@@ -1,0 +1,27 @@
+.small-box h3 {
+    font-size: 28px;
+    font-weight: inherit;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    padding: 0;
+}
+
+.main-footer {
+    background: #fff;
+    padding: 5px;
+    color: #444;
+    border-top: 1px solid #d2d6de;
+}
+
+.required{
+    color : red;
+}
+
+.td-c{
+    text-align: center;
+}
+
+.tds{
+    padding: 5px !important;
+    line-height: 1.2 !important;
+}
