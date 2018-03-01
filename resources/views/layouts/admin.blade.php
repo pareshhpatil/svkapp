@@ -40,8 +40,8 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="/admin/dashboard" class="logo" style="background-color: #ffffff;">
-                    <span class="logo-mini"><img src="{{ asset('dist/img/'.$company_logo) }}"></span>
-                    <span class="logo-lg"><img src="{{ asset('dist/img/'.$company_logo) }}"></span>
+                    <span class="logo-mini"><img style="max-height:45px;" src="{{ asset('dist/img/'.$company_logo) }}"></span>
+                    <span class="logo-lg"><img style="max-height:45px;" src="{{ asset('dist/img/'.$company_logo) }}"></span>
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">

@@ -38,7 +38,7 @@ class LoginController extends Controller {
         @session_start();
         session_destroy();
         Session::flush();
-        return view('auth.expired');
+        header('Location: /login');
         exit;
     }
 
