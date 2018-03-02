@@ -15,7 +15,10 @@
                     <form action="/admin/logsheet/generatebill" method="post" class="form-horizontal">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="col-md-12">
-
+                            <div class="col-md-3">
+                                <input type="text" name="date" readonly="" required="" value="{{$month}}" autocomplete="off" class="form-control form-control-inline month-picker" data-date-format="M yyyy" >
+                                <div class="help-block"></div>
+                            </div>
                             <div class="col-md-3">
                                 <select name="vehicle_id" required class="form-control" data-placeholder="Select...">
                                     <option value="">Select vehicle</option>
@@ -28,6 +31,7 @@
 
                                     @endforeach
                                 </select>
+                                <div class="help-block"></div>
                             </div>
 
 
@@ -43,10 +47,9 @@
 
                                     @endforeach
                                 </select>
+                                <div class="help-block"></div>
                             </div>
-                            <div class="col-md-3">
-                                <input type="text" name="date" readonly="" required="" value="{{$month}}" autocomplete="off" class="form-control form-control-inline month-picker" data-date-format="M yyyy" >
-                            </div>
+
                             <div class="col-md-3">
                                 <button  type="submit" class="btn btn-primary">Generate </button>
                                 <a href="/admin/logsheet" class="btn btn-default">Back </a>

@@ -13,10 +13,6 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\Apirequestsend',
-        'App\Console\Commands\bulkuploadsave',
-        'App\Console\Commands\bulkuploadsend',
-        'App\Console\Commands\remindersend',
     ];
 
     /**
@@ -26,17 +22,6 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        $schedule->command('apiinvoice:send')
-                ->withoutOverlapping()
-                ->hourly();
-        $schedule->command('bulkinvoice:send')
-                ->withoutOverlapping()
-                ->hourly();
-        $schedule->command('bulkinvoice:save')
-                ->withoutOverlapping()
-                ->everyFiveMinutes();
-        $schedule->command('reminder:send')
-                ->dailyAt('09:00');
         // $schedule->command('log:demo')->everyMinute();
     }
 
