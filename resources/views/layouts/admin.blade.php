@@ -104,7 +104,7 @@
                                         <i class="fa fa-circle-o"></i> Vehicle</a>
                                 </li>
                                 <li>
-                                    <a href="/admin/master/vendor">
+                                    <a href="/admin/vendor/list">
                                         <i class="fa fa-circle-o"></i> Vendor</a>
                                 </li>
                                 <li>
@@ -112,13 +112,10 @@
                                         <i class="fa fa-circle-o"></i> Company</a>
                                 </li>
                                 <li>
-                                    <a href="/admin/master/card">
-                                        <i class="fa fa-circle-o"></i> Card</a>
+                                    <a href="/admin/paymentsource/list">
+                                        <i class="fa fa-circle-o"></i> Payment Source</a>
                                 </li>
-                                <li>
-                                    <a href="/admin/master/location">
-                                        <i class="fa fa-circle-o"></i> Location</a>
-                                </li>
+                                
 
                             </ul>
                         </li>
@@ -143,8 +140,8 @@
                                         <i class="fa fa-circle-o"></i> Over Time</a>
                                 </li>
                                 <li>
-                                    <a href="/admin/employee/payment">
-                                        <i class="fa fa-circle-o"></i> Payment</a>
+                                    <a href="/admin/employee/salary">
+                                        <i class="fa fa-circle-o"></i> Salary</a>
                                 </li>
 
                             </ul>

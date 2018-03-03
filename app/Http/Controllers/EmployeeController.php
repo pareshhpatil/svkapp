@@ -66,6 +66,34 @@ class EmployeeController extends Controller {
         return view('employee.advance', $data);
     }
 
+    public function salary() {
+        $salary_list = $this->employee_model->getSalaryList($this->admin_id);
+        $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
+
+        if (isset($_POST['date'])) {
+            $data['month'] = $_POST['date'];
+            $data['insert'] = 1;
+            $absent_list = $this->master_model->getMaster('absent', $_POST['employee_id'], 'employee_id');
+            $advance_list = $this->master_model->getMaster('advance', $_POST['employee_id'], 'employee_id');
+            $overtime_list = $this->master_model->getMaster('overtime', $_POST['employee_id'], 'employee_id');
+            $detail = $this->master_model->getMasterDetail('employee', 'employee_id', $_POST['employee_id']);
+            $data['employee_id'] = $_POST['employee_id'];
+            $data['absent_list'] = $absent_list;
+            $data['advance_list'] = $advance_list;
+            $data['overtime_list'] = $overtime_list;
+            $data['det'] = $detail;
+        } else {
+            $data['month'] = '';
+            $data['insert'] = 0;
+            $data['employee_id'] = 0;
+        }
+        $data['title'] = 'Employee Salary';
+        $data['list'] = $salary_list;
+        $data['employee_list'] = $employee_list;
+        $data['addnew_button'] = 1;
+        return view('employee.salary', $data);
+    }
+
     public function saveabsent(Request $request) {
         $date = date('Y-m-d', strtotime($request->date));
         $deduct = (isset($request->is_deduct)) ? $request->is_deduct : 0;

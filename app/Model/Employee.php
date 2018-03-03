@@ -49,6 +49,15 @@ class Employee extends Model {
                 ->get();
         return $retObj;
     }
+    
+    public function getSalaryList($admin_id) {
+        $retObj = DB::table('salary as a')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->where('a.admin_id', $admin_id)
+                ->select(DB::raw('a.*,ea.name as employee_name'))
+                ->get();
+        return $retObj;
+    }
 
     public function saveAbsent($vehicle_id, $absent_employee_id, $replace_employee_id, $date, $remark, $is_deduct, $user_id, $admin_id) {
         $id = DB::table('absent')->insertGetId(

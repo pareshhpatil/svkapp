@@ -122,6 +122,42 @@ class MasterController extends Controller {
         return view('master.company.saved', $data);
     }
 
+    #Vendor
+
+    public function vendorsave(Request $request) {
+        $company_id = $this->master_model->saveVendor($request->business_name, $request->name, $request->email, $request->mobile, $request->gst_number, $request->address, $this->admin_id, $this->user_id);
+        $link = $this->encrypt->encode($company_id);
+        $data['title'] = 'Success Vendor';
+        $data['success'] = 'Vendor has been saved successfully';
+        $data['link'] = $link;
+        return view('master.vendor.saved', $data);
+    }
+
+    public function vendorupdatesave(Request $request) {
+        $this->master_model->updateVendor($request->vendor_id, $request->business_name, $request->name, $request->email, $request->mobile, $request->gst_number, $request->address, $this->admin_id, $this->user_id);
+        $link = $this->encrypt->encode($request->vendor_id);
+        $data['title'] = 'Success Vendor';
+        $data['success'] = 'Vendor has been saved successfully';
+        $data['link'] = $link;
+        return view('master.vendor.saved', $data);
+    }
+
+    #Payment Source
+
+    public function paymentsourcesave(Request $request) {
+        $company_id = $this->master_model->savePaymentsource($request->name, $request->bank, $request->card_number, $request->type, $this->admin_id, $this->user_id);
+        $this->setSuccess('Payment source has been deleted successfully');
+        header('Location: /admin/paymentsource/list');
+        exit();
+    }
+
+    public function paymentsourceupdatesave(Request $request) {
+        $this->master_model->updatePaymentsource($request->id, $request->name, $request->bank, $request->card_number, $request->type, $this->admin_id, $this->user_id);
+        $this->setSuccess('Payment source has been deleted successfully');
+        header('Location: /admin/paymentsource/list');
+        exit();
+    }
+
     #Vehicle
 
     public function vehiclesave(Request $request) {

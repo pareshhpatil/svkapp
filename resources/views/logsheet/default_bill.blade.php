@@ -62,7 +62,9 @@
                             {{ Carbon\Carbon::parse($item->close_time)->format('h:i A')}}
                         </td>
                         <td class="td-c">
+                            @if($item->total_time>'00:00:00')
                             {{ Carbon\Carbon::parse($item->total_time)->format('H:i')}}
+                            @endif
                         </td>
                         <td class="td-c">
                             @if($item->extra_time>'00:00:00')

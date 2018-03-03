@@ -106,6 +106,66 @@ class Master extends Model {
         ]);
     }
 
+    public function saveVendor($business_name, $name, $email, $mobile, $gst_number, $address, $admin_id, $user_id) {
+        $id = DB::table('vendor')->insertGetId(
+                [
+                    'admin_id' => $admin_id,
+                    'business_name' => $business_name,
+                    'name' => $name,
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'gst_number' => $gst_number,
+                    'address' => $address,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
+    }
+
+    public function updateVendor($vendor_id, $business_name, $name, $email, $mobile, $gst_number, $address, $admin_id, $user_id) {
+        DB::table('vendor')
+                ->where('vendor_id', $vendor_id)
+                ->update([
+                    'business_name' => $business_name,
+                    'name' => $name,
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'gst_number' => $gst_number,
+                    'address' => $address,
+                    'last_update_by' => $user_id
+        ]);
+    }
+
+    public function savePaymentsource($name, $bank, $card_number, $type, $admin_id, $user_id) {
+        $id = DB::table('paymentsource')->insertGetId(
+                [
+                    'admin_id' => $admin_id,
+                    'name' => $name,
+                    'bank' => $bank,
+                    'card_number' => $card_number,
+                    'type' => $type,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
+    }
+
+    public function updatePaymentsource($id, $name, $bank, $card_number, $type, $admin_id, $user_id) {
+        DB::table('paymentsource')
+                ->where('paymentsource_id', $id)
+                ->update([
+                    'name' => $name,
+                    'bank' => $bank,
+                    'card_number' => $card_number,
+                    'type' => $type,
+                    'last_update_by' => $user_id
+        ]);
+    }
+
     public function saveVehicle($name, $brand, $car_type, $number, $model, $purchase_date, $admin_id, $user_id) {
         $id = DB::table('vehicle')->insertGetId(
                 [

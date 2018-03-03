@@ -36,7 +36,6 @@
                                 <a target="_BLANK" href="/admin/logsheet/printlogsheet/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-file-excel-o"></i></a>
                                 <a target="_BLANK" href="/admin/logsheet/printbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-file-word-o"></i></a>
                                 <a href="/admin/logsheet/generatebill/{{$item->link}}" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/company/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
                         </tr>
                         @endforeach

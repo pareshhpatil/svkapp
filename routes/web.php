@@ -49,6 +49,8 @@ Route::post('/admin/employee/updatesave', 'MasterController@employeeupdatesave')
 Route::get('/admin/employee/absent', 'EmployeeController@absent');
 Route::get('/admin/employee/advance', 'EmployeeController@advance');
 Route::get('/admin/employee/overtime', 'EmployeeController@overtime');
+Route::any('/admin/employee/salary', 'EmployeeController@salary');
+
 Route::post('/admin/employee/saveabsent', 'EmployeeController@saveabsent');
 Route::post('/admin/employee/saveadvance', 'EmployeeController@saveadvance');
 Route::post('/admin/employee/saveovertime', 'EmployeeController@saveovertime');
@@ -56,6 +58,14 @@ Route::post('/admin/employee/saveovertime', 'EmployeeController@saveovertime');
 #Company
 Route::post('/admin/company/save', 'MasterController@companysave');
 Route::post('/admin/company/updatesave', 'MasterController@companyupdatesave');
+
+#Vendor
+Route::post('/admin/vendor/save', 'MasterController@vendorsave');
+Route::post('/admin/vendor/updatesave', 'MasterController@vendorupdatesave');
+
+#Paymentsource
+Route::post('/admin/paymentsource/save', 'MasterController@paymentsourcesave');
+Route::post('/admin/paymentsource/updatesave', 'MasterController@paymentsourceupdatesave');
 
 #Vehicle
 Route::post('/admin/vehicle/save', 'MasterController@vehiclesave');
