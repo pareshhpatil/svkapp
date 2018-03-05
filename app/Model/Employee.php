@@ -110,5 +110,15 @@ class Employee extends Model {
         );
         return $id;
     }
+    
+    public function updateAbsentAmount($amount, $id, $user_id) {
+        DB::table('absent')
+                ->where('absent_id', $id)
+                ->update([
+                    'amount_deduct' => $amount,
+                    'last_update_by' => $user_id
+        ]);
+    }
+
 
 }

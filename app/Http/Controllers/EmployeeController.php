@@ -67,6 +67,26 @@ class EmployeeController extends Controller {
     }
 
     public function salary() {
+
+        if (isset($_POST['salary_month'])) {
+            foreach ($_POST['absent_id'] as $value) {
+                $key = array_search($value, $_POST['absent_idint']);
+                $this->employee_model->updateAbsentAmount($_POST['absent_amount'][$key], $value, $this->user_id);
+            }
+
+            $absent_id = (isset($_POST['absent_id'])) ? implode(',', $_POST['absent_id']) : '';
+            $overtime_id = (isset($_POST['overtime_id'])) ? implode(',', $_POST['overtime_id']) : '';
+            $advance_id = (isset($_POST['advance_id'])) ? implode(',', $_POST['advance_id']) : '';
+
+            $advance_amount = ($_POST['advance_amount'] > 0) ? $_POST['advance_amount'] : 0;
+            $overtime_amount = ($_POST['overtime_amount'] > 0) ? $_POST['overtime_amount'] : 0;
+            $absent_amount = ($_POST['absent_total_amount'] > 0) ? $_POST['absent_total_amount'] : 0;
+
+
+            $salary_list = $this->employee_model->getSalaryList($this->admin_id);
+        }
+
+
         $salary_list = $this->employee_model->getSalaryList($this->admin_id);
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
 

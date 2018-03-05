@@ -142,3 +142,46 @@ function roundA(amt)
 {
     return amt.toFixed(2);
 }
+
+function calculateSalary()
+{
+    var total_advance = 0
+    $('input[name="advance_id[]"]').each(function () {
+
+        if ($(this).is(':checked'))
+        {
+            var advance_id = $(this).val();
+            var advance = Number(_("adv" + advance_id).value);
+            total_advance = Number(total_advance) + Number(advance);
+        }
+    });
+
+    _("adv_amt").value = total_advance;
+
+    var total_ot = 0
+    $('input[name="overtime_id[]"]').each(function () {
+        if ($(this).is(':checked'))
+        {
+            var ot_id = $(this).val();
+            var ot = Number(_("ot" + ot_id).value);
+            total_ot = Number(total_ot) + Number(ot);
+        }
+    });
+
+    _("ot_amt").value = total_ot;
+
+    var total_absent = 0
+    $('input[name="absent_id[]"]').each(function () {
+        if ($(this).is(':checked'))
+        {
+            var abs_id = $(this).val();
+            var absent = Number(_("abs" + abs_id).value);
+            total_absent = Number(total_absent) + Number(absent);
+        }
+    });
+
+    _("abs_amt").value = total_absent;
+
+    salary = Number(_("salary").value);
+    _("paid_amt").value = salary + total_ot - total_absent - total_advance;
+}

@@ -97,9 +97,9 @@
                                     <tr>
                                         <td class="td-c"><input type="text" class="form-control" value="{{$det['particular_name']}}" name="particular_name[]"> </td>
                                         <td class="td-c"><input type="text" class="form-control"   name="unit[]" value="{{$det['unit']}}"></td>
-                                        <td class="td-c"><input type="number" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control"  onblur="calculateLogsheet();" id="qty{{$int}}" name="qty[]" value="{{$det['qty']}}"></td>
-                                        <td class="td-c"><input type="number" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control" onblur="calculateLogsheet();" id="rate{{$int}}" name="rate[]" value="{{$det['rate']}}"></td>
-                                        <td class="td-c"><input type="number" pattern="[0-9]*" class="form-control" id="amt{{$int}}" name="amount[]" value="{{$det['amount']}}">
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control"  onblur="calculateLogsheet();" id="qty{{$int}}" name="qty[]" value="{{$det['qty']}}"></td>
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control" onblur="calculateLogsheet();" id="rate{{$int}}" name="rate[]" value="{{$det['rate']}}"></td>
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt{{$int}}" name="amount[]" value="{{$det['amount']}}">
                                             <input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct{{$int}}" value="{{$det['is_deduct']}}">
                                             <input type="hidden" class="form-control" name="int[]" value="{{$int}}">
                                             <input type="hidden" class="form-control" name="detail_id[]" value="{{$det['id']}}">

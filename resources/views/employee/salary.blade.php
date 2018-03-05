@@ -73,159 +73,221 @@
                         </div>
                     </div>
                     @isset($det)
-                    <div class="row">
-                        <div class="col-md-12">
+                    <form action="" method="post" class="form-horizontal">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <div class="row">
 
-                            <!-- Profile Image -->
-                            <div class="box box-primary">
-                                <div class="col-md-4">
-                                    <div class="box-body box-profile">
-                                        <div style="width: 100%; text-align: center;">
-                                            @if($det->photo!='')
-                                            <img style="display: inline;" class="img-responsive " src="{{ asset('dist/uploads/employee/'.$det->photo) }}" alt="User profile picture">
-                                            @else
-                                            <img style="display: inline;" class="img-responsive " src="{{ asset('dist/img/avatar5.png') }}" alt="User profile picture">
-                                            @endif
+                            <div class="col-md-12">
+
+                                <!-- Profile Image -->
+                                <div class="box box-primary">
+                                    <div class="col-md-4">
+                                        <div class="box-body box-profile">
+                                            <div style="width: 100%; text-align: center;">
+                                                @if($det->photo!='')
+                                                <img style="display: inline;" class="img-responsive " src="{{ asset('dist/uploads/employee/'.$det->photo) }}" alt="User profile picture">
+                                                @else
+                                                <img style="display: inline;" class="img-responsive " src="{{ asset('dist/img/avatar5.png') }}" alt="User profile picture">
+                                                @endif
+                                            </div>
+
+                                            <h3 class="profile-username text-center">{{$det->name}}</h3>
+                                            <p class="text-muted text-center">Driver</p>
+
+
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="box-body box-profile">
 
-                                        <h3 class="profile-username text-center">{{$det->name}}</h3>
-                                        <p class="text-muted text-center">Driver</p>
 
+                                            <ul class="list-group list-group-unbordered">
+                                                <li class="list-group-item">
+                                                    <b>Employee code</b> <a class="pull-right">{{$det->employee_code}}</a>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <b>Email</b> <a class="pull-right">{{$det->email}}</a>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <b>Mobile</b> <a class="pull-right">{{$det->mobile}}</a>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <b>Salary</b> <a class="pull-right">{{$det->payment}}</a>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <b>Payment Day</b> <a class="pull-right">{{$det->payment_day}}Th Of Month</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
 
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Advance details</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body no-padding">
+                                        <table class="table table-condensed">
+                                            <tbody><tr>
+                                                    <th style="width: 10%;">#</th>
+                                                    <th style="width: 20%;">Date</th>
+                                                    <th style="width: 20%;">Amount deduct</th>
+                                                    <th  style="width: 30%;">Note</th>
+                                                    <th  style="width: 20%;">Include in salary</th>
+                                                </tr>
+                                                @foreach ($advance_list as $item)
+                                                @if($item->is_adjust==0)
+                                                <tr>
+                                                    <td>{{$item->advance_id}}</td>
+                                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
+                                                    <td>{{$item->amount}} <input type="hidden" id="adv{{$item->advance_id}}" value="{{$item->amount}}"> </td>
+                                                    <td>{{$item->note}}</td>
+                                                    <td><label><input type="checkbox" name="advance_id[]" onchange="calculateSalary();"  value="{{$item->advance_id}}"> Include</label></td>
+                                                </tr>
+                                                @endif
+                                                @endforeach
+                                            </tbody></table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Over Time details</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body no-padding">
+                                        <table class="table table-condensed">
+                                            <tbody><tr>
+                                                    <th style="width: 10%;" >#</th>
+                                                    <th style="width: 20%;">Date</th>
+                                                    <th style="width: 20%;">Amount deduct</th>
+                                                    <th style="width: 30%;" >Note</th>
+                                                    <th style="width: 20%;" >Include in salary</th>
+                                                </tr>
+                                                @foreach ($overtime_list as $item)
+                                                @if($item->is_used==0)
+                                                <tr>
+                                                    <td>{{$item->ot_id}}</td>
+                                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
+                                                    <td>{{$item->amount}}<input type="hidden" id="ot{{$item->ot_id}}" value="{{$item->amount}}"></td>
+                                                    <td>{{$item->note}}</td>
+                                                    <td><label><input type="checkbox" onchange="calculateSalary();"  name="overtime_id[]" value="{{$item->ot_id}}"> Include</label></td>
+                                                </tr>
+                                                @endif
+                                                @endforeach
+                                            </tbody></table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Absent details</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body no-padding">
+                                        <table class="table table-condensed">
+                                            <tbody><tr>
+                                                    <th style="width: 10%;" >#</th>
+                                                    <th style="width: 20%;">Date</th>
+                                                    <th style="width: 20%;">Amount deduct</th>
+                                                    <th style="width: 30%;" >Note</th>
+                                                    <th style="width: 20%;" >Include in salary</th>
+                                                </tr>
+                                                @foreach ($absent_list as $item)
+                                                @if($item->is_deduct==0)
+                                                <tr>
+                                                    <td>{{$item->absent_id}}</td>
+                                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
+                                                    <td><input type="text" name="absent_amount[]" onblur="calculateSalary();" id="abs{{$item->absent_id}}" value="<?php echo round($det->payment / 30, 2); ?>" class="form-control"></td>
+                                                    <td>{{$item->note}}</td>
+                                                    <td><label>
+                                                            <input type="checkbox" onchange="calculateSalary();" name="absent_id[]" value="{{$item->absent_id}}"> Include
+                                                        </label>
+                                                        <input type="hidden" name="absent_idint[]" value="{{$item->absent_id}}">
+                                                    </td>
+
+                                                </tr>
+                                                @endif
+                                                @endforeach
+                                            </tbody></table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"  >
+                            
+                            <div class="col-md-2"></div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Date<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy" >
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="box-body box-profile">
-
-
-                                        <ul class="list-group list-group-unbordered">
-                                            <li class="list-group-item">
-                                                <b>Employee code</b> <a class="pull-right">{{$det->employee_code}}</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Email</b> <a class="pull-right">{{$det->email}}</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Mobile</b> <a class="pull-right">{{$det->mobile}}</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Salary</b> <a class="pull-right">{{$det->payment}}</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Payment Day</b> <a class="pull-right">{{$det->payment_day}}Th Of Month</a>
-                                            </li>
-                                        </ul>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Salary amount<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="number" pattern="[0-9]*" readonly="" id="salary" value="{{$det->payment}}" name="amount"  class="form-control">
                                     </div>
                                 </div>
-                                <!-- /.box-body -->
-                            </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Advance amount<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="number" pattern="[0-9]*" readonly=""  id="adv_amt" name="advance_amount"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Overtime amount<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="number" pattern="[0-9]*" readonly=""  id="ot_amt" name="overtime_amount"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Absent amount<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="number" pattern="[0-9]*" readonly=""  id="abs_amt" name="absent_total_amount"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Paid amount<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="number" pattern="[0-9]*"  id="paid_amt" name="paid_amount" value="{{$det->payment}}"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Remark<span class="required"> </span></label>
+                                    <div class="col-md-7">
+                                        <input type="text" id="remark" name="remark"   class="form-control" >
+                                    </div>
+                                </div>
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Advance details</h3>
+                                <div class="form-group">
+                                    <div class="modal-footer">
+                                        <p id="loaded_n_total"></p>
+                                        <a href="" class="btn btn-default pull-right" >Close</a>
+                                        <button  type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
+                                        <input type="hidden" name="employee_id" value="{{$employee_id}}">
+                                        <input type="hidden" name="salary_month" value="{{$month}}">
+                                    </div>
                                 </div>
-                                <!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table class="table table-condensed">
-                                        <tbody><tr>
-                                                <th style="width: 10%;">#</th>
-                                                <th style="width: 20%;">Date</th>
-                                                <th style="width: 20%;">Amount deduct</th>
-                                                <th  style="width: 30%;">Note</th>
-                                                <th  style="width: 20%;">Include in salary</th>
-                                            </tr>
-                                            @foreach ($advance_list as $item)
-                                            @if($item->is_adjust==0)
-                                            <tr>
-                                                <td>{{$item->advance_id}}</td>
-                                                <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
-                                                <td>{{$item->amount}}</td>
-                                                <td>{{$item->note}}</td>
-                                                <td><label><input type="checkbox" name="advance_id[]" value="{{$item->advance_id}}"> Include</label></td>
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                        </tbody></table>
-                                </div>
-                                <!-- /.box-body -->
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Over Time details</h3>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table class="table table-condensed">
-                                        <tbody><tr>
-                                                <th style="width: 10%;" >#</th>
-                                                <th style="width: 20%;">Date</th>
-                                                <th style="width: 20%;">Amount deduct</th>
-                                                <th style="width: 30%;" >Note</th>
-                                                <th style="width: 20%;" >Include in salary</th>
-                                            </tr>
-                                            @foreach ($overtime_list as $item)
-                                            @if($item->is_used==0)
-                                            <tr>
-                                                <td>{{$item->ot_id}}</td>
-                                                <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
-                                                <td>{{$item->amount}}</td>
-                                                <td>{{$item->note}}</td>
-                                                <td><label><input type="checkbox" name="overtime_id[]" value="{{$item->ot_id}}"> Include</label></td>
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                        </tbody></table>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Absent details</h3>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table class="table table-condensed">
-                                        <tbody><tr>
-                                                <th style="width: 10%;" >#</th>
-                                                <th style="width: 20%;">Date</th>
-                                                <th style="width: 20%;">Amount deduct</th>
-                                                <th style="width: 30%;" >Note</th>
-                                                <th style="width: 20%;" >Include in salary</th>
-                                            </tr>
-                                            @foreach ($absent_list as $item)
-                                            @if($item->is_deduct==0)
-                                            <tr>
-                                                <td>{{$item->absent_id}}</td>
-                                                <td>{{ Carbon\Carbon::parse($item->date)->format('d-M-Y')}}</td>
-                                                <td><input type="text" name="absent_amount[]" value="<?php echo round($det->payment / 30, 2); ?>" class="form-control"></td>
-                                                <td>{{$item->note}}</td>
-                                                <td><label>
-                                                        <input type="checkbox" name="absent_id[]" value="{{$item->absent_id}}"> Include
-                                                    </label>
-                                                    <input type="hidden" name="absent_idint[]" value="{{$item->absent_id}}">
-                                                </td>
-
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                        </tbody></table>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                     @endisset
                     <!-- /.panel-body -->
                 </div>
