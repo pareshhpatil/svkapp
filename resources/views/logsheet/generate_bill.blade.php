@@ -99,7 +99,7 @@
                                         <td class="td-c"><input type="text" class="form-control"   name="unit[]" value="{{$det['unit']}}"></td>
                                         <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control"  onblur="calculateLogsheet();" id="qty{{$int}}" name="qty[]" value="{{$det['qty']}}"></td>
                                         <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='') readonly @endif class="form-control" onblur="calculateLogsheet();" id="rate{{$int}}" name="rate[]" value="{{$det['rate']}}"></td>
-                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt{{$int}}" name="amount[]" value="{{$det['amount']}}">
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt{{$int}}" name="amount[]" onblur="calculateLogsheet();" value="{{$det['amount']}}">
                                             <input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct{{$int}}" value="{{$det['is_deduct']}}">
                                             <input type="hidden" class="form-control" name="int[]" value="{{$int}}">
                                             <input type="hidden" class="form-control" name="detail_id[]" value="{{$det['id']}}">
@@ -118,17 +118,17 @@
                                         <td colspan="2" rowspan="3" style="vertical-align: middle;"><span class="pull-right"><b>Goods and Services Tax @5%</b></span></td>
                                         <td><span class="pull-right">CGST@</span></td>
                                         <td><span class="pull-right"><input id="cgst" class="form-control" type="number" onblur="calculateLogsheet();" value="2.50"></span></td>
-                                        <th><span class="pull-right"><input type="number" class="form-control" readonly="" id="cgst_amt" name="cgst"></span></th>
+                                        <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="cgst_amt" name="cgst"></span></th>
                                     </tr>
                                     <tr>
                                         <td><span class="pull-right">SGST@</span></td>
                                         <td><span class="pull-right"><input id="sgst" class="form-control" onblur="calculateLogsheet();" type="number" value="2.50"></span></td>
-                                        <th><span class="pull-right"><input type="number" class="form-control" readonly="" id="sgst_amt" name="sgst"></span></th>
+                                        <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="sgst_amt" name="sgst"></span></th>
                                     </tr>
                                     <tr>
                                         <td><span class="pull-right">IGST@</span></td>
                                         <td><span class="pull-right"><input id="igst" class="form-control" onblur="calculateLogsheet();" type="number" value="0.0"></span></td>
-                                        <th><span class="pull-right"><input type="number" class="form-control" readonly="" id="igst_amt" name="igst"></span></th>
+                                        <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="igst_amt" name="igst"></span></th>
                                     </tr>
                                     <tr>
                                         <td colspan="4"  style="vertical-align: middle;"><span class="pull-right"><b>Total GST Value</b></span></td>
