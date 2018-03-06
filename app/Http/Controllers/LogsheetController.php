@@ -69,7 +69,7 @@ class LogsheetController extends Controller {
             $type = $item->type;
             $link = $this->encrypt->encode($item->logsheet_id);
             $list[$int]->link = $link;
-            if (substr($item->extra_time, 0, 1) == '-') {
+            if (substr($item->total_time, 0, 1) == '-') {
                 $datetime1 = strtotime($item->date . ' ' . $item->start_time);
                 $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
                 $datetime2 = strtotime($todate . ' ' . $item->close_time);
@@ -200,7 +200,7 @@ class LogsheetController extends Controller {
             foreach ($list as $item) {
                 $type = $item->type;
                 $link = $this->encrypt->encode($item->logsheet_id);
-                if (substr($item->extra_time, 0, 1) == '-') {
+                if (substr($item->total_time, 0, 1) == '-') {
                     $datetime1 = strtotime($item->date . ' ' . $item->start_time);
                     $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
                     $datetime2 = strtotime($todate . ' ' . $item->close_time);
