@@ -111,7 +111,7 @@ class LogsheetController extends Controller {
         $data['logsheet_detail'] = $logsheet_detail;
         $data['vehicle'] = $vehicle;
         $data['company'] = $company;
-        $data['word_money'] = $this->wordMoney($invoice['grand_total']);
+        $data['word_money'] = $this->displaywords($invoice->grand_total);
         $data['list'] = $list;
         $data['title'] = 'Logsheet Print';
         $data['type'] = $type;

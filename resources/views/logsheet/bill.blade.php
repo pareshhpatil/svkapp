@@ -140,7 +140,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="tds" colspan="2"><span class="pull-right"><b>Invoice Value (In Words)&nbsp;&nbsp;</b></span></td>
-                                                    <td class="tds" colspan="4"> &nbsp;&nbsp;{{$word_money}}  Only.</td>
+                                                    <td class="tds" colspan="4"> &nbsp;&nbsp;{{$word_money}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
