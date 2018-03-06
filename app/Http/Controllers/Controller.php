@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Session;
 use App\Lib\Encryption;
+use Numbers_Words;
 use View;
 
 class Controller extends BaseController {
@@ -141,6 +142,14 @@ class Controller extends BaseController {
             }
             $_SESSION['last_action'] = time();
         }
+    }
+
+    public function wordMoney($amount) {
+        $numb = new Numbers_Words();
+        $num_words = $numb->toCurrency($amount, "en_IN");
+        $num_words1 = str_replace("Indian Rupeess", "Rupees", $num_words);
+        $money_words = ucwords($num_words1);
+        return str_replace('Zero Paises', '', $money_words);
     }
 
 }

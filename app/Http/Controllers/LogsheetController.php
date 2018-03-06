@@ -83,12 +83,12 @@ class LogsheetController extends Controller {
         $type = ($type == 2) ? 'location' : 'default';
         return view('logsheet.' . $type . '_excel', $data);
     }
-    
+
     public function printbill($link) {
         $id = $this->encrypt->decode($link);
         $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
         $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
-        $admin = $this->master_model->getMasterDetail('admin','admin_id', $this->admin_id);
+        $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
         $data['admin'] = $admin;
         $data['invoice'] = $invoice;
         $data['vehicle_id'] = $invoice->vehicle_id;
@@ -111,6 +111,7 @@ class LogsheetController extends Controller {
         $data['logsheet_detail'] = $logsheet_detail;
         $data['vehicle'] = $vehicle;
         $data['company'] = $company;
+        $data['word_money'] = $this->wordMoney($invoice['grand_total']);
         $data['list'] = $list;
         $data['title'] = 'Logsheet Print';
         $data['type'] = $type;
