@@ -69,6 +69,28 @@ class LogsheetController extends Controller {
             $type = $item->type;
             $link = $this->encrypt->encode($item->logsheet_id);
             $list[$int]->link = $link;
+            if (substr($item->extra_time, 0, 1) == '-') {
+                $datetime1 = strtotime($item->date . ' ' . $item->start_time);
+                $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
+                $datetime2 = strtotime($todate . ' ' . $item->close_time);
+                $interval = $datetime2 - $datetime1;
+
+                $total_time = round($interval / 60 / 60, 2);
+                $extra_time = $total_time - 12;
+                if (substr($total_time, -2) == '.5') {
+                    $total_time = substr($total_time, 0, -2) . ':30';
+                } else {
+                    $total_time = $total_time . ':00';
+                }
+
+                if (substr($extra_time, -2) == '.5') {
+                    $extra_time = substr($extra_time, 0, -2) . ':30';
+                } else {
+                    $extra_time = $extra_time . ':00';
+                }
+                $list[$int]->total_time = $total_time;
+                $list[$int]->extra_time = $extra_time;
+            }
             $int++;
         }
         $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
@@ -178,6 +200,28 @@ class LogsheetController extends Controller {
             foreach ($list as $item) {
                 $type = $item->type;
                 $link = $this->encrypt->encode($item->logsheet_id);
+                if (substr($item->extra_time, 0, 1) == '-') {
+                    $datetime1 = strtotime($item->date . ' ' . $item->start_time);
+                    $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
+                    $datetime2 = strtotime($todate . ' ' . $item->close_time);
+                    $interval = $datetime2 - $datetime1;
+
+                    $total_time = round($interval / 60 / 60, 2);
+                    $extra_time = $total_time - 12;
+                    if (substr($total_time, -2) == '.5') {
+                        $total_time = substr($total_time, 0, -2) . ':30';
+                    } else {
+                        $total_time = $total_time . ':00';
+                    }
+
+                    if (substr($extra_time, -2) == '.5') {
+                        $extra_time = substr($extra_time, 0, -2) . ':30';
+                    } else {
+                        $extra_time = $extra_time . ':00';
+                    }
+                    $list[$int]->total_time = $total_time;
+                    $list[$int]->extra_time = $extra_time;
+                }
                 $list[$int]->link = $link;
                 $int++;
             }
