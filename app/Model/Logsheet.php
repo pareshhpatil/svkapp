@@ -170,6 +170,7 @@ class Logsheet extends Model {
                 ->where('company_id', $company_id)
                 ->where('vehicle_id', $vehicle_id)
                 ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), date('Y-m', strtotime($date)))
+                ->orderBy('date', 'asc')
                 ->get();
         return $retObj;
     }
