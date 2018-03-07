@@ -90,6 +90,9 @@ class LogsheetController extends Controller {
                 }
                 $list[$int]->total_time = $total_time;
                 $list[$int]->extra_time = $extra_time;
+                if ($item->day_night == 'Night') {
+                    $list[$int]->extra_time = '00:00';
+                }
             }
             $int++;
         }
@@ -221,6 +224,9 @@ class LogsheetController extends Controller {
                     }
                     $list[$int]->total_time = $total_time;
                     $list[$int]->extra_time = $extra_time;
+                }
+                if ($item->day_night == 'Night') {
+                    $list[$int]->extra_time = '00:00';
                 }
                 $list[$int]->link = $link;
                 $int++;
