@@ -117,17 +117,17 @@
                                     <tr>
                                         <td colspan="2" rowspan="3" style="vertical-align: middle;"><span class="pull-right"><b>Goods and Services Tax @5%</b></span></td>
                                         <td><span class="pull-right">CGST@</span></td>
-                                        <td><span class="pull-right"><input id="cgst" class="form-control" type="number" onblur="calculateLogsheet();" value="2.50"></span></td>
+                                        <td><span class="pull-right"><input id="cgst" class="form-control" type="number" onblur="calculateLogsheet();" step="0.01" value="2.50"></span></td>
                                         <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="cgst_amt" name="cgst"></span></th>
                                     </tr>
                                     <tr>
                                         <td><span class="pull-right">SGST@</span></td>
-                                        <td><span class="pull-right"><input id="sgst" class="form-control" onblur="calculateLogsheet();" type="number" value="2.50"></span></td>
+                                        <td><span class="pull-right"><input id="sgst" class="form-control" onblur="calculateLogsheet();" type="number" step="0.01" value="2.50"></span></td>
                                         <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="sgst_amt" name="sgst"></span></th>
                                     </tr>
                                     <tr>
                                         <td><span class="pull-right">IGST@</span></td>
-                                        <td><span class="pull-right"><input id="igst" class="form-control" onblur="calculateLogsheet();" type="number" value="0.0"></span></td>
+                                        <td><span class="pull-right"><input id="igst" class="form-control" onblur="calculateLogsheet();" type="number" step="0.01" value="0.0"></span></td>
                                         <th><span class="pull-right"><input type="number" step="0.01" class="form-control" readonly="" id="igst_amt" name="igst"></span></th>
                                     </tr>
                                     <tr>

@@ -14,26 +14,25 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Employee #</th>
-                            <th>Name </th>
-                            <th>Code </th>
-                            <th>Mobile </th>
-                            <th>Joining date </th>
+                            <th>Bill #</th>
+                            <th>Date</th>
+                            <th>Vendor Name </th>
+                            <th>Category </th>
+                            <th>Amount </th>
                             <th style="width: 70px;">Action </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($list as $item)
                         <tr class="odd gradeX">
-                            <td>{{$item->employee_id}}</td>
+                            <td>{{$item->bill_id}}</td>
+                            <td>{{$item->date}}</td>
                             <td>{{$item->name}}</td>
-                            <td>{{$item->employee_code}}</td>
-                            <td>{{$item->mobile}}</td>
-                            <td>{{$item->join_date}}</td>
+                            <td>{{$item->category}}</td>
+                            <td>{{$item->amount}}</td>
                             <td>
-                                <a href="/admin/employee/view/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-table"></i></a>
-                                <a href="/admin/employee/update/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
-                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/employee/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+                                <a href="/admin/payment/bill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-money"></i></a>
+                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/bill/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -54,10 +53,10 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Delete Employee</h4>
+                <h4 class="modal-title">Delete Bill</h4>
             </div>
             <div class="modal-body">
-                <p>Are you sure you would not like to use this employee in the future?</p>
+                <p>Are you sure you would not like to use this bill in the future?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>

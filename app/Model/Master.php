@@ -19,11 +19,12 @@ use Illuminate\Support\Facades\DB;
 
 class Master extends Model {
 
-    public function saveEmployee($request, $name, $email, $mobile, $pan, $address, $adharcard, $license, $image_file, $payment, $join_date, $payment_day, $account_no, $account_holder_name, $ifsc_code, $bank_name, $account_type, $admin_id, $user_id) {
+    public function saveEmployee($request, $code, $name, $email, $mobile, $pan, $address, $adharcard, $license, $image_file, $payment, $join_date, $payment_day, $account_no, $account_holder_name, $ifsc_code, $bank_name, $account_type, $admin_id, $user_id) {
         $photo = $this->uploadImage($request);
         $id = DB::table('employee')->insertGetId(
                 [
                     'admin_id' => $admin_id,
+                    'employee_code' => $code,
                     'name' => $name,
                     'email' => $email,
                     'mobile' => $mobile,
@@ -48,7 +49,7 @@ class Master extends Model {
         return $id;
     }
 
-    public function updateEmployee($request, $employee_id, $photo, $name, $email, $mobile, $pan, $address, $adharcard, $license, $image_file, $payment, $join_date, $payment_day, $account_no, $account_holder_name, $ifsc_code, $bank_name, $account_type, $admin_id, $user_id) {
+    public function updateEmployee($request, $employee_id, $code, $photo, $name, $email, $mobile, $pan, $address, $adharcard, $license, $image_file, $payment, $join_date, $payment_day, $account_no, $account_holder_name, $ifsc_code, $bank_name, $account_type, $admin_id, $user_id) {
         $image = $this->uploadImage($request);
         if ($image != '') {
             $photo = $image;
@@ -56,6 +57,7 @@ class Master extends Model {
         DB::table('employee')
                 ->where('employee_id', $employee_id)
                 ->update([
+                    'employee_code' => $code,
                     'name' => $name,
                     'email' => $email,
                     'mobile' => $mobile,
@@ -224,6 +226,15 @@ class Master extends Model {
         return $retObj;
     }
 
+    public function getWherein($table, $column_name, $array) {
+        $retObj = DB::table($table)
+                ->select(DB::raw('*'))
+                ->where('is_active', 1)
+                ->whereIn($column_name, $array)
+                ->get();
+        return $retObj;
+    }
+
     public function getMasterDetail($table, $column, $id) {
         $retObj = DB::table($table)
                 ->select(DB::raw('*'))
@@ -237,6 +248,15 @@ class Master extends Model {
                 ->where($column, $id)
                 ->update([
                     'is_active' => 0,
+                    'last_update_by' => $user_id
+        ]);
+    }
+
+    public function updateTableColumn($table, $column_name, $value, $search_column, $id, $user_id) {
+        DB::table($table)
+                ->where($search_column, $id)
+                ->update([
+                    $column_name => $value,
                     'last_update_by' => $user_id
         ]);
     }

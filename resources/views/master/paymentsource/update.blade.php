@@ -32,6 +32,7 @@
                         <option @if($det->type=='Credit card') selected @endif value="Credit card">Credit card</option>
                         <option @if($det->type=='Debit card') selected @endif value="Debit card">Debit card</option>
                         <option @if($det->type=='Current account') selected @endif value="Current account">Current account</option>
+                        <option @if($det->type=='Other') selected @endif value="Other">Other</option>
                     </select>
                 </div>
             </div>

@@ -50,6 +50,7 @@ Route::get('/admin/employee/absent', 'EmployeeController@absent');
 Route::get('/admin/employee/advance', 'EmployeeController@advance');
 Route::get('/admin/employee/overtime', 'EmployeeController@overtime');
 Route::any('/admin/employee/salary', 'EmployeeController@salary');
+Route::get('/admin/employee/salarydetail/{id}', 'EmployeeController@salarydetail');
 
 Route::post('/admin/employee/saveabsent', 'EmployeeController@saveabsent');
 Route::post('/admin/employee/saveadvance', 'EmployeeController@saveadvance');
@@ -84,6 +85,13 @@ Route::get('/admin/logsheet/deletebill/{id}', 'LogsheetController@logsheetdelete
 Route::get('/admin/logsheet/printlogsheet/{id}', 'LogsheetController@printlogsheet');
 Route::get('/admin/logsheet/printbill/{id}', 'LogsheetController@printbill');
 Route::post('/admin/logsheet/logsheetbillsave', 'LogsheetController@logsheetbillsave');
+
+Route::get('/admin/bill', 'BillController@bill');
+Route::get('/admin/bill/new', 'BillController@billcreate');
+Route::post('/admin/bill/save', 'BillController@billsave');
+Route::post('/admin/bill/paymentsave', 'BillController@paymentsave');
+Route::get('/admin/payment/{type}/{id}', 'BillController@billpayment');
+Route::get('/admin/transaction', 'BillController@transaction');
 
 
 

@@ -13,6 +13,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-4">Employee code<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <input type="text" name="employee_code"  value="{{$det->employee_code}}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-4">Mobile<span class="required">* </span></label>
                 <div class="col-md-7">
                     <input type="number" pattern="[0-9]*" value="{{$det->mobile}}" name="mobile" class="form-control">

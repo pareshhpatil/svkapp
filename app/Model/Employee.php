@@ -49,7 +49,7 @@ class Employee extends Model {
                 ->get();
         return $retObj;
     }
-    
+
     public function getSalaryList($admin_id) {
         $retObj = DB::table('salary as a')
                 ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
@@ -57,6 +57,30 @@ class Employee extends Model {
                 ->select(DB::raw('a.*,ea.name as employee_name'))
                 ->get();
         return $retObj;
+    }
+
+    public function saveSalary($employee_id, $salary_month, $salary_date, $salary_amount, $absent_amount, $advance_amount, $overtime_amount, $paid_amount, $absent_id, $advance_id, $overtime_id, $remark, $user_id, $admin_id) {
+        $id = DB::table('salary')->insertGetId(
+                [
+                    'admin_id' => $admin_id,
+                    'employee_id' => $employee_id,
+                    'salary_month' => $salary_month,
+                    'salary_date' => $salary_date,
+                    'salary_amount' => $salary_amount,
+                    'absent_amount' => $absent_amount,
+                    'advance_amount' => $advance_amount,
+                    'overtime_amount' => $overtime_amount,
+                    'paid_amount' => $paid_amount,
+                    'absent_id' => $absent_id,
+                    'advance_id' => $advance_id,
+                    'overtime_id' => $overtime_id,
+                    'note' => $remark,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
     }
 
     public function saveAbsent($vehicle_id, $absent_employee_id, $replace_employee_id, $date, $remark, $is_deduct, $user_id, $admin_id) {
@@ -110,15 +134,14 @@ class Employee extends Model {
         );
         return $id;
     }
-    
+
     public function updateAbsentAmount($amount, $id, $user_id) {
         DB::table('absent')
                 ->where('absent_id', $id)
                 ->update([
                     'amount_deduct' => $amount,
+                    'is_deduct' => 1,
                     'last_update_by' => $user_id
         ]);
     }
-
-
 }

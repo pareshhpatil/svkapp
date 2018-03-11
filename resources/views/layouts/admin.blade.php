@@ -62,13 +62,13 @@
                                     <span class="hidden-xs">{{$name}}</span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li class="user-header">
+                                    <li class="user-header" style="height: 140px;">
                                         <img src="{{ asset('dist/img/avatar.png') }}" class="img-circle" alt="User Image">
                                         <p>
                                             {{$name}}
                                         </p>
                                     </li>
-                                    <li class="user-footer">
+                                    <li class="user-footer" style="background: #222d32;">
                                         <div class="pull-left">
                                             <a href="/admin/profile" class="btn btn-default btn-flat">Profile</a>
                                         </div>
@@ -162,6 +162,26 @@
                                 <li>
                                     <a href="/admin/vehicle/replacecab">
                                         <i class="fa fa-circle-o"></i> Replace Cab</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-rupee"></i> <span>Bills & Payments</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/admin/bill">
+                                        <i class="fa fa-circle-o"></i> Pending Bills</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/transaction">
+                                        <i class="fa fa-circle-o"></i> Payment Transaction</a>
                                 </li>
 
                             </ul>

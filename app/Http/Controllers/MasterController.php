@@ -82,7 +82,7 @@ class MasterController extends Controller {
 
     public function employeesave(Request $request) {
         $join_date = date('Y-m-d', strtotime($request->join_date));
-        $employee_id = $this->master_model->saveEmployee($request, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
+        $employee_id = $this->master_model->saveEmployee($request, $request->employee_code,$request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
         $link = $this->encrypt->encode($employee_id);
         $data['title'] = 'Success Employee';
         $data['success'] = 'Employee has been saved successfully';
@@ -92,7 +92,7 @@ class MasterController extends Controller {
 
     public function employeeupdatesave(Request $request) {
         $join_date = date('Y-m-d', strtotime($request->join_date));
-        $this->master_model->updateEmployee($request, $request->employee_id, $request->photo, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
+        $this->master_model->updateEmployee($request, $request->employee_id,$request->employee_code, $request->photo, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
         $link = $this->encrypt->encode($request->employee_id);
         $data['title'] = 'Success Employee';
         $data['success'] = 'Employee has been saved successfully';

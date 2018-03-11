@@ -66,14 +66,38 @@ class EmployeeController extends Controller {
         return view('employee.advance', $data);
     }
 
-    public function salary() {
+    public function salarydetail($link) {
+        $id = $this->encrypt->decode($link);
+        $detail = $this->master_model->getMasterDetail('salary', 'salary_id', $id);
+        $employee_detail = $this->master_model->getMasterDetail('employee', 'employee_id', $detail->employee_id);
 
+        if ($detail->advance_id != '')
+            $data['advance_list'] = $this->master_model->getWherein('advance', 'advance_id', explode(',', $detail->advance_id));
+
+        if ($detail->absent_id != '')
+            $data['absent_list'] = $this->master_model->getWherein('absent', 'absent_id', explode(',', $detail->absent_id));
+
+        if ($detail->overtime_id != '')
+           $data['overtime_list'] = $this->master_model->getWherein('overtime', 'ot_id', explode(',', $detail->overtime_id));
+
+        $data['title'] = 'Salary Detail';
+        $data['emp_detail'] = $employee_detail;
+        $data['det'] = $detail;
+        return view('employee.salary_view', $data);
+    }
+
+    public function salary() {
         if (isset($_POST['salary_month'])) {
             foreach ($_POST['absent_id'] as $value) {
                 $key = array_search($value, $_POST['absent_idint']);
                 $this->employee_model->updateAbsentAmount($_POST['absent_amount'][$key], $value, $this->user_id);
             }
-
+            foreach ($_POST['advance_id'] as $value) {
+                $this->master_model->updateTableColumn('advance', 'is_adjust', 1, 'advance_id', $value, $this->user_id);
+            }
+            foreach ($_POST['overtime_id'] as $value) {
+                $this->master_model->updateTableColumn('overtime', 'is_used', 1, 'ot_id', $value, $this->user_id);
+            }
             $absent_id = (isset($_POST['absent_id'])) ? implode(',', $_POST['absent_id']) : '';
             $overtime_id = (isset($_POST['overtime_id'])) ? implode(',', $_POST['overtime_id']) : '';
             $advance_id = (isset($_POST['advance_id'])) ? implode(',', $_POST['advance_id']) : '';
@@ -82,12 +106,21 @@ class EmployeeController extends Controller {
             $overtime_amount = ($_POST['overtime_amount'] > 0) ? $_POST['overtime_amount'] : 0;
             $absent_amount = ($_POST['absent_total_amount'] > 0) ? $_POST['absent_total_amount'] : 0;
 
-
-            $salary_list = $this->employee_model->getSalaryList($this->admin_id);
+            $salary_month = date('Y-m-d', strtotime($_POST['salary_month']));
+            $salary_date = date('Y-m-d', strtotime($_POST['date']));
+            $this->employee_model->saveSalary($_POST['employee_id'], $salary_month, $salary_date, $_POST['amount'], $absent_amount, $advance_amount, $overtime_amount, $_POST['paid_amount'], $absent_id, $advance_id, $overtime_id, $_POST['remark'], $this->user_id, $this->admin_id);
+            $this->setSuccess('Salary has been save successfully');
+            header('Location: /admin/employee/salary');
         }
 
 
         $salary_list = $this->employee_model->getSalaryList($this->admin_id);
+        $int = 0;
+        foreach ($salary_list as $item) {
+            $link = $this->encrypt->encode($item->{'salary_id'});
+            $salary_list[$int]->link = $link;
+            $int++;
+        }
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
 
         if (isset($_POST['date'])) {

@@ -20,6 +20,7 @@
                             <th>Employee name </th>
                             <th>Salary amount </th>
                             <th>Paid amount </th>
+                            <th>Action </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,6 +32,12 @@
                             <td>{{$item->employee_name}}</td>
                             <td>{{$item->salary_amount}}</td>
                             <td>{{$item->paid_amount}}</td>
+                            <td> 
+                                <a href="/admin/employee/salarydetail/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-table"></i></a>
+                                @if($item->is_paid==0)
+                                <a href="/admin/payment/salary/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-money"></i></a>
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -170,7 +177,7 @@
                                             <tbody><tr>
                                                     <th style="width: 10%;" >#</th>
                                                     <th style="width: 20%;">Date</th>
-                                                    <th style="width: 20%;">Amount deduct</th>
+                                                    <th style="width: 20%;">Amount</th>
                                                     <th style="width: 30%;" >Note</th>
                                                     <th style="width: 20%;" >Include in salary</th>
                                                 </tr>
@@ -230,7 +237,7 @@
                             </div>
                         </div>
                         <div class="row"  >
-                            
+
                             <div class="col-md-2"></div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -266,7 +273,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-4">Paid amount<span class="required"> </span></label>
                                     <div class="col-md-7">
-                                        <input type="number" pattern="[0-9]*"  id="paid_amt" name="paid_amount" value="{{$det->payment}}"  class="form-control">
+                                        <input type="number" pattern="[0-9]*"  step="0.01" id="paid_amt" name="paid_amount" value="{{$det->payment}}"  class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">

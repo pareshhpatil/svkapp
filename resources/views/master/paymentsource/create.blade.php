@@ -31,6 +31,7 @@
                         <option value="Credit card">Credit card</option>
                         <option value="Debit card">Debit card</option>
                         <option value="Current account">Current account</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
             </div>
