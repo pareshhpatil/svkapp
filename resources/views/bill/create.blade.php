@@ -23,8 +23,9 @@
                         <option value="">Select category</option>
                         <option value="Maintenance">Maintenance</option>
                         <option value="Loan EMI">LOAN EMI</option>
-                        <option value="Admin Commision">Admin Commision</option>
+                        <option value="Admin Commission">Admin Commission</option>
                         <option value="Fuel">Fuel</option>
+                        <option value="GST & TAX">GST & TAX</option>
                     </select>
                 </div>
             </div>
