@@ -78,7 +78,7 @@ class EmployeeController extends Controller {
             $data['absent_list'] = $this->master_model->getWherein('absent', 'absent_id', explode(',', $detail->absent_id));
 
         if ($detail->overtime_id != '')
-           $data['overtime_list'] = $this->master_model->getWherein('overtime', 'ot_id', explode(',', $detail->overtime_id));
+            $data['overtime_list'] = $this->master_model->getWherein('overtime', 'ot_id', explode(',', $detail->overtime_id));
 
         $data['title'] = 'Salary Detail';
         $data['emp_detail'] = $employee_detail;
@@ -88,15 +88,21 @@ class EmployeeController extends Controller {
 
     public function salary() {
         if (isset($_POST['salary_month'])) {
-            foreach ($_POST['absent_id'] as $value) {
-                $key = array_search($value, $_POST['absent_idint']);
-                $this->employee_model->updateAbsentAmount($_POST['absent_amount'][$key], $value, $this->user_id);
+            if (isset($_POST['absent_id'])) {
+                foreach ($_POST['absent_id'] as $value) {
+                    $key = array_search($value, $_POST['absent_idint']);
+                    $this->employee_model->updateAbsentAmount($_POST['absent_amount'][$key], $value, $this->user_id);
+                }
             }
-            foreach ($_POST['advance_id'] as $value) {
-                $this->master_model->updateTableColumn('advance', 'is_adjust', 1, 'advance_id', $value, $this->user_id);
+            if (isset($_POST['advance_id'])) {
+                foreach ($_POST['advance_id'] as $value) {
+                    $this->master_model->updateTableColumn('advance', 'is_adjust', 1, 'advance_id', $value, $this->user_id);
+                }
             }
-            foreach ($_POST['overtime_id'] as $value) {
-                $this->master_model->updateTableColumn('overtime', 'is_used', 1, 'ot_id', $value, $this->user_id);
+            if (isset($_POST['overtime_id'])) {
+                foreach ($_POST['overtime_id'] as $value) {
+                    $this->master_model->updateTableColumn('overtime', 'is_used', 1, 'ot_id', $value, $this->user_id);
+                }
             }
             $absent_id = (isset($_POST['absent_id'])) ? implode(',', $_POST['absent_id']) : '';
             $overtime_id = (isset($_POST['overtime_id'])) ? implode(',', $_POST['overtime_id']) : '';
