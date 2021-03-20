@@ -38,12 +38,6 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-md-4">Purchase date<span class="required"> </span></label>
-                <div class="col-md-7">
-                    <input type="text" name="purchase_date" value="{{$det->purchase_date}}" required="" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="yyyy-mm-dd">
-                </div>
-            </div>
-            <div class="form-group">
                 <div class="col-md-4"></div>
                 <div class="col-md-7">
                     <h4 id="status"></h4>
@@ -51,6 +45,7 @@
 
                     <a href="/admin/vehicle/list" class="btn btn-default pull-right" >Close</a>
                     <input type="hidden" name="vehicle_id" value="{{$det->vehicle_id}}">
+                    <input type="hidden" name="purchase_date" value="2014-01-01">
                     <button id="savebutton" type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                 </div>
             </div>

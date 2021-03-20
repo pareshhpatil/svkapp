@@ -58,10 +58,8 @@ return redirect('/404');
 die();
 }
 }
-Log::critical('Laravel Error URL: '. $request->url() .' Error: '.$exception->getMessage());
-header("Location: /error");
-exit();
-//return parent::render($request, $exception);
+
+return parent::render($request, $exception);
 }
 
 /**

@@ -29,13 +29,15 @@
                             <td>{{$item->salary_id}}</td>
                             <td>{{ Carbon\Carbon::parse($item->salary_date)->format('d-M-Y')}}</td>
                             <td>{{ Carbon\Carbon::parse($item->salary_month)->format('M-Y')}}</td>
-                            <td>{{$item->employee_name}}</td>
+                            <td><a target="_BLANK" href="/admin/employee/view/{{$item->emp_link}}" >{{$item->employee_name}}</a></td>
                             <td>{{$item->salary_amount}}</td>
                             <td>{{$item->paid_amount}}</td>
                             <td> 
                                 <a href="/admin/employee/salarydetail/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-table"></i></a>
                                 @if($item->is_paid==0)
                                 <a href="/admin/payment/salary/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-money"></i></a>
+                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/salary/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+
                                 @endif
                             </td>
                         </tr>
@@ -308,3 +310,24 @@
 <!-- /.col-lg-12 -->
 </div>
 @endsection
+
+<div class="modal modal-danger fade" id="modal-danger">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Amount</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you would not like to use this vehicle in the future?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>
+                <a id="deleteanchor" href="" class="btn btn-outline">Delete</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

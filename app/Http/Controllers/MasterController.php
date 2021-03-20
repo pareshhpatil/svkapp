@@ -25,7 +25,7 @@ class MasterController extends Controller {
 
     function __construct() {
         parent::__construct();
-        $this->validateSession(1);
+        $this->validateSession(array(1, 4));
         $this->master_model = new Master();
     }
 
@@ -35,7 +35,12 @@ class MasterController extends Controller {
      * @return type
      */
     public function masterlist($master) {
-        $list = $this->master_model->getMaster($master, $this->admin_id);
+        if ($this->user_type == 4) {
+            $list = $this->master_model->getMaster($master, $this->user_id, 'created_by');
+        } else {
+            $list = $this->master_model->getMaster($master, $this->admin_id);
+        }
+
         $int = 0;
         foreach ($list as $item) {
             $link = $this->encrypt->encode($item->{$master . '_id'});
@@ -51,6 +56,12 @@ class MasterController extends Controller {
     public function masterview($master, $link) {
         $id = $this->encrypt->decode($link);
         $detail = $this->master_model->getMasterDetail($master, $master . '_id', $id);
+        if ($master == 'employee') {
+            $transaction_list = $this->master_model->getMaster('transaction', $id, 'employee_id');
+            $data['transaction_list'] = $transaction_list;
+            $request_list = $this->master_model->getMaster('request', $id, 'employee_id');
+            $data['request_list'] = $request_list;
+        }
         $data['title'] = ucfirst($master) . ' detail';
         $data['det'] = $detail;
         return view('master.' . $master . '.view', $data);
@@ -58,6 +69,10 @@ class MasterController extends Controller {
 
     public function mastercreate($master) {
         $data['title'] = 'Create ' . ucfirst($master);
+        if ($master == 'subscription') {
+            $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
+            $data['employee_list'] = $employee_list;
+        }
         return view('master.' . $master . '.create', $data);
     }
 
@@ -65,7 +80,13 @@ class MasterController extends Controller {
         $id = $this->encrypt->decode($link);
         $this->master_model->deleteReccord($master, $master . '_id', $id, $this->user_id);
         $this->setSuccess(ucfirst($master) . ' has been deleted successfully');
-        header('Location: /admin/' . $master . '/list');
+        if ($master == 'salary') {
+            header('Location: /admin/employee/salary');
+        } else if ($master == 'transaction') {
+            header('Location: /admin/bill/new');
+        }else {
+            header('Location: /admin/' . $master . '/list');
+        }
         exit;
     }
 
@@ -82,7 +103,7 @@ class MasterController extends Controller {
 
     public function employeesave(Request $request) {
         $join_date = date('Y-m-d', strtotime($request->join_date));
-        $employee_id = $this->master_model->saveEmployee($request, $request->employee_code,$request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
+        $employee_id = $this->master_model->saveEmployee($request, $request->employee_code, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
         $link = $this->encrypt->encode($employee_id);
         $data['title'] = 'Success Employee';
         $data['success'] = 'Employee has been saved successfully';
@@ -90,9 +111,13 @@ class MasterController extends Controller {
         return view('master.employee.saved', $data);
     }
 
+    #Employee
+
+    
+
     public function employeeupdatesave(Request $request) {
         $join_date = date('Y-m-d', strtotime($request->join_date));
-        $this->master_model->updateEmployee($request, $request->employee_id,$request->employee_code, $request->photo, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
+        $this->master_model->updateEmployee($request, $request->employee_id, $request->employee_code, $request->photo, $request->name, $request->email, $request->mobile, $request->pan, $request->address, $request->adharcard, $request->license, $request->uploaded_file, $request->payment, $join_date, $request->payment_day, $request->account_no, $request->holder_name, $request->ifsc_code, $request->bank_name, $request->account_type, $this->admin_id, $this->user_id);
         $link = $this->encrypt->encode($request->employee_id);
         $data['title'] = 'Success Employee';
         $data['success'] = 'Employee has been saved successfully';
@@ -145,14 +170,14 @@ class MasterController extends Controller {
     #Payment Source
 
     public function paymentsourcesave(Request $request) {
-        $company_id = $this->master_model->savePaymentsource($request->name, $request->bank, $request->card_number, $request->type, $this->admin_id, $this->user_id);
+        $company_id = $this->master_model->savePaymentsource($request->name, $request->bank, $request->card_number, $request->type,$request->balance, $this->admin_id, $this->user_id);
         $this->setSuccess('Payment source has been deleted successfully');
         header('Location: /admin/paymentsource/list');
         exit();
     }
 
     public function paymentsourceupdatesave(Request $request) {
-        $this->master_model->updatePaymentsource($request->id, $request->name, $request->bank, $request->card_number, $request->type, $this->admin_id, $this->user_id);
+        $this->master_model->updatePaymentsource($request->id, $request->name, $request->bank, $request->card_number, $request->type,$request->balance, $this->admin_id, $this->user_id);
         $this->setSuccess('Payment source has been deleted successfully');
         header('Location: /admin/paymentsource/list');
         exit();

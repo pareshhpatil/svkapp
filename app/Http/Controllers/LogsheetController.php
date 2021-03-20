@@ -16,49 +16,90 @@ namespace App\Http\Controllers;
 
 use App\Model\Logsheet;
 use App\Model\Master;
+use App\Model\Bill;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Session;
+use PDF;
+use Excel;
 
-class LogsheetController extends Controller {
+class LogsheetController extends Controller
+{
 
     private $logsheet_model;
     private $master_model;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
-        $this->validateSession(1);
+
         $this->logsheet_model = new Logsheet();
         $this->master_model = new Master();
     }
 
-    public function logsheet() {
+    public function logsheet()
+    {
+        $this->validateSession(array(1, 2));
+        if (isset($_POST['type'])) {
+            $type = $_POST['type'];
+        } else {
+            $type = 1;
+        }
+
+        if (isset($_POST['company_id'])) {
+            $company_id = $_POST['company_id'];
+        } else {
+            $company_id = 0;
+        }
+
+        if ($type == 1) {
+            $ttype = 'is_paid';
+            $val = 0;
+        } elseif ($type == 2) {
+            $ttype = 'gst_paid';
+            $val = 0;
+        } else {
+            $ttype = 'is_active';
+            $val = 1;
+        }
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $company_list = $this->master_model->getMaster('company', $this->admin_id);
-        $invoice_list = $this->logsheet_model->getLogsheetBill($this->admin_id);
-
+        $invoice_list = $this->logsheet_model->getLogsheetBill($this->admin_id, $ttype, $val, $company_id);
         $int = 0;
         foreach ($invoice_list as $item) {
-            $link = $this->encrypt->encode($item->invoice_id);
-            $invoice_list[$int]->link = $link;
+            if ($type == 2 && $item->invoice_number == '') {
+                unset($invoice_list[$int]);
+            } else {
+                $link = $this->encrypt->encode($item->invoice_id);
+                $invoice_list[$int]->link = $link;
+            }
             $int++;
         }
 
-        $data['title'] = 'Logsheet';
+
+
+        $data['type'] = $type;
+        $data['title'] = 'Invoices';
         $data['current_date'] = date('d-m-Y');
+        $data['company_id'] = $company_id;
         $data['vehicle_list'] = $vehicle_list;
         $data['company_list'] = $company_list;
         $data['invoice_list'] = $invoice_list;
+        $data['user_type'] = $this->user_type;
         return view('logsheet.list', $data);
     }
 
-    public function printlogsheet($link) {
+    public function printlogsheet($link)
+    {
+        $this->validateSession(array(1));
+        $data['link'] = $link;
         $id = $this->encrypt->decode($link);
         $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
         $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
         $data['invoice'] = $invoice;
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
+        $data['work_order_no'] = $invoice->work_order_no;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -109,7 +150,60 @@ class LogsheetController extends Controller {
         return view('logsheet.' . $type . '_excel', $data);
     }
 
-    public function printbill($link) {
+    public function printbill($link)
+    {
+        $this->validateSession(array(1));
+        $id = $this->encrypt->decode($link);
+        $data['link'] = $link;
+        $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
+        $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
+        $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
+        $data['admin'] = $admin;
+        $data['invoice'] = $invoice;
+
+        $data['vehicle_id'] = $invoice->vehicle_id;
+        $data['company_id'] = $invoice->company_id;
+        $data['work_order_no'] = $invoice->work_order_no;
+        $data['month'] = date('M-Y', strtotime($invoice->date));
+        $date = $invoice->date;
+
+        $type = 1;
+        $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
+        $int = 0;
+        foreach ($list as $item) {
+            $type = $item->type;
+            $link = $this->encrypt->encode($item->logsheet_id);
+            $list[$int]->link = $link;
+            $int++;
+        }
+
+        $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
+        $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);
+        $logsheet_detail = json_decode(json_encode($logsheet_detail), true);
+        $data['logsheet_detail'] = $logsheet_detail;
+        $data['vehicle'] = $vehicle;
+        $data['company'] = $company;
+        $data['word_money'] = $this->displaywords($invoice->grand_total);
+        $data['list'] = $list;
+        $data['title'] = 'Bill Print';
+        $data['type'] = $type;
+
+        if ($this->admin_id == 3) {
+            return view('logsheet.bill_idea', $data);
+        } else {
+            return view('logsheet.bill', $data);
+        }
+    }
+
+    public function download($link)
+    {
+        $this->downloadbill($link);
+        $this->downloadlogsheet($link);
+    }
+
+    public function downloadbill($link)
+    {
+        $this->validateSession(array(1));
         $id = $this->encrypt->decode($link);
         $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
         $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
@@ -118,6 +212,7 @@ class LogsheetController extends Controller {
         $data['invoice'] = $invoice;
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
+        $data['work_order_no'] = $invoice->work_order_no;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -138,22 +233,236 @@ class LogsheetController extends Controller {
         $data['company'] = $company;
         $data['word_money'] = $this->displaywords($invoice->grand_total);
         $data['list'] = $list;
-        $data['title'] = 'Logsheet Print';
+        $data['title'] = 'Download Bill';
         $data['type'] = $type;
+        if (isset($_SERVER['QUERY_STRING'])) {
+            $data['po'] = $_SERVER['QUERY_STRING'];
+        } else {
+            $data['po'] = '';
+        }
+
         $type = ($type == 2) ? 'location' : 'default';
-        return view('logsheet.bill', $data);
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => '',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 4,
+            'margin_right' => 4,
+            'margin_bottom' => 4,
+            'margin_header' => 9,
+            'margin_footer' => 9,
+        ]);
+        $mpdf->WriteHTML(\View::make('pdf.bill2')->with($data)->render());
+        $mpdf->Output('bill_' . $vehicle->name . '_' . $invoice->invoice_number . '.pdf', 'D');
+        die();
+
+
+
+
+        $pdf = PDF::loadView('pdf.bill', $data);
+        return $pdf->download('bill_' . $vehicle->name . '_' . $invoice->invoice_number . '.pdf');
     }
 
-    public function logsheetbillsave(Request $request) {
+
+    public function exportExcel($column, $name)
+    {
+        try {
+
+            Excel::create($name, function ($excel) use ($column) {
+                foreach ($column as $sheet_name => $cols) {
+
+                    $excel->sheet($sheet_name, function ($sheet) use ($cols) {
+                        $sheet->fromArray($cols);
+                        if (!empty($cols)) {
+                            $sheet->row(1, function ($row) {
+                                // call cell manipulation methods
+                                $row->setBackground('#2874A6');
+                                $row->setFontColor('#ffffff');
+                            });
+                        }
+                        $sheet->freezeFirstRow();
+                        $sheet->setAutoSize(true);
+                    });
+                }
+            })->export('xlsx');
+        } catch (Exception $e) {
+        }
+    }
+
+    public function storeExcel($column, $name)
+    {
+        try {
+
+            Excel::create($name, function ($excel) use ($column) {
+                foreach ($column as $sheet_name => $cols) {
+
+                    $excel->sheet($sheet_name, function ($sheet) use ($cols) {
+                        $sheet->fromArray($cols);
+                        if (!empty($cols)) {
+                            $sheet->row(1, function ($row) {
+                                // call cell manipulation methods
+                                $row->setBackground('#2874A6');
+                                $row->setFontColor('#ffffff');
+                            });
+                        }
+                        $sheet->freezeFirstRow();
+                        $sheet->setAutoSize(true);
+                    });
+                }
+            })->store('xlsx', 'uploads/excel');
+        } catch (Exception $e) {
+        }
+    }
+
+    public function downloadexcel($month)
+    {
+        $this->validateSession(array(1));
+        //$array=array(41,200,203);
+        //$id=$array[2];
+        $ids = $this->logsheet_model->getMonthVehicle($month);
+        foreach ($ids as $idrow) {
+            $id = $idrow->vehicle_id;
+            if ($idrow->company_id == 8) {
+                $comp = 'T-';
+            } else {
+                $comp = 'S-';
+            }
+            $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $id);
+            $type = 1;
+            $list = $this->logsheet_model->getMonthLogsheet($id, $month);
+            $int = 0;
+            $export = array();
+            foreach ($list as $key => $item) {
+                $export[$vehicle->number][$key]['Cab Number'] = $vehicle->number;
+                $export[$vehicle->number][$key]['Date'] = date('d/m/Y', strtotime($item->date));
+                $export[$vehicle->number][$key]['Start KM'] = $item->start_km;
+                $export[$vehicle->number][$key]['End KM'] = $item->end_km;
+                $export[$vehicle->number][$key]['Total KM'] = $item->total_km;
+                $export[$vehicle->number][$key]['Start Time'] = date('h:i a', strtotime($item->start_time));
+                $export[$vehicle->number][$key]['Close time'] = date('h:i a', strtotime($item->close_time));
+                $extra_time = $item->extra_time;
+                $total_time = $item->total_time;
+                if (substr($item->total_time, 0, 1) == '-') {
+                    $datetime1 = strtotime($item->date . ' ' . $item->start_time);
+                    $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
+                    $datetime2 = strtotime($todate . ' ' . $item->close_time);
+                    $interval = $datetime2 - $datetime1;
+
+                    $total_time = round($interval / 60 / 60, 2);
+                    $extra_time = $total_time - 12;
+                    if (substr($total_time, -2) == '.5') {
+                        $total_time = substr($total_time, 0, -2) . ':30';
+                    } else {
+                        $total_time = $total_time . ':00';
+                    }
+
+                    if (substr($extra_time, -2) == '.5') {
+                        $extra_time = substr($extra_time, 0, -2) . ':30';
+                    } else {
+                        $extra_time = $extra_time . ':00';
+                    }
+                    //$list[$int]->total_time = $total_time;
+                    //$list[$int]->extra_time = $extra_time;
+                    if ($item->day_night == 'Night') {
+                        $extra_time = '00:00';
+                    }
+                }
+                $export[$vehicle->number][$key]['Total Hour'] = $total_time;
+                $export[$vehicle->number][$key]['Extra Hour'] = $extra_time;
+                $export[$vehicle->number][$key]['Toll Amount'] = $item->toll;
+                $export[$vehicle->number][$key]['Remark'] = $item->remark;
+                $export[$vehicle->number][$key]['Day/Night'] = $item->day_night;
+            }
+            if (!empty($export)) {
+                $this->storeExcel($export, $comp . 'Sep-2020 ' . $vehicle->number);
+            }
+        }
+    }
+
+    public function downloadlogsheet($link)
+    {
+        $this->validateSession(array(1));
+        $id = $this->encrypt->decode($link);
+        $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
+        $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
+        $data['invoice'] = $invoice;
+        $data['vehicle_id'] = $invoice->vehicle_id;
+        $data['company_id'] = $invoice->company_id;
+        $data['work_order_no'] = $invoice->work_order_no;
+        $data['month'] = date('M-Y', strtotime($invoice->date));
+        $date = $invoice->date;
+
+        $type = 1;
+        $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
+        $int = 0;
+        foreach ($list as $item) {
+            $type = $item->type;
+            $link = $this->encrypt->encode($item->logsheet_id);
+            $list[$int]->link = $link;
+            if (substr($item->total_time, 0, 1) == '-') {
+                $datetime1 = strtotime($item->date . ' ' . $item->start_time);
+                $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
+                $datetime2 = strtotime($todate . ' ' . $item->close_time);
+                $interval = $datetime2 - $datetime1;
+
+                $total_time = round($interval / 60 / 60, 2);
+                $extra_time = $total_time - 12;
+                if (substr($total_time, -2) == '.5') {
+                    $total_time = substr($total_time, 0, -2) . ':30';
+                } else {
+                    $total_time = $total_time . ':00';
+                }
+
+                if (substr($extra_time, -2) == '.5') {
+                    $extra_time = substr($extra_time, 0, -2) . ':30';
+                } else {
+                    $extra_time = $extra_time . ':00';
+                }
+                $list[$int]->total_time = $total_time;
+                $list[$int]->extra_time = $extra_time;
+                if ($item->day_night == 'Night') {
+                    $list[$int]->extra_time = '00:00';
+                }
+            }
+            $int++;
+        }
+        $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
+        $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);
+        $logsheet_detail = json_decode(json_encode($logsheet_detail), true);
+        $data['logsheet_detail'] = $logsheet_detail;
+        $data['vehicle'] = $vehicle;
+        $data['company'] = $company;
+        $data['list'] = $list;
+        $data['title'] = 'Download Logsheet';
+        $data['type'] = $type;
+        $type = ($type == 2) ? 'location' : 'default';
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML(\View::make('pdf.logsheet2')->with($data)->render());
+        $mpdf->Output('logsheet_' . $vehicle->name . '_' . $invoice->invoice_number . '.pdf', 'D');
+        die();
+        //$pdf = PDF::loadView('pdf.logsheet', $data);
+        //return $pdf->download('logsheet_' . $vehicle->name . '_' . $invoice->invoice_number . '.pdf');
+    }
+
+    public function logsheetbillsave(Request $request)
+    {
+        $this->validateSession(array(1, 2));
         $date = date('Y-m-d', strtotime($request->date));
         $bill_date = date('Y-m-d', strtotime($request->bill_date));
-        $toll = ($_POST['amount'][5] > 0) ? $_POST['amount'][5] : 0;
+        if ($this->admin_id == 3) {
+            $toll = ($_POST['amount'][7] > 0) ? $_POST['amount'][7] : 0;
+        } else {
+            $toll = ($_POST['amount'][5] > 0) ? $_POST['amount'][5] : 0;
+        }
+
         if ($request->invoice_id > 0) {
             $invoice_id = $request->invoice_id;
-            $invoice_id = $this->logsheet_model->updateLogsheetInvoice($invoice_id, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $this->user_id, $this->admin_id);
+            $invoice_id = $this->logsheet_model->updateLogsheetInvoice($invoice_id, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $this->user_id, $this->admin_id);
         } else {
             $invoice_number = $this->logsheet_model->getInvoiceNumber($request->invoice_seq);
-            $invoice_id = $this->logsheet_model->saveLogsheetInvoice($invoice_number, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $this->user_id, $this->admin_id);
+            $invoice_id = $this->logsheet_model->saveLogsheetInvoice($invoice_number, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $this->user_id, $this->admin_id);
         }
         $int = 0;
         foreach ($_POST['int'] as $row) {
@@ -164,19 +473,55 @@ class LogsheetController extends Controller {
             }
             $int++;
         }
+        if ($_POST['expense_amount'] > 0) {
+            foreach ($_POST['rcheck'] as $req_id) {
+                $amount = $_POST['req_' . $req_id];
+                $this->logsheet_model->saveInvoiceExpense($invoice_id, $req_id, $amount, $this->user_id);
+                $reqdet = $this->master_model->getMasterDetail('request', 'request_id', $req_id);
+                $amount = $reqdet->pending_amount - $amount;
+                $this->master_model->updateTableColumn('request', 'pending_amount', $amount, 'request_id', $req_id, $this->user_id);
+                if ($amount == 0) {
+                    $this->master_model->updateTableColumn('request', 'adjust_status', 1, 'request_id', $req_id, $this->user_id);
+                }
+                $this->master_model->updateTableColumn('logsheet_invoice', 'expense_amount', $_POST['expense_amount'], 'invoice_id', $invoice_id, $this->user_id);
+            }
+        }
+
         $this->setSuccess('Logsheet Bill has been save successfully');
         header('Location: /admin/logsheet');
         exit;
     }
 
-    public function generatebill($link = null) {
+    public function approve()
+    {
+        $this->validateSession(array(1, 2));
+        if (isset($_POST['item'])) {
+            foreach ($_POST['item'] as $id) {
+                if (isset($_POST['delete'])) {
+                    $this->master_model->deleteReccord('logsheet_bill', 'logsheet_id', $id, $this->user_id);
+                } else {
+                    $this->logsheet_model->approveLogsheetDetail($id, $this->user_id);
+                }
+            }
+        }
+        $list = $this->logsheet_model->getPendingBillData($this->admin_id);
+        $data['list'] = $list;
+        $data['title'] = 'Approve bill';
+        return view('employee.default_bill', $data);
+    }
+
+    public function generatebill($link = null)
+    {
+        $this->validateSession(array(1));
         $id = 0;
+        $data['admin_id'] = $this->admin_id;
+        $data['work_order_no'] = '';
         if (isset($_POST['vehicle_id'])) {
             $data['vehicle_id'] = $_POST['vehicle_id'];
             $data['company_id'] = $_POST['company_id'];
             $data['month'] = $_POST['date'];
             $date = date('Y-m-d', strtotime('01-' . $_POST['date']));
-            $id = $this->logsheet_model->getInvoiceId($_POST['company_id'], $_POST['vehicle_id'], $date, $this->admin_id);
+            //$id = $this->logsheet_model->getInvoiceId($_POST['company_id'], $_POST['vehicle_id'], $date, $this->admin_id);
         } else {
             $data['vehicle_id'] = 0;
             $data['company_id'] = 0;
@@ -192,9 +537,120 @@ class LogsheetController extends Controller {
             $data['invoice'] = $invoice;
             $data['vehicle_id'] = $invoice->vehicle_id;
             $data['company_id'] = $invoice->company_id;
+            $data['work_order_no'] = $invoice->work_order_no;
             $data['month'] = date('M-Y', strtotime($invoice->date));
             $date = $invoice->date;
         }
+
+        $type = 1;
+        if ($data['vehicle_id'] > 0) {
+            $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
+            $int = 0;
+            foreach ($list as $item) {
+                $type = $item->type;
+                $link2 = $this->encrypt->encode($item->logsheet_id);
+                if (substr($item->total_time, 0, 1) == '-') {
+                    $datetime1 = strtotime($item->date . ' ' . $item->start_time);
+                    $todate = date('Y-m-d', strtotime($item->date . ' + 1 days'));
+                    $datetime2 = strtotime($todate . ' ' . $item->close_time);
+                    $interval = $datetime2 - $datetime1;
+
+                    $total_time = round($interval / 60 / 60, 2);
+                    $extra_time = $total_time - 12;
+                    if (substr($total_time, -2) == '.5') {
+                        $total_time = substr($total_time, 0, -2) . ':30';
+                    } else {
+                        $total_time = $total_time . ':00';
+                    }
+
+                    if (substr($extra_time, -2) == '.5') {
+                        $extra_time = substr($extra_time, 0, -2) . ':30';
+                    } else {
+                        $extra_time = $extra_time . ':00';
+                    }
+                    $list[$int]->total_time = $total_time;
+                    $list[$int]->extra_time = $extra_time;
+                }
+                if ($item->day_night == 'Night') {
+                    $list[$int]->extra_time = '00:00';
+                }
+                $list[$int]->link = $link2;
+                $int++;
+            }
+            $sequence = $this->master_model->getMaster('sequence', $this->admin_id);
+            $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
+            $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);
+
+            if (empty($logsheet_detail)) {
+                $total_days = date(' t ', strtotime($date));
+                if ($this->admin_id == 3) {
+                    $array[] = array('particular_name' => 'Idea Cellular Limited, MUMBAI ' . $data['month'], 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => $vehicle->number, 'unit' => '3000', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => date('d-m-Y', strtotime($date)) . ' to ' . $total_days . date('-m-Y', strtotime($date)), 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => '3000kms /26day/12hrs', 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => ' EXTRA KMS', 'unit' => '', 'qty' => '', 'rate' => '10.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => ' EXTRA HOURS', 'unit' => '', 'qty' => '', 'rate' => '100.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => ' DEDUCTION (-)', 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '1', 'id' => 0);
+                    $array[] = array('particular_name' => 'Toll /Parking', 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                } else {
+                    $total_days = (float) $total_days;
+                    $day_rate = round(45000 / $total_days, 2);
+                    $array[] = array('particular_name' => 'Fixed monthly charges', 'unit' => 'Month', 'qty' => '1', 'rate' => '45000.00', 'amount' => '45000.00', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => 'Extra Day', 'unit' => 'Day', 'qty' => '', 'rate' => $day_rate, 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => 'Extra KM.', 'unit' => 'KM', 'qty' => '', 'rate' => '12.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => 'Extra Hour', 'unit' => 'Hour', 'qty' => '', 'rate' => '65.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                    $array[] = array('particular_name' => 'Break down', 'unit' => 'Day', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '1', 'id' => 0);
+                    $array[] = array('particular_name' => 'Toll /Parking', 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
+                }
+                $logsheet_detail = $array;
+            } else {
+                $logsheet_detail = json_decode(json_encode($logsheet_detail), true);
+            }
+            $data['logsheet_detail'] = $logsheet_detail;
+            $data['vehicle'] = $vehicle;
+            $data['sequence'] = $sequence;
+            $data['company'] = $company;
+            $data['list'] = $list;
+        }
+        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
+        $company_list = $this->master_model->getMaster('company', $this->admin_id);
+        $expense_list = array();
+        if ($link == null) {
+            $bill_model = new Bill();
+            $expense_list = $bill_model->getPendingRequest();
+        }
+        //dd($expense_list);
+
+        $data['title'] = 'Generate Bill';
+        $data['vehicle_list'] = $vehicle_list;
+        $data['company_list'] = $company_list;
+        $data['expense_list'] = $expense_list;
+        $data['type'] = $type;
+        if ($this->admin_id == 3) {
+            $type = 'idea';
+        } else {
+            $type = ($type == 2) ? 'location' : 'default';
+        }
+        return view('logsheet.' . $type . '_bill', $data);
+    }
+
+    public function getlogsheet()
+    {
+        $this->validateSession(array(1, 2));
+        $id = 0;
+        $data['admin_id'] = $this->admin_id;
+        if (isset($_POST['vehicle_id'])) {
+            $data['vehicle_id'] = $_POST['vehicle_id'];
+            $data['company_id'] = $_POST['company_id'];
+            $data['month'] = $_POST['date'];
+            $date = date('Y-m-d', strtotime('01-' . $_POST['date']));
+            $id = $this->logsheet_model->getInvoiceId($_POST['company_id'], $_POST['vehicle_id'], $date, $this->admin_id);
+        } else {
+            $data['vehicle_id'] = 0;
+            $data['company_id'] = 0;
+            $data['month'] = '';
+        }
+
 
         $type = 1;
         if ($data['vehicle_id'] > 0) {
@@ -231,48 +687,35 @@ class LogsheetController extends Controller {
                 $list[$int]->link = $link;
                 $int++;
             }
-            $sequence = $this->master_model->getMaster('sequence', $this->admin_id);
             $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
             $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);
 
-            if (empty($logsheet_detail)) {
-                $total_days = date(' t ', strtotime($date));
-                $day_rate = round(45000 / $total_days, 2);
-                $array[] = array('particular_name' => 'Fixed monthly charges', 'unit' => 'Month', 'qty' => '1', 'rate' => '45000.00', 'amount' => '45000.00', 'is_deduct' => '0', 'id' => 0);
-                $array[] = array('particular_name' => 'Extra Day', 'unit' => 'Day', 'qty' => '', 'rate' => $day_rate, 'amount' => '', 'is_deduct' => '0', 'id' => 0);
-                $array[] = array('particular_name' => 'Extra KM.', 'unit' => 'KM', 'qty' => '', 'rate' => '12.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
-                $array[] = array('particular_name' => 'Extra Hour', 'unit' => 'Hour', 'qty' => '', 'rate' => '65.00', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
-                $array[] = array('particular_name' => 'Break down', 'unit' => 'Day', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '1', 'id' => 0);
-                $array[] = array('particular_name' => 'Toll /Parking', 'unit' => '', 'qty' => '', 'rate' => '', 'amount' => '', 'is_deduct' => '0', 'id' => 0);
-                $logsheet_detail = $array;
-            } else {
-                $logsheet_detail = json_decode(json_encode($logsheet_detail), true);
-            }
+            $logsheet_detail = array();
             $data['logsheet_detail'] = $logsheet_detail;
             $data['vehicle'] = $vehicle;
-            $data['sequence'] = $sequence;
             $data['company'] = $company;
             $data['list'] = $list;
         }
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $company_list = $this->master_model->getMaster('company', $this->admin_id);
-        $data['title'] = 'Generate Bill';
+        $data['title'] = 'Get Logsheet';
         $data['vehicle_list'] = $vehicle_list;
         $data['company_list'] = $company_list;
         $data['type'] = $type;
-        $type = ($type == 2) ? 'location' : 'default';
+        $type = 'show';
         return view('logsheet.' . $type . '_bill', $data);
     }
 
-    public function logsheetdelete($link) {
+    public function logsheetdelete($link)
+    {
         $id = $this->encrypt->decode($link);
         $this->master_model->deleteReccord('logsheet_bill', 'logsheet_id', $id, $this->user_id);
-        $this->setSuccess('Entry has been deleted successfully');
-        header('Location: /admin/logsheet/generatebill');
         exit;
     }
 
-    public function confirmLogsheet(Request $request) {
+    public function confirmLogsheet(Request $request)
+    {
+        $this->validateSession(array(1, 2));
         $type = $request->type;
         $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $request->vehicle_id);
         $company = $this->master_model->getMasterDetail('company', 'company_id', $request->company_id);
@@ -297,7 +740,9 @@ class LogsheetController extends Controller {
         echo '</tbody></table>';
     }
 
-    public function saveLogsheet(Request $request) {
+    public function saveLogsheet(Request $request)
+    {
+        $this->validateSession(array(1, 2));
         $type = $request->type;
         $pick_drop = $request->pickup;
         $vehicle_id = isset($_POST['vehicle_id']) ? $_POST['vehicle_id'] : 0;
@@ -314,10 +759,13 @@ class LogsheetController extends Controller {
             $_POST['to'] = '';
         }
         $day_night = (isset($request->day_night)) ? $request->day_night : 'Day';
-
+        if ($this->user_type == 1) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
         $date = date('Y-m-d', strtotime($request->date));
-        $result = $this->logsheet_model->saveLogsheetbill($request->vehicle_id, $request->company_id, $date, $request->start_km, $request->end_km, $start_time, $close_time, $day_night, $_POST['remark'], $_POST['toll_amount'], $type, $pick_drop, $_POST['from'], $_POST['to'], $this->user_id, $this->admin_id);
+        $result = $this->logsheet_model->saveLogsheetbill($request->vehicle_id, $request->company_id, $date, $request->start_km, $request->end_km, $start_time, $close_time, $day_night, $_POST['remark'], $_POST['toll_amount'], $type, $pick_drop, $_POST['from'], $_POST['to'], $this->user_id, $this->admin_id, $status);
         echo 'Logsheet has been saved successfully';
     }
-
 }

@@ -1,26 +1,14 @@
 @extends('logsheet.generate_bill')
 @section('middle_content')
 @isset($company)
+@php($extra_hour=0)
+@php($toll=0)
+@if(count($list)>0)
 <div class="panel panel-primary">
     <div class="panel-body" style="overflow: auto;">
-        <div class="row"  >
+        <div class="row">
             <table class="table table-bordered" style="font-size: 12px !important;color: black !important;text-align: center;">
                 <tbody>
-                    <tr>
-                        <td colspan="11" class="td-c" style="font-size: 20px;font-weight: bold;">{{$company_name}}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="11" class="td-c" style="font-size: 15px;font-weight: bold;">
-                            {{$company->name}} {{$company->address}}
-                            <br>
-                            Logsheet Entry for the month of {{$month}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="11" class="td-c" style="font-size: 15px;font-weight: bold;">
-                            Summery of Car No: ({{$vehicle->car_type}}){{$vehicle->number}}
-                        </td>
-                    </tr>
                     <tr>
                         <th class="td-c">DATE</th>
                         <th class="td-c">START KM</th>
@@ -83,24 +71,24 @@
                             {{$item->remark}}
                         </td>
                         <td class="td-c">
-                            <a onclick="return confirm('Are you sure?');" href="/admin/logsheet/deletebill/{{$item->link}}">Delete</a>
+                            <a onclick="return confirm('Are you sure?')?deleteEntry('{{$item->link}}',this):'';" href="#">Delete</a>
                         </td>
 
                     </tr>
                     @endforeach
                 <tfoot>
-                <th class="td-c"></th>
-                <th class="td-c"></th>
-                <th class="td-c">TOTAL KM</th>
-                <th class="td-c">{{$total_km}}</th>
-                <th class="td-c"></th>
-                <th class="td-c"></th>
-                <th class="td-c">EXTRA HRS</th>
-                @php($extra_hour=($extra_min+($extra_hr*60))/60)
-                <th class="td-c">{{$extra_hour}} </th>
-                <th class="td-c">{{number_format($toll,2)}}</th>
-                <th class="td-c"></th>
-                <th class="td-c"></th>
+                    <th class="td-c"></th>
+                    <th class="td-c"></th>
+                    <th class="td-c">TOTAL KM</th>
+                    <th class="td-c">{{$total_km}}</th>
+                    <th class="td-c"></th>
+                    <th class="td-c"></th>
+                    <th class="td-c">EXTRA HRS</th>
+                    @php($extra_hour=($extra_min+($extra_hr*60))/60)
+                    <th class="td-c">{{$extra_hour}} </th>
+                    <th class="td-c">{{number_format($toll,2)}}</th>
+                    <th class="td-c"></th>
+                    <th class="td-c"></th>
                 </tfoot>
                 </tbody>
             </table>
@@ -108,5 +96,8 @@
     </div>
     <!-- /.panel-body -->
 </div>
+@endif
+
+
 @endisset
 @endsection

@@ -19,6 +19,7 @@
                             <th>Bank name </th>
                             <th>Card Number </th>
                             <th>Type </th>
+                            <th>Balance </th>
                             <th style="width: 70px;">Action </th>
                         </tr>
                     </thead>
@@ -30,8 +31,10 @@
                             <td>{{$item->bank}}</td>
                             <td>{{$item->card_number}}</td>
                             <td>{{$item->type}}</td>
+                            <td>{{$item->balance}}</td>
                             <td>
                                 <a href="/admin/paymentsource/update/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
+                                <a href="/admin/paymentsource/statement/{{$item->link}}" class="btn btn-xs btn-warning"><i class="fa fa-file"></i></a>
                                 <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/paymentsource/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
                         </tr>

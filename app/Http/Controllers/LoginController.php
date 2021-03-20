@@ -43,12 +43,29 @@ class LoginController extends Controller {
     }
 
     public function accessdenied() {
-        return view('auth.denied');
+        $data['title'] = 'Access denied';
+        $data['company_name'] = Session::get('company_name');
+        $data['company_logo'] = Session::get('logo');
+        $data['current_date'] = date('d-m-Y');
+        $user_type = Session::get('user_type');
+        if ($user_type == 1) {
+            $type = 'admin';
+        } elseif ($user_type == 2) {
+            $type = 'employee';
+        } elseif ($user_type == 3) {
+            $type = 'client';
+        }
+        $data['login_type'] = $type;
+        return view('auth.denied', $data);
         exit;
     }
 
     public function expired() {
         return view('auth.expired');
+    }
+
+    public function getwordmoney($amount) {
+        echo $this->displaywords($amount);
     }
 
     public function check(Request $request) {
@@ -63,6 +80,7 @@ class LoginController extends Controller {
             $_SESSION['user_id'] = $userObj->user_id;
             $_SESSION['company_name'] = $userObj->company_name;
             $_SESSION['admin_id'] = $userObj->admin_id;
+            $_SESSION['employee_id'] = $userObj->employee_id;
             $_SESSION['user_type'] = $userObj->user_type;
             $_SESSION['logo'] = $userObj->logo;
             CustomSession::set('logged_in', 1);
@@ -70,11 +88,22 @@ class LoginController extends Controller {
             CustomSession::set('user_id', $userObj->user_id);
             CustomSession::set('company_name', $userObj->company_name);
             CustomSession::set('admin_id', $userObj->admin_id);
+            CustomSession::set('employee_id', $userObj->employee_id);
             CustomSession::set('user_type', $userObj->user_type);
             CustomSession::set('logo', $userObj->logo);
-
-
-            header('location: /admin/dashboard');
+            if ($userObj->user_type == 1) {
+                $type = 'admin';
+            } elseif ($userObj->user_type == 2) {
+                $type = 'employee';
+            } elseif ($userObj->user_type == 3) {
+                $type = 'client';
+            } elseif ($userObj->user_type == 4) {
+                $type = 'vendor';
+            }elseif ($userObj->user_type == 7) {
+                $type = 'company';
+            }
+			
+            header('location: /' . $type . '/dashboard');
             exit;
         } else {
             return view('auth.login', array('error' => 'There was an error with your E-Mail/Password combination. Please try again.'));

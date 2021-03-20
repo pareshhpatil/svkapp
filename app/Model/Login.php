@@ -21,7 +21,7 @@ class Login extends Model {
     public function hasEmailId($user_name, $password) {
         $retObj = DB::table('user as u')
                 ->join('admin as a', 'a.admin_id', '=', 'u.admin_id')
-                ->select(DB::raw('user_id,u.name,a.logo,a.company_name,u.admin_id,user_type'))
+                ->select(DB::raw('user_id,u.name,a.logo,a.company_name,u.admin_id,user_type,employee_id'))
                 ->where('user_name', $user_name)
                 ->where('password', $password)
                 ->where('u.is_active', 1)

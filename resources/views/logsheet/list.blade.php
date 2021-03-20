@@ -9,16 +9,18 @@
             <strong>Success! </strong> {{$success_message}}
         </div>
         @endisset
-        <div class="panel panel-primary" id="list">
+        <div class="panel panel-primary" @if($user_type==2)style="display: none;" @endif id="list">
             <div class="panel-body" style="overflow: auto;">
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr class="odd gradeX">
+                            <th>ID</th>
                             <th>Bill #</th>
                             <th>Vehicle </th>
                             <th>Company </th>
                             <th>Month </th>
                             <th>Bill date </th>
+                            <th>GST </th>
                             <th>Total Amount </th>
                             <th style="width: 80px;">Action </th>
                         </tr>
@@ -26,15 +28,19 @@
                     <tbody>
                         @foreach ($invoice_list as $item)
                         <tr>
+                            <td>{{$item->invoice_id}}</td>
                             <td>{{$item->invoice_number}}</td>
                             <td>{{$item->vehicle_name}}</td>
                             <td>{{$item->company_name}}</td>
                             <td>{{ Carbon\Carbon::parse($item->date)->format('M-Y')}}</td>
                             <td>{{ Carbon\Carbon::parse($item->bill_date)->format('d-M-Y')}}</td>
+                            <td>{{$item->total_gst}}</td>
                             <td>{{$item->grand_total}}</td>
-                            <td>
+                            <td style="width: 130px;">
                                 <a target="_BLANK" href="/admin/logsheet/printlogsheet/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-file-excel-o"></i></a>
+                                <a target="_BLANK" href="/admin/logsheet/downloadlogsheet/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-download"></i></a>
                                 <a target="_BLANK" href="/admin/logsheet/printbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-file-word-o"></i></a>
+                                <a target="_BLANK" href="/admin/logsheet/downloadbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-download"></i></a>
                                 <a href="/admin/logsheet/generatebill/{{$item->link}}" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></a>
                             </td>
                         </tr>
@@ -46,7 +52,7 @@
             <!-- /.panel-body -->
         </div>
 
-        <div class="panel panel-primary" style="display: none;" id="insert">
+        <div class="panel panel-primary" @if($user_type==1)style="display: none;" @endif id="insert">
             <div class="panel-body" style="overflow: auto;">
                 <div class="row"  >
                     <form action="" method="post" id="logsheetform" onsubmit="return confirmlogsheet();" enctype="multipart/form-data" class="form-horizontal">
@@ -62,7 +68,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Vehicle<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="vehicle_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="vehicle_id" style="width: 100%;" required class="form-control select2" data-placeholder="Select...">
                                         <option value="">Select vehicle</option>
                                         @foreach ($vehicle_list as $item)
                                         <option value="{{$item->vehicle_id}}">{{$item->name}}</option>
@@ -70,11 +76,10 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-group">
-                                <label class="control-label col-md-4">Company<span class="required">* </span></label>
+                                <label class="control-label col-md-4 ">Company<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="company_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="company_id" style="width: 100%;" required class="form-control select2" data-placeholder="Select...">
                                         <option value="">Select comapny</option>
                                         @foreach ($company_list as $item)
                                         <option value="{{$item->company_id}}">{{$item->name}}</option>
@@ -82,6 +87,7 @@
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label class="control-label col-md-4">Date<span class="required"> </span></label>
                                 <div class="col-md-7">

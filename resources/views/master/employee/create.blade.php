@@ -11,12 +11,12 @@
                     <input type="text" name="name" required="" value="" class="form-control">
                 </div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label class="control-label col-md-4">Employee code<span class="required"> </span></label>
                 <div class="col-md-7">
                     <input type="text" name="employee_code"  value="" class="form-control">
                 </div>
-            </div>
+            </div>-->
             <div class="form-group">
                 <label class="control-label col-md-4">Mobile<span class="required">* </span></label>
                 <div class="col-md-7">
@@ -24,13 +24,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Email<span class="required">* </span></label>
+                <label class="control-label col-md-4">Email<span class="required"> </span></label>
                 <div class="col-md-7">
                     <input type="email" name="email" value="" class="form-control">
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Pan<span class="required">* </span></label>
+                <label class="control-label col-md-4">Pan<span class="required"> </span></label>
                 <div class="col-md-7">
                     <input type="text" name="pan" value="" class="form-control">
                 </div>
@@ -66,13 +66,13 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Joining date<span class="required"> </span></label>
                 <div class="col-md-7">
-                    <input type="text" name="join_date" required="" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="yyyy-mm-dd">
+                    <input type="text" name="join_date" value="2014-01-01" required="" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="yyyy-mm-dd">
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Salary<span class="required">* </span></label>
+                <label class="control-label col-md-4">Salary<span class="required"> </span></label>
                 <div class="col-md-7">
-                    <input type="number" pattern="[0-9]*" required="" name="payment" class="form-control">
+                    <input type="number" value="0" pattern="[0-9]*" required="" name="payment" class="form-control">
                 </div>
             </div>
             <div class="form-group">
@@ -119,6 +119,7 @@
                 <div class="col-md-7">
                     <h4 id="status"></h4>
                     <p id="loaded_n_total"></p>
+                    <input type="hidden" name="employee_code"  value="" class="form-control">
                     <button id="savebutton" type="submit" class="btn btn-primary">Save</button>
                     <a href="/admin/employee/list" class="btn btn-default">Close</a>
                 </div>

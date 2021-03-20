@@ -1,4 +1,4 @@
-@extends('layouts.nonloggedin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="row">

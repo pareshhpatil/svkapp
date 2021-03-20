@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Vehicle<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="vehicle_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="vehicle_id" style="width: 100%;"  required class="form-control select2" data-placeholder="Select Employee...">
                                         <option value="">Select vehicle</option>
                                         @foreach ($vehicle_list as $item)
                                         <option value="{{$item->vehicle_id}}">{{$item->name}}</option>
@@ -61,7 +61,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Overtime Employee<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="over_employee_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="over_employee_id" style="width: 100%;" required class="form-control select2" data-placeholder="Select Employee...">
                                         <option value="">Select Employee</option>
                                         @foreach ($employee_list as $item)
                                         <option value="{{$item->employee_id}}">{{$item->name}}</option>
@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Replace Employee<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="replace_employee_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="replace_employee_id" style="width: 100%;"  required class="form-control select2" data-placeholder="Select Employee...">
                                         <option value="">Select Employee</option>
                                         @foreach ($employee_list as $item)
                                         <option value="{{$item->employee_id}}">{{$item->name}}</option>
@@ -87,9 +87,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4">Amount<span class="required"> </span></label>
+                                <label class="control-label col-md-4">Replace Amount<span class="required"> </span></label>
                                 <div class="col-md-7">
                                     <input type="number" pattern="[0-9]*" value="" name="amount" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Deduct Amount<span class="required"> </span></label>
+                                <div class="col-md-7">
+                                    <input type="number" pattern="[0-9]*" value="" name="deduct_amount" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">

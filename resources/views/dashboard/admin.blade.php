@@ -130,6 +130,26 @@
             </div>
         </a>
     </div>
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <a href="/admin/logsheet/approve">
+            <div class="small-box bg-fuchsia">
+                <div class="inner">
+                    <h3>Approve</h3>
+                    <div class="hidden-xs">
+                        <p>&nbsp;</p>
+                        <br>
+                    </div>
+                    <div class="visible-xs">
+                        <p style="font-size: 30px;"><i class="ion ion-ios-checkmark"></i></p>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-android-checkmark-circle"></i>
+                </div>
+            </div>
+        </a>
+    </div>
 
 
 </div>

@@ -36,12 +36,7 @@
             </div>
         </div><br>
 
-        <div class="form-group">
-            <label class="control-label col-md-4">Purchase date<span class="required"> </span></label>
-            <div class="col-md-7">
-                {{$det->purchase_date}}
-            </div>
-        </div><br>
+        
         <div class="form-group">
             <div class="col-md-4"></div>
             <div class="col-md-5">

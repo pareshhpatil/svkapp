@@ -39,7 +39,7 @@
                         <option value="">Select mode</option>
                         <option value="Cash">Cash</option>
                         <option value="Cheque">Cheque</option>
-                        <option value="NEFT">NEFT</option>
+                        <option selected value="NEFT">NEFT</option>
                     </select>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                     <select name="source_id" required class="form-control" data-placeholder="Select...">
                         <option value="">Select source</option>
                         @foreach ($paymentsource_list as $item)
-                        <option value="{{$item->paymentsource_id}}">{{$item->name}}</option>
+                        <option @if($item->paymentsource_id==2) selected @endif value="{{$item->paymentsource_id}}">{{$item->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -58,7 +58,7 @@
              <div class="form-group">
                 <label class="control-label col-md-4">Refference No<span class="required"> </span></label>
                 <div class="col-md-7">
-                    <input type="text" name="ref_no" class="form-control" >
+                    <input type="text" name="ref_no" value="Na" class="form-control" >
                 </div>
             </div>
 
@@ -66,8 +66,6 @@
                 <div class="col-md-11 modal-footer">
                     <p id="loaded_n_total"></p>
                     <input type="hidden" name="employee_id" value="{{$det->employee_id}}">
-                    <input type="hidden" name="vendor_id" value="{{$det->vendor_id}}">
-                    <input type="hidden" name="vehicle_id" value="{{$det->vehicle_id}}">
                     <input type="hidden" name="type" value="{{$det->type}}">
                     <input type="hidden" name="bill_id" value="{{$det->bill_id}}">
                     <input type="hidden" name="category" value="{{$det->category}}">

@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ asset('plugins/timepicker/bootstrap-timepicker.min.css') }}">
         <link rel="stylesheet" href="{{ asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/timepicker/bootstrap-timepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bower_components/select2/dist/css/select2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
         <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css') }}">
         <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
@@ -39,7 +40,7 @@
         <div id="load"></div>
         <div class="wrapper">
             <header class="main-header">
-                <a href="/admin/dashboard" class="logo" style="background-color: #ffffff;">
+                <a href="/{{$login_type}}/dashboard" class="logo" style="background-color: #ffffff;">
                     <span class="logo-mini"><img style="max-height:45px;" src="{{ asset('dist/img/'.$company_logo) }}"></span>
                     <span class="logo-lg"><img style="max-height:45px;" src="{{ asset('dist/img/'.$company_logo) }}"></span>
                 </a>
@@ -85,8 +86,49 @@
             <aside class="main-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu" data-widget="tree">
-                        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                        <li><a href="/admin/logsheet"><i class="fa fa-file-text"></i> <span>Log sheet</span></a></li>
+                        <li><a href="/{{$login_type}}/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+
+                        @if($login_type!='client' && $login_type!='vendor')
+
+                        <li><a href="/admin/logsheet"><i class="fa fa-rupee"></i> <span>Bills</span></a></li>
+
+                        <li class="treeview"><a href="/admin/logsheet"><i class="fa fa-file-text"></i> <span>Log sheet</span><span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/admin/logsheet">
+                                        <i class="fa fa-circle-o"></i> Create</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/logsheet/getlogsheet">
+                                        <i class="fa fa-circle-o"></i> List</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs"></i> <span>MIS</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/admin/mis/createmis">
+                                        <i class="fa fa-circle-o"></i> Create</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/mis/listmis">
+                                        <i class="fa fa-circle-o"></i> List</a>
+                                </li>
+
+
+
+                            </ul>
+                        </li>
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>Masters</span>
@@ -115,7 +157,7 @@
                                     <a href="/admin/paymentsource/list">
                                         <i class="fa fa-circle-o"></i> Payment Source</a>
                                 </li>
-                                
+
 
                             </ul>
                         </li>
@@ -131,18 +173,23 @@
                                     <a href="/admin/employee/absent">
                                         <i class="fa fa-circle-o"></i> Absent</a>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <a href="/admin/employee/advance">
                                         <i class="fa fa-circle-o"></i> Advance</a>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="/admin/employee/overtime">
                                         <i class="fa fa-circle-o"></i> Over Time</a>
                                 </li>
                                 <li>
+                                    <a href="/admin/employee/subscription">
+                                        <i class="fa fa-circle-o"></i> Subscription</a>
+                                </li>
+                                <!--
+                                <li>
                                     <a href="/admin/employee/salary">
                                         <i class="fa fa-circle-o"></i> Salary</a>
-                                </li>
+                                </li>-->
 
                             </ul>
                         </li>
@@ -156,7 +203,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li>
-                                    <a href="/admin/transaction/fuel">
+                                    <a href="/admin/vehicle/fuel">
                                         <i class="fa fa-circle-o"></i> Fuel</a>
                                 </li>
                                 <li>
@@ -166,7 +213,7 @@
 
                             </ul>
                         </li>
-                        
+
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-rupee"></i> <span>Bills & Payments</span>
@@ -176,12 +223,73 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li>
+                                    <a href="/admin/bill/new">
+                                        <i class="fa fa-circle-o"></i> Create</a>
+                                </li>
+                                <li>
                                     <a href="/admin/bill">
                                         <i class="fa fa-circle-o"></i> Pending Bills</a>
                                 </li>
                                 <li>
                                     <a href="/admin/transaction">
                                         <i class="fa fa-circle-o"></i> Payment Transaction</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/request">
+                                        <i class="fa fa-circle-o"></i> Payment Request</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/paymentsource/credit">
+                                        <i class="fa fa-circle-o"></i> Credit</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/paymentsource/creditlist">
+                                        <i class="fa fa-circle-o"></i> Credit list</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        @endif
+
+                        @if($login_type=='vendor')
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs"></i> <span>Masters</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/admin/employee/list">
+                                        <i class="fa fa-circle-o"></i> Employee</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/vehicle/list">
+                                        <i class="fa fa-circle-o"></i> Vehicle</a>
+                                </li>
+                            </ul>
+                        </li>
+                        @endif
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-car"></i> <span>Trips</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/trip/add">
+                                        <i class="fa fa-circle-o"></i> Add Trip</a>
+                                </li>
+                                <li>
+                                    <a href="/trip/list/upcoming">
+                                        <i class="fa fa-circle-o"></i> Upcoming Trips</a>
+                                </li>
+                                <li>
+                                    <a href="/trip/list/past">
+                                        <i class="fa fa-circle-o"></i> Past Trips</a>
                                 </li>
 
                             </ul>
@@ -200,15 +308,37 @@
                         @isset($addnewlink)
                         <a href="{{$addnewlink}}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus"></i> &nbsp; Add new</a>
                         @endisset
-                        @if($title=='Logsheet')
+                        @if($title=='Invoices')
+                        @if($user_type==1)
                         <button  onclick="logsheetDiv();" style="margin-left: 10px;" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> &nbsp; Logsheet Entry</button>
                         <a href="/admin/logsheet/generatebill" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus"></i> &nbsp; Generate Bill</a>
+                        <form id="frm" style="display: contents;" action="" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <select onchange="document.getElementById('frm').submit();" name="type" required class="form-control pull-right" style="width: 150px; margin-right: 10px;" data-placeholder="Select...">
+                                <option @if($type==1) selected @endif value="1">Unpaid Bill</option>
+                                <option @if($type==2) selected @endif value="2">Unpaid GST</option>
+                                <option @if($type==3) selected @endif value="3">All Bills</option>
+                            </select>
+                            <select name="company_id" onchange="document.getElementById('frm').submit();" class="form-control pull-right" style="width: 150px; margin-right: 10px;" data-placeholder="Select...">
+                                        <option value="0">Select comapny</option>
+                                        @foreach ($company_list as $item)
+                                        <option @if($company_id==$item->company_id) selected @endif value="{{$item->company_id}}">{{$item->name}}</option>
+                                        @endforeach
+                            </select>
+                        </form>
+                        @else
+                        <a href="/admin/logsheet/getlogsheet" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus"></i> &nbsp; Get Logsheet</a>
+                        @endif
+
                         @endif
                         @isset($addnew_button)
                         <button  onclick="logsheetDiv();" style="margin-left: 10px;" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> &nbsp; Add new</button>
                         @endisset
+                        @if($title=='Bill Print')
+                        <a  href="/admin/logsheet/downloadbill/{{$link}}" style="margin-left: 10px;" class="btn btn-success btn-sm pull-right"><i class="fa fa-download"></i> &nbsp; Download</a>
+                        @endif
                         @if($title=='Logsheet Print')
-                        <button  onclick="window.print();" style="margin-left: 10px;" class="btn btn-success btn-sm pull-right"><i class="fa fa-print"></i> &nbsp; Print</button>
+                        <a  href="/admin/logsheet/downloadlogsheet/{{$link}}" style="margin-left: 10px;" class="btn btn-success btn-sm pull-right"><i class="fa fa-download"></i> &nbsp; Download</a>
                         @endif
                     </h1>
                     @endisset
@@ -229,11 +359,13 @@
         <script src="{{ asset('plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
         <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+        <script src="{{ asset('bower_components/select2/dist/js/select2.full.min.js') }}"></script>
         <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
         <script src="{{ asset('dist/js/demo.js') }}"></script>
-        <script src="{{ asset('dist/js/custom.js') }}"></script>
+        <script src="{{ asset('dist/js/custom.js?version=30') }}"></script>
         <script>
                             $(function () {
+                                $('.select2').select2()
                                 //Date picker
                                 $('.date-picker').datepicker({
                                     format: 'dd-mm-yyyy',

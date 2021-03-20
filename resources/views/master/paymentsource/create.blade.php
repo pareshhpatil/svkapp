@@ -35,6 +35,12 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Balance<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <input type="number" step="0.01"  name="balance" class="form-control">
+                </div>
+            </div>
 
             
             <div class="form-group">

@@ -30,12 +30,34 @@ class Employee extends Model {
         return $retObj;
     }
 
+    public function getEMPAbsentList($admin_id) {
+        $retObj = DB::table('absent as a')
+                ->join('vehicle as v', 'v.vehicle_id', '=', 'a.vehicle_id')
+                ->join('employee as er', 'er.employee_id', '=', 'a.replace_employee_id')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->where('a.employee_id', $admin_id)
+                ->select(DB::raw('a.absent_id,ea.name as absent_name,er.name as replace_name,v.name as vehicle_name,a.date,a.is_deduct'))
+                ->get();
+        return $retObj;
+    }
+
     public function getOverTimeList($admin_id) {
         $retObj = DB::table('overtime as a')
                 ->join('vehicle as v', 'v.vehicle_id', '=', 'a.vehicle_id')
                 ->join('employee as er', 'er.employee_id', '=', 'a.replace_employee_id')
                 ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
                 ->where('a.admin_id', $admin_id)
+                ->select(DB::raw('a.ot_id,ea.name as over_name,er.name as replace_name,v.name as vehicle_name,a.date,a.amount'))
+                ->get();
+        return $retObj;
+    }
+
+    public function getEMPOverTimeList($admin_id) {
+        $retObj = DB::table('overtime as a')
+                ->join('vehicle as v', 'v.vehicle_id', '=', 'a.vehicle_id')
+                ->join('employee as er', 'er.employee_id', '=', 'a.replace_employee_id')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->where('a.employee_id', $admin_id)
                 ->select(DB::raw('a.ot_id,ea.name as over_name,er.name as replace_name,v.name as vehicle_name,a.date,a.amount'))
                 ->get();
         return $retObj;
@@ -50,11 +72,39 @@ class Employee extends Model {
         return $retObj;
     }
 
+    public function getEMPAdvanceList($employee_id) {
+        $retObj = DB::table('advance as a')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->where('a.employee_id', $employee_id)
+                ->select(DB::raw('a.advance_id,ea.name as employee_name,a.amount,a.date,a.note'))
+                ->get();
+        return $retObj;
+    }
+
     public function getSalaryList($admin_id) {
         $retObj = DB::table('salary as a')
                 ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
                 ->where('a.admin_id', $admin_id)
+                ->where('a.is_active', 1)
                 ->select(DB::raw('a.*,ea.name as employee_name'))
+                ->get();
+        return $retObj;
+    }
+
+    public function getEMPSalaryList($employee_id) {
+        $retObj = DB::table('salary as a')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->where('a.employee_id', $employee_id)
+                ->select(DB::raw('a.*,ea.name as employee_name'))
+                ->get();
+        return $retObj;
+    }
+    public function getEMPSubscriptionList($admin_id) {
+        $retObj = DB::table('subscription as a')
+                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
+                ->select(DB::raw('a.*,ea.name as employee_name'))
+                ->where('a.admin_id', $admin_id)
+                ->where('a.is_active', 1)
                 ->get();
         return $retObj;
     }
@@ -101,7 +151,7 @@ class Employee extends Model {
         return $id;
     }
 
-    public function saveOverTime($vehicle_id, $absent_employee_id, $replace_employee_id, $date, $amount, $remark, $user_id, $admin_id) {
+    public function saveOverTime($vehicle_id, $absent_employee_id, $replace_employee_id, $date, $amount,$deduct_amount, $remark, $user_id, $admin_id) {
         $id = DB::table('overtime')->insertGetId(
                 [
                     'admin_id' => $admin_id,
@@ -110,6 +160,7 @@ class Employee extends Model {
                     'replace_employee_id' => $replace_employee_id,
                     'date' => $date,
                     'amount' => $amount,
+                    'deduct_amount' => $deduct_amount,
                     'note' => $remark,
                     'created_by' => $user_id,
                     'created_date' => date('Y-m-d H:i:s'),
@@ -144,4 +195,35 @@ class Employee extends Model {
                     'last_update_by' => $user_id
         ]);
     }
+
+    public function saveSubscription($employee_id,$type,  $mode,$repeat_every, $day, $amount, $note, $admin_id, $user_id) {
+        $id = DB::table('subscription')->insertGetId(
+                [
+                    'employee_id' => $employee_id,
+                    'mode' => $mode,
+                    'repeat_every' => $repeat_every,
+                    'type' => $type,
+                    'day' => $day,
+                    'amount' => $amount,
+                    'note' => $note,
+                    'admin_id' => $admin_id,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
+    }
+
+    public function updateSubscription($subscription_id, $day, $amount, $note, $user_id) {
+        DB::table('subscription')
+                ->where('subscription_id', $subscription_id)
+                ->update([
+                    'day' => $day,
+                    'amount' => $amount,
+                    'note' => $note,
+                    'last_update_by' => $user_id
+        ]);
+    }
+
 }

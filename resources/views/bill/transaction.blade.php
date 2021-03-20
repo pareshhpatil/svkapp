@@ -17,7 +17,6 @@
                             <th>Trans #</th>
                             <th>Date</th>
                             <th>Payee Name </th>
-                            <th>Category </th>
                             <th>Amount </th>
                             <th>Mode </th>
                             <th>Source </th>
@@ -29,12 +28,11 @@
                         <tr class="odd gradeX">
                             <td>{{$item->transaction_id}}</td>
                             <td>{{$item->paid_date}}</td>
-                            <td>@if($item->type==1) {{$item->vendor_name}} @else {{$item->employee_name}} @endif</td>
-                            <td>{{$item->category}}</td>
+                            <td><a target="_BLANK" href="/admin/employee/view/{{$item->emplink}}">{{$item->employee_name}}</a></td>
                             <td>{{$item->amount}}</td>
                             <td>{{$item->payment_mode}}</td>
                             <td>{{$item->payment_source}}</td>
-                            <td>{{$item->note}}</td>
+                            <td style="max-width: 250px;">{{$item->narrative}}</td>
                         </tr>
                         @endforeach
                     </tbody>

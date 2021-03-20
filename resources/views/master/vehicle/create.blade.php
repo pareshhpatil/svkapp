@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Number<span class="required">* </span></label>
+                <label class="control-label col-md-4">Vehicle Number<span class="required">* </span></label>
                 <div class="col-md-7">
                     <input type="text" required name="number" value="" class="form-control">
                 </div>
@@ -38,12 +38,7 @@
             </div>
 
 
-            <div class="form-group">
-                <label class="control-label col-md-4">Purchase date<span class="required"> </span></label>
-                <div class="col-md-7">
-                    <input type="text" name="purchase_date" required="" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="yyyy-mm-dd">
-                </div>
-            </div>
+            
             <div class="form-group">
                 <div class="col-md-4"></div>
                 <div class="col-md-7">
@@ -51,6 +46,7 @@
                     <p id="loaded_n_total"></p>
 
                     <a href="/admin/vehicle/list" class="btn btn-default pull-right" >Close</a>
+                    <input type="hidden" name="purchase_date" value="2014-01-01">
                     <button id="savebutton" type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                 </div>
             </div>

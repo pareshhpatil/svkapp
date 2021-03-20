@@ -16,9 +16,9 @@
                         <tr>
                             <th>Employee #</th>
                             <th>Name </th>
-                            <th>Code </th>
                             <th>Mobile </th>
                             <th>Joining date </th>
+                            <th>Balance </th>
                             <th style="width: 70px;">Action </th>
                         </tr>
                     </thead>
@@ -27,9 +27,10 @@
                         <tr class="odd gradeX">
                             <td>{{$item->employee_id}}</td>
                             <td>{{$item->name}}</td>
-                            <td>{{$item->employee_code}}</td>
+                            
                             <td>{{$item->mobile}}</td>
                             <td>{{$item->join_date}}</td>
+                            <td>{{$item->balance}}</td>
                             <td>
                                 <a href="/admin/employee/view/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-table"></i></a>
                                 <a href="/admin/employee/update/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>

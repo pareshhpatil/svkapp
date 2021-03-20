@@ -3,6 +3,7 @@
 @section('content')
 <div class="row">
     <div class="col-lg-12">
+        <h4>Total Amount: {{$total_amount}}</h4>
         @isset($success_message)
         <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -16,8 +17,8 @@
                         <tr>
                             <th>Bill #</th>
                             <th>Date</th>
-                            <th>Vendor Name </th>
-                            <th>Category </th>
+                            <th>Name </th>
+                            <th>Narrative </th>
                             <th>Amount </th>
                             <th style="width: 70px;">Action </th>
                         </tr>
@@ -25,14 +26,14 @@
                     <tbody>
                         @foreach ($list as $item)
                         <tr class="odd gradeX">
-                            <td>{{$item->bill_id}}</td>
-                            <td>{{$item->date}}</td>
-                            <td>{{$item->name}}</td>
-                            <td>{{$item->category}}</td>
+                            <td>{{$item->transaction_id}}</td>
+                            <td>{{$item->paid_date}}</td>
+                            <td><a target="_BLANK" href="/admin/employee/view/{{$item->emplink}}">{{$item->name}}</a></td>
+                            <td>{{$item->narrative}}</td>
                             <td>{{$item->amount}}</td>
                             <td>
                                 <a href="/admin/payment/bill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-money"></i></a>
-                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/bill/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/transaction/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
                         </tr>
                         @endforeach

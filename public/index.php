@@ -16,7 +16,7 @@
   | loading any of our classes later on. It feels great to relax.
   |
  */
-
+ini_set("include_path", '/home/tc3ynsgo52bu/php:' . ini_get("include_path") );
 require __DIR__ . '/../bootstrap/autoload.php';
 
 /*

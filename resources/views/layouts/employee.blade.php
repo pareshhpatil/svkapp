@@ -1,101 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
     <head>
-
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-
         <title>{{$title}}</title>
-
-        <!-- Bootstrap Core CSS -->
-        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
-        <!-- MetisMenu CSS -->
-        <link href="{{ asset('vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
-
-        <!-- Custom CSS -->
-        <link href="{{ asset('dist/css/sb-admin-2.css') }}" rel="stylesheet">
-
-        <!-- Custom Fonts -->
-        <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
-
-        
-        
-
-
-    <!-- DataTables CSS -->
-    <link href="{{ asset('vendor/datatables-plugins/dataTables.bootstrap.css') }}" rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href="{{ asset('vendor/datatables-responsive/dataTables.responsive.css') }}" rel="stylesheet">
-        
-        
-<!--Out source -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>    
-<!--End metronic -->
-
-        <link href="{{ asset('dist/css/custom.css') }}" rel="stylesheet">
-        
-        <script src="{{ asset('dist/js/custom.js') }}"></script>
-
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" href="{{ asset('bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/timepicker/bootstrap-timepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/timepicker/bootstrap-timepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bower_components/select2/dist/css/select2.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <style>
+            #load{
+                width:100%;
+                height:100%;
+                position:fixed;
+                z-index:9999;
+                background:url("{{ asset('dist/img/loader.gif') }}") no-repeat center center rgba(0,0,0,0.25)
+            }
+        </style>
         <script>
-
+            document.onreadystatechange = function () {
+                var state = document.readyState
+                if (state == 'complete') {
+                    document.getElementById('interactive');
+                    document.getElementById('load').style.visibility = "hidden";
+                }
+            }
         </script>
     </head>
-
-    <body>
-            <!-- Navigation -->
-            <div id="page-wrapper" style="margin: 0 0 0 0px;">
-                
-                @yield('content')
+    <body class="hold-transition skin-blue sidebar-mini fixed">
+        <div id="load"></div>
+        <div class="wrapper">
+            <header class="main-header">
+                <a href="/{{$login_type}}/dashboard" class="logo" style="background-color: #ffffff;">
+                    <span class="logo-mini"><img style="max-height:45px;" src="http://siddhivinayaktravel.in/dist/img/1539330364.png"></span>
+                    <span class="logo-lg"><img style="max-height:45px;" src="http://siddhivinayaktravel.in/dist/img/1539330364.png"></span>
+                </a>
+                <nav class="navbar navbar-static-top">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <div class="navbar-custom-menu pull-left">
+                        <h4 style="color: #ffffff;vertical-align: middle;margin-top: 15px;">{{$title}}</h4>
+                    </div>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="{{ asset('dist/img/avatar.png') }}" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">Employee</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header" style="height: 140px;">
+                                        <img src="{{ asset('dist/img/avatar.png') }}" class="img-circle" alt="User Image">
+                                        <p>
+                                            Employee
+                                        </p>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    
+                </section>
+            </aside>
+            <div class="content-wrapper">
+                <section class="content">
+                    @yield('content')
+                </section>
             </div>
-            <!-- /#wrapper -->
+            <footer class="main-footer hidden-print">
+                <small>Copyright &copy; 2018 Siddhivinayak travels All rights reserved.</small>
+            </footer>
+            <div class="control-sidebar-bg"></div>
+        </div>
+        <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+        <script src="{{ asset('plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
+        <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+        <script src="{{ asset('bower_components/select2/dist/js/select2.full.min.js') }}"></script>
+        <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
+        <script src="{{ asset('dist/js/demo.js') }}"></script>
+        <script src="{{ asset('dist/js/custom.js?version=28') }}"></script>
+        <script>
+                            $(function () {
+                                $('.select2').select2()
+                                //Date picker
+                                $('.date-picker').datepicker({
+                                    format: 'dd-mm-yyyy',
+                                    todayHighlight: true,
+                                    autoclose: true
+                                })
 
-            <!-- jQuery -->
-           
-            <!-- Bootstrap Core JavaScript -->
-            <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+                                $('#example1').DataTable(
+                                        {
+                                            "order": [[0, "desc"]]
+                                        })
+                                $('.timepicker').timepicker({
+                                    showInputs: false
+                                })
 
-            <!-- Metis Menu Plugin JavaScript -->
-            <script src="{{ asset('vendor/metisMenu/metisMenu.min.js') }}"></script>
-            
-            
-            <!-- DataTables JavaScript -->
-        <script src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('vendor/datatables-plugins/dataTables.bootstrap.min.js') }}"></script>
-        <script src="{{ asset('vendor/datatables-responsive/dataTables.responsive.js') }}"></script>
+                                $('.month-picker').datepicker({
+                                    autoclose: true,
+                                    minViewMode: 1,
+                                    format: 'M-yyyy'
+                                });
+                            })
 
-         <!-- Metronic -->
-
-            <!-- Morris Charts JavaScript -->
-
-            <!-- Custom Theme JavaScript -->
-            <script src="{{ asset('dist/js/sb-admin-2.js') }}"></script>
-            
-             <script>
-                                                                $(document).ready(function () {
-                                                                    $('#dataTables-example').DataTable({
-                                                                        responsive: true
-                                                                    });
-                                                                     $( ".date-picker" ).datepicker();
-                                                                     $( ".date-picker" ).datepicker("option", "dateFormat", "dd-M-yy" );
-
-                                                                });
         </script>
-
     </body>
-
 </html>

@@ -21,7 +21,7 @@
                                 </tr>
                                 <tr>
                                     <td class="td-c" style="font-size: 20px;font-family: cambria;">
-                                        TAX INVOICE FOR THE MONTH OF {{ Carbon\Carbon::parse($invoice->date)->format('M-Y')}}
+                                        @if($invoice->total_gst>0)TAX @endif INVOICE FOR THE MONTH OF {{ Carbon\Carbon::parse($invoice->date)->format('M-Y')}}
                                     </td>
                                 </tr>
                             </tbody>
@@ -47,6 +47,11 @@
                                         <div class="col-md-12" >
                                             <p><b>Address:</b> {{$admin->address}}</p>
                                         </div>
+										@if($company->company_id==24)
+										<div class="col-md-12" >
+                                            <p><b>RCM Applicable :</b> Yes</p>
+                                        </div>
+										@endif
                                     </td>
                                     <td  style="width: 50%;">
                                         <div class="col-md-12" >
@@ -61,6 +66,11 @@
                                         <div class="col-md-12" >
                                             <p><b>HSN/SAC Code:</b>  {{$admin->sac_code}}</p>
                                         </div>
+										@if($invoice->work_order_no!='')
+										<div class="col-md-12" >
+                                            <p><b>Work Order No:</b>  {{$invoice->work_order_no}}</p>
+                                        </div>
+										@endif
                                     </td>
                                 </tr>
                                 <tr>
@@ -111,9 +121,10 @@
                                                 @endforeach
                                                 <tr>
 
-                                                    <td class="tds" colspan="5"><span class="pull-right"><b>Total Value /Taxable Value(Rs.)</b></span></td>
+                                                    <td class="tds" colspan="5"><span class="pull-right"><b>Total Value @if($invoice->total_gst>0)/Taxable Value @endif(Rs.)</b></span></td>
                                                     <td class="tds"><span class="pull-right"><b>{{$invoice->base_total}}</b></span></td>
                                                 </tr>
+                                                @if($invoice->total_gst>0)
                                                 <tr>
                                                     <td class="tds" colspan="3" rowspan="3" style="vertical-align: middle;"><span class="pull-right"><b>Goods and Services Tax @5%</b></span></td>
                                                     <td class="tds"><span class="pull-right">CGST@</span></td>
@@ -127,7 +138,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="tds"><span class="pull-right">IGST@</span></td>
-                                                    <td class="tds"><span class="pull-right">@if($invoice->igst>0)2.50 @else 00 @endif%</span></td>
+                                                    <td class="tds"><span class="pull-right">@if($invoice->igst>0)5.00 @else 00 @endif%</span></td>
                                                     <td class="tds"><span class="pull-right">{{$invoice->igst}}</span></td>
                                                 </tr>
                                                 <tr>
@@ -138,6 +149,7 @@
                                                     <td  class="tds" colspan="5"><span class="pull-right"><b>Grand Total (Inclusive of GST)</b></span></td>
                                                     <td class="tds"><span class="pull-right"><b>{{$invoice->grand_total}}</b></span></td>
                                                 </tr>
+                                                @endif
                                                 <tr>
                                                     <td class="tds" colspan="2"><span class="pull-right"><b>Invoice Value (In Words)&nbsp;&nbsp;</b></span></td>
                                                     <td class="tds" colspan="4"> &nbsp;&nbsp;{{$word_money}}</td>
@@ -153,7 +165,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-8" ></div>
+                    <div class="col-xs-8" >
+					@if($invoice->narrative!='')
+					Narrative: {{$invoice->narrative}}
+					@endif
+					</div>
                     <div class="col-xs-4" >
                         Name Of Signatory
                     </div>

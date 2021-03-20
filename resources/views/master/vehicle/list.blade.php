@@ -19,7 +19,6 @@
                             <th>Number </th>
                             <th>Car type </th>
                             <th>Brand </th>
-                            <th>Purchase date </th>
                             <th style="width: 70px;">Action </th>
                         </tr>
                     </thead>
@@ -31,7 +30,6 @@
                             <td>{{$item->number}}</td>
                             <td>{{$item->car_type}}</td>
                             <td>{{$item->brand}}</td>
-                            <td>{{$item->purchase_date}}</td>
                             <td>
                                 <a href="/admin/vehicle/view/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-table"></i></a>
                                 <a href="/admin/vehicle/update/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>

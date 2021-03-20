@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class Logsheet extends Model {
 
-    public function saveLogsheetbill($vehicle_id, $company_id, $date, $start_km, $end_km, $start_time, $close_time, $daynight, $remark, $toll, $type, $pick_drop, $from, $to, $user_id, $admin_id) {
+    public function saveLogsheetbill($vehicle_id, $company_id, $date, $start_km, $end_km, $start_time, $close_time, $daynight, $remark, $toll, $type, $pick_drop, $from, $to, $user_id, $admin_id, $status) {
         $id = DB::table('logsheet_bill')->insertGetId(
                 [
                     'admin_id' => $admin_id,
@@ -39,6 +39,7 @@ class Logsheet extends Model {
                     'to' => $to,
                     'pick_drop' => $pick_drop,
                     'type' => $type,
+                    'status' => $status,
                     'created_by' => $user_id,
                     'created_date' => date('Y-m-d H:i:s'),
                     'last_update_by' => $user_id
@@ -47,7 +48,7 @@ class Logsheet extends Model {
         return $id;
     }
 
-    public function saveLogsheetInvoice($invoice_number, $vehicle_id, $company_id, $date, $bill_date, $cgst, $sgst, $igst, $total_gst, $base_total, $grand_total, $toll, $type, $user_id, $admin_id) {
+    public function saveLogsheetInvoice($invoice_number, $vehicle_id, $company_id, $date, $bill_date, $cgst, $sgst, $igst, $total_gst, $base_total, $grand_total, $toll, $type,$work_order_no, $user_id, $admin_id) {
         $id = DB::table('logsheet_invoice')->insertGetId(
                 [
                     'admin_id' => $admin_id,
@@ -63,6 +64,7 @@ class Logsheet extends Model {
                     'bill_date' => $bill_date,
                     'grand_total' => $grand_total,
                     'type' => $type,
+					'work_order_no' => $work_order_no,
                     'toll' => $toll,
                     'created_by' => $user_id,
                     'created_date' => date('Y-m-d H:i:s'),
@@ -90,7 +92,21 @@ class Logsheet extends Model {
         return $id;
     }
 
-    public function updateLogsheetInvoice($invoice_id, $vehicle_id, $company_id, $date, $bill_date, $cgst, $sgst, $igst, $total_gst, $base_total, $grand_total, $toll, $type, $user_id, $admin_id) {
+    public function saveInvoiceExpense($invoice_id, $request_id, $amount, $user_id) {
+        $id = DB::table('invoice_expense')->insertGetId(
+                [
+                    'invoice_id' => $invoice_id,
+                    'request_id' => $request_id,
+                    'amount' => $amount,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
+    }
+
+    public function updateLogsheetInvoice($invoice_id, $vehicle_id, $company_id, $date, $bill_date, $cgst, $sgst, $igst, $total_gst, $base_total, $grand_total, $toll, $type,$work_order_no, $user_id, $admin_id) {
         DB::table('logsheet_invoice')
                 ->where('invoice_id', $invoice_id)
                 ->where('admin_id', $admin_id)
@@ -107,6 +123,7 @@ class Logsheet extends Model {
                     'bill_date' => $bill_date,
                     'grand_total' => $grand_total,
                     'type' => $type,
+					'work_order_no' => $work_order_no,
                     'toll' => $toll,
                     'last_update_by' => $user_id
                         ]
@@ -123,6 +140,16 @@ class Logsheet extends Model {
                     'rate' => $rate,
                     'amount' => $amount,
                     'is_deduct' => $is_deduct,
+                    'last_update_by' => $user_id
+                        ]
+        );
+    }
+
+    public function approveLogsheetDetail($id, $user_id) {
+        DB::table('logsheet_bill')
+                ->where('logsheet_id', $id)
+                ->update([
+                    'status' => 1,
                     'last_update_by' => $user_id
                         ]
         );
@@ -167,6 +194,7 @@ class Logsheet extends Model {
         $retObj = DB::table('logsheet_bill')
                 ->select(DB::raw("*,TIMEDIFF(close_time,start_time) as total_time,TIMEDIFF( TIMEDIFF( close_time,start_time),'12:00:00') as extra_time"))
                 ->where('is_active', 1)
+                ->where('status', 1)
                 ->where('company_id', $company_id)
                 ->where('vehicle_id', $vehicle_id)
                 ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), date('Y-m', strtotime($date)))
@@ -174,13 +202,57 @@ class Logsheet extends Model {
                 ->get();
         return $retObj;
     }
+	
+	public function getMonthLogsheet($vehicle_id,$month) {
+        $retObj = DB::table('logsheet_bill')
+                ->select(DB::raw("*,TIMEDIFF(close_time,start_time) as total_time,TIMEDIFF( TIMEDIFF( close_time,start_time),'12:00:00') as extra_time"))
+                ->where('is_active', 1)
+                ->where('status', 1)
+                ->where('vehicle_id', $vehicle_id)
+                ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), $month)
+                ->orderBy('date', 'asc')
+                ->get();
+        return $retObj;
+    }
+	
+	public function getMonthVehicle($month) {
+        $retObj = DB::table('logsheet_bill')
+                ->select(DB::raw("distinct vehicle_id,admin_id,company_id"))
+                ->where('is_active', 1)
+                ->where('status', 1)
+                ->whereIn('company_id', [1, 8])
+                ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), $month)
+                ->orderBy('date', 'asc')
+                ->get();
+        return $retObj;
+    }
 
-    public function getLogsheetBill($admin_id) {
+    public function getPendingBillData($admin_id) {
+        $retObj = DB::table('logsheet_bill as l')
+                ->join('vehicle as v', 'v.vehicle_id', '=', 'l.vehicle_id')
+                ->join('company as c', 'c.company_id', '=', 'l.company_id')
+                ->join('user as u', 'u.user_id', '=', 'l.created_by')
+                ->select(DB::raw("l.*,v.name as vehicle_name,c.name as company_name,u.name as user_name"))
+                ->where('l.is_active', 1)
+                ->where('l.status', 0)
+                ->where('l.admin_id', $admin_id)
+                ->orderBy('l.date', 'asc')
+                ->get();
+        return $retObj;
+    }
+
+    public function getLogsheetBill($admin_id, $type, $val,$company_id) {
         $retObj = DB::table('logsheet_invoice as l')
                 ->join('vehicle as v', 'v.vehicle_id', '=', 'l.vehicle_id')
                 ->join('company as c', 'c.company_id', '=', 'l.company_id')
-                ->where('l.admin_id', $admin_id)
-                ->select(DB::raw('l.invoice_id,l.invoice_number,l.date,l.bill_date,l.grand_total,v.name as vehicle_name,c.name as company_name'))
+                ->where('l.' . $type, $val)
+                ->where('l.is_active', 1)
+                ->where('l.admin_id', $admin_id);
+                if($company_id>0)
+                {
+                    $retObj= $retObj->where('l.company_id', $company_id);
+                }
+                $retObj= $retObj->select(DB::raw('l.invoice_id,l.total_gst,l.invoice_number,l.date,l.bill_date,l.grand_total,v.name as vehicle_name,c.name as company_name'))
                 ->get();
         return $retObj;
     }
