@@ -14,6 +14,7 @@
 Route::get('/', 'LoginController@index');
 
 
+
 Route::get('/error', 'ErrorController@display');
 Route::get('/404', 'ErrorController@pagenotfound');
 
