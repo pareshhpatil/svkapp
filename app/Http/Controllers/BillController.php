@@ -91,6 +91,10 @@ class BillController extends Controller
     {
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
         $paymentsource_list = $this->master_model->getMaster('paymentsource', $this->admin_id);
+        $company_list = $this->master_model->getMaster('company', $this->admin_id);
+        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id, 'admin_id', 'fuel_enable', 1);
+        $data['vehicle_list'] = $vehicle_list;
+        $data['company_list'] = $company_list;
         $data['employee_list'] = $employee_list;
         $data['paymentsource_list'] = $paymentsource_list;
         $data['title'] = 'Create Bill';
@@ -115,9 +119,10 @@ class BillController extends Controller
         $this->master_model->updateBankBalance($_POST['amount'], $_POST['source_id'], 0);
 
         $this->setSuccess('Transaction has been save successfully');
-        header('Location: /admin/bill/new');
+        header('Location: /admin/paymentsource/credit');
+        die();
     }
-    
+
 
     public function creditlist()
     {
@@ -143,6 +148,20 @@ class BillController extends Controller
         $data['clist'] = $c_list;
         $data['title'] = 'Statement';
         return view('bill.statement', $data);
+    }
+
+    public function invoicepayment($link)
+    {
+        $id = $this->encrypt->decode($link);
+        $det = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
+        $company = $this->master_model->getMasterDetail('company', 'company_id', $det->company_id);
+        $paymentsource_list = $this->master_model->getMaster('paymentsource', $this->admin_id);
+        $data['paymentsource_list'] = $paymentsource_list;
+        $data['det'] = $det;
+        $data['id'] = $id;
+        $data['company_name'] = $company->name;
+        $data['title'] = 'Invoice payment';
+        return view('bill.invoicepayment', $data);
     }
 
     public function billpayment($type, $link)
@@ -183,9 +202,11 @@ class BillController extends Controller
             $request->payment_mode = '';
             $request->source_id = 0;
         }
+        $company_id = ($request->company_id > 0) ? $request->company_id : 0;
+        $vehicle_id = ($request->company_id > 0) ? $request->company_id : 0;
         if ($_POST['type'] != 3) {
-            $this->bill_model->saveBill($request->employee_id,$request->category,0,0,$request->amount, $request->remark, $date, $request->amount, $this->user_id, $this->admin_id);
-            $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id,0);
+            $this->bill_model->saveBill($request->employee_id, $request->category, $company_id, $vehicle_id, $request->amount, $request->remark, $date, $request->amount, $this->user_id, $this->admin_id);
+            $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id, 0);
         }
         if ($_POST['type'] != 1) {
             $this->bill_model->saveTransaction($is_paid, $request->employee_id, $date, $request->amount, $request->payment_mode, $request->remark, 'NA', $request->source_id, 1, $this->user_id, $this->admin_id);
@@ -205,7 +226,7 @@ class BillController extends Controller
     {
         $date = date('Y-m-d', strtotime($request->date));
         $this->bill_model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $this->user_id);
-        
+
         $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id);
         $this->master_model->updateBankBalance($request->amount, $request->source_id);
         $this->setSuccess('Transaction has been save successfully');
@@ -213,5 +234,15 @@ class BillController extends Controller
         exit;
     }
 
-    
+    public function invoicepaymentsave(Request $request)
+    {
+        $date = date('Y-m-d', strtotime($request->date));
+        $this->bill_model->saveBillPayment($_POST['id'], $_POST['source_id'], $_POST['remark'], $_POST['tds'], $_POST['amount'],  $date, $_POST['payment_mode'], $this->user_id, $this->admin_id);
+
+        $this->master_model->updateBankBalance($request->amount, $request->source_id);
+        $this->master_model->updateTableColumn('logsheet_invoice', 'is_paid', 1, 'invoice_id', $request->id, $this->user_id);
+        $this->setSuccess('Transaction has been save successfully');
+        header('Location: /admin/logsheet');
+        exit;
+    }
 }

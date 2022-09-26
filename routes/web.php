@@ -124,6 +124,8 @@ Route::get('/admin/bill', 'BillController@bill');
 Route::get('/admin/bill/new', 'BillController@billcreate');
 Route::post('/admin/bill/save', 'BillController@billsave');
 Route::post('/admin/bill/paymentsave', 'BillController@paymentsave');
+Route::post('/admin/invoice/paymentsave', 'BillController@invoicepaymentsave');
+Route::get('/admin/invoice/payment/{invoiceid}', 'BillController@invoicepayment');
 Route::get('/admin/payment/{type}/{id}', 'BillController@billpayment');
 Route::get('/admin/transaction', 'BillController@transaction');
 Route::get('/admin/request', 'BillController@request');

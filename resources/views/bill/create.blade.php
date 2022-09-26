@@ -49,6 +49,30 @@
                     </select>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">Company<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <select name="company_id" required class="form-control select2" data-placeholder="Select...">
+                        <option value="">Select Company</option>
+                        @foreach ($company_list as $item)
+                        <option value="{{$item->company_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">Vehicle<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <select name="vehicle_id" required class="form-control select2" data-placeholder="Select...">
+                        <option value="">Select Vehicle</option>
+                        @foreach ($vehicle_list as $item)
+                        <option value="{{$item->vehicle_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             
             <div class="form-group">
                 <label class="control-label col-md-4">Bill Date<span class="required"> </span></label>
