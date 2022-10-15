@@ -98,6 +98,15 @@ function confirmMis() {
     return false;
 }
 
+function confirmCompanyMis() {
+    try {
+        _("conf").click();
+    } catch (o) {
+        alert(o.message);
+    }
+    return false;
+}
+
 function saveLogsheet() {
     try {
         var data = $("#logsheetform").serialize();
@@ -133,6 +142,23 @@ function saveMis() {
                 _("toll").value = '';
                 _("remark").value = '';
                 _("closebtn").click();
+            }
+        });
+    } catch (o) {
+        alert(o.message);
+    }
+    return false;
+}
+
+function saveCompanyMis() {
+    try {
+        var data = $("#logsheetform").serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/admin/mis/savecompanymis',
+            data: data,
+            success: function (data) {
+                _("loaded_n_total").innerHTML = data;
             }
         });
     } catch (o) {

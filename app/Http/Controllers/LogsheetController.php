@@ -411,13 +411,23 @@ class LogsheetController extends Controller
                 $extra_time = $total_time - 12;
                 if (substr($total_time, -2) == '.5') {
                     $total_time = substr($total_time, 0, -2) . ':30';
-                } else {
+                } 
+				elseif(substr($total_time, -3) == '.75')
+					{
+						$total_time = substr($total_time, 0, -3)+1 . ':15';
+					}
+				else {
                     $total_time = $total_time . ':00';
                 }
 
                 if (substr($extra_time, -2) == '.5') {
                     $extra_time = substr($extra_time, 0, -2) . ':30';
-                } else {
+                } 
+				elseif(substr($extra_time, -3) == '.75')
+					{
+						$extra_time = substr($extra_time, 0, -3)+1 . ':15';
+					}
+				else {
                     $extra_time = $extra_time . ':00';
                 }
                 $list[$int]->total_time = $total_time;
@@ -546,7 +556,8 @@ class LogsheetController extends Controller
         if ($data['vehicle_id'] > 0) {
             $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
             $int = 0;
-            foreach ($list as $item) {
+            foreach ($list as $k=>$item) {
+								
                 $type = $item->type;
                 $link2 = $this->encrypt->encode($item->logsheet_id);
                 if (substr($item->total_time, 0, 1) == '-') {
@@ -556,16 +567,27 @@ class LogsheetController extends Controller
                     $interval = $datetime2 - $datetime1;
 
                     $total_time = round($interval / 60 / 60, 2);
+					
                     $extra_time = $total_time - 12;
+					
                     if (substr($total_time, -2) == '.5') {
                         $total_time = substr($total_time, 0, -2) . ':30';
-                    } else {
+                    }elseif(substr($total_time, -3) == '.75')
+					{
+						$total_time = substr($total_time, 0, -3)+1 . ':15';
+					}else {
                         $total_time = $total_time . ':00';
                     }
+					
 
                     if (substr($extra_time, -2) == '.5') {
                         $extra_time = substr($extra_time, 0, -2) . ':30';
-                    } else {
+                    }
+						elseif(substr($extra_time, -3) == '.75')
+					{
+						$extra_time = substr($extra_time, 0, -3)+1 . ':15';
+					}
+					else {
                         $extra_time = $extra_time . ':00';
                     }
                     $list[$int]->total_time = $total_time;
@@ -577,6 +599,8 @@ class LogsheetController extends Controller
                 $list[$int]->link = $link2;
                 $int++;
             }
+						
+
             $sequence = $this->master_model->getMaster('sequence', $this->admin_id);
             $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
             $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);

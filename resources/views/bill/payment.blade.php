@@ -50,7 +50,7 @@
                     <select name="source_id" required class="form-control" data-placeholder="Select...">
                         <option value="">Select source</option>
                         @foreach ($paymentsource_list as $item)
-                        <option @if($item->paymentsource_id==2) selected @endif value="{{$item->paymentsource_id}}">{{$item->name}}</option>
+                        <option @if($item->paymentsource_id==6) selected @endif value="{{$item->paymentsource_id}}">{{$item->name}}</option>
                         @endforeach
                     </select>
                 </div>

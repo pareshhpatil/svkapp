@@ -73,7 +73,7 @@
 										@endif
 										@if($company->company_id==34)
 											@php
-											$po = 4200297686;
+											$po='7000013922 & 7000022738';
 											@endphp
 										@endif 
 										

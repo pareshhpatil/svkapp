@@ -52,6 +52,10 @@ Route::get('/admin/{master}/delete/{id}', 'MasterController@masterdelete');
 
 #Employee
 Route::post('/admin/employee/save', 'MasterController@employeesave');
+Route::post('/admin/location/save', 'MasterController@locationsave');
+Route::post('/admin/zone/save', 'MasterController@zonesave');
+
+Route::post('/admin/zone/updatesave', 'MasterController@zoneupdatesave');
 Route::post('/admin/employee/updatesave', 'MasterController@employeeupdatesave');
 
 Route::get('/admin/employee/absent', 'EmployeeController@absent');
@@ -96,9 +100,14 @@ Route::any('/admin/logsheet', 'LogsheetController@logsheet');
 Route::any('/admin/logsheet/getlogsheet', 'LogsheetController@getlogsheet');
 Route::get('/admin/mis/createmis', 'MisController@create');
 Route::any('/admin/mis/listmis', 'MisController@mislist');
+Route::any('/admin/mis/listmiscompany', 'MisController@listmiscompany');
 Route::post('/admin/mis/confirmmis', 'MisController@confirmmis');
+Route::post('/admin/mis/confirmcompanymis', 'MisController@confirmcompanymis');
 Route::post('/admin/mis/savemis', 'MisController@savemis');
+Route::post('/admin/mis/savecompanymis', 'MisController@savecompanymis');
 Route::get('/admin/mis/deletemis/{id}', 'MisController@deletemis');
+
+Route::any('/admin/mis/createcompanymis', 'MisController@createcompanymis');
 
 Route::get('/admin/mis/updatekm/{from_date}/{to_date}', 'MisController@updatekm');
 
@@ -124,8 +133,6 @@ Route::get('/admin/bill', 'BillController@bill');
 Route::get('/admin/bill/new', 'BillController@billcreate');
 Route::post('/admin/bill/save', 'BillController@billsave');
 Route::post('/admin/bill/paymentsave', 'BillController@paymentsave');
-Route::post('/admin/invoice/paymentsave', 'BillController@invoicepaymentsave');
-Route::get('/admin/invoice/payment/{invoiceid}', 'BillController@invoicepayment');
 Route::get('/admin/payment/{type}/{id}', 'BillController@billpayment');
 Route::get('/admin/transaction', 'BillController@transaction');
 Route::get('/admin/request', 'BillController@request');

@@ -104,6 +104,60 @@ class Master extends Model
         return $id;
     }
 
+
+
+    public function saveZone($request, $admin_id, $user_id)
+    {
+        $id = DB::table('zone')->insertGetId(
+            [
+                'admin_id' => $admin_id,
+                'company_id' => $request->company_id,
+                'zone' => $request->zone,
+                'from' => $request->from,
+                'to' => $request->to,
+                'car_type' => $request->car_type,
+                'svk_km' => $request->svk_km,
+                'vendor_km' => $request->vendor_km,
+                'admin_km' => $request->admin_km,
+                'company_km' => $request->company_km,
+                'svk_amount' => $request->svk_amount,
+                'vendor_amount' => $request->vendor_amount,
+                'admin_amount' => $request->admin_amount,
+                'company_amount' => $request->company_amount,
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+    
+
+    public function updateZone($request, $admin_id, $user_id)
+    {
+        DB::table('zone')
+            ->where('zone_id', $request->zone_id)
+            ->update(
+                [
+                    'admin_id' => $admin_id,
+                    'company_id' => $request->company_id,
+                    'zone' => $request->zone,
+                    'from' => $request->from,
+                    'to' => $request->to,
+                    'car_type' => $request->car_type,
+                    'svk_km' => $request->svk_km,
+                    'vendor_km' => $request->vendor_km,
+                    'admin_km' => $request->admin_km,
+                    'company_km' => $request->company_km,
+                    'svk_amount' => $request->svk_amount,
+                    'vendor_amount' => $request->vendor_amount,
+                    'admin_amount' => $request->admin_amount,
+                    'company_amount' => $request->company_amount,
+                    'last_update_by' => $user_id
+                ]
+            );
+    }
+
     public function saveFormEmployee($request, $code, $name, $email, $mobile, $pan, $address, $adharcard, $license, $image_file, $payment, $join_date, $payment_day, $account_no, $account_holder_name, $ifsc_code, $bank_name, $account_type, $admin_id, $user_id)
     {
         $photo = $this->uploadImage($request);
@@ -210,6 +264,21 @@ class Master extends Model
                 'mobile' => $mobile,
                 'gst_number' => $gst_number,
                 'address' => $address,
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+    public function saveLocation($name, $company_id, $admin_id, $user_id)
+    {
+        $id = DB::table('location')->insertGetId(
+            [
+                'admin_id' => $admin_id,
+                'company_id' => $company_id,
+                'name' => $name,
                 'created_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s'),
                 'last_update_by' => $user_id
@@ -378,5 +447,18 @@ class Master extends Model
             $current_balance = $current_balance + $amount;
         }
         $this->updateTableColumn('employee', 'balance', $current_balance, 'employee_id', $employee_id, 0);
+    }
+
+
+    public function getZoneList($admin_id)
+    {
+        $retObj = DB::table('zone as z')
+            ->join('company as c', 'c.company_id', '=', 'z.company_id')
+            ->select(DB::raw("z.*,c.name as company_name"))
+            ->where('z.is_active', 1)
+            ->where('z.admin_id', $admin_id)
+            ->orderBy('z.zone_id', 'desc')
+            ->get();
+        return $retObj;
     }
 }

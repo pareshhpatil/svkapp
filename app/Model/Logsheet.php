@@ -41,7 +41,6 @@ class Logsheet extends Model {
                     'type' => $type,
                     'status' => $status,
                     'created_by' => $user_id,
-                    'created_date' => date('Y-m-d H:i:s'),
                     'last_update_by' => $user_id
                 ]
         );
@@ -199,6 +198,7 @@ class Logsheet extends Model {
                 ->where('vehicle_id', $vehicle_id)
                 ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), date('Y-m', strtotime($date)))
                 ->orderBy('date', 'asc')
+				->orderBy('start_km', 'asc')
                 ->get();
         return $retObj;
     }
@@ -211,6 +211,7 @@ class Logsheet extends Model {
                 ->where('vehicle_id', $vehicle_id)
                 ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m'))"), $month)
                 ->orderBy('date', 'asc')
+				->orderBy('start_km', 'asc')
                 ->get();
         return $retObj;
     }

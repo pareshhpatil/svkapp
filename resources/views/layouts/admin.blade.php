@@ -124,6 +124,10 @@
                                     <a href="/admin/mis/listmis">
                                         <i class="fa fa-circle-o"></i> List</a>
                                 </li>
+                                <li>
+                                    <a href="/admin/mis/listmiscompany">
+                                        <i class="fa fa-circle-o"></i> Company MIS</a>
+                                </li>
 
 
 
@@ -152,6 +156,14 @@
                                 <li>
                                     <a href="/admin/company/list">
                                         <i class="fa fa-circle-o"></i> Company</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/zone/list">
+                                        <i class="fa fa-circle-o"></i> Zone</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/location/list">
+                                        <i class="fa fa-circle-o"></i> Location</a>
                                 </li>
                                 <li>
                                     <a href="/admin/paymentsource/list">
@@ -362,10 +374,12 @@
         <script src="{{ asset('bower_components/select2/dist/js/select2.full.min.js') }}"></script>
         <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
         <script src="{{ asset('dist/js/demo.js') }}"></script>
-        <script src="{{ asset('dist/js/custom.js?version=30') }}"></script>
+        <script src="{{ asset('dist/js/custom.js?version=33') }}"></script>
         <script>
                             $(function () {
-                                $('.select2').select2()
+                                $('.select2').select2({
+								  tags: true
+								})
                                 //Date picker
                                 $('.date-picker').datepicker({
                                     format: 'dd-mm-yyyy',

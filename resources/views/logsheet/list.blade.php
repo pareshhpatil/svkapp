@@ -42,7 +42,6 @@
                                 <a target="_BLANK" href="/admin/logsheet/printbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-file-word-o"></i></a>
                                 <a target="_BLANK" href="/admin/logsheet/downloadbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-download"></i></a>
                                 <a href="/admin/logsheet/generatebill/{{$item->link}}" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="/admin/invoice/payment/{{$item->link}}" title="Bill payment" class="btn btn-xs btn-success"><i class="fa fa-inr"></i></a>
                             </td>
                         </tr>
                         @endforeach
