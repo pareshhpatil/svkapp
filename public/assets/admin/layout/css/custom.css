@@ -44,13 +44,13 @@
 
 /* assign hover and color to top bar drop down */
 .page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-toggle:hover {
-    background-color: #007B8E;
+    background-color: #ededed;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown .blank:hover {
     background-color: #FFFFFF;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown.open .dropdown-toggle {
-    background-color: #007B8E;
+    background-color: #ededed;
 }
 
 .page-header.navbar .top-menu .navbar-nav > li.dropdown.open .white {
@@ -830,7 +830,7 @@ table.dataTable thead th, table.dataTable thead td {
 
 /* Handle on hover */
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #18aebf; 
+    background: #3E4AA3; 
 }
 
 .custom-error{
@@ -855,7 +855,7 @@ table.dataTable thead th, table.dataTable thead td {
 }
 
 .dashboard-stat.blue-steel{
-    background-color: #18AEBF;
+    background-color: #3E4AA3;
 }
 
 .dashboard-stat.blue-dark{
@@ -878,7 +878,7 @@ a {
     background-color: #F99B36;
 }
 .label-success {
-    background-color: #18AEBF;
+    background-color: #3E4AA3;
 }
 
 .font-red-sunglo {
@@ -886,7 +886,7 @@ a {
 }
 
 .font-green-sharp {
-    color: #18AEBF !important;
+    color: #3E4AA3 !important;
 }
 .ml-0{
     margin-left: 0px !important;
@@ -894,8 +894,8 @@ a {
 
 .alert-success {
     background-color: #f3fbfe;
-    border-color: #18aebf;
-    color: #18aebf;
+    border-color: #3E4AA3;
+    color: #3E4AA3;
 }
 
 .alert-info {
@@ -939,11 +939,11 @@ a {
 }
 
 .blue.btn{
-    background-color: #18aebf;
+    background-color: #3E4AA3;
 }
 
 .blue.btn:hover, .blue.btn:focus, .blue.btn:active, .blue.btn.active {
-    background-color: #008B9C;
+    background-color: #707ee0;
 }
 
 .blue-madison.btn{
@@ -951,11 +951,11 @@ a {
 }
 
 .blue-madison.btn:hover, .blue-madison.btn:focus, .blue-madison.btn:active, .blue-madison.btn.active {
-    background-color: #37818F;
+    background-color: #707ee0;
 }
 
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary {
-    background: #18aebf;
+    background: #3E4AA3;
 }
 
 .portlet.box.blue {
@@ -965,13 +965,13 @@ a {
 
 .note.note-success{
     background-color: #f3fbfe;
-    border-color: #18aebf;
-    color: #18aebf;
+    border-color: #3E4AA3;
+    color: #3E4AA3;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #18aebf;
+    background-color: #3E4AA3;
 }
 
 .btn-primary:hover{
@@ -1002,7 +1002,7 @@ a {
 
 .btn-blue {
     color: #fff;
-    background-color: #18aebf;
+    background-color: #3E4AA3;
 }
 
 .btn-blue:hover{
@@ -1014,7 +1014,7 @@ a {
 }
 
 .font-blue {
-    color: #18aebf !important;
+    color: #3E4AA3 !important;
 }
 
 
@@ -1077,16 +1077,16 @@ select.input-sm {
     height: 50px !important;
     padding-top: 0px !important;
     padding-left: 15px !important;
-    border: 2px solid #18aebf!important;
+    border: 2px solid #3E4AA3!important;
 }
 
 .time-complete{
-    background-color: #18aebf!important;
+    background-color: #3E4AA3!important;
     color: #ffffff!important;
 }
 .time-pending{
     background-color: #ffffff!important;
-    color: #18aebf!important;
+    color: #3E4AA3!important;
 }
 
 .timeline-body {
@@ -1224,11 +1224,11 @@ select.input-sm {
 
 
 .page-breadcrumb .ms-hover:hover > a {
-    color: #18AEBF;
+    color: #3E4AA3;
 }
 
 .page-breadcrumb .ms-hover:hover {
-    color: #18AEBF;
+    color: #3E4AA3;
 }
 
 .ms-hover .fa-home{
@@ -1241,9 +1241,35 @@ select.input-sm {
 .tax-note {
     font-size: 0.9rem !important;
 }
-/* .page-container{
+.page-container{
     background-color: rgb(42, 42, 58);
 }
 .page-sidebar{
     background-color: rgb(42, 42, 58) !important;
-} */
+}
+
+.page-sidebar-menu .title{
+    color:#999fa7;
+}
+
+.page-sidebar-menu .active .title{
+    color: #fff !important;
+}
+.page-sidebar-menu .active .fa{
+    color: #fff !important;
+}
+
+.page-sidebar-menu .active{
+    background:  linear-gradient(90deg,rgba(78,80,121,.964321),rgba(49,49,70,.947514)) !important;    
+    border-radius: 0 4px 4px 0 !important; 
+    border-left: 4px solid #8589dc !important; 
+    background-color:rgb(42, 42, 58) !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a {
+    background:rgb(42, 42, 58) !important;
+}
+
+.page-sidebar-menu a:hover { 
+    background-color:rgb(42, 42, 58) !important;
+}

@@ -1,7 +1,7 @@
 <div class="page-sidebar-wrapper">
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <div class="page-sidebar navbar-collapse collapse">
+    <div class="page-sidebar navbar-collapse collapse" style="margin-top: -66px;">
         <!-- BEGIN SIDEBAR MENU -->
         <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
         <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
@@ -11,7 +11,10 @@
         <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
         <ul style="padding-top:10px;" class="page-sidebar-menu <?php echo $this->language; ?>" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
             <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-            
+            <a itemprop="url" id="logo-wrapper-default" title="Swipez" href="<?php echo $this->server_name; ?>" style="margin-left:20px;" >
+                <img style="max-height: 60px;" id="logo-default" class="logo-default hidden-xs" src="<?php echo '/assets/admin/layout/img/logo.png?v=5'; ?>" 
+                    alt="Briq" title="Briq">
+            </a>
             <?php foreach ($this->menus[0] as $row) { ?>
             <li class="<?php if(in_array($row['id'], $this->selectedMenu)){ echo 'active open';} ?>">
                     <a href="<?php if($row['link']!=''){ echo $row['link']; }else{ echo 'javascript:;';}  ?>">
@@ -60,10 +63,10 @@
                 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
                 <div class="sidebar-toggler">
                 <a href="javascript:;">
-                    <i id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px" 
-                    onMouseOver="this.style.color='#0f9dae'"
-                    onMouseOut="this.style.color='#275770'"
-                    class="sidebartoggle fa fa-chevron-circle-left"></i>
+                    <i id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px;color: rgb(99, 102, 158);" 
+                    onMouseOver="this.style.color='rgb(99, 102, 158)'"
+                    onMouseOut="this.style.color='rgb(99, 102, 158)'"
+                    class="sidebartoggle fa fa-chevron-circle-left fa-inverse"></i>
                 </a>
                 </div>
                 <!-- END SIDEBAR TOGGLER BUTTON -->

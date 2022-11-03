@@ -1,9 +1,12 @@
 <div class="page-sidebar-wrapper">
-    <div class="page-sidebar navbar-collapse collapse">
+    <div class="page-sidebar navbar-collapse collapse" style="margin-top: -66px;">
         <ul style="padding-top:10px;" class="page-sidebar-menu {{$language}}" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+            <a itemprop="url" id="logo-wrapper-default" title="Swipez" href="{{$server_name}}"  style="margin-left:20px;">
+                <img style="max-height: 60px;" id="logo-default"class="logo-default hidden-xs" src="/assets/admin/layout/img/logo.png?v=6" alt="Briq" title="Briq">
+            </a>
             @isset($menus[0])
             @foreach ($menus[0] as $row)
-            <li class="@if(in_array($row['id'], $selectedMenu)) active open @endif">
+            <li class="menu-items @if(in_array($row['id'], $selectedMenu)) active open @endif">
                 <a href="@if ($row['link']!=''){{$row['link']}} @else javascript:; @endif">
                     <i class="{{$row['icon']}}"></i>
                     @if($row['id']==170)<span class="badge badge-success">New</span>@endif
@@ -13,7 +16,7 @@
                 @isset($menus[$row['id']])
                 <ul class="sub-menu">
                     @foreach ($menus[$row['id']] as $row2)
-                    <li class="@if(in_array($row2['id'], $selectedMenu)) active open @endif">
+                    <li class="menu-items @if(in_array($row2['id'], $selectedMenu)) active open @endif">
                         <a href="@if ($row2['link']!=''){{$row2['link']}} @else javascript:; @endif">
                             @if ($row2['icon']!='')<i class="{{$row2['icon']}}"></i> @endif
                             <span class="title">{{$row2['title']}}</span>
@@ -43,11 +46,7 @@
                 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
                 <div class="sidebar-toggler">
                     <a href="javascript:;">
-                        <i id="side-bar-toggle" 
-                        style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px" 
-                        onMouseOver="this.style.color='#0f9dae'" 
-                        onMouseOut="this.style.color='#275770'"
-                         class="sidebartoggle fa fa-chevron-circle-left"></i>
+                        <i id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px" onMouseOver="this.style.color='rgb(99, 102, 158)'" onMouseOut="this.style.color='rgb(99, 102, 158)'" class="sidebartoggle fa fa-chevron-circle-left"></i>
                     </a>
                 </div>
                 <!-- END SIDEBAR TOGGLER BUTTON -->

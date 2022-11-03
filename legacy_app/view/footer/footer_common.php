@@ -8,14 +8,14 @@
 ?>
 -->
 <?php if ($this->hide_footer != 1) { ?>
-    <div class="page-footer">
+    <!-- <div class="page-footer">
         <div class="page-footer-inner">
             Powered by Swipez &copy; <?php echo $this->current_year; ?> OPUS Net Pvt. Handmade in Pune.
         </div>
         <div class="scroll-to-top hidden-xs">
             <i class="icon-arrow-up"></i>
         </div>
-    </div>
+    </div> -->
 <?php } ?>
 <?php if ($this->disable_talk != 1 && $this->env == 'PROD') { ?>
     <!-- BEGIN GROOVE WIDGET CODE -->

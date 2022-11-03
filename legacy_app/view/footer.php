@@ -1,12 +1,12 @@
 <!-- BEGIN FOOTER -->
-<div class="page-footer">
+<!-- <div class="page-footer">
     <div class="page-footer-inner">
         Powered by Swipez &copy; <?php echo $this->current_year; ?> OPUS Net Pvt. Handmade in Pune.
     </div>
     <div class="scroll-to-top hidden-xs>
         <i class="icon-arrow-up"></i>
     </div>
-</div>
+</div> -->
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->

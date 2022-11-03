@@ -368,7 +368,7 @@
                             <div class="row" id="requestDemobody">
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <label>Our onboarding experts are ready to setup <?php echo $this->company_name; ?>'s
-                                        account in Swipez. Schedule a <span style="color: #18AEBF;">FREE</span>
+                                        account in Swipez. Schedule a <span style="color: #707ee0;">FREE</span>
                                         online session with our expert and setup your companies Swipez account.
                                         It takes less than 15 minutes 🙌</label>
                                 </div>

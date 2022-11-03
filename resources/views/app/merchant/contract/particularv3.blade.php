@@ -96,7 +96,7 @@
                                                 </li>
                                             </template>
                                             <li class="">
-                                                <a class="" @click="addGroup(field);" href="#" style="color: #18AEBF;"> Add new</a>
+                                                <a class="" @click="addGroup(field);" href="#" style="color: #707ee0;"> Add new</a>
                                             </li>
 
                                         </ul>

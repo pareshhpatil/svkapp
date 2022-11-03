@@ -373,7 +373,7 @@ var Layout = function () {
     // Hanles sidebar toggler
     var handleSidebarToggler = function () {
         var body = $('body');
-        document.getElementById("side-bar-toggle").style.color="#275770";
+        document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
         if ($.cookie && $.cookie('sidebar_closed') === '1' && Swipez.getViewPort().width >= resBreakpointMd) {
             $('body').addClass('page-sidebar-closed');
             $('.page-sidebar-menu').addClass('page-sidebar-menu-closed');
@@ -381,7 +381,10 @@ var Layout = function () {
             document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-right');
             document.getElementById("side-bar-toggle").style.marginLeft="26px";
             document.getElementById("side-bar-toggle").style.width="22px";
-            document.getElementById("side-bar-toggle").style.color="#275770";
+            document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
+            document.getElementById("logo-default").style.maxHeight="40px";
+            document.getElementById("logo-default").style.marginBottom="10px";
+            document.getElementById("logo-wrapper-default").style.marginLeft="2px";
         }
 
         // handle sidebar show/hide
@@ -397,6 +400,10 @@ var Layout = function () {
                 document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-left');
                 document.getElementById("side-bar-toggle").style.marginLeft="32px";
                 document.getElementById("side-bar-toggle").style.width="32px";
+                document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
+                document.getElementById("logo-default").style.maxHeight="60px";
+                document.getElementById("logo-default").style.marginBottom="10px";
+                document.getElementById("logo-wrapper-default").style.marginLeft="20px";
                 if ($.cookie) {
                     $.cookie('sidebar_closed', '0');
                 }
@@ -407,6 +414,10 @@ var Layout = function () {
                 document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-right');
                 document.getElementById("side-bar-toggle").style.marginLeft="26px";
                 document.getElementById("side-bar-toggle").style.width="22px";
+                document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
+                document.getElementById("logo-default").style.maxHeight="40px";
+                document.getElementById("logo-default").style.marginBottom="10px";
+                document.getElementById("logo-wrapper-default").style.marginLeft="2px";
                 if (body.hasClass("page-sidebar-fixed")) {
                     sidebarMenu.trigger("mouseleave");
                 }
