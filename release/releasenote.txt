@@ -1,0 +1,26 @@
+#Add new column setting in  invoice_template table
+ALTER TABLE `swipez`.`invoice_template` 
+ADD COLUMN `setting` text  null AFTER `footer_note`
+
+#changed datatype date to datetime in invoice_travel_particular/staging_invoice_travel_particular table
+
+#changed store procedure of save_travel_particular added descripion & information column 
+
+#added 2 column  description & information in invoice_travel_particular/staging_invoice_travel_particular table 
+  -ALTER TABLE `swipez`.`invoice_travel_particular` 
+   ADD COLUMN `information` text NULL AFTER `description`;
+
+#added seq column in invoice_template_mandatory_fields table
+  - added 2 row in all section column_name (description & information)
+
+#ALTER TABLE `swipez`.`invoice_template_mandatory_fields` 
+ADD COLUMN `seq` INT NOT NULL DEFAULT '0' AFTER `is_mandatory`;
+
+# added setting column in get_invoice_details store procedure
+
+#added setting column in statging_invoice_details
+
+#Ser. ch. to Service charge  Table: invoice_template_mandatory_fields
+ Update invoice_template_mandatory_fields set column_name='Service charge' where column_name='Ser. ch.'
+ 
+ 

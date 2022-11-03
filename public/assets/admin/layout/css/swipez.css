@@ -1,0 +1,7 @@
+.banner-main{height: 300px;position: absolute;}
+.banner-container{text-align: center;}
+.logo-main{margin-top: 200px;max-width: 300px;}
+.logo-container{width: 200px; height: 130px;}
+.logo-select{max-width: 200px; max-height: 150px;}
+.eventtitle{position: absolute;margin-top: 300px;}
+.title{background: transparent;border: none; width: 100% !important;}

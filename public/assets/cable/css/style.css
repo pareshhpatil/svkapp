@@ -1,0 +1,970 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    color: #000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    box-sizing: border-box;
+}
+
+p {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 400;
+    margin: 0 0 15px;
+    color: #333;
+}
+
+a {
+    color: #000;
+    text-decoration: none !important;
+    transition: ease-in-out 0.3s;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 36px;
+    line-height: 48px;
+    margin-bottom: 25px;
+}
+
+img {
+    max-width: 100%;
+}
+
+header,
+section,
+footer {
+    width: 100%;
+    float: left;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 15px;
+}
+
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+}
+
+.btn {
+    transition: ease-in-out 0.5s;
+}
+
+.mainHeader {
+    background: #fff;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.myNavBar {
+    margin: 0px;
+    border-radius: 0px;
+    background-color: transparent;
+    border: none;
+    padding: 15px 0px;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 15px 20px;
+}
+
+.navbar-inverse .navbar-nav>li>a:focus,
+.navbar-inverse .navbar-nav>li>a:hover {
+    color: #2c5294;
+}
+
+.dropdownMenu {
+    position: relative;
+}
+
+.dropdownMenu:hover .subMenu {
+    display: block;
+}
+
+.subMenu {
+    display: none;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 99;
+    border-radius: 3px;
+    box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.subMenu li a {
+    padding: 10px 20px;
+    display: block;
+    white-space: nowrap;
+}
+
+.subMenu li a i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.subMenu li a:hover {
+    background: #2c5294;
+    color: #fff;
+}
+
+.navbar-inverse .navbar-nav>.active>a,
+.navbar-inverse .navbar-nav>.active>a:focus,
+.navbar-inverse .navbar-nav>.active>a:hover,
+.navbar-inverse .navbar-nav>li>a:hover {
+    color: #0c1934;
+    background-color: transparent;
+}
+
+.navbar-brand {
+    height: auto;
+    padding: 0px 15px;
+    color: #0db8de !important;
+    font-size: 29px;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.navbar-brand Span {
+    color: #fd7100;
+}
+
+
+/*--------------------------Login Pages CSS----------------------------*/
+.loginPage {
+    height: 100Vh;
+    background: #2c5294;
+}
+
+
+.colTable {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.colTable .colCell {
+    display: table-cell;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.vh100 {
+    height: 100vh
+}
+
+.login_div {
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px 30px 10px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.formLogoTop {
+    position: absolute;
+    padding: 15px 20px 5px;
+    bottom: 100%;
+    background: #fff;
+    border-radius: 5px 5px 0px 0px;
+    transform: translate(-50%, 0%);
+    width: 160px;
+    left: 50%;
+}
+
+.formBtn {
+    width: 100%;
+    max-width: 200px;
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    background: #2c5294;
+    border-radius: 3px;
+    font-size: 20px;
+    text-transform: capitalize;
+    color: #fff;
+    margin-top: 15px;
+}
+
+.login_div .inputFild {
+    text-align: center
+}
+
+.form-headline {
+    margin-top: 0;
+}
+
+.inputFild {
+    border: 1px #999 solid;
+    border-radius: 5px;
+}
+
+.loginImg {
+    width: 100%;
+    max-width: 300px;
+    margin: 20px auto;
+}
+
+/*--------------------------Login Pages CSS End----------------------------*/
+
+/*--------------------------SetUp Box Pages CSS----------------------------*/
+.bannerSection {}
+
+.bannerSection .carousel {
+    width: 100%;
+}
+
+.bannerSection .carousel .item {
+    /*height: 500px;*/
+    overflow: hidden;
+}
+
+.bannerSection .carousel .item img {
+    width: 100%;
+}
+
+.bannerSection .carousel-indicators {
+    margin-bottom: 0;
+}
+
+.bannerSection .carousel-indicators li {
+    background: #2c5294;
+}
+
+
+.whiteBox {
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.ptb40 {
+    padding-top: 40px;
+    padding-bottom: 10px;
+    min-height: 250px
+}
+.ptb80 {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    min-height: 550px
+}
+
+.setupBoxInfo {
+    margin-bottom: 20px;
+}
+
+.setupBoxInfo .amtBox {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.setupBoxInfo .subInfo {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.iconBox {
+    float: left;
+    width: 70px;
+    margin-right: 20px;
+}
+
+.rechargeNow {
+    width: 100%;
+    max-width: 650px;
+    margin: 30px auto;
+    position: relative;
+    border: 1px #ddd solid;
+    border-radius: 75px;
+    overflow: hidden;
+}
+
+.rechargeNow input {
+    width: 100%;
+    padding: 20px 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.rechargeNow button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    border: none;
+    min-width: 130px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #fff;
+    background: #2c5294;
+}
+
+footer {
+    padding: 50px 0px;
+    background: #203d6f;
+}
+
+.fLeftLinks {
+    text-align: right;
+    margin: 0;
+}
+
+.fLeftLinks li {
+    display: inline-block
+}
+
+.fLeftLinks li a {
+    display: block;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.fLeftLinks li a:hover {
+    color: #3f6dbc;
+}
+
+.fLogo {
+    max-width: 140px;
+}
+
+/*--------------------------SetUp Box Pages CSS End----------------------------*/
+
+
+.pageTitleSection {
+
+    background: #00afbd;
+}
+
+.pageTitleSection h1 {
+    text-align: center;
+    color: #fff;
+}
+
+
+.btnBlue {
+    padding: 15px 20px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #2c5294;
+    border: none;
+    min-width: 130px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    overflow: hidden;
+}
+
+.btnBlue:hover {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #2c5294;
+    border: none;
+    min-width: 130px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 3px;
+}
+
+
+.hvr-bounce-to-right {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+}
+
+.hvr-bounce-to-right:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #2098D1;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+.hvr-bounce-to-right:hover,
+.hvr-bounce-to-right:focus,
+.hvr-bounce-to-right:active {
+    color: #fff;
+}
+
+.hvr-bounce-to-right:hover:before,
+.hvr-bounce-to-right:focus:before,
+.hvr-bounce-to-right:active:before {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+    transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+}
+
+.mt30 {
+    margin-top: 30px;
+}
+
+.planBox {
+    width: 100%;
+    min-height: 150px;
+    padding: 30px 10px;
+    text-align: center;
+    border: 1px #eee solid;
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 25px;
+    transition: ease-in-out 0.5s;
+}
+
+.planBox:hover {
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1)
+}
+
+.planBox h3 {
+    text-transform: capitalize;
+    margin: 0px 0px 15px
+}
+
+.planBox h4 {
+    font-size: 26px;
+}
+
+.planBox h4 span {
+    font-size: 18px;
+}
+
+.planBox .btnInfo {
+    color: #333;
+    background: none;
+    border: none;
+    margin-left: 5px;
+}
+
+.planBox .btnInfo:hover {
+    color: #2c5294;
+}
+
+.planBox .btnInfo:focus {
+    outline: none;
+}
+
+.planBox h5 {
+    font-size: 16px;
+    margin: 20px 0px;
+}
+
+
+.channelLogoList {
+    width: 100%;
+    float: left;
+}
+
+.channelLogoList li {
+    width: 20%;
+    float: left;
+    text-align: center;
+    margin: 8px 0px;
+    min-height: 95px;
+}
+
+.channelLogoBox {
+    width: 100%;
+    height: 80px;
+}
+
+.channelLogoBox img {
+    height: inherit;
+    max-width: 80%;
+    object-fit: contain;
+}
+
+.channalName {
+    font-size: 12px;
+    font-weight: 500;
+    margin: 5px 0px;
+}
+
+.panelGroup {}
+
+.panelGroup .panel-heading {
+    padding: 0;
+}
+
+.panelGroup .panel-title {}
+
+.panelGroup .panel-title a {
+    display: block;
+    padding: 15px;
+}
+
+.panelGroup .panel-title a>i {
+    float: right;
+}
+
+.myModalBox .modal-content {
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.modal-content {
+    border-radius: 0;
+    border: none;
+    position: relative;
+}
+
+.myModalBox .modal-header {
+    border-bottom: 1px solid #e5e5e5;
+    position: fixed;
+    width: 100%;
+    background: #fff;
+    z-index: 1;
+}
+
+.myModalBox .modal-body {
+    top: 60px;
+}
+
+.modal-body p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+
+
+.modal-dialog {
+    margin-top: 10%;
+}
+
+
+.editBtn {
+    width: 45px;
+    height: 45px;
+    line-height: 40px;
+    text-align: center;
+    display: inline-block;
+    background: #2c5294;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 0px 0px 0px 50px;
+    padding-left: 12px;
+}
+
+.editBtn:hover {
+    background: #2098D1;
+    color: #fff;
+}
+
+.addBtn {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border: 2px #2c5294 solid;
+    border-radius: 50%;
+    color: #2c5294;
+    line-height: 50px;
+}
+
+.addBtn:hover {
+    color: #fff;
+    background: #2c5294;
+}
+
+
+.overlapHeading {
+    color: #979797;
+    height: 2px;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    position: relative;
+    background: #eaeaea;
+    letter-spacing: 1.1px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.overlapHeading span {
+    position: absolute;
+    left: 0;
+    top: -8px;
+    padding-right: 15px;
+    background: #fff;
+}
+
+.subNote {
+    display: block;
+}
+
+.selectPriceBox {
+    max-width: 280px;
+    margin-top: 20px;
+    border-radius: 3px;
+    font-size: 16px;
+    font-weight: 500;
+    -webkit-appearance: none;
+    background: url(../images/arrow-down.png) right 15px center no-repeat;
+    border-color: #eee;
+}
+
+.packageListBox {}
+
+.packageListBox .panelGroup {
+    margin-bottom: 10px;
+}
+
+.channelListSelect {
+    text-align: left
+}
+
+.channelListSelect li {
+    width: 100%;
+    text-align: left;
+    min-height: auto;
+    margin: 10px 0px;
+    padding-bottom: 15px;
+    border-bottom: 1px #eee solid;
+}
+
+.pakg .channelListSelect li {
+    width: 25%;
+    text-align: left;
+    min-height: auto;
+    margin: 10px 0px;
+    padding-bottom: 15px;
+    border-bottom: 1px #eee solid;
+}
+
+.pakg .channelListSelect li:last-child {
+    padding-bottom: 15px;
+    border-bottom: 1px #eee solid;
+}
+
+.channelListSelect li:last-child {
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+.channelListSelect li select {
+    border-color: #eee;
+    font-size: 16px;
+    font-weight: 500;
+    -webkit-appearance: none;
+    background: url(../images/arrow-down.png) right 15px center no-repeat;
+}
+
+.channelListSelect .channalName {
+    float: left;
+    font-size: 15px;
+    margin: 8px 0px;
+}
+
+.channelListSelect .channelLogoBox {
+    width: 80px;
+    height: 45px;
+    float: left;
+    text-align: center;
+}
+
+.channelListSelect .channelLogoBox {
+    width: 80px;
+    height: 45px;
+    float: left;
+    text-align: center;
+}
+
+.searchBoxTop {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    float: right;
+}
+
+.searchBoxTop input {
+    padding-right: 140px;
+}
+
+.searchBoxTop .btnBlue {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 11px;
+    border-radius: 0;
+}
+
+
+.btnGroup {
+    margin-top: 30px;
+}
+
+.btnGroup .btnBlue {
+    margin-right: 10px;
+}
+
+.scrolloff {
+    pointer-events: none;
+}
+
+.myDiv {
+    display: none;
+}
+
+#showOne {
+    color: red;
+    border: 1px solid red;
+    padding: 10px;
+}
+
+#showTwo {
+    color: green;
+    border: 1px solid green;
+    padding: 10px;
+}
+
+#showThree {
+    color: blue;
+    border: 1px solid blue;
+    padding: 10px;
+}
+
+
+
+
+.radioTabs {
+    position: relative;
+    width: 33.33%;
+    float: left;
+}
+
+.desc {
+    width: 100%;
+    float: left;
+}
+
+.radioTabs input[type=radio] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.radioTabs label {
+    display: block;
+    position: relative;
+    font-weight: 300;
+    font-size: 1.35em;
+    padding: 25px 25px 25px 80px;
+    margin: 10px auto;
+    height: auto;
+    z-index: 9;
+    cursor: pointer;
+    -webkit-transition: all 0.25s linear;
+}
+
+.radioTabs:hover label {
+    color: #ccc;
+}
+
+.radioTabs .check {
+    display: block;
+    position: absolute;
+    border: 5px solid #AAAAAA;
+    border-radius: 100%;
+    height: 25px;
+    width: 25px;
+    top: 38px;
+    left: 20px;
+    z-index: 5;
+    transition: border .25s linear;
+    -webkit-transition: border .25s linear;
+}
+
+.radioTabs:hover .check {
+    border: 5px solid #ccc;
+}
+
+.radioTabs .check::before {
+    display: block;
+    position: absolute;
+    content: '';
+    border-radius: 100%;
+    height: 11px;
+    width: 11px;
+    top: 2px;
+    left: 2px;
+    margin: auto;
+    transition: background 0.25s linear;
+    -webkit-transition: background 0.25s linear;
+}
+
+.radioTabs input[type=radio]:checked~.check {
+    border: 5px solid #2c5294;
+}
+
+.radioTabs input[type=radio]:checked~.check::before {
+    background: #2c5294;
+}
+
+.radioTabs input[type=radio]:checked~label {
+    color: #2c5294;
+}
+
+.actionDel {
+    text-align: center;
+}
+
+.searchWrap {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+.setupboxTable,
+.setupboxRow,
+.setupboxTable2 {
+    width: 100%;
+    float: left;
+}
+
+.setupboxRow {
+    padding: 15px;
+    border-bottom: solid 1px #f1f1f1
+}
+
+.setup80 {
+    width: 80%;
+    float: left;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 52px;
+}
+
+.setup20 {
+    width: 20%;
+    float: left;
+    text-align: right;
+}
+
+.setupboxRow:last-child {
+    border: none;
+}
+
+.setupboxRow2 {
+    padding: 15px 0px;
+    border-bottom: solid 1px #f1f1f1
+}
+
+.setupRight {
+    text-align: right;
+}
+
+.setupBoxTitle {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 52px;
+}
+
+.checkBox {
+    height: 21px;
+}
+
+.deleteBtn {
+    position: relative;
+    top: -34px;
+    float: right;
+    margin-right: 51px;
+    margin-bottom: -80px;
+}
+
+.deleteBtn a img {
+    width: 57% !important;
+    height: auto;
+}
+
+span.subInfoDays {
+    font-weight: bold;
+}
+
+span.price-setup {
+    font-weight: bold;
+}
+
+
+/*-- top sticky section--*/
+div.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    padding: 50px;
+    font-size: 20px;
+    z-index: 999;
+}
+div.sticky-bottom {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    font-size: 20px;
+    z-index: 999;
+}
+span.total {
+    font-size: 18px;
+    border-bottom: 1px solid;
+}
+
+.pakageCount {text-align:center;margin-right:0px;margin-left:0px;}
+
+a.btnBlue.hvr-bounce-to-right.pull-right { top: 25px;}

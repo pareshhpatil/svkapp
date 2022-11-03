@@ -1,0 +1,20 @@
+$bg-color: #FFFFFF;
+$brand-primary:#275770;
+
+body {
+    background: $bg-color;
+}
+
+a {
+    color: $brand-primary;
+}
+.btn-primary{
+    background:$brand-primary;
+    border-color:$brand-primary;
+}
+
+.btn-primary:hover{
+    background-color: $brand-primary;
+    border-color:$brand-primary;
+}
+

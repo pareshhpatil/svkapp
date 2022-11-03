@@ -1,0 +1,12 @@
+<configuration xmlns="http://logging.apache.org/log4php/">
+    <appender name="myFileAppender" class="LoggerAppenderFile">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%date{Y-m-d H:i:s,u} [%pid] [%level] [%logger] %message%newline%ex" />
+        </layout>
+        <param name="file" value="/opt/app/swipez/logs/swipez.reconcile.log" />
+    </appender>
+    <root>
+        <level value="WARN" />
+        <appender_ref ref="myFileAppender" />
+    </root>
+</configuration>

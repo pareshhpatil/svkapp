@@ -1,0 +1,112 @@
+div.editable-popup{float:left; width:100%; height:100%; position:fixed; left:0px; top:0px; background:rgba(0,0,0,0.8); z-index:100; display: none;}
+div.editable-popup-inside{ display:inline-block; width:500px; padding:20px; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; margin-top:10%; background:#fff; position:relative;}
+div.editable-popup-inside a.btn-close{ color:#000; top:0px; font-size:16px;}
+div.editable-popup-inside ul.form-editable{float:left; width:100%; text-align:left;}
+div.editable-popup-inside ul.form-editable li{float:left; width:100%; margin-bottom:10px;}
+div.editable-popup-inside ul.form-editable li label{float:left; width:100%; margin-bottom:3px; font-size:14px;}
+div.editable-popup-inside ul.form-editable li div.btnFile{ float:left; width:100%; height:44px; line-height:44px;  position:relative; overflow:hidden; text-align:center; border-radius:5px; -webkit-border-radius:5px; -moz-border-radius:5px; cursor:pointer; background:#29B6CD; color:#FFFFFF;}
+div.editable-popup-inside ul.form-editable li div.btnFile input{ position:absolute; right:0px; top:0px; font-size:100px; opacity:1; cursor:pointer;}
+/*-------------------------------------------------------------------------------------------------------------*/
+div.main-wrapper{float:left; width:100%; padding:130px 50px 50px 250px; background:#eff4fa;}
+div.main-wrapper-inside{float:left; width:100%; background:#fff;}
+div.main-sidebar{ float:left; width:200px; height:100%; background:#2e5775; position:fixed; top:0px; left:0px; z-index:100; text-align:left;}
+div.main-sidebar a.btn-back{ float:left; width:100%; height:80px; background:#2faec1; padding-left:25px; line-height:80px; color:#fff; font-size:18px;}
+/*-------------------------------------------------------------------------------------------------------------*/
+div.main-topbar-wrapp{ float:left; width:100%; position:fixed; left:0px; top:0px; z-index:20; padding-left:200px;}
+div.main-topbar{float:left; width:100%; height:80px; background:#fff; padding:0px 50px;}
+div.main-topbar h1{ float:left; width:auto; line-height:80px; color:#2f5876; font-size:28px; text-transform:capitalize;}
+div.main-topbar div.btns{ float:right; margin-top:16px;}
+div.main-topbar .preview{ border:3px solid #5c9ca6; background:#fff; color:#5c9ca6; line-height:35px; margin-right:10px;}
+/*-------------------------------------------------------------------------------------------------------------*/
+ul.sidebar-nav{ float:left; width:100%; margin-top:20px;}
+ul.sidebar-nav li{ float:left; width:100%;}
+ul.sidebar-nav li a{ float:left; width:100%; color:#2faec1; padding:10px 15px 10px 25px; font-size:16px; font-weight:700;}
+ul.sidebar-nav li a:hover,ul.sidebar-nav li a.active{ color:#fff;}
+/*-------------------------------------------------------------------------------------------------------------*/
+div.btnEditBox{ float:left; position:absolute; bottom:100%; right:0px; z-index:12; font-size:12px; opacity:0; visibility:hidden; transition:ease-out 0.3s; padding:0px 20px;}
+div.btnEditBox.btmAlign{bottom:0;}
+div.btnEditBox button{display:inline-block; padding:5px 10px; cursor:pointer; margin-left:5px; background:#21c7d5; color:#fff; white-space:nowrap;}
+div.btnEditBox button.btnEditText{ background:#f4a723;}
+div.btnEditBox button.btnDesableSec{ background:#9113fb;}
+div.btnEditBox button.btnEnableSec{ background:#7cd322;}
+div.btnEditBox button.btnMinus{ background:#cf031e;}
+div.btnEditBox button.btnPlus{ background:#49e3bf;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section,section *{position:relative;}
+
+a.logo{ border:2px solid #fff; position:relative;}
+a.logo:hover{ border:2px dashed #74bda9;}
+a.logo:hover div.btnEditBox{opacity:1; visibility:visible;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.banner-img{border:2px solid #fff; position:relative;}
+section.banner-img:hover{ border:2px dashed #74bda9;} 
+/*-------------------------------------------------------------------------------------------------------------*/
+ul.main-nav{border:2px solid #fff; position:relative;}
+ul.main-nav:hover{ border:2px dashed #74bda9;}
+ul.main-nav:hover div.btnEditBox{opacity:1; visibility:visible;}
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.banner-img:hover h1{ border:2px dashed #74bda9;} 
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.banner-img:hover h5{ border:2px dashed #74bda9;} 
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.info:hover{ border:2px dashed #74bda9;}
+section.info:hover div.btnEditBox{opacity:1; visibility:visible;}
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.about-us:hover{ border:2px dashed #74bda9;} 
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.about-us:hover div.data{ border:2px dashed #74bda9;} 
+/*-------------------------------------------------------------------------------------------------------------*/
+h2.sec-ttl{position:relative;}
+section:hover h2.sec-ttl{ border:2px dashed #74bda9;}  
+/*-------------------------------------------------------------------------------------------------------------*/ 
+section.our-services:hover,
+section.our-services:hover ul.our-service-list,
+section.our-services:hover ul.our-service-list li div.icon,
+section.our-services:hover ul.our-service-list li div.data{border:2px dashed #74bda9;}
+section.our-services:hover div.btnEditBox{opacity:1; visibility:visible;}
+/*-------------------------------------------------------------------------------------------------------------*/ 
+ul.our-service-list li div.btnEditBox{ padding:0px;}
+ul.our-service-list li div.icon div.btnEditBox{right:auto; left:0px;}
+ul.our-service-list li div.icon div.btnEditBox button{ margin:0px;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.the-team:hover, 
+section.the-team:hover ul.team-list,
+section.the-team:hover ul.team-list li div.img-box,
+section.the-team:hover ul.team-list li div.data{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.testimonial:hover,
+section.testimonial:hover ul.testimonial-list,
+section.testimonial:hover ul.testimonial-list li div.img-box,
+section.testimonial:hover ul.testimonial-list li div.data{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.pricing-plans:hover,
+section.pricing-plans:hover ul.pricing-list,
+section.pricing-plans:hover ul.pricing-list li.main div.inside{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.our-projects:hover,
+section.our-projects:hover ul.our-projects-list,
+section.our-projects:hover ul.our-projects-list li,
+section.our-projects:hover ul.our-projects-list li a span{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section.contact-us:hover, 
+section.contact-us:hover ul.contact-form,
+section.contact-us:hover ul.contact-form li,
+section.contact-us:hover div.data ul.data-inside,
+section.contact-us:hover div.data ul.data-inside li{border:2px dashed #74bda9;}
+section.contact-us:hover ul.contact-form li div.btnEditBox{padding:0px; bottom:10px;}
+section.contact-us:hover ul.contact-form li.btn div.btnEditBox{right:100%; bottom:5px;}
+section.contact-us ul.contact-form li{padding-right:80px;}
+
+section.editor-data:hover div.data{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/ 
+footer *{ position:relative;}
+footer:hover ul.f-nav,
+footer:hover ul.f-nav li,
+footer:hover div.social a,
+footer:hover div.copy{border:2px dashed #74bda9;}
+/*-------------------------------------------------------------------------------------------------------------*/
+section:hover div.btnEditBox,footer:hover div.btnEditBox{opacity:1; visibility:visible;}
+
+footer div.social a div.btnEditBox{ opacity:0 !important;}
+footer div.social a:hover div.btnEditBox{ opacity:1 !important; padding-right:5px; bottom:-10px; right:100%;}
+footer div.social a div.btnEditBox button{ float:right; clear:both; margin:1px 0px;}

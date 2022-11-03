@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemap>
+  <loc>https://www.swipez.in/main-sitemap.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://www.swipez.in/blog/sitemap.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://www.swipez.in/merchant-sites-2020.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://www.swipez.in/merchant-sites-2021.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://www.swipez.in/merchant-sites-2021-1.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://www.swipez.in/merchant-sites-2022.xml</loc>
+</sitemap>
+<!-- <sitemap>
+  <loc>https://www.swipez.in/testuser00.xml</loc>
+</sitemap> -->
+</sitemapindex>

@@ -1,0 +1,261 @@
+html {
+    font-size: 16px;
+}
+body{
+    background-color: #eee !important;
+}
+
+.main-collaps-container .leftbar-menu nav .sidebar-nav li .active {
+    background-color: #e6e6e6;
+}
+
+.main-collaps-container .leftbar-menu nav .sidebar-nav li .active a:hover {
+    background-color: #e6e6e6 !important;
+}
+
+.main-collaps-container .leftbar-menu nav .sidebar-nav .sidebar-sub-nav li a:hover {
+    background-color: #e6e6e6 !important;
+}
+
+
+.main-collaps-container .leftbar-menu nav .sidebar-nav .sidebar-sub-nav {
+    padding: .3125rem .0625rem .5rem .0625rem;
+}
+
+header .loginBox .navList ul li a {
+    text-decoration: none !important;
+}
+
+header .loginBox .logOut a {
+    text-decoration: none !important;
+}
+
+.main-collaps-container .leftbar-menu .uesr-area .user-img img {
+    border-radius: 50% !important;
+}
+
+.main-collaps-container .leftbar-menu .uesr-area .user-img {
+    border-radius: 50% !important;
+}
+
+.collapse-icon-bg {
+    width: 2.375rem;
+    height: 2.375rem;
+    margin: 0 .8125rem 0 .125rem;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    border-radius: 50%;
+    cursor: pointer;
+    display: -moz-inline-stack;
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+    vertical-align: middle;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    color: #fff;
+    background: #1ab744;
+    float: left;
+}
+
+.collapse-icon-bg .collapse-icon {
+    background: url(https://tiimg.tistatic.com/new_website1/my-tradeindia/images/header-footer-s58bcf9f7d0.png) 0 -337px no-repeat!important;
+    width: 1rem;
+    height: 1rem;
+    margin: .625rem;
+}
+
+.collapse-icon {
+    background-image: url('/public/images/trade-toggle.png') !important;
+    width: 1rem;
+    height: 1rem;
+    margin: .625rem;
+    //background: #1ab744;
+}
+.collapse-icon-bg
+{
+    background: #374955;
+}
+
+.padding-top-div{
+    height: 65px;
+}
+
+.page-footer .page-footer-inner{
+    margin-left: 210px;
+}
+@media (max-width: 991px)
+{
+.page-sidebar.navbar-collapse.collapse {
+    display: block !important;
+}
+}
+@media (max-width: 48rem)
+{
+    .main-collaps-container .leftbar-menu nav .sidebar-nav {
+        top: 0px !important;
+    }
+
+
+    .side-bar-collapsed .leftbar-menu .leftbar-menu-inside {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+
+    header .ti-logo {
+        width: 70%;
+        margin-left: 0;
+        margin-right: 0;
+        text-align: center;
+    }
+    .side-bar-collapsed .leftbar-menu {
+        z-index: 3;
+    }
+
+    .mti-text{
+        margin-top: 70px !important;
+    }
+    .dataTables_wrapper .dataTables_filter .form-control {
+        width: 130px !important;
+    }
+    .dataTables_wrapper .dataTables_filter {
+        margin-top: 0px !important;
+    }
+
+    .page-footer .page-footer-inner{
+        margin-left: 10px;
+    }
+}
+
+.main-collaps-container .leftbar-menu nav .sidebar-nav {
+    top: 50px;
+}
+
+.floating-back {
+    cursor: pointer;
+    display: block;
+    padding: 1px;
+    text-align: center;
+    position: fixed;
+    bottom: 40px;
+    z-index: 10001;
+    color: #687991;
+    right: 10px;
+}
+
+.mti-text{
+    width: 9.375rem;
+    float: left;
+    color: #0060ff;
+    font-size: 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-left: none;
+    line-height: 30px;
+    /* padding-left: .9375rem; */
+    margin-top: .5575rem;
+    width: 100%;
+    text-align: center;
+}
+.page-footer-inner{
+    float: right !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover, .page-sidebar {
+    background-color: #ffffff;
+}
+
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li:hover > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > i, .page-sidebar .page-sidebar-menu > li:hover > a > i, .page-sidebar .page-sidebar-menu > li.open > a > i {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li:hover > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a, .page-sidebar .page-sidebar-menu > li:hover > a, .page-sidebar .page-sidebar-menu > li.open > a {
+   background: #e6e6e6;
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar .page-sidebar-menu > li > a {
+    border-top: none;
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i, .page-sidebar .page-sidebar-menu > li > a > i {
+     color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a {
+    background: #e6e6e6;
+    color: #1f2129;
+}
+
+.page-sidebar .page-sidebar-menu > li.active > a:hover, .page-sidebar .page-sidebar-menu > li.active.open > a:hover {
+    background: #e6e6e6;
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > i, .page-sidebar .page-sidebar-menu > li.active > a > i, .page-sidebar .page-sidebar-menu > li.active.open > a > i {
+    color: #1f2129;
+}
+
+.page-sidebar .page-sidebar-menu > li .sub-menu {
+    background-color: #ffffff !important;
+    color: #1f2129 !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li > a, .page-sidebar .page-sidebar-menu .sub-menu > li > a {
+    color: #1f2129;
+    padding-right: 25px !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a > i, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a > i, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a > i, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a > i {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li > a > i, .page-sidebar .page-sidebar-menu .sub-menu > li > a > i {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a {
+    background: #e6e6e6 !important;
+    color: #1f2129;
+    padding-right: 25px !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a > .arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a > .arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a > .arrow.open:before, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a > .arrow:before, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a > .arrow.open:before, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a > .arrow:before, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a > .arrow.open:before, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a > .arrow:before, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu li > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu li > a > .arrow.open:before, .page-sidebar .page-sidebar-menu li > a > .arrow:before, .page-sidebar .page-sidebar-menu li > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu li:hover > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu li:hover > a > .arrow.open:before, .page-sidebar .page-sidebar-menu li:hover > a > .arrow:before, .page-sidebar .page-sidebar-menu li:hover > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li > a > .arrow.open:before, .page-sidebar .page-sidebar-menu .sub-menu > li > a > .arrow:before, .page-sidebar .page-sidebar-menu .sub-menu > li > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li:hover > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li:hover > a > .arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow.open:before, .page-sidebar .page-sidebar-menu > li:hover > a > .arrow:before, .page-sidebar .page-sidebar-menu > li:hover > a > .arrow.open:before, .page-sidebar .page-sidebar-menu > li.open > a > .arrow:before, .page-sidebar .page-sidebar-menu > li.open > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .arrow.open:before, .page-sidebar .page-sidebar-menu > li.active > a > .arrow:before, .page-sidebar .page-sidebar-menu > li.active > a > .arrow.open:before, .page-sidebar .page-sidebar-menu > li.active.open > a > .arrow:before, .page-sidebar .page-sidebar-menu > li.active.open > a > .arrow.open:before {
+    color: #1f2129;
+}
+
+.leftbar-menu{
+    overflow-y: auto !important;
+}
+.page-sidebar{
+    //padding-right: 10px !important;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar .page-sidebar-menu > li > a {
+    padding-right: 25px !important;
+}

@@ -1,0 +1,231 @@
+@media (max-width: 1440px) {
+    .loginImg {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 1366px) {}
+
+@media (max-width:1024px) {
+    .pakg .channelListSelect li {
+        width: 50%;
+    }
+}
+
+@media (max-width: 991px) {
+    .container {
+        width: 100%;
+    }
+    .navbar-inverse .navbar-nav>li>a{ padding: 15px;}
+    .setupBoxInfo .amtBox{
+        font-size: 22px;
+    }
+    .subMenu{
+        right: 0px;
+    }
+    .planBox{
+        height: 230px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .dropdownMenu:hover .subMenu {
+        display: block;
+        position: relative;
+        box-shadow: none;
+    }
+
+    .navbar-toggle {
+        background: #2c5294 !important;
+        color: #ffffff;
+    }
+
+    .navbar-inverse .navbar-toggle {
+        border-color: #2c5294 !important;
+    }
+
+    .navbar-inverse .navbar-collapse,
+    .navbar-inverse .navbar-form {
+        border: none;
+
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        background-color: #ffff;
+        width: 100%;
+        box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .setupBoxInfo {
+        width: 50%;
+        float: left;
+    }
+
+    .mobileWidth100 {
+        width: 100% !important;
+        float: left;
+    }
+
+    .rechargeBTN {
+        max-width: 300px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    footer .col-sm-4,
+    footer .col-sm-8 {
+        width: 100%;
+        text-align: center;
+    }
+
+    .fLeftLinks {
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .pageTitleSection h1 {
+        margin: 0px;
+    }
+
+    .channelLogoList li .col-sm-5 {
+        width: 41.66666667%;
+    }
+
+    .channelLogoList li .col-sm-2 {
+        width: 16.66666667%;
+    }
+
+    .channelLogoList li .col-sm-3 {
+        width: 25%;
+    }
+
+    .channelLogoList li .col-sm-1 {
+        width: 8.33333333%;
+    }
+    .btnBlue, .btnBlue:hover{  min-width: auto;  }
+    .carousel-indicators{ z-index: 10;}
+    .mainHeader{ z-index: 99999;}
+
+
+}
+@media (max-width: 700px) {
+    .managePackage .col-sm-4{
+        width: 50%;
+        float: left;
+
+    }
+}
+@media (max-width: 640px) {
+    .channelListSelect .channalName {
+        font-size: 15px;
+    }
+
+    .radioTabs {
+        width: 100%;
+    }
+
+    .radioTabs label {
+        padding: 10px 25px 10px 60px;
+    }
+
+    .radioTabs .check {
+        top: 18px;
+    }
+}
+
+@media (max-width: 580px) {
+
+    .managePackage .col-sm-4{
+        width: 100%;
+
+    }
+    .planBox{ height: auto;}
+    .channelList{
+        position: relative;
+    }
+    .arrowMobile{
+        position: absolute;
+        top: 5px;
+        right: 15px;
+    }
+    .channelLogoList li .col-sm-6,
+    .channelLogoList li .col-sm-5{
+        width: 100%;
+        height: 50px;
+    }
+
+    .channelLogoList li .col-sm-2,
+    .channelLogoList li .col-sm-3,
+    .channelLogoList li .col-sm-1 {
+        width: 33.33%;
+        height: 50px;
+        font-size: 14px;
+    }
+    .channelList .col-sm-2, .channelList .col-sm-3, .channelList .col-sm-1{
+        height: 70px;
+        /* padding-top: 0px; */
+        /* padding-bottom: 0px; */
+        width: 29.33%;
+        float: left;
+        font-size: 14px;
+        margin-left: 20px;
+
+    }
+
+
+    .channelListSelect .channelLogoBox {
+        text-align: left;
+    }
+
+    .pakg .channelListSelect li {
+        width: 100%;
+    }
+
+    .setupboxRow .col-md-4, .setupboxRow .col-md-2{ width: 100%;}
+    .setup80{ line-height: 2;}
+    .setupboxRow{text-align: center;}
+    .panel-title{max-width: 240px;}
+    .setup20, .btnBlue, .setup80 { width: 39%; left: 5px; height: 50px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .setupBoxInfo {
+        width: 100%;
+    }
+
+    .rechargeBTN {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .channelLogoList li .col-sm-2,
+
+    .channelLogoList li .col-sm-3 {
+        width: 33.33%;
+        height: 40px;
+    }
+
+    .channelLogoList li .col-sm-1 {
+        width: 33.33%;
+        height: auto;
+        text-align: left;
+    }
+    .fLeftLinks li{ width: 100%; text-align: center;}
+    .fLeftLinks li a{
+        font-size: 16px;
+        width: 100%;
+        float: left;
+    }
+    .ptb80 {
+        padding-top: 5px;
+    }
+
+}
+
+@media (max-width: 360px) {
+
+
+}

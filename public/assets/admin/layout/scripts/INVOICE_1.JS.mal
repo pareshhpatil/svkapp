@@ -1,0 +1,196 @@
+function savepatron(url)
+{
+    var data = $("#submit_form").serialize();
+    $.ajax({
+        type: 'POST',
+        url: '/patron/register/saved/' + url,
+        data: data,
+        success: function(data)
+        {
+            obj = JSON.parse(data);
+            if (obj.status == 1)
+            {
+                $('#submit_form').trigger("reset");
+                document.getElementById('register').style.display = 'none';
+                document.getElementById('errorshow').style.display = 'none';
+                document.getElementById('info').style.display = 'block';
+
+            } else
+            {
+
+                var error = '';
+                try {
+                    $.each(obj['error'], function(index, value) {
+                        error = error + value.value + '<br>';
+                    });
+                    document.getElementById('errorshow').style.display = 'block';
+                    document.getElementById('error_display').innerHTML = error;
+                } catch (o)
+                {
+                    alert(o.message);
+                }
+            }
+
+        }
+    });
+
+    return false;
+}
+
+
+function calculatededuct(tax, basic_amount, previous_due)
+{
+    var sel = document.getElementById("deduct");
+    var deductval = sel.options[sel.selectedIndex].value;
+    var deducttext = sel.options[sel.selectedIndex].text;
+    total_percent = (tax * 100) / basic_amount;
+
+    total_deduct = basic_amount - deductval;
+    document.getElementById("deduct_val").innerHTML = Number(deductval).toFixed(2);
+    document.getElementById("deduct_label").innerHTML = deducttext;
+
+    document.getElementById("deduct_amount").value = Number(deductval).toFixed(2);
+    document.getElementById("deduct_text").value = deducttext;
+
+    document.getElementById("deducttotal").innerHTML = Number(total_deduct).toFixed(2);
+
+    total_tax = (total_percent * total_deduct) / 100;
+    document.getElementById("total_tax").innerHTML = total_tax.toFixed(2);
+
+    if (previous_due > 0)
+    {
+    } else
+    {
+        previous_due = 0;
+    }
+    discount = document.getElementById("coupon_discount").value;
+    grand_total = total_deduct + total_tax + previous_due - discount;
+    document.getElementById("deductgrandtotal").innerHTML = grand_total.toFixed(2);
+    document.getElementById("grandtotal").innerHTML = '<i class="fa fa-inr fa-large"></i> ' + grand_total.toFixed(2) + ' /-';
+}
+
+function calculatedeductMerchant(tax, basic_amount, previous_due)
+{
+    var sel = document.getElementById("deduct");
+    var deductval = sel.options[sel.selectedIndex].value;
+    var deducttext = sel.options[sel.selectedIndex].text;
+    total_percent = (tax * 100) / basic_amount;
+
+    total_deduct = basic_amount - deductval;
+    document.getElementById("deduct_amount").value = Number(deductval).toFixed(2);
+    document.getElementById("deduct_text").value = deducttext;
+
+
+    total_tax = (total_percent * total_deduct) / 100;
+
+    if (previous_due > 0)
+    {
+    } else
+    {
+        previous_due = 0;
+    }
+    grand_total = total_deduct + total_tax + previous_due;
+    document.getElementById("total").value = grand_total.toFixed(2);
+}
+
+
+function getgrandtotal(grand_total, fee_id)
+{
+    var data = '';
+    $.ajax({
+        type: 'POST',
+        url: '/patron/paymentrequest/getgrandtotal/' + grand_total + '/' + fee_id,
+        data: data,
+        success: function(data)
+        {
+            document.getElementById('form_gender_error').innerHTML = '';
+            document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + data + '/-';
+        }
+    });
+
+}
+
+function getxwaygrandtotal(grand_total, fee_id)
+{
+    var data = '';
+    $.ajax({
+        type: 'POST',
+        url: '/patron/paymentrequest/getxwaygrandtotal/' + grand_total + '/' + fee_id,
+        data: data,
+        success: function(data)
+        {
+            document.getElementById('form_gender_error').innerHTML = '';
+            document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + data + '/-';
+            grand_total = document.getElementById('amt').value;
+            conv_fee = Number(data) - Number(grand_total);
+            if (conv_fee > 0)
+            {
+                document.getElementById('conv').innerHTML = '(Convenience fee <i class="fa  fa-inr"></i>' + conv_fee + '/-)';
+            } else
+            {
+                document.getElementById('conv').innerHTML = '';
+            }
+        }
+    });
+
+}
+
+function calculateSMS(rate, pack)
+{
+    grand_total = rate * pack;
+    document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + grand_total.toFixed(2) + '/-';
+}
+
+function validateCoupon(merchant_id, total)
+{
+    var coupon_code = document.getElementById('coupon_code').value;
+    coupon_code = coupon_code.split(' ').join('SPACE');
+    var coupon_id = '';
+    try
+    {
+        total = Number(total);
+        if (coupon_code == '')
+        {
+            document.getElementById('coupon_status').innerHTML = 'Enter coupon code';
+            document.getElementById('coupon_id').value = coupon_id;
+            document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + total.toFixed(2) + '/-';
+            return false;
+        }
+        var data = '';
+        $.ajax({
+            type: 'POST',
+            url: '/patron/paymentrequest/couponvalidate/' + merchant_id + '/' + coupon_code,
+            data: data,
+            success: function(data)
+            {
+                if (data == 'false')
+                {
+                    document.getElementById('coupon_status').innerHTML = 'Invalid coupon code';
+                } else
+                {
+                    obj = JSON.parse(data);
+                    if (obj.type == 1)
+                    {
+                        cost_coupon = Number(obj.fixed_amount);
+                    } else
+                    {
+                        cost_coupon = Number(total * obj.percent / 100);
+                    }
+                    total = Number(total - cost_coupon);
+                    coupon_id = obj.coupon_id;
+                    document.getElementById('coupon_status').innerHTML = 'Your coupon discount has been applied<br>' + obj.descreption;
+                    document.getElementById('coupon_id').value = coupon_id;
+                    document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + total.toFixed(2) + '/-';
+                    return false;
+                }
+            }
+        });
+
+        document.getElementById('coupon_id').value = coupon_id;
+        document.getElementById('grandtotal').innerHTML = '<i class="fa fa-inr fa-large"></i> ' + total.toFixed(2) + '/-';
+    } catch (o)
+    {
+        alert(o.message);
+    }
+    return false;
+}

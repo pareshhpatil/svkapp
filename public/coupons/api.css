@@ -1,0 +1,186 @@
+	#swipez-offer li {
+		display: inline-block;
+		zoom: 1;
+		*display: inline;
+		list-style-type: none;
+		vertical-align: middle;
+		
+	}
+	li a:hover {
+		background-color: #111111;
+	}
+	.button {
+    background-color: #cd3232;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.cudu_title
+{
+font-size: 18px !important;
+font-weight: 600 !important;
+}
+
+/*below css for model popup*/
+.cudu_button {
+    background-color: #cd3232;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.cudu_deal-activated-text{
+	margin: 48px auto 0 auto;
+	font-size: 18px;    
+	line-height: 48px;    
+	height: 48px;   
+	width: 70%;    
+	border: 1px dashed #cd3232;
+	border-radius: 3px;    
+	font-weight: 500;    
+	color: rgba(0,0,0,0.54);    
+	text-align: center;
+}
+
+
+
+
+/* The Modal (background) */
+.cudu_modal {
+	
+  display: none; /* Hidden by default */  
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  text-align: center;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Modal Content */
+.cudu_modal-content {
+  position: absolute;
+  top: 10%; left: 15%; right:15%; bottom:20%;
+  background-color: #fefefe;
+  width: 70%;
+  overflow: auto;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+
+
+
+.cudu_popup_close:hover,
+.cudu_popup_close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cudu_popup_close
+{
+  display:block;
+  float: right;
+  margin-top: 1em;
+  box-sizing:border-box;
+  width:20px;
+  height:20px;
+  border-width:3px;
+  border-style: solid;
+  border-color:red;
+  border-radius:100%;
+  background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, white 46%,  white 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%,  white 56%,transparent 56%, transparent 100%);
+  background-color:red;
+  box-shadow:0px 0px 5px 2px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+}
+
+.cudu_modal-header {
+	border-bottom: 1px solid #e5e5e5;
+	padding: 2px 16px;
+}
+
+.cudu_modal-body {padding: 2px 16px;}
+
+.cudu_modal-footer {
+	padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+/*offer navigation css*/
+.cudu_nav_ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333333;
+}
+
+.cudu_nav_li {
+  float: left;
+}
+
+.cudu_nav_li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+}
+
+.cudu_nav_li a:hover {
+  background-color: #111111;
+  cursor:pointer;
+}
+.cudu_offer_li_table td div{
+  width:220px;
+  height:100px;
+  overflow:hidden;
+  word-wrap:break-word; 
+}

@@ -1,0 +1,10 @@
+DB changes for tax-applicable-on-other-taxes
+
+UPDATE `swipez`.`config` SET `config_value` = 'Fixed tax amount' WHERE (`config_type` = 'tax_type') and (`config_key` = '5');
+
+INSERT INTO `swipez`.`config` (`config_type`, `config_key`, `config_value`, `description`, `created_by`, `created_date`, `last_update_by`) VALUES ('tax_calculated_on', '0', 'Base amount (Amount without GST)', 'Base amount (Amount without GST)', 'E14010102', '2014-12-07 13:00:00', 'E14010102');
+
+INSERT INTO `swipez`.`config` (`config_type`, `config_key`, `config_value`, `description`, `created_by`, `created_date`, `last_update_by`) VALUES ('tax_calculated_on', '1', 'Grand total (Amount with GST)', 'Grand total (Amount with GST)', 'E14010102', '2014-12-07 13:00:00', 'E14010102');
+
+ALTER TABLE `swipez`.`merchant_tax` 
+ADD COLUMN `tax_calculated_on` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_active`;

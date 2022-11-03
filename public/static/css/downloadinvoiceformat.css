@@ -1,0 +1,261 @@
+.table th, .table td {
+    padding: .4rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+.table-scrollable {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.no-margin {
+    margin: 0;
+}
+html {
+    font-size: 16px;
+}
+.form-control-plaintext{
+    color: #5b4d4b;
+    font-size: 13px;
+    line-height: 16px;
+    height: auto;
+    padding: 4px;
+}
+.tx-c{
+    text-align: center;
+}
+.tx-l{
+    text-align: left;
+}
+.tx-r{
+    text-align: right;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: transparent;
+    opacity: 1;
+}
+.tdb1{
+    border-bottom: 1px solid #cbcbcb;
+    border-right: 1px solid #cbcbcb;
+    width: 38%;
+}
+.tdb2{
+    border-bottom: 1px solid #cbcbcb;
+}
+.tdb3{
+    border-bottom: 1px solid #cbcbcb;border-top: 1px solid #cbcbcb;border-right: 1px solid #cbcbcb;
+}
+.no-padding{
+    padding: 0;
+}
+.tdpr{
+    border-bottom: 1px solid #cbcbcb;
+    border-right: 1px solid #cbcbcb;
+    text-align: center;
+}
+.file {
+    visibility: hidden;
+}
+.datepicker table tr td, .datepicker table tr th {
+    font-size: 12px;
+}
+.bold{
+    font-weight: bold;
+}
+.imgdiv{
+    background-image: url(/static/images/demo-logo.png?v=4);
+    height: 150px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 160px;
+    text-align: center;
+    background-position: center;
+}
+.imgbtn{
+    padding: .05rem 0.2rem;
+    font-size: .775rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+    margin-top: 90px;
+
+}
+.newrowbtn{
+    padding: .05rem 0.2rem;
+    font-size: .775rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+    color: #ffffff !important;
+    margin-bottom: 5px;
+    cursor: pointer;
+
+}
+.input-group-append{
+    display: none;
+}
+.sp-add-on{
+    border: none !important;
+}
+.spectrum, sp-colorize{
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    color: transparent !important;
+    cursor: pointer;
+
+}
+.gear{
+    margin-top: 6px;
+    float: right!important;
+    cursor: pointer;
+}
+.pull-right {
+    float: right !important;
+}
+.sp-colorize-container{
+    display: contents !important;
+}
+.page-content {
+    margin-top: 0px;
+    padding: 0px;
+    background-color: #fff;
+
+    color: #333333;
+    font-family: "Open Sans", sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size: 13px;
+    direction: ltr;
+
+}
+.bg-grey {
+    border-color: #5B5B5B;
+    background-color: #5B5B5B;
+    color: #ffffff;
+}
+.bg-grey2 {
+    border-color: #5B5B5B;
+    background-color: #5B5B5B;
+    color: #ffffff;
+}
+.add-col{
+    display: none;
+}
+.add-col2{
+    display: none;
+}
+
+.cpd {
+    position: absolute;
+    //top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: block;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 0px;
+    margin: -6.425rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    font-size: 12px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+
+}
+.table {
+    color: black !important;
+}
+.table thead th{
+    border-bottom: none;
+
+}
+.jumbotron{
+    padding-bottom: 50px !important;
+    padding-top: 50px !important;
+}
+
+@media (max-width: 767.98px)
+{
+    .mdiv {
+        position: initial !important;
+    }
+    .py-5 {.cpd
+           padding-top: 1rem!important;
+    }
+    .custom-container{
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .company-name-text-box{
+        font-size: 16px !important;
+    }
+    #btndiv{
+        margin-left: 35%;
+        margin-top: -25px;
+    }
+    .sp-container{
+        left: 140.011px !important;
+    }
+}
+
+.invoice{
+    max-width: 900px;
+    text-align: left;
+}
+
+.h-contact{
+    font-size:13px; display:block; margin-top:1px; margin-bottom:1px;line-height: 16px;
+}
+
+.no-border{
+    border: none;
+}
+
+.td-invoice_detail{
+    min-width: 120px;
+    border: none;
+}
+
+.td-firstcol{
+    border-bottom: 1px solid #cbcbcb;
+    border-right: 1px solid #cbcbcb;
+    border-left: 1px solid #cbcbcb;
+    text-align: left;
+}
+
+.company-name-text-box{
+    font-size:25px; 
+    color:#6e605d;
+    padding-top: 2px;
+}
+
+.modal {
+    padding-right: 0px !important;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #cbcbcb;
+    font-weight: normal;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #cbcbcb;
+    font-weight: normal;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #cbcbcb;
+    font-weight: normal;
+}
+
+.color-white{
+    color:#ffffff;
+}
