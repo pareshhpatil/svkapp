@@ -413,9 +413,8 @@
                     });
                 });
 
-                @if($script != '') {
-                    !!$script!!
-                }
+                @if($script != '') 
+                {!!$script!!}
                 @endif
 
                 @if(Session::get('default_date_format') == 'd M yyyy')
