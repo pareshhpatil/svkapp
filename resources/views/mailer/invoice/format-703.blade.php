@@ -30,7 +30,7 @@
     font-weight: 600;
 }
 body{
-    font-family: Rubik;
+    font-family: Roboto;
     letter-spacing: 0px;
     line-height: 75%;
 }

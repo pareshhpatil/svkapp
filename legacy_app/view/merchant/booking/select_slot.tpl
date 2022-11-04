@@ -93,7 +93,7 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-8">
                     <div class="row">
-                        <h3 class="booking-title" style="color: #18aebf;">{$category_name} - {$court_name}</h3>
+                        <h3 class="booking-title" style="color: #707ee0;">{$category_name} - {$court_name}</h3>
                         <p class="booking-info">Showing all avaliable slots</p>
                     </div>
 

@@ -21,7 +21,7 @@
     }
 
     #title_8 {
-        font-family: Rubik;
+        font-family: Roboto;
         font-style: normal;
         font-weight: 400;
         font-size: 18px;
@@ -31,7 +31,7 @@
     }
 
     .apps-description1 {
-        font-family: Rubik;
+        font-family: Roboto;
         font-style: normal;
         font-weight: 400;
         font-size: 14px;

@@ -74,7 +74,7 @@
         <!-- END PAGE HEADER-->
         {if ($payment_gateway_info==true)}
             <!-- Added info box on invoice creation -->
-            <div class="alert alert-info" style="max-width: 900px;text-align: left;">
+            {* <div class="alert alert-info" style="max-width: 900px;text-align: left;">
                 <strong>Free online transactions for you!</strong>
                 <div class="media">
                     <p class="media-heading">Collect payments for your invoices online. No charges for all your online
@@ -82,7 +82,7 @@
                     </p>
                 </div>
 
-            </div>
+            </div> *}
         {/if}
         <div class="invoice" style="padding: 12px 0px 15px 0px;">
             <div class="row invoice-logo  no-margin" style="margin-bottom: 0px;">

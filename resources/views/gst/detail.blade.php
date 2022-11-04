@@ -171,7 +171,7 @@
     box-sizing: border-box;
     border-radius: 14px !important;
     text-align: center;
-    font-family: Rubik;
+    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     display: flex;

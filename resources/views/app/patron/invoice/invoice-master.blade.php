@@ -120,14 +120,14 @@
             @yield('content')
 
             <!-- BEGIN FOOTER -->
-            <div class="page-footer">
+            <!-- <div class="page-footer">
                 <div class="page-footer-inner">
                     &copy; {{$current_year}} OPUS Net Pvt. Handmade in Pune.
                 </div>
                 <div class="scroll-to-top">
                     <i class="icon-arrow-up"></i>
                 </div>
-            </div>
+            </div> -->
 
 
 

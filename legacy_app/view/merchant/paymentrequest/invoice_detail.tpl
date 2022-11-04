@@ -72,7 +72,7 @@
                 {/if}
                 {if ($payment_gateway_info==true)}
                     <!-- Added info box on invoice creation -->
-                    <div class="alert alert-info" style="max-width: 900px;text-align: left;">
+                    {* <div class="alert alert-info" style="max-width: 900px;text-align: left;">
                         <strong>Free online transactions for you!</strong>
                         <div class="media">
                             <p class="media-heading">Collect payments for your invoices online. No charges for all your
@@ -80,7 +80,7 @@
                                     started.</a></p>
                         </div>
 
-                    </div>
+                    </div> *}
                 {/if}
                 <br>
 

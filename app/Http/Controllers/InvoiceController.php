@@ -679,7 +679,7 @@ class InvoiceController extends AppController
            
             $info = (array)$info;
             $info['its_from'] = 'real';
-           
+            $info['gtype'] = '703';
             $plugin_array = json_decode($plugin_value, 1);
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
@@ -722,8 +722,8 @@ class InvoiceController extends AppController
         }
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt=json_decode($constriuction_details, 1);
-            $data['docs']= $this->getDataBillCodeAttachment($tt,$doclist,$data);
-         
+            $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
+          
           $selectedDoc=array();
         $selectnm='';
         if(!empty($parentnm))
@@ -852,9 +852,9 @@ class InvoiceController extends AppController
        // $datalist[]=$parentmenu;
        
     }
-   
-   //dd($datalist);
-    return $datalist;
+  
+$datas['docs']=$datalist;
+    return $datas;
     }
 
     public function documentsPatron($link,$parentnm='',$sub='',$docpath='')
@@ -875,6 +875,7 @@ class InvoiceController extends AppController
            
             $info = (array)$info;
             $info['its_from'] = 'real';
+            $info['gtype'] = '703';
             $plugin = json_decode($info['plugin_value'], 1);
             if (isset($plugin['has_coupon']) && $plugin['has_coupon'] == 1) {
                 $is_coupon = $this->invoiceModel->getActiveCoupon($info['merchant_user_id']);
@@ -970,7 +971,7 @@ class InvoiceController extends AppController
         }
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt=json_decode($constriuction_details, 1);
-            $data['docs']= $this->getDataBillCodeAttachment($tt,$doclist,$data);
+            $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
             $selectedDoc=array();
             $selectnm='';
             if(!empty($parentnm))
@@ -992,6 +993,7 @@ class InvoiceController extends AppController
     }
     public function downloadSingle($link)
     {
+      
         $filePath = 'invoices/' . $link;
 
         return  redirect(Storage::disk('s3_expense')->temporaryUrl(
@@ -1003,8 +1005,11 @@ class InvoiceController extends AppController
     public function downloadZip($link)
     {
         $payment_request_id = Encrypt::decode($link);
+       
         if (strlen($payment_request_id) == 10) {
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
+            $attach_value =  $this->invoiceModel->getColumnValueWithAllRow('invoice_construction_particular', 'payment_request_id', $payment_request_id, 'attachments');
+
             $plugin_array = json_decode($plugin_value, 1);
             $source_disk = 's3_expense';
             if (File::exists(public_path('tmp/documents.zip'))) {
@@ -1018,7 +1023,23 @@ class InvoiceController extends AppController
                 $file_content = Storage::disk($source_disk)->get($source_path);
                 $zip->put(basename($file_name), $file_content);
             }
-
+           $billcode_docs= json_decode($attach_value,1);
+          
+           foreach ($billcode_docs as $items)
+            {
+               
+               $inner_data=json_decode($items['value'],1);
+               if(!empty($inner_data))
+               {
+               foreach ($inner_data as $values)
+            {
+                $source_path = 'invoices/' . basename($values);
+                $file_content = Storage::disk($source_disk)->get($source_path);
+                $zip->put(basename($values), $file_content);
+            }
+        }
+       
+           }
 
             return redirect('tmp/documents.zip');
         }
