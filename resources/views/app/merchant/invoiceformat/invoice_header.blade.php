@@ -17,9 +17,9 @@
             Settle </a>
         <a class="btn green" href="/merchant/invoice/update/{{$info['link']}}">
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/1/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -38,9 +38,9 @@
             Settle </a>
         <a class="btn green" href="/merchant/invoice/update/{{$info['link']}}">
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/1/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype'])) /{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -60,9 +60,9 @@
             Settle </a>
         <a class="btn green" href="/merchant/invoice/update/{{$info['link']}}">
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/1/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/@if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -80,9 +80,9 @@
             Settle </a>
         <a class="btn green" href="/merchant/invoice/update/{{$info['link']}}">
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/1/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/703">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/@if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -95,9 +95,9 @@
 @endisset
 @isset(($info['payment_gateway_info']))
 
-@if ($info['payment_gateway_info']==true)
+<!-- @if ($info['payment_gateway_info']==true) -->
 <!-- Added info box on invoice creation -->
-<div class="alert alert-info" style="max-width: 900px;text-align: left;">
+<!-- <div class="alert alert-info" style="max-width: 900px;text-align: left;">
     <strong>Free online transactions for you!</strong>
     <div class="media">
         <p class="media-heading">Collect payments for your invoices online. No charges for all your
@@ -105,8 +105,8 @@
                 started.</a></p>
     </div>
 
-</div>
-@endif
+</div> -->
+<!-- @endif -->
 
 @endisset
 @isset($info['error'])

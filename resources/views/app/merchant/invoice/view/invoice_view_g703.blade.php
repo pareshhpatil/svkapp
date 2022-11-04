@@ -13,19 +13,19 @@ if ($info['user_type'] == 'merchant') {
 
 <style>
     .tabbable-line>.nav-tabs>li.active {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
         position: relative;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.active>a {
         border: 0;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.open,
     .tabbable-line>.nav-tabs>li:hover {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
     }
 </style>
 

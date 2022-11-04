@@ -56,6 +56,19 @@ class ParentModel extends Model
             return false;
         }
     }
+    public function getColumnValueWithAllRow($table, $where, $value, $column_name)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw($column_name . ' as value'))
+            ->where($where, $value)
+            ->get();
+        if (!empty($retObj)) {
+            return $retObj;
+        } else {
+            return false;
+        }
+    }
     public function getColumnValueExtraWhere($table, $where, $value, $column_name, $active, $status)
     {
 

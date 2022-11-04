@@ -1,7 +1,7 @@
 <div class="page-sidebar-wrapper">
     <div class="page-sidebar navbar-collapse collapse" style="margin-top: -66px;">
         <ul style="padding-top:10px;" class="page-sidebar-menu {{$language}}" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-            <a itemprop="url" id="logo-wrapper-default" title="Swipez" href="{{$server_name}}"  style="margin-left:20px;">
+            <a itemprop="url" id="logo-wrapper-default" title="Swipez" href="{{$server_name}}"  style="margin-left:20px;display: block;">
                 <img style="max-height: 60px;" id="logo-default"class="logo-default hidden-xs" src="/assets/admin/layout/img/logo.png?v=6" alt="Briq" title="Briq">
             </a>
             @isset($menus[0])
@@ -46,7 +46,9 @@
                 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
                 <div class="sidebar-toggler">
                     <a href="javascript:;">
-                        <i id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px" onMouseOver="this.style.color='rgb(99, 102, 158)'" onMouseOut="this.style.color='rgb(99, 102, 158)'" class="sidebartoggle fa fa-chevron-circle-left"></i>
+                    <img  id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px;color: rgb(99, 102, 158);" 
+                    src="<?php echo '/assets/admin/layout/img/circled-chevron-left.png'; ?>" alt="open"
+                    class="sidebartoggle">
                     </a>
                 </div>
                 <!-- END SIDEBAR TOGGLER BUTTON -->

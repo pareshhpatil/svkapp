@@ -377,11 +377,9 @@ var Layout = function () {
         if ($.cookie && $.cookie('sidebar_closed') === '1' && Swipez.getViewPort().width >= resBreakpointMd) {
             $('body').addClass('page-sidebar-closed');
             $('.page-sidebar-menu').addClass('page-sidebar-menu-closed');
-            document.getElementById("side-bar-toggle").classList.remove('fa-chevron-circle-left');
-            document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-right');
+            document.getElementById("side-bar-toggle").src = '/assets/admin/layout/img/circled-chevron-right.png';
             document.getElementById("side-bar-toggle").style.marginLeft="26px";
             document.getElementById("side-bar-toggle").style.width="22px";
-            document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
             document.getElementById("logo-default").style.maxHeight="40px";
             document.getElementById("logo-default").style.marginBottom="10px";
             document.getElementById("logo-wrapper-default").style.marginLeft="2px";
@@ -396,8 +394,7 @@ var Layout = function () {
             if (body.hasClass("page-sidebar-closed")) {
                 body.removeClass("page-sidebar-closed");
                 sidebarMenu.removeClass("page-sidebar-menu-closed");
-                document.getElementById("side-bar-toggle").classList.remove('fa-chevron-circle-right');
-                document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-left');
+                document.getElementById("side-bar-toggle").src = '/assets/admin/layout/img/circled-chevron-left.png';
                 document.getElementById("side-bar-toggle").style.marginLeft="32px";
                 document.getElementById("side-bar-toggle").style.width="32px";
                 document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";
@@ -409,9 +406,8 @@ var Layout = function () {
                 }
             } else {
                 body.addClass("page-sidebar-closed");
-                sidebarMenu.addClass("page-sidebar-menu-closed");
-                document.getElementById("side-bar-toggle").classList.remove('fa-chevron-circle-left');
-                document.getElementById("side-bar-toggle").classList.add('fa-chevron-circle-right');
+                sidebarMenu.addClass("page-sidebar-menu-closed"); 
+                document.getElementById("side-bar-toggle").src = '/assets/admin/layout/img/circled-chevron-right.png';
                 document.getElementById("side-bar-toggle").style.marginLeft="26px";
                 document.getElementById("side-bar-toggle").style.width="22px";
                 document.getElementById("side-bar-toggle").style.color="rgb(99, 102, 158)";

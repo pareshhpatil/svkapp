@@ -48,7 +48,7 @@ class User extends ParentModel
             ->where($column, $value)
             ->where('otp', $otp)
             ->where('is_active', 1)
-            ->whereRaw('created_date >= DATE_SUB(NOW(),INTERVAL 20 MINUTE)')
+            ->whereRaw('created_date >= DATE_SUB(NOW(),INTERVAL 400 MINUTE)')
             ->first();
         if (!empty($retObj)) {
             //$this->disableOTP($retObj->id);

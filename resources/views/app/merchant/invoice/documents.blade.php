@@ -13,19 +13,19 @@ $header='app.patron.invoice.invoice-master';}
 
 <style>
     .tabbable-line>.nav-tabs>li.active {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
         position: relative;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.active>a {
         border: 0;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.open,
     .tabbable-line>.nav-tabs>li:hover {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
     }
     
 </style>
@@ -38,6 +38,7 @@ $header='app.patron.invoice.invoice-master';}
 <script src="/assets/admin/layout/scripts/invoice.js?version=1649936891" type="text/javascript"></script>
 
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
 @section('content')
 @if($info['user_type']=='merchant')
 <div class="page-content" style="text-align: -webkit-center !important;">
@@ -107,7 +108,7 @@ $header='app.patron.invoice.invoice-master';}
                    
                    
                 </div>
-               
+              
                 <div class="col-md-10 col-sm-9 col-xs-9" >
                     <div class="tab-content"  >
                         @foreach ($files as $key=>$item)
