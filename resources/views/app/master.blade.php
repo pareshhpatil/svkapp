@@ -196,10 +196,11 @@
                         <li class="dropdown ">
                             <a href="javascript:;" class="dropdown-toggle dropdown-l" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <i class="fa fa-user-circle"></i>
+                                <span>{{Session::get('email_id')}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                <a href="http://swipez.prod/merchant/profile/settings">
+                                <a href="/merchant/profile/settings">
                                         <i class="fa fa-cog"></i> Setting </a>
                                 </li>
                                 <li>

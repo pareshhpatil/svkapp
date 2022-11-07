@@ -106,6 +106,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('*'))
             ->join('project as p', 'p.id', '=', 'c.project_id')
             ->where('c.is_active', 1)
+            ->where('c.status', 1)
             ->where('c.merchant_id', $merchant_id)
             ->get();
         return $retObj;
