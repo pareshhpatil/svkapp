@@ -580,7 +580,7 @@ function addbillcode() {
 
                     } catch (o) { }
                     $('select[name="bill_code[]"]').map(function () {
-                        this.append(new Option(data[0] + ' |' + data[1], data[0], true, true)); // bill code
+                        this.append(new Option(data[0] + ' |' + data[1], data[0])); // bill code
                     }).get();
 
                     $('select[name="bill_code[]"]').each(function (indx, arr) {

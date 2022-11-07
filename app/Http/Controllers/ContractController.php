@@ -56,7 +56,7 @@ class ContractController extends Controller
         $data['particulars'] = $particulars;
         $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
         foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+            $cust_data->customer_code =  $cust_data->company_name??null . ' | ' . $cust_data->customer_code;
         }
         $data["cust_list"] = $cust_list;
         $data["project_id"] = 0;
@@ -209,7 +209,7 @@ class ContractController extends Controller
         $row->json_particulars = json_decode($row->particulars, true);
         $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
         foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+            $cust_data->customer_code =  (is_null($cust_data->company_name??null)) ? $cust_data->customer_code :  $cust_data->company_name??null . ' | ' . $cust_data->customer_code;
         }
         if ($row->version != '') {
             $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3]);

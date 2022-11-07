@@ -510,6 +510,7 @@
                                         int = this.fields.length;
                                         this.fields.push({
                                             introw: int,
+                                            pint: int,
                                             bill_code: '',
                                             bill_type: '',
                                             group: '',
@@ -518,6 +519,7 @@
                                         });
                                         particularray.push({
                                             introw: int,
+                                            pint: int,
                                             bill_code: '',
                                             bill_type: '',
                                             group: '',
