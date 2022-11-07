@@ -38,7 +38,7 @@
             <!-- END PAGE HEADER-->
             <!-- BEGIN PAGE CONTENT-->
             <div class="row">--}}
-                @livewire('contract.create', ['contract_id' => $contract_id])
+                @livewire('contract.create', ['contract_id' => $contract_id, 'title' => $title])
                 <!-- END PAGE CONTENT-->
             {{--</div>
         </div>--}}

@@ -591,8 +591,10 @@ function addbillcode() {
 
                     });
                     //$('#bill_code' + new_bill_index).trigger('change')
-                   // particularray[new_bill_index].bill_code = data[0]
-                  //  particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
+                    if(particularray !== undefined) {
+                        particularray[new_bill_index].bill_code = data[0]
+                        particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
+                    }
 
                     if ($('#bill_code' + new_bill_index).find("option[value='" + data[0] + "']").length) {
                         console.log('in trigger code');
@@ -3021,6 +3023,7 @@ function getContractParticularsData() {
 
 
             particular.pint = document.getElementsByName('pint[]')[int].value;
+            particular.introw = document.getElementsByName('pint[]')[int].value;
             // particular.group = document.getElementById('select2-group' + num + '-container').innerHTML;
 
             particular.bill_code_detail = (document.getElementById('select2-billcodedetail' + num + '-container').innerHTML === 'Yes') ? 'Yes' : 'No';
