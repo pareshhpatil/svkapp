@@ -1443,3 +1443,8 @@ label.tree_label:after { border-bottom: 0; }
   }
 
 .tree > li:last-child:before { display: none; }
+
+.steps {
+    border: 2px #3e4aa3 solid !important;
+    color: #3e4aa3 !important;
+}
