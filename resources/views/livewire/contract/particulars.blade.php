@@ -5,8 +5,8 @@
         }
 
         .table-hover>tbody>tr:hover {
-    background-color: transparent !important;
-}
+            background-color: transparent !important;
+        }
 
         .table thead tr th {
             font-size: 12px;
@@ -91,7 +91,7 @@
                                     @if($k=='bill_code')
                                     <select required style="width: 100%; min-width: 200px;" onchange="billCode2()" :id="`billcode${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select Bill Code" class="form-control input-sm select2me productselect">
                                         <option value="">Select Code</option>
-                                        
+
                                         @if(!empty($csi_codes))
                                         @foreach($csi_codes as $code)
                                         <option value="{{$code['code']}}">{{$code['code']}} | {{$code['title']}}</option>
@@ -107,7 +107,7 @@
                                     </select>
                                     <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                     <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                    <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
+                                    <input type="hidden" name="description[]" x-value="field.description" :id="`description${index}`">
                                     <div class="text-center" style="display: none;">
                                         <p :id="`description-hidden${index}`" x-text="field.description"></p>
                                     </div>
@@ -125,12 +125,12 @@
 
                                     </select>
                                     @elseif($k=='bill_type')
-                                        <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
-                                            <option value="">Select..</option>
-                                            <option value="% Complete">% Complete</option>
-                                            <option value="Unit">Unit</option>
-                                            <option value="Calculated">Calculated</option>
-                                        </select>
+                                    <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
+                                        <option value="">Select..</option>
+                                        <option value="% Complete">% Complete</option>
+                                        <option value="Unit">Unit</option>
+                                        <option value="Calculated">Calculated</option>
+                                    </select>
                                     @elseif($k=='bill_code_detail')
                                     <select required style="width: 100%; min-width: 200px;" :id="`billcodedetail${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billcodedetail">
                                         <option value="">Select..</option>
@@ -138,13 +138,13 @@
                                         <option value="No">No</option>
                                     </select>
                                     @else
-                                        @if($k=='original_contract_amount')
-                                            <template x-if="field.bill_type!='Calculated'">
-                                            <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
-                                            </template>
-                                        @else
-                                            <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
-                                        @endif
+                                    @if($k=='original_contract_amount')
+                                    <template x-if="field.bill_type!='Calculated'">
+                                        <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                    </template>
+                                    @else
+                                    <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                    @endif
                                     @endif
 
                                     @if($k=='original_contract_amount')
@@ -222,7 +222,7 @@
         particular_array = JSON.parse('{!!$particular_json!!}');
 
         @if($csi_code_json != '')
-            csi_codes = JSON.parse('{!!$csi_code_json!!}');
+        csi_codes = JSON.parse('{!!$csi_code_json!!}');
         @endif
 
         window.addEventListener('update-csi-codes', event => {
@@ -301,7 +301,7 @@
                         document.getElementById("panelWrapIdgroup").style.transform = "";
                         var newState = new Option(this.group_name, this.group_name, true, true);
                         $("#group" + group_index).append(newState).trigger('change');
-                        this.group_name='';
+                        this.group_name = '';
                     }
 
                 },
@@ -378,10 +378,10 @@
                 setAOriginalContractAmount() {
                     selected_field_int = document.getElementById('selected_field_int').value;
                     calc_amount = document.getElementById("calc_amount").value;
-                    try{
+                    try {
                         this.fields[selected_field_int].original_contract_amount = calc_amount;
-                    }catch(o){}
-                    
+                    } catch (o) {}
+
                     setOriginalContractAmount();
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
@@ -398,8 +398,13 @@
                     RemoveCaculatedRow(field.introw);
                 },
                 EditCaculated(field) {
-                    document.getElementById('selected_field_int').value = field.introw;
-                    editCaculatedRow(field.introw);
+                    if (field.introw == undefined) {
+                        int = field.pint;
+                    } else {
+                        int = field.introw;
+                    }
+                    document.getElementById('selected_field_int').value = int;
+                    editCaculatedRow(int);
                 },
 
                 select2Dropdown(id) {
