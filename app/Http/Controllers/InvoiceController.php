@@ -23,6 +23,7 @@ use Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
 class InvoiceController extends AppController
 {
@@ -679,7 +680,7 @@ class InvoiceController extends AppController
            
             $info = (array)$info;
             $info['its_from'] = 'real';
-           
+            $info['gtype'] = '703';
             $plugin_array = json_decode($plugin_value, 1);
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
@@ -691,7 +692,8 @@ class InvoiceController extends AppController
             if(!empty($data['files'][0]))
             {
             $menus['title']="Invoice";
-            $menus['id']=1;
+            $menus['id']='Invoice';
+            $menus['full']='Invoice';
             $menus['link']="";
           
             $menus1=array();
@@ -699,9 +701,12 @@ class InvoiceController extends AppController
             $pos=1;
             foreach($data['files'] as $files)
             {
-
-                $menus1['title']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
-               $menus1['id']=$pos;
+                $menus1['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                $menus1['full']=basename($files);
+                $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
+                $menus1['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
+              
+             
                 $menus1['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                 $menus1['menu']="";
                 $menus1['type']="invoice";
@@ -710,7 +715,7 @@ class InvoiceController extends AppController
                 {
                 if(empty($docpath))
                 {
-                    $docpath  =substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
+                    $docpath  =strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
                 }
             }
                 $pos++;
@@ -722,8 +727,8 @@ class InvoiceController extends AppController
         }
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt=json_decode($constriuction_details, 1);
-            $data['docs']= $this->getDataBillCodeAttachment($tt,$doclist,$data);
-         
+            $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
+       
           $selectedDoc=array();
         $selectnm='';
         if(!empty($parentnm))
@@ -770,8 +775,10 @@ class InvoiceController extends AppController
         $pos1=0;
         $chiledmenu=array();
         $parentmenu=array();
-         $parentmenu['title']=strlen($names) > 15 ? substr($names,0,15)."..." : $names;
-            $parentmenu['id']=$pos1;
+         $parentmenu['title']=strlen($names) > 10 ? substr($names,0,10)."..." : $names;
+         $parentmenu['id']=str_replace(substr($names,0,7),' ','_');
+         $parentmenu['full']=$names;
+
              $parentmenu['link']="";
              $parentmenu['type']='billcode';
         foreach ($result[$names] as $data) {
@@ -786,8 +793,9 @@ class InvoiceController extends AppController
               
                 $emptyarray=array();
               
-                $chiledmenu['title']=strlen($data['description']) > 15 ? substr($data['description'],0,15)."..." : $data['description']; 
-                    $chiledmenu['id']=$pos1;
+                $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description']; 
+                $chiledmenu['id']=str_replace(substr($data['description'],0,7),' ','_');
+                $chiledmenu['full']=$data['description'];
                     $chiledmenu['link']="";
                     $chiledmenu['type']='billcode';
                    
@@ -795,8 +803,10 @@ class InvoiceController extends AppController
                     {
                         $datas['files'][]=$files;
                         $subchiledmenu=array();
-                        $subchiledmenu['title']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
-                            $subchiledmenu['id']=$pos1;
+                        $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
+                        $subchiledmenu['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
+                        $subchiledmenu['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                        $subchiledmenu['full']=basename($files);
                             $subchiledmenu['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                             $subchiledmenu['type']='billcode';
                             $subchiledmenu['menu']='';
@@ -813,8 +823,9 @@ class InvoiceController extends AppController
                 {
                
                 
-                 $chiledmenu['title']=strlen($data['description']) > 15 ? substr($data['description'],0,15)."..." : $data['description'];
-                     $chiledmenu['id']=$pos1;
+                 $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description'];
+                 $chiledmenu['id']=str_replace(substr($data['description'],0,7),' ','_');
+                 $chiledmenu['full']=$data['description'];
                      $chiledmenu['link']="";
                      $chiledmenu['type']='billcode';
                      $emptyarray=array();
@@ -822,8 +833,10 @@ class InvoiceController extends AppController
                      {
                         $datas['files'][]=$files;
                         $subchiledmenu=array();
-                         $subchiledmenu['title']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
-                             $subchiledmenu['id']=$pos1;
+                        $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
+                        $subchiledmenu['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
+                       $subchiledmenu['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                         $subchiledmenu['full']=basename($files);
                              $subchiledmenu['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                              $subchiledmenu['type']='billcode';
                              $subchiledmenu['menu']='';
@@ -852,9 +865,9 @@ class InvoiceController extends AppController
        // $datalist[]=$parentmenu;
        
     }
-   
-   //dd($datalist);
-    return $datalist;
+  dd($datalist);
+$datas['docs']=$datalist;
+    return $datas;
     }
 
     public function documentsPatron($link,$parentnm='',$sub='',$docpath='')
@@ -875,6 +888,7 @@ class InvoiceController extends AppController
            
             $info = (array)$info;
             $info['its_from'] = 'real';
+            $info['gtype'] = '703';
             $plugin = json_decode($info['plugin_value'], 1);
             if (isset($plugin['has_coupon']) && $plugin['has_coupon'] == 1) {
                 $is_coupon = $this->invoiceModel->getActiveCoupon($info['merchant_user_id']);
@@ -940,16 +954,21 @@ class InvoiceController extends AppController
             if(!empty($data['files'][0]))
             {
             $menus['title']="Invoice";
-            $menus['id']=1;
+            $menus['id']='Invoice';
+            $menus['full']='Invoice';
             $menus['link']="";
-           
+          
             $menus1=array();
             $menus2=array();
             $pos=1;
             foreach($data['files'] as $files)
             {
-                $menus1['title']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
-               $menus1['id']=$pos;
+                $menus1['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                $menus1['full']=basename($files);
+                $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
+                $menus1['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
+              
+             
                 $menus1['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                 $menus1['menu']="";
                 $menus1['type']="invoice";
@@ -958,7 +977,7 @@ class InvoiceController extends AppController
                 {
                 if(empty($docpath))
                 {
-                    $docpath  =substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
+                    $docpath  =strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
                 }
             }
                 $pos++;
@@ -970,7 +989,7 @@ class InvoiceController extends AppController
         }
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt=json_decode($constriuction_details, 1);
-            $data['docs']= $this->getDataBillCodeAttachment($tt,$doclist,$data);
+            $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
             $selectedDoc=array();
             $selectnm='';
             if(!empty($parentnm))
@@ -992,6 +1011,7 @@ class InvoiceController extends AppController
     }
     public function downloadSingle($link)
     {
+      
         $filePath = 'invoices/' . $link;
 
         return  redirect(Storage::disk('s3_expense')->temporaryUrl(
@@ -1003,8 +1023,11 @@ class InvoiceController extends AppController
     public function downloadZip($link)
     {
         $payment_request_id = Encrypt::decode($link);
+       
         if (strlen($payment_request_id) == 10) {
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
+            $attach_value =  $this->invoiceModel->getColumnValueWithAllRow('invoice_construction_particular', 'payment_request_id', $payment_request_id, 'attachments');
+
             $plugin_array = json_decode($plugin_value, 1);
             $source_disk = 's3_expense';
             if (File::exists(public_path('tmp/documents.zip'))) {
@@ -1018,7 +1041,23 @@ class InvoiceController extends AppController
                 $file_content = Storage::disk($source_disk)->get($source_path);
                 $zip->put(basename($file_name), $file_content);
             }
-
+           $billcode_docs= json_decode($attach_value,1);
+          
+           foreach ($billcode_docs as $items)
+            {
+               
+               $inner_data=json_decode($items['value'],1);
+               if(!empty($inner_data))
+               {
+               foreach ($inner_data as $values)
+            {
+                $source_path = 'invoices/' . basename($values);
+                $file_content = Storage::disk($source_disk)->get($source_path);
+                $zip->put(basename($values), $file_content);
+            }
+        }
+       
+           }
 
             return redirect('tmp/documents.zip');
         }
@@ -2081,10 +2120,14 @@ class InvoiceController extends AppController
                 $f+=$data['stored_materials'];
                 $retain+= $data['total_outstanding_retainage'];
                 if(empty($isattach))
-                   $isattach=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
-              
+                {
+                    $nm=substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,10);
+                    
+                  
+                   $isattach=$data['attachments'] ? strlen(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4)) < 10 ?substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4):$nm.'...':'';
+                }
                    if(empty($bill_desc))
-                   $bill_desc=strlen($data['description']) > 15 ? substr($data['description'],0,15)."..." : $data['description'];
+                   $bill_desc=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description'];
                
             }else  if(!empty($data['group']) && $data['bill_code_detail']=='Yes'){
                 if($pos==0)
@@ -2106,12 +2149,19 @@ class InvoiceController extends AppController
                 $single_data = array();
                 $single_data['a']=$data['bill_code'];
                 $single_data['b']=$data['description'];
-                $single_data['group_name']=$names;
+                $single_data['group_name']=strlen($names) > 10 ? substr($names,0,10)."..." : $names;
                 $single_data['c']=number_format($data['current_contract_amount'], 2);
                 $single_data['d']=number_format($data['previously_billed_amount'], 2);
                 $single_data['e']=number_format($data['current_billed_amount'], 2);
                 $single_data['f']=number_format($data['stored_materials'], 2);
-                $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
+               // $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
+                $nm=substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,10);
+                    
+                  
+                $single_data['attachment']=$data['attachments'] ? strlen(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4)) < 10 ?substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4):$nm.'...':'';
+            
+              
+              
                 $single_data['g']=number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                $per=0;
                 if ($data['current_contract_amount'] > 0)
@@ -2160,7 +2210,12 @@ class InvoiceController extends AppController
                 $single_data['e']=number_format($data['current_billed_amount'], 2);
                 $single_data['f']=number_format($data['stored_materials'], 2);
                 $single_data['g']=number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
-                $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
+              //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
+                $nm=substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,10);
+                    
+                  
+                $single_data['attachment']=$data['attachments'] ? strlen(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4)) < 10 ?substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4):$nm.'...':'';
+            
                 $per=0;
                 if ($data['current_contract_amount'] > 0)
                 $per= number_format(($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']) / $data['current_contract_amount'], 2);

@@ -63,10 +63,9 @@
                 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
                 <div class="sidebar-toggler">
                 <a href="javascript:;">
-                    <i id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px;color: rgb(99, 102, 158);" 
-                    onMouseOver="this.style.color='rgb(99, 102, 158)'"
-                    onMouseOut="this.style.color='rgb(99, 102, 158)'"
-                    class="sidebartoggle fa fa-chevron-circle-left fa-inverse"></i>
+                    <img  id="side-bar-toggle" style="position:fixed; bottom:50px; font-size: 25px; margin-left: 32px; width:32px;color: rgb(99, 102, 158);" 
+                    src="<?php echo '/assets/admin/layout/img/circled-chevron-left.png'; ?>" alt="open"
+                    class="sidebartoggle">
                 </a>
                 </div>
                 <!-- END SIDEBAR TOGGLER BUTTON -->

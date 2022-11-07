@@ -37,7 +37,7 @@ class OrderController extends Controller
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
 
-    public function create($errors = null, $link = null, $type = null, Request $request)
+    public function create($version ='',$errors = null, $link = null, $type = null, Request $request)
     {
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -87,7 +87,7 @@ class OrderController extends Controller
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
 
-        return view('app/merchant/order/' . $title, $data);
+        return view('app/merchant/order/' . $title.$version, $data);
     }
 
     public function save(Request $request)

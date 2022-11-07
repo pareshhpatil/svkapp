@@ -125,12 +125,12 @@
 
                                     </select>
                                     @elseif($k=='bill_type')
-                                    <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
-                                        <option value="">Select..</option>
-                                        <option value="% Complete">% Complete</option>
-                                        <option value="Unit">Unit</option>
-                                        <option value="Calculated">Calculated</option>
-                                    </select>
+                                        <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
+                                            <option value="">Select..</option>
+                                            <option value="% Complete">% Complete</option>
+                                            <option value="Unit">Unit</option>
+                                            <option value="Calculated">Calculated</option>
+                                        </select>
                                     @elseif($k=='bill_code_detail')
                                     <select required style="width: 100%; min-width: 200px;" :id="`billcodedetail${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billcodedetail">
                                         <option value="">Select..</option>
@@ -138,13 +138,13 @@
                                         <option value="No">No</option>
                                     </select>
                                     @else
-                                    @if($k=='original_contract_amount')
-                                    <template x-if="field.bill_type!='Calculated'">
-                                    <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
-                                    </template>
-                                    @else
-                                    <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
-                                    @endif
+                                        @if($k=='original_contract_amount')
+                                            <template x-if="field.bill_type!='Calculated'">
+                                            <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                            </template>
+                                        @else
+                                            <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                        @endif
                                     @endif
 
                                     @if($k=='original_contract_amount')
@@ -475,6 +475,7 @@
                         this.count = numrow;
 
                         this.select2Dropdown(numrow);
+                        this.saveParticulars();
                         // @this.set('particulars', this.fields);
 
 

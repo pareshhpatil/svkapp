@@ -17,7 +17,6 @@ class ContractParticular extends Model
         'contract_code',
         'merchant_id',
         'version',
-        'contract_amount',
         'customer_id',
         'project_id',
         'contract_amount',

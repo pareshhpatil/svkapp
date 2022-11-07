@@ -135,6 +135,39 @@ function getCGItextReturns(defaultval, type, numrow = 1) {
     return produ_text;
 }
 
+function getCGItextReturnsV2(defaultval, type, numrow = 1) {
+    if (typeof type === 'undefined') {
+        type = '';
+    }
+    var exist = 0;
+    var produ_text = '<td class="col-id-no" scope="row">' +
+        '<select style="width:100%;" required id="bill_code' + numrow + '" ' +
+        'onchange="billCode(this.value,' + numrow + ');"  name="' + type + 'bill_code[]" data-cy="particular_product' + numrow + '" ' +
+        'data-placeholder="Type or Select" class="form-control input-sm productselect" >';
+    if (csi_codes != null) {
+        $.each(csi_codes, function (value, arr) {
+            var selected = '';
+            try {
+                if (arr.code != '') {
+                    if (defaultval == arr.code) {
+                        selected = 'selected';
+                        exist = 1;
+                    }
+
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.code + '">' + arr.title + ' | ' + arr.code + '</option>';
+                }
+            } catch (o) {
+            }
+        });
+    }
+    if (exist == 0) {
+        produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
+    }
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" class="lable-heading"></p></div></td>';
+
+    return produ_text;
+}
+
 function AddInvoiceParticularRow(defaultval) {
     //var x = document.getElementById("particular_table").rows.length;
     if (typeof defaultval === 'undefined') {
@@ -229,7 +262,7 @@ function AddInvoiceParticularRowConstruction(defaultval) {
 
 
             if (index == 'bill_code') {
-                product_text = getCGItext(defaultval, '', numrow);
+                product_text = getCGItextV2(defaultval, '', numrow);
                 row = row + product_text;
             }
             else if (index == 'bill_type') {
@@ -383,6 +416,93 @@ function AddInvoiceParticularRowOrder(defaultval) {
     mainDiv.appendChild(newDiv);
 
     setAdvanceDropdownOrder(numrow);
+}
+
+function AddInvoiceParticularRowOrderV2(defaultval) {
+    //var x = document.getElementById("particular_table").rows.length;
+    if (typeof defaultval === 'undefined') {
+        defaultval = '';
+    }
+    var rate_exist = false;
+    var tax_amt_readonly = '';
+    var discount_amt_readonly = '';
+    var mainDiv = document.getElementById('new_particular');
+    var newDiv = document.createElement('tr');
+    var i;
+    var row = '';
+    read_cols = ["retainage_amount"];
+    var numrow = Number($('input[name="particular_id[]"]').length + 1);
+    while (_('pint' + numrow)) {
+        numrow = Number(numrow + 1);
+    }
+    particular_col_array = {
+        "bill_code": "Bill Code",
+        "original_contract_amount": "Original Contract Amount",
+        "unit": "Unit",
+        "rate": "Rate",
+        "change_order_amount": "Chnage Order Amount",
+        "order_description": "Description",
+    };
+    $.each(particular_col_array, function (index, value) {
+        if (index != 'sr_no') {
+            readonly = '';
+            if (read_cols.includes(index)) {
+                readonly = 'readonly';
+            }
+            if (index == 'bill_code') {
+                product_text = getCGItextReturnsV2(defaultval, '', numrow);
+                row = row + product_text;
+            }
+            else if (index == 'original_contract_amount') {
+                row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
+            }
+            else if (index == 'unit') {
+                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            }
+            else if (index == 'rate') {
+                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            }
+            else if (index == 'change_order_amount') {
+                row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            }
+            else if (index == 'order_description'){
+                row = row + '<td><input type="text" data-cy="particular_' + index + numrow + '" className="form-control input-sm" value="" id="order_description'+ numrow +'" name="' + index + '[]" class="form-control input-sm"/></td>'
+            }
+            else {
+                row = row + getParticularValue(index, numrow, readonly);
+            }
+        }
+    });
+    row = row + '<input type="hidden" value=0 id="calculated_perc' + numrow + '" name="calculated_perc[]">' +
+        '<input type="hidden" value=0 id="calculated_row' + numrow + '" name="calculated_row[]">' +
+        '<input type="hidden" id="description-hidden' + numrow + '" name="description[]" value="' + numrow + '">' +
+        '<input type="hidden" id="pint' + numrow + '" name="pint[]" value="' + numrow + '">' +
+        '<input type="hidden" name="product_gst[]" value="" data-cy="product_gst' + numrow + '"> ' +
+        '<input type="hidden" name="particular_id[]" value="0"><td class="td-c">' +
+        '<button data-cy="particular-remove'+ numrow +'" onclick="$(this).closest(\'tr\').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>' +
+        ' <span id="addRowButton'+numrow+'">' +
+        '<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>' +
+        '</span>'+
+        '</td>';
+    newDiv.innerHTML = row;
+    mainDiv.appendChild(newDiv);
+
+    removePreviousRowAddButton(numrow);
+
+    setAdvanceDropdownOrder(numrow);
+}
+
+function removePreviousRowAddButton(numrow){
+    let oldrow = numrow - 1;
+    $('#addRowButton' + oldrow).html('');
+}
+
+function addLastRowAddButton(){
+    // let oldrow = numrow ;
+    // console.log(oldrow, numrow, $('input[name="pint[]"]').length);
+    // if (oldrow == $('input[name="pint[]"]').length )
+    console.log($('input[name="pint[]"]').length);
+        $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
 }
 
 function addCaculatedRow(value, row) {
@@ -1223,7 +1343,7 @@ function calculatedRowSummary() {
 
 function calculatedRowSummaryContract() {
     $('input[name="pint[]"]').each(function (indx, arr) {
-        int = $(this).val();
+        int = $(this).val();console.log(int);
         bill_type = _('bill_type' + int).value;
         if (bill_type == 'Calculated') {
             rows = _('calculated_row' + int).value;
@@ -1265,6 +1385,34 @@ function calculateRetainage() {
         int = $(this).val();
         total = total + getamt(document.getElementById('original_contract_amount' + int).value)
     });
+    calculatedRowSummaryContract()
+    try {
+        document.getElementById('particulartotal1').value = updateTextView1(total);
+    }
+    catch (o) {
+
+    }
+    document.getElementById('contract_amount').value = updateTextView1(total);
+}
+
+function calculateRetainageV2() {
+    var total = 0;
+    try {
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            document.getElementById('retainage_amount' + int).value = updateTextView1(getamt(document.getElementById('retainage_percent' + int).value) * getamt(document.getElementById('original_contract_amount' + int).value) / 100);
+            total = total + getamt(document.getElementById('original_contract_amount' + int).value);
+            if(int === $('input[name="pint[]"]').length){
+
+                $('#addRowButton'+int).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
+            }
+        });
+    }
+    catch (o) {
+
+    }
+
+
     calculatedRowSummaryContract()
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);

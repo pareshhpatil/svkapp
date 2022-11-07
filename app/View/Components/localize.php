@@ -6,7 +6,7 @@ use Illuminate\View\Component;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
 
-class localize extends Component
+class Localize extends Component
 {
     public $date;
     public $type;

@@ -13,19 +13,19 @@ if ($info['user_type'] == 'merchant') {
 
 <style>
     .tabbable-line>.nav-tabs>li.active {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
         position: relative;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.active>a {
         border: 0;
-        color: #18aebf !important;
+        color: #3E4AA3 !important;
     }
 
     .tabbable-line>.nav-tabs>li.open,
     .tabbable-line>.nav-tabs>li:hover {
-        border-bottom: 4px solid #18aebf !important;
+        border-bottom: 4px solid #3E4AA3 !important;
     }
 </style>
 
@@ -307,7 +307,7 @@ if ($info['user_type'] == 'merchant') {
                     <tr>
                         <td colspan="2" class=" border border-gray-500 px-2 py-2 text-left">
 
-                            <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 15 ? substr($item['b'],0,15)."..." : $item['b']}}/{{$item['group_name']}}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif </p>
+                            <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b']}}/{{$item['group_name']}}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif </p>
 
 
                         </td>
@@ -351,9 +351,9 @@ if ($info['user_type'] == 'merchant') {
                                 </td>
                                 <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
                                     @if(isset( $item['group_name']))
-                                    <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{$item['group_name']}}/{{ strlen($item['b']) > 15 ? substr($item['b'],0,15)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
+                                    <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{$item['group_name']}}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
                              @else
-                             <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 15 ? substr($item['b'],0,15)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
+                             <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
                              
                                     @endif
                                   </td>

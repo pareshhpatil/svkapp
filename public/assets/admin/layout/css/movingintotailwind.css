@@ -164,20 +164,24 @@ h1, h2, h3, h4, h5, h6 {
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a {
     background: #ffffff;
     border-top-color: transparent;
-    color: #3E4AA3;
+    /* color: #3E4AA3; */
     font-weight: 600;
     font-size: 1.1rem;
 }
 
 
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > i, .page-sidebar .page-sidebar-menu > li.active > a > i, .page-sidebar .page-sidebar-menu > li.active.open > a > i {
-    color: #3E4AA3;
+    /* color: #3E4AA3; */
 }
 
 
 .page-sidebar .page-sidebar-menu > li.active > a:hover, .page-sidebar .page-sidebar-menu > li.active.open > a:hover {
     background: #ffffff;
-    color: #3E4AA3;
+    /* color: #3E4AA3; */
+    /* background: linear-gradient(90deg, rgba(78, 80, 121, .964321), rgba(49, 49, 70, .947514)) !important;
+    border-radius: 0 4px 4px 0 !important;
+    border-left: 4px solid #8589dc !important;
+    background-color: rgb(42, 42, 58) !important; */
 }
 
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a {

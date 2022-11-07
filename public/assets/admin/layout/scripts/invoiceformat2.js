@@ -451,12 +451,15 @@ function addRowinCalcTable(ind) {
     clearCalcTable();
     calcRowInt = ind
     var mainDiv = document.getElementById('new_particular1');
+
     $('input[name="pint[]"]').each(function (indx, arr) {
         var newDiv = document.createElement('tr');
         row = '';
-        int = $(this).val();
+        int = ($(this).val() === null || $(this).val() == ''  ) ? 0 : $(this).val();
+
         bint = Number(int) + 2;
         if (ind != int) {
+            console.log('original_contract_amount' + int);
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
             var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
@@ -577,7 +580,7 @@ function addbillcode() {
 
                     } catch (o) { }
                     $('select[name="bill_code[]"]').map(function () {
-                        this.append(new Option(data[0] + ' |' + data[1], data[0])); // bill code
+                        this.append(new Option(data[0] + ' |' + data[1], data[0], true, true)); // bill code
                     }).get();
 
                     $('select[name="bill_code[]"]').each(function (indx, arr) {
@@ -587,8 +590,12 @@ function addbillcode() {
                         }
 
                     });
+                    $('#bill_code' + new_bill_index).trigger('change')
+                    particularray[new_bill_index].bill_code = data[0]
+                    particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
 
                     if ($('#bill_code' + new_bill_index).find("option[value='" + data[0] + "']").length) {
+                        console.log('in trigger code');
                         $('#bill_code' + new_bill_index).val(data[0]).trigger('change');
                     }
                 }
@@ -1243,12 +1250,16 @@ function calculatedRowSummary() {
 
 function calculatedRowSummaryContract() {
     $('input[name="pint[]"]').each(function (indx, arr) {
-        int = $(this).val();
+        let int = $(this).val();
+        if (int === '' || int === null) int = 0;
         bill_type = _('bill_type' + int).value;
         if (bill_type == 'Calculated') {
             rows = _('calculated_row' + int).value;
             per = _('calculated_perc' + int).value;
-            let arr1 = JSON.parse(rows);
+            let arr1 = [];
+			if(rows!= ''){
+				 arr1 = JSON.parse(rows);
+			}
             ocamount = 0;
             kbamount = 0;
             $(arr1).each(function (ri, rv) {
@@ -1283,6 +1294,7 @@ function calculateRetainage() {
     var total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
+        if (int === '' || int === null) int = 0;
         total = total + getamt(document.getElementById('original_contract_amount' + int).value)
     });
     calculatedRowSummaryContract()
@@ -2919,6 +2931,48 @@ function preview() {
     });
 }
 
+function previewv5(previewArray) {
+
+    $('#pr_project_name').html($('#project_name').val());
+    $('#pr_company_name').html($('#customer_code').val());
+    $('#pr_contract_number').html($('#contract_number').val());
+    $('#pr_billing_frequency').html( $("#billing_frequency option:selected").text() );
+    $('#pr_contract_date').html($('#contract_date').val());
+    $('#preview_data').html('');
+
+    let mainDiv = document.getElementById('preview_data');
+    for (let p=0; p < previewArray.length; p++) {
+        let newDiv = document.createElement('tr');
+        let row = '';
+
+        let billTypeArr = ['% Complete', 'Unit', 'Calculated'];
+
+        if (previewArray[p].bill_code && billTypeArr.includes(previewArray[p].bill_type)
+            && previewArray[p].original_contract_amount !== null) {
+            let original_contract_amount = getamt(previewArray[p].original_contract_amount);
+            let retainge_percentage = (previewArray[p].retainage_percent === 0) ? '' : getamt(previewArray[p].retainage_percent)
+            let retainage_amount = (previewArray[p].retainage_amount === 0) ? '' : getamt(previewArray[p].retainage_amount)
+            let group = (previewArray[p].group === null) ? '' : previewArray[p].group
+            let cost_code = (previewArray[p].cost_code === null) ? '' : previewArray[p].cost_code
+            let cost_type = (previewArray[p].cost_type === null) ? '' : previewArray[p].cost_type
+            row = '<td class="td-c">' + previewArray[p].bill_code_text +
+                '</td><td class="td-c">' + previewArray[p].bill_type +
+                '</td><td class="td-c">' + original_contract_amount +
+                '</td><td class="td-c">' + retainge_percentage +
+                '</td><td class="td-c">' + retainage_amount +
+                '</td><td class="td-c">' + previewArray[p].project_code +
+                '</td><td class="td-c">' + cost_code +
+                ' </td><td class="td-c">' + cost_type +
+                '</td> <td class="td-c">' + group +
+                '</td><td class="td-c"> ' + previewArray[p].bill_code_detail +
+                '</td>';
+            newDiv.innerHTML = row;
+            mainDiv.appendChild(newDiv);
+        }
+    }
+}
+
+
 function getContractParticularsData() {
     let particulars = [];
     let billTypeArr = ['% Complete', 'Unit', 'Calculated'];
@@ -2979,6 +3033,7 @@ function getContractParticularsData() {
 
 
 function select2Dropdowns(id) {
+
     try {
         $('#billcode' + id).select2({
             insertTag: function (data, tag) {
@@ -2989,6 +3044,9 @@ function select2Dropdowns(id) {
             if (document.getElementById('prolist' + pind)) { } else {
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
             }
+        }).on('change', function (e){
+            var data = $('#billcode' + id).select2('val');
+            console.log(data);
         });
     } catch (o) { }
 
@@ -3016,3 +3074,40 @@ function select2Dropdowns(id) {
         });
     } catch (o) { }
 }
+
+/*
+function particularsDropdowns(id, fields) {
+
+    try {
+        $('#billcode' + id).select2({
+            insertTag: function (data, tag) {
+
+            }
+        }).on('select2:open', function (e) {
+            pind = $(this).index();
+            if (document.getElementById('prolist' + pind)) { } else {
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+            }
+        }).on('change', function (e){
+            var data = $('#billcode' + id).select2('val');
+            fields[id].bill_code = data;
+
+        });
+    } catch (o) { }
+
+
+    try {
+        $('#group' + id).select2({
+            insertTag: function (data, tag) {
+
+            }
+        }).on('select2:open', function (e) {
+            pind = $(this).index();
+            if (document.getElementById('grouplist' + pind)) { } else {
+                $('.select2-results').append('<div class="wrapper" id="grouplist' + pind + '" > <a class="clicker" onclick="setgroup(' + id + ');">Add new group</a> </div>');
+            }
+        });
+    } catch (o) { }
+
+    return fields;
+}*/

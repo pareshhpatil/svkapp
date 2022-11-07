@@ -325,12 +325,13 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
   Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703');
+  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
+  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/document/{link}', 'InvoiceController@documents');
   Route::get('invoice/document/{link}/{name}', 'InvoiceController@documents');
   Route::get('invoice/document/{link}/{parent}/{sub}', 'InvoiceController@documents');
-   Route::get('invoice/document/{link}/{parent}/{sub}/{name}', 'InvoiceController@documents');
-  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
-  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
+  Route::get('invoice/document/{link}/{parent}/{sub}/{name}', 'InvoiceController@documents');
+
   
   Route::get('invoice/bulkview/{link}', 'InvoiceController@bulkview');
   Route::get('invoice/download/{link}', 'InvoiceController@download');
@@ -358,15 +359,18 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
   Route::any('contract/save', 'ContractController@save')->name('save.contract');
   Route::any('contract/saveV4', 'ContractController@saveV4')->name('save.contractV4');
+  Route::any('contract/saveV5', 'ContractController@saveV5')->name('save.contractV4');
   Route::any('contract/list', 'ContractController@list')->name('list.contract');
   Route::any('contract/delete/{link}', 'ContractController@delete')->name('delete.contract');
   Route::any('contract/getProjectDetails/{project_id}', 'ContractController@getprojectdetails')->name('getprojectdetails.contract');
   Route::any('contract/updatesave/', 'ContractController@updatesave')->name('updatesave.contract');
   Route::any('contract/updatesaveV4/', 'ContractController@updatesaveV4')->name('updatesave.contractV4');
+  Route::any('contract/updatesaveV5/', 'ContractController@updatesaveV5')->name('updatesave.contractV5');
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
   
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
+  Route::any('order/create{version}', 'OrderController@create')->name('create.orderv2');
   Route::any('order/update/{link}', 'OrderController@update')->name('update.order');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
   Route::any('order/save', 'OrderController@save')->name('save.order');
@@ -396,6 +400,8 @@ Route::group(['prefix' => 'patron'], function () {
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');
+  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
+  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/download/{link}', 'InvoiceController@downloadPatron');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@downloadPatron');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@downloadPatron');
@@ -403,8 +409,7 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('invoice/document/{link}/{name}', 'InvoiceController@documentsPatron');
   Route::get('invoice/document/{link}/{parent}/{sub}', 'InvoiceController@documentsPatron');
   Route::get('invoice/document/{link}/{parent}/{sub}/{name}', 'InvoiceController@documentsPatron');
-  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
-  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
+
 
 });
 

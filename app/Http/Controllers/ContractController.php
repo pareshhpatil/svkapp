@@ -153,6 +153,15 @@ class ContractController extends Controller
         return redirect('merchant/contract/list')->with('success', "Contract has been created");
     }
 
+    public function saveV5(Request $request)
+    {
+        $id = Encrypt::decode( $request->link );
+        $contract = ContractParticular::find($id);
+        $contract->update(['status' => 1]);
+
+        return redirect('merchant/contract/list')->with('success', "Contract has been created");
+    }
+
     public function list(Request $request)
     {
         $dates = Helpers::setListDates();
@@ -287,6 +296,24 @@ class ContractController extends Controller
     public function updatesaveV4(Request $request)
     {
         $id = $request->link;
+        $main_array = [];
+        $retain_amount = 0;
+        $formData = $request->form_data;
+
+        $contract = ContractParticular::find($id);
+        $contract->update([
+            'particulars' => $formData, 'project_id' => $request->project_id,
+            'contract_amount' => str_replace(',', '', $request->totalcost),
+            'contract_code' => $request->contract_code, 'billing_frequency' => $request->billing_frequency,
+            'contract_date' => Helpers::sqlDate($request->contract_date), 'bill_date' => Helpers::sqlDate($request->bill_date)
+        ]);
+
+        return redirect('merchant/contract/list')->with('success', "Contract has been updated");
+    }
+
+    public function updatesaveV5(Request $request)
+    {
+        $id = Encrypt::decode($request->link);
         $main_array = [];
         $retain_amount = 0;
         $formData = $request->form_data;
