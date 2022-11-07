@@ -34,6 +34,7 @@ class Create extends Component
     public $version = 'v5';
     public $project = null;
     public $project_name = null;
+    public $title = null;
 
     public $masterModel;
 
