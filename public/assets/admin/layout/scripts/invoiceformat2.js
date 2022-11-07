@@ -3023,6 +3023,7 @@ function getContractParticularsData() {
 
 
             particular.pint = document.getElementsByName('pint[]')[int].value;
+            particular.introw = document.getElementsByName('pint[]')[int].value;
             // particular.group = document.getElementById('select2-group' + num + '-container').innerHTML;
 
             particular.bill_code_detail = (document.getElementById('select2-billcodedetail' + num + '-container').innerHTML === 'Yes') ? 'Yes' : 'No';
