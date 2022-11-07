@@ -261,6 +261,7 @@ function AddInvoiceParticularRowConstruction(defaultval) {
 
 
 
+            
             if (index == 'bill_code') {
                 product_text = getCGItext(defaultval, '', numrow);
                 row = row + product_text;
