@@ -121,7 +121,7 @@
                         <li class="dropdown ">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="" data-close-others="true">
                                 <i class="fa fa-user-circle"></i>
-                                <span><?php echo $ml['email_id']; ?> </span>
+                                <span><?php echo $this->talk_email_id; ?> </span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
