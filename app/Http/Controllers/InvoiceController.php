@@ -699,9 +699,12 @@ class InvoiceController extends AppController
             $menus1=array();
             $menus2=array();
             $pos=1;
+          
             foreach($data['files'] as $files)
             {
-                $menus1['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+
+
+                $menus1['id']=str_replace(' ','_',substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7));
                 $menus1['full']=basename($files);
                 $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
                 $menus1['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
@@ -766,7 +769,7 @@ class InvoiceController extends AppController
         foreach ($tt as $element) {
             $result[$element['group']][] = $element;
         }
-       
+    
         $single_data1 = array();
        
        foreach ($group_names as $names) {
@@ -776,7 +779,7 @@ class InvoiceController extends AppController
         $chiledmenu=array();
         $parentmenu=array();
          $parentmenu['title']=strlen($names) > 10 ? substr($names,0,10)."..." : $names;
-         $parentmenu['id']=str_replace(substr($names,0,7),' ','_');
+         $parentmenu['id']=str_replace(' ','_',substr($names,0,7));
          $parentmenu['full']=$names;
 
              $parentmenu['link']="";
@@ -794,7 +797,7 @@ class InvoiceController extends AppController
                 $emptyarray=array();
               
                 $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description']; 
-                $chiledmenu['id']=str_replace(substr($data['description'],0,7),' ','_');
+                $chiledmenu['id']=str_replace(' ','_',substr($data['description'],0,7));
                 $chiledmenu['full']=$data['description'];
                     $chiledmenu['link']="";
                     $chiledmenu['type']='billcode';
@@ -805,7 +808,7 @@ class InvoiceController extends AppController
                         $subchiledmenu=array();
                         $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
                         $subchiledmenu['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
-                        $subchiledmenu['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                        $subchiledmenu['id']=str_replace(' ','_',substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7));
                         $subchiledmenu['full']=basename($files);
                             $subchiledmenu['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                             $subchiledmenu['type']='billcode';
@@ -824,7 +827,7 @@ class InvoiceController extends AppController
                
                 
                  $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description'];
-                 $chiledmenu['id']=str_replace(substr($data['description'],0,7),' ','_');
+                 $chiledmenu['id']=str_replace(' ','_',substr($data['description'],0,7));
                  $chiledmenu['full']=$data['description'];
                      $chiledmenu['link']="";
                      $chiledmenu['type']='billcode';
@@ -835,7 +838,7 @@ class InvoiceController extends AppController
                         $subchiledmenu=array();
                         $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
                         $subchiledmenu['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
-                       $subchiledmenu['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                       $subchiledmenu['id']=str_replace(' ','_',substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7));
                          $subchiledmenu['full']=basename($files);
                              $subchiledmenu['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
                              $subchiledmenu['type']='billcode';
@@ -865,7 +868,7 @@ class InvoiceController extends AppController
        // $datalist[]=$parentmenu;
        
     }
-  dd($datalist);
+
 $datas['docs']=$datalist;
     return $datas;
     }
@@ -963,7 +966,7 @@ $datas['docs']=$datalist;
             $pos=1;
             foreach($data['files'] as $files)
             {
-                $menus1['id']=str_replace(substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7),' ','_');
+                $menus1['id']=str_replace(' ','_',substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7));
                 $menus1['full']=basename($files);
                 $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
                 $menus1['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
