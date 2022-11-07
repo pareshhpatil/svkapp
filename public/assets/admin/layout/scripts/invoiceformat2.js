@@ -1176,7 +1176,10 @@ function calculatedRowSummary() {
         if (bill_type == 'Calculated') {
             rows = _('calculated_row' + int).value;
             per = _('calculated_perc' + int).value;
-            let arr1 = JSON.parse(rows);
+            let arr1 = [];
+			if(rows!= ''){
+				 arr1 = JSON.parse(rows);
+			}
             ocamount = 0;
             kbamount = 0;
             acoamount = 0;
