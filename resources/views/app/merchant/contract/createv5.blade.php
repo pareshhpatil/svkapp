@@ -28,7 +28,7 @@
 @section('content')
     <div>
 
-        <div class="page-content">
+        {{--<div class="page-content">
             <!-- BEGIN PAGE HEADER-->
             <div class="page-bar">
                 <span class="page-title" style="float: left;">{{$title}}</span>
@@ -37,11 +37,11 @@
             </div>
             <!-- END PAGE HEADER-->
             <!-- BEGIN PAGE CONTENT-->
-            <div class="row">
+            <div class="row">--}}
                 @livewire('contract.create', ['contract_id' => $contract_id])
                 <!-- END PAGE CONTENT-->
-            </div>
-        </div>
+            {{--</div>
+        </div>--}}
         <!-- END CONTENT -->
 
     </div>
