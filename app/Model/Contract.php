@@ -87,6 +87,7 @@ class Contract extends ParentModel
         $project_cond
         AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
         AND a.is_active ='1'
+        AND a.status ='1'
         ORDER BY a.created_date desc");
 
         return $retObj;
