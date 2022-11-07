@@ -1,5 +1,5 @@
 <div class="page-sidebar-wrapper">
-    <div class="container_2 page-sidebar1 navbar-collapse collapse" style="max-width: 151px;">
+    <div class="container_2 page-sidebar1 navbar-collapse collapse" >
 
         <ul class="tree">
           @isset($docs)
@@ -8,7 +8,7 @@
             
             <a onclick="myFunction('{{$row['id']}}','{{$row['id']}}')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row['full']}}">
               <label   id="l{{$row['id']}}" class=" tree_label @if(in_array($row['title'], $selectedDoc)) active1  @endif" for="{{$row['title']}}">{{$row['title']}}</label>
-              <div id="arrow{{$row['id']}}" style="float: right;" class='@if(in_array($row['title'], $selectedDoc))fa fa-angle-down  active @else fa fa-angle-right @endif'></div>
+              <div id="arrow{{$row['id']}}" style="float: right;" class='@if(in_array($row['title'], $selectedDoc))fa fa-angle-down  active1 @else fa fa-angle-right @endif'></div>
             </a>
               @if(!empty($row['menu']))
               <ul id="ul{{$row['id']}}" style="display:@if(in_array($row['title'], $selectedDoc)) block @else none  @endif">
@@ -16,11 +16,11 @@
                 <li >
                   @if(!empty($row2['menu']))
                   <a onclick="myFunction('{{$row['id']}}','{{$row2['id']}}')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">
-                  <label  for="{{$row2['title']}}" id="l{{$row2['id']}}"  class=" tree_label @if(in_array($row2['title'], $selectedDoc)) active  @endif">{{$row2['title']}}</label>
-                  <div id="arrow{{$row2['id']}}" style="float: right;" class='@if(in_array($row2['title'], $selectedDoc))fa fa-angle-down  active @else fa fa-angle-right  @endif'></div>
+                  <label  for="{{$row2['title']}}" id="l{{$row2['id']}}"  class=" tree_label @if(in_array($row2['title'], $selectedDoc)) active1  @endif">{{$row2['title']}}</label>
+                  <div id="arrow{{$row2['id']}}" style="float: right;" class='@if(in_array($row2['title'], $selectedDoc))fa fa-angle-down  active1 @else fa fa-angle-right  @endif'></div>
                   </a>
                   @else
-                  <a class=" @if(in_array($row2['title'], $selectedDoc)) aclass active  @endif" href="@if($row2['link']!='')#tab_{{$row2['link']}}@else javascript:; @endif" data-toggle="tab">
+                  <a  id="a{{$row2['id']}}" class=" @if(in_array($row2['title'], $selectedDoc)) aclass active1  @endif" href="@if($row2['link']!='')#tab_{{$row2['link']}}@else javascript:; @endif" data-toggle="tab">
                   <span onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">{{$row2['title']}}</span>
                   </a>
                   @endif
@@ -28,7 +28,7 @@
                   <ul id="ul{{$row2['id']}}" style="display:@if(in_array($row2['title'], $selectedDoc)) block @else none  @endif">
                     @foreach ($row2['menu'] as $row3)
                     <li onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','{{$row3['id']}}');" class="popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row3['full']}}">
-                      <a class=" @if(in_array($row3['title'], $selectedDoc)) aclass active  @endif" href="@if($row3['link']!='')#tab_{{$row3['link']}}@else javascript:; @endif" data-toggle="tab">
+                      <a id="a{{$row3['id']}}" class=" @if(in_array($row3['title'], $selectedDoc)) aclass active1   @endif" href="@if($row3['link']!='')#tab_{{$row3['link']}}@else javascript:; @endif" data-toggle="tab">
                       <span class="tree_label1"  >{{$row3['title']}}</span>
                       </a>
                     </li>
@@ -99,7 +99,7 @@ $('div.container_2 label').removeClass('active');
 $('div.container_2 li').removeClass('active1');
 $('div.container_2 li').removeClass('active'); 
 $('div.container_2 a').removeClass('aclass'); 
-$('div.container_2 a').removeClass('active'); 
+$('div.container_2 a').removeClass('active1'); 
 $('div.container_2 div').removeClass('active'); 
 $('div.container_2 div').removeClass('active1'); 
 
@@ -113,19 +113,29 @@ $('div.container_2 div').removeClass('active1');
        }
        if(c!='')
        {
-      
+        if(s=='')
+       {
+       
+        var ele=document.getElementById("a"+c);
+    
+    ele.classList.add("active1");
+     
+       }else
+       {
     var ele=document.getElementById("l"+c);
-    document.getElementById("arrow"+c).classList.add('active');
-    ele.classList.add("active");
+    document.getElementById("arrow"+c).classList.add('active1');
+     ele.classList.add("active1");
+       }
     
        }
-    //    if(s!='')
-    //    {
+       if(s!='')
+       {
        
-    //    var ele= document.getElementById(""+s);
-    //    ele.className = " open ";
+        var ele=document.getElementById("a"+s);
+    
+    ele.classList.add("active1");
      
-    //    }
+       }
     }
 
 
