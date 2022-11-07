@@ -199,7 +199,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                <a href="http://swipez.prod/merchant/profile/settings">
+                                <a href="/merchant/profile/settings">
                                         <i class="fa fa-cog"></i> Setting </a>
                                 </li>
                                 <li>
