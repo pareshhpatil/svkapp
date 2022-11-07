@@ -6,7 +6,7 @@
           @foreach ($docs as $row)
             <li >
             
-            <a onclick="myFunction('{{$row['id']}}','{{$row['id']}}')" class="popovers" data-placement="left" data-container="body" data-trigger="hover"  data-content="{{$row['full']}}">
+            <a onclick="myFunction('{{$row['id']}}','{{$row['id']}}')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row['full']}}">
               <label   id="l{{$row['id']}}" class=" tree_label @if(in_array($row['title'], $selectedDoc)) active1  @endif" for="{{$row['title']}}">{{$row['title']}}</label>
               <div id="arrow{{$row['id']}}" style="float: right;" class='@if(in_array($row['title'], $selectedDoc))fa fa-angle-down  active @else fa fa-angle-right @endif'></div>
             </a>
@@ -15,19 +15,19 @@
                 @foreach ($row['menu'] as $row2)
                 <li >
                   @if(!empty($row2['menu']))
-                  <a onclick="myFunction('{{$row['id']}}','{{$row2['id']}}')" class="popovers" data-placement="left" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">
+                  <a onclick="myFunction('{{$row['id']}}','{{$row2['id']}}')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">
                   <label  for="{{$row2['title']}}" id="l{{$row2['id']}}"  class=" tree_label @if(in_array($row2['title'], $selectedDoc)) active  @endif">{{$row2['title']}}</label>
                   <div id="arrow{{$row2['id']}}" style="float: right;" class='@if(in_array($row2['title'], $selectedDoc))fa fa-angle-down  active @else fa fa-angle-right  @endif'></div>
                   </a>
                   @else
                   <a class=" @if(in_array($row2['title'], $selectedDoc)) aclass active  @endif" href="@if($row2['link']!='')#tab_{{$row2['link']}}@else javascript:; @endif" data-toggle="tab">
-                  <span onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','');" class="tree_label1  popovers"  data-placement="left" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">{{$row2['title']}}</span>
+                  <span onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">{{$row2['title']}}</span>
                   </a>
                   @endif
                   @if(!empty($row2['menu']))
                   <ul id="ul{{$row2['id']}}" style="display:@if(in_array($row2['title'], $selectedDoc)) block @else none  @endif">
                     @foreach ($row2['menu'] as $row3)
-                    <li onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','{{$row3['id']}}');" class="popovers"  data-placement="left" data-container="body" data-trigger="hover"  data-content="{{$row3['full']}}">
+                    <li onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','{{$row3['id']}}');" class="popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row3['full']}}">
                       <a class=" @if(in_array($row3['title'], $selectedDoc)) aclass active  @endif" href="@if($row3['link']!='')#tab_{{$row3['link']}}@else javascript:; @endif" data-toggle="tab">
                       <span class="tree_label1"  >{{$row3['title']}}</span>
                       </a>
