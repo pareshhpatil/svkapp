@@ -151,10 +151,9 @@
                                     }
                                     this.goToNextStep();
                                     @this.storeContract();
-                                    $('input[name="bill_code[]"]').each(function(int, arr) {
-                                        // select2Dropdowns(int);
+                                    for(let b=0; b<$('input[name="bill_code[]"]').length; b++)
                                         this.particularsDropdowns(int);
-                                    });
+
                                 },
                                 goToPreview() {
 
