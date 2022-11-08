@@ -8,6 +8,8 @@ use App\Model\Contract;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
+use App\Project;
+use Illuminate\Support\Facades\DB;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -90,6 +92,90 @@ class ContractController extends Controller
     }
 
 
+    public function loadContract($step=1, $contract_id=null){
+        Helpers::hasRole(2, 27);
+        $project_list = $this->masterModel->getProjectList($this->merchant_id);
+        if ($step == 1 && is_null($contract_id) )
+            $title = "Create";
+        else
+            $title = "Update";
+
+        $contract = null;
+        $project = null;
+        if ($contract_id) {
+            $contract = ContractParticular::find($contract_id);
+            $project = $this->getProject($contract->project_id);
+        }
+
+        if (old('project_id'))
+            $project = $this->getProject(old('project_id'));
+
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template','invoiceformat2'], [3, 179]);
+
+        $data['project_list'] = $project_list;
+        $data['title'] = $title;
+        $data['contract'] = $contract;
+        $data['step'] = $step;
+        $data['contract_id'] = $contract_id;
+        $data['project'] = $project;
+        $data['merchant_id'] = $this->merchant_id;
+
+
+        return view('app/merchant/contract/createv6' , $data);
+    }
+
+    public function store(Request $request){
+        if ($request->step == 1)
+            $validator = Validator::make($request->all(), $this->informationRules());
+        if ($request->step == 2)
+            $validator = Validator::make($request->all(), ['particulars' => 'required|array|min:1']);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator);
+        }
+
+        $data = $validator->validated();
+
+        $data['contract_date'] = Helpers::sqlDate($data['contract_date']);
+        $data['bill_date'] = Helpers::sqlDate($data['bill_date']);
+        $data['created_by'] = $this->user_id;
+        $data['last_update_by'] = $this->user_id;
+        $data['created_date'] = date('Y-m-d H:i:s');
+        $contract = ContractParticular::create($data);
+    }
+
+    public function getProject($id){
+        return Project::where('id', $id)->where('project.is_active', 1)
+            ->join('customer', 'customer.customer_id', 'project.customer_id')
+            ->select([
+                'id', 'project_id',  'project_name', 'project.customer_id',
+                'company_name', 'sequence_number',
+                DB::raw("concat(project.customer_id, ' | ' ,company_name) as customer_company_code"),
+                'customer.email', 'customer.mobile', DB::raw("concat(first_name,' ', last_name) as name")
+            ])
+            ->first();
+    }
+
+    private function informationRules(): array
+    {
+        return [
+            'contract_code' => 'required',
+            'merchant_id' => 'required',
+            'version' => 'required',
+            'contract_amount' => 'required',
+            'customer_id' => 'required',
+            'project_id' => 'required',
+            'contract_date' => 'required',
+            'bill_date' => 'required',
+            'billing_frequency' => 'required',
+        ];
+    }
+
+    public function fetchProject(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $project = $this->getProject($request->project_id);
+        return response()->json(array('project'=> $project), 200);
+    }
 
     public function save(Request $request)
     {
@@ -351,6 +437,7 @@ class ContractController extends Controller
             return $data;
         }
     }
+
     public function billcodeupdate(Request $request)
     {
         $validator = Validator::make($request->all(), [
