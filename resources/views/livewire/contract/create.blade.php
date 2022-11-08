@@ -152,7 +152,7 @@
                                     this.goToNextStep();
                                     @this.storeContract();
                                     for(let b=0; b<$('input[name="bill_code[]"]').length; b++)
-                                        this.particularsDropdowns(int);
+                                        this.particularsDropdowns(b);
 
                                 },
                                 goToPreview() {
