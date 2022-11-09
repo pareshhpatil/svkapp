@@ -357,7 +357,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('contract/create', 'ContractController@create')->name('create.contract');
   Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
-  Route::any('contract/new/{step?}/{contract_id?}', 'ContractController@loadContract')->name('create.contractv6');
+  Route::any('contract/new/{step?}/{contract_id?}', 'ContractController@loadContract')->name('create.new');
   Route::any('contract/fetchProject', 'ContractController@fetchProject')->name('contract.fetchProject');
   Route::post('contract/store', 'ContractController@store')->name('contract.store');
 

@@ -26,6 +26,7 @@
     @endforeach
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link href='/assets/admin/layout/css/plugin/select2.min.css' rel='stylesheet' type='text/css'>
+    <link href='/assets/admin/layout/css/plugin/virtual-select.min.css' rel='stylesheet' type='text/css'>
     @if($datatablejs!='')
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     @endif
@@ -332,6 +333,7 @@
             @endif
             <!-- BEGIN PAGE LEVEL PLUGINS -->
             <script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>
+            <script src='/assets/admin/layout/scripts/plugin/virtual-select.min.js'></script>
 
 
             <script type="text/javascript" src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>

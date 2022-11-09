@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\ContractParticular;
+use App\CsiCode;
 use App\Libraries\Helpers;
 use App\Model\Contract;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
 use App\Project;
+use App\Traits\Contract\ContractParticulars;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use Illuminate\Support\Facades\Session;
@@ -24,6 +26,8 @@ class ContractController extends Controller
     private $invoiceModel = null;
     private $merchant_id = null;
     private $user_id = null;
+
+//    use ContractParticulars;
 
     public function __construct()
     {
@@ -103,7 +107,7 @@ class ContractController extends Controller
         $contract = null;
         $project = null;
         if ($contract_id) {
-            $contract = ContractParticular::find($contract_id);
+            $contract = ContractParticular::find( Encrypt::decode($contract_id) );
             $project = $this->getProject($contract->project_id);
         }
 
@@ -120,20 +124,43 @@ class ContractController extends Controller
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
 
+        if ($step == 2){
+            $data['particulars'] = ($contract != null && !empty(json_decode($contract->particulars))) ? json_decode($contract->particulars) : ContractParticular::initializeParticulars();
+            $data['bill_codes'] = $this->getBillCodes($contract->project_id);
+            $data['project_id'] = $contract->project_id;
+        }
 
         return view('app/merchant/contract/createv6' , $data);
     }
 
     public function store(Request $request){
-        if ($request->step == 1)
-            $validator = Validator::make($request->all(), $this->informationRules());
-        if ($request->step == 2)
-            $validator = Validator::make($request->all(), ['particulars' => 'required|array|min:1']);
+
+        $step = $request->step;
+        $contract = null;
+        if ($request->contract_id)
+            $contract = ContractParticular::find($request->contract_id);
+
+        switch ($step){
+            case 1:
+                $contract = $this->step1Store($request,$contract);
+                $step++;
+                break;
+            case 2:
+                $contract = $this->step2Store($request,$contract);
+                $step++;
+                break;
+        }
+
+        return redirect()->route('create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
+
+    }
+
+    public function step1Store(Request $request, $contract) {
+        $validator = Validator::make($request->all(), $this->informationRules());
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
         }
-
         $data = $validator->validated();
 
         $data['contract_date'] = Helpers::sqlDate($data['contract_date']);
@@ -141,7 +168,26 @@ class ContractController extends Controller
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-        $contract = ContractParticular::create($data);
+
+        if (is_null($contract))
+            $contract = ContractParticular::create($data);
+        else
+            $contract->update($data);
+
+        return $contract;
+    }
+
+    public function step2Store(Request $request, $contract){
+        return $contract;
+    }
+
+    public function getBillCodes($project_id)
+    {
+        return CsiCode::where('project_id', $project_id)
+            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->where('merchant_id', $this->merchant_id)
+            ->where('is_active', 1)
+            ->get()->toArray();
     }
 
     public function getProject($id){

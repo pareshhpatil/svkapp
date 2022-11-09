@@ -58,6 +58,9 @@
                             @case(1)
                                 @include('app.merchant.contract.steps.step-1')
                             @break
+                            @case(2)
+                                @include('app.merchant.contract.steps.step-2')
+                            @break
                         @endswitch
                     </form>
 
@@ -70,5 +73,5 @@
         {{--mode = '{{$mode}}';--}}
     </script>
     </div>
-{{--    @include('app.merchant.contract.add-bill-code-modal')--}}
+
 @endsection

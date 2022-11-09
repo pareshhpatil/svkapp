@@ -591,10 +591,10 @@ function addbillcode() {
 
                     });
                     //$('#bill_code' + new_bill_index).trigger('change')
-                    if(particularray !== undefined) {
+                    /*if(particularray !== undefined) {
                         particularray[new_bill_index].bill_code = data[0]
                         particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
-                    }
+                    }*/
 
                     if ($('#bill_code' + new_bill_index).find("option[value='" + data[0] + "']").length) {
                         console.log('in trigger code');
