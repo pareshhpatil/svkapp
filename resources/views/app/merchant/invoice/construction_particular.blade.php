@@ -148,10 +148,11 @@
                         @endif
 
                     </select>
-                    <input type="hidden" name="attach-{{$int}}[]" id="attach-{{$int}}" >
+                    <input type="hidden" name="attach[]" id="attach-{{$int}}" >
                     <a onclick="showupdatebillcodeattachment('{{$int}}');" style="align-self: center; margin-left: 3px;" class="pull-right">
-                    <i class="fa fa-paperclip"  aria-hidden="true"></i> </a>
-                   </div>
+                    <i id="icon-{{$int}}" class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover"  data-content="0 file"  aria-hidden="true"></i> </a>
+                  
+                </div>
                     <div class="text-center">
 
                         <p id="description{{$int}}" class="lable-heading">

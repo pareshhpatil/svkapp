@@ -121,15 +121,15 @@
             <div class="form-wizard">
                 <div class="form-body">
                     <ul class="nav nav-pills ">
-                        <li class="active">
+                        <li id="listtab1" class="active">
                             <a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">
                               
                                 <span class="desc">
                                     Upload attachment </span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#tab2" data-toggle="tab" class="step">
+                        <li id="listtab2">
+                            <a href="#tab2" onclick="setBillCodeMenuData();" data-toggle="tab" class="step">
                                
                                 <span class="desc">
                                     View attachments </span>
@@ -151,7 +151,7 @@
 
 
                         <div class="tab-pane active" id="tab1">
-                            <div class="portlet light bordered" style="padding:0px !important;    border: 0px solid #e1e1e1!important">
+                            <div class=" light " style="padding:0px !important;    border: 0px solid #e1e1e1!important">
                                 <input type="hidden" name="_token1" value="{{ csrf_token() }}">
                                     <div id="drag-drop-area-bill"></div>
                                
@@ -160,87 +160,21 @@
                         <div class="tab-pane" id="tab2">
                             <div class="portlet light bordered">
                                 <div class="portlet-body form">
+                                    <div id="noview" style="display:none;">
+                                    <div  class="row w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;">
+                                        <h3 style="margin-left: 29px !important;" class="form-section mt-2">No attachments uploaded</h3>
+                                        </div>
+                                    </div>
+                                    <div id="yesview"  style="display:none;">
                                     <div class="row w-full   bg-white  shadow-2xl font-rubik m-2 py-10" style="max-width: 1400px;">
                                         <div class="tabbable-line col-md-2 col-sm-3 col-xs-3">
-                                            @php
-                                            $files  ='["https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/otp-screen5701.png","https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/login-sign-in-screen5845.png"
-                                 ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/q19WxeL74pM3AZUducMCrn_Ogm_59Nk2ll9eWQ9386.pdf"
-                                  ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/pricing-slider2.png46431825.png"
-                                 ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/MoTv9_Fq3hZavFcAs2o673_Ogm_59Nk1k1tdVg4277.png"
-                                 ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/Abhijeet Choubey_2022-Jul-18 14_07_47.pdf11556322.pdf"
-                                 ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/MoTv9_Fq3hZavFcAs2o673_Ogm_59Nk1k1tdVg4277.png"
-                                 ,"https://s3.ap-south-1.amazonaws.com/uat.expense/invoices/Abhijeet Choubey_2022-Jul-18 14_07_47.pdf11556322.pdf"
-                                ]';
-                                $files=json_decode($files,1);
-                                $selectedDoc='["Invoice", "","login-sign..."]';
-                                $selectedDoc=json_decode($selectedDoc,1);
-                                $menus=array();
-            $doclist=array();
            
-            $menus['title']="Invoice";
-            $menus['id']='Invoice';
-            $menus['full']='Invoice';
-            $menus['link']="";
-          
-            $menus1=array();
-            $menus2=array();
-            $pos=1;
-          
-            foreach($files as $key=>$item)
-            {
+                                            <div class="container_2 page-sidebar1 navbar-collapse collapse" >
 
-
-                $menus1['id']=str_replace(' ','_',substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,7));
-                $menus1['full']=basename($item);
-                $nm=substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10);
-                $menus1['title']=strlen(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)) < 10 ?substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4):$nm.'...';
-              
-             
-                $menus1['link']=substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,7);
-                $menus1['menu']="";
-                $menus1['type']="invoice";
-                $menus2[ $pos]=$menus1;
-                
-                $pos++;
-               
-            }
-
-            $menus['menu']=$menus2;
-             $doclist[]=$menus;
-             $docs= $doclist;
-        
-                                           @endphp    
-                                         
-                                            
-                                           
-                                         <div class="container_2 page-sidebar1 navbar-collapse collapse" >
-
-                                            <ul class="tree">
-                                              @isset($docs)
-                                              @foreach ($docs as $row)
-                                                <li >
-                                                
-                                                <a onclick="myFunction('title','title')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row['full']}}">
-                                                  <label   id="ltitle" class=" tree_label @if(in_array($row['title'], $selectedDoc)) active1  @endif" for="{{$row['title']}}">{{$row['title']}}</label>
-                                                  <div id="arrowtitle" style="float: right;" class='@if(in_array($row['title'], $selectedDoc))fa fa-angle-down  active1 @else fa fa-angle-right @endif'></div>
-                                                </a>
-                                                  @if(!empty($row['menu']))
-                                                  <ul id="ul{{$row['id']}}" style="display:@if(in_array($row['title'], $selectedDoc)) block @else none  @endif">
-                                                    @foreach ($row['menu'] as $row2)
-                                                    <li >
-                                                      
-                                                      <a style="color: #636364;"  id="a{{$row2['id']}}" class=" @if(in_array($row2['title'], $selectedDoc)) aclass active1  @endif" href="@if($row2['link']!='')#tab_{{$row2['link']}}@else javascript:; @endif" data-toggle="tab">
-                                                      <span onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="{{$row2['full']}}">{{$row2['title']}}</span>
-                                                      </a>
-                                                   
-                                                      
-                                                    </li>
-                                                    @endforeach
-                                                  </ul>
-                                    @endif
-                                                </li>
-                                                @endforeach
-                                                @endisset
+                                            <ul class="tree" id="ulmenu">
+                                             
+                                               
+                                              
                                                 
                                              
                                               </ul>
@@ -248,35 +182,11 @@
                                         </div>
                                   
                                         <div class="col-md-10 col-sm-9 col-xs-9" >
-                                            <div class="tab-content"  >
-                                                @foreach ($files as $key=>$item)
-                        @php
-                            $nm=substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10);
-                            $nm=strlen(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)) < 10 ?substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4):$nm.'...';
-                             
-                        @endphp
-                                              <div class="tab-pane @if(in_array($nm, $selectedDoc)) active @else fade @endif" id="tab_{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,7)}}" >
-                       
-                                                    <div class="grid grid-cols-3  gap-4 mb-2">
-                                                        <div class="col-span-2">
-                                                     <h2 class="text-lg text-left  font-normal  text-black">{{substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)}} </h2>
-                                                        </div>
-                                                   
-                                                       
-                                                    </div>
-                                                    <hr>
-                                                    <p class="mt-2">
-                                                        <iframe src="{{$item}}" width="100%" height="800px">
-                                                        </iframe>
-                                                    </p>
-                                                </div>
-                                                @endforeach
-                        
-                                        
-                        
+                                            <div class="tab-content container_1"  id="frame_view" >
+                                              
                                             </div>
                                         </div>
-                                </div>
+                                </div></div>
                             </div>
                         </div>
                          </div>
@@ -286,12 +196,38 @@
                 </div>
 
             </div>
-            @php
-            $docjson=json_encode($docs);
-        @endphp
+           
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete attachment</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this attachment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <input type="hidden" id="removepath">
+                <a  id="attach-delete-click" onclick="deleteattchment()" data-dismiss="modal" class="btn delete">Confirm</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
 <script>
@@ -357,6 +293,15 @@ uppy_attach.on('upload-success', (file, response) => {
     }else{
         document.getElementById("attach-"+attach_pos).value=path;
     }
+    var file_count=document.getElementById("attach-"+attach_pos).value;
+    var pathlist=file_count.split(",");
+    var counts='0 file';
+    if(pathlist.length>1)
+    counts=pathlist.length+' files';
+    else
+    counts=pathlist.length+' file';
+      
+    document.getElementById("icon-"+attach_pos).setAttribute("data-content",""+counts);
     if(response.body.status == 300) {
         document.getElementById("error").innerHTML = response.body.errors;
         uppy_attach.removeFile(file.id);
@@ -375,20 +320,7 @@ uppy_attach.on('error', (error) => {
 <script>
     function myFunction(parent,id) {
  
-   var list ={!!$docjson!!}; 
- 
-   for(var i=0;i<list.length;i++)
-   {
-      var filenm=list[i]['id'];
-      if(parent!=filenm)
-      {
-      var text = document.getElementById("ul"+filenm);
-      text.style.display = "none";
-      var ele = document.getElementById("arrow"+filenm);
-      ele.classList.remove('fa','fa-angle-down');
-     ele.classList.add('fa','fa-angle-right');
-      }
-   }
+  
  
  
    var text = document.getElementById("ul"+id);
@@ -409,52 +341,24 @@ uppy_attach.on('error', (error) => {
    }
  }
  
-     function removeactive(p,c,s)
+     function removeactive(p,c)
      {
         
       
- 
- $('div.container_2 label').removeClass('active1')
- $('div.container_2 label').removeClass('active');
- //$('div.container_2 ul').removeClass('show');
- 
- $('div.container_2 li').removeClass('active1');
- $('div.container_2 li').removeClass('active'); 
+
  $('div.container_2 a').removeClass('aclass'); 
  $('div.container_2 a').removeClass('active1'); 
- $('div.container_2 div').removeClass('active'); 
- $('div.container_2 div').removeClass('active1'); 
  
-  if(p!='')
-        {
-        
-        var ele= document.getElementById("l"+p);
-        document.getElementById("arrow"+p).classList.add('active1');
-        ele.classList.add("active1");
-      
-        }
+ $('div.container_1 div').removeClass('active');
+   $('div.container_1 div').add('fade'); 
+
         if(c!='')
-        {
-         if(s=='')
         {
         
          var ele=document.getElementById("a"+c);
-     
-     ele.classList.add("active1");
-      
-        }else
-        {
-     var ele=document.getElementById("l"+c);
-     document.getElementById("arrow"+c).classList.add('active1');
-      ele.classList.add("active1");
-        }
-     
-        }
-        if(s!='')
-        {
-        
-         var ele=document.getElementById("a"+s);
-     
+         document.getElementById("tab_"+c).classList.add('active');
+         document.getElementById("tab_"+c).classList.remove('fade');
+    
      ele.classList.add("active1");
       
         }
