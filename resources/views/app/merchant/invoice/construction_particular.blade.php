@@ -129,7 +129,8 @@
                     <label class="row-label" id="{{$k}}_lb{{$int}}">{{$dp->bill_code}}</label><br>
                     <input type="hidden" name="{{$k}}[]" id="{{$k}}{{$int}}" value="{{$dp->bill_code}}">
                     @else
-                    <select required style="width: 100%; min-width: 200px;" onchange="billCode(this.value, {{$int}});" data-cy="particular_item{{$int}}" id="bill_code{{$int}}" name="bill_code[]" data-placeholder="Type or Select" class="form-control  select2me productselect">
+                   <div style="display:flex;">
+                    <select required style="width: 100%; min-width: 200px;"  onchange="billCode(this.value, {{$int}});" data-cy="particular_item{{$int}}" id="bill_code{{$int}}" name="bill_code[]" data-placeholder="Type or Select" class="form-control  select2me productselect pull-left">
                         <option value="">Select Code</option>
                         @if(!empty($csi_code))
                         @php $excode=0; @endphp
@@ -147,6 +148,10 @@
                         @endif
 
                     </select>
+                    <input type="hidden" name="attach-{{$int}}[]" id="attach-{{$int}}" >
+                    <a onclick="showupdatebillcodeattachment('{{$int}}');" style="align-self: center; margin-left: 3px;" class="pull-right">
+                    <i class="fa fa-paperclip"  aria-hidden="true"></i> </a>
+                   </div>
                     <div class="text-center">
 
                         <p id="description{{$int}}" class="lable-heading">
