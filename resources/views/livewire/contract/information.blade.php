@@ -85,7 +85,7 @@
             <label class="control-label col-md-4">Company name</label>
             <div class="col-md-8">
                 <div class="input-icon right">
-                    <input type="text" id="customer_code" name="customer_code" readonly class="form-control" value="{{ (!is_null($project) && is_null($project->company_name))? $project->customer_id : $project->customer_company_code??null }}">
+                    <input type="text" id="customer_code" name="customer_code" readonly class="form-control" value="{{ (!is_null($project) && is_null($project->company_name))? $project->customer_code : $project->customer_company_code??null }}">
                 </div>
             </div>
         </div>

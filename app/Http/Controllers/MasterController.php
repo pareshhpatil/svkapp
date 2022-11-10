@@ -204,13 +204,18 @@ class MasterController extends AppController
         $title = 'Update Project';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $id = Encrypt::decode($link);
-        $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $id);
-        $data['project_data']->encrypted_id = Encrypt::encode($data['project_data']->id);
-        $data['sequence_data'] = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $data['project_data']->sequence_number);
-        $data['sequence_data']->val = $data['sequence_data']->val + 1;
-        $data['project_data']->project_prefix = $data['project_data']->project_id;
-        $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
-        return view('app/merchant/project/update', $data);
+        if ($id != '') {
+            $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $id);
+            $data['project_data']->encrypted_id = Encrypt::encode($data['project_data']->id);
+            $data['sequence_data'] = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $data['project_data']->sequence_number);
+            $data['sequence_data']->val = $data['sequence_data']->val + 1;
+            $data['project_data']->project_prefix = $data['project_data']->project_id;
+            $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+
+            return view('app/merchant/project/update', $data);
+        } else {
+            return redirect('/404');
+        }
     }
 
     public function projectupdatestore(Request $request)
@@ -240,18 +245,22 @@ class MasterController extends AppController
     public function codeList($link)
     {
         $project_id = Encrypt::decode($link);
-        $title =  'Bill code list';
-        $data = Helpers::setBladeProperties($title,  [],  []);
-        $model = new Master();
-        $list = $model->getProjectCodeList($this->merchant_id, $project_id);
-        foreach ($list as $ck => $row) {
-            $list[$ck]->encrypted_id = Encrypt::encode($row->id);
-        }
-        $data['project_id'] = $project_id;
-        $data['list'] = $list;
-        $data['datatablejs'] = 'table-no-export';
+        if ($project_id != '') {
+            $title =  'Bill code list';
+            $data = Helpers::setBladeProperties($title,  [],  []);
+            $model = new Master();
+            $list = $model->getProjectCodeList($this->merchant_id, $project_id);
+            foreach ($list as $ck => $row) {
+                $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+            }
+            $data['project_id'] = $project_id;
+            $data['list'] = $list;
+            $data['datatablejs'] = 'table-no-export';
 
-        return view('app/merchant/code/list', $data);
+            return view('app/merchant/code/list', $data);
+        } else {
+            return redirect('/404');
+        }
     }
     public function getbillcode($project_id)
     {

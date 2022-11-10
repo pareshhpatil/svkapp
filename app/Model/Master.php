@@ -46,11 +46,12 @@ class Master extends ParentModel
     public function getProjectList($merchant_id)
     {
 
-        $retObj =  DB::select("SELECT *
-        FROM project
-        WHERE merchant_id = '$merchant_id' 
-        and is_active ='1'
-        ORDER by 1 DESC");
+        $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+                            FROM project a
+                            join customer b on a.customer_id = b.customer_id
+                            WHERE a.merchant_id = '$merchant_id' 
+                            and a.is_active ='1'
+                            ORDER by 1 DESC");
 
         return $retObj;
     }
