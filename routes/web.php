@@ -371,6 +371,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('contract/updatesave/', 'ContractController@updatesave')->name('updatesave.contract');
   Route::any('contract/updatesaveV4/', 'ContractController@updatesaveV4')->name('updatesave.contractV4');
   Route::any('contract/updatesaveV5/', 'ContractController@updatesaveV5')->name('updatesave.contractV5');
+  Route::any('contract/updatesaveV6/', 'ContractController@updatesaveV6')->name('updatesave.contractV6');
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
   
   //order

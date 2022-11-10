@@ -125,9 +125,7 @@ class ContractController extends Controller
         $data['merchant_id'] = $this->merchant_id;
 
         if ($step == 2){
-            $data['particulars'] = ($contract != null && !empty(json_decode($contract->particulars))) ? json_decode($contract->particulars) : ContractParticular::initializeParticulars();
-            $data['bill_codes'] = $this->getBillCodes($contract->project_id);
-            $data['project_id'] = $contract->project_id;
+            $data = $this->step2Data($data, $contract);
         }
 
         return view('app/merchant/contract/createv6' , $data);
@@ -179,6 +177,19 @@ class ContractController extends Controller
 
     public function step2Store(Request $request, $contract){
         return $contract;
+    }
+
+    public function step2Data($data, $contract){
+        [$total, $groups, $particulars] = $contract->calculateTotal();
+
+        $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars();
+        $data['bill_codes'] = $this->getBillCodes($contract->project_id);
+        $data['project_id'] = $contract->project_id;
+        $data['total'] = $total;
+        $data['groups'] = $groups;
+        $data['row'] = ContractParticular::$row;
+
+        return $data;
     }
 
     public function getBillCodes($project_id)
@@ -459,6 +470,16 @@ class ContractController extends Controller
         ]);
 
         return redirect('merchant/contract/list')->with('success', "Contract has been updated");
+    }
+
+    public function updatesavev6(Request $request){
+        $id = Encrypt::decode($request->link);
+        $formData = $request->form_data;
+
+        $contract = ContractParticular::find($id);print_r($contract);
+        $contract->update(['particulars' => json_decode($formData)]);
+
+        return response()->json(array('message'=> 'Particulars saved properly'), 200);
     }
 
     public function getprojectdetails($project_id)

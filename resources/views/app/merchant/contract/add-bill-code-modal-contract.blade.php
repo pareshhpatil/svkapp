@@ -131,7 +131,7 @@
                                         <label class="control-label col-md-3">Bill Code <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="45" name="bill_code" x-model="bill_code" class="form-control" placeholder="Enter bill code">
+                                            <input type="text" required="true" maxlength="45" name="bill_code" id="new_bill_code" class="form-control" placeholder="Enter bill code">
                                         </div>
                                     </div>
                                     <!-- <div class="form-group">
@@ -145,7 +145,8 @@
                                         <label class="control-label col-md-3">Bill Description <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="100" name="bill_description" x-model="bill_description" class="form-control" placeholder="Enter bill description">
+                                            <input type="text" required="true" maxlength="100" name="bill_description" id="new_bill_description" class="form-control" placeholder="Enter bill description">
+                                            <input type="hidden" id="selectedBillCodeId" value=""/>
                                         </div>
                                     </div>
                                 </div>
