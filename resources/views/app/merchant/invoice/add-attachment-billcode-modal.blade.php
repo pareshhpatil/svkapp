@@ -232,6 +232,8 @@
 <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
 <script>
     var newdocfileslist=[];
+ var billcode='';
+ //const { Compressor } = Uppy;
 //uppy file upload code
 var uppy_attach = Uppy.Core({ 
     autoProceed: true,
@@ -240,9 +242,25 @@ var uppy_attach = Uppy.Core({
         maxNumberOfFiles: 10,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
+    },
+    onBeforeFileAdded: (currentFile, files) => {
+      const name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
+      const modifiedFile = {
+        ...currentFile,
+        meta: {
+             ...currentFile.meta,
+             name
+         },
+        name
+      }
+      uppy.log(modifiedFile.name)
+      return modifiedFile
     }
 });
-
+// uppy_attach.use(Compressor, {
+//   quality: 0.6,
+//   limit: 10,
+// });
 uppy_attach.use(Uppy.Dashboard, {
     target: '#drag-drop-area-bill', 
    // trigger: '.UppyModalOpenerBtn',
@@ -264,20 +282,23 @@ uppy_attach.use(Uppy.Dashboard, {
     //         done: 'Cancel'
     // }}
 });
+uppy_attach.on('file-added', (file) => {
+    document.getElementById("error").innerHTML = '';
+   
+    console.log('file-added'+billcode);
+});
 uppy_attach.use(Uppy.XHRUpload, { 
+    
     headers: {
         'X-CSRF-TOKEN': $('meta[name="_token1"]').attr('content')
     },
-    endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
+    endpoint: '/merchant/uppyfileupload/uploadImage/invoice/billcode',
     method:'post',
     formData: true,
     fieldName: 'image'
 });
 
-uppy_attach.on('file-added', (file) => {
-    document.getElementById("error").innerHTML = '';
-    console.log('file-added');
-});
+
 
 uppy_attach.on('upload', (data) => {
     console.log('Starting upload');

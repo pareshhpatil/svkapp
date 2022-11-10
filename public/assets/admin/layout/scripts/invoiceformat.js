@@ -583,6 +583,7 @@ function showupdatebillcode(ind, project_id, code, desc) {
 
 function showupdatebillcodeattachment(pos) {
     attach_pos=pos;
+    billcode=document.getElementById("bill_code"+attach_pos).value;
     document.getElementById("listtab1").classList.add('active');
     document.getElementById("tab1").classList.add('active');
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";

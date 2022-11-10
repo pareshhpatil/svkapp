@@ -296,6 +296,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('product/getExpenseList/{exp_type}', 'ProductController@getExpenseList');
   Route::post('uppyfileupload/uploadImage', 'UppyFileUploadController@uploadImage');
   Route::post('uppyfileupload/uploadImage/{type}', 'UppyFileUploadController@uploadImage');
+  Route::post('uppyfileupload/uploadImage/{type}/{folder}', 'UppyFileUploadController@uploadImage');
 
   Route::get('hsn-sac-code/index', 'HsnsaccodeController@index');
   Route::get('hsn-sac-code/create', 'HsnsaccodeController@create');

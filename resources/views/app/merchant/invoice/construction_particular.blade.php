@@ -148,9 +148,24 @@
                         @endif
 
                     </select>
-                    <input type="hidden" name="attach[]" id="attach-{{$int}}" >
+                    @php
+                     $attach=isset($dp->attachments)?$dp->attachments:'';
+                     $count=0;
+                    if(!empty($attach))
+                    {
+                        $attach= str_replace('"', '', $attach);
+                        $attach= str_replace('[', '',$attach);
+                        $attach= str_replace(']', '',$attach);
+                        $datafiles=explode(",",$attach);
+                        $count=count($datafiles);
+
+                    }
+                       
+                    @endphp
+               
+                    <input type="hidden" name="attach[]" id="attach-{{$int}}" value="{{$attach}}">
                     <a onclick="showupdatebillcodeattachment('{{$int}}');" style="align-self: center; margin-left: 3px;" class="pull-right">
-                    <i id="icon-{{$int}}" class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover"  data-content="0 file"  aria-hidden="true"></i> </a>
+                    <i id="icon-{{$int}}" class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover"  data-content="{{$count}} @if($count<=1)file @else files @endif"  aria-hidden="true"></i> </a>
                   
                 </div>
                     <div class="text-center">
