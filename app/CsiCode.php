@@ -10,4 +10,10 @@ class CsiCode extends Model
     use HasFactory;
 
     protected $table = 'csi_code';
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'code', 'title', 'description', 'project_id', 'merchant_id'
+    ];
 }
