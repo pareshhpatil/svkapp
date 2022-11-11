@@ -463,7 +463,11 @@ function addRowinCalcTable(ind) {
             console.log('original_contract_amount' + int);
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
-            var bill_code = document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+            try {
+                var bill_code = document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+            } catch (o) {
+                var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
+            }
             var discription = document.getElementById('description' + int).value;
             //bill_code = document.getElementById('bill_code' + bint).value;
             if (amt > 0) {
@@ -592,11 +596,11 @@ function addbillcode() {
                     });
                     //$('#bill_code' + new_bill_index).trigger('change')
                     try {
-                    if (particularray !== undefined) {
-                        particularray[new_bill_index].bill_code = data[0]
-                        particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
-                    }
-                } catch (o) {}
+                        if (particularray !== undefined) {
+                            particularray[new_bill_index].bill_code = data[0]
+                            particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
+                        }
+                    } catch (o) { }
                     try {
                         if ($('#bill_code' + new_bill_index).find("option[value='" + data[0] + "']").length) {
                             $('#bill_code' + new_bill_index).val(data[0]).trigger('change');
@@ -3239,9 +3243,9 @@ function setBillCodeMenuData() {
 
 
 function closeSidePanelBillCodeAttachment() {
-     try{
-    uppy_attach.reset();
-    }catch(o){}
+    try {
+        uppy_attach.reset();
+    } catch (o) { }
     document.getElementById("listtab2").classList.remove('active');
     document.getElementById("tab2").classList.remove('active')
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "none";
