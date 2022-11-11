@@ -732,12 +732,29 @@ class InvoiceController extends AppController
             $tt=json_decode($constriuction_details, 1);
             $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
        
+//dd($data['docs'][0]['menu'][0]['title']);
+
           $selectedDoc=array();
         $selectnm='';
         if(!empty($parentnm))
         $selectnm=$parentnm;
         else if(isset($data['docs'][0]['title'])){
              $selectnm=$data['docs'][0]['title'];}
+            
+             if(empty($sub))
+               {
+                if(isset($data['docs'][0]['menu'][0]['title']))
+                      $sub=$data['docs'][0]['menu'][0]['title'];
+
+                 
+               }
+               if(empty($docpath))
+               {
+                if(isset($data['docs'][0]['menu'][0]['menu'][0]['title']))
+                $docpath =$data['docs'][0]['menu'][0]['menu'][0]['title'];
+                else if(isset($data['docs'][0]['menu'][0]['title']))
+                    $docpath=$data['docs'][0]['menu'][0]['title'];
+                 }
              
 
            $selectedDoc[0]=$selectnm;
@@ -1045,7 +1062,21 @@ $datas['docs']=$datalist;
             $selectnm=$parentnm;
             else if(isset($data['docs'][0]['title'])){
                  $selectnm=$data['docs'][0]['title'];}
-                 
+              
+                 if(empty($sub))
+                 {
+                  if(isset($data['docs'][0]['menu'][0]['title']))
+                        $sub=$data['docs'][0]['menu'][0]['title'];
+  
+                   
+                 }
+                 if(empty($docpath))
+                 {
+                  if(isset($data['docs'][0]['menu'][0]['menu'][0]['title']))
+                  $docpath =$data['docs'][0]['menu'][0]['menu'][0]['title'];
+                  else if(isset($data['docs'][0]['menu'][0]['title']))
+                      $docpath=$data['docs'][0]['menu'][0]['title'];
+                   }
     
                $selectedDoc[0]=$selectnm;
                $selectedDoc[1]=$sub;
