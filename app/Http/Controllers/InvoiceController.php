@@ -2585,7 +2585,7 @@ class InvoiceController extends AppController
             }
         }
 
-        return redirect('/merchant/invoice/preview/' . Encrypt::encode($request_id));
+        return redirect('/merchant/invoice/viewg703/' . Encrypt::encode($request_id));
     }
 
     public function particular($link)
