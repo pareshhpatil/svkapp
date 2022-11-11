@@ -81,7 +81,7 @@
 
 
     <div class="page-content">
-        <div  x-init="initSelect2">
+        <div x-init="initSelect2">
             <!-- BEGIN PAGE HEADER-->
             <div class="page-bar">
                 <span class="page-title" style="float: left;">{{$title}}</span>
@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h3 id="pr_contract_date">
-                                        <x-localize :date="$invoice->bill_date" type="date" />
+                                            <x-localize :date="$invoice->bill_date" type="date" />
                                         </h3>
                                         <p class="text-center chelptext">Bill DATE</p>
                                     </div>
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h3 id="pr_billing_frequency">
-                                        <x-localize :date="$invoice->due_date" type="date" />
+                                            <x-localize :date="$invoice->due_date" type="date" />
                                         </h3>
                                         <p class="text-center chelptext">DUE DATE</p>
                                     </div>
@@ -204,26 +204,32 @@
                 <div class="portlet-body form">
                     <div class="row">
                         <div class="col-md-12">
+                            <div class="col-md-4 ">
+                                <div class="form-group">
+                                    <p>Grand Total</p>
+                                    <input type="text" id="totalamount" data-cy="invoice_total" name="grand_total" value="{{$invoice->grand_total}}" readonly="" class="form-control">
+                                </div>
+                            </div>
                             <div class="pull-right">
                                 <input type="hidden" id="request_id" name="link" value="{{$link}}"></th>
 
                                 <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$payment_request_id}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
                                     <div class="col-md-4 pull-left btn-pl-0">
                                         <div class="input-icon">
-                                            <label class="control-label pr-1">Notify customer </label> 
+                                            <label class="control-label pr-1">Notify customer </label>
                                             <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($notify_patron==1) checked @endif class="make-switch" data-size="small">
                                             <input type="hidden" id="is_notify_" name="notify_patron" value="{{($notify_patron==1) ? 1 : 0}}" />
                                         </div>
                                     </div>
                                     <div class="col-md-8 pull-left btn-pl-0">
                                     </div>
-                                   
+
                                     <input type="hidden" name="payment_request_id" value="{{$payment_request_id}}" />
                                     <input type="hidden" name="payment_request_type" value="1" />
                                     <div class="view-footer-btn-rht-align">
                                         <br>
-                                    <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                    <a class="btn green" href="/merchant/invoice/particular/{{$link}}">Back</a>
+                                        <a href="/merchant/contract/list" class="btn green">Cancel</a>
+                                        <a class="btn green" href="/merchant/invoice/particular/{{$link}}">Back</a>
 
                                         <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
 
