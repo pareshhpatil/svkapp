@@ -207,7 +207,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <p>Grand Total</p>
-                                    <input type="text" id="totalamount" data-cy="invoice_total" name="grand_total" value="{{$invoice->grand_total}}" readonly="" class="form-control">
+                                    <input type="text" id="totalamount" data-cy="invoice_total" name="grand_total" value="{{number_format($invoice->grand_total)}}" readonly="" class="form-control">
                                 </div>
                             </div>
                             <div class="pull-right">
