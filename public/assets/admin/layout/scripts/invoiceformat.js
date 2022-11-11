@@ -132,7 +132,7 @@ function getCGItextReturns(defaultval, type, numrow = 1) {
     if (exist == 0) {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
-    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" class="lable-heading"></p></div></td>';
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" style="display:none;" class="lable-heading"></p></div></td>';
 
     return produ_text;
 }
@@ -165,7 +165,7 @@ function getCGItextReturnsV2(defaultval, type, numrow = 1) {
     if (exist == 0) {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
-    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" class="lable-heading"></p></div></td>';
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" style="display:none;" class="lable-heading"></p></div></td>';
 
     return produ_text;
 }
