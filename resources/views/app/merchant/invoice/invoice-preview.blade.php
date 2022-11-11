@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h3 id="pr_contract_date">
-                                            {{$invoice->bill_date}}
+                                        <x-localize :date="$invoice->bill_date" type="date" />
                                         </h3>
                                         <p class="text-center chelptext">Bill DATE</p>
                                     </div>
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h3 id="pr_billing_frequency">
-                                            {{$invoice->due_date}}
+                                        <x-localize :date="$invoice->due_date" type="date" />
                                         </h3>
                                         <p class="text-center chelptext">DUE DATE</p>
                                     </div>
