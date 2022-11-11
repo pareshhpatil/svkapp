@@ -46,6 +46,7 @@ class ContractParticular extends Model
         'calculated_row' => null,
         'description' => null,
         'introw' => 0,
+        'pint' => 0,
         'bill_type' => null,
         'original_contract_amount' => null,
         'retainage_percent' => null,
