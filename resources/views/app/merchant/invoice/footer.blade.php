@@ -579,6 +579,27 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+ <!-- /.delete attachment-dialog -->
+<div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete attachment</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this attachment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <input type="hidden" id="removepath">
+                <a  id="attach-delete-click" onclick="deleteattchment()" data-dismiss="modal" class="btn delete">Confirm</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 <!-- Side panel code for Customer ledger -->
 
