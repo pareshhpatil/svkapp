@@ -2678,7 +2678,12 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }
                 }
-                $particulars = (object)$cop;
+                $particulars_c = json_decode(json_encode($cop), 1);
+				$particulars=[];
+				foreach($particulars_c as $row)
+				{
+					$particulars[]=$row;
+				}
             }
             $particulars = json_decode(json_encode($particulars), 1);
             foreach ($particulars as $k => $row) {
