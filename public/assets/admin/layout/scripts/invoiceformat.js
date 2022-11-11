@@ -589,12 +589,7 @@ function showupdatebillcodeattachment(pos) {
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-    // document.getElementById("project_id").value = project_id;
-    // document.getElementById("bill_id").value = ind;
-    // document.getElementById("bill_code").value = code
-    // document.getElementById("bill_description").value = desc;;
-
-
+   
 }
 
 function addRowinCalcTable(ind) {
