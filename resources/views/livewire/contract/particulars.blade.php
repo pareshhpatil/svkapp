@@ -480,7 +480,7 @@
                         this.count = numrow;
 
                         this.select2Dropdown(numrow);
-                        this.saveParticulars();
+                        // this.saveParticulars();
                         // @this.set('particulars', this.fields);
 
 

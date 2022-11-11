@@ -246,7 +246,12 @@ var uppy_attach = new Uppy.Uppy({
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
     },
     onBeforeFileAdded: (currentFile, files) => {
-      const name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
+        try{
+            const name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
+        }catch(o)
+        {
+            const name = document.getElementById("billcode"+attach_pos).value + '_' + currentFile.name
+        }
       const modifiedFile = {
         ...currentFile,
         meta: {
