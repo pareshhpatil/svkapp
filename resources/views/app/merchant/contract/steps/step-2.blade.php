@@ -287,11 +287,16 @@
                 addNewBillCode(){
                     var data = $("#billcodeform").serialize();
 
-                    var actionUrl = '/merchant/billcode/create';
+                    var actionUrl = '/merchant/billcode/new';
                     $.ajax({
                         type: "POST",
                         url: actionUrl,
-                        data: data,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            bill_code : $('#new_bill_code').val(),
+                            bill_description : $('#new_bill_description').val(),
+                            project_id : $('#project_id').val()
+                        },
                         success: function (data) {
                             console.log(data);
                         }
@@ -535,13 +540,14 @@
                 copyBillCodeGroups() {
                     console.log(this.fields);
                     for(let p=0; p < this.fields.length; p++){
-                       /* this.fields[p].bill_code = particularsArray[p].bill_code;
+                        this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].group = particularsArray[p].group;
-                        console.log(typeof this.fields[p].retainage_amount)
-                        this.fields[p].original_contract_amount = (this.fields[p].original_contract_amount !== null && this.fields[p].original_contract_amount !== '')? this.fields[p].original_contract_amount.replace(',','') : 0
+
+                        let oriContractAmt = this.fields[p].original_contract_amount;
+                        this.fields[p].original_contract_amount = (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt == 'number') ? getamt(oriContractAmt) : oriContractAmt.replace(',','')) : 0
 
                         let retainAmt = this.fields[p].retainage_amount;
-                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? getamt(retainAmt) : retainAmt.replace(',','')) : 0;*/
+                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? getamt(retainAmt) : retainAmt.replace(',','')) : 0;
                     }
                 },
                 OpenAddCalculated(field) {
@@ -621,6 +627,7 @@
                     }catch(o){}
 
                     setOriginalContractAmount();
+                    this.saveParticulars();
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 

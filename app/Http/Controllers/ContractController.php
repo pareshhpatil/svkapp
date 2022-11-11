@@ -493,7 +493,7 @@ class ContractController extends Controller
     }
 
     public function billcodesave(Request $request)
-    {dd($request);
+    {
         $validator = Validator::make($request->all(), [
             'bill_code' => 'required'
         ]);
@@ -507,6 +507,19 @@ class ContractController extends Controller
 
             return $data;
         }
+    }
+
+    public function newBillCode(Request $request)
+    {
+        $billCode = CsiCode::create([
+           'code' => $request->bill_code,
+           'title' => $request->bill_description,
+           'description' => $request->bill_description,
+            'project_id' => $request->project_id,
+            'merchant_id' => $this->merchant_id
+        ]);
+
+        return response()->json(['message' => 'Bill code is created successfully']);
     }
 
     public function billcodeupdate(Request $request)
