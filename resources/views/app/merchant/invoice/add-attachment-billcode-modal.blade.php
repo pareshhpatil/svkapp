@@ -215,7 +215,7 @@ var uppy_attach = new Uppy.Uppy({
   
     autoProceed: true,
     restrictions: {
-        maxFileSize: 3000000,
+        maxFileSize: 9000000,
         maxNumberOfFiles: 10,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
@@ -248,6 +248,7 @@ uppy_attach.use(Uppy.Dashboard, {
    // trigger: '.UppyModalOpenerBtn',
     inline: true,
     height: 400,
+    autoProceed: true,
     hideAfterFinish: true,
     showProgressDetails: false,
     hideUploadButton: false,

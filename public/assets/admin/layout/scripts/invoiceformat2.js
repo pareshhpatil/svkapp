@@ -3244,7 +3244,7 @@ function setBillCodeMenuData() {
 
 function closeSidePanelBillCodeAttachment() {
     try {
-        uppy_attach.reset();
+        var closebutton = document.getElementsByClassName("uppy-u-reset uppy-c-btn uppy-StatusBar-actionBtn uppy-StatusBar-actionBtn--done")[0].click();
     } catch (o) { }
     document.getElementById("listtab2").classList.remove('active');
     document.getElementById("tab2").classList.remove('active')
