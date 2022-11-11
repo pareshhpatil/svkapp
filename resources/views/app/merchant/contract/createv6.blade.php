@@ -63,6 +63,9 @@
                             @case(2)
                                 @include('app.merchant.contract.steps.step-2')
                             @break
+                            @case(3)
+                                @include('app.merchant.contract.steps.step-3')
+                            @break
                         @endswitch
                     </form>
 

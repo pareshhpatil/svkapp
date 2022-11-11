@@ -60,6 +60,7 @@ class ContractParticular extends Model
         'show' => false
     ];
 
+
     public static $particular_column = [
         'bill_code' => [ 'title'=>'Bill Code', 'type' => 'select' ],
         'bill_type' => [ 'title'=>'Bill Type', 'type' => 'select' ],
@@ -95,7 +96,7 @@ class ContractParticular extends Model
                             $groups[] = $row['group'];
                         }
                     }
-                    $total = $total + $row['original_contract_amount'];
+                    $total = $total + str_replace(',', '', $row['original_contract_amount']);
                     $particulars[$key]['original_contract_amount'] = str_replace(',', '', $row['original_contract_amount']);
                 }
             }
