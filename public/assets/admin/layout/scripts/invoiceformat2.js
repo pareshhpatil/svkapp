@@ -584,7 +584,7 @@ function addbillcode() {
 
                     } catch (o) { }
                     $('select[name="bill_code[]"]').map(function () {
-                        this.append(new Option(data[0] + ' |' + data[1], data[0])); // bill code
+                        this.append(new Option(data[0] + ' | ' + data[1], data[0])); // bill code
                     }).get();
 
                     $('select[name="bill_code[]"]').each(function (indx, arr) {
@@ -598,7 +598,7 @@ function addbillcode() {
                     try {
                         if (particularray !== undefined) {
                             particularray[new_bill_index].bill_code = data[0]
-                            particularray[new_bill_index].bill_code_text = data[0] + ' |' + data[1]
+                            particularray[new_bill_index].bill_code_text = data[0] + ' | ' + data[1]
                         }
                     } catch (o) { }
                     try {
