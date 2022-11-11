@@ -113,11 +113,11 @@ $header='app.patron.invoice.invoice-master';}
                     <div class="tab-content"  >
                         @foreach ($files as $key=>$item)
 @php
-    $nm=substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10);
-    $nm=strlen(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)) < 10 ?substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4):$nm.'...';
+    $nm=substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10);
+    $nm=strlen(substr(basename($item), 0, strrpos(basename($item), '.'))) < 10 ?substr(basename($item), 0, strrpos(basename($item), '.')):$nm;
      
 @endphp
-                        <div class="tab-pane @if(in_array($nm, $selectedDoc)) active @else fade @endif" id="tab_{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,7)}}" >
+                        <div class="tab-pane @if(in_array($nm, $selectedDoc)) active @else fade @endif" id="tab_{{str_replace(' ', '_', substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10));}}" >
                             <div class="grid grid-cols-3  gap-4 mb-2">
                                 <div class="col-span-2">
                              <h2 class="text-lg text-left  font-normal  text-black">{{substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)}} </h2>
