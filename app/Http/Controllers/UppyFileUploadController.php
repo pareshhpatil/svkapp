@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class UppyFileUploadController extends Controller
 {
-    public function uploadImage(Request $request, $type = null)
+    public function uploadImage(Request $request, $type = null, $subfolder = null)
     {
         $response['errors'] = '';
         $response['status'] = 300;
@@ -29,6 +29,13 @@ class UppyFileUploadController extends Controller
             $file = $request->file('image');
             $name = $file->getClientOriginalName();
             $name = substr($name, 0, strrpos($name, '.'));
+            if($subfolder=='billcode')
+            {
+                $data=explode("_", $name);
+               $folder=$folder.'/'.$data[0];
+               $name=str_replace($data[0].'_',"",$name);
+               $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';
+            }
             //$encryptedFileName = Encrypt::encode($name);
             $filenameExt =$name.$randNo;//$dt . $randNo;
             $encryptedFileName =$filenameExt; //Encrypt::encode($filenameExt);

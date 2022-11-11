@@ -73,7 +73,7 @@
                                             <input class="form-control" type="text" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
                                         </div>
                                         <div class="col-md-2">
-                                            <input class="form-control" type="number" name="sequence_number" placeholder="Sequence number" />
+                                            <input class="form-control" type="number" min="0" max="99999999" name="sequence_number" placeholder="Sequence number" />
                                         </div>
                                     </div>
                                 </div>

@@ -673,3 +673,4 @@ document.getElementById("file_upload").value =filesnm;
 
 @include('app.merchant.contract.add-calculation-modal')
 @include('app.merchant.contract.add-bill-code-modal')
+@include('app.merchant.invoice.add-attachment-billcode-modal')

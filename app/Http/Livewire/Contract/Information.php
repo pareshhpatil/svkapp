@@ -59,8 +59,8 @@ class Information extends Component
                 ->join('customer', 'customer.customer_id', 'project.customer_id')
                 ->select([
                     'id', 'project_id',  'project_name', 'project.customer_id',
-                    'company_name', 'sequence_number',
-                    DB::raw("concat(project.customer_id, ' | ' ,company_name) as customer_company_code"),
+                    'company_name', 'sequence_number', 'customer.customer_code',
+                    DB::raw("concat(customer.customer_code, ' | ' ,company_name) as customer_company_code"),
                     'customer.email', 'customer.mobile', DB::raw("concat(first_name,' ', last_name) as name")
                 ])
                 ->first();
