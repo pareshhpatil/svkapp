@@ -142,8 +142,8 @@ class Invoice extends ParentModel
         $retObj = DB::table('order')
             ->select(DB::raw('*'))
             ->where('contract_id', $contract_id)
-            ->where('status',1)
-            ->where('is_active',1)            
+            ->where('status', 1)
+            ->where('is_active', 1)
             ->whereDate('approved_date', '<=', $date)
             ->orderBy('order_id', 'desc')
             ->get();
@@ -482,5 +482,52 @@ class Invoice extends ParentModel
         } else {
             return false;
         }
+    }
+
+
+    public function saveInvoice($merchant_id, $user_id, $customer_id, $invoice_number, $template_id, $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
+    {
+        $retObj = DB::select("call `insert_invoicevalues`('$merchant_id','$user_id','$customer_id','$invoice_number','$template_id','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,1,0,0,'$plugin',0,1,0,'$currency',null,1);");
+        return $retObj[0];
+    }
+
+
+    public function saveConstructionParticular($data, $request_id, $user_id)
+    {
+        $id = DB::table('invoice_construction_particular')->insertGetId(
+            [
+                'payment_request_id' => $request_id,
+                'pint' => $data['pint'],
+                'bill_code' => $data['bill_code'],
+                'description' => $data['description'],
+                'bill_type' => $data['bill_type'],
+                'original_contract_amount' => $data['original_contract_amount'],
+                'approved_change_order_amount' => $data['approved_change_order_amount'],
+                'current_contract_amount' => $data['current_contract_amount'],
+                'previously_billed_percent' => $data['previously_billed_percent'],
+                'previously_billed_amount' => $data['previously_billed_amount'],
+                'current_billed_percent' => $data['current_billed_percent'],
+                'current_billed_amount' => $data['current_billed_amount'],
+                'total_billed' => $data['total_billed'],
+                'retainage_percent' => $data['retainage_percent'],
+                'retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'],
+                'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
+                'net_billed_amount' => $data['net_billed_amount'],
+                'retainage_release_amount' => $data['retainage_release_amount'],
+                'total_outstanding_retainage' => $data['total_outstanding_retainage'],
+                'stored_materials' => $data['stored_materials'],
+                'project' => $data['project'],
+                'cost_code' => $data['cost_code'],
+                'group' => $data['group'],
+                'bill_code_detail' => $data['bill_code_detail'],
+                'calculated_perc' => $data['calculated_perc'],
+                'calculated_row' => $data['calculated_row'],
+                'attachments' => $data['attachments'],
+                'created_by' => $user_id,
+                'last_update_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
     }
 }

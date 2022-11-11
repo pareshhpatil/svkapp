@@ -254,6 +254,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoiceformat/savePluginValue/', 'InvoiceFormatController@savePluginValue');
 
   Route::any('invoice/create', 'InvoiceController@create')->name('create.invoice');
+  Route::any('invoice/createv2', 'InvoiceController@createv2')->name('createv2.invoice');
+  Route::any('invoice/particular/{link}', 'InvoiceController@particular')->name('particular.invoice');
+  Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice');
+  Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular');
+  Route::post('invoice/particularsave/ajax', 'InvoiceController@particularsave')->name('save.particularajax');
   Route::any('invoice/create/{type}', 'InvoiceController@create')->name('create.invoice.type');
   Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice');
   Route::any('invoice/update/{link}/{type}', 'InvoiceController@update')->name('update.invoice.type');
