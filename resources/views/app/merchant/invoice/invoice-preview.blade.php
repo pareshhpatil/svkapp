@@ -204,7 +204,7 @@
                 <div class="portlet-body form">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="col-md-4 ">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <p>Grand Total</p>
                                     <input type="text" id="totalamount" data-cy="invoice_total" name="grand_total" value="{{$invoice->grand_total}}" readonly="" class="form-control">
