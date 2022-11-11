@@ -319,6 +319,14 @@ uppy_attach.on('upload-success', (file, response) => {
     }else{
         document.getElementById("attach-"+attach_pos).value=path;
     }
+    
+    try{
+        if (particularray !== undefined) {
+            particularray[attach_pos].attachments = document.getElementById("attach-"+attach_pos).value;
+        }
+    }catch(o){}
+    
+
     var file_count=document.getElementById("attach-"+attach_pos).value;
     var pathlist=file_count.split(",");
     var counts='0 file';

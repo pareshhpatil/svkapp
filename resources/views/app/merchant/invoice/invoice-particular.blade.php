@@ -152,7 +152,7 @@
                                     <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${index}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                         @if($k=='bill_code')
                                         <div style="display:flex;">
-                                            <select required style=" min-width: 200px;" onchange="billCode2()" :id="`billcode${index}`"
+                                            <select required style=" min-width: 200px;" onchange="billCode2()" :id="`bill_code${index}`"
                                                     x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select Bill Code"
                                                     class="form-control input-sm select2me productselect" @update-csi-codes.window="bill_codes = this.bill_codes">
                                                 <option value="">Select Code</option>
@@ -170,7 +170,7 @@
                                                     </template>
                                                 @endif
                                             </select>
-                                            <input type="hidden" name="attachments[]" :id="`attach-${index}`" value="">
+                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value="">
                                             <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right">
                                             <i :id="`icon-${index}`"  class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title=""></i> </a>
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
@@ -191,7 +191,7 @@
 
                                             </select>
                                         @elseif($k=='bill_type')
-                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
+                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
                                                 <option value="">Select..</option>
                                                 <option value="% Complete">% Complete</option>
                                                 <option value="Unit">Unit</option>
@@ -314,9 +314,7 @@
 
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" x-show="step!=1" @click="step=step-1">Back</a>
-                                            <a class="btn blue" @click="setParticulars()" x-show="step==1">Add particulars</a>
                                             <button type="submit" @click="return setParticulars();" class="btn blue" >Preview invoice</button>
-                                            <a class="btn blue" x-show="step==3" @click="saveContract()">Save contract</a>
                                         </div>
                                     </div>
                                 </div>
@@ -475,7 +473,7 @@
                                 particularsDropdowns(id = null) {
 
                                      try {
-                                         $('#billcode' + id).select2({
+                                         $('#bill_code' + id).select2({
                                              insertTag: function (data, tag) {
 
                                              }
@@ -485,7 +483,7 @@
                                                  $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
                                              }
                                          }).on('select2:select', function (e){
-                                             let data = $('#billcode' + id).select2('val');
+                                             let data = $('#bill_code' + id).select2('val');
                                              let dataArray = data.split('|')
                                              particularray[id]['bill_code'] = dataArray[0].trim();
                                              particularray[id]['bill_code_text'] = data;
@@ -623,7 +621,7 @@
                                 setParticulars()
                                 {
                                     particularray.forEach(function(currentValue, index, arr) {
-                                            document.getElementById('billcode'+index).value = currentValue.bill_code;
+                                            document.getElementById('bill_code'+index).value = currentValue.bill_code;
                                     });
                                 },
 
@@ -772,13 +770,13 @@
                                     RemoveCaculatedRow(field.introw);
                                 },
                                 EditCaculated(field) {
-                                    document.getElementById('selected_field_int').value = field.introw;
-                                    editCaculatedRow(field.introw);
+                                    document.getElementById('selected_field_int').value = field.pint;
+                                    editCaculatedRow(field.pint);
                                 },
 
                                 select2Dropdown(id) {
                                     try {
-                                        $('#billcode' + id).select2({
+                                        $('#bill_code' + id).select2({
                                             insertTag: function(data, tag) {
 
                                             }
