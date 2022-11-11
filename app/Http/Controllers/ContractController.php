@@ -179,7 +179,7 @@ class ContractController extends Controller
         return $contract;
     }
 
-    public function step2Data($data, $contract){
+    public function step2Data($data, $contract, $project_id){
         [$total, $groups, $particulars] = $contract->calculateTotal();
 
         $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);

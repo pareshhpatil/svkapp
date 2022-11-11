@@ -166,9 +166,9 @@
                                         </span>
                                             </template>
                                             <template x-if="field.bill_type!='Calculated'">
-                                        <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                        </span>
+                                                <span x-show="field.txt{{$k}}">
+                                                    <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                                </span>
                                             </template>
 
                                             <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.introw" name="pint[]">
