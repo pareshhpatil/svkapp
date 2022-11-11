@@ -125,7 +125,7 @@ class ContractController extends Controller
         $data['merchant_id'] = $this->merchant_id;
 
         if ($step == 2){
-            $data = $this->step2Data($data, $contract);
+            $data = $this->step2Data($data, $contract, $project->project_id??'');
         }
 
         return view('app/merchant/contract/createv6' , $data);
@@ -182,7 +182,7 @@ class ContractController extends Controller
     public function step2Data($data, $contract){
         [$total, $groups, $particulars] = $contract->calculateTotal();
 
-        $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars();
+        $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);
         $data['bill_codes'] = $this->getBillCodes($contract->project_id);
         $data['project_id'] = $contract->project_id;
         $data['total'] = $total;
@@ -476,8 +476,8 @@ class ContractController extends Controller
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
 
-        $contract = ContractParticular::find($id);print_r($contract);
-        $contract->update(['particulars' => json_decode($formData)]);
+        $contract = ContractParticular::find($id);
+        $contract->update(['particulars' => json_decode($formData), 'contract_amount' => $request->contract_amount]);
 
         return response()->json(array('message'=> 'Particulars saved properly'), 200);
     }
@@ -489,7 +489,7 @@ class ContractController extends Controller
     }
 
     public function billcodesave(Request $request)
-    {
+    {dd($request);
         $validator = Validator::make($request->all(), [
             'bill_code' => 'required'
         ]);

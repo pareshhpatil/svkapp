@@ -195,9 +195,21 @@
                 bill_code : null,
                 bill_description : null,
                 group_name : null,
-                count : particularsArray.length,
+                count : {!! count($particulars) !!},
 
                 addNewBillCode(){
+                    var data = $("#billcodeform").serialize();
+                    console.log(data);return false
+                    var actionUrl = '/merchant/billcode/create';
+                    $.ajax({
+                        type: "POST",
+                        url: actionUrl,
+                        data: data,
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+
                     let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
 
@@ -208,18 +220,24 @@
                     )
 
                     this.updateBillCodeDropdowns(bill_codes, new_bill_code);
+
+
+
+
                     // initializeBillCodes();
                     return false;
                 },
                 updateBillCodeDropdowns(optionArray, selectedValue){
                     let selectedId = $('#selectedBillCodeId').val();
 
-                    for(let v=0; v < particularsArray.length; v++){
+                    for(let v=0; v < this.fields.length; v++){
                         let billCodeSelector = document.querySelector('#bill_code' + v);
 
                         if(selectedId === 'bill_code'+v ) {
                             billCodeSelector.setOptions(optionArray, selectedValue);
-                            particularsArray[v].bill_code = billCodeSelector.val();
+                            this.fields[v].bill_code = billCodeSelector.value;
+                            particularsArray.bill_code = billCodeSelector.value;
+                            closeSidePanelBillCode()
                         }
                         else billCodeSelector.setOptions(optionArray, $('#bill_code'+v).val());
 
@@ -230,19 +248,19 @@
                     $('#selectedBillCodeId').val(null);
                 },
                 initializeDropdowns(){
-                    for(let v=0; v < particularsArray.length; v++){
-                        this.virtualSelect(v, 'bill_code', bill_codes)
-                        this.virtualSelect(v, 'group', groups)
+                    for(let v=0; v < this.fields.length; v++){
+                        this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
+                        this.virtualSelect(v, 'group', groups, this.fields[v].group)
                     }
                 },
-                virtualSelect(id, type, options){
-                    console.log($('#'+type+id))
+                virtualSelect(id, type, options, selectedValue){
                     VirtualSelect.init({
                         ele: '#'+type+id,
                         options: options,
                         dropboxWrapper: 'body',
                         allowNewOption: true,
-                        multiple:false
+                        multiple:false,
+                        selectedValue : selectedValue
                     });
 
 
@@ -311,16 +329,16 @@
                 },
                 validateParticulars(){
                     let valid = true;
-                    console.log(particularsArray)
-                    for(let p=0; p < particularsArray.length;p++){
+                    this.copyBillCodeGroups();
+                    for(let p=0; p < this.fields.length;p++){
 
-                        if(particularsArray[p].bill_code === null || particularsArray[p].bill_code === '') {
+                        if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
                             $('#cell_bill_code_' + p).addClass(' error-corner');
                             addPopover('cell_bill_code_' + p, "Please select Bill code");
                             valid = false
                         }else{
                             $('#cell_bill_code_' + p).removeClass(' error-corner').popover('destroy')
-                            this.fields[p].bill_code = particularsArray[p].bill_code
+                            // this.fields[p].bill_code = this.fields[p].bill_code
                         }
 
                         if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
@@ -338,7 +356,7 @@
                         }else {
                             $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
                         }
-                        this.fields[p].group = particularsArray[p].group
+                        // this.fields[p].group = particularsArray[p].group
                     }
                     return valid;
                 },
@@ -354,6 +372,7 @@
                             _token: '{{ csrf_token() }}',
                             form_data: JSON.stringify(data),
                             link: $('#contract_id').val(),
+                            contract_amount : $('#particulartotal').val().replace(/,/g,'')
                         },
                         success: function(data) {
                             console.log(data)
@@ -386,9 +405,11 @@
                     this.count = numrow;
                 },
                 copyBillCodeGroups() {
-                    for(let p=0; p < particularsArray.length; p++){
+                    for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].group = particularsArray[p].group;
+                        this.fields[p].original_contract_amount = (this.fields[p].original_contract_amount !== null && this.fields[p].original_contract_amount !== '')? this.fields[p].original_contract_amount.replace(',','') : 0
+                        this.fields[p].retainage_amount = (this.fields[p].retainage_amount !== null && this.fields[p].retainage_amount !== '')? this.fields[p].retainage_amount.replace(',','') : 0;
                     }
                 }
             }

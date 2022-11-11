@@ -54,6 +54,8 @@
                         <input type="hidden" name="version" value="v6"/>
                         <input type="hidden" name="contract_id" id="contract_id" value="{{ $contract_id }}">
                         <input type="hidden" name="merchant_id" id="merchant_id" value="{{ $merchant_id }}">
+                        <input type="hidden" name="project_id" id="project_id" value="{{ $project_id??null }}">
+
                         @switch($step)
                             @case(1)
                                 @include('app.merchant.contract.steps.step-1')

@@ -73,18 +73,19 @@ class ContractParticular extends Model
     ];
 
 
-    public static function initializeParticulars(): array
+    public static function initializeParticulars($project_id = ''): array
     {
         $particulars = [];
         $particulars[] = self::$row;
-        $particulars[] = self::$row;
+        if ($project_id != '')
+            $particulars[0]['project'] = $project_id;
         return $particulars;
     }
 
     public function calculateTotal(){
         $total =0;
         $groups = [];
-        $particulars = json_decode($this->particulars??[]);
+        $particulars = json_decode($this->particulars??[], true);
         if(!empty($particulars)) {
             foreach ($particulars as $key => $row) {
                 if ($row['bill_code'] != '') {
