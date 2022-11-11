@@ -162,8 +162,39 @@ class InvoiceController extends AppController
         return view('app/merchant/invoice/create', $data);
     }
 
-    public function createv2(Request $request, $type = 'invoice', $invoice_type = 1)
+
+
+    public function updatev2(Request $request, $link = null)
     {
+        return $this->createv2($request, $link, 1);
+    }
+    public function createv2(Request $request, $link = null, $update = null)
+    {
+        $cycleName = date('M-Y') . ' Bill';
+        $invoice_number = '';
+        $bill_date = '';
+        $due_date = '';
+        if ($link != null) {
+            $request_id = Encrypt::decode($link);
+            $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+            $request->template_id = $invoice->template_id;
+            $request->contract_id = $invoice->contract_id;
+            $request->currency = $invoice->currency;
+            $request->billing_profile_id = $invoice->billing_profile_id;
+            $_POST['template_id'] = $invoice->template_id;
+            $_POST['contract_id'] = $invoice->contract_id;
+            $_POST['currency'] = $invoice->currency;
+            $_POST['billing_profile_id'] = $invoice->billing_profile_id;
+            $cycleName = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $invoice->billing_cycle_id, 'cycle_name');
+            if ($invoice->payment_request_status != 11) {
+                $invoice_number = $invoice->invoice_number;
+            }
+
+            $bill_date = Helpers::htmlDate($invoice->bill_date);
+            $due_date = Helpers::htmlDate($invoice->due_date);
+        }
+        $type = 'invoice';
+        $invoice_type = 1;
         if (isset($request->invoice_type)) {
             $invoice_type = $request->invoice_type;
         }
@@ -174,7 +205,8 @@ class InvoiceController extends AppController
         }
         $template_type = '';
         $menu = $menus[$type];
-        $data = $this->setBladeProperties('Create ' . $type, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
+        $title = ($update == null) ? 'Create ' . $type : 'Update ' . $type;
+        $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
         #get merchant invoice format list
         $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
         if (count($data['format_list']) == 1) {
@@ -233,6 +265,7 @@ class InvoiceController extends AppController
             #get pre define system column metadata
             $metarows = $formatModel->getFormatMetadata($template_id);
             $metadata = $this->setMetadata($metarows);
+
             $invoice_seq_id = 0;
             if (isset($data['contract_detail']->sequence_number)) {
                 $invoice_seq_id = $data['contract_detail']->sequence_number;
@@ -243,25 +276,41 @@ class InvoiceController extends AppController
                     if (isset($row->script)) {
                         $data['script'] .= $row->script;
                     }
+                    if ($bill_date != '') {
+                        if ($row->column_position == 5) {
+                            $metadata['H'][$k]->value = $bill_date;
+                        }
+                        if ($row->column_position == 6) {
+                            $metadata['H'][$k]->value = $due_date;
+                        }
+                        if ($row->column_position == 4) {
+                            $metadata['H'][$k]->value = $cycleName;
+                        }
+                    }
 
                     if ($row->function_id == 9 && $row->param == 'system_generated') {
-                        if ($invoice_seq_id > 0) {
-                            $metadata['H'][$k]->value = "System generated" . $invoice_seq_id;
-                            $metadata['H'][$k]->param_value = $invoice_seq_id;
-                        }
-                        if ($metadata['H'][$k]->param_value > 0) {
-                            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
-                            $seq_no = $seq_row->val + 1;
-                            $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                        if ($invoice_number == '') {
+                            if ($invoice_seq_id > 0) {
+                                $metadata['H'][$k]->value = "System generated" . $invoice_seq_id;
+                                $metadata['H'][$k]->param_value = $invoice_seq_id;
+                            }
+                            if ($metadata['H'][$k]->param_value > 0) {
+                                $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
+                                $seq_no = $seq_row->val + 1;
+                                $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                            }
+                        } else {
+                            $metadata['H'][$k]->value =  $invoice_number;
+                            $metadata['H'][$k]->display_value =  $invoice_number;
                         }
                     }
                 }
             }
-
             $template_type = $data['template_info']->template_type;
             $data['metadata'] = $metadata;
+            $data['link'] = $link;
             $data['mode'] = 'create';
-            $data['cycleName'] = date('M-Y') . ' Bill';
+            $data['cycleName'] = $cycleName;
             $data['plugin'] = json_decode($data['template_info']->plugin, 1);
             $data['properties'] = json_decode($data['template_info']->properties, 1);
             $data['setting'] = json_decode($data['template_info']->setting, 1);
@@ -2475,9 +2524,16 @@ class InvoiceController extends AppController
                 $duedate = Helpers::sqlDate($request->requestvalue[$k]);
             }
         }
-        $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $request->currency,  1, 0, 11);
-        $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
-        return redirect('/merchant/invoice/particular/' . Encrypt::encode($response->request_id));
+        if ($request->link != '') {
+            $request_id = Encrypt::decode($request->link);
+            $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+            $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
+        } else {
+            $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $request->currency,  1, 0, 11);
+            $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
+            $request_id = $response->request_id;
+        }
+        return redirect('/merchant/invoice/particular/' . Encrypt::encode($request_id));
     }
 
     public function particularsave(Request $request, $type = null)
@@ -2510,6 +2566,7 @@ class InvoiceController extends AppController
                 $data['stored_materials'] = $request->stored_materials[$k];
                 $data['project'] = $request->project[$k];
                 $data['cost_code'] = $request->cost_code[$k];
+                $data['cost_type'] = $request->cost_type[$k];
                 $data['group'] = $request->group[$k];
                 $data['bill_code_detail'] = $request->bill_code_detail[$k];
                 $data['calculated_perc'] = $request->calculated_perc[$k];
@@ -2520,10 +2577,13 @@ class InvoiceController extends AppController
                 } else {
                     $data['attachments'] = null;
                 }
-
+                $request->totalcost=str_replace(',','',$request->totalcost);
+                $this->invoiceModel->updateInvoiceAmount($request_id, $request->totalcost);
                 $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
             }
         }
+
+        return redirect('/merchant/invoice/preview/' . Encrypt::encode($request_id));
     }
 
     public function particular($link)
@@ -2576,9 +2636,9 @@ class InvoiceController extends AppController
                     }
                 }
             }
-
             if ($pre_req_id != false) {
                 $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
+                
                 $cp = array();
                 foreach ($contract_particulars as $row) {
                     $cp[$row->bill_code] = $row;
@@ -2623,16 +2683,19 @@ class InvoiceController extends AppController
                 $ocm = $row['original_contract_amount'];
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
-                if ($particulars[$k]['attachments'] != '') {
-                    $particulars[$k]['attachments'] = implode(',', json_decode($particulars[$k]['attachments'], 1));
-                }
+                $particulars[$k]['attachments'] = '';
+                $particulars[$k]['override'] = false;
             }
         } else {
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
+                $total = $total + $particulars[$k]['net_billed_amount'];
+                $particulars[$k]['override'] = false;
+
                 if ($particulars[$k]['attachments'] != '') {
-                    $particulars[$k]['attachments'] = implode(',', json_decode($particulars[$k]['attachments'], 1));
-                    $total = $total + $particulars[$k]['net_billed_amount'];
+                    $attachment = json_decode($particulars[$k]['attachments'], 1);
+                    $particulars[$k]['count'] = count($attachment);
+                    $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
             }
         }
@@ -2641,12 +2704,11 @@ class InvoiceController extends AppController
 
 
         Session::put('valid_ajax', 'expense');
-
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
         $data['mode'] = 'create';
-        $data['title'] = 'Create Invoice';
+        $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;
         $data['project_id'] = $project->project_id;
@@ -2673,7 +2735,7 @@ class InvoiceController extends AppController
         $groups = [];
         $total = 0;
         $particulars = json_decode(json_encode($invoice_particulars), 1);
-        
+
         Helpers::hasRole(2, 27);
         $title = 'create';
 
@@ -2696,6 +2758,15 @@ class InvoiceController extends AppController
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
+
+        $data['plugin'] = json_decode($template->plugin, 1);
+        $data['template_link'] = '';
+        $data['invoice_type'] = 1;
+        $data['notify_patron'] = 1;
+        $data['payment_request_id'] = $request_id;
+
+
+
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
     }

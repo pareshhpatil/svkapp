@@ -170,9 +170,10 @@
                                                     </template>
                                                 @endif
                                             </select>
-                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value="">
-                                            <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right">
-                                            <i :id="`icon-${index}`"  class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title=""></i> </a>
+                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value=""/>
+                                            <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
+                                            <i :id="`icon-${index}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
+                                         </a>
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                             <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
                                             <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
@@ -219,9 +220,16 @@
                                                 <div>
                                                     <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$k}}"></span><br>
                                                     <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
+                                                    <template x-if="field.override==false">
+                                                    <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Override</a>
+                                                    <span :id="`pipe-calc${index}`"  style="margin-left: 4px; color:#859494;display: none;"> | </span>
+                                                    <a :id="`remove-calc${index}`"  style="padding-top:5px;display: none;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                    </template>
+                                                    <template x-if="field.override==true">
                                                     <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
                                                     <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                     <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
+                                                    </template>
                                                 </div>
                                                 <span x-show="field.txt{{$k}}">
                                             <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
@@ -313,7 +321,7 @@
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
 
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                            <a class="btn green" x-show="step!=1" @click="step=step-1">Back</a>
+                                            <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
                                             <button type="submit" @click="return setParticulars();" class="btn blue" >Preview invoice</button>
                                         </div>
                                     </div>
@@ -332,7 +340,7 @@
                             particularsDropdowns(0, this.fields);
 
                         });*/
-                       csi_codes = [];
+                       csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
                        var particularray = JSON.parse('{!! json_encode($particulars) !!}');
                        var previewArray = [];
 
@@ -537,7 +545,14 @@
 
                                     total = 0;
                                     this.fields.forEach(function(currentValue, index, arr) {
-                                        total = Number(total) + Number(getamt(currentValue.original_contract_amount));
+                                        if(currentValue.net_billed_amount==null)
+                                        {
+                                            net_billed_amount=0;
+                                        }else{
+                                            net_billed_amount=currentValue.net_billed_amount;
+                                        }
+
+                                        total = Number(total) + Number(getamt(net_billed_amount));
                                     });
 
                                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -759,15 +774,18 @@
 
                                 },
                                 OpenAddCaculated(field) {
-                                    console.log(field.introw);
-                                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
-                                    document.getElementById('selected_field_int').value = field.introw;
-                                    OpenAddCaculatedRow(field.introw);
+                                    console.log(field.pint);
+                                    this.selected_field_int = field.pint;
+                                    console.log(document.getElementById('selected_field_int'));
+                                    document.getElementById('selected_field_int').value = field.pint;
+                                    OpenAddCaculatedRow(field.pint);
                                 },
                                 RemoveCaculated(field) {
-                                    this.fields[field.introw].original_contract_amount = 0;
-                                    document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
-                                    RemoveCaculatedRow(field.introw);
+                                    this.fields[field.pint].original_contract_amount = 0;
+                                    this.fields[field.pint].current_contract_amount = 0;
+                                    document.getElementById('lbl_current_contract_amount' + field.pint).innerHTML = '';
+                                    document.getElementById('lbl_original_contract_amount' + field.pint).innerHTML = '';
+                                    RemoveCaculatedRow(field.pint);
                                 },
                                 EditCaculated(field) {
                                     document.getElementById('selected_field_int').value = field.pint;
@@ -822,6 +840,7 @@
                                             bill_code: '',
                                             bill_type: '',
                                             group: '',
+                                            override: true,
                                             bill_code_detail: '',
                                             bill_code_detail: 'Yes',
                                             project: project_code
@@ -831,6 +850,7 @@
                                             pint: pint,
                                             bill_code: '',
                                             bill_type: '',
+                                            override: true,
                                             group: '',
                                             bill_code_detail: '',
                                             project: project_code

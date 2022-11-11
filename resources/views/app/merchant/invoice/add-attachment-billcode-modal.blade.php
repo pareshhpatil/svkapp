@@ -313,6 +313,7 @@ uppy_attach.on('upload-success', (file, response) => {
     counts=pathlist.length+' file';
       
     document.getElementById("icon-"+attach_pos).setAttribute("data-content",""+counts);
+    document.getElementById("icon-"+attach_pos).setAttribute("title",""+counts);
     if(response.body.status == 300) {
         document.getElementById("error").innerHTML = response.body.errors;
         uppy_attach.removeFile(file.id);

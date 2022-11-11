@@ -38,8 +38,13 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('create.invoice','Invoice') }}
+        @if($link=='')
         <a href="/merchant/template/viewlist" class="btn green pull-right"> Invoice formats </a>
         <a href="/merchant/template/newtemplate" class="btn green pull-right mr-1"> Add new format</a>
+        @else
+        <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;margin-bottom: 15px">Step <span x-text="step">1</span> of 3</span>
+
+        @endif
     </div>
 
 
@@ -59,8 +64,10 @@
 
             </div>
             @else
+            
             <div class="row">
                 <div class="col-md-12">
+                @if($link=='')
                     <div class="portlet " style="margin-bottom: 15px;">
                         <div class="portlet-body" data-tour="invoice-pick-format">
                             <form action="" method="post" id="template_create" class="form-horizontal form-row-sepe mb-0">
@@ -140,9 +147,11 @@
                             </form>
                         </div>
                     </div>
+                    @endif
                 </div>
                 @endif
             </div>
+           
         </div>
     </div>
 
@@ -161,9 +170,11 @@
     </div>
     @else
     <!-- Show create invoice form -->
+    @if($link=='')
     <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;margin-bottom: 15px">Step <span x-text="step">1</span> of 3</span>
     <br>
     <br>
+    @endif
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <div class="alert alert-danger" style="display: none;" id="invoiceerrorshow">
@@ -391,6 +402,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-right">
+                        <input type="hidden" name="link" value="{{$link}}">
                         <input type="hidden" name="contract_id" value="{{$contract_id}}">
                         <input type="hidden" name="template_id" value="{{$template_id}}">
                         <a href="/merchant/collect-payments" class="btn green">Cancel</a>

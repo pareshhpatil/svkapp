@@ -9,6 +9,7 @@ var tax_index = null;
 var update = false;
 var tb_col = null;
 var tc_col = null;
+var csi_codes = null;
 var hb_col = null;
 var fs_col = null;
 var invoice_construction = false;
@@ -732,6 +733,7 @@ function setOriginalContractAmount() {
     document.getElementById("add-calc" + calcRowInt).style.display = 'none';
     document.getElementById("remove-calc" + calcRowInt).style.display = 'inline-block';
     document.getElementById("edit-calc" + calcRowInt).style.display = 'inline-block';
+    document.getElementById("edit-calc" + calcRowInt).innerHTML = 'Edit';
     document.getElementById("pipe-calc" + calcRowInt).style.display = 'inline-block';
     document.getElementById("edit-calc" + calcRowInt).innerHTML = 'Edit';
     calcRowArray = [];
@@ -3185,6 +3187,7 @@ function setBillCodeMenuData() {
             counts = pathlist.length + ' file';
 
         document.getElementById("icon-" + attach_pos).setAttribute("data-content", "" + counts);
+        document.getElementById("icon-" + attach_pos).setAttribute("title", "" + counts);
         var ul = '<ul id="ul' + sortname.trim() + '" style="display: block">';
         for (var i = 0; i < pathlist.length; i++) {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
