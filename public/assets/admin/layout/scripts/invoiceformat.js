@@ -659,7 +659,9 @@ function closeSidePanelBillCode() {
     return false;
 }
 function closeSidePanelBillCodeAttachment() {
+    try{
     uppy_attach.reset();
+    }catch(o){}
     document.getElementById("listtab2").classList.remove('active');
     document.getElementById("tab2").classList.remove('active')
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "none";
