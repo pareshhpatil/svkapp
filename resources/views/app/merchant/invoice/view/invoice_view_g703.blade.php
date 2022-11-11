@@ -76,11 +76,11 @@ if ($info['user_type'] == 'merchant') {
                         <li class="active">
                             <a href="/patron/invoice/view/{{ $info['Url'] }}/703">703</a>
                         </li>
-                        @isset($metadata['plugin']['has_upload'])
+                      
                             <li>
                                 <a href="/patron/invoice/document/{{ $info['Url'] }}">Attached files</a>
                             </li>
-                        @endisset
+                       
                     @else
                         <li>
                             <a href="/merchant/invoice/viewg702/{{ $info['Url'] }}">702</a>
@@ -88,11 +88,11 @@ if ($info['user_type'] == 'merchant') {
                         <li class="active">
                             <a href="/merchant/invoice/viewg703/{{ $info['Url'] }}">703</a>
                         </li>
-                        @isset($metadata['plugin']['has_upload'])
+                      
                             <li>
                                 <a href="/merchant/invoice/document/{{ $info['Url'] }}">Attached files</a>
                             </li>
-                        @endisset
+                       
                     @endif
                 </ul>
             </div>

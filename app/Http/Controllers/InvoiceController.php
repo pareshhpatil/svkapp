@@ -795,8 +795,10 @@ class InvoiceController extends AppController
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
             }
-
-
+            if(isset($data['files']))
+            {
+            $data['files']= array_filter( $data['files'], 'strlen');
+            }
             $menus = array();
             $doclist = array();
             if (!empty($data['files'][0])) {
