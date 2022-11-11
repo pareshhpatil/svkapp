@@ -3,23 +3,31 @@
 @section('header')
 <link href="/assets/global/plugins/summernote/summernote.min.css" rel="stylesheet">
 <style>
+    .uppy-Dashboard-AddFiles-title {
+        font-size: 15px !important;
+        font-weight: 400 !important;
+    }
 
-.uppy-Dashboard-AddFiles-title {
-    font-size: 15px !important;
-    font-weight: 400 !important;
-}
     .uppy-Dashboard-inner {
-   
-    border: 0px solid #eaeaea !important;
-    border-radius: 5px !important;
-}
-[data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
-     margin: 0px !important; 
-    padding-bottom: 9px;
-     height: calc(100%) !important; 
-    border-radius: 3px;
-    border: 1px dashed #dfdfdf;
-}
+
+        border: 0px solid #eaeaea !important;
+        border-radius: 5px !important;
+    }
+
+    [data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
+        margin: 0px !important;
+        padding-bottom: 9px;
+        height: calc(100%) !important;
+        border-radius: 3px;
+        border: 1px dashed #dfdfdf;
+    }
+
+    .steps {
+        background-color: transparent !important;
+        border: 2px #18AEBF solid !important;
+        color: #18AEBF !important;
+        width: auto !important;
+    }
 </style>
 @endsection
 
@@ -53,17 +61,17 @@
             @else
             <div class="row">
                 <div class="col-md-12">
-                    <div class="portlet ">
+                    <div class="portlet " style="margin-bottom: 15px;">
                         <div class="portlet-body" data-tour="invoice-pick-format">
                             <form action="" method="post" id="template_create" class="form-horizontal form-row-sepe mb-0">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <div class="form-body">
                                     <div class="form-group mb-0">
                                         <div class="col-md-12">
-                                        
+
                                             <div class="col-md-3 pl-1" style="padding-right: 0px;">
-                                               {{-- @if($template_id=='' )onchange="invoicePreview(this.value);" @endif --}}
-                                            <select data-cy="template_id" name="template_id" id="template_id"  required title="Pick an invoice format" class="form-control select2me" data-placeholder="Select format">
+                                                {{-- @if($template_id=='' )onchange="invoicePreview(this.value);" @endif --}}
+                                                <select data-cy="template_id" name="template_id" id="template_id" required title="Pick an invoice format" class="form-control select2me" data-placeholder="Select format">
                                                     <option value=""></option>
                                                     @if(!empty($format_list))
                                                     @foreach($format_list as $v)
@@ -80,42 +88,42 @@
                                                 <small class="form-text text-muted">Invoice format</small>
                                                 <div class="help-block"></div>
                                             </div>
-                                            <div class="col-md-3 pl-1 pr-0" >
-                                                    <select data-placeholder="Select billing profile" onchange="setCurrency(this.value);" class="form-control select2me" id="billing_profile_id" data-cy="billing_profile_id" name="billing_profile_id">
+                                            <div class="col-md-3 pl-1 pr-0">
+                                                <select data-placeholder="Select billing profile" onchange="setCurrency(this.value);" class="form-control select2me" id="billing_profile_id" data-cy="billing_profile_id" name="billing_profile_id">
                                                     <option value=""></option>
                                                     @foreach($billing_profile as $v)
                                                     <option @if($billing_profile_id==$v->id) selected @endif value="{{$v->id}}">{{$v->profile_name}} {{$v->gst_number}}</option>
                                                     @endforeach
-                                                    </select>
-                                                    <small class="form-text text-muted">Billing profile</small>
+                                                </select>
+                                                <small class="form-text text-muted">Billing profile</small>
                                                 <div class="help-block"></div>
                                             </div>
-                                            <div class="col-md-2 pl-1 pr-0" >
-                                                    <select data-cy="currency" required id="currency" name="currency" required class="form-control select2me" data-placeholder="Select...">
-                                                        @foreach($currency_list as $v)
-                                                        <option @if($currency==$v) selected @endif value="{{$v}}">{{$v}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <small class="form-text text-muted">Currency</small>
+                                            <div class="col-md-2 pl-1 pr-0">
+                                                <select data-cy="currency" required id="currency" name="currency" required class="form-control select2me" data-placeholder="Select...">
+                                                    @foreach($currency_list as $v)
+                                                    <option @if($currency==$v) selected @endif value="{{$v}}">{{$v}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="form-text text-muted">Currency</small>
                                                 <div class="help-block"></div>
                                             </div>
-                                            
+
                                             @if($type=='construction')
-                                            <div class="col-md-3 pl-1 pr-0" >
-                                                    <select data-placeholder="Select contract" required class="form-control select2me"  name="contract_id">
+                                            <div class="col-md-3 pl-1 pr-0">
+                                                <select data-placeholder="Select contract" required class="form-control select2me" name="contract_id">
                                                     <option value=""></option>
                                                     @foreach($contract as $v)
-                                                        <option @if($contract_id==$v->contract_id) selected @endif value="{{$v->contract_id}}">{{$v->project_name}} | {{$v->contract_code}}</option>
-                                                        @endforeach
-                                                    
-                                                    </select>
-                                                    <small class="form-text text-muted">Contract</small>
+                                                    <option @if($contract_id==$v->contract_id) selected @endif value="{{$v->contract_id}}">{{$v->project_name}} | {{$v->contract_code}}</option>
+                                                    @endforeach
+
+                                                </select>
+                                                <small class="form-text text-muted">Contract</small>
                                                 <div class="help-block"></div>
                                             </div>
                                             @endif
                                             @if($request_type==4)
                                             <div class="col-md-2 pl-1 pr-0" style="width: auto;">
-                                            <select data-cy="invoice_type" name="invoice_type"  required class="form-control" data-placeholder="Select...">
+                                                <select data-cy="invoice_type" name="invoice_type" required class="form-control" data-placeholder="Select...">
                                                     <option @if($invoice_type==1) selected @endif value="1">Invoice</option>
                                                     <option @if($invoice_type==2) selected @endif value="2">Estimate</option>
                                                 </select>
@@ -137,6 +145,7 @@
             </div>
         </div>
     </div>
+
     @if($template_id=='')
     <div class="row" id="preview_div" style="display: none;">
         <div class="col-md-12">
@@ -152,17 +161,21 @@
     </div>
     @else
     <!-- Show create invoice form -->
+    <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;margin-bottom: 15px">Step <span x-text="step">1</span> of 3</span>
+    <br>
+    <br>
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <div class="alert alert-danger" style="display: none;" id="invoiceerrorshow">
                 <p id="invoiceerror_display">Please correct the below errors to complete registration.</p>
             </div>
-            <form action="/merchant/invoice/invoicesave" onsubmit="return checkCurrentContractAmount('');" id="invoice" method="post" class="form-horizontal" enctype="multipart/form-data">
-                {!!Helpers::csrfToken('invoice')!!}
-                
+            <form action="/merchant/invoice/save" onsubmit="return checkCurrentContractAmount('');" id="invoice" method="post" class="form-horizontal" enctype="multipart/form-data">
+                @csrf
+
                 <input type="hidden" id="product_taxation_type" name="product_taxation_type" value="{{$product_taxation_type}}">
-              
+
                 <div>
+
                     <div class="row invoice-logo">
                         <div class="col-xs-6">
                             @if($invoice_type==2)
@@ -179,7 +192,7 @@
                                     <i class="popovers fa fa-info-circle support blue" data-container="body" data-trigger="hover" data-content="Keep this toggle On if you would like an invoice to be auto generated once the customer pays the estimate online. The auto-generated invoice copy is sent to your customer on email & SMS and the same invoice is added in your Swipez account." data-original-title="" title=""></i>
                                 </label>
                                 <div class="col-md-6">
-                                 <input type="checkbox" name="generate_estimate_invoice" checked data-cy="invoice_detail_generate_estimate_invoice" value="1" class="make-switch" data-size="small">
+                                    <input type="checkbox" name="generate_estimate_invoice" checked data-cy="invoice_detail_generate_estimate_invoice" value="1" class="make-switch" data-size="small">
                                 </div>
                             </div>
                             @endif
@@ -190,28 +203,28 @@
                     <h3 class="form-section">@if($invoice_type==2)Estimate @else Invoice @endif information</h3>
                     <div class="row">
                         <div class="col-md-6" data-tour="invoice-create-customer-select">
-                            
-                        <div class="form-group">
+
+                            <div class="form-group">
                                 <label class="control-label col-md-4">Project name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text"  readonly class="form-control cust_det" value="{{$contract_detail->project_name}} | {{$contract_detail->project_id}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->project_name}} | {{$contract_detail->project_id}}">
                                     </div>
                                 </div>
                             </div>
-                        <div class="form-group">
+                            <div class="form-group">
                                 <label class="control-label col-md-4">Company name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text"  readonly class="form-control cust_det" value="{{$customer->company_name}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->company_name}}">
                                     </div>
                                 </div>
                             </div>
-                        <div class="form-group">
+                            <div class="form-group">
                                 <label class="control-label col-md-4">Contract code</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text"  readonly class="form-control cust_det" value="{{$contract_detail->contract_code}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->contract_code}}">
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +232,7 @@
                                 <label class="control-label col-md-4">Client code</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text"  readonly class="form-control cust_det" value="{{$customer->customer_code}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->customer_code}}">
                                         <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
                                     </div>
                                 </div>
@@ -228,15 +241,15 @@
                                 <label class="control-label col-md-4">Client name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text"  readonly class="form-control cust_det" value="{{$customer->first_name}} {{$customer->last_name}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->first_name}} {{$customer->last_name}}">
                                     </div>
                                 </div>
                             </div>
-                            
-                            
+
+
                         </div>
                         <div class="col-md-6" data-tour="invoice-create-billing-information">
-                            
+
                             <input type="hidden" name="billing_profile_id" value="{{$billing_profile_id}}">
                             <input type="hidden" name="currency" value="{{$currency}}">
                             @php $is_carry=0; @endphp
@@ -274,7 +287,7 @@
                                         @if($v->column_datatype=="textarea")
                                         <textarea type="text" name="{{$field_name}}" data-cy="invoice_detail_{{$v->column_name??''}}" class="form-control" placeholder="Enter specific value">{{$v->value}}</textarea>
                                         @elseif($v->column_datatype=="date")
-                                        <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker"  data-date-format="{{ Session::get('default_date_format')}}">
+                                        <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
                                         @elseif($v->column_datatype=="time")
                                         <input type="text" {{$req}} autocomplete="off" data-cy="invoice_detail_{{$v->column_name??''}}" value="{{$v->value??''}}" id="{{$id}}" name="{{$field_name}}" class="form-control timepicker timepicker-no-seconds">
                                         @elseif($v->function_id==15)
@@ -282,7 +295,7 @@
                                             @foreach($einvoice_type as $ev)
                                             <option value="{{$ev->config_value}}">{{$ev->description}}</option>
                                             @endforeach
-                                        </select>                                       
+                                        </select>
                                         @else
                                         @if($v->function_id==9)
                                         <input type="hidden" id="{{$id}}" {!!$valid!!} data-cy="invoice_detail_{{$v->column_name??''}}" @if($v->column_name !='Billing cycle name' ) {{$req}} @endif value="{{$v->value??''}}" name="{{$field_name}}" class="form-control">
@@ -293,14 +306,14 @@
                                         @endif
                                     </div>
                                 </div>
-                                @if($v->function_id==4)<a onclick="showLedger();"  class="btn green ml10 popovers" style="padding: 6px 10px;margin-left: 0px;"  data-placement="top" data-container="body" data-trigger="hover" data-content="Pick a customer and view all invoices raised for the chosen customer"><i class="fa fa-list-ul"></i></a> @endif
+                                @if($v->function_id==4)<a onclick="showLedger();" class="btn green ml10 popovers" style="padding: 6px 10px;margin-left: 0px;" data-placement="top" data-container="body" data-trigger="hover" data-content="Pick a customer and view all invoices raised for the chosen customer"><i class="fa fa-list-ul"></i></a> @endif
 
                             </div>
                             @if($v->function_id==10)
                             <div class="form-group">
                                 <label class="control-label col-md-4">Billing Period start date</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="billing_start_date" data-cy="invoice_detail_{{$v->column_name??''}}" required class="form-control  date-picker" autocomplete="off"  data-date-format="{{ Session::get('default_date_format')}}" placeholder="Select start date">
+                                    <input type="text" name="billing_start_date" data-cy="invoice_detail_{{$v->column_name??''}}" required class="form-control  date-picker" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Select start date">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -350,8 +363,8 @@
                                 <label class="control-label col-md-4"></label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="hidden" name="file_upload" id="file_upload" value=""> 
-                                        <a  class="UppyModalOpenerBtn btn  default">Add attachments</a>
+                                        <input type="hidden" name="file_upload" id="file_upload" value="">
+                                        <a class="UppyModalOpenerBtn btn  default">Add attachments</a>
                                         <div id="docviewbox" class="mt-1">
                                         </div>
                                         <div id="drag-drop-area2"></div>
@@ -364,318 +377,252 @@
                     </div>
 
 
-                    
 
-                    @if($request_type==4)
-                    <input type="hidden" name="payment_request_type" value="4">
-                    @include('app.merchant.invoice.create_subscription',['is_carry'=>$is_carry])
+
+
+
                     @endif
-                    @if($template_info->template_type=='travel')
-                    @include('app.merchant.invoice.travel_particular')
-                    @elseif($template_info->template_type=='franchise')
-                    @include('app.merchant.invoice.franchise_particular')
-                    @elseif($template_info->template_type=='construction')
-                    @include('app.merchant.invoice.construction_particular')
-                    @elseif($template_info->template_type=='nonbrandfranchise')
-                    @include('app.merchant.invoice.non_brand_franchise_particular')
-                    @else
-                    @include('app.merchant.invoice.particular')
-                    @endif
-                    @include('app.merchant.invoice.create_footer')
-                    @include('app.merchant.invoice.footer')
-                    @endif
+
                 </div>
-
-
-           
-               
-              
-
-                <!-- BEGIN SEARCH CONTENT-->
-                @endsection
-
-                <!-- add particulars label ends -->
-               
-                @section('footer')
-                @if($template_id!='')
-                <script>
-                    mode = '{{$mode}}';
-                    exist_paricular_cnt = '0';
-                    @if(isset($customer_id))
-                    selectCustomer({{$customer_id}});
-                    @endif
-                    @if(isset($product_list))
-                    products = {!!$product_json!!};
-                    @endif
-
-                    @if(isset($csi_code))
-                    csi_codes = {!!$csi_code_json!!};
-                    @endif
-
-                    @if(isset($tax_array))
-                    tax_master = '{!!$tax_array!!}';
-                    tax_array = JSON.parse(tax_master);
-                    taxes_rate = '{!!$tax_rate_array!!}';
-                    @endif
-
-                    particular_values = '{{$template_info->particular_values}}';
-
-                    particular_col_array = JSON.parse('{!!$template_info->particular_column!!}');
-                    
-                   
-                    @if(isset($contract_detail))
-                    document.getElementById('_project_id').value = '{!!$contract_detail->id!!}';
-                    @endif
- 
-                  
-                    /*@php $default_tax = json_decode($template_info->default_tax, 1);
-                    @endphp
-                    @if(!empty($default_tax))
-                    @foreach($default_tax as $v)
-                    AddInvoiceTax('{{$v}}');
-                    @endforeach
-                    @endif*/
-
-                    @if(!empty($plugin['supplier']))
-                    @foreach($plugin['supplier'] as $v)
-                    AddsupplierRow({{$v}});
-                    @endforeach
-                    @endif
-
-                    
-                    var datetime='{!!$setting['has_datetime']??"0"!!}';
-
-                    
-                    @if(isset($properties['travel_section']))
-                        AddSecRow(tb_col, 'tb',datetime);
-                        AddSecRow(tc_col, 'tc',datetime);
-                    @endif
-
-                    @if(isset($properties['hotel_section']))
-                    AddSecRow(hb_col, 'hb',datetime);
-                    @endif
-
-                    @if(isset($properties['facility_section']))
-                    AddSecRow(fs_col, 'fs',datetime);
-                    @endif
-
-                    calculateConstruction();
-                </script>
-            @endif
-            <script>
-            $('#billing_profile_id').select2({
-                
-            }).on('select2:open', function (e) {
-                pind = $(this).index();
-                if (document.getElementById('profilelist' + pind)) {
-                } else {
-                    $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/gstprofile" id="profilelist'+pind+'" target="_BLANK" class="clicker" >Add new profile</a> </div>');
-                }
-            });
-            $('#currency').select2({
-                
-            }).on('select2:open', function (e) {
-                pind = $(this).index();
-                if (document.getElementById('currencylist' + pind)) {
-                } else {
-                    $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/currency" id="currencylist'+pind+'"  target="_BLANK" class="clicker" >Add new currency</a> </div>');
-                }
-            });
-
-            $('#template_id').select2({
-                
-            }).on('select2:open', function (e) {
-                pind = $(this).index();
-                if (document.getElementById('templatelists' + pind)) {
-                } else {
-                    $('.select2-results').append('<div class="wrapper" > <a href="/merchant/template/newtemplate" id="templatelists'+pind+'"   class="clicker" >Add new format</a> </div>');
-                }
-            });
-            invoice_construction=true;
-
-
-            $('.productselect').select2({
-        tags: true,
-        insertTag: function(data, tag) {
-            var $found = false;
-            $.each(data, function(index, value) {
-                if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
-                    $found = true;
-                }
-            });
-            if (!$found) data.unshift(tag);
-        }
-    }).on('select2:open', function(e) {
-        pind = $(this).index();
-        var index = $(".productselect").index(this);
-        index+=1;
-        if (document.getElementById('prolist' + pind)) {} else {
-            $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
-        }
-    });
-            </script>
-
-
-<script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
-<script>
-    var newdocfileslist=[];
-//uppy file upload code
-var uppy = Uppy.Core({ 
-    autoProceed: true,
-    restrictions: {
-        maxFileSize: 3000000,
-        maxNumberOfFiles: 10,
-        minNumberOfFiles: 1,
-        allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
-    }
-});
-
-uppy.use(Uppy.Dashboard, {
-    target: 'body', 
-    trigger: '.UppyModalOpenerBtn',
-    inline: false,
-    height: 40,
-    maxHeight: 200,
-   
-    hideAfterFinish: true,
-    showProgressDetails: false,
-    hideUploadButton: false,
-    hideRetryButton: false,
-    hidePauseResumeButton: false,
-    hideCancelButton: false,
-    // doneButtonHandler: () => {
-    //     document.getElementById("file_upload").value = '';
-    //     this.uppy.reset()
-    //     this.requestCloseModal()
-    // },
-    // locale: {
-    //     strings: {
-    //         done: 'Cancel'
-    // }}
-});
-
-uppy.use(Uppy.XHRUpload, { 
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    },
-    endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
-    method:'post',
-    formData: true,
-    fieldName: 'image'
-});
-
-uppy.on('file-added', (file) => {
-    document.getElementById("error").innerHTML = '';
-    console.log('file-added');
-});
-
-uppy.on('upload', (data) => {
-    console.log('Starting upload');
-});
-uppy.on('upload-success', (file, response) => {
-    path = response.body.fileUploadPath;
-    extvalue=document.getElementById("file_upload").value;
-    newdocfileslist.push(path);
-    deletedocfile('');
-    if(extvalue!='')
-    {
-        document.getElementById("file_upload").value=extvalue+','+path;
-    }else{
-        document.getElementById("file_upload").value=path;
-    }
-    if(response.body.status == 300) {
-        document.getElementById("error").innerHTML = response.body.errors;
-        uppy.removeFile(file.id);
-    } else {
-        document.getElementById("error").innerHTML = '';
-    }
-});
-uppy.on('complete', (result) => {
-    //console.log('successful files:', result.successful)
-    //console.log('failed files:', result.failed)
-});
-uppy.on('error', (error) => {
-    //console.error(error.stack);
-});
-</script>
-<div class="modal fade" id="delete_doc" tabindex="-1" role="basic" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 id="poptitle" class="modal-title">Delete attachment</h4>
-                <input type="hidden" id="docfullurl">
-            </div>
-            <div class="modal-body">
-                Do you want to permanently delete this attachment from this invoice?
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
-                <button type="button" onclick="deletedocfile('delete')" id="deleteanchor" class="btn delete">Delete</button>
+        </div>
+    </div>
+    <div class="portlet light bordered">
+        <div class="portlet-body form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <input type="hidden" name="contract_id" value="{{$contract_id}}">
+                        <input type="hidden" name="template_id" value="{{$template_id}}">
+                        <a href="/merchant/collect-payments" class="btn green">Cancel</a>
+                        <button type="submit" class="btn blue">Add particulars</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-<script>
+    </form>
 
 
-    function setdata(name,fullurl)
-     {
-     
-       document.getElementById('poptitle').innerHTML="Delete attachment - "+name;
-       document.getElementById('docfullurl').value=fullurl;
-     }
-     function deletedocfile(x)
-     {
-        var html='';
-if(x=='delete')
-{
- var fullurl=document.getElementById('docfullurl').value;
- var index = newdocfileslist.indexOf(fullurl);
- if (index !== -1) {
-    newdocfileslist.splice(index, 1);
- }
-}
-
- for(var i=0;i<newdocfileslist.length;i++)
- {
-    var filenm=newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/')+1);
-    filenm=filenm.split('.').slice(0, -1).join('.')
-    filenm =filenm.substring(0, filenm.length - 4);
-  html=html+'<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">'+
-           '<a class=" btn btn-xs " target="_BLANK" href="'+newdocfileslist[i]+'" title="Click to view full size">'+filenm.substring(0,10)+'..</a>'+
-            '<a href="#delete_doc" onclick="setdata(\''+filenm.substring(0,10)+'\',\''+newdocfileslist[i]+'\');"   data-toggle="modal"> '+
-             ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
-            
-        
- }
- clearnewuploads('no');
-             document.getElementById('docviewbox').innerHTML=html;
- document.getElementById('closeconformdoc').click();
-     }
-     function clearnewuploads(x){
-         document.getElementById("file_upload").value = '';
-         
-         var filesnm='';
-        
- for(var i=0;i<newdocfileslist.length;i++)
- {
-     if(filesnm!='')
-         filesnm=filesnm+','+newdocfileslist[i];
-         else
-         filesnm=filesnm+newdocfileslist[i];
- }
- document.getElementById("file_upload").value =filesnm;
-     }
-     </script>
-                @endsection
-               
-                
-
-@include('app.merchant.contract.add-calculation-modal')
-@include('app.merchant.contract.add-bill-code-modal')
-@include('app.merchant.invoice.add-attachment-billcode-modal')
 
 
+
+
+    <!-- BEGIN SEARCH CONTENT-->
+    @endsection
+
+    <!-- add particulars label ends -->
+
+    @section('footer')
+    @if($template_id!='')
+    <script>
+        mode = '{{$mode}}';
+        exist_paricular_cnt = '0';
+        @if(isset($customer_id))
+        selectCustomer({
+            {
+                $customer_id
+            }
+        });
+        @endif
+    </script>
+    @endif
+    <script>
+        $('#billing_profile_id').select2({
+
+        }).on('select2:open', function(e) {
+            pind = $(this).index();
+            if (document.getElementById('profilelist' + pind)) {} else {
+                $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/gstprofile" id="profilelist' + pind + '" target="_BLANK" class="clicker" >Add new profile</a> </div>');
+            }
+        });
+        $('#currency').select2({
+
+        }).on('select2:open', function(e) {
+            pind = $(this).index();
+            if (document.getElementById('currencylist' + pind)) {} else {
+                $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/currency" id="currencylist' + pind + '"  target="_BLANK" class="clicker" >Add new currency</a> </div>');
+            }
+        });
+
+        $('#template_id').select2({
+
+        }).on('select2:open', function(e) {
+            pind = $(this).index();
+            if (document.getElementById('templatelists' + pind)) {} else {
+                $('.select2-results').append('<div class="wrapper" > <a href="/merchant/template/newtemplate" id="templatelists' + pind + '"   class="clicker" >Add new format</a> </div>');
+            }
+        });
+        invoice_construction = true;
+
+
+        $('.productselect').select2({
+            tags: true,
+            insertTag: function(data, tag) {
+                var $found = false;
+                $.each(data, function(index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
+            }
+        }).on('select2:open', function(e) {
+            pind = $(this).index();
+            var index = $(".productselect").index(this);
+            index += 1;
+            if (document.getElementById('prolist' + pind)) {} else {
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
+            }
+        });
+    </script>
+
+
+    <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+    <script>
+        var newdocfileslist = [];
+        //uppy file upload code
+        var uppy = Uppy.Core({
+            autoProceed: true,
+            restrictions: {
+                maxFileSize: 3000000,
+                maxNumberOfFiles: 10,
+                minNumberOfFiles: 1,
+                allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
+            }
+        });
+
+        uppy.use(Uppy.Dashboard, {
+            target: 'body',
+            trigger: '.UppyModalOpenerBtn',
+            inline: false,
+            height: 40,
+            maxHeight: 200,
+
+            hideAfterFinish: true,
+            showProgressDetails: false,
+            hideUploadButton: false,
+            hideRetryButton: false,
+            hidePauseResumeButton: false,
+            hideCancelButton: false,
+            // doneButtonHandler: () => {
+            //     document.getElementById("file_upload").value = '';
+            //     this.uppy.reset()
+            //     this.requestCloseModal()
+            // },
+            // locale: {
+            //     strings: {
+            //         done: 'Cancel'
+            // }}
+        });
+
+        uppy.use(Uppy.XHRUpload, {
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
+            method: 'post',
+            formData: true,
+            fieldName: 'image'
+        });
+
+        uppy.on('file-added', (file) => {
+            document.getElementById("error").innerHTML = '';
+            console.log('file-added');
+        });
+
+        uppy.on('upload', (data) => {
+            console.log('Starting upload');
+        });
+        uppy.on('upload-success', (file, response) => {
+            path = response.body.fileUploadPath;
+            extvalue = document.getElementById("file_upload").value;
+            newdocfileslist.push(path);
+            deletedocfile('');
+            if (extvalue != '') {
+                document.getElementById("file_upload").value = extvalue + ',' + path;
+            } else {
+                document.getElementById("file_upload").value = path;
+            }
+            if (response.body.status == 300) {
+                document.getElementById("error").innerHTML = response.body.errors;
+                uppy.removeFile(file.id);
+            } else {
+                document.getElementById("error").innerHTML = '';
+            }
+        });
+        uppy.on('complete', (result) => {
+            //console.log('successful files:', result.successful)
+            //console.log('failed files:', result.failed)
+        });
+        uppy.on('error', (error) => {
+            //console.error(error.stack);
+        });
+    </script>
+    <div class="modal fade" id="delete_doc" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 id="poptitle" class="modal-title">Delete attachment</h4>
+                    <input type="hidden" id="docfullurl">
+                </div>
+                <div class="modal-body">
+                    Do you want to permanently delete this attachment from this invoice?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+                    <button type="button" onclick="deletedocfile('delete')" id="deleteanchor" class="btn delete">Delete</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <script>
+        function setdata(name, fullurl) {
+
+            document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
+            document.getElementById('docfullurl').value = fullurl;
+        }
+
+        function deletedocfile(x) {
+            var html = '';
+            if (x == 'delete') {
+                var fullurl = document.getElementById('docfullurl').value;
+                var index = newdocfileslist.indexOf(fullurl);
+                if (index !== -1) {
+                    newdocfileslist.splice(index, 1);
+                }
+            }
+
+            for (var i = 0; i < newdocfileslist.length; i++) {
+                var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
+                filenm = filenm.split('.').slice(0, -1).join('.')
+                filenm = filenm.substring(0, filenm.length - 4);
+                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
+                    '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
+                    '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
+                    ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
+
+
+            }
+            clearnewuploads('no');
+            document.getElementById('docviewbox').innerHTML = html;
+            document.getElementById('closeconformdoc').click();
+        }
+
+        function clearnewuploads(x) {
+            document.getElementById("file_upload").value = '';
+
+            var filesnm = '';
+
+            for (var i = 0; i < newdocfileslist.length; i++) {
+                if (filesnm != '')
+                    filesnm = filesnm + ',' + newdocfileslist[i];
+                else
+                    filesnm = filesnm + newdocfileslist[i];
+            }
+            document.getElementById("file_upload").value = filesnm;
+        }
+    </script>
+    @endsection

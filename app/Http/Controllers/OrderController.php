@@ -218,7 +218,7 @@ class OrderController extends Controller
     public function approved($link)
     {
         $title = 'Approved';
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
         $model = new Master();
         $row = $model->getTableRow('order', 'order_id', $id);

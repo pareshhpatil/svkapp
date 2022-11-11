@@ -346,7 +346,7 @@
                         showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                     </div>
                     <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
-                    <a data-toggle="modal" href="#new_covering" class="btn mb-1 green pull-right ">Add new note </a>
+                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right ">Add new note </a>
                 </div>
                 <div class="row mb-2">
                     <div class="form-group form-horizontal">

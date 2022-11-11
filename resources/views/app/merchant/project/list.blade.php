@@ -28,7 +28,7 @@
                                     Project Name
                                 </th>
                                 <th class="td-c">
-                                    Client ID
+                                    Company Name
                                 </th>
                                 <th class="td-c">
                                     Start Date
@@ -55,7 +55,7 @@
                                     {{$v->project_name}}
                                 </td>
                                 <td class="td-c">
-                                    {{$v->customer_id}}
+                                    {{$v->company_name}}
                                 </td>
                                 <td class="td-c">
                                     <x-localize :date="$v->start_date" type="date" />

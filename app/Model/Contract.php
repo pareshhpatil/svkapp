@@ -95,8 +95,8 @@ class Contract extends ParentModel
 
     public function getAllProjectDetails($project_id)
     {
-        $retObj =  DB::select("SELECT id, project_id,  project_name, a.customer_id, b.company_name,a.sequence_number,
-        concat(a.customer_id, ' | ' , b.company_name) customer_company_code, email, mobile, concat(first_name,' ', last_name) name
+        $retObj =  DB::select("SELECT id, project_id,  project_name, a.customer_id, b.customer_code, b.company_name,a.sequence_number,
+        concat(b.customer_code, ' | ' , b.company_name) customer_company_code, email, mobile, concat(first_name,' ', last_name) name
         FROM project a
         JOIN customer b on a.customer_id  = b.customer_id
         where id = '$project_id'

@@ -162,6 +162,116 @@ class InvoiceController extends AppController
         return view('app/merchant/invoice/create', $data);
     }
 
+    public function createv2(Request $request, $type = 'invoice', $invoice_type = 1)
+    {
+        if (isset($request->invoice_type)) {
+            $invoice_type = $request->invoice_type;
+        }
+        $req_types = array('invoice' => 1, 'estimate' => 2, 'subscription' => 4, 'construction' => 1);
+        $menus = array('invoice' => 19, 'estimate' => 122, 'subscription' => 21, 'construction' => 19);
+        if (!isset($req_types[$type])) {
+            throw new Exception('Invalid invoice type ' . $type);
+        }
+        $template_type = '';
+        $menu = $menus[$type];
+        $data = $this->setBladeProperties('Create ' . $type, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
+        #get merchant invoice format list
+        $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
+        if (count($data['format_list']) == 1) {
+            $request->template_id = $data['format_list']->first()->template_id;
+        }
+
+        $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
+        $data['billing_profile_id'] = '';
+        if (count($data['billing_profile']) == 1) {
+            $request->billing_profile_id = $data['billing_profile']->first()->id;
+            $data['billing_profile_id'] = $request->billing_profile_id;
+        }
+        $data['currency'] = '';
+        $data['template_id'] = '';
+        $data['currency_list'] = Session::get('currency');
+        $data['multi_currency'] = env('ENABLE_MULTI_CURRENCY');
+        $data['subscription'] = 0;
+        $data['type'] = ucfirst($type);
+        $data['invoice_product_taxation'] = 1;
+        $data['richtext'] = true;
+        if ($invoice_type == 2 || $type == 'estimate') {
+            $data['invoice_type'] = 2;
+        } else {
+            $data['invoice_type'] = 1;
+        }
+
+        $data['request_type'] = $req_types[$type];
+
+
+        $data['contract_id'] = 0;
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        $breadcrumbs['menu'] = 'collect_payments';
+        $breadcrumbs['title'] = $data['title'];
+        $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
+
+        if (env('ENV') != 'LOCAL') {
+            //menu list
+            $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
+            $item_list = json_decode($mn1, 1);
+            $row_array['name'] = $data['title'];
+            $row_array['link'] = '/merchant/invoice/create/' . $type;
+            $item_list[] = $row_array;
+            Redis::set('merchantMenuList' . $this->merchant_id, json_encode($item_list));
+        }
+
+        $request->session()->put('breadcrumbs', $breadcrumbs);
+        if (isset($request->template_id)) {
+            $formatModel = new InvoiceFormat();
+            $template_id = $request->template_id;
+            $data['template_link'] = Encrypt::encode($template_id);
+            $data['template_id'] = $template_id;
+            $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : 0;
+            $data['type'] = ($data['contract_id'] > 0) ? 'construction' : '';
+            $data = $this->setInvoiceData($data, $template_id, $request->billing_profile_id, $request->currency);
+
+            #get pre define system column metadata
+            $metarows = $formatModel->getFormatMetadata($template_id);
+            $metadata = $this->setMetadata($metarows);
+            $invoice_seq_id = 0;
+            if (isset($data['contract_detail']->sequence_number)) {
+                $invoice_seq_id = $data['contract_detail']->sequence_number;
+            }
+            if (isset($metadata['H'])) {
+                $metadata['H'] = $this->setCreateFunction($metadata['H']);
+                foreach ($metadata['H'] as $k => $row) {
+                    if (isset($row->script)) {
+                        $data['script'] .= $row->script;
+                    }
+
+                    if ($row->function_id == 9 && $row->param == 'system_generated') {
+                        if ($invoice_seq_id > 0) {
+                            $metadata['H'][$k]->value = "System generated" . $invoice_seq_id;
+                            $metadata['H'][$k]->param_value = $invoice_seq_id;
+                        }
+                        if ($metadata['H'][$k]->param_value > 0) {
+                            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
+                            $seq_no = $seq_row->val + 1;
+                            $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                        }
+                    }
+                }
+            }
+
+            $template_type = $data['template_info']->template_type;
+            $data['metadata'] = $metadata;
+            $data['mode'] = 'create';
+            $data['cycleName'] = date('M-Y') . ' Bill';
+            $data['plugin'] = json_decode($data['template_info']->plugin, 1);
+            $data['properties'] = json_decode($data['template_info']->properties, 1);
+            $data['setting'] = json_decode($data['template_info']->setting, 1);
+        }
+        if ($template_type == 'construction') {
+            return view('app/merchant/invoice/constructionv2', $data);
+        }
+        return view('app/merchant/invoice/create', $data);
+    }
+
     /**
      * Renders form to update invoice
      *
@@ -732,12 +842,29 @@ class InvoiceController extends AppController
             $tt=json_decode($constriuction_details, 1);
             $data= $this->getDataBillCodeAttachment($tt,$doclist,$data);
        
+//dd($data['docs'][0]['menu'][0]['title']);
+
           $selectedDoc=array();
         $selectnm='';
         if(!empty($parentnm))
         $selectnm=$parentnm;
         else if(isset($data['docs'][0]['title'])){
              $selectnm=$data['docs'][0]['title'];}
+            
+             if(empty($sub))
+               {
+                if(isset($data['docs'][0]['menu'][0]['title']))
+                      $sub=$data['docs'][0]['menu'][0]['title'];
+
+                 
+               }
+               if(empty($docpath))
+               {
+                if(isset($data['docs'][0]['menu'][0]['menu'][0]['title']))
+                $docpath =$data['docs'][0]['menu'][0]['menu'][0]['title'];
+                else if(isset($data['docs'][0]['menu'][0]['title']))
+                    $docpath=$data['docs'][0]['menu'][0]['title'];
+                 }
              
 
            $selectedDoc[0]=$selectnm;
@@ -778,12 +905,14 @@ class InvoiceController extends AppController
         $pos1=0;
         $chiledmenu=array();
         $parentmenu=array();
+        $chiledmenu2=array();
          $parentmenu['title']=strlen($names) > 10 ? substr($names,0,10)."..." : $names;
          $parentmenu['id']=str_replace(' ','_',substr($names,0,7));
          $parentmenu['full']=$names;
 
              $parentmenu['link']="";
              $parentmenu['type']='billcode';
+            
         foreach ($result[$names] as $data) {
             $pos1++;
             if(!empty($data['group']) && $data['bill_code_detail']=='No')
@@ -796,11 +925,11 @@ class InvoiceController extends AppController
               
                 $emptyarray=array();
               
-                $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description']; 
-                $chiledmenu['id']=str_replace(' ','_',substr($data['description'],0,7));
-                $chiledmenu['full']=$data['description'];
-                    $chiledmenu['link']="";
-                    $chiledmenu['type']='billcode';
+                $chiledmenu2['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description']; 
+                $chiledmenu2['id']=str_replace(' ','_',substr($data['description'],0,7));
+                $chiledmenu2['full']=$data['description'];
+                    $chiledmenu2['link']="";
+                    $chiledmenu2['type']='billcode';
                    
                     foreach (json_decode($data['attachments'],1) as $files) 
                     {
@@ -816,16 +945,54 @@ class InvoiceController extends AppController
                             $emptyarray[]=$subchiledmenu;
                     }
                   
-                    $chiledmenu['menu']=$emptyarray;
+                    $chiledmenu2['menu']=$emptyarray;
+                    $parentmenu['menu'][]=$chiledmenu2;
+                   
                 }
               
                
-            }else  
+            }else if(empty($names))
             {
+
+                if(!empty($data['attachments']))
+                {
+                
+                    $chiledmenu1=array();
+                 $chiledmenu1['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description'];
+                 $chiledmenu1['id']=str_replace(' ','_',substr($data['description'],0,7));
+                 $chiledmenu1['full']=$data['description'];
+                     $chiledmenu1['link']="";
+                     $chiledmenu1['type']='billcode';
+                     $emptyarray=array();
+                     foreach (json_decode($data['attachments'],1) as $files) 
+                     {
+                        $datas['files'][]=$files;
+                        $subchiledmenu=array();
+                        $nm=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,10);
+                        $subchiledmenu['title']=strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4)) < 10 ?substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4):$nm.'...';
+                       $subchiledmenu['id']=str_replace(' ','_',substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7));
+                         $subchiledmenu['full']=basename($files);
+                             $subchiledmenu['link']=substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')),0,-4),0,7);
+                             $subchiledmenu['type']='billcode';
+                             $subchiledmenu['menu']='';
+                             $emptyarray[]= $subchiledmenu;
+                     }
+                  
+                 
+                        $chiledmenu1['menu']=$emptyarray;
+                        $datalist[]=$chiledmenu1;
+                    
+                    
+                 }
+             
+            }
+            else  
+            {
+
                 if(!empty($data['attachments']))
                 {
                
-                
+                  
                  $chiledmenu['title']=strlen($data['description']) > 10 ? substr($data['description'],0,10)."..." : $data['description'];
                  $chiledmenu['id']=str_replace(' ','_',substr($data['description'],0,7));
                  $chiledmenu['full']=$data['description'];
@@ -847,6 +1014,7 @@ class InvoiceController extends AppController
                      }
                   
                      $chiledmenu['menu']=$emptyarray;
+                     $parentmenu['menu'][]=$chiledmenu;
                     
                  }
              
@@ -856,15 +1024,20 @@ class InvoiceController extends AppController
         if(!empty($names))
         {
             if(!empty($chiledmenu)){
-            $parentmenu['menu'][]=$chiledmenu;
+            //$parentmenu['menu'][]=$chiledmenu;
             $datalist[]=$parentmenu;
             }
+            if(!empty($chiledmenu2)){
+               // $parentmenu['menu'][]=$chiledmenu2;
+                $datalist[]=$parentmenu;
+                }
         }else
         {
-            if(!empty($chiledmenu))
-                 $datalist[]=$chiledmenu;
+           if(!empty($chiledmenu))
+                $datalist[]=$chiledmenu;
+              
         }
-       
+     
        // $datalist[]=$parentmenu;
        
     }
@@ -999,7 +1172,21 @@ $datas['docs']=$datalist;
             $selectnm=$parentnm;
             else if(isset($data['docs'][0]['title'])){
                  $selectnm=$data['docs'][0]['title'];}
-                 
+              
+                 if(empty($sub))
+                 {
+                  if(isset($data['docs'][0]['menu'][0]['title']))
+                        $sub=$data['docs'][0]['menu'][0]['title'];
+  
+                   
+                 }
+                 if(empty($docpath))
+                 {
+                  if(isset($data['docs'][0]['menu'][0]['menu'][0]['title']))
+                  $docpath =$data['docs'][0]['menu'][0]['menu'][0]['title'];
+                  else if(isset($data['docs'][0]['menu'][0]['title']))
+                      $docpath=$data['docs'][0]['menu'][0]['title'];
+                   }
     
                $selectedDoc[0]=$selectnm;
                $selectedDoc[1]=$sub;
@@ -1014,8 +1201,15 @@ $datas['docs']=$datalist;
     }
     public function downloadSingle($link)
     {
-      
-        $filePath = 'invoices/' . $link;
+        $filePath = '';
+        $data=explode("_", $link);
+               $folder=$data[0];
+               $link=str_replace($data[0].'_',"",$link);
+         if($folder!='invoices')      
+                 $filePath =  'invoices/'.$folder.'/'.$link;
+         else
+         $filePath = 'invoices/'.$link;
+
 
         return  redirect(Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
@@ -1037,13 +1231,15 @@ $datas['docs']=$datalist;
                 unlink(public_path('tmp/documents.zip'));
             }
             $zip = new Filesystem(new ZipArchiveAdapter(public_path('tmp/documents.zip')));
-
+         if(isset($plugin_array['files']))
+         {
             foreach ($plugin_array['files'] as $file_name) {
 
                 $source_path = 'invoices/' . basename($file_name);
                 $file_content = Storage::disk($source_disk)->get($source_path);
                 $zip->put(basename($file_name), $file_content);
             }
+        }
            $billcode_docs= json_decode($attach_value,1);
           
            foreach ($billcode_docs as $items)
@@ -1054,7 +1250,9 @@ $datas['docs']=$datalist;
                {
                foreach ($inner_data as $values)
             {
-                $source_path = 'invoices/' . basename($values);
+                $lastWord = explode("/", $values);
+	$folder= $lastWord[count($lastWord)-2];
+                $source_path = 'invoices/'.$folder.'/'. basename($values);
                 $file_content = Storage::disk($source_disk)->get($source_path);
                 $zip->put(basename($values), $file_content);
             }
@@ -2109,8 +2307,10 @@ $datas['docs']=$datalist;
         $pos=0;
         $pos1=0;
         $sub_c=0; $sub_d=0; $sub_e=0; $sub_f=0; $sub_g=0; $sub_g_per=0; $sub_h=0; $sub_i=0;
+        $attach_count=0;
         foreach ($result[$names] as $data) {
          
+           
            
             $pos1++;
             if(!empty($data['group']) && $data['bill_code_detail']=='No')
@@ -2122,6 +2322,13 @@ $datas['docs']=$datalist;
                 $e+= $data['current_billed_amount'];
                 $f+=$data['stored_materials'];
                 $retain+= $data['total_outstanding_retainage'];
+                $counts=0;
+                if(!empty($data['attachments']))
+                     $counts=count(json_decode($data['attachments'],1));
+   
+                 
+
+                $attach_count+=$counts;
                 if(empty($isattach))
                 {
                     $nm=substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,10);
@@ -2157,14 +2364,20 @@ $datas['docs']=$datalist;
                 $single_data['d']=number_format($data['previously_billed_amount'], 2);
                 $single_data['e']=number_format($data['current_billed_amount'], 2);
                 $single_data['f']=number_format($data['stored_materials'], 2);
-               // $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
                 $nm=substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,10);
                     
                   
                 $single_data['attachment']=$data['attachments'] ? strlen(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4)) < 10 ?substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4):$nm.'...':'';
             
-              
-              
+                $counts=0;
+             if(!empty($data['attachments']))
+                  $counts=count(json_decode($data['attachments'],1));
+
+                if($counts>1)
+                $single_data['files']=$counts.' files';
+             else 
+             $single_data['files']=$counts.' file';
+
                 $single_data['g']=number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                $per=0;
                 if ($data['current_contract_amount'] > 0)
@@ -2218,7 +2431,15 @@ $datas['docs']=$datalist;
                     
                   
                 $single_data['attachment']=$data['attachments'] ? strlen(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4)) < 10 ?substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4):$nm.'...':'';
-            
+             $counts=0;
+             if(!empty($data['attachments']))
+                  $counts=count(json_decode($data['attachments'],1));
+
+                if($counts>1)
+                $single_data['files']=$counts.' files';
+             else 
+             $single_data['files']=$counts.' file';
+
                 $per=0;
                 if ($data['current_contract_amount'] > 0)
                 $per= number_format(($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']) / $data['current_contract_amount'], 2);
@@ -2241,6 +2462,12 @@ $datas['docs']=$datalist;
         $single_data1['group_name']=$bill_desc;
         $single_data1['f']=number_format($f,2);
         $single_data1['g']=number_format($g,2);
+        if($attach_count>1)
+           $single_data1['files']=$attach_count.' files';
+        else 
+        $single_data1['files']=$attach_count.' file';   
+       
+
         if($c>0)
            $single_data1['g_per']=number_format(($g/$c),2);
            else
@@ -2255,6 +2482,193 @@ $datas['docs']=$datalist;
    
 
     return $grouping_data;
+    }
+
+
+    public function save(Request $request)
+    {
+        $invoice_number = '';
+        foreach ($request->function_id as $k => $function_id) {
+            if ($function_id == 9) {
+                $invoice_number = $request->newvalues[$k];
+            }
+        }
+        foreach ($request->col_position as $k => $position) {
+            if ($position == 4) {
+                $cyclename = $request->requestvalue[$k];
+            } elseif ($position == 5) {
+                $billdate = Helpers::sqlDate($request->requestvalue[$k]);
+            } elseif ($position == 6) {
+                $duedate = Helpers::sqlDate($request->requestvalue[$k]);
+            }
+        }
+        $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $request->currency,  1, 0, 11);
+        $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
+        return redirect('/merchant/invoice/particular/' . Encrypt::encode($response->request_id));
+    }
+
+    public function particularsave(Request $request, $type = null)
+    {
+        $request_id = Encrypt::decode($request->link);
+        $this->invoiceModel->updateTable('invoice_construction_particular', 'payment_request_id', $request_id, 'is_active', 0);
+        if ($type == null) {
+            foreach ($request->bill_code as $k => $bill_code) {
+                $request=Helpers::setArrayZeroValue(array('original_contract_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_percent'
+                ,'current_billed_amount','total_billed','retainage_percent','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','retainage_release_amount','total_outstanding_retainage','calculated_perc'));
+                $data['bill_code'] = $request->bill_code[$k];
+                $data['description'] = $request->description[$k];
+                $data['bill_type'] = $request->bill_type[$k];
+                $data['original_contract_amount'] = $request->original_contract_amount[$k];
+                $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
+                $data['pint'] = $request->pint[$k];
+                $data['current_contract_amount'] = $request->current_contract_amount[$k];
+                $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
+                $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
+                $data['current_billed_percent'] = $request->current_billed_percent[$k];
+                $data['current_billed_amount'] = $request->current_billed_amount[$k];
+                $data['total_billed'] = $request->total_billed[$k];
+                $data['retainage_percent'] = $request->retainage_percent[$k];
+                $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
+                $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
+                $data['net_billed_amount'] = $request->net_billed_amount[$k];
+                $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
+                $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
+                $data['stored_materials'] = $request->stored_materials[$k];
+                $data['project'] = $request->project[$k];
+                $data['cost_code'] = $request->cost_code[$k];
+                $data['group'] = $request->group[$k];
+                $data['bill_code_detail'] = $request->bill_code_detail[$k];
+                $data['calculated_perc'] = $request->calculated_perc[$k];
+                $data['calculated_row'] = $request->calculated_row[$k];
+                $data['attachments'] = $request->attachments[$k];
+                $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
+            }
+        }
+    }
+
+    public function particular($link)
+    {
+        $request_id = Encrypt::decode($link);
+        $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+        $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
+        $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
+        $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
+        $csi_codes = $this->invoiceModel->getTableList('csi_code', 'project_id', $contract->project_id);
+        $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $particulars[] = [];
+        $groups = [];
+
+        foreach (json_decode($contract->particulars) as $cp) {
+            if (isset($cp->group)) {
+                if (!in_array($cp->group, $groups)) {
+                    $groups[] = $cp->group;
+                }
+            }
+        }
+
+        if ($invoice_particulars->isEmpty()) {
+            $particulars = json_decode($contract->particulars);
+
+
+            $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
+            $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
+            $change_order_data = json_decode($change_order_data, true);
+
+            $cop_particulars = [];
+            foreach ($change_order_data as $co_data) {
+                foreach (json_decode($co_data["particulars"], true) as $co_par) {
+                    $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
+                    array_push($cop_particulars, $co_par);
+                }
+            }
+
+            $result = array();
+            foreach ($cop_particulars as $k => $v) {
+                $id = $v['bill_code'];
+                $result[$id][] = $v['change_order_amount'];
+            }
+
+            $co_particulars = array();
+            foreach ($result as $key => $value) {
+                foreach ($cop_particulars as $kdata) {
+                    if ($kdata["bill_code"] == $key) {
+                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"]);
+                    }
+                }
+            }
+
+            if ($pre_req_id != false) {
+                $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
+                $cp = array();
+                foreach ($contract_particulars as $row) {
+                    $cp[$row->bill_code] = $row;
+                }
+
+                foreach ($particulars as $k => $v) {
+                    if (isset($cp[$v->bill_code])) {
+                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
+                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
+                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+                    }
+                }
+            }
+
+            if ($change_order_data != false) {
+                $cop = array();
+                foreach ($particulars as $row2) {
+                    if (isset($cop[$row2->bill_code])) {
+                        $cop[$row2->bill_code . rand()] = $row2;
+                    } else {
+                        $cop[$row2->bill_code] = $row2;
+                    }
+                }
+
+                foreach ($co_particulars as $k => $v) {
+                    if (isset($cop[$v["bill_code"]])) {
+                        $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                    } else {
+                        $cop[$v["bill_code"]] = (object)[];
+                        $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
+                        $cop[$v["bill_code"]]->bill_type = '';
+                        $cop[$v["bill_code"]]->description = $v["description"];
+                        $cop[$v["bill_code"]]->calculated_perc = '';
+                        $cop[$v["bill_code"]]->calculated_row  = '';
+                    }
+                }
+                $particulars = (object)$cop;
+            }
+            $particulars = json_decode(json_encode($particulars), 1);
+            foreach ($particulars as $k => $row) {
+                $ocm = $row['original_contract_amount'];
+                $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
+                $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
+            }
+        } else {
+            $particulars = json_decode(json_encode($invoice_particulars), 1);
+        }
+        Helpers::hasRole(2, 27);
+        $title = 'create';
+
+
+        Session::put('valid_ajax', 'expense');
+
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data['gst_type'] = 'intra';
+        $data['button'] = 'Save';
+
+        $data['mode'] = 'create';
+        $data['title'] = 'Create Invoice';
+        $data['contract_id'] = $invoice->contract_id;
+        $data['contract_code'] = $contract->contract_code;
+        $data['project_id'] = $project->project_id;
+        $data['link'] = $link;
+        $data['particulars'] = $particulars;
+        $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
+        $data['total'] = 0;
+        $data['groups'] = $groups;
+        $data["particular_column"] = json_decode($template->particular_column, 1);
+        return view('app/merchant/invoice/invoice-particular', $data);
     }
    
 }

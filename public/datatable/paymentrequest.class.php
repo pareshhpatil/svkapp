@@ -52,7 +52,7 @@ class SSP
                         } else if ($data[$i]['payment_request_type'] == 6) {
                             $value = 'Woocommerce';
                         }
-                        $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]) . '<br><span class="text-gray-400 text-font-12">SOURCE : <span class="text-gray-900">' . $value . '</span></span>';
+                        $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
                         //$row[$column['dt']] = moneyFormatIndia($data[$i][$column['db']]);
                         $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . moneyFormatIndia($data[$i][$column['db']]) . '</span>';

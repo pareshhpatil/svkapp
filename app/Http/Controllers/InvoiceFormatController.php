@@ -74,16 +74,14 @@ class InvoiceFormatController extends AppController
             $data['detail']->custmized_receipt_fields = '';
             $data['defaultReceiptFields'] = $this->setDefaultReceiptFields();
             $data['logo'] = '';
-            if(isset($request->design_name))
-            {
-                if($request->design_name=='travel')
-                {
+            if (isset($request->design_name)) {
+                if ($request->design_name == 'travel') {
                     $data['designname'] = '';
-                }else{
-            $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
+                } else {
+                    $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
                 }
             }
-           
+
             $data['colorname'] =  isset($request->design_color) ? $request->design_color : '';
             $data['footernote'] = 'Thank you for your purchase.';
             $formateData = '';
@@ -103,7 +101,7 @@ class InvoiceFormatController extends AppController
             $data['available_fields'] = json_encode($added_available_fields, 1);
 
             $data['customerColumns'] = $this->formatModel->getTableList('customer_mandatory_column', 'is_active', 1);
-           
+
             $data["product_list"] = [];
             $product_list = $this->invoiceModel->getAllParentProducts($this->merchant_id);
             if (!empty($product_list)) {
@@ -122,6 +120,7 @@ class InvoiceFormatController extends AppController
             }
             return view('app/merchant/invoiceformat/create', $data);
         } else {
+            return redirect('/404');
         }
     }
 
@@ -332,11 +331,10 @@ class InvoiceFormatController extends AppController
             $data['footernote'] = isset($data['detail']->footer_note) ? $data['detail']->footer_note : '';
 
             if (isset($request->design_name)) {
-                if($request->design_name=='travel')
-                {
+                if ($request->design_name == 'travel') {
                     $data['designname'] = '';
-                }else{
-                $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
+                } else {
+                    $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
                 }
                 $data['colorname'] =  isset($request->design_color) ? $request->design_color : '';
 
@@ -436,6 +434,7 @@ class InvoiceFormatController extends AppController
 
             return view('app/merchant/invoiceformat/create', $data);
         } else {
+            return redirect('/404');
         }
     }
 
@@ -808,7 +807,9 @@ class InvoiceFormatController extends AppController
             $plugin['has_e_invoice'] = $_POST['is_einvoice'];
         }
         if (isset($_POST['is_revision'])) {
-            $plugin['save_revision_history'] = $_POST['is_revision'];
+            if ($_POST['is_revision'] == 1) {
+                $plugin['save_revision_history'] = $_POST['is_revision'];
+            }
         }
 
         if (empty($plugin)) {
