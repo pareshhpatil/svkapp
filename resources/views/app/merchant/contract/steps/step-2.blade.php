@@ -41,6 +41,10 @@
             line-height: 18px;
         }
 
+        .bill_code_td{
+            text-align: left;
+        }
+
 
     </style>
     <div class="portlet light bordered">
@@ -69,7 +73,7 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
-                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no @endif">
+                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -180,8 +184,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-right">
-                        <a class="btn green">Back</a>
-                        <button class="btn blue" type="submit" @click="return validateParticulars(); ">Preview contract</button>
+                        <a class="btn green" @click="back()">Back</a>
+                        <button class="btn blue" type="submit" @click="next()">Preview contract</button>
                     </div>
                 </div>
             </div>
@@ -264,7 +268,7 @@
                             particularsArray.bill_code = billCodeSelector.value;
                             closeSidePanelBillCode()
                         }
-                        else billCodeSelector.setOptions(optionArray, $('#bill_code'+v).val());
+                        else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
 
                     }
 
@@ -288,7 +292,8 @@
                         allowNewOption: true,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option'
+                        additionalClasses : 'vs-option',
+                        maxWidth : '150px'
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
@@ -299,13 +304,24 @@
                         if(type === 'bill_code') {
                             particularsArray[id].bill_code = this.value
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                                only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
                                 $('#selectedBillCodeId').val(type + id)
                                 billIndex(0, 0, 0)
                             }
                         }
                         if(type === 'group'){
-                            if(!groups.includes(this.value)) groups.push(this.value)
+                            if(!groups.includes(this.value) && this.value !== '') {
+                                groups.push(this.value)
+                                for (let g = 0; g < particularsArray.length; g++) {
+                                    let groupSelector = document.querySelector('#group' + g);
+                                    console.log('group'+id, 'group'+g)
+                                    if('group'+id === 'group'+g)
+                                        groupSelector.setOptions(groups, this.value);
+                                    else
+                                        groupSelector.setOptions( groups, particularsArray[g].group);
+                                }
+                            }
                             particularsArray[id].group = this.value
                         }
 
@@ -404,7 +420,7 @@
                     }
                     return valid;
                 },
-                saveParticulars(){
+                saveParticulars(back=0, next=0){
 
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
@@ -419,9 +435,18 @@
                             contract_amount : $('#particulartotal').val().replace(/,/g,'')
                         },
                         success: function(data) {
-                            console.log(data)
+                            if(back === 1)
+                                window.location = '{{ route('create.new', ['step' => 1, 'contract_id' => $contract_id]) }}';
+                            if(next === 1)
+                                window.location = '{{ route('create.new', ['step' => 3, 'contract_id' => $contract_id]) }}'
                         }
                     })
+                },
+                next(){
+                    if(this.validateParticulars()) this.saveParticulars(0,1);
+                },
+                back(){
+                    if(this.validateParticulars()) this.saveParticulars(1,0);
                 },
                 async addNewRow() {
                     int = this.fields.length
@@ -495,14 +520,14 @@
                     for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].group = particularsArray[p].group;
-                        /*this.fields[p].bill_type = particularsArray[p].bill_type;
-                        this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;*/
+                        /*this.fields[p].bill_type = particularsArray[p].bill_type;*/
+                        this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
 
                         let oriContractAmt = this.fields[p].original_contract_amount;
-                        this.fields[p].original_contract_amount = (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
+                        this.fields[p].original_contract_amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
 
                         let retainAmt = this.fields[p].retainage_amount;
-                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
+                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
                     }
                 },
                 /*OpenAddCalculated(field) {
