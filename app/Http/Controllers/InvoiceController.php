@@ -52,8 +52,7 @@ class InvoiceController extends AppController
      */
     public function create(Request $request, $type = 'invoice', $invoice_type = 1)
     {
-        if(env('INVOICE_VERSION')=='2')
-        {
+        if (env('INVOICE_VERSION') == '2') {
             return redirect('/merchant/invoice/createv2');
         }
 
@@ -353,9 +352,8 @@ class InvoiceController extends AppController
     public function update($link, $staging = 0, $revision = 0)
     {
 
-        if(env('INVOICE_VERSION')=='2')
-        {
-            return redirect('/merchant/invoice/updatev2/'.$link);
+        if (env('INVOICE_VERSION') == '2') {
+            return redirect('/merchant/invoice/updatev2/' . $link);
         }
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
@@ -2622,11 +2620,15 @@ class InvoiceController extends AppController
 
     function setPlugins($plugin, $request)
     {
-        if ($plugin['has_upload'] == 1) {
-            $plugin['files'] = explode(',', $request->file_upload);
+        if (isset($plugin['has_upload'])) {
+            if ($plugin['has_upload'] == 1) {
+                $plugin['files'] = explode(',', $request->file_upload);
+            }
         }
-        if ($plugin['has_covering_note'] == 1) {
-            $plugin['default_covering_note'] = (isset($request->covering_id)) ? $request->covering_id : 0;
+        if (isset($plugin['has_covering_note'])) {
+            if ($plugin['has_covering_note'] == 1) {
+                $plugin['default_covering_note'] = (isset($request->covering_id)) ? $request->covering_id : 0;
+            }
         }
         return $plugin;
     }
