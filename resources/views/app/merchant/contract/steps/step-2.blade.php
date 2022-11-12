@@ -42,7 +42,8 @@
         }
 
         .bill_code_td{
-            text-align: left;
+            /*text-align: left;*/
+            width: auto;
         }
 
 
@@ -297,7 +298,7 @@
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
-                        $(this).addClass('form-control input-sm');
+                        $(this).addClass('form-control input-sm mw-150');
                     })
 
                     $('#'+type+id).change(function () {
