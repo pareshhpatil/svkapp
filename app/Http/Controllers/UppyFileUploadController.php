@@ -37,7 +37,9 @@ class UppyFileUploadController extends Controller
                $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';
             }
             //$encryptedFileName = Encrypt::encode($name);
-            $filenameExt =$name.$randNo;//$dt . $randNo;
+            $filenameExt =str_replace('.','',$name).$randNo;//$dt . $randNo;
+            $filenameExt =str_replace('(','',$filenameExt);
+            $filenameExt =str_replace(')','',$filenameExt);
             $encryptedFileName =$filenameExt; //Encrypt::encode($filenameExt);
             //get file extension
             $fileExtension = $file->getClientOriginalExtension();

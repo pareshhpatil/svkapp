@@ -105,7 +105,7 @@
         text-align: right;
     }
 </style>
-<div class="panel-wrap" id="panelWrapIdBillCode">
+<div class="panel-wrap" style="left:50% !important;" id="panelWrapIdBillCode">
 
 
     

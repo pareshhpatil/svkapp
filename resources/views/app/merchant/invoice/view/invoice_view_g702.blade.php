@@ -49,6 +49,10 @@ $header='app.patron.invoice.invoice-master';}
       
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.invoice.view','Invoice') }}
+
+        @if ($info['payment_request_status']==11)
+            <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
+            @endif
       
     </div>
    @endif
