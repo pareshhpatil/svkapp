@@ -778,6 +778,8 @@
                                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
+                                    calc(this.fields[selected_field_int]);
+
                                 },
                                 OpenAddCaculated(field) {
                                     console.log(field.pint);

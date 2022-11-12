@@ -721,9 +721,9 @@ function setOriginalContractAmount() {
     // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
     try {
         document.getElementById("approved_change_order_amount" + calcRowInt).readOnly = true;
-        document.getElementById("current_billed_percent" + calcRowInt).readOnly = true;
-        document.getElementById("retainage_percent" + calcRowInt).readOnly = true;
-        document.getElementById("retainage_release_amount" + calcRowInt).readOnly = true;
+        //document.getElementById("current_billed_percent" + calcRowInt).readOnly = true;
+        //document.getElementById("retainage_percent" + calcRowInt).readOnly = true;
+        //document.getElementById("retainage_release_amount" + calcRowInt).readOnly = true;
         document.getElementById("project" + calcRowInt).readOnly = true;
         document.getElementById("cost_code" + calcRowInt).readOnly = true;
         document.getElementById("cost_type" + calcRowInt).readOnly = true;
