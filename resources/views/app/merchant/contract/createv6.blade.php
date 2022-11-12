@@ -24,6 +24,112 @@
         color: #18AEBF !important;
         width: auto !important;
     }
+
+    .panel-wrap {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 50% !important;
+        /* width: 80em; */
+        transform: translateX(100%);
+        transition: .3s ease-out;
+        z-index: 100;
+    }
+
+    .panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        color: #394242;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding: 1em;
+        box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+        margin-bottom: 0;
+    }
+
+    .remove {
+        padding: 4px 3px;
+        cursor: pointer;
+        float: left;
+        position: relative;
+        top: 0px;
+        color: #fff;
+        right: 25px;
+        z-index: 99999;
+    }
+
+    .remove:hover {
+        color: #FFF;
+    }
+
+    .remove i {
+        font-size: 19px !important;
+    }
+
+    .subscription-info i {
+        font-size: 22px !important;
+    }
+
+    .cust-head {
+        text-align: left !important;
+    }
+
+    .subscription-info h3 {
+        text-align: center;
+        color: #000;
+        margin-bottom: 2px !important;
+    }
+
+    .subscription-info h2 {
+        font-weight: 600;
+        margin-bottom: 0 !important;
+        margin-top: 5px !important;
+        text-align: center;
+    }
+
+    .td-head {
+        font-size: 19px;
+    }
+
+    @media (max-width: 767px) {
+        .cust-head {
+            text-align: center !important;
+        }
+
+        .panel-wrap {
+            /* width: 23em; */
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            position: fixed;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        .panel-wrap {
+            /* width: 47em; */
+            position: fixed;
+            right: 0;
+        }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .panel-wrap {
+            /* width: 47em; */
+            position: fixed;
+            right: 0;
+        }
+    }
+
+    .right-value {
+        text-align: right;
+    }
 </style>
 @section('content')
     <div>

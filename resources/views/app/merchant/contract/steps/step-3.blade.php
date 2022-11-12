@@ -65,7 +65,7 @@
                     </p>
                 </div>
                 <div class="col-md-3">
-                    <h3 id="pr_company_name">{{ $project->customer_code }}</h3>
+                    <h3 id="pr_company_name">{{ (!is_null($project) && is_null($project->company_name))? $project->customer_id : $project->customer_company_code??null }}</h3>
                     <p class="text-center chelptext">COMPANY NAME</p>
                 </div>
                 <div class="col-md-3">
@@ -75,11 +75,11 @@
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <h3 id="pr_contract_number">{{ $project->contract_code }}</h3>
+                    <h3 id="pr_contract_number">{{ $contract->contract_code }}</h3>
                     <p class="text-center chelptext">CONTRACT NUMBER</p>
                 </div>
                 <div class="col-md-3">
-                    <h3 id="pr_billing_frequency">{{ $contract->billing_frequency }}</h3>
+                    <h3 id="pr_billing_frequency">{{ \App\ContractParticular::$billing_frequency[$contract->billing_frequency] }}</h3>
                     <p class="text-center chelptext">BILLING FREQUENCY</p>
                 </div>
 
@@ -116,7 +116,7 @@
                             <td class="td-c">{{ $particular['original_contract_amount'] }}</td>
                             <td class="td-c">{{ $particular['retainage_percent'] }}</td>
                             <td class="td-c">{{ $particular['retainage_amount'] }}</td>
-                            <td class="td-c">{{ $particular['project_code'] }}</td>
+                            <td class="td-c">{{ $particular['project_code']??$particular['project'] }}</td>
                             <td class="td-c">{{ $particular['cost_code'] }} </td>
                             <td class="td-c">{{ $particular['cost_type'] }}</td>
                             <td class="td-c">{{ $particular['group'] }}</td>
@@ -127,6 +127,19 @@
                 </table>
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-body form">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <a href="{{ route('contract.list.new') }}" class="btn green">Cancel</a>
+                    <a class="btn green" href="{{ route('contract.create.new', ['step' => 2, 'contract_id' => $contract_id]) }}">Back</a>
+                    <button type="submit" class="btn blue">Save Contract</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

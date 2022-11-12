@@ -147,9 +147,14 @@ class ContractController extends Controller
                 $contract = $this->step2Store($request,$contract);
                 $step++;
                 break;
+            case 3:
+                $contract->update(['status' =>1]);
+                return redirect()->route('contract.list.new');
+                break;
+
         }
 
-        return redirect()->route('create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
+        return redirect()->route('contract.create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
 
     }
 
@@ -330,6 +335,33 @@ class ContractController extends Controller
         }
 
         return view('app/merchant/contract/list', $data);
+    }
+
+    public function listNew(Request $request)
+    {
+        $dates = Helpers::setListDates();
+        $title = 'Contract list';
+        $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
+        $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
+        $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
+        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['project_id']);
+        foreach ($list as $ck => $row) {
+            $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
+        }
+        $data['list'] = $list;
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $data['datatablejs'] = 'table-no-export';
+        $data['hide_first_col'] = 1;
+        $data['customer_name'] = 'Customer name';
+        $data['customer_code'] = 'Customer code';
+
+        if (Session::has('customer_default_column')) {
+            $default_column = Session::get('customer_default_column');
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
+        }
+
+        return view('app/merchant/contract/list-new', $data);
     }
 
     public function delete($link)

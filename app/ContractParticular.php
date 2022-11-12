@@ -74,6 +74,8 @@ class ContractParticular extends Model
         'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ]
     ];
 
+    public static $billing_frequency = [ 1 => 'Weekly', 2 => 'Monthly', 3 => 'Quarterly' ];
+
 
     public static function initializeParticulars($project_id = ''): array
     {
