@@ -199,6 +199,45 @@
 
 
 
+            <div class="portlet light bordered">
+                <div class="portlet-body form">
+                    <div style="display: block;" id="plugin_div">
+                        <h3 class="form-section mt-2">Plugins</h3>
+                    </div>
+                    <h3 class="form-section base-font mb-2">Covering note
+                        <a class="btn mb-1 green pull-right" onclick="AddCoveringNote();" href="javascript:;">
+                            Add new note</a>
+                    </h3>
+                    <div class="row mb-2">
+                        <div class="form-group form-section form-horizontal">
+                            <label class="control-label col-md-3 w-auto">Select covering note</label>
+                            <div class="col-md-3">
+                                <select name="covering_id" onchange="showEditNote();" data-cy="plugin_covering_id" id="covering_select" class="form-control" data-placeholder="Select...">
+                                    <option value="0">Select covering note</option>
+                                    <option value="1">test note</option>
+                                    <option value="2">test</option>
+                                    <option value="14">covering note</option>
+                                    <option value="75">testdsfdsf</option>
+                                    <option value="76">covering note3</option>
+                                </select>
+                                <a class="hidden" id="conf_cov" data-toggle="modal" href="#con_coveri"></a>
+                            </div>
+                            <div class=" col-md-2" id="edit_note_div" style="display:  none  ;">
+                                <a class="btn mb-1 green " onclick="EditCoveringNote();" href="javascript:;">
+                                    Edit note</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                </div>
+            </div>
+
+
+
+
+
+
 
             <div class="portlet light bordered">
                 <div class="portlet-body form">

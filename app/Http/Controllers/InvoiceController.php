@@ -52,7 +52,10 @@ class InvoiceController extends AppController
      */
     public function create(Request $request, $type = 'invoice', $invoice_type = 1)
     {
-
+        if(env('INVOICE_VERSION')=='2')
+        {
+            return redirect('/merchant/invoice/createv2');
+        }
 
         if (isset($request->invoice_type)) {
             $invoice_type = $request->invoice_type;
@@ -174,6 +177,7 @@ class InvoiceController extends AppController
         $invoice_number = '';
         $bill_date = '';
         $due_date = '';
+        $plugin = [];
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
@@ -311,10 +315,28 @@ class InvoiceController extends AppController
             $data['link'] = $link;
             $data['mode'] = 'create';
             $data['cycleName'] = $cycleName;
-            $data['plugin'] = json_decode($data['template_info']->plugin, 1);
+            if ($link == null) {
+                $plugin = json_decode($data['template_info']->plugin, 1);
+            } else {
+                $plugin = json_decode($invoice->plugin_value, 1);
+            }
             $data['properties'] = json_decode($data['template_info']->properties, 1);
             $data['setting'] = json_decode($data['template_info']->setting, 1);
         }
+
+        if (isset($plugin['has_covering_note'])) {
+            $data['covering_list'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'covering_note');
+            $logo = $this->invoiceModel->getColumnValue('merchant_landing', 'merchant_id', $this->merchant_id, 'logo');
+            if ($logo != '') {
+                $logo = env('APP_URL') . '/uploads/images/landing/' . $logo;
+            } else {
+                $logo = env('APP_URL') . '/assets/frontend/onepage2/img/logo_scroll.png';
+            }
+            $data['logo'] = $logo;
+        }
+
+        $data['plugin'] = $plugin;
+
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }
@@ -331,6 +353,10 @@ class InvoiceController extends AppController
     public function update($link, $staging = 0, $revision = 0)
     {
 
+        if(env('INVOICE_VERSION')=='2')
+        {
+            return redirect('/merchant/invoice/updatev2/'.$link);
+        }
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -2569,6 +2595,8 @@ class InvoiceController extends AppController
                 $invoice_number = $request->newvalues[$k];
             }
         }
+        $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $request->template_id);
+
         foreach ($request->col_position as $k => $position) {
             if ($position == 4) {
                 $cyclename = $request->requestvalue[$k];
@@ -2581,13 +2609,26 @@ class InvoiceController extends AppController
         if ($request->link != '') {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-            $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
+            $plugin = $this->setPlugins(json_decode($invoice->plugin_value, 1), $request);
+            $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, json_encode($plugin), $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
         } else {
-            $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, '', $request->currency,  1, 0, 11);
+            $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
+            $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
         }
         return redirect('/merchant/invoice/particular/' . Encrypt::encode($request_id));
+    }
+
+    function setPlugins($plugin, $request)
+    {
+        if ($plugin['has_upload'] == 1) {
+            $plugin['files'] = explode(',', $request->file_upload);
+        }
+        if ($plugin['has_covering_note'] == 1) {
+            $plugin['default_covering_note'] = (isset($request->covering_id)) ? $request->covering_id : 0;
+        }
+        return $plugin;
     }
 
     public function particularsave(Request $request, $type = null)
@@ -2601,7 +2642,7 @@ class InvoiceController extends AppController
                 ));
                 $data['bill_code'] = $request->bill_code[$k];
                 if ($request->description[$k] == '') {
-                    $request->description[$k] = $this->invoiceModel->getColumnValue('csi_code', 'code', $data['bill_code'],'description', ['merchant_id' => $this->merchant_id]);
+                    $request->description[$k] = $this->invoiceModel->getColumnValue('csi_code', 'code', $data['bill_code'], 'description', ['merchant_id' => $this->merchant_id]);
                 }
                 $data['description'] = $request->description[$k];
                 $data['bill_type'] = $request->bill_type[$k];
