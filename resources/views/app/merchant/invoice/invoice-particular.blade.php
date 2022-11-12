@@ -2,9 +2,15 @@
 @section('content')
 
 <style>
-        .onhover-border:hover {
-            border: 1px solid #ddd !important;
+
+.onhover-border:hover {
+            border: 1px solid grey !important;
         }
+
+        .table-hover>tbody>tr:hover {
+            background-color: transparent !important;
+        }
+
 
         .table thead tr th {
             font-size: 12px;
