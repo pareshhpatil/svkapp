@@ -680,6 +680,7 @@
                     }catch(o){}
 
                     setOriginalContractAmount();
+                    this.calc(this.fields[selected_field_int]);
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 

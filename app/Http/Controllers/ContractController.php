@@ -124,7 +124,7 @@ class ContractController extends Controller
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
 
-        if ($step == 2){
+        if ($step == 2 || $step == 3){
             $data = $this->step2Data($data, $contract, $project->project_id??'');
         }
 
@@ -136,7 +136,7 @@ class ContractController extends Controller
         $step = $request->step;
         $contract = null;
         if ($request->contract_id)
-            $contract = ContractParticular::find($request->contract_id);
+            $contract = ContractParticular::find( Encrypt::decode($request->contract_id) );
 
         switch ($step){
             case 1:
@@ -166,7 +166,7 @@ class ContractController extends Controller
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-
+//dd($contract);
         if (is_null($contract))
             $contract = ContractParticular::create($data);
         else
