@@ -704,13 +704,14 @@ function inputCalcClicked(row, value) {
 }
 
 function calculatePercContract(value) {
+    console.log(calcRowInt);
     calc_total = document.getElementById("calc_total").value
     document.getElementById("calculated_perc" + calcRowInt).value = value
     document.getElementById("calc_amount").value = updateTextView1(getamt(value) * getamt(calc_total) / 100)
 }
 
 function setOriginalContractAmount() {
-
+    console.log(calcRowInt);
     try {
         document.getElementById("original_contract_amount" + calcRowInt).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
     } catch (o) {
