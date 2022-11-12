@@ -104,7 +104,7 @@ $header='app.patron.invoice.invoice-master';}
 </div>
 @else
             <div class="row w-full   bg-white  shadow-2xl font-rubik m-2 py-10" style="max-width: 1400px;">
-                <div class="tabbable-line col-md-2 col-sm-3 col-xs-3">
+                <div class="tabbable-line col-md-2 col-sm-3 col-xs-3" style="padding: 0px !important;">
                  
                     @include('app.merchant.invoice.view.attachment-menu')
                     
