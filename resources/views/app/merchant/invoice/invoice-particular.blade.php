@@ -182,7 +182,7 @@
                                          </a>
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                             <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                            <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
+                                            <input type="hidden" name="description[]"  x-model="field.description" :id="`description${index}`">
                                             <div class="text-center" style="display: none;">
                                                 <p :id="`description-hidden${index}`" x-text="field.description"></p>
                                             </div>
