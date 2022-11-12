@@ -176,6 +176,7 @@ class InvoiceController extends AppController
         $invoice_number = '';
         $bill_date = '';
         $due_date = '';
+        $narrative = '';
         $plugin = [];
         if ($link != null) {
             $request_id = Encrypt::decode($link);
@@ -195,6 +196,7 @@ class InvoiceController extends AppController
 
             $bill_date = Helpers::htmlDate($invoice->bill_date);
             $due_date = Helpers::htmlDate($invoice->due_date);
+            $narrative=$invoice->narrative;
         }
         $type = 'invoice';
         $invoice_type = 1;
@@ -312,6 +314,7 @@ class InvoiceController extends AppController
             $template_type = $data['template_info']->template_type;
             $data['metadata'] = $metadata;
             $data['link'] = $link;
+            
             $data['mode'] = 'create';
             $data['cycleName'] = $cycleName;
             if ($link == null) {
@@ -335,6 +338,7 @@ class InvoiceController extends AppController
         }
 
         $data['plugin'] = $plugin;
+        $data['narrative'] = $narrative;
 
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
@@ -2608,10 +2612,10 @@ class InvoiceController extends AppController
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             $plugin = $this->setPlugins(json_decode($invoice->plugin_value, 1), $request);
-            $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, json_encode($plugin), $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
+            $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
         } else {
             $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
-            $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, '', 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
+            $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
         }

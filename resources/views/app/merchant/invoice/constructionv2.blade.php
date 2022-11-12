@@ -373,37 +373,37 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4"></label>
                                 <div class="col-md-8">
-                                @if(isset($plugin['files']) && !empty($plugin['files'][0]))
-                                        <span class="help-block">
-                                            <div id="docviewbox">
+                                    @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+                                    <span class="help-block">
+                                        <div id="docviewbox">
                                             @foreach ($plugin['files'] as $key=>$item)
                                             <span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important">
-                                            <a class=" btn-xs " target="_BLANK" href="{{$item}}" title="Click to view full size">{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}..</a>
-                                          <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');"   data-toggle="modal">  <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a>
-                                        </span>
-                                        @php
-                                         
-                                         @endphp
+                                                <a class=" btn-xs " target="_BLANK" href="{{$item}}" title="Click to view full size">{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}..</a>
+                                                <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                            </span>
+                                            @php
+
+                                            @endphp
                                             @endforeach
-                                            </div>
-                                            <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn btn btn-xs btn-link">Upload doc
-                                            </a>
-                                        </span>
-                                        <span id="newImageDiv" style="display: none;">
-                                            <input type="hidden" name="file_upload" id="file_upload" value="{{implode(',',$plugin['files'])}}"> 
-                                            <div id="drag-drop-area2"></div>
-                                        </span>
-                                    @else
-                                        <div class="input-icon right">
-                                           
-                                            <input type="hidden" name="file_upload" id="file_upload" value=""> 
-                                            <a  class="UppyModalOpenerBtn btn  default">Add attachments</a>
-                                            <div id="docviewbox" class="mt-1">
-                                            </div>
-                                          
-                                            <div id="drag-drop-area2"></div>
-                                           
                                         </div>
+                                        <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn btn btn-xs btn-link">Upload doc
+                                        </a>
+                                    </span>
+                                    <span id="newImageDiv" style="display: none;">
+                                        <input type="hidden" name="file_upload" id="file_upload" value="{{implode(',',$plugin['files'])}}">
+                                        <div id="drag-drop-area2"></div>
+                                    </span>
+                                    @else
+                                    <div class="input-icon right">
+
+                                        <input type="hidden" name="file_upload" id="file_upload" value="">
+                                        <a class="UppyModalOpenerBtn btn  default">Add attachments</a>
+                                        <div id="docviewbox" class="mt-1">
+                                        </div>
+
+                                        <div id="drag-drop-area2"></div>
+
+                                    </div>
                                     @endif
                                 </div>
                             </div>
@@ -426,10 +426,16 @@
         <div class="portlet-body form">
             <div class="row">
                 <div class="col-md-12">
+                <div class="col-md-2">
+                        <div class="form-group">
+                            <p>Narrative</p>
+                            <input type="text"  name="narrative" @isset($narrative) value="{{$narrative}}" @endisset class="form-control">
+                        </div>
+                    </div>
                     @isset($plugin['has_covering_note'])
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label col-md-3 w-auto">Select covering note</label>
+                            <p><label class="control-label col-md-3 w-auto">Select covering note</label><br></p>
                             <div class="col-md-5">
                                 <select name="covering_id" onchange="showEditNote();" data-cy="plugin_covering_id" id="covering_select" class="form-control" data-placeholder="Select...">
                                     <option value="0">Select covering note</option>
@@ -452,8 +458,10 @@
                         </div>
                     </div>
                     @endisset
-                    <div class="col-md-6">
+                    
+                    <div class="col-md-4">
                         <div class="pull-right">
+                            <p>&nbsp;</p>
                             <input type="hidden" name="link" value="{{$link}}">
                             <input type="hidden" name="contract_id" value="{{$contract_id}}">
                             <input type="hidden" name="template_id" value="{{$template_id}}">
