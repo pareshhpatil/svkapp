@@ -43,15 +43,20 @@ class ParentModel extends Model
         }
     }
 
-    public function getColumnValue($table, $where, $value, $column_name)
+    public function getColumnValue($table, $where, $value, $column_name, $param = [])
     {
 
         $retObj = DB::table($table)
             ->select(DB::raw($column_name . ' as value'))
-            ->where($where, $value)
-            ->first();
-        if (!empty($retObj)) {
-            return $retObj->value;
+            ->where($where, $value);
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        $array = $retObj->first();
+        if (!empty($array)) {
+            return $array->value;
         } else {
             return false;
         }
@@ -96,7 +101,7 @@ class ParentModel extends Model
             ->get();
         return $retObj;
     }
-    public function getTableListOrderby($table, $where, $value,$orderby)
+    public function getTableListOrderby($table, $where, $value, $orderby)
     {
 
         $retObj = DB::table($table)
@@ -113,7 +118,7 @@ class ParentModel extends Model
         $retObj = DB::table($table)
             ->select(DB::raw('*'))
             ->where('is_active', 1)
-           ->get();
+            ->get();
         return $retObj;
     }
     public function getList($table)

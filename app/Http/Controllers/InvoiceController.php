@@ -2600,6 +2600,9 @@ class InvoiceController extends AppController
                     'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc'
                 ));
                 $data['bill_code'] = $request->bill_code[$k];
+                if ($request->description[$k] == '') {
+                    $request->description[$k] = $this->invoiceModel->getColumnValue('csi_code', 'code', $data['bill_code'],'description', ['merchant_id' => $this->merchant_id]);
+                }
                 $data['description'] = $request->description[$k];
                 $data['bill_type'] = $request->bill_type[$k];
                 $data['original_contract_amount'] = $request->original_contract_amount[$k];
