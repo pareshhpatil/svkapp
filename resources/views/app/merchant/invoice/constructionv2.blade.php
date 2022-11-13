@@ -622,9 +622,8 @@
             console.log('Starting upload');
         });
         uppy.on('upload-success', (file, response) => {
-            console.log(response);
-            path = response.body.fileUploadPath;
             if (response.body.fileUploadPath != undefined) {
+                path = response.body.fileUploadPath;
                 extvalue = document.getElementById("file_upload").value;
                 newdocfileslist.push(path);
                 deletedocfile('');

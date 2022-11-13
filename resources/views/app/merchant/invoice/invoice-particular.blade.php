@@ -936,6 +936,7 @@ uppy.on('upload', (data) => {
     console.log('Starting upload');
 });
 uppy.on('upload-success', (file, response) => {
+    if (response.body.fileUploadPath != undefined) {
     path = response.body.fileUploadPath;
     extvalue=document.getElementById("file_upload").value;
     newdocfileslist.push(path);
@@ -952,6 +953,7 @@ uppy.on('upload-success', (file, response) => {
     } else {
         document.getElementById("error").innerHTML = '';
     }
+}
 });
 uppy.on('complete', (result) => {
     //console.log('successful files:', result.successful)
