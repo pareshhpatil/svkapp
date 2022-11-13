@@ -399,9 +399,10 @@ class InvoiceController extends AppController
                     if ($payment_request_id != $req_id) {
                         $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
+                        if ($revision != 1) {
                         Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
                         The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
-                        if ($revision != 1) {
+                        
                             return redirect('/merchant/paymentrequest/viewlist');
                         }
                     }
