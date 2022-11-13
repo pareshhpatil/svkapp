@@ -579,6 +579,12 @@
     <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
     <script>
         var newdocfileslist = [];
+
+        @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+        @foreach ($plugin['files'] as $key=>$item)
+        newdocfileslist.push('{{$item}}');
+        @endforeach
+        @endif
         //uppy file upload code
         var uppy = Uppy.Core({
             autoProceed: true,
@@ -682,7 +688,7 @@
         }
 
         function deletedocfile(x) {
-            var html = document.getElementById('docviewbox').innerHTML;
+            var html = '';
             if (x == 'delete') {
                 var fullurl = document.getElementById('docfullurl').value;
                 var index = newdocfileslist.indexOf(fullurl);
