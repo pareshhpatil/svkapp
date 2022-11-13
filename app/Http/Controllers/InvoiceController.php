@@ -2422,6 +2422,7 @@ class InvoiceController extends AppController
                     }
                     $data['attachments']=str_replace('"undefined",','',$data['attachments']);
                     $data['attachments']=str_replace('"undefined"','',$data['attachments']);
+                    $data['attachments']=str_replace('[]','',$data['attachments']);
                     if (!empty($data['attachments']))
                         $counts = count(json_decode($data['attachments'], 1));
 
