@@ -247,6 +247,7 @@
                                         </span>
                                             </template>
 
+                                            <input :id="`id${index}`" type="hidden"  x-model="field.id" name="id[]">
                                             <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.pint" name="pint[]">
 
 
@@ -843,6 +844,7 @@
                                         int = this.fields.length-1;
                                         pint=Number(this.fields[int].pint) + 1;
                                         this.fields.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',
@@ -854,6 +856,7 @@
                                             project: project_code
                                         });
                                         particularray.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',

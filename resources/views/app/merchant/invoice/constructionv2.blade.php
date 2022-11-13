@@ -432,8 +432,9 @@
                             <input type="text"  name="narrative" @isset($narrative) value="{{$narrative}}" @endisset class="form-control">
                         </div>
                     </div>
-                    @isset($plugin['has_covering_note'])
+                    
                     <div class="col-md-6">
+                    @isset($plugin['has_covering_note'])
                         <div class="form-group">
                             <p><label class="control-label col-md-3 w-auto">Select covering note</label><br></p>
                             <div class="col-md-5">
@@ -456,8 +457,9 @@
                                     Add new note</a>
                             </div>
                         </div>
+                        @endisset
                     </div>
-                    @endisset
+                   
                     
                     <div class="col-md-4">
                         <div class="pull-right">
