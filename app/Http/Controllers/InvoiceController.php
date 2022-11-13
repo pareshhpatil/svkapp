@@ -2810,7 +2810,7 @@ class InvoiceController extends AppController
             if (isset($revision[$table_name])) {
                 foreach ($revision[$table_name] as $row) {
                     $id = $row['id'];
-                    $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'is_active', 'created_by', 'created_date', 'last_update_by', 'last_update_date');
+                    $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row','group_code1','group_code2','group_code3','group_code4','group_code5', 'is_active', 'created_by', 'created_date', 'last_update_by', 'last_update_date');
                     $row = array_diff_key($row, array_flip($removeKeys));
                     $old_particular[$id] = $row;
                 }
@@ -2818,7 +2818,7 @@ class InvoiceController extends AppController
 
             foreach ($new_construction_particular as $row) {
                 $id = $row['id'];
-                $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'is_active', 'created_by', 'created_date', 'last_update_by', 'last_update_date');
+                $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'is_active', 'created_by','group_code1','group_code2','group_code3','group_code4','group_code5', 'created_date', 'last_update_by', 'last_update_date');
                 $row = array_diff_key($row, array_flip($removeKeys));
                 $new_particular[$id] = $row;
             }
