@@ -426,12 +426,13 @@
         <div class="portlet-body form">
             <div class="row">
                 <div class="col-md-12">
-                <div class="col-md-2">
+                <input type="hidden"  name="narrative" value="" >
+               <!-- <div class="col-md-2">
                         <div class="form-group">
                             <p>Narrative</p>
                             <input type="text"  name="narrative" @isset($narrative) value="{{$narrative}}" @endisset class="form-control">
                         </div>
-                    </div>
+                    </div>-->
                     
                     <div class="col-md-6">
                     @isset($plugin['has_covering_note'])
@@ -461,7 +462,7 @@
                     </div>
                    
                     
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="pull-right">
                             <p>&nbsp;</p>
                             <input type="hidden" name="link" value="{{$link}}">
