@@ -356,9 +356,12 @@ class InvoiceController extends AppController
     public function update($link, $staging = 0, $revision = 0)
     {
 
-        if (env('INVOICE_VERSION') == '2') {
-            return redirect('/merchant/invoice/updatev2/' . $link);
+        if ($revision != 1) {
+            if (env('INVOICE_VERSION') == '2') {
+                return redirect('/merchant/invoice/updatev2/' . $link);
+            }
         }
+
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -389,7 +392,6 @@ class InvoiceController extends AppController
             $data['template_link'] = Encrypt::encode($info->template_id);
             $data['payment_request_id'] = $payment_request_id;
             $data['type'] = $info->template_type;
-
             if ($info->template_type == 'construction') {
                 $data['contract_id'] = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'contract_id');
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($data['contract_id'], $this->merchant_id);
@@ -399,7 +401,9 @@ class InvoiceController extends AppController
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
                         The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
-                        return redirect('/merchant/paymentrequest/viewlist');
+                        if ($revision != 1) {
+                            return redirect('/merchant/paymentrequest/viewlist');
+                        }
                     }
                 }
             }
@@ -541,7 +545,9 @@ class InvoiceController extends AppController
             //$data['contract_particulars'] = (object) $particulars;
             $data['contract_particulars'] = collect(json_decode(json_encode($particulars), 0))->all();
         }
+
         $data['title'] = 'Revision';
+
         return view('app/merchant/invoice/construction_revision', $data);
     }
 
@@ -2810,7 +2816,7 @@ class InvoiceController extends AppController
             if (isset($revision[$table_name])) {
                 foreach ($revision[$table_name] as $row) {
                     $id = $row['id'];
-                    $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row','group_code1','group_code2','group_code3','group_code4','group_code5', 'is_active', 'created_by', 'created_date', 'last_update_by', 'last_update_date');
+                    $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'group_code1', 'group_code2', 'group_code3', 'group_code4', 'group_code5', 'is_active', 'created_by', 'created_date', 'last_update_by', 'last_update_date');
                     $row = array_diff_key($row, array_flip($removeKeys));
                     $old_particular[$id] = $row;
                 }
@@ -2818,7 +2824,7 @@ class InvoiceController extends AppController
 
             foreach ($new_construction_particular as $row) {
                 $id = $row['id'];
-                $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'is_active', 'created_by','group_code1','group_code2','group_code3','group_code4','group_code5', 'created_date', 'last_update_by', 'last_update_date');
+                $removeKeys = array('id', 'payment_request_id', 'calculated_perc', 'calculated_row', 'is_active', 'created_by', 'group_code1', 'group_code2', 'group_code3', 'group_code4', 'group_code5', 'created_date', 'last_update_by', 'last_update_date');
                 $row = array_diff_key($row, array_flip($removeKeys));
                 $new_particular[$id] = $row;
             }
