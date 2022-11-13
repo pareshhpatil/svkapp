@@ -2681,6 +2681,9 @@ class InvoiceController extends AppController
                 if ($request->attachments[$k] != '') {
                     $data['attachments'] = json_encode(explode(',', $request->attachments[$k]));
                     $data['attachments'] = str_replace('\\', '',  $data['attachments']);
+                    $data['attachments']=str_replace('"undefined",','',$data['attachments']);
+                    $data['attachments']=str_replace('"undefined"','',$data['attachments']);
+                    $data['attachments']=str_replace('[]','',$data['attachments']);
                 } else {
                     $data['attachments'] = null;
                 }
