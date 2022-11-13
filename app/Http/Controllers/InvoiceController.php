@@ -2661,7 +2661,6 @@ class InvoiceController extends AppController
         $request_id = Encrypt::decode($request->link);
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $revision = false;
-        dd($request->all());
         if ($invoice->payment_request_status != 11) {
             $plugin = json_decode($invoice->plugin_value, 1);
             if ($plugin['save_revision_history'] == 1) {
