@@ -2755,8 +2755,8 @@ class InvoiceController extends AppController
                     $old_value = $revision['payment_request'][$key];
                     $new_value = $new_payment_request[$key];
                     if ($key == 'bill_date' || $key == 'due_date') {
-                        $old_value = $this->generic->htmlDate($old_value);
-                        $new_value = $this->generic->htmlDate($new_value);
+                        $old_value = Helpers::htmlDate($old_value);
+                        $new_value = Helpers::htmlDate($new_value);
                     }
                     if ($key == 'grand_total') {
                         $old_value = number_format($old_value, 2);
