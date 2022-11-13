@@ -2420,6 +2420,8 @@ class InvoiceController extends AppController
                     if (empty($bill_code)) {
                         $bill_code = $data['bill_code'];
                     }
+                    $data['attachments']=str_replace('"undefined",','',$data['attachments']);
+                    $data['attachments']=str_replace('"undefined"','',$data['attachments']);
                     if (!empty($data['attachments']))
                         $counts = count(json_decode($data['attachments'], 1));
 
