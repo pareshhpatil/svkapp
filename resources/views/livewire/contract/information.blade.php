@@ -36,7 +36,7 @@
                 <select class="form-control" id="billing_frequency" wire:model.defer="billing_frequency">
                     <option @if($billing_frequency==1) selected @endif value="1">Weekly</option>
                     <option @if($billing_frequency==2) selected @endif value="2">Monthly</option>
-                    <option @if($billing_frequency==3) selected @endif value="3">Quaterly</option>
+                    <option @if($billing_frequency==3) selected @endif value="3">Quarterly</option>
                 </select>
             </div>
         </div>

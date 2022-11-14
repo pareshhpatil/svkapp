@@ -30,7 +30,7 @@
                     <select onchange="alert(this.value);" name="billing_frequency">
                         <option value="1">Weekly</option>
                         <option selected value="2">Monthly</option>
-                        <option value="3">Quaterly</option>
+                        <option value="3">Quarterly</option>
                     </select>
                 </div>
             </div>
