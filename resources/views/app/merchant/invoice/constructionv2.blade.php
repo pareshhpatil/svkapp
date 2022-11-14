@@ -577,9 +577,12 @@
     </script>
 
 
-    <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
     <script>
         var newdocfileslist = [];
+
+    const { Compressor } = Uppy;
+
 
         @if(isset($plugin['files']) && !empty($plugin['files'][0]))
         @foreach ($plugin['files'] as $key=>$item)
@@ -587,7 +590,7 @@
         @endforeach
         @endif
         //uppy file upload code
-        var uppy = Uppy.Core({
+        var uppy = new Uppy.Uppy({
             autoProceed: true,
             restrictions: {
                 maxFileSize: 3000000,
@@ -611,7 +614,10 @@
             hidePauseResumeButton: false,
             hideCancelButton: false,
         });
-
+        uppy.use( Compressor, {
+  quality: 0.6,
+  limit: 10,
+});
         uppy.use(Uppy.XHRUpload, {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')

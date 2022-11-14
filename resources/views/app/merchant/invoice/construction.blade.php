@@ -516,11 +516,12 @@
             </script>
 
 
-<script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
 <script>
+   
     var newdocfileslist=[];
 //uppy file upload code
-var uppy = Uppy.Core({ 
+var uppy = new Uppy.Uppy({ 
     autoProceed: true,
     restrictions: {
         maxFileSize: 3000000,
@@ -563,7 +564,10 @@ uppy.use(Uppy.XHRUpload, {
     formData: true,
     fieldName: 'image'
 });
-
+uppy.use( Compressor, {
+  quality: 0.6,
+  limit: 10,
+});
 uppy.on('file-added', (file) => {
     document.getElementById("error").innerHTML = '';
     console.log('file-added');
