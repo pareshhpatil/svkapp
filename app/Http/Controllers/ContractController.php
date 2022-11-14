@@ -337,7 +337,7 @@ class ContractController extends Controller
         return view('app/merchant/contract/list', $data);
     }
 
-    public function listNew(Request $request)
+    public function listContracts(Request $request)
     {
         $dates = Helpers::setListDates();
         $title = 'Contract list';
@@ -361,7 +361,7 @@ class ContractController extends Controller
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 
-        return view('app/merchant/contract/list-new', $data);
+        return view('app/merchant/contract/list-contract', $data);
     }
 
     public function delete($link)
