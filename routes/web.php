@@ -363,20 +363,24 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/delete/{project_id}/{link}', 'MasterController@projectCodeDelete');
   Route::any('/billcode/update/', 'ContractController@billcodeupdate');
   //contract
-  Route::any('contract/create', 'ContractController@create')->name('create.contract');
-  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
+//  Route::any('contract/create', 'ContractController@create')->name('create.contract');
+//  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
-  Route::any('contract/new/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
-  Route::any('contract/edit/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new');
+  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
+
+  Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new');
+
   Route::any('contract/fetchProject', 'ContractController@fetchProject')->name('contract.fetchProject');
   Route::post('contract/store', 'ContractController@store')->name('contract.store');
 
-  Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
+//  Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
   Route::any('contract/save', 'ContractController@save')->name('save.contract');
   Route::any('contract/saveV4', 'ContractController@saveV4')->name('save.contractV4');
   Route::any('contract/saveV5', 'ContractController@saveV5')->name('save.contractV4');
-  Route::any('contract/list', 'ContractController@list')->name('list.contract');
-  Route::any('contract/listnew', 'ContractController@listNew')->name('contract.list.new');
+//  Route::any('contract/list', 'ContractController@list')->name('list.contract');
+
+  Route::any('contract/list', 'ContractController@listContracts')->name('contract.list.new');
+
   Route::any('contract/delete/{link}', 'ContractController@delete')->name('delete.contract');
   Route::any('contract/getProjectDetails/{project_id}', 'ContractController@getprojectdetails')->name('getprojectdetails.contract');
   Route::any('contract/updatesave/', 'ContractController@updatesave')->name('updatesave.contract');
@@ -384,6 +388,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('contract/updatesaveV5/', 'ContractController@updatesaveV5')->name('updatesave.contractV5');
   Route::any('contract/updatesaveV6/', 'ContractController@updatesaveV6')->name('updatesave.contractV6');
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
+
   Route::any('/billcode/new', 'ContractController@newBillCode')->name('newBillCode.contract');
 
   //order

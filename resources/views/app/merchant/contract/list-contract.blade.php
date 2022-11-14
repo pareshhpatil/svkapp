@@ -5,7 +5,7 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.contractlist') }}
-        <a href="/merchant/contract/create" class="btn blue pull-right"> Create Contract </a>
+        <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
     </div>
     <!-- BEGIN SEARCH CONTENT-->
     <div class="row">
