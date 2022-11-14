@@ -3133,7 +3133,9 @@ function particularsDropdowns(id, fields) {
 
 function showupdatebillcodeattachment(pos) {
     attach_pos = pos;
-    console.log(attach_pos);
+    try{
+    document.getElementById("up-error").innerHTML = '';
+    }catch(o){}
     document.getElementById("listtab1").classList.add('active');
     document.getElementById("tab1").classList.add('active');
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
@@ -3228,7 +3230,7 @@ function setBillCodeMenuData() {
                {
                   framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
                }else{
-                  framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
+                  framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;"/>';
                }
                framedata+= '</p> </div>';
               }

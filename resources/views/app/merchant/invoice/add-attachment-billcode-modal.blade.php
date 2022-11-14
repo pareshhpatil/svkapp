@@ -152,14 +152,7 @@
                     </ul>
                    
                     <div class="tab-content">
-                        <div class="alert alert-danger display-none">
-                            <button class="close" data-dismiss="alert"></button>
-                            You have some form errors. Please check below.
-                        </div>
-                        <div class="alert alert-success display-none">
-                            <button class="close" data-dismiss="alert"></button>
-                            Your form validation is successful!
-                        </div>
+                        <span id="up-error" style="color: red;font-size: 14px;"></span>
 
 
                         <div class="tab-pane active" id="tab1">
@@ -278,7 +271,7 @@ uppy_attach.use(Uppy.Dashboard, {
     // }}
 });
 uppy_attach.on('file-added', (file) => {
-    document.getElementById("error").innerHTML = '';
+    document.getElementById("up-error").innerHTML = '';
    
     console.log('file-added'+billcode);
 });
@@ -328,7 +321,7 @@ uppy_attach.on('upload-success', (file, response) => {
     document.getElementById("icon-"+attach_pos).setAttribute("data-content",""+counts);
     document.getElementById("icon-"+attach_pos).setAttribute("title",""+counts);
     if(response.body.status == 300) {
-        document.getElementById("error").innerHTML = response.body.errors;
+        document.getElementById("up-error").innerHTML = response.body.errors;
         uppy_attach.removeFile(file.id);
     } else {
        // document.getElementById("error").innerHTML = '';
