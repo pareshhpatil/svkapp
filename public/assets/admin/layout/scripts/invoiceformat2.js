@@ -3133,7 +3133,9 @@ function particularsDropdowns(id, fields) {
 
 function showupdatebillcodeattachment(pos) {
     attach_pos = pos;
-    console.log(attach_pos);
+    try{
+    document.getElementById("up-error").innerHTML = '';
+    }catch(o){}
     document.getElementById("listtab1").classList.add('active');
     document.getElementById("tab1").classList.add('active');
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
@@ -3170,7 +3172,7 @@ function deleteattchment() {
 
 function setBillCodeMenuData() {
 
-    current_bill_name = document.getElementById('description' + attach_pos).innerText;
+    current_bill_name = document.getElementById('description' + attach_pos).value;
     var sortname = current_bill_name.length > 10 ? current_bill_name.slice(0, 10) + '...' : current_bill_name;
     var paths = document.getElementById('attach-' + attach_pos).value;
 
@@ -3197,6 +3199,7 @@ function setBillCodeMenuData() {
         for (var i = 0; i < pathlist.length; i++) {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
             var sortname = filename.length > 10 ? filename.slice(0, 10) + '...' : filename;
+            var extension = pathlist[i].split('.').pop();
             var classnm = '';
             var frameclassnm = 'fade';
             if (i == 0) {
@@ -3214,17 +3217,23 @@ function setBillCodeMenuData() {
                 ' </a>  </li>';
 
 
-            framedata += '<div class="tab-pane ' + frameclassnm + '" id="tab_' + sortname.trim() + '" >' +
-
-                '<div class="grid grid-cols-3  gap-4 mb-2">' +
-                '<div class="col-span-2">' +
-                '<h4 class="title pull-left">' + pathlist[i].replace(/^.*[\\\/]/, '') + '</h4>' +
-                '</div> <div > <h2 class="pull-right" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\'' + pathlist[i] + '\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>' +
-
-                '</div> </div>' +
-                ' <p class="mt-2"> <iframe src="' + pathlist[i] + '" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe> </p> </div>';
-
-        }
+                framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+sortname.trim()+'" >'+
+                       
+                '<div class="grid grid-cols-3  gap-4 mb-2">'+
+                    '<div class="col-span-2">'+
+                '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
+                    '</div> <div > <h2 class="pull-right" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
+                     
+                        '</div> </div>'+
+               ' <p class="mt-2">';
+               if(extension.toLowerCase()=='pdf')
+               {
+                  framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
+               }else{
+                  framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;"/>';
+               }
+               framedata+= '</p> </div>';
+              }
         data += ul + '</ul>';
     }
     if (framedata == '') {

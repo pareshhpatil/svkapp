@@ -1,17 +1,29 @@
 <style>
     
-    .panel-wrap {
+.panel-wrap {
         position: fixed;
         top: 0;
         bottom: 0;
         right: 0;
-        left: 10% !important;
+        left: 25% !important;
         /* width: 80em; */
         transform: translateX(100%);
         transition: .3s ease-out;
         z-index: 100;
     }
-
+    @media (min-width: 1400px){
+        .panel-wrap {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 40% !important;
+        /* width: 80em; */
+        transform: translateX(100%);
+        transition: .3s ease-out;
+        z-index: 100;
+    }
+}
     .panel {
         position: absolute;
         top: 0;
@@ -140,14 +152,7 @@
                     </ul>
                    
                     <div class="tab-content">
-                        <div class="alert alert-danger display-none">
-                            <button class="close" data-dismiss="alert"></button>
-                            You have some form errors. Please check below.
-                        </div>
-                        <div class="alert alert-success display-none">
-                            <button class="close" data-dismiss="alert"></button>
-                            Your form validation is successful!
-                        </div>
+                        <span id="up-error" style="color: red;font-size: 14px;"></span>
 
 
                         <div class="tab-pane active" id="tab1">
@@ -266,7 +271,7 @@ uppy_attach.use(Uppy.Dashboard, {
     // }}
 });
 uppy_attach.on('file-added', (file) => {
-    document.getElementById("error").innerHTML = '';
+    document.getElementById("up-error").innerHTML = '';
    
     console.log('file-added'+billcode);
 });
@@ -316,7 +321,7 @@ uppy_attach.on('upload-success', (file, response) => {
     document.getElementById("icon-"+attach_pos).setAttribute("data-content",""+counts);
     document.getElementById("icon-"+attach_pos).setAttribute("title",""+counts);
     if(response.body.status == 300) {
-        document.getElementById("error").innerHTML = response.body.errors;
+        document.getElementById("up-error").innerHTML = response.body.errors;
         uppy_attach.removeFile(file.id);
     } else {
        // document.getElementById("error").innerHTML = '';
