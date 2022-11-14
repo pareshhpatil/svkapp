@@ -1,17 +1,29 @@
 <style>
     
-    .panel-wrap {
+.panel-wrap {
         position: fixed;
         top: 0;
         bottom: 0;
         right: 0;
-        left: 10% !important;
+        left: 50% !important;
         /* width: 80em; */
         transform: translateX(100%);
         transition: .3s ease-out;
         z-index: 100;
     }
-
+    @media (min-width: 1199px){
+        .panel-wrap {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 25% !important;
+        /* width: 80em; */
+        transform: translateX(100%);
+        transition: .3s ease-out;
+        z-index: 100;
+    }
+}
     .panel {
         position: absolute;
         top: 0;

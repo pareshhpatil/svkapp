@@ -133,9 +133,15 @@ $header='app.patron.invoice.invoice-master';}
                                        </div>
                             </div>
                             <hr>
+                            
                             <p class="mt-2">
+                                @if(strtolower(pathinfo($item, PATHINFO_EXTENSION))=='pdf')
                                 <iframe src="{{$item}}" class="w-full" height="800px">
                                 </iframe>
+                                @else
+                                <img src="{{$item}}" class="img-fluid" height="800px"/>
+                               
+                                @endif
                             </p>
                         </div>
                         @endforeach

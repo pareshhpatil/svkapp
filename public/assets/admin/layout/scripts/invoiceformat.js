@@ -3022,6 +3022,7 @@ if(pathlist[0]!='')
         {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
             var sortname=filename.length>10?filename.slice(0,10)+'...':filename;
+            var extension = pathlist[i].split('.').pop();
           var classnm='';
           var frameclassnm='fade';
           if(i==0)
@@ -3045,11 +3046,18 @@ if(pathlist[0]!='')
                        
           '<div class="grid grid-cols-3  gap-4 mb-2">'+
               '<div class="col-span-2">'+
-          '<h4 class="title pull-left">'+pathlist[i].replace(/^.*[\\\/]/, '')+'</h4>'+
+          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
               '</div> <div > <h2 class="pull-right" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
                
                   '</div> </div>'+
-         ' <p class="mt-2"> <iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe> </p> </div>';
+         ' <p class="mt-2">';
+         if(extension.toLowerCase()=='pdf')
+         {
+            framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
+         }else{
+            framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
+         }
+         framedata+= '</p> </div>';
        
         }
         data+=ul+'</ul>';
