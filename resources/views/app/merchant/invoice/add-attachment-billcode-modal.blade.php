@@ -203,54 +203,31 @@
 
 
 
-<div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Delete attachment</h4>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this attachment?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn default" data-dismiss="modal">Close</button>
-                <input type="hidden" id="removepath">
-                <a  id="attach-delete-click" onclick="deleteattchment()" data-dismiss="modal" class="btn delete">Confirm</a>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-
-
-
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
+
 <script>
     var newdocfileslist=[];
  var billcode='';
- //const { Compressor } = Uppy;
+ const { Compressor } = Uppy;
 //uppy file upload code
-var uppy_attach = Uppy.Core({ 
+var uppy_attach = new Uppy.Uppy({ 
+  
     autoProceed: true,
     restrictions: {
-        maxFileSize: 3000000,
+        maxFileSize: 9000000,
         maxNumberOfFiles: 10,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
     },
     onBeforeFileAdded: (currentFile, files) => {
         try{
-            const name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
+             name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
         }catch(o)
         {
-            const name = document.getElementById("billcode"+attach_pos).value + '_' + currentFile.name
+             name = document.getElementById("billcode"+attach_pos).value + '_' + currentFile.name
         }
-      const modifiedFile = {
+       modifiedFile = {
         ...currentFile,
         meta: {
              ...currentFile.meta,
@@ -262,15 +239,16 @@ var uppy_attach = Uppy.Core({
       return modifiedFile
     }
 });
-// uppy_attach.use(Compressor, {
-//   quality: 0.6,
-//   limit: 10,
-// });
+uppy_attach.use( Compressor, {
+  quality: 0.6,
+  limit: 10,
+});
 uppy_attach.use(Uppy.Dashboard, {
     target: '#drag-drop-area-bill', 
    // trigger: '.UppyModalOpenerBtn',
     inline: true,
     height: 400,
+    autoProceed: true,
     hideAfterFinish: true,
     showProgressDetails: false,
     hideUploadButton: false,
@@ -319,6 +297,14 @@ uppy_attach.on('upload-success', (file, response) => {
     }else{
         document.getElementById("attach-"+attach_pos).value=path;
     }
+    
+    try{
+        if (particularray !== undefined) {
+            particularray[attach_pos].attachments = document.getElementById("attach-"+attach_pos).value;
+        }
+    }catch(o){}
+    
+
     var file_count=document.getElementById("attach-"+attach_pos).value;
     var pathlist=file_count.split(",");
     var counts='0 file';
@@ -328,6 +314,7 @@ uppy_attach.on('upload-success', (file, response) => {
     counts=pathlist.length+' file';
       
     document.getElementById("icon-"+attach_pos).setAttribute("data-content",""+counts);
+    document.getElementById("icon-"+attach_pos).setAttribute("title",""+counts);
     if(response.body.status == 300) {
         document.getElementById("error").innerHTML = response.body.errors;
         uppy_attach.removeFile(file.id);

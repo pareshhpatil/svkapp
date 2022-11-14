@@ -49,6 +49,10 @@ $header='app.patron.invoice.invoice-master';}
       
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.invoice.view','Invoice') }}
+
+        @if ($info['payment_request_status']==11)
+            <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
+            @endif
       
     </div>
    @endif
@@ -73,11 +77,11 @@ $header='app.patron.invoice.invoice-master';}
             <li >
                 <a href="/patron/invoice/view/{{$info['Url']}}/703">703</a>
             </li>
-            @isset($metadata['plugin']['has_upload'])
+           
             <li >
                 <a href="/patron/invoice/document/{{$info['Url']}}">Attached files</a>
             </li>
-            @endisset
+          
             @else
             <li class="active">
                 <a href="/merchant/invoice/viewg702/{{$info['Url']}}">702</a>
@@ -85,11 +89,11 @@ $header='app.patron.invoice.invoice-master';}
             <li >
                 <a href="/merchant/invoice/viewg703/{{$info['Url']}}">703</a>
             </li>
-            @isset($metadata['plugin']['has_upload'])
+          
             <li >
                 <a href="/merchant/invoice/document/{{$info['Url']}}">Attached files</a>
             </li>
-            @endisset
+          
             @endif
         </ul>
     </div>

@@ -2,9 +2,15 @@
 @section('content')
 
 <style>
-        .onhover-border:hover {
-            border: 1px solid #ddd !important;
+
+.onhover-border:hover {
+            border: 1px solid grey !important;
         }
+
+        .table-hover>tbody>tr:hover {
+            background-color: transparent !important;
+        }
+
 
         .table thead tr th {
             font-size: 12px;
@@ -152,7 +158,7 @@
                                     <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${index}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                         @if($k=='bill_code')
                                         <div style="display:flex;">
-                                            <select required style=" min-width: 200px;" onchange="billCode2()" :id="`billcode${index}`"
+                                            <select required style=" min-width: 200px;" onchange="billCode2()" :id="`bill_code${index}`"
                                                     x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select Bill Code"
                                                     class="form-control input-sm select2me productselect" @update-csi-codes.window="bill_codes = this.bill_codes">
                                                 <option value="">Select Code</option>
@@ -170,12 +176,13 @@
                                                     </template>
                                                 @endif
                                             </select>
-                                            <input type="hidden" name="attachments[]" :id="`attach-${index}`" value="">
-                                            <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right">
-                                            <i :id="`icon-${index}`"  class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title=""></i> </a>
+                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value=""/>
+                                            <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
+                                            <i :id="`icon-${index}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
+                                         </a>
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                             <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                            <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
+                                            <input type="hidden" name="description[]"  x-model="field.description" :id="`description${index}`">
                                             <div class="text-center" style="display: none;">
                                                 <p :id="`description-hidden${index}`" x-text="field.description"></p>
                                             </div>
@@ -191,7 +198,7 @@
 
                                             </select>
                                         @elseif($k=='bill_type')
-                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
+                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
                                                 <option value="">Select..</option>
                                                 <option value="% Complete">% Complete</option>
                                                 <option value="Unit">Unit</option>
@@ -219,9 +226,16 @@
                                                 <div>
                                                     <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$k}}"></span><br>
                                                     <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
+                                                    <template x-if="field.override==false">
+                                                    <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Override</a>
+                                                    <span :id="`pipe-calc${index}`"  style="margin-left: 4px; color:#859494;display: none;"> | </span>
+                                                    <a :id="`remove-calc${index}`"  style="padding-top:5px;display: none;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                    </template>
+                                                    <template x-if="field.override==true">
                                                     <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
                                                     <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                     <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
+                                                    </template>
                                                 </div>
                                                 <span x-show="field.txt{{$k}}">
                                             <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
@@ -233,6 +247,7 @@
                                         </span>
                                             </template>
 
+                                            <input :id="`id${index}`" type="hidden"  x-model="field.id" name="id[]">
                                             <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.pint" name="pint[]">
 
 
@@ -313,10 +328,8 @@
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
 
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                            <a class="btn green" x-show="step!=1" @click="step=step-1">Back</a>
-                                            <a class="btn blue" @click="setParticulars()" x-show="step==1">Add particulars</a>
+                                            <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
                                             <button type="submit" @click="return setParticulars();" class="btn blue" >Preview invoice</button>
-                                            <a class="btn blue" x-show="step==3" @click="saveContract()">Save contract</a>
                                         </div>
                                     </div>
                                 </div>
@@ -334,7 +347,7 @@
                             particularsDropdowns(0, this.fields);
 
                         });*/
-                       csi_codes = [];
+                       csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
                        var particularray = JSON.parse('{!! json_encode($particulars) !!}');
                        var previewArray = [];
 
@@ -475,7 +488,7 @@
                                 particularsDropdowns(id = null) {
 
                                      try {
-                                         $('#billcode' + id).select2({
+                                         $('#bill_code' + id).select2({
                                              insertTag: function (data, tag) {
 
                                              }
@@ -485,7 +498,7 @@
                                                  $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
                                              }
                                          }).on('select2:select', function (e){
-                                             let data = $('#billcode' + id).select2('val');
+                                             let data = $('#bill_code' + id).select2('val');
                                              let dataArray = data.split('|')
                                              particularray[id]['bill_code'] = dataArray[0].trim();
                                              particularray[id]['bill_code_text'] = data;
@@ -539,7 +552,14 @@
 
                                     total = 0;
                                     this.fields.forEach(function(currentValue, index, arr) {
-                                        total = Number(total) + Number(getamt(currentValue.original_contract_amount));
+                                        if(currentValue.net_billed_amount==null)
+                                        {
+                                            net_billed_amount=0;
+                                        }else{
+                                            net_billed_amount=currentValue.net_billed_amount;
+                                        }
+
+                                        total = Number(total) + Number(getamt(net_billed_amount));
                                     });
 
                                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -622,8 +642,10 @@
 
                                 setParticulars()
                                 {
+                                   
                                     particularray.forEach(function(currentValue, index, arr) {
-                                            document.getElementById('billcode'+index).value = currentValue.bill_code;
+                                            document.getElementById('bill_code'+index).value = currentValue.bill_code;
+                                            document.getElementById('attach-'+index).value = currentValue.attachments;
                                     });
                                 },
 
@@ -759,26 +781,31 @@
                                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
+                                    this.calc(this.fields[selected_field_int]);
+
                                 },
                                 OpenAddCaculated(field) {
-                                    console.log(field.introw);
-                                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
-                                    document.getElementById('selected_field_int').value = field.introw;
-                                    OpenAddCaculatedRow(field.introw);
+                                    console.log(field.pint);
+                                    this.selected_field_int = field.pint;
+                                    console.log(document.getElementById('selected_field_int'));
+                                    document.getElementById('selected_field_int').value = field.pint;
+                                    OpenAddCaculatedRow(field.pint);
                                 },
                                 RemoveCaculated(field) {
-                                    this.fields[field.introw].original_contract_amount = 0;
-                                    document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
-                                    RemoveCaculatedRow(field.introw);
+                                    this.fields[field.pint].original_contract_amount = 0;
+                                    this.fields[field.pint].current_contract_amount = 0;
+                                    document.getElementById('lbl_current_contract_amount' + field.pint).innerHTML = '';
+                                    document.getElementById('lbl_original_contract_amount' + field.pint).innerHTML = '';
+                                    RemoveCaculatedRow(field.pint);
                                 },
                                 EditCaculated(field) {
-                                    document.getElementById('selected_field_int').value = field.introw;
-                                    editCaculatedRow(field.introw);
+                                    document.getElementById('selected_field_int').value = field.pint;
+                                    editCaculatedRow(field.pint);
                                 },
 
                                 select2Dropdown(id) {
                                     try {
-                                        $('#billcode' + id).select2({
+                                        $('#bill_code' + id).select2({
                                             insertTag: function(data, tag) {
 
                                             }
@@ -819,20 +846,24 @@
                                         int = this.fields.length-1;
                                         pint=Number(this.fields[int].pint) + 1;
                                         this.fields.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',
                                             bill_type: '',
                                             group: '',
+                                            override: true,
                                             bill_code_detail: '',
                                             bill_code_detail: 'Yes',
                                             project: project_code
                                         });
                                         particularray.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',
                                             bill_type: '',
+                                            override: true,
                                             group: '',
                                             bill_code_detail: '',
                                             project: project_code
@@ -910,6 +941,7 @@ uppy.on('upload', (data) => {
     console.log('Starting upload');
 });
 uppy.on('upload-success', (file, response) => {
+    if (response.body.fileUploadPath != undefined) {
     path = response.body.fileUploadPath;
     extvalue=document.getElementById("file_upload").value;
     newdocfileslist.push(path);
@@ -926,6 +958,7 @@ uppy.on('upload-success', (file, response) => {
     } else {
         document.getElementById("error").innerHTML = '';
     }
+}
 });
 uppy.on('complete', (result) => {
     //console.log('successful files:', result.successful)
@@ -1010,5 +1043,27 @@ if(x=='delete')
 
     @include('app.merchant.contract.add-bill-code-modal')
     @include('app.merchant.invoice.add-attachment-billcode-modal')
+
+
+    <div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete attachment</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this attachment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <input type="hidden" id="removepath">
+                <a  id="attach-delete-click" onclick="deleteattchment()" data-dismiss="modal" class="btn delete">Confirm</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 @endsection

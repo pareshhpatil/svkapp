@@ -173,13 +173,7 @@
                                                 @endif
                                                 @endforeach
                                                 @endif
-                                                <div class="text-center">
-                                                    <p id="description{{$key+1}}" class="lable-heading">
-                                                        @isset($row['description'])
-                                                        {{$row['description']}}
-                                                        @endisset
-                                                    </p>
-                                                </div>
+                                                
                                             </div>
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')

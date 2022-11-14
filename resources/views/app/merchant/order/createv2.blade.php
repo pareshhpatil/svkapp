@@ -203,7 +203,7 @@
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}" class="lable-heading">
+                                                    <p id="description{{$key+1}}" style="display: none;" class="lable-heading">
                                                         @isset($row['description'])
                                                         {{$row['description']}}
                                                         @endisset

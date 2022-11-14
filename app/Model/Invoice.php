@@ -128,6 +128,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
+            ->where('payment_request_status', '<>', 11)
             ->orderBy('payment_request_id', 'desc')
             ->first();
         if (!empty($retObj)) {
@@ -491,6 +492,24 @@ class Invoice extends ParentModel
         return $retObj[0];
     }
 
+    public function updateInvoice($payment_request_id, $user_id, $customer_id, $invoice_number,  $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $billing_profile_id = 0, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
+    {
+        $retObj = DB::select("call `update_invoicevalues`('$payment_request_id','$user_id','$customer_id','$invoice_number','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,0,'$plugin',0,$billing_profile_id,0,'$currency',null,1);");
+        return $retObj[0];
+    }
+
+
+    public function updateInvoiceAmount($request_id, $amount)
+    {
+        DB::table('payment_request')->where('payment_request_id', $request_id)
+            ->update([
+                'absolute_cost' => $amount,
+                'basic_amount' => $amount,
+                'invoice_total' => $amount,
+                'swipez_total' => $amount,
+                'grand_total' => $amount
+            ]);
+    }
 
     public function saveConstructionParticular($data, $request_id, $user_id)
     {
@@ -518,11 +537,69 @@ class Invoice extends ParentModel
                 'stored_materials' => $data['stored_materials'],
                 'project' => $data['project'],
                 'cost_code' => $data['cost_code'],
+                'cost_type' => $data['cost_type'],
                 'group' => $data['group'],
                 'bill_code_detail' => $data['bill_code_detail'],
                 'calculated_perc' => $data['calculated_perc'],
                 'calculated_row' => $data['calculated_row'],
                 'attachments' => $data['attachments'],
+                'created_by' => $user_id,
+                'last_update_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
+
+    public function updateConstructionParticular($data, $id, $user_id)
+    {
+        DB::table('invoice_construction_particular')->where('id', $id)
+            ->update(
+                [
+                    'pint' => $data['pint'],
+                    'bill_code' => $data['bill_code'],
+                    'description' => $data['description'],
+                    'bill_type' => $data['bill_type'],
+                    'original_contract_amount' => $data['original_contract_amount'],
+                    'approved_change_order_amount' => $data['approved_change_order_amount'],
+                    'current_contract_amount' => $data['current_contract_amount'],
+                    'previously_billed_percent' => $data['previously_billed_percent'],
+                    'previously_billed_amount' => $data['previously_billed_amount'],
+                    'current_billed_percent' => $data['current_billed_percent'],
+                    'current_billed_amount' => $data['current_billed_amount'],
+                    'total_billed' => $data['total_billed'],
+                    'retainage_percent' => $data['retainage_percent'],
+                    'retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'],
+                    'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
+                    'net_billed_amount' => $data['net_billed_amount'],
+                    'retainage_release_amount' => $data['retainage_release_amount'],
+                    'total_outstanding_retainage' => $data['total_outstanding_retainage'],
+                    'stored_materials' => $data['stored_materials'],
+                    'project' => $data['project'],
+                    'is_active' => 1,
+                    'cost_code' => $data['cost_code'],
+                    'cost_type' => $data['cost_type'],
+                    'group' => $data['group'],
+                    'bill_code_detail' => $data['bill_code_detail'],
+                    'calculated_perc' => $data['calculated_perc'],
+                    'calculated_row' => $data['calculated_row'],
+                    'attachments' => $data['attachments'],
+                    'last_update_by' => $user_id,
+                ]
+            );
+        return $id;
+    }
+
+
+
+    public function saveRevision($payment_request_id, $json, $number = 'V1', $user_id)
+    {
+        $id = DB::table('invoice_revision')->insertGetId(
+            [
+                'payment_request_id' => $payment_request_id,
+                'json' => $json,
+                'revision_no' => $number,
                 'created_by' => $user_id,
                 'last_update_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s')
