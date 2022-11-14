@@ -321,7 +321,7 @@
 
                                         <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
                                                 <a
-                                                    href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b']) }}/@if (empty($item['group_name'])) {{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a']) }}@else{{ str_replace(' ', '_', strlen($item['group_name']) > 7 ? substr($item['group_name'], 0, 7) : $item['group_name']) }} @endif/{{ $item['attachment'] }}">
+                                                    href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b'])}}/@if(empty($item['group_name'])){{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a'])}}@else{{str_replace(' ', '_', strlen($item['group_name']) > 7 ? substr($item['group_name'], 0, 7) : $item['group_name'])}}@endif/{{ $item['attachment'] }}">
                                                     <i class="fa fa-paperclip popovers" data-placement="right"
                                                         data-container="body" data-trigger="hover"
                                                         data-content="{{ $item['files'] }}" aria-hidden="true"></i></a>
@@ -373,7 +373,7 @@
                                         @if (isset($item['group_name']))
                                             <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
                                                     <a
-                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ $item['group_name'] }}/@if (empty($item['b'])) {{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a']) }}@else{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b']) }} @endif/{{ $item['attachment'] }}">
+                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ $item['group_name'] }}/@if(empty($item['b'])){{str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a'])}}@else{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b'])}}@endif/{{ $item['attachment'] }}">
                                                         <i class="fa fa-paperclip popovers" data-placement="right"
                                                             data-container="body" data-trigger="hover"
                                                             data-content="{{ $item['files'] }}"
@@ -383,7 +383,7 @@
                                         @else
                                             <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
                                                     <a
-                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/@if (empty($item['b'])) {{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a']) }}@else{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b']) }} @endif/{{ $item['attachment'] }}">
+                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/@if(empty($item['b'])){{str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a']) }}@else{{str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b'])}}@endif/{{ $item['attachment'] }}">
                                                         <i class="fa fa-paperclip popovers" data-placement="right"
                                                             data-container="body" data-trigger="hover"
                                                             data-content="{{ $item['files'] }}"

@@ -24,9 +24,9 @@
                                             <a onclick="myFunction('{{ $row['id'] }}','{{ $row2['id'] }}')"
                                                 class="popovers" data-placement="top" data-container="body"
                                                 data-trigger="hover" data-content="{{ $row2['full'] }}">
-                                                <label for="{{ $row2['title'] }}" id="l{{ $row2['id'] }}"
+                                                <label for="{{$row2['title']}}" id="l{{$row2['id']}}"
                                                     class=" tree_label @if (in_array($row2['id'], $selectedDoc)) active1 @endif">{{ $row2['title'] }}</label>
-                                                <div id="arrow{{ $row2['id'] }}" style="float: right;"
+                                                <div id="arrow{{$row2['id']}}" style="float: right;"
                                                     class='@if (in_array($row2['id'], $selectedDoc)) fa fa-angle-down  active1 @else fa fa-angle-right @endif'>
                                                 </div>
                                             </a>
@@ -43,10 +43,10 @@
                                             </a>
                                         @endif
                                         @if (!empty($row2['menu']))
-                                            <ul id="ul{{ $row2['id'] }}"
+                                            <ul id="ul{{$row2['id']}}"
                                                 style="display:@if (in_array($row2['id'], $selectedDoc)) block @else none @endif">
                                                 @foreach ($row2['menu'] as $row3)
-                                                    <li onclick="removeactive('{{ $row['id'] }}','{{ $row2['id'] }}','{{ $row3['id'] }}');"
+                                                    <li onclick="removeactive('{{$row['id']}}','{{$row2['id']}}','{{ $row3['id'] }}');"
                                                         class="popovers" data-placement="top" data-container="body"
                                                         data-trigger="hover" data-content="{{ $row3['full'] }}">
                                                         <a id="a{{ $row3['id'] }}"
@@ -139,6 +139,7 @@
                 ele.classList.add("active1");
 
             } else {
+               
                 var ele = document.getElementById("l" + c);
                 document.getElementById("arrow" + c).classList.add('active1');
                 ele.classList.add("active1");
