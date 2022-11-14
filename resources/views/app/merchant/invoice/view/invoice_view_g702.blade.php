@@ -179,7 +179,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold"></p>
                         </td>
                         <td width="25%" class="text-left">
-                            <p class="text-xs font-bold">PROJECT NOS: {{$info['project_details']->project_id}}</p>
+                            <p class="text-xs font-bold">PROJECT NOS: {{$info['project_details']->project_code}}</p>
                         </td>
                         <td width="25%" class="text-right"> 
                             <label class="text-xs mr-2 mt-1">FIELD</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">

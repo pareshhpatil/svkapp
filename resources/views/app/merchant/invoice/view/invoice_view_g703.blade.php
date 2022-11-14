@@ -169,7 +169,7 @@
                                 <p class="text-xs font-bold">ARCHITECT’S PROJECT NO:</p>
                             </td>
                             <td>
-                                <p class=" ml-2 text-xs font-bold">{{ $info['project_details']->project_id }}</p>
+                                <p class=" ml-2 text-xs font-bold">{{ $info['project_details']->project_code }}</p>
                             </td>
                         </tr>
                     </table>
