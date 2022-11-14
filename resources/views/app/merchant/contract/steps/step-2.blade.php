@@ -222,7 +222,7 @@
                 bill_code : null,
                 bill_description : null,
                 group_name : null,
-                count : {!! count($particulars) !!},
+                count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
 
                 addNewBillCode(){
