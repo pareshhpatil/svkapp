@@ -74,7 +74,7 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
-                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -89,7 +89,7 @@
                                             @case('bill_type')
 {{--                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
 {{--                                            <input type="hidden" :id="`checkBillType${index}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
-                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect">
+                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type">
                                                     <option value="">Select..</option>
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
@@ -327,6 +327,7 @@
                         }
 
                         if(type === 'bill_type'){
+                            console.log(fields);
                             particularsArray[id].bill_type = this.value
                             if(this.value === 'Calculated')
                                 fields[id].bill_type = this.value
@@ -529,6 +530,13 @@
 
                         let retainAmt = this.fields[p].retainage_amount;
                         this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
+
+                        this.fields[p].showoriginal_contract_amount = false;
+                        this.fields[p].showretainage_percent = false;
+                        this.fields[p].showretainage_amount = false;
+                        this.fields[p].showcost_code = false;
+                        this.fields[p].showcost_type = false;
+                        this.fields[p].showproject = false;
                     }
                 },
                 /*OpenAddCalculated(field) {
