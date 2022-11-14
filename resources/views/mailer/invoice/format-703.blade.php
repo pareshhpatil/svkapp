@@ -93,7 +93,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                         <td>
                                             <div style="font-size: 12px; font-weight: 600">ARCHITECT’S PROJECT NO:</div>
                                         </td>
-                                        <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$info['project_details']->project_id}}</td>
+                                        <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$info['project_details']->project_code}}</td>
                                     </tr>
                                 </table>
                             </td> 
