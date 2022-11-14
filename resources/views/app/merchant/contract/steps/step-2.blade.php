@@ -252,12 +252,12 @@
                         {label: label, value : new_bill_code, description : new_bill_description }
                     )
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code);
+                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
 
                     // initializeBillCodes();
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue){
+                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
@@ -266,7 +266,9 @@
                         if(selectedId === 'bill_code'+v ) {
                             billCodeSelector.setOptions(optionArray, selectedValue);
                             this.fields[v].bill_code = billCodeSelector.value;
-                            particularsArray.bill_code = billCodeSelector.value;
+                            particularsArray[v].bill_code = billCodeSelector.value;
+                            particularsArray[v].description = selectedDescription;
+                            $('#description'+v).val(selectedDescription)
                             closeSidePanelBillCode()
                         }
                         else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
@@ -304,6 +306,11 @@
                     $('#'+type+id).change(function () {
                         if(type === 'bill_code') {
                             particularsArray[id].bill_code = this.value
+                            let displayValue = this.getDisplayValue().split('|');
+                            if(displayValue[1] !== undefined) {
+                                $('#description'+id).val(displayValue[1].trim())
+                                particularsArray[id].description = displayValue[1].trim();
+                            }
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
@@ -521,6 +528,7 @@
                     console.log(this.fields);
                     for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
+                        this.fields[p].description = particularsArray[p].description;
                         this.fields[p].group = particularsArray[p].group;
                         /*this.fields[p].bill_type = particularsArray[p].bill_type;*/
                         this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
@@ -686,10 +694,12 @@
                     document.getElementById('original_contract_amount'+selected_field_int).type = 'hidden';
                     try{
                         this.fields[selected_field_int].original_contract_amount = calc_amount;
+                        this.fields[selected_field_int].showoriginal_contract_amount = false;
                     }catch(o){}
 
                     setOriginalContractAmount();
                     this.calc(this.fields[selected_field_int]);
+                    this.saveParticulars();
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
@@ -703,6 +713,7 @@
                 RemoveCaculated(field) {
                     this.fields[field.introw].original_contract_amount = 0;
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
+                    this.fields[field.introw].showoriginal_contract_amount = false;
                     RemoveCaculatedRow(field.introw);
                 },
                 EditCaculated(field) {

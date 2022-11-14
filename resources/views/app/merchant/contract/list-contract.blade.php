@@ -75,7 +75,7 @@
                                         {{ $v->created_date }}
                                     </td>
                                     <td class="td-c">
-                                        <a style="font-size: 1.2rem;" href="/merchant/contract/update/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
+                                        <a style="font-size: 1.2rem;" href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         <br>
                                         <span class="text-gray-400 text-font-12">{{$customer_code}} : <span class="text-gray-900"> {{$v->customer_id}}</span></span>
                                     </td>
@@ -108,7 +108,7 @@
                                                 &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                             </button>
                                             <ul class="dropdown-menu" role="menu">
-                                                <li><a href=" {{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
+                                                <li><a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
                                                 </li>
                                                 <li>
                                                     <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
