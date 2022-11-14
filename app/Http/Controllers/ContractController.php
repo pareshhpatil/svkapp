@@ -124,7 +124,7 @@ class ContractController extends Controller
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
 
-        if ($step == 2){
+        if ($step == 2 || $step == 3){
             $data = $this->step2Data($data, $contract, $project->project_id??'');
         }
 
@@ -136,7 +136,7 @@ class ContractController extends Controller
         $step = $request->step;
         $contract = null;
         if ($request->contract_id)
-            $contract = ContractParticular::find($request->contract_id);
+            $contract = ContractParticular::find( Encrypt::decode($request->contract_id) );
 
         switch ($step){
             case 1:
@@ -147,9 +147,14 @@ class ContractController extends Controller
                 $contract = $this->step2Store($request,$contract);
                 $step++;
                 break;
+            case 3:
+                $contract->update(['status' =>1]);
+                return redirect()->route('contract.list.new');
+                break;
+
         }
 
-        return redirect()->route('create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
+        return redirect()->route('contract.create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
 
     }
 
@@ -166,7 +171,7 @@ class ContractController extends Controller
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-
+//dd($contract);
         if (is_null($contract))
             $contract = ContractParticular::create($data);
         else
@@ -330,6 +335,33 @@ class ContractController extends Controller
         }
 
         return view('app/merchant/contract/list', $data);
+    }
+
+    public function listNew(Request $request)
+    {
+        $dates = Helpers::setListDates();
+        $title = 'Contract list';
+        $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
+        $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
+        $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
+        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['project_id']);
+        foreach ($list as $ck => $row) {
+            $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
+        }
+        $data['list'] = $list;
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $data['datatablejs'] = 'table-no-export';
+        $data['hide_first_col'] = 1;
+        $data['customer_name'] = 'Customer name';
+        $data['customer_code'] = 'Customer code';
+
+        if (Session::has('customer_default_column')) {
+            $default_column = Session::get('customer_default_column');
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
+        }
+
+        return view('app/merchant/contract/list-new', $data);
     }
 
     public function delete($link)

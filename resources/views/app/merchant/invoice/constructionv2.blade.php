@@ -64,10 +64,10 @@
 
             </div>
             @else
-            
+
             <div class="row">
                 <div class="col-md-12">
-                @if($link=='')
+                    @if($link=='')
                     <div class="portlet " style="margin-bottom: 15px;">
                         <div class="portlet-body" data-tour="invoice-pick-format">
                             <form action="" method="post" id="template_create" class="form-horizontal form-row-sepe mb-0">
@@ -151,7 +151,7 @@
                 </div>
                 @endif
             </div>
-           
+
         </div>
     </div>
 
@@ -373,13 +373,38 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4"></label>
                                 <div class="col-md-8">
+                                    @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+                                    <span class="help-block">
+                                        <div id="docviewbox">
+                                            @foreach ($plugin['files'] as $key=>$item)
+                                            <span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important">
+                                                <a class=" btn-xs " target="_BLANK" href="{{$item}}" title="Click to view full size">{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}..</a>
+                                                <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                            </span>
+                                            @php
+
+                                            @endphp
+                                            @endforeach
+                                        </div>
+                                        <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn btn btn-xs btn-link">Upload doc
+                                        </a>
+                                    </span>
+                                    <span id="newImageDiv" style="display: none;">
+                                        <input type="hidden" name="file_upload" id="file_upload" value="{{implode(',',$plugin['files'])}}">
+                                        <div id="drag-drop-area2"></div>
+                                    </span>
+                                    @else
                                     <div class="input-icon right">
+
                                         <input type="hidden" name="file_upload" id="file_upload" value="">
                                         <a class="UppyModalOpenerBtn btn  default">Add attachments</a>
                                         <div id="docviewbox" class="mt-1">
                                         </div>
+
                                         <div id="drag-drop-area2"></div>
+
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                             @endif
@@ -401,12 +426,51 @@
         <div class="portlet-body form">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pull-right">
-                        <input type="hidden" name="link" value="{{$link}}">
-                        <input type="hidden" name="contract_id" value="{{$contract_id}}">
-                        <input type="hidden" name="template_id" value="{{$template_id}}">
-                        <a href="/merchant/collect-payments" class="btn green">Cancel</a>
-                        <button type="submit" class="btn blue">Add particulars</button>
+                <input type="hidden"  name="narrative" value="" >
+               <!-- <div class="col-md-2">
+                        <div class="form-group">
+                            <p>Narrative</p>
+                            <input type="text"  name="narrative" @isset($narrative) value="{{$narrative}}" @endisset class="form-control">
+                        </div>
+                    </div>-->
+                    
+                    <div class="col-md-6">
+                    @isset($plugin['has_covering_note'])
+                        <div class="form-group">
+                            <p><label class="control-label col-md-3 w-auto">Select covering note</label><br></p>
+                            <div class="col-md-5">
+                                <select name="covering_id" onchange="showEditNote();" data-cy="plugin_covering_id" id="covering_select" class="form-control" data-placeholder="Select...">
+                                    <option value="0">Select covering note</option>
+                                    @if(!empty($covering_list))
+                                    @foreach($covering_list as $v)
+                                    <option @isset($plugin['default_covering_note']) @if($plugin['default_covering_note']==$v->covering_id) selected @endif @endisset value="{{$v->covering_id}}">{{$v->template_name}}</option>
+                                    @endforeach
+                                    @endif
+                                </select>
+                                <a class="hidden" id="conf_cov" data-toggle="modal" href="#con_coveri"></a>
+                            </div>
+                            <div class=" col-md-2" id="edit_note_div" style="display:  none  ;">
+                                <a class="btn mb-1 green " onclick="EditCoveringNote();" href="javascript:;">
+                                    Edit note</a>
+                            </div>
+                            <div class=" col-md-2">
+                                <a class="btn mb-1 green pull-right" onclick="AddCoveringNote();" href="javascript:;">
+                                    Add new note</a>
+                            </div>
+                        </div>
+                        @endisset
+                    </div>
+                   
+                    
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            <p>&nbsp;</p>
+                            <input type="hidden" name="link" value="{{$link}}">
+                            <input type="hidden" name="contract_id" value="{{$contract_id}}">
+                            <input type="hidden" name="template_id" value="{{$template_id}}">
+                            <a href="/merchant/collect-payments" class="btn green">Cancel</a>
+                            <button type="submit" class="btn blue">Add particulars</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -416,9 +480,33 @@
 
 
 
+    @include('app.merchant.cover-note.add-covernote-modal')
+    @include('app.merchant.cover-note.edit-covernote-modal')
 
 
 
+    <div class="modal  fade" id="confirm_box" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Discard changes</h4>
+                </div>
+                <div class="form-body form-horizontal form-row-sepe" style="padding: 10px">
+                    <p>Changes will not be saved. Do you want to proceed?</p>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button type="button" data-cy="covering-btn-close" id="cancel_confirm_box" class="btn default" data-dismiss="modal">Close</button>
+                    <input type="button" data-cy="editcovering-btn-save" onclick="closeSidePanelcover()" value="Discard" class="btn blue">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <!-- BEGIN SEARCH CONTENT-->
     @endsection
 
@@ -492,6 +580,12 @@
     <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
     <script>
         var newdocfileslist = [];
+
+        @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+        @foreach ($plugin['files'] as $key=>$item)
+        newdocfileslist.push('{{$item}}');
+        @endforeach
+        @endif
         //uppy file upload code
         var uppy = Uppy.Core({
             autoProceed: true,
@@ -516,15 +610,6 @@
             hideRetryButton: false,
             hidePauseResumeButton: false,
             hideCancelButton: false,
-            // doneButtonHandler: () => {
-            //     document.getElementById("file_upload").value = '';
-            //     this.uppy.reset()
-            //     this.requestCloseModal()
-            // },
-            // locale: {
-            //     strings: {
-            //         done: 'Cancel'
-            // }}
         });
 
         uppy.use(Uppy.XHRUpload, {
@@ -546,20 +631,26 @@
             console.log('Starting upload');
         });
         uppy.on('upload-success', (file, response) => {
-            path = response.body.fileUploadPath;
-            extvalue = document.getElementById("file_upload").value;
-            newdocfileslist.push(path);
-            deletedocfile('');
-            if (extvalue != '') {
-                document.getElementById("file_upload").value = extvalue + ',' + path;
-            } else {
-                document.getElementById("file_upload").value = path;
+            if (response.body.fileUploadPath != undefined) {
+                path = response.body.fileUploadPath;
+                extvalue = document.getElementById("file_upload").value;
+                newdocfileslist.push(path);
+                deletedocfile('');
+                if (extvalue != '') {
+                    document.getElementById("file_upload").value = extvalue + ',' + path;
+                } else {
+                    document.getElementById("file_upload").value = path;
+                }
             }
             if (response.body.status == 300) {
-                document.getElementById("error").innerHTML = response.body.errors;
+                try {
+                    document.getElementById("error").innerHTML = response.body.errors;
+                } catch (o) {}
                 uppy.removeFile(file.id);
             } else {
-                document.getElementById("error").innerHTML = '';
+                try {
+                    document.getElementById("error").innerHTML = '';
+                } catch (o) {}
             }
         });
         uppy.on('complete', (result) => {
@@ -615,8 +706,6 @@
                     '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
                     '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
-
-
             }
             clearnewuploads('no');
             document.getElementById('docviewbox').innerHTML = html;

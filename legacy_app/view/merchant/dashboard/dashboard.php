@@ -100,7 +100,7 @@
                         <?php if ($this->report_days != 7) { ?>
                             <li class="">
                                 <a href="/merchant/dashboard/reportdays/7">
-                                    Current Week
+                                    Last 7 days
                                 </a>
                             </li>
                         <?php } ?>

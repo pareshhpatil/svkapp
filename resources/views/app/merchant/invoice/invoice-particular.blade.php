@@ -2,9 +2,15 @@
 @section('content')
 
 <style>
-        .onhover-border:hover {
-            border: 1px solid #ddd !important;
+
+.onhover-border:hover {
+            border: 1px solid grey !important;
         }
+
+        .table-hover>tbody>tr:hover {
+            background-color: transparent !important;
+        }
+
 
         .table thead tr th {
             font-size: 12px;
@@ -176,7 +182,7 @@
                                          </a>
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                             <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                            <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
+                                            <input type="hidden" name="description[]"  x-model="field.description" :id="`description${index}`">
                                             <div class="text-center" style="display: none;">
                                                 <p :id="`description-hidden${index}`" x-text="field.description"></p>
                                             </div>
@@ -241,6 +247,7 @@
                                         </span>
                                             </template>
 
+                                            <input :id="`id${index}`" type="hidden"  x-model="field.id" name="id[]">
                                             <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.pint" name="pint[]">
 
 
@@ -635,8 +642,10 @@
 
                                 setParticulars()
                                 {
+                                   
                                     particularray.forEach(function(currentValue, index, arr) {
                                             document.getElementById('bill_code'+index).value = currentValue.bill_code;
+                                            document.getElementById('attach-'+index).value = currentValue.attachments;
                                     });
                                 },
 
@@ -772,6 +781,8 @@
                                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
+                                    this.calc(this.fields[selected_field_int]);
+
                                 },
                                 OpenAddCaculated(field) {
                                     console.log(field.pint);
@@ -835,6 +846,7 @@
                                         int = this.fields.length-1;
                                         pint=Number(this.fields[int].pint) + 1;
                                         this.fields.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',
@@ -846,6 +858,7 @@
                                             project: project_code
                                         });
                                         particularray.push({
+                                            id: 0,
                                             introw: pint,
                                             pint: pint,
                                             bill_code: '',
@@ -928,6 +941,7 @@ uppy.on('upload', (data) => {
     console.log('Starting upload');
 });
 uppy.on('upload-success', (file, response) => {
+    if (response.body.fileUploadPath != undefined) {
     path = response.body.fileUploadPath;
     extvalue=document.getElementById("file_upload").value;
     newdocfileslist.push(path);
@@ -944,6 +958,7 @@ uppy.on('upload-success', (file, response) => {
     } else {
         document.getElementById("error").innerHTML = '';
     }
+}
 });
 uppy.on('complete', (result) => {
     //console.log('successful files:', result.successful)

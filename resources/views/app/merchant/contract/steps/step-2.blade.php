@@ -32,7 +32,7 @@
             list-style-type: none !important;
         }
 
-        .vs-option {
+        .vs-option, .vscomp-value {
             font-size: 12px !important;
         }
 
@@ -40,6 +40,12 @@
             font-size: 12px !important;
             line-height: 18px;
         }
+
+        .bill_code_td{
+            /*text-align: left;*/
+            width: auto;
+        }
+
 
     </style>
     <div class="portlet light bordered">
@@ -68,7 +74,7 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
-                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no @endif">
+                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -81,7 +87,9 @@
                                             @break
 
                                             @case('bill_type')
-                                                <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect">
+{{--                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
+{{--                                            <input type="hidden" :id="`checkBillType${index}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
+                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect">
                                                     <option value="">Select..</option>
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
@@ -94,11 +102,12 @@
                                             @break
 
                                             @case('bill_code_detail')
-                                                <select required style="width: 100%; min-width: 200px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
+                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
+                                                {{--<select required style="width: 100%; min-width: 200px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
                                                     <option value="">Select..</option>
                                                     <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
-                                                </select>
+                                                </select>--}}
                                             @break
 
                                             @case('original_contract_amount')
@@ -116,10 +125,14 @@
                                                 <template x-if="field.bill_type=='Calculated'">
                                                     <div>
                                                         <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$column}}"></span><br>
-                                                        <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCalculated(field)">Add calculation</a>
+                                                        {{--<a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCalculated(field)">Add calculation</a>
                                                         <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="removeCalculated(field)">Remove</a>
                                                         <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="editCalculatedRow(field)">Edit</a>
+                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCalculated(field)">Edit</a>--}}
+                                                        <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
+                                                        <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                        <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
                                                     <span x-show="field.show{{$column}}">
                                                         <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm ">
@@ -144,81 +157,7 @@
                                     </td>
                                     @endif
                                 @endforeach
-                               {{-- @foreach($particular_column as $k=>$v)
-                                    @php $readonly=false; @endphp
-                                    @php $number='type="text"'; @endphp
-                                    @if($k!='description')
-                                        @if(in_array($k, $readonly_array))
-                                            @php $readonly=true; @endphp
-                                        @endif
-                                        @if(in_array($k, $number_array))
-                                            @php $number='type=number step=0.00'; @endphp
-                                        @endif
-                                        <td style="max-width: 100px;vertical-align: middle; @if($k=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${index}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
-                                            @if($k=='bill_code')
-                                                <div :id="`{{$k}}${index}`" x-model="field.{{$k}}"></div>
-                                                <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
-                                                <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                                <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
-                                                <div class="text-center" style="display: none;">
-                                                    <p :id="`description-hidden${index}`" x-text="field.description"></p>
-                                                </div>
-                                            @elseif($k=='group')
-                                                <div :id="`{{$k}}${index}`" x-model="field.{{$k}}"></div>
-                                            @elseif($k=='bill_type')
-                                                <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`billtype${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control billTypeSelect">
-                                                    <option value="">Select..</option>
-                                                    <option value="% Complete">% Complete</option>
-                                                    <option value="Unit">Unit</option>
-                                                    <option value="Calculated">Calculated</option>
-                                                </select>
-                                            @elseif($k=='bill_code_detail')
-                                                <select required style="width: 100%; min-width: 200px;" :id="`billcodedetail${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
-                                                    <option value="">Select..</option>
-                                                    <option value="Yes">Yes</option>
-                                                    <option value="No">No</option>
-                                                </select>
-                                            @else
-                                                @if($k=='original_contract_amount')
-                                                    <template x-if="field.bill_type!='Calculated'">
-                                                        <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
-                                                    </template>
-                                                @else
-                                                    <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}" @if($k == 'project') @update-csi-codes.window="field.{{$k}} = this.project"  @endif> </span>
-                                                @endif
-                                            @endif
 
-                                            @if($k=='original_contract_amount')
-
-                                                <template x-if="field.bill_type=='Calculated'">
-                                                    <div>
-                                                        <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$k}}"></span><br>
-                                                        <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCalculated(field)">Add calculation</a>
-                                                        <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="removeCalculated(field)">Remove</a>
-                                                        <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="editCalculatedRow(field)">Edit</a>
-                                                    </div>
-                                                    <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                        </span>
-                                                </template>
-                                                <template x-if="field.bill_type!='Calculated'">
-                                                <span x-show="field.txt{{$k}}">
-                                                    <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                                </span>
-                                                </template>
-
-                                                <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.introw" name="pint[]">
-
-
-                                            @else
-                                                <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                    </span>
-                                            @endif
-                                        </td>
-                                    @endif
-                                @endforeach--}}
                                 <td class="td-c " style="vertical-align: middle;width: 60px;">
                                     <button type="button" class="btn btn-xs red" @click="removeRow(index)">&times;</button>
                                     <template x-if="count === index">
@@ -246,8 +185,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-right">
-                        <a class="btn green">Back</a>
-                        <button class="btn blue" type="submit" @click="return validateParticulars()">Preview contract</button>
+                        <a class="btn green" @click="back()">Back</a>
+                        <button class="btn blue" type="submit" @click="next()">Preview contract</button>
                     </div>
                 </div>
             </div>
@@ -263,6 +202,8 @@
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
         var bill_codes = JSON.parse('{!! json_encode($bill_codes) !!}');
         var groups = JSON.parse('{!! json_encode($groups) !!}');
+        var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
+        var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
         function addPopover(id, message){
@@ -328,7 +269,7 @@
                             particularsArray.bill_code = billCodeSelector.value;
                             closeSidePanelBillCode()
                         }
-                        else billCodeSelector.setOptions(optionArray, $('#bill_code'+v).val());
+                        else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
 
                     }
 
@@ -340,6 +281,8 @@
                     for(let v=0; v < this.fields.length; v++){
                         this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
                         this.virtualSelect(v, 'group', groups, this.fields[v].group)
+                        // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
+                        this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                     }
                 },
                 virtualSelect(id, type, options, selectedValue){
@@ -350,27 +293,52 @@
                         allowNewOption: true,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option'
+                        additionalClasses : 'vs-option',
+                        maxWidth : '150px'
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
-                        $(this).addClass('form-control input-sm');
+                        $(this).addClass('form-control input-sm mw-150');
                     })
 
                     $('#'+type+id).change(function () {
                         if(type === 'bill_code') {
                             particularsArray[id].bill_code = this.value
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                                only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
                                 $('#selectedBillCodeId').val(type + id)
                                 billIndex(0, 0, 0)
                             }
                         }
                         if(type === 'group'){
-                            if(!groups.includes(this.value)) groups.push(this.value)
+                            if(!groups.includes(this.value) && this.value !== '') {
+                                groups.push(this.value)
+                                for (let g = 0; g < particularsArray.length; g++) {
+                                    let groupSelector = document.querySelector('#group' + g);
+                                    console.log('group'+id, 'group'+g)
+                                    if('group'+id === 'group'+g)
+                                        groupSelector.setOptions(groups, this.value);
+                                    else
+                                        groupSelector.setOptions( groups, particularsArray[g].group);
+                                }
+                            }
                             particularsArray[id].group = this.value
                         }
+
+                        if(type === 'bill_type'){
+                            particularsArray[id].bill_type = this.value
+                            if(this.value === 'Calculated')
+                                fields[id].bill_type = this.value
+                        }
+
+                        if(type === 'bill_code_detail'){
+                            particularsArray[id].bill_code_detail = this.value
+                        }
                     });
+
+                },
+                updateBillType(){
 
                 },
                 calc(field) {
@@ -453,7 +421,7 @@
                     }
                     return valid;
                 },
-                saveParticulars(){
+                saveParticulars(back=0, next=0){
 
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
@@ -468,9 +436,18 @@
                             contract_amount : $('#particulartotal').val().replace(/,/g,'')
                         },
                         success: function(data) {
-                            console.log(data)
+                            if(back === 1)
+                                window.location = '{{ route('contract.create.new', ['step' => 1, 'contract_id' => $contract_id]) }}';
+                            if(next === 1)
+                                window.location = '{{ route('contract.create.new', ['step' => 3, 'contract_id' => $contract_id]) }}'
                         }
                     })
+                },
+                next(){
+                    if(this.validateParticulars()) this.saveParticulars(0,1);
+                },
+                back(){
+                    if(this.validateParticulars()) this.saveParticulars(1,0);
                 },
                 async addNewRow() {
                     int = this.fields.length
@@ -518,8 +495,10 @@
                     this.count = id;
 
                     const x = await this.wait(10);
-                    await this.virtualSelect(id, 'bill_code', bill_codes)
+                    this.virtualSelect(id, 'bill_code', bill_codes)
                     this.virtualSelect(id, 'group', groups)
+                    // this.virtualSelect(id, 'bill_type', bill_types)
+                    this.virtualSelect(id, 'bill_code_detail', bill_code_details)
                 },
                 removeRow(id){
                     this.fields.splice(id, 1);
@@ -542,17 +521,19 @@
                     for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].group = particularsArray[p].group;
+                        /*this.fields[p].bill_type = particularsArray[p].bill_type;*/
+                        this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
 
                         let oriContractAmt = this.fields[p].original_contract_amount;
-                        this.fields[p].original_contract_amount = (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt == 'number') ? getamt(oriContractAmt) : oriContractAmt.replace(',','')) : 0
+                        this.fields[p].original_contract_amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
 
                         let retainAmt = this.fields[p].retainage_amount;
-                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? getamt(retainAmt) : retainAmt.replace(',','')) : 0;
+                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
                     }
                 },
-                OpenAddCalculated(field) {
+                /*OpenAddCalculated(field) {
                     console.log(field.introw);
-                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
+                    this.selected_field_int = field.introw;
                     document.getElementById('selected_field_int').value = field.introw;
                     this.openAddCalculationRow(field.introw);
                 },
@@ -561,16 +542,16 @@
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
                     RemoveCaculatedRow(field.introw);
                 },
-                EditCaculated(field) {
+                EditCalculated(field) {
                     document.getElementById('selected_field_int').value = field.introw;
-                    editCaculatedRow(field.introw);
+                    this.editCalculatedRow(field);
                 },
                 openAddCalculationRow(row) {
                     this.openCalculationContract(row, row)
 
                 },
                 editCalculatedRow(row) {
-                    this.openAddCalculationRow(row.introw)
+                    this.openAddCalculationRow(row)
                     document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row.introw).value
                     calc_json = document.getElementById("calculated_row" + row.introw).value;
                     calc_json = JSON.parse(calc_json)
@@ -593,16 +574,16 @@
                 addRowinCalculationTable(ind) {
                     console.log(ind);
                     clearCalcTable();
-                    calcRowInt = ind
+                    calcRowInt = ind.introw
                     var mainDiv = document.getElementById('new_particular1');
 
                     $('input[name="pint[]"]').each(function (indx, arr) {
                         var newDiv = document.createElement('tr');
                         row = '';
                         int = ($(this).val() === null || $(this).val() == ''  ) ? 0 : $(this).val();
-                        console.log(ind, int);
+
                         bint = Number(int) + 2;
-                        if (ind != int) {
+                        if (ind.introw != int) {
                             oca = document.getElementById('original_contract_amount' + int).value;
                             console.log(oca);
                             amt = getamt(oca);
@@ -626,12 +607,156 @@
                         this.fields[selected_field_int].original_contract_amount = calc_amount;
                     }catch(o){}
 
-                    setOriginalContractAmount();
+                    this.setOriginalContractAmount(selected_field_int);
                     this.saveParticulars();
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
                 },
+                 setOriginalContractAmount(int) {
+                     console.log(int)
+                try {
+                    document.getElementById("original_contract_amount" + int).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
+                } catch (o) {
+
+                }
+                document.getElementById("lbl_original_contract_amount" + int).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+                // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
+                try {
+                    document.getElementById("approved_change_order_amount" + int).readOnly = true;
+                    document.getElementById("current_billed_percent" + int).readOnly = true;
+                    document.getElementById("retainage_percent" + int).readOnly = true;
+                    document.getElementById("retainage_release_amount" + int).readOnly = true;
+                    document.getElementById("project" + int).readOnly = true;
+                    document.getElementById("cost_code" + int).readOnly = true;
+                    document.getElementById("cost_type" + int).readOnly = true;
+                    document.getElementById("group_code1" + int).readOnly = true;
+                    document.getElementById("group_code2" + int).readOnly = true;
+                    document.getElementById("group_code3" + int).readOnly = true;
+                    document.getElementById("group_code4" + int).readOnly = true;
+                    document.getElementById("group_code5" + int).readOnly = true;
+                } catch (o) {
+
+                }
+                document.getElementById("add-calc" + int).style.display = 'none';
+                document.getElementById("remove-calc" + int).style.display = 'inline-block';
+                document.getElementById("edit-calc" + int).style.display = 'inline-block';
+                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
+                document.getElementById("pipe-calc" + int).style.display = 'inline-block';
+                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
+                calcRowArray = [];
+
+                $('input[name="calc-checkbox[]"]').each(function (indx, arr) {
+                    int = $(this).val();
+                    //var checkBox = document.getElementById("calc" + $(this).val());
+                    if ($(this).checked == true) {
+                        calcRowArray.push(parseInt($(this).val()))
+                    }
+                });
+                calcRowArray = JSON.stringify(calcRowArray);
+                console.log(calcRowInt);
+                document.getElementById("calculated_row" + int).value = calcRowArray;
+                document.getElementById("calculated_perc" + int).value = parseInt(document.getElementById("calc_perc").value);
+                closeSidePanelcalc()
+                clearCalcTable();
+                calculateRetainage();
+                try {
+                    document.getElementById("exicon" + int).style.display = 'inline-block';
+                } catch (o) { }
+                try {
+                    if (invoice_construction == true) {
+                        calculateConstruction();
+                    } else {
+                        calculatedRowSummaryContract()
+                    }
+                } catch (o) { }
+                return false;
+            }*/
+                setAOriginalContractAmount() {
+                    selected_field_int = document.getElementById('selected_field_int').value;
+                    calc_amount = document.getElementById("calc_amount").value;
+                    document.getElementById('original_contract_amount'+selected_field_int).type = 'hidden';
+                    try{
+                        this.fields[selected_field_int].original_contract_amount = calc_amount;
+                    }catch(o){}
+
+                    setOriginalContractAmount();
+                    this.calc(this.fields[selected_field_int]);
+                    this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
+                    this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+
+                },
+                OpenAddCaculated(field) {
+                    console.log(field.introw);
+                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
+                    document.getElementById('selected_field_int').value = field.introw;
+                    this.OpenAddCaculatedRow(field.introw);
+                },
+                RemoveCaculated(field) {
+                    this.fields[field.introw].original_contract_amount = 0;
+                    document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
+                    RemoveCaculatedRow(field.introw);
+                },
+                EditCaculated(field) {
+                    document.getElementById('selected_field_int').value = field.introw;
+                    this.editCaculatedRow(field.introw);
+                },
+                addRowinCalcTable(ind) {
+                    clearCalcTable();
+                    calcRowInt = ind
+                    var mainDiv = document.getElementById('new_particular1');
+
+                    $('input[name="pint[]"]').each(function (indx, arr) {
+                        var newDiv = document.createElement('tr');
+                        row = '';
+                        int = ($(this).val() === null || $(this).val() == '') ? 0 : $(this).val();
+
+                        bint = Number(int) + 2;
+                        if (ind != int) {
+                            console.log('original_contract_amount' + int);
+                            oca = document.getElementById('original_contract_amount' + int).value;
+                            amt = getamt(oca);
+                            try {
+                                var bill_code = particularsArray[int].bill_code; //document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+                            } catch (o) {
+                                var bill_code = particularsArray[int].bill_code;//document.getElementById('select2-billcode' + int + '-container').innerHTML;
+                            }
+                            var discription = document.getElementById('description' + int).value;
+                            //bill_code = document.getElementById('bill_code' + bint).value;
+                            if (amt > 0) {
+                                row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
+                            }
+                        }
+                        newDiv.innerHTML = row;
+                        mainDiv.appendChild(newDiv);
+
+                    });
+                },
+                OpenAddCaculatedRow(row) {
+                    this.proindexContract(row, row)
+
+                },proindexContract(ind, select_id) {
+                    product_index = ind;
+                    currect_select_dropdwn_id = select_id;
+                    document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
+                    document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
+                    $('.page-sidebar-wrapper').css('pointer-events', 'none');
+                    this.addRowinCalcTable(ind)
+
+                },
+                editCaculatedRow(row) {
+                    this.OpenAddCaculatedRow(row)
+                    document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row).value
+                    calc_json = document.getElementById("calculated_row" + row).value;
+                    calc_json = JSON.parse(calc_json)
+
+                    for (const element of calc_json) {
+                        amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
+                        document.getElementById("calc" + element).checked = true
+                        inputCalcClicked(element, amount_value)
+                    }
+
+                }
             }
         }
     </script>

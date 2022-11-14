@@ -704,13 +704,14 @@ function inputCalcClicked(row, value) {
 }
 
 function calculatePercContract(value) {
+    console.log(calcRowInt);
     calc_total = document.getElementById("calc_total").value
     document.getElementById("calculated_perc" + calcRowInt).value = value
     document.getElementById("calc_amount").value = updateTextView1(getamt(value) * getamt(calc_total) / 100)
 }
 
 function setOriginalContractAmount() {
-
+    console.log(calcRowInt);
     try {
         document.getElementById("original_contract_amount" + calcRowInt).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
     } catch (o) {
@@ -720,9 +721,9 @@ function setOriginalContractAmount() {
     // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
     try {
         document.getElementById("approved_change_order_amount" + calcRowInt).readOnly = true;
-        document.getElementById("current_billed_percent" + calcRowInt).readOnly = true;
-        document.getElementById("retainage_percent" + calcRowInt).readOnly = true;
-        document.getElementById("retainage_release_amount" + calcRowInt).readOnly = true;
+        //document.getElementById("current_billed_percent" + calcRowInt).readOnly = true;
+        //document.getElementById("retainage_percent" + calcRowInt).readOnly = true;
+        //document.getElementById("retainage_release_amount" + calcRowInt).readOnly = true;
         document.getElementById("project" + calcRowInt).readOnly = true;
         document.getElementById("cost_code" + calcRowInt).readOnly = true;
         document.getElementById("cost_type" + calcRowInt).readOnly = true;
