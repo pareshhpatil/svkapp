@@ -460,9 +460,9 @@
                         },
                         success: function(data) {
                             if(back === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 1, 'contract_id' => $contract_id]) }}';
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 1, 'contract_id' => $contract_id]) }}';
                             if(next === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 3, 'contract_id' => $contract_id]) }}'
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 3, 'contract_id' => $contract_id]) }}'
                         }
                     })
                 },

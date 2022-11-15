@@ -12,6 +12,7 @@ use App\Libraries\Encrypt;
 use App\Project;
 use App\Traits\Contract\ContractParticulars;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -97,9 +98,10 @@ class ContractController extends Controller
 
 
     public function loadContract($step=1, $contract_id=null){
+
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
-        if ($step == 1 && is_null($contract_id) )
+        if (Route::getCurrentRoute()->getName() == 'contract.create.new' )
             $title = "Create";
         else
             $title = "Update";
@@ -154,7 +156,7 @@ class ContractController extends Controller
 
         }
 
-        return redirect()->route('contract.create.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
+        return redirect()->route('contract.'.strtolower($request->title).'.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
 
     }
 
