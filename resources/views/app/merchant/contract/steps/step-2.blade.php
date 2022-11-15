@@ -714,6 +714,7 @@
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
                     this.fields[field.introw].showoriginal_contract_amount = false;
                     RemoveCaculatedRow(field.introw);
+                    this.calc(field)
                 },
                 EditCaculated(field) {
                     document.getElementById('selected_field_int').value = field.introw;
