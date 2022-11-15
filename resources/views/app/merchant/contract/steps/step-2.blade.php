@@ -135,7 +135,7 @@
                                                         <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
                                                     <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm ">
+                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]"  x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" style="width: 100%;" class="form-control input-sm ">
                                                     </span>
                                                 </template>
 
@@ -295,12 +295,11 @@
                         allowNewOption: true,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option',
-                        maxWidth : '150px'
+                        additionalClasses : 'vs-option'
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
-                        $(this).addClass('form-control input-sm mw-150');
+                        $(this).addClass('form-control input-sm');
                     })
 
                     $('#'+type+id).change(function () {
@@ -430,7 +429,7 @@
                     return valid;
                 },
                 saveParticulars(back=0, next=0){
-
+                    console.log('test');
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
                     var actionUrl = '/merchant/contract/updatesaveV6';
