@@ -160,7 +160,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                         <p>Error! Before proceeding, please verify the details.. <br> 'Bill code', 'Bill Type', 'Original Contract Amount' are mandatory fields !
                         </p>
                     </div>
-                    <form action="/merchant/invoice/particularsave" id="frm_expense" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
+                    <form action="/merchant/invoice/particularsave" id="frm_invoice" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
                         @csrf
                        
                         <div>
@@ -363,7 +363,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
-                                            <button type="submit" @click="return setParticulars();" class="btn blue" >Preview invoice</button>
+                                            <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>
                                         </div>
                                     </div>
                                 </div>
@@ -682,7 +682,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                     document.getElementById("panelWrapIdBillCodePanel").style.transform = "translateX(0%)";
                                 },
                                 validateParticulars(){
-
+                                    this.goAhead = true;
                                     for(let p=0; p < particularray.length;p++){
                                         if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
                                             $('#cell_bill_code_' + p).addClass(' error-corner');
@@ -692,22 +692,22 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                             $('#cell_bill_code_' + p).removeClass(' error-corner').popover('destroy')
                                         }
 
-                                        if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
+                                        if(particularray[p].bill_type === null || particularray[p].bill_type === '') {
                                             $('#cell_bill_type_' + p).addClass(' error-corner');
                                             addPopover('cell_bill_type_' + p, "Please select Bill type");
                                             this.goAhead = false;
                                         }else{
                                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                                         }
-
-                                        if(particularray[p].original_contract_amount === null || particularray[p].original_contract_amount === '') {
-                                            $('#cell_original_contract_amount_' + p).addClass(' error-corner');
-                                            addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
-                                            this.goAhead = false;
-                                        }else {
-                                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
-                                        }
+                                        
                                     }
+                                    alert();
+                                    console.log(this.goAhead);
+                                    if( this.goAhead==true)
+                                    {
+                                        document.getElementById("frm_invoice").submit();
+                                    }
+
                                 },
                                 removeValidationError(fieldName, id){
                                     if($('#'+fieldName+id).val() !== null && $('#'+fieldName+id).val() !== '') {
@@ -737,13 +737,49 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                     field.bill_code = val;
                                 },
 
+                                validateParticulars(){
+                    let valid = true;
+                   // this.copyBillCodeGroups();
+                    for(let p=0; p < this.fields.length;p++){
+
+                        if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
+                            $('#cell_bill_code_' + p).addClass(' error-corner');
+                            addPopover('cell_bill_code_' + p, "Please select Bill code");
+                            valid = false
+                        }else{
+                            $('#cell_bill_code_' + p).removeClass(' error-corner').popover('destroy')
+                            // this.fields[p].bill_code = this.fields[p].bill_code
+                        }
+
+                        if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
+                            $('#cell_bill_type_' + p).addClass(' error-corner');
+                            addPopover('cell_bill_type_' + p, "Please select Bill type");
+                            valid = false
+                        }else{
+                            $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
+                        }
+
+                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '') {
+                            $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                            addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
+                            valid = false
+                        }else {
+                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                        }
+                        // this.fields[p].group = particularsArray[p].group
+                    }
+                    return valid;
+                },
+
                                 setParticulars()
                                 {
+                                   
                                    
                                     particularray.forEach(function(currentValue, index, arr) {
                                             document.getElementById('bill_code'+index).value = currentValue.bill_code;
                                             document.getElementById('attach-'+index).value = currentValue.attachments;
                                     });
+                                    this.validateParticulars();
                                 },
 
                                 setBillCodes() {
