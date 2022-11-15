@@ -363,7 +363,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
-                                            <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>
+                                            <button type="submit"  @click="return setParticulars();" class="btn blue" >Preview invoice</button>
                                         </div>
                                     </div>
                                 </div>
