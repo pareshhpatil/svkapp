@@ -464,7 +464,7 @@ function addRowinCalcTable(ind) {
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
             try {
-                var bill_code = document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+                var bill_code = particularray[int].bill_code;
             } catch (o) {
                 var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
             }
@@ -773,13 +773,16 @@ function editCaculatedRow(row) {
     OpenAddCaculatedRow(row)
     document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row).value
     calc_json = document.getElementById("calculated_row" + row).value;
-    calc_json = JSON.parse(calc_json)
-
-    for (const element of calc_json) {
-        amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
-        document.getElementById("calc" + element).checked = true
-        inputCalcClicked(element, amount_value)
+    if(calc_json!="")
+    {
+        calc_json = JSON.parse(calc_json)
+        for (const element of calc_json) {
+            amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
+            document.getElementById("calc" + element).checked = true
+            inputCalcClicked(element, amount_value)
+        }
     }
+    
 
 }
 

@@ -472,6 +472,16 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+    public function getBillCodes($project_id)
+    {
+        $retObj = DB::table('csi_code')
+            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->where('project_id', $project_id)
+            ->where('is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
     public function validateUpdateConstructionInvoice($contract_id, $merchant_id)
     {
         $retObj = DB::table('payment_request')

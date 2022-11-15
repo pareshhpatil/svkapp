@@ -2856,6 +2856,8 @@ class InvoiceController extends AppController
         }
     }
 
+    
+
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
@@ -2863,7 +2865,8 @@ class InvoiceController extends AppController
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
         $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
-        $csi_codes = $this->invoiceModel->getTableList('csi_code', 'project_id', $contract->project_id);
+        $csi_codes = $this->invoiceModel->getBillCodes( $contract->project_id);
+
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $particulars[] = [];
         $groups = [];
@@ -2984,7 +2987,8 @@ class InvoiceController extends AppController
         $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;
-        $data['project_id'] = $project->project_id;
+        $data['project_id'] = $project->id;
+        $data['project_code'] = $project->project_id;
         $data['link'] = $link;
         $data['particulars'] = $particulars;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
