@@ -226,36 +226,51 @@
                 project_code : '{{ $project->project_id }}',
 
                 addNewBillCode(){
-                    var data = $("#billcodeform").serialize();
-
-                    var actionUrl = '/merchant/billcode/new';
-                    $.ajax({
-                        type: "POST",
-                        url: actionUrl,
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            bill_code : $('#new_bill_code').val(),
-                            bill_description : $('#new_bill_description').val(),
-                            project_id : $('#project_id').val()
-                        },
-                        success: function (data) {
-                            console.log(data);
-                        }
-                    });
-
                     let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
+                    let goAhead = true;
+                    if(new_bill_code === '') {
+                        $('#new_bill_code_message').html('Please enter bill code');
+                        goAhead = false
+                    }else{
+                        $('#new_bill_code_message').html('');
+                    }
+                    if( new_bill_description === ''){
+                        $('#new_bill_description_message').html('Please enter bill description');
+                        goAhead = false
+                    }else {
+                        $('#new_bill_description_message').html('');
+                    }
 
-                    let label = new_bill_code + ' | ' + new_bill_description
+                    if(goAhead) {
 
-                    bill_codes.push(
-                        {label: label, value : new_bill_code, description : new_bill_description }
-                    )
+                        let actionUrl = '/merchant/billcode/new';
+                        $.ajax({
+                            type: "POST",
+                            url: actionUrl,
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                bill_code: new_bill_code,
+                                bill_description: new_bill_description,
+                                project_id: $('#project_id').val()
+                            },
+                            success: function (data) {
+                                console.log(data);
+                            }
+                        });
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
 
-                    // initializeBillCodes();
-                    return false;
+                        let label = new_bill_code + ' | ' + new_bill_description
+
+                        bill_codes.push(
+                            {label: label, value: new_bill_code, description: new_bill_description}
+                        )
+
+                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+
+                        // initializeBillCodes();
+                        return false;
+                    }
                 },
                 updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
@@ -264,9 +279,10 @@
                         let billCodeSelector = document.querySelector('#bill_code' + v);
 
                         if(selectedId === 'bill_code'+v ) {
-                            billCodeSelector.setOptions(optionArray, selectedValue);
-                            this.fields[v].bill_code = billCodeSelector.value;
-                            particularsArray[v].bill_code = billCodeSelector.value;
+                            billCodeSelector.setOptions(optionArray, $('#new_bill_code').val());
+                            only_bill_codes.push($('#new_bill_code').val())
+                            this.fields[v].bill_code = $('#new_bill_code').val();
+                            particularsArray[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].description = selectedDescription;
                             $('#description'+v).val(selectedDescription)
                             closeSidePanelBillCode()
@@ -444,9 +460,9 @@
                         },
                         success: function(data) {
                             if(back === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 1, 'contract_id' => $contract_id]) }}';
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 1, 'contract_id' => $contract_id]) }}';
                             if(next === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 3, 'contract_id' => $contract_id]) }}'
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 3, 'contract_id' => $contract_id]) }}'
                         }
                     })
                 },

@@ -400,9 +400,9 @@ class InvoiceController extends AppController
                         $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         if ($revision != 1) {
-                        Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
+                            Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
                         The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
-                        
+
                             return redirect('/merchant/paymentrequest/viewlist');
                         }
                     }
@@ -992,7 +992,7 @@ class InvoiceController extends AppController
             $parentmenu['type'] = 'billcode';
 
             foreach ($result[$names] as $data) {
-           
+
                 $pos1++;
                 if (!empty($data['group']) && $data['bill_code_detail'] == 'No') {
 
@@ -2714,7 +2714,7 @@ class InvoiceController extends AppController
                 $data['cost_code'] = $request->cost_code[$k];
                 $data['cost_type'] = $request->cost_type[$k];
                 $data['group'] = $request->group[$k];
-                $data['bill_code_detail'] = $request->bill_code_detail[$k];
+                $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
                 $data['calculated_perc'] = $request->calculated_perc[$k];
                 $data['calculated_row'] = $request->calculated_row[$k];
                 if ($request->attachments[$k] != '') {
@@ -2856,6 +2856,8 @@ class InvoiceController extends AppController
         }
     }
 
+
+
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
@@ -2863,7 +2865,8 @@ class InvoiceController extends AppController
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
         $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
-        $csi_codes = $this->invoiceModel->getTableList('csi_code', 'project_id', $contract->project_id);
+        $csi_codes = $this->invoiceModel->getBillCodes($contract->project_id);
+
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $particulars[] = [];
         $groups = [];
@@ -2984,7 +2987,8 @@ class InvoiceController extends AppController
         $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;
-        $data['project_id'] = $project->project_id;
+        $data['project_id'] = $project->id;
+        $data['project_code'] = $project->project_id;
         $data['link'] = $link;
         $data['particulars'] = $particulars;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);

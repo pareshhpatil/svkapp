@@ -70,6 +70,69 @@
         background-color: transparent !important;
         width: auto !important;
     }
+
+    .vscomp-clear-icon::before, .vscomp-clear-icon::after {
+    height: 8px;
+    left: 5px;
+    top: 2;
+    width: 2px;
+}
+
+.vscomp-arrow::after {
+    height: 6px;
+    margin-top: -3px;
+    width: 6px;
+}
+
+.vscomp-clear-button {
+    right: 20px;
+}
+.vscomp-option {
+    height: 30px;
+
+}
+
+element.style {
+}
+.vscomp-option-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+.vscomp-wrapper *, .vscomp-wrapper *::before, .vscomp-wrapper *::after {
+    box-sizing: border-box;
+}
+a, button, code, img, input, label, li, p, pre, select, span, table, td, textarea, th, ul {
+    -webkit-border-radius: 0!important;
+    -moz-border-radius: 0!important;
+    border-radius: 0!important;
+}
+* {
+    cursor: default !important;
+}
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.vscomp-option {
+    height: 40px !important;
+}
+
+.vscomp-wrapper {
+    font-size: 12px;
+}
+
+.vscomp-search-input {
+    
+    font-size: 12px;
+   
+}
     </style>
 
 
@@ -77,7 +140,7 @@
 
         
 <div class="page-content">
-    <div x-data="handler_create()" x-init="initSelect2" >
+    <div x-data="handler_create()" x-init="initializeParticulars" >
         <!-- BEGIN PAGE HEADER-->
         <div class="page-bar">
             <span class="page-title" style="float: left;">{{$title}}</span>
@@ -158,24 +221,7 @@
                                     <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${index}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                         @if($k=='bill_code')
                                         <div style="display:flex;">
-                                            <select required style=" min-width: 200px;" onchange="billCode2()" :id="`bill_code${index}`"
-                                                    x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select Bill Code"
-                                                    class="form-control input-sm select2me productselect" @update-csi-codes.window="bill_codes = this.bill_codes">
-                                                <option value="">Select Code</option>
-
-                                                @if(!empty($csi_codes))
-                                                    @foreach($csi_codes as $code)
-                                                        <option value="{{$code['code']}}">{{$code['code']}} | {{$code['title']}}</option>
-                                                    @endforeach
-                                                    <template x-for="(bill_code, newbillcodeindex) in new_codes" :key="newbillcodeindex">
-                                                        <option x-value="bill_code.code" x-text="`${bill_code.code} | ${bill_code.title}`"></option>
-                                                    </template>
-                                                @else
-                                                    <template x-for="(bill_code, billcodeindex) in bill_codes" :key="billcodeindex">
-                                                        <option x-value="bill_code.code" x-text="`${bill_code.code} | ${bill_code.title}`"></option>
-                                                    </template>
-                                                @endif
-                                            </select>
+                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                             <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value=""/>
                                             <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
                                             <i :id="`icon-${index}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
@@ -188,28 +234,16 @@
                                             </div>
                                             </div>
                                         @elseif($k=='group')
-                                            <select required style="width: 100%; min-width: 200px;" x-ref="`group${index}`" :id="`group${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select group" class="form-control input-sm  ">
-                                                <option value="">Select..</option>
-                                                @if(!empty($groups))
-                                                    @foreach($groups as $g)
-                                                        <option value="{{$g}}">{{$g}}</option>
-                                                    @endforeach
-                                                @endif
-
-                                            </select>
+                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                         @elseif($k=='bill_type')
-                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect">
+                                            <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
                                                 <option value="">Select..</option>
                                                 <option value="% Complete">% Complete</option>
                                                 <option value="Unit">Unit</option>
                                                 <option value="Calculated">Calculated</option>
                                             </select>
                                         @elseif($k=='bill_code_detail')
-                                            <select required style="width: 100%; min-width: 200px;" :id="`billcodedetail${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
-                                                <option value="">Select..</option>
-                                                <option value="Yes">Yes</option>
-                                                <option value="No">No</option>
-                                            </select>
+                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                         @else
                                             @if($k=='original_contract_amount')
                                                 <template x-if="field.bill_type!='Calculated'">
@@ -338,6 +372,8 @@
                     </form>
                     
                 </div>
+                @include('app.merchant.contract.add-bill-code-modal-contract')
+
         </div>
     </div>
 </div>
@@ -350,9 +386,13 @@
                        csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
                        var particularray = JSON.parse('{!! json_encode($particulars) !!}');
                        var previewArray = [];
-
-                        
-
+                       var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
+                       var groups = JSON.parse('{!! json_encode($groups) !!}');
+                       var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
+                       var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
+                        function initializeParticulars(){
+                            this.initializeDropdowns();
+                        }
                         function initSelect2(){
 
                             if(particularray.length > 1) {
@@ -389,6 +429,7 @@
                             return {
                                 step: 2,
                                 contract_code: '{{$contract_code}}',
+                                project_code : '{{$project_code}}',
                                 project_id : '{{$project_id}}',
                                 goAhead: true,
                                 fields : JSON.parse('{!! json_encode($particulars) !!}'),
@@ -409,6 +450,63 @@
                                 bill_types: ['% Complete', 'Unit', 'Calculated'],
                                 grand_total: 0,
                                 project:null,
+
+
+
+                                addNewBillCode(){
+                    var data = $("#billcodeform").serialize();
+
+                    var actionUrl = '/merchant/billcode/new';
+                    $.ajax({
+                        type: "POST",
+                        url: actionUrl,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            bill_code : $('#new_bill_code').val(),
+                            bill_description : $('#new_bill_description').val(),
+                            project_id : this.project_id
+                        },
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+
+                    let new_bill_code = $('#new_bill_code').val();
+                    let new_bill_description = $('#new_bill_description').val();
+
+                    let label = new_bill_code + ' | ' + new_bill_description
+
+                    bill_codes.push(
+                        {label: label, value : new_bill_code, description : new_bill_description }
+                    )
+
+                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+
+                    // initializeBillCodes();
+                    return false;
+                },
+                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+                    let selectedId = $('#selectedBillCodeId').val();
+
+                    for(let v=0; v < this.fields.length; v++){
+                        let billCodeSelector = document.querySelector('#bill_code' + v);
+
+                        if(selectedId === 'bill_code'+v ) {
+                            billCodeSelector.setOptions(optionArray, selectedValue);
+                            this.fields[v].bill_code = billCodeSelector.value;
+                            particularray[v].bill_code = billCodeSelector.value;
+                            particularray[v].description = selectedDescription;
+                            $('#description'+v).val(selectedDescription)
+                            closeSidePanelBillCode()
+                        }
+                        else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
+
+                    }
+
+                    $('#new_bill_code').val(null);
+                    $('#new_bill_description').val(null);
+                    $('#selectedBillCodeId').val(null);
+                },
                                 goToParticulars() {
                                     this.resetFlags();
                                     /*if (this.project_id === null || this.project_id === '') {
@@ -586,7 +684,6 @@
                                 validateParticulars(){
 
                                     for(let p=0; p < particularray.length;p++){
-                                        console.log(particularray);
                                         if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
                                             $('#cell_bill_code_' + p).addClass(' error-corner');
                                             addPopover('cell_bill_code_' + p, "Please select Bill code");
@@ -841,7 +938,7 @@
                                 },
                                 async addNewField() {
                                     document.getElementById('perror').style.display = 'none';
-                                        project_code = '{{$project_id}}';
+                                        project_code = '{{$project_code}}';
                                         this.bill_codes = csi_codes;
                                         int = this.fields.length-1;
                                         pint=Number(this.fields[int].pint) + 1;
@@ -869,12 +966,100 @@
                                             project: project_code
                                         })
                                         const x = await this.wait(10);
-                                        numrow = this.fields.length - 1;
-                                        this.count = numrow;
-                                        this.particularsDropdowns(numrow)
+                                        id = this.fields.length - 1;
+                                        this.count = id;
+                                        console.log(bill_codes);
+                                        this.virtualSelect(id, 'bill_code', bill_codes)
+                                        this.virtualSelect(id, 'group', groups)
+                                        // this.virtualSelect(id, 'bill_type', bill_types)
+                                        this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
+                                },
+                                initializeDropdowns(){
+                            for(let v=0; v < this.fields.length; v++){
+                                this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
+                                this.virtualSelect(v, 'group', groups, this.fields[v].group)
+                                // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
+                                this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
+                            }
+                        },
+                        virtualSelect(id, type, options, selectedValue){
+                            allowNewOption= true;
+                                search= true;
+                            if(type!='bill_code')
+                            {
+                            if(type=='bill_code_detail')
+                            {
+                                if(selectedValue=='')
+                                {
+                                    selectedValue='Yes';
                                 }
+                            }
+                                allowNewOption= false;
+                                search= false;
+                            }
+                    VirtualSelect.init({
+                        ele: '#'+type+id,
+                        options: options,
+                        name: type+'[]',
+                        dropboxWrapper: 'body',
+                        allowNewOption: allowNewOption,
+                        search:search,
+                        multiple:false,
+                        selectedValue : selectedValue,
+                        additionalClasses : 'vs-option',
+                    });
+
+                    $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
+                        $(this).addClass('form-control input-sm mw-150');
+                    })
+
+                    $('#'+type+id).change(function () {
+                        if(type === 'bill_code') {
+                            particularray[id].bill_code = this.value
+                            let displayValue = this.getDisplayValue().split('|');
+                            if(displayValue[1] !== undefined) {
+                                $('#description'+id).val(displayValue[1].trim())
+                                particularray[id].description = displayValue[1].trim();
+                            }
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                                console.log(this.value); 
+                                only_bill_codes.push(this.value)
+                                $('#new_bill_code').val(this.value)
+                                $('#selectedBillCodeId').val(type + id)
+                                billIndex(0, 0, 0)
+                            }
+                        }
+                        if(type === 'group'){
+                            if(!groups.includes(this.value) && this.value !== '') {
+                                groups.push(this.value)
+                                for (let g = 0; g < particularray.length; g++) {
+                                    let groupSelector = document.querySelector('#group' + g);
+                                    console.log('group'+id, 'group'+g)
+                                    if('group'+id === 'group'+g)
+                                        groupSelector.setOptions(groups, this.value);
+                                    else
+                                        groupSelector.setOptions( groups, particularray[g].group);
+                                }
+                            }
+                            particularray[id].group = this.value
+                        }
+
+                        if(type === 'bill_type'){
+                            console.log(fields);
+                            particularray[id].bill_type = this.value
+                            if(this.value === 'Calculated')
+                                fields[id].bill_type = this.value
+                        }
+
+                        if(type === 'bill_code_detail'){
+                            particularray[id].bill_code_detail = this.value
+                        }
+                    });
+
+                }
 
                             }
+                            
                         }
                     </script>
 
@@ -1041,7 +1226,6 @@ if(x=='delete')
      }
      </script>
 
-    @include('app.merchant.contract.add-bill-code-modal')
     @include('app.merchant.invoice.add-attachment-billcode-modal')
 
 

@@ -161,6 +161,7 @@
                         <input type="hidden" name="contract_id" id="contract_id" value="{{ $contract_id }}">
                         <input type="hidden" name="merchant_id" id="merchant_id" value="{{ $merchant_id }}">
                         <input type="hidden" name="project_id" id="project_id" value="{{ $project_id??null }}">
+                        <input type="hidden" name="title" id="title" value="{{ $title }}">
 
                         @switch($step)
                             @case(1)
