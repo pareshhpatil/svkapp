@@ -122,6 +122,7 @@
                     <form class="form-horizontal form-row-sepe" id="billcodeform" name="billcodeform" action="/merchant/billcode/create" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="project_id" value="{{$project_id}}"  id="_project_id" >
+                        <input type="hidden" name="project_id2" value="{{$project_id}}"  id="project_id" >
                         <input type="hidden"  id="comefrom" >
                         <div class="form-body">
                             <!-- Start profile details -->
