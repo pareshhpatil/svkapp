@@ -992,7 +992,7 @@ class InvoiceController extends AppController
             $parentmenu['type'] = 'billcode';
 
             foreach ($result[$names] as $data) {
-
+           
                 $pos1++;
                 if (!empty($data['group']) && $data['bill_code_detail'] == 'No') {
 
@@ -1003,7 +1003,7 @@ class InvoiceController extends AppController
                         $emptyarray = array();
                         if (!empty($data['description'])) {
                             $chiledmenu2['title'] =  strlen($data['description']) > 10 ? substr($data['description'], 0, 10) . "..." : $data['description'];
-                            $chiledmenu2['id'] = str_replace(' ', '_', substr($data['description'], 0, 7));
+                            $chiledmenu2['id'] = str_replace(' ', '_', substr($data['bill_code'], 0, 7));
                             $chiledmenu2['full'] = $data['description'];
                         } else {
                             $chiledmenu2['title'] = strlen($data['bill_code']) > 10 ? substr($data['bill_code'], 0, 10) . "..." : $data['bill_code'];
@@ -1038,7 +1038,7 @@ class InvoiceController extends AppController
                         $chiledmenu1 = array();
                         if (!empty($data['description'])) {
                             $chiledmenu1['title'] =  strlen($data['description']) > 10 ? substr($data['description'], 0, 10) . "..." : $data['description'];
-                            $chiledmenu1['id'] = str_replace(' ', '_', substr($data['description'], 0, 7));
+                            $chiledmenu1['id'] = str_replace(' ', '_', substr($data['bill_code'], 0, 7));
                             $chiledmenu1['full'] = $data['description'];
                         } else {
                             $chiledmenu1['title'] = strlen($data['bill_code']) > 10 ? substr($data['bill_code'], 0, 10) . "..." : $data['bill_code'];
@@ -1075,7 +1075,7 @@ class InvoiceController extends AppController
                         if (!empty($data['description'])) {
 
                             $chiledmenu['title'] =  strlen($data['description']) > 10 ? substr($data['description'], 0, 10) . "..." : $data['description'];
-                            $chiledmenu['id'] = str_replace(' ', '_', substr($data['description'], 0, 7));
+                            $chiledmenu['id'] = str_replace(' ', '_', substr($data['bill_code'], 0, 7));
                             $chiledmenu['full'] = $data['description'];
                         } else {
                             $chiledmenu['title'] = strlen($data['bill_code']) > 10 ? substr($data['bill_code'], 0, 10) . "..." : $data['bill_code'];
@@ -2444,7 +2444,7 @@ class InvoiceController extends AppController
                     }
                     if (empty($bill_desc)) {
                         if (!empty($data['description']))
-                            $bill_desc = str_replace(' ', '_', strlen($data['description']) > 7 ? substr($data['description'], 0, 7) : $data['description']);
+                            $bill_desc = str_replace(' ', '_', strlen($data['bill_code']) > 7 ? substr($data['bill_code'], 0, 7) : $data['bill_code']);
                         else
                             $bill_desc = str_replace(' ', '_', strlen($data['bill_code']) > 7 ? substr($data['bill_code'], 0, 7) : $data['bill_code']);
                     }

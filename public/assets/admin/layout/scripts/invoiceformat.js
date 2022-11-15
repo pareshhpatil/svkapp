@@ -699,6 +699,16 @@ function addbillcode() {
         data: data,
         success: function (data) {
 
+try{
+            if (document.getElementsByClassName('dataTables_empty'))
+{    
+    deleteRow = document.getElementsByClassName('dataTables_empty')[0];
+
+    if(deleteRow.parentNode)
+        deleteRow.parentNode.removeChild(deleteRow);
+}
+}catch(o){}
+
 
             if (data[2] > 0) {
                 if (comefrom == 'create') {
