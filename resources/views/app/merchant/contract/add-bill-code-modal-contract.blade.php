@@ -132,6 +132,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="45" name="bill_code" id="new_bill_code" class="form-control" placeholder="Enter bill code">
+                                            <div class="text-danger" id="new_bill_code_message"></div>
                                         </div>
                                     </div>
                                     <!-- <div class="form-group">
@@ -146,6 +147,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="100" name="bill_description" id="new_bill_description" class="form-control" placeholder="Enter bill description">
+                                            <div class="text-danger" id="new_bill_description_message"></div>
                                             <input type="hidden" id="selectedBillCodeId" value=""/>
                                         </div>
                                     </div>
