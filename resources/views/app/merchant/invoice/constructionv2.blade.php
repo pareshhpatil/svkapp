@@ -449,13 +449,16 @@
                                 </select>
                                 <a class="hidden" id="conf_cov" data-toggle="modal" href="#con_coveri"></a>
                             </div>
-                            <div class=" col-md-3" id="edit_note_div" style="display:  none  ;">
+                            <div class=" col-md-6">
+                            <div class="pull-left" id="edit_note_div" 
+                            @isset($plugin['default_covering_note']) @if($plugin['default_covering_note']>0) style="margin-right:20px" @else style="display:  none  ;" @endif @else style="display:  none  ;" @endisset >
                                 <a class="btn mb-1 green " onclick="EditCoveringNote();" href="javascript:;">
                                     Edit note</a>
                             </div>
-                            <div class=" col-md-3">
+                            <div class="pull-left">
                                 <a class="btn mb-1 green pull-right" onclick="AddCoveringNote();" href="javascript:;">
                                     Add new note</a>
+                            </div>
                             </div>
                         </div>
                         @endisset
