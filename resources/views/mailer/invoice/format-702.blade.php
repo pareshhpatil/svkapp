@@ -150,7 +150,7 @@ body{
                         
                         </td>
                         <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
-                           PROJECT NOS: {{$info['project_details']->project_id}}
+                           PROJECT NOS: {{$info['project_details']->project_code}}
                         </td>
                         <td width="25%" style="text-align: right;">
                            

@@ -115,12 +115,8 @@ $header='app.patron.invoice.invoice-master';}
                 <div class="col-md-10 col-sm-9 col-xs-9" >
                     <div class="tab-content"  >
                         @foreach ($files as $key=>$item)
-@php
-    $nm=substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10);
-    $nm=strlen(substr(basename($item), 0, strrpos(basename($item), '.'))) < 10 ?substr(basename($item), 0, strrpos(basename($item), '.')):$nm;
-     
-@endphp
-                        <div class="tab-pane @if(in_array($nm, $selectedDoc)) active @else fade @endif" id="tab_{{str_replace(' ', '_', substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10));}}" >
+
+                        <div class="tab-pane @if(in_array(str_replace(' ', '_', substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10)), $selectedDoc)) active @else fade @endif" id="tab_{{str_replace(' ', '_', substr(substr(basename($item), 0, strrpos(basename($item), '.')),-10))}}" >
                             <div class="grid grid-cols-3  gap-4 mb-2">
                                 <div class="col-span-2">
                              <h2 class="text-lg text-left  font-normal  text-black">{{substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)}} </h2>
@@ -137,9 +133,15 @@ $header='app.patron.invoice.invoice-master';}
                                        </div>
                             </div>
                             <hr>
+                            
                             <p class="mt-2">
+                                @if(strtolower(pathinfo($item, PATHINFO_EXTENSION))=='pdf')
                                 <iframe src="{{$item}}" class="w-full" height="800px">
                                 </iframe>
+                                @else
+                                <img src="{{$item}}" class="img-fluid" height="800px"/>
+                               
+                                @endif
                             </p>
                         </div>
                         @endforeach

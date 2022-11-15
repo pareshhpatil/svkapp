@@ -74,7 +74,7 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
-                                    <td :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -89,7 +89,7 @@
                                             @case('bill_type')
 {{--                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
 {{--                                            <input type="hidden" :id="`checkBillType${index}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
-                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect">
+                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type">
                                                     <option value="">Select..</option>
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
@@ -135,7 +135,7 @@
                                                         <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
                                                     <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm ">
+                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]"  x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" style="width: 100%;" class="form-control input-sm ">
                                                     </span>
                                                 </template>
 
@@ -222,7 +222,7 @@
                 bill_code : null,
                 bill_description : null,
                 group_name : null,
-                count : {!! count($particulars) !!},
+                count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
 
                 addNewBillCode(){
@@ -252,12 +252,12 @@
                         {label: label, value : new_bill_code, description : new_bill_description }
                     )
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code);
+                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
 
                     // initializeBillCodes();
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue){
+                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
@@ -266,7 +266,9 @@
                         if(selectedId === 'bill_code'+v ) {
                             billCodeSelector.setOptions(optionArray, selectedValue);
                             this.fields[v].bill_code = billCodeSelector.value;
-                            particularsArray.bill_code = billCodeSelector.value;
+                            particularsArray[v].bill_code = billCodeSelector.value;
+                            particularsArray[v].description = selectedDescription;
+                            $('#description'+v).val(selectedDescription)
                             closeSidePanelBillCode()
                         }
                         else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
@@ -293,17 +295,21 @@
                         allowNewOption: true,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option',
-                        maxWidth : '150px'
+                        additionalClasses : 'vs-option'
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
-                        $(this).addClass('form-control input-sm mw-150');
+                        $(this).addClass('form-control input-sm');
                     })
 
                     $('#'+type+id).change(function () {
                         if(type === 'bill_code') {
                             particularsArray[id].bill_code = this.value
+                            let displayValue = this.getDisplayValue().split('|');
+                            if(displayValue[1] !== undefined) {
+                                $('#description'+id).val(displayValue[1].trim())
+                                particularsArray[id].description = displayValue[1].trim();
+                            }
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
@@ -327,6 +333,7 @@
                         }
 
                         if(type === 'bill_type'){
+                            console.log(fields);
                             particularsArray[id].bill_type = this.value
                             if(this.value === 'Calculated')
                                 fields[id].bill_type = this.value
@@ -422,7 +429,7 @@
                     return valid;
                 },
                 saveParticulars(back=0, next=0){
-
+                    console.log('test');
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
                     var actionUrl = '/merchant/contract/updatesaveV6';
@@ -520,6 +527,7 @@
                     console.log(this.fields);
                     for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
+                        this.fields[p].description = particularsArray[p].description;
                         this.fields[p].group = particularsArray[p].group;
                         /*this.fields[p].bill_type = particularsArray[p].bill_type;*/
                         this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
@@ -529,159 +537,28 @@
 
                         let retainAmt = this.fields[p].retainage_amount;
                         this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
+
+                        this.fields[p].showoriginal_contract_amount = false;
+                        this.fields[p].showretainage_percent = false;
+                        this.fields[p].showretainage_amount = false;
+                        this.fields[p].showcost_code = false;
+                        this.fields[p].showcost_type = false;
+                        this.fields[p].showproject = false;
                     }
                 },
-                /*OpenAddCalculated(field) {
-                    console.log(field.introw);
-                    this.selected_field_int = field.introw;
-                    document.getElementById('selected_field_int').value = field.introw;
-                    this.openAddCalculationRow(field.introw);
-                },
-                removeCalculated(field) {
-                    this.fields[field.introw].original_contract_amount = 0;
-                    document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
-                    RemoveCaculatedRow(field.introw);
-                },
-                EditCalculated(field) {
-                    document.getElementById('selected_field_int').value = field.introw;
-                    this.editCalculatedRow(field);
-                },
-                openAddCalculationRow(row) {
-                    this.openCalculationContract(row, row)
 
-                },
-                editCalculatedRow(row) {
-                    this.openAddCalculationRow(row)
-                    document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row.introw).value
-                    calc_json = document.getElementById("calculated_row" + row.introw).value;
-                    calc_json = JSON.parse(calc_json)
-
-                    for (const element of calc_json) {
-                        amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
-                        document.getElementById("calc" + element).checked = true
-                        inputCalcClicked(element, amount_value)
-                    }
-
-                },
-                openCalculationContract(ind, select_id) {
-                product_index = ind;
-                currect_select_dropdwn_id = select_id;
-                document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
-                document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
-                $('.page-sidebar-wrapper').css('pointer-events', 'none');
-                this.addRowinCalculationTable(ind)
-                },
-                addRowinCalculationTable(ind) {
-                    console.log(ind);
-                    clearCalcTable();
-                    calcRowInt = ind.introw
-                    var mainDiv = document.getElementById('new_particular1');
-
-                    $('input[name="pint[]"]').each(function (indx, arr) {
-                        var newDiv = document.createElement('tr');
-                        row = '';
-                        int = ($(this).val() === null || $(this).val() == ''  ) ? 0 : $(this).val();
-
-                        bint = Number(int) + 2;
-                        if (ind.introw != int) {
-                            oca = document.getElementById('original_contract_amount' + int).value;
-                            console.log(oca);
-                            amt = getamt(oca);
-                            var bill_code = particularsArray[int].bill_code;
-                            var discription = particularsArray[int].description;
-                            //bill_code = document.getElementById('bill_code' + bint).value;
-                            if (amt > 0) {
-                                row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
-                            }
-                        }
-                        newDiv.innerHTML = row;
-                        mainDiv.appendChild(newDiv);
-
-                    });
-                },
-                setAOriginalContractAmount() {
-                    selected_field_int = document.getElementById('selected_field_int').value;
-                    calc_amount = document.getElementById("calc_amount").value;
-                    document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden'
-                    try{
-                        this.fields[selected_field_int].original_contract_amount = calc_amount;
-                    }catch(o){}
-
-                    this.setOriginalContractAmount(selected_field_int);
-                    this.saveParticulars();
-                    this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                    this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
-
-                },
-                 setOriginalContractAmount(int) {
-                     console.log(int)
-                try {
-                    document.getElementById("original_contract_amount" + int).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
-                } catch (o) {
-
-                }
-                document.getElementById("lbl_original_contract_amount" + int).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
-                // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
-                try {
-                    document.getElementById("approved_change_order_amount" + int).readOnly = true;
-                    document.getElementById("current_billed_percent" + int).readOnly = true;
-                    document.getElementById("retainage_percent" + int).readOnly = true;
-                    document.getElementById("retainage_release_amount" + int).readOnly = true;
-                    document.getElementById("project" + int).readOnly = true;
-                    document.getElementById("cost_code" + int).readOnly = true;
-                    document.getElementById("cost_type" + int).readOnly = true;
-                    document.getElementById("group_code1" + int).readOnly = true;
-                    document.getElementById("group_code2" + int).readOnly = true;
-                    document.getElementById("group_code3" + int).readOnly = true;
-                    document.getElementById("group_code4" + int).readOnly = true;
-                    document.getElementById("group_code5" + int).readOnly = true;
-                } catch (o) {
-
-                }
-                document.getElementById("add-calc" + int).style.display = 'none';
-                document.getElementById("remove-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
-                document.getElementById("pipe-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
-                calcRowArray = [];
-
-                $('input[name="calc-checkbox[]"]').each(function (indx, arr) {
-                    int = $(this).val();
-                    //var checkBox = document.getElementById("calc" + $(this).val());
-                    if ($(this).checked == true) {
-                        calcRowArray.push(parseInt($(this).val()))
-                    }
-                });
-                calcRowArray = JSON.stringify(calcRowArray);
-                console.log(calcRowInt);
-                document.getElementById("calculated_row" + int).value = calcRowArray;
-                document.getElementById("calculated_perc" + int).value = parseInt(document.getElementById("calc_perc").value);
-                closeSidePanelcalc()
-                clearCalcTable();
-                calculateRetainage();
-                try {
-                    document.getElementById("exicon" + int).style.display = 'inline-block';
-                } catch (o) { }
-                try {
-                    if (invoice_construction == true) {
-                        calculateConstruction();
-                    } else {
-                        calculatedRowSummaryContract()
-                    }
-                } catch (o) { }
-                return false;
-            }*/
                 setAOriginalContractAmount() {
                     selected_field_int = document.getElementById('selected_field_int').value;
                     calc_amount = document.getElementById("calc_amount").value;
                     document.getElementById('original_contract_amount'+selected_field_int).type = 'hidden';
                     try{
                         this.fields[selected_field_int].original_contract_amount = calc_amount;
+                        this.fields[selected_field_int].showoriginal_contract_amount = false;
                     }catch(o){}
 
                     setOriginalContractAmount();
                     this.calc(this.fields[selected_field_int]);
+                    this.saveParticulars();
                     this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
@@ -695,7 +572,9 @@
                 RemoveCaculated(field) {
                     this.fields[field.introw].original_contract_amount = 0;
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
+                    this.fields[field.introw].showoriginal_contract_amount = false;
                     RemoveCaculatedRow(field.introw);
+                    this.calc(field)
                 },
                 EditCaculated(field) {
                     document.getElementById('selected_field_int').value = field.introw;

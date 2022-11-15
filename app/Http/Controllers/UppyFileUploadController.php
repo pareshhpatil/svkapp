@@ -52,7 +52,7 @@ class UppyFileUploadController extends Controller
             if (!in_array($fileExtension, $fileExtensionsAllowed)) {
                 $response['errors'] = $fileExtension . " file extension is not allowed. Please upload a JPEG or PNG file";
             }
-            if($subfolder!='billcode'){
+            if($type != 'invoice'){
             if ($fileSize > 1000000) {
                 $response['errors'] = "File exceeds maximum size (1MB)";
             }
