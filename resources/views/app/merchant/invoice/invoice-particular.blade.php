@@ -985,13 +985,15 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                         virtualSelect(id, type, options, selectedValue){
                             allowNewOption= true;
                                 search= true;
+                            if(type!='bill_code')
+                            {
                             if(type=='bill_code_detail')
                             {
                                 if(selectedValue=='')
                                 {
-                                    alert(selectedValue);
                                     selectedValue='Yes';
                                 }
+                            }
                                 allowNewOption= false;
                                 search= false;
                             }
