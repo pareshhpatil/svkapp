@@ -546,147 +546,7 @@
                         this.fields[p].showproject = false;
                     }
                 },
-                /*OpenAddCalculated(field) {
-                    console.log(field.introw);
-                    this.selected_field_int = field.introw;
-                    document.getElementById('selected_field_int').value = field.introw;
-                    this.openAddCalculationRow(field.introw);
-                },
-                removeCalculated(field) {
-                    this.fields[field.introw].original_contract_amount = 0;
-                    document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
-                    RemoveCaculatedRow(field.introw);
-                },
-                EditCalculated(field) {
-                    document.getElementById('selected_field_int').value = field.introw;
-                    this.editCalculatedRow(field);
-                },
-                openAddCalculationRow(row) {
-                    this.openCalculationContract(row, row)
 
-                },
-                editCalculatedRow(row) {
-                    this.openAddCalculationRow(row)
-                    document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row.introw).value
-                    calc_json = document.getElementById("calculated_row" + row.introw).value;
-                    calc_json = JSON.parse(calc_json)
-
-                    for (const element of calc_json) {
-                        amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
-                        document.getElementById("calc" + element).checked = true
-                        inputCalcClicked(element, amount_value)
-                    }
-
-                },
-                openCalculationContract(ind, select_id) {
-                product_index = ind;
-                currect_select_dropdwn_id = select_id;
-                document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
-                document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
-                $('.page-sidebar-wrapper').css('pointer-events', 'none');
-                this.addRowinCalculationTable(ind)
-                },
-                addRowinCalculationTable(ind) {
-                    console.log(ind);
-                    clearCalcTable();
-                    calcRowInt = ind.introw
-                    var mainDiv = document.getElementById('new_particular1');
-
-                    $('input[name="pint[]"]').each(function (indx, arr) {
-                        var newDiv = document.createElement('tr');
-                        row = '';
-                        int = ($(this).val() === null || $(this).val() == ''  ) ? 0 : $(this).val();
-
-                        bint = Number(int) + 2;
-                        if (ind.introw != int) {
-                            oca = document.getElementById('original_contract_amount' + int).value;
-                            console.log(oca);
-                            amt = getamt(oca);
-                            var bill_code = particularsArray[int].bill_code;
-                            var discription = particularsArray[int].description;
-                            //bill_code = document.getElementById('bill_code' + bint).value;
-                            if (amt > 0) {
-                                row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
-                            }
-                        }
-                        newDiv.innerHTML = row;
-                        mainDiv.appendChild(newDiv);
-
-                    });
-                },
-                setAOriginalContractAmount() {
-                    selected_field_int = document.getElementById('selected_field_int').value;
-                    calc_amount = document.getElementById("calc_amount").value;
-                    document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden'
-                    try{
-                        this.fields[selected_field_int].original_contract_amount = calc_amount;
-                    }catch(o){}
-
-                    this.setOriginalContractAmount(selected_field_int);
-                    this.saveParticulars();
-                    this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                    this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
-
-                },
-                 setOriginalContractAmount(int) {
-                     console.log(int)
-                try {
-                    document.getElementById("original_contract_amount" + int).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
-                } catch (o) {
-
-                }
-                document.getElementById("lbl_original_contract_amount" + int).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
-                // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
-                try {
-                    document.getElementById("approved_change_order_amount" + int).readOnly = true;
-                    document.getElementById("current_billed_percent" + int).readOnly = true;
-                    document.getElementById("retainage_percent" + int).readOnly = true;
-                    document.getElementById("retainage_release_amount" + int).readOnly = true;
-                    document.getElementById("project" + int).readOnly = true;
-                    document.getElementById("cost_code" + int).readOnly = true;
-                    document.getElementById("cost_type" + int).readOnly = true;
-                    document.getElementById("group_code1" + int).readOnly = true;
-                    document.getElementById("group_code2" + int).readOnly = true;
-                    document.getElementById("group_code3" + int).readOnly = true;
-                    document.getElementById("group_code4" + int).readOnly = true;
-                    document.getElementById("group_code5" + int).readOnly = true;
-                } catch (o) {
-
-                }
-                document.getElementById("add-calc" + int).style.display = 'none';
-                document.getElementById("remove-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
-                document.getElementById("pipe-calc" + int).style.display = 'inline-block';
-                document.getElementById("edit-calc" + int).innerHTML = 'Edit';
-                calcRowArray = [];
-
-                $('input[name="calc-checkbox[]"]').each(function (indx, arr) {
-                    int = $(this).val();
-                    //var checkBox = document.getElementById("calc" + $(this).val());
-                    if ($(this).checked == true) {
-                        calcRowArray.push(parseInt($(this).val()))
-                    }
-                });
-                calcRowArray = JSON.stringify(calcRowArray);
-                console.log(calcRowInt);
-                document.getElementById("calculated_row" + int).value = calcRowArray;
-                document.getElementById("calculated_perc" + int).value = parseInt(document.getElementById("calc_perc").value);
-                closeSidePanelcalc()
-                clearCalcTable();
-                calculateRetainage();
-                try {
-                    document.getElementById("exicon" + int).style.display = 'inline-block';
-                } catch (o) { }
-                try {
-                    if (invoice_construction == true) {
-                        calculateConstruction();
-                    } else {
-                        calculatedRowSummaryContract()
-                    }
-                } catch (o) { }
-                return false;
-            }*/
                 setAOriginalContractAmount() {
                     selected_field_int = document.getElementById('selected_field_int').value;
                     calc_amount = document.getElementById("calc_amount").value;
@@ -714,6 +574,7 @@
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
                     this.fields[field.introw].showoriginal_contract_amount = false;
                     RemoveCaculatedRow(field.introw);
+                    this.calc(field)
                 },
                 EditCaculated(field) {
                     document.getElementById('selected_field_int').value = field.introw;

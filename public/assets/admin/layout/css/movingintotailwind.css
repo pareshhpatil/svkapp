@@ -1049,7 +1049,7 @@ i.apps {
 
 
 .select2-dropdown {
-    z-index: 99999;
+    z-index: 10;
 }
 
 .datepicker table td {

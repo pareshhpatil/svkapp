@@ -312,6 +312,7 @@ body {
     /* Page sidebar */
     .page-sidebar {
         background-color: #275770;
+        margin-top: 0px !important;
         /* light sidebar */
     }
 
