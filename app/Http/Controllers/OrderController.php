@@ -87,7 +87,7 @@ class OrderController extends Controller
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
 
-        return view('app/merchant/order/' . $title.$version, $data);
+        return view('app/merchant/order/createv2', $data);
     }
 
     public function save(Request $request)
