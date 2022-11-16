@@ -229,8 +229,8 @@ class ContractController extends Controller
             'contract_amount' => 'required',
             'customer_id' => 'required',
             'project_id' => 'required',
-            'contract_date' => 'required',
-            'bill_date' => 'required',
+            'contract_date' => 'required|date',
+            'bill_date' => 'required|date|after_or_equal:contract_date',
             'billing_frequency' => 'required',
         ];
     }
