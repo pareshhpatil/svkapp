@@ -80,7 +80,7 @@
                                         @if(in_array($column, $number_array))
                                             @php $number='type=number step=0.00'; @endphp
                                         @endif
-                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif" x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -117,15 +117,22 @@
                                             @break
 
                                             @case('original_contract_amount')
+                                                <span x-show="field.show{{$column}}">
+                                                        <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        @keyup="removeValidationError(`{{$column}}`, `${index}`)"
+                                                               x-model="field.{{$column}}"
+                                                               value="" name="{{$column}}[]"
+                                                               style="width: 100%;" class="form-control input-sm " x-show="field.showoriginal_contract_amount">
+                                                    </span>
                                                 <template x-if="field.bill_type!='Calculated'">
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
-                                                    <span x-show="field.show{{$column}}">
+                                                    {{--<span x-show="field.show{{$column}}">
                                                         <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
                                                         @keyup="removeValidationError(`{{$column}}`, `${index}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
                                                                style="width: 100%;" class="form-control input-sm ">
-                                                    </span>
+                                                    </span>--}}
                                                 </template>
 
                                                 <template x-if="field.bill_type=='Calculated'">
@@ -140,9 +147,9 @@
                                                         <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                         <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
-                                                    <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]"  x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" style="width: 100%;" class="form-control input-sm ">
-                                                    </span>
+                                                    {{--<span x-show="field.show{{$column}}">
+                                                        <input :id="`{{$column}}${index}`" x-model="field.{{$column}}" value="" name="{{$column}}[]" @if($readonly) type="hidden" @else  type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif style="width: 100%;" class="form-control input-sm ">
+                                                    </span>--}}
                                                 </template>
 
 
@@ -332,6 +339,7 @@
                                 $('#description'+id).val(displayValue[1].trim())
                                 particularsArray[id].description = displayValue[1].trim();
                             }
+
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
@@ -369,6 +377,10 @@
                 },
                 updateBillType(){
 
+                },
+                checkBillType(field){
+                  if(field.bill_type === 'Calculated')  field.showoriginal_contract_amount = false
+                    else  field.showoriginal_contract_amount = true
                 },
                 calc(field) {
                     try {
@@ -444,7 +456,13 @@
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
                         }else {
-                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            if( parseInt(this.fields[p].original_contract_amount) > 0 )
+                                $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            else {
+                                $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                                addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
+                                valid = false
+                            }
                         }
                         // this.fields[p].group = particularsArray[p].group
                     }
@@ -570,23 +588,41 @@
                 },
 
                 setAOriginalContractAmount() {
-                    selected_field_int = document.getElementById('selected_field_int').value;
-                    calc_amount = document.getElementById("calc_amount").value;
-                    document.getElementById('original_contract_amount'+selected_field_int).type = 'hidden';
-                    try{
-                        this.fields[selected_field_int].original_contract_amount = calc_amount;
-                        this.fields[selected_field_int].showoriginal_contract_amount = false;
-                    }catch(o){}
+                    let valid = true;
+                    if ($('input[name^=calc-checkbox]:checked').length <= 0) {
+                        $('#calc_checkbox_error').html('Please select atleast one particular');
+                        valid = false;
+                    }else
+                        $('#calc_checkbox_error').html('');
 
-                    setOriginalContractAmount();
-                    this.calc(this.fields[selected_field_int]);
-                    this.saveParticulars();
-                    this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                    this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === 0 || $('#calc_perc').val() < 0 ) {
+                        $('#calc_perc_error').html('Please enter percentage');
+                        valid = false
+                    }else
+                        $('#calc_perc_error').html('');
+
+                    if(valid) {
+                        selected_field_int = document.getElementById('selected_field_int').value;
+                        calc_amount = document.getElementById("calc_amount").value;
+                        // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
+                        try {
+                            this.fields[selected_field_int].original_contract_amount = calc_amount;
+                            this.fields[selected_field_int].showoriginal_contract_amount = false;
+                        } catch (o) {
+                        }
+
+                        setOriginalContractAmount();
+                        this.calc(this.fields[selected_field_int]);
+                        this.saveParticulars();
+                        this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
+                        this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                    }
 
                 },
                 OpenAddCaculated(field) {
                     console.log(field.introw);
+                    field.showoriginal_contract_amount = false;
+                    //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
                     this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
                     document.getElementById('selected_field_int').value = field.introw;
                     this.OpenAddCaculatedRow(field.introw);
