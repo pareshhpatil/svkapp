@@ -174,7 +174,7 @@
 
         <section class="section">
             <div class="row sameheight-container">
-                <?php if ($this->is_legal == 0 || $this->has_invoice == 0 || $this->isCompletedCompayPage == 0) { ?>
+                <?php if ($this->is_legal == 1 || $this->has_invoice == 1 || $this->isCompletedCompayPage == 1) { ?>
                     <!-- this card will appear if and only if user's profile is not completed -->
                     <div class="col col-12 col-md-4 mt-1">
                         <div class="card stats" data-exclude="xs">
