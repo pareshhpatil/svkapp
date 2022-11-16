@@ -130,8 +130,6 @@ class Contract extends ParentModel
                 'code' => $data->bill_code,
                 'title' => $data->bill_description,
                 'description' => $data->bill_description,
-                'merchant_id' => $merchant_id,
-                'project_id' => $data->project_id,
                 'last_update_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s')
             ]);
