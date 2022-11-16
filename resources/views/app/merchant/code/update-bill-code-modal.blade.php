@@ -121,7 +121,7 @@
                 <div class="portlet-body form">
                     <form class="form-horizontal form-row-sepe" id="billcodeform" name="billcodeform" action="/merchant/billcode/update" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="project_id"  id="project_id" >
+                        <input type="hidden" name="project_id"  id="project_id_update" >
                         <input type="hidden"  id="bill_id" name="bill_id" >
                         <div class="form-body">
                             <!-- Start profile details -->

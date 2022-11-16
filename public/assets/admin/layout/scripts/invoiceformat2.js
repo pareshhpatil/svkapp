@@ -3161,7 +3161,7 @@ function deleteattchment() {
     }
     for (var i = 0; i < pathlist.length; i++) {
         if (lists != '') {
-            lists + ',' + pathlist[i];
+            lists = lists + ',' + pathlist[i];
         } else {
             lists = pathlist[i];
         }
