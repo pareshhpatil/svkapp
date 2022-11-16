@@ -74,6 +74,12 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
+                                        @if(in_array($column, $readonly_array))
+                                            @php $readonly=true; @endphp
+                                        @endif
+                                        @if(in_array($column, $number_array))
+                                            @php $number='type=number step=0.00'; @endphp
+                                        @endif
                                     <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
