@@ -2471,9 +2471,9 @@ function showEditNote() {
     var value = document.getElementById('covering_select').value;
 
     if (value != '0') {
-        document.getElementById('edit_note_div').style = 'display:block';
+        document.getElementById('edit_note_div').style.display = 'block';
     } else {
-        document.getElementById('edit_note_div').style = 'display:none';
+        document.getElementById('edit_note_div').style.display = 'none';
     }
 
     data = '';
