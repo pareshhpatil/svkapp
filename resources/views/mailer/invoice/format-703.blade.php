@@ -157,7 +157,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                   
                                                         @foreach ($info['constriuction_details'] as $key=>$item)  
                                  
-                                                        @if($item['a']=='heading')
+                                                        @if($item['type']=='heading')
                                     <tr>
                                         <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">   
                                                                                      <div style="font-size: 14px">{{ $item['b'] }} </div>      
@@ -166,37 +166,37 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                         
                                        
                                     </tr>
-                                    @elseif ($item['a']=='footer')
+                                    @elseif ($item['type']=='footer')
                                     <tr>
-                                          <td colspan="2" style="border-right:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
+                                          <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
                                             <div style="font-size: 12px"> {{ $item['b'] }}</div>                                        </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px"> {{ $item['c'] }}</div>                                        </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">{{ $item['d'] }} </div>
                                         </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
                                             <div style="font-size: 14px">{{ $item['e'] }}</div>
                                         </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">{{ $item['f'] }}</div>
                                         </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">{{ $item['g'] }}</div>
                                         </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">
                                                 {{ $item['g_per'] }}
                                                 </div>
                                         </td>
-                                        <td style="border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">{{ $item['h'] }}</div>
                                         </td>
-                                        <td style=" border-top:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <td style=" border-top:1px solid #313131;border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px">{{ $item['i'] }}</div>
                                         </td>
                                     </tr>
-                                   @elseif ($item['a']=='combine')
+                                   @elseif ($item['type']=='combine')
                                    <tr>
                                          <td colspan="2" style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                             <div style="font-size: 14px"> {{ $item['b'] }}</div>                                        </td>
