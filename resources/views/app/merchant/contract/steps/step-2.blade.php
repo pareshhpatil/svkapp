@@ -515,7 +515,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
                     particularsArray.push({
@@ -534,7 +534,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
 
@@ -545,7 +545,7 @@
                     this.virtualSelect(id, 'bill_code', bill_codes)
                     this.virtualSelect(id, 'group', groups)
                     // this.virtualSelect(id, 'bill_type', bill_types)
-                    this.virtualSelect(id, 'bill_code_detail', bill_code_details)
+                    this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
                 },
                 removeRow(id){
                     this.fields.splice(id, 1);
