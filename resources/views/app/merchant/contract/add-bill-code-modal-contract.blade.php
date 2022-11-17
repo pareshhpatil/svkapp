@@ -113,7 +113,7 @@
         <div class='cnt223'>
             <h3 class="modal-title">Add bill code
 
-            <a class="close " data-toggle="modal"  onclick="return closeSidePanelBillCode();">
+            <a class="close " data-toggle="modal" @click="return closeBillCodePanel();">
                     <button type="button" class="close" aria-hidden="true"></button></a>
             </h3>
             <hr>
@@ -158,8 +158,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="pull-right">
-                                        <a href="#" onclick="return closeSidePanelBillCode();" class="btn default">Cancel</a>
-                                        <input type="button" value="Add bill code" @click="return addNewBillCode();" class="btn blue" />
+                                        <a href="#" @click="return closeBillCodePanel();" class="btn default">Cancel</a>
+                                        <input type="button" value="Add bill code" @click="return addNewBillCode('{{ csrf_token() }}');" class="btn blue" />
                                     </div>
                                 </div>
                             </div>

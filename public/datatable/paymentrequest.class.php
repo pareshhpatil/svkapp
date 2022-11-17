@@ -54,10 +54,10 @@ class SSP
                         }
                         $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
-                        //$row[$column['dt']] = moneyFormatIndia($data[$i][$column['db']]);
-                        $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . moneyFormatIndia($data[$i][$column['db']]) . '</span>';
+                        //$row[$column['dt']] = number_format($data[$i][$column['db']]);
+                        $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]) . '</span>';
                     } else if ($column['datatype'] == 'cost') {
-                        $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . moneyFormatIndia($data[$i][$column['db']]);
+                        $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]);
                     }
                 } else {
                     $value = $data[$i][$columns[$j]['db']];

@@ -518,16 +518,35 @@
 
 <script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
 <script>
-   
+    var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
     var newdocfileslist=[];
 //uppy file upload code
 var uppy = new Uppy.Uppy({ 
     autoProceed: true,
     restrictions: {
         maxFileSize: 3000000,
-        maxNumberOfFiles: 10,
+        maxNumberOfFiles: envlimit,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
+    },
+    onBeforeFileAdded: (currentFile, files) => {
+        var remainleng=document.getElementById("file_upload").value.split(",").length;
+        var counts=envlimit-remainleng;
+        console.log('path limit'+remainleng);
+       console.log('env limit'+envlimit);
+       console.log('remain limit'+counts);
+      
+        if(remainleng==envlimit)
+        {
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            return Promise.reject('too few files')
+        }else if (Object.keys(files).length > counts) 
+         {
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+       return Promise.reject('too few files')
+     }else{
+        return true; 
+     }
     }
 });
 
@@ -566,7 +585,7 @@ uppy.use(Uppy.XHRUpload, {
 });
 uppy.use( Compressor, {
   quality: 0.6,
-  limit: 10,
+  limit: envlimit,
 });
 uppy.on('file-added', (file) => {
     document.getElementById("error").innerHTML = '';

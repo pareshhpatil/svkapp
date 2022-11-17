@@ -434,7 +434,7 @@
                         </div>
                     </div>-->
                     
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                     @isset($plugin['has_covering_note'])
                         <div class="form-group">
                             <p><label class="control-label col-md-3 w-auto">Select covering note</label><br></p>
@@ -449,15 +449,15 @@
                                 </select>
                                 <a class="hidden" id="conf_cov" data-toggle="modal" href="#con_coveri"></a>
                             </div>
-                            <div class=" col-md-6">
+                            <div class=" col-md-7">
                             <div class="pull-left" id="edit_note_div" 
-                            @isset($plugin['default_covering_note']) @if($plugin['default_covering_note']>0) style="margin-right:20px" @else style="display:  none  ;" @endif @else style="display:  none  ;" @endisset >
+                            @isset($plugin['default_covering_note']) @if($plugin['default_covering_note']>0) style="margin-right:10px" @else style="display:  none  ;margin-right:10px" @endif @else style="display:  none  ;margin-right:10px" @endisset >
                                 <a class="btn mb-1 green " onclick="EditCoveringNote();" href="javascript:;">
-                                    Edit note</a>
+                                    Edit</a>
                             </div>
                             <div class="pull-left">
                                 <a class="btn mb-1 green pull-right" onclick="AddCoveringNote();" href="javascript:;">
-                                    Add new note</a>
+                                    Add new</a>
                             </div>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
                     </div>
                    
                     
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="pull-right">
                             <p>&nbsp;</p>
                             <input type="hidden" name="link" value="{{$link}}">
@@ -580,26 +580,53 @@
     </script>
 
 
-    <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
     <script>
+       var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
+      
         var newdocfileslist = [];
-
+        const { Compressor } = Uppy;
         @if(isset($plugin['files']) && !empty($plugin['files'][0]))
         @foreach ($plugin['files'] as $key=>$item)
         newdocfileslist.push('{{$item}}');
         @endforeach
         @endif
         //uppy file upload code
-        var uppy = Uppy.Core({
+        var uppy = new Uppy.Uppy({
             autoProceed: true,
             restrictions: {
                 maxFileSize: 3000000,
-                maxNumberOfFiles: 10,
+                maxNumberOfFiles: envlimit,
                 minNumberOfFiles: 1,
                 allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
-            }
+            },
+            onBeforeFileAdded: (currentFile, files) => {
+                var remainleng=0;
+        if(document.getElementById("file_upload").value!='')
+            remainleng=document.getElementById("file_upload").value.split(",").length;
+     
+        var counts=envlimit-remainleng;
+        if(remainleng==envlimit)
+        {
+            uppy.info({
+  message: 'upload limit exceeded',
+  details: 'File couldn’t be uploaded because you can upload only '+envlimit+ 'files',
+}, 'error', 5000)
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            return Promise.reject('too few files')
+        }else if (Object.keys(files).length > counts-1) 
+         {
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+       return Promise.reject('too few files')
+     }else{
+        return true; 
+     }
+    }
         });
-
+        uppy.use( Compressor, {
+  quality: 0.6,
+  limit: envlimit,
+});
         uppy.use(Uppy.Dashboard, {
             target: 'body',
             trigger: '.UppyModalOpenerBtn',

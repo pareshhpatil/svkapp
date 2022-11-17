@@ -2471,9 +2471,9 @@ function showEditNote() {
     var value = document.getElementById('covering_select').value;
 
     if (value != '0') {
-        document.getElementById('edit_note_div').style = 'display:block';
+        document.getElementById('edit_note_div').style.display = 'block';
     } else {
-        document.getElementById('edit_note_div').style = 'display:none';
+        document.getElementById('edit_note_div').style.display = 'none';
     }
 
     data = '';
@@ -3138,6 +3138,7 @@ function showupdatebillcodeattachment(pos) {
     attach_pos = pos;
     try{
     document.getElementById("up-error").innerHTML = '';
+    
     }catch(o){}
     document.getElementById("listtab1").classList.add('active');
     document.getElementById("tab1").classList.add('active');
@@ -3149,107 +3150,118 @@ function showupdatebillcodeattachment(pos) {
 
 }
 
-function deleteattchment() {
-    var fullurl = document.getElementById('removepath').value;
-    var paths = document.getElementById('attach-' + attach_pos).value;
+function deleteattchment()
+{
+    var fullurl= document.getElementById('removepath').value;
+    var paths= document.getElementById('attach-'+attach_pos).value;
 
-    var pathlist = paths.split(",");
-    var lists = '';
+    var pathlist=paths.split(",");
+    var lists='';
     var index = pathlist.indexOf(fullurl);
-    if (index !== -1) {
+    
+    if (index >-1) {
         pathlist.splice(index, 1);
     }
-    for (var i = 0; i < pathlist.length; i++) {
-        if (lists != '') {
-            lists = lists + ',' + pathlist[i];
-        } else {
-            lists = pathlist[i];
-        }
+    for(var i=0;i<pathlist.length;i++)
+    {
+        if(lists!='')
+         {
+           
+            lists= lists+','+pathlist[i];
+         }else{
+            lists=pathlist[i];
+         }
     }
-    if (particularray !== undefined) {
-        particularray[attach_pos].attachments = lists;
-    }
-    document.getElementById('attach-' + attach_pos).value = lists;
+   
+    document.getElementById('attach-'+attach_pos).value=lists;
     setBillCodeMenuData();
 }
 
-function setBillCodeMenuData() {
 
-    current_bill_name = document.getElementById('description' + attach_pos).value;
-    var sortname = current_bill_name.length > 10 ? current_bill_name.slice(0, 10) + '...' : current_bill_name;
-    var paths = document.getElementById('attach-' + attach_pos).value;
+function setBillCodeMenuData()
+{
+    
+    current_bill_name=document.getElementById('description'+attach_pos).value;
+    var sortname=current_bill_name.length>10?current_bill_name.slice(0,10)+'...':current_bill_name;
+    var paths= document.getElementById('attach-'+attach_pos).value;
+   
+    var pathlist=paths.split(",");
+   
+    var ul='';
+  var data= ' <li>'+
+                                                
+   ' <a onclick="myFunction(\''+sortname.trim()+'\',\''+sortname.trim()+'\')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="'+current_bill_name+'">'+
+     ' <label   id="l'+sortname.trim()+'" class=" tree_label  active1 ">'+sortname+'</label>'+
+     ' <div id="arrow'+sortname.trim()+'" style="float: right;" class="fa fa-angle-down  active1 "></div> </a>';
+     
+     var framedata='';   
+if(pathlist[0]!='')
+{
+    var counts='0 file';
+    if(pathlist.length>1)
+    counts=pathlist.length+' files';
+    else
+    counts=pathlist.length+' file';
 
-    var pathlist = paths.split(",");
-
-    var ul = '';
-    var data = ' <li>' +
-
-        ' <a onclick="myFunction(\'' + sortname.trim() + '\',\'' + sortname.trim() + '\')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="' + current_bill_name + '">' +
-        ' <label   id="l' + sortname.trim() + '" class=" tree_label  active1 ">' + sortname + '</label>' +
-        ' <div id="arrow' + sortname.trim() + '" style="float: right;" class="fa fa-angle-down  active1 "></div> </a>';
-
-    var framedata = '';
-    if (pathlist[0] != '') {
-        var counts = '0 file';
-        if (pathlist.length > 1)
-            counts = pathlist.length + ' files';
-        else
-            counts = pathlist.length + ' file';
-
-        document.getElementById("icon-" + attach_pos).setAttribute("data-content", "" + counts);
-        document.getElementById("icon-" + attach_pos).setAttribute("title", "" + counts);
-        var ul = '<ul id="ul' + sortname.trim() + '" style="display: block">';
-        for (var i = 0; i < pathlist.length; i++) {
+    document.getElementById("icon-"+attach_pos).setAttribute("data-content", ""+counts);
+   var ul='<ul id="ul'+sortname.trim()+'" style="display: block">';
+        for(var i=0;i<pathlist.length;i++)
+        {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
-            var sortname = filename.length > 10 ? filename.slice(0, 10) + '...' : filename;
+            var sortname=filename.length>10?filename.slice(0,10)+'...':filename;
+            var uniq_id=filename.length>7?filename.substring(-7):filename;
             var extension = pathlist[i].split('.').pop();
-            var classnm = '';
-            var frameclassnm = 'fade';
-            if (i == 0) {
-                classnm = 'aclass active1';
-                frameclassnm = 'active';
-            } else {
-                classnm = '';
-                frameclassnm = 'fade';
-            }
+          var classnm='';
+          var frameclassnm='fade';
+          if(i==0)
+          {
+             classnm='aclass active1';
+             frameclassnm='active';
+          }else
+          {
+            classnm='';
+            frameclassnm='fade';
+          }
 
-            ul += ' <li>' +
-
-                '<a style="color: #636364;"  id="a' + sortname.trim() + '" class="' + classnm + '" href="#tab_' + sortname.trim() + '" data-toggle="tab">' +
-                '<span onclick="removeactive(\'' + sortname.trim() + '\',\'' + sortname.trim() + '\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="' + pathlist[i].replace(/^.*[\\\/]/, '') + '">' + sortname + '</span>' +
-                ' </a>  </li>';
-
-
-                framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+sortname.trim()+'" >'+
+            ul+= ' <li>'+
+          
+         '<a style="color: #636364;"  id="a'+uniq_id.trim()+'" class="'+classnm+'" href="#tab_'+uniq_id.trim()+'" data-toggle="tab">'+
+         '<span onclick="removeactive(\''+uniq_id.trim()+'\',\''+uniq_id.trim()+'\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+sortname+'</span>'+
+          ' </a>  </li>';
+       
+       
+          framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+uniq_id.trim()+'" >'+
                        
-                '<div class="grid grid-cols-3  gap-4 mb-2">'+
-                    '<div class="col-span-2">'+
-                '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
-                    '</div> <div > <h2 class="pull-right" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
-                     
-                        '</div> </div>'+
-               ' <p class="mt-2">';
-               if(extension.toLowerCase()=='pdf')
-               {
-                  framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
-               }else{
-                  framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;"/>';
-               }
-               framedata+= '</p> </div>';
-              }
-        data += ul + '</ul>';
+          '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
+              
+          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+filename.substring(0,35)+'</h4>'+
+              '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
+               
+                  '</div></div>'+
+         ' <div class="row"><div>';
+         if(extension.toLowerCase()=='pdf')
+         {
+            framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
+         }else{
+            framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
+         }
+         framedata+= '</div></div> </div>';
+       
+        }
+        data+=ul+'</ul>';
     }
-    if (framedata == '') {
-        document.getElementById('yesview').style.display = "none";
-        document.getElementById('noview').style.display = "block";
-    } else {
-        document.getElementById('yesview').style.display = "block";
-        document.getElementById('noview').style.display = "none";
-    }
+if(framedata=='')
+{
+    document.getElementById('yesview').style.display="none";
+    document.getElementById('noview').style.display="block";
+}else{
+    document.getElementById('yesview').style.display="block";
+    document.getElementById('noview').style.display="none";
+}
 
-    data += '</li>';
+    data+='</li>'; 
     document.getElementById('ulmenu').innerHTML = data;
-    document.getElementById('frame_view').innerHTML = framedata;
+    document.getElementById('frame_view').innerHTML =framedata;
 
 }
 

@@ -9,6 +9,7 @@
             padding: 3px;
             font-weight: 400;
             color: #333;
+            background:#eee;
         }
 
         .table > tbody > tr > td {
@@ -46,7 +47,21 @@
             width: auto;
         }
 
+        table thead,
+        table tfoot {
+            position: sticky;
+            z-index: 3;
+        }
+        table thead {
+            inset-block-start: 0; /* "top" */
+        }
+        table tfoot {
+            inset-block-end: 0; /* "bottom" */
+        }
 
+        .tableFixHead {
+            max-height: 200px;overflow: auto;
+        }
     </style>
     <div class="portlet light bordered">
         <div class="portlet-body form">
@@ -206,11 +221,11 @@
         </div>
     </div>
 
+{{--    <script src="{{ asset('assets/admin/layout/scripts/contract-virtual-select.js') }}"></script>--}}
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
         }
-
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
         var bill_codes = JSON.parse('{!! json_encode($bill_codes) !!}');
@@ -238,76 +253,6 @@
                 count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
 
-                addNewBillCode(){
-                    let new_bill_code = $('#new_bill_code').val();
-                    let new_bill_description = $('#new_bill_description').val();
-                    let goAhead = true;
-                    if(new_bill_code === '') {
-                        $('#new_bill_code_message').html('Please enter bill code');
-                        goAhead = false
-                    }else{
-                        $('#new_bill_code_message').html('');
-                    }
-                    if( new_bill_description === ''){
-                        $('#new_bill_description_message').html('Please enter bill description');
-                        goAhead = false
-                    }else {
-                        $('#new_bill_description_message').html('');
-                    }
-
-                    if(goAhead) {
-
-                        let actionUrl = '/merchant/billcode/new';
-                        $.ajax({
-                            type: "POST",
-                            url: actionUrl,
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                bill_code: new_bill_code,
-                                bill_description: new_bill_description,
-                                project_id: $('#project_id').val()
-                            },
-                            success: function (data) {
-                                console.log(data);
-                            }
-                        });
-
-
-                        let label = new_bill_code + ' | ' + new_bill_description
-
-                        bill_codes.push(
-                            {label: label, value: new_bill_code, description: new_bill_description}
-                        )
-
-                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
-
-                        // initializeBillCodes();
-                        return false;
-                    }
-                },
-                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
-                    let selectedId = $('#selectedBillCodeId').val();
-
-                    for(let v=0; v < this.fields.length; v++){
-                        let billCodeSelector = document.querySelector('#bill_code' + v);
-
-                        if(selectedId === 'bill_code'+v ) {
-                            billCodeSelector.setOptions(optionArray, $('#new_bill_code').val());
-                            only_bill_codes.push($('#new_bill_code').val())
-                            this.fields[v].bill_code = $('#new_bill_code').val();
-                            particularsArray[v].bill_code = $('#new_bill_code').val();
-                            particularsArray[v].description = selectedDescription;
-                            $('#description'+v).val(selectedDescription)
-                            closeSidePanelBillCode()
-                        }
-                        else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
-
-                    }
-
-                    $('#new_bill_code').val(null);
-                    $('#new_bill_description').val(null);
-                    $('#selectedBillCodeId').val(null);
-                },
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
                         this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
@@ -374,6 +319,93 @@
                         }
                     });
 
+                } ,
+                addNewBillCode(token){
+                    console.log(token);
+                    let new_bill_code = $('#new_bill_code').val();
+                    let new_bill_description = $('#new_bill_description').val();
+                    let goAhead = true;
+                    if(new_bill_code === '') {
+                        $('#new_bill_code_message').html('Please enter bill code');
+                        goAhead = false
+                    }else{
+                        $('#new_bill_code_message').html('');
+                    }
+                    if( new_bill_description === ''){
+                        $('#new_bill_description_message').html('Please enter bill description');
+                        goAhead = false
+                    }else {
+                        $('#new_bill_description_message').html('');
+                    }
+
+                    if(goAhead) {
+
+                        let actionUrl = '/merchant/billcode/new';
+                        $.ajax({
+                            type: "POST",
+                            url: actionUrl,
+                            data: {
+                                _token: token,
+                                bill_code: new_bill_code,
+                                bill_description: new_bill_description,
+                                project_id: $('#project_id').val()
+                            },
+                            success: function (data) {
+                                console.log(data);
+                            }
+                        });
+
+
+                        let label = new_bill_code + ' | ' + new_bill_description
+
+                        bill_codes.push(
+                            { value: new_bill_code, label: label, description: new_bill_description }
+                        )
+
+                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+
+                        // initializeBillCodes();
+                        return false;
+                    }
+                },
+                closeBillCodePanel() {
+                    let selectedId = $('#selectedBillCodeId').val();
+
+                    var selectedBillCode = document.querySelector('#'+selectedId);
+                    selectedBillCode.reset();
+
+                    document.getElementById("panelWrapIdBillCode").style.boxShadow = "none";
+                    document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
+                    $("#billcodeform").trigger("reset");
+                    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+
+                    return false;
+                },
+                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+                    let selectedId = $('#selectedBillCodeId').val();
+
+                    for(let v=0; v < this.fields.length; v++){
+                        let billCodeSelector = document.querySelector('#bill_code' + v);
+
+                        if(selectedId === 'bill_code'+v ) {
+
+                            billCodeSelector.setOptions(optionArray);
+                            billCodeSelector.setValue(selectedValue);
+                            // billCodeSelector.setDisplayValue(selectedValue + '|'+selectedDescription)
+                            only_bill_codes.push($('#new_bill_code').val())
+                            this.fields[v].bill_code = $('#new_bill_code').val();
+                            particularsArray[v].bill_code = $('#new_bill_code').val();
+                            particularsArray[v].description = selectedDescription;
+                            $('#description'+v).val(selectedDescription)
+                            closeSidePanelBillCode()
+                        }
+                        else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+
+                    }
+
+                    $('#new_bill_code').val(null);
+                    $('#new_bill_description').val(null);
+                    $('#selectedBillCodeId').val(null);
                 },
                 updateBillType(){
 
@@ -515,7 +547,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
                     particularsArray.push({
@@ -534,7 +566,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
 
@@ -545,7 +577,7 @@
                     this.virtualSelect(id, 'bill_code', bill_codes)
                     this.virtualSelect(id, 'group', groups)
                     // this.virtualSelect(id, 'bill_type', bill_types)
-                    this.virtualSelect(id, 'bill_code_detail', bill_code_details)
+                    this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
                 },
                 removeRow(id){
                     this.fields.splice(id, 1);
@@ -672,7 +704,8 @@
                 OpenAddCaculatedRow(row) {
                     this.proindexContract(row, row)
 
-                },proindexContract(ind, select_id) {
+                },
+                proindexContract(ind, select_id) {
                     product_index = ind;
                     currect_select_dropdwn_id = select_id;
                     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";

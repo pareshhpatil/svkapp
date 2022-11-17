@@ -394,7 +394,7 @@
                                                 type<span class="required">*
                                                 </span></label>
                                             <div class="col-md-5">
-                                                <select class="form-control" name="response_type"
+                                                <select class="form-control input-sm" name="response_type"
                                                     onchange="responseType(this.value);" data-placeholder="Select type">
                                                     <option value="1">NEFT/RTGS</option>
                                                     <option value="2">Cheque</option>
@@ -472,14 +472,9 @@
                                             <label for="inputPassword12" class="col-md-5 control-label">Bank
                                                 name</label>
                                             <div class="col-md-5">
-                                                <select  class="form-control" name="bank_name"
-                                                    data-placeholder="Select bank name">
-                                                    <option value=""></option>
-                                                    @foreach ($info['bank_value'] as $key=>$item)
-                                                    <option value="{{$item}}">{{$item}}</option>
-
-                                                    @endforeach
-                                                </select>
+                                            <input class="form-control form-control-inline input-sm"
+                                                    name="bank_name"  type="text"
+                                                    value="" placeholder="Bank name" />
                                             </div>
                                         </div>
                                         <div class="form-group">

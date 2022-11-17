@@ -1205,7 +1205,13 @@ class HomeController extends Controller
             $data['button_text'] = 'Renew now';
             $data['return_url'] = '/merchant/package/confirm/' . Session::get('package_link');
             $data['message'] = 'Your current package has expired. Please renew your package to start using your account - <a href="/merchant/package/confirm/ ' . Session::get('package_link') . '">Renew package</a> or <a href="/' . Session::get('choose_package_link') . '">Pick another package</a>';
-        } else {
+        }
+        elseif ($type == 'invalidlink') {
+            $data['title'] = 'Invalid link';
+            $data['return_url'] = '';
+            $data['message'] = 'Invalid link please do not modified encrypted link.';
+        }
+        else {
             $data['title'] = 'Error';
             $data['return_url'] = '';
             $data['message'] = 'Something Went Wrong. Please try again';
