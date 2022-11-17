@@ -79,7 +79,7 @@ class Contract extends ParentModel
             $project_cond = "AND a.project_id = '$project'";
         }
 
-        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,  concat(first_name,' ', last_name) name
+        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
         FROM contract a
         join project b on a.project_id  = b.id
         join customer c on a.customer_id  = c.customer_id

@@ -95,7 +95,7 @@
                                         </span>
                                         @endif
                                         <br>
-                                        <span class="text-gray-400 text-font-12">{{$customer_code}} : <span class="text-gray-900"> {{$v->customer_id}}</span></span>
+                                        <span class="text-gray-400 text-font-12">{{$customer_code}} : <span class="text-gray-900"> {{$v->customer_code}}</span></span>
                                     </td>
                                     <td class="td-c">
                                         ORDER

@@ -138,70 +138,32 @@
                         <!-- <a itemprop="url" title="Swipez" href="{{$server_name}}">
                             <img style="max-height: 50px;" class="logo-default hidden-xs" src="/assets/admin/layout/img/logo.png?v=5" alt="Swipez Online Payment" title="Swipez Online Payment Solutions">
                         </a> -->
-                        <li class="dropdown dropdown-user pull-left hidden-lg hidden-sm">
-                            <a href="javascript:;" class="dropdown-toggle blank white " data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                {{$display_name}}
-                                @if(Session::has('master_login_group'))
-                                <i class="fa fa-angle-down"></i>
-                                @endif
-                            </a>
-                            @if(Session::has('master_login_group'))
-                            <ul class="dropdown-menu">
-                                @foreach (Session::get('master_login_group') as $ml)
-                                <li class="{{$ml['active']}}">
-                                    @if($ml['active']=='active')
-                                    <a href="#">
-                                        <b>{{$ml['display_name']}}</b>
-                                        <p>{{$ml['email_id']}}</p>
-                                    </a>
-                                    @else
-                                    <a href="/merchant/profile/switchlogin/{{$ml['key']}}">
-                                        <b>{{$ml['display_name']}}</b>
-                                        <p>{{$ml['email_id']}}</p>
-                                    </a>
-                                    @endif
-                                </li>
-                                @endforeach
-                            </ul>
-                            @endif
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav pull-right">
-                        <!-- <li class="dropdown hidden-xs">
-                            <a href="javascript:;" class="dropdown-toggle blank white dropdown-l" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                {{$display_name}}
-                                @if(Session::has('master_login_group'))
-                                <i class="fa fa-angle-down"></i>
-                                @endif
-                            </a>
-                            @if(Session::has('master_login_group'))
-                            <ul class="dropdown-menu">
-                                @foreach (Session::get('master_login_group') as $ml)
-                                <li class="{{$ml['active']}}">
-                                    @if($ml['active']=='active')
-                                    <a href="#">
-                                        <b>{{$ml['display_name']}}</b>
-                                        <p>{{$ml['email_id']}}</p>
-                                    </a>
-                                    @else
-                                    <a href="/merchant/profile/switchlogin/{{$ml['key']}}">
-                                        <b>{{$ml['display_name']}}</b>
-                                        <p>{{$ml['email_id']}}</p>
-                                    </a>
-                                    @endif
-                                </li>
-                                @endforeach
-                            </ul>
-                            @endif
-                        </li> -->
-                        <li class="dropdown ">
+                        <li class="dropdown dropdown-user pull-left hidden-lg hidden-md hidden-sm">
                             <a href="javascript:;" class="dropdown-toggle dropdown-l" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <i class="fa fa-user-circle"></i>
                                 <span>{{Session::get('email_id')}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                <a href="/merchant/profile/settings">
+                                    <a href="/merchant/profile/settings">
+                                        <i class="fa fa-cog"></i> Setting </a>
+                                </li>
+                                <li>
+                                    <a href="/logout">
+                                        <i class="fa fa-sign-out"></i> {{$menu['logout']}} </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown hidden-xs">
+                            <a href="javascript:;" class="dropdown-toggle dropdown-l" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="fa fa-user-circle"></i>
+                                <span>{{Session::get('email_id')}}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/merchant/profile/settings">
                                         <i class="fa fa-cog"></i> Setting </a>
                                 </li>
                                 <li>
@@ -215,7 +177,7 @@
                                 <i class="fa fa-th"></i>
                             </a>
                             <ul class="dropdown-menu" style="min-width: 230px;">
-                            <li>
+                                <li>
                                     <a href="#">
                                         <div style="position: relative;">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="v-icon__component theme--light" style="color: rgb(33, 33, 64); caret-color: rgb(33, 33, 64);">
@@ -233,29 +195,29 @@
                                 </li>
                                 <li>
                                     <a href="#">
-                                    <div style="position: relative;">
-                                    <img src="<?php echo '/assets/admin/layout/img/spend.png'; ?>">
-                                        <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Spend Management</span>
-                                    </div>
+                                        <div style="position: relative;">
+                                            <img src="<?php echo '/assets/admin/layout/img/spend.png'; ?>">
+                                            <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Spend Management</span>
+                                        </div>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#">
-                                    <div style="position: relative;">
-                                    <img src="<?php echo '/assets/admin/layout/img/cash.png'; ?>">
-                                        <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Briq Cash</span>
-                                    </div>
+                                        <div style="position: relative;">
+                                            <img src="<?php echo '/assets/admin/layout/img/cash.png'; ?>">
+                                            <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Briq Cash</span>
+                                        </div>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#">
-                                    <div style="position: relative;">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="v-icon__component theme--light" style="color: rgb(33, 33, 64); caret-color: rgb(33, 33, 64);">
-                                            <path d="M18.7219 10.7219C18.7219 11.9259 18.4053 13.0559 17.8509 14.0333L15.4224 10.3087C15.097 9.80952 14.3031 9.80952 13.9777 10.3087L13.1193 11.6253L12.5097 12.5434L10.5239 9.44277C10.1752 8.89826 9.32465 8.89826 8.9759 9.44277L6.09657 13.9392C5.5747 12.9836 5.27808 11.8874 5.27808 10.7219C5.27808 7.00949 8.28757 4 12 4C15.7124 4 18.7219 7.00949 18.7219 10.7219Z" fill="#212140"></path>
-                                            <path d="M20.8799 19.9969L15.4225 11.6269C15.2597 11.3774 14.9798 11.2525 14.7 11.2525C14.4201 11.2525 14.1403 11.3774 13.9774 11.6269L12.5149 13.8701L10.524 10.7609C10.3496 10.4887 10.0498 10.3525 9.74996 10.3525C9.45014 10.3525 9.15033 10.4887 8.97595 10.7609L3.12875 19.892C2.77522 20.4441 3.19147 21.1526 3.86957 21.1526H20.1883C20.8211 21.1526 21.2098 20.5032 20.8799 19.9969ZM4.78897 19.8026L9.74996 12.0555L14.7109 19.8026H4.78897ZM16.3141 19.8026L13.3137 15.1169L14.7 12.9907L19.1415 19.8026H16.3141Z" fill="#212140"></path>
-                                        </svg>
-                                        <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Discover</span>
-                                    </div>
+                                        <div style="position: relative;">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="v-icon__component theme--light" style="color: rgb(33, 33, 64); caret-color: rgb(33, 33, 64);">
+                                                <path d="M18.7219 10.7219C18.7219 11.9259 18.4053 13.0559 17.8509 14.0333L15.4224 10.3087C15.097 9.80952 14.3031 9.80952 13.9777 10.3087L13.1193 11.6253L12.5097 12.5434L10.5239 9.44277C10.1752 8.89826 9.32465 8.89826 8.9759 9.44277L6.09657 13.9392C5.5747 12.9836 5.27808 11.8874 5.27808 10.7219C5.27808 7.00949 8.28757 4 12 4C15.7124 4 18.7219 7.00949 18.7219 10.7219Z" fill="#212140"></path>
+                                                <path d="M20.8799 19.9969L15.4225 11.6269C15.2597 11.3774 14.9798 11.2525 14.7 11.2525C14.4201 11.2525 14.1403 11.3774 13.9774 11.6269L12.5149 13.8701L10.524 10.7609C10.3496 10.4887 10.0498 10.3525 9.74996 10.3525C9.45014 10.3525 9.15033 10.4887 8.97595 10.7609L3.12875 19.892C2.77522 20.4441 3.19147 21.1526 3.86957 21.1526H20.1883C20.8211 21.1526 21.2098 20.5032 20.8799 19.9969ZM4.78897 19.8026L9.74996 12.0555L14.7109 19.8026H4.78897ZM16.3141 19.8026L13.3137 15.1169L14.7 12.9907L19.1415 19.8026H16.3141Z" fill="#212140"></path>
+                                            </svg>
+                                            <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Discover</span>
+                                        </div>
                                     </a>
                                 </li>
                                 <!-- @if(!empty(Session::get('active_service_list')))
@@ -416,8 +378,7 @@
                     });
                 });
 
-                @if($script != '') 
-                {!!$script!!}
+                @if($script != '') {!!$script!!}
                 @endif
 
                 @if(Session::get('default_date_format') == 'd M yyyy')

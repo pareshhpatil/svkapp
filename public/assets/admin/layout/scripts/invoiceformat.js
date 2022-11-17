@@ -460,10 +460,10 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
             else if (index == 'unit') {
-                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'rate') {
-                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
@@ -3091,4 +3091,20 @@ function validateDate() {
         return true;
 
     }
+}
+
+function changerOrderAmountCheck(){
+    order_value  = document.getElementById('total_change_order_amount').value;
+    if(order_value > 0){
+        return true;
+    }else{
+        document.getElementById('change_order_amount_error').style.display = "block";
+        return false;
+    }
+   
+}
+
+function limitMe(evt, txt) {
+    if (evt.which && evt.which == 8) return true;
+    else return (txt.value.length < txt.getAttribute("maxlength"));
 }
