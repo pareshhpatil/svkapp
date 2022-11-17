@@ -74,7 +74,13 @@
                                     @php $readonly=false; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
-                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; " x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                        @if(in_array($column, $readonly_array))
+                                            @php $readonly=true; @endphp
+                                        @endif
+                                        @if(in_array($column, $number_array))
+                                            @php $number='type=number step=0.00'; @endphp
+                                        @endif
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif" x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
                                                 <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
@@ -111,15 +117,22 @@
                                             @break
 
                                             @case('original_contract_amount')
+                                                <span x-show="field.show{{$column}}">
+                                                        <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        @keyup="removeValidationError(`{{$column}}`, `${index}`)"
+                                                               x-model="field.{{$column}}"
+                                                               value="" name="{{$column}}[]"
+                                                               style="width: 100%;" class="form-control input-sm " x-show="field.showoriginal_contract_amount">
+                                                    </span>
                                                 <template x-if="field.bill_type!='Calculated'">
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
-                                                    <span x-show="field.show{{$column}}">
+                                                    {{--<span x-show="field.show{{$column}}">
                                                         <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
                                                         @keyup="removeValidationError(`{{$column}}`, `${index}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
                                                                style="width: 100%;" class="form-control input-sm ">
-                                                    </span>
+                                                    </span>--}}
                                                 </template>
 
                                                 <template x-if="field.bill_type=='Calculated'">
@@ -134,9 +147,9 @@
                                                         <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                         <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
-                                                    <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" type="hidden" x-model="field.{{$column}}" value="" name="{{$column}}[]"  x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" style="width: 100%;" class="form-control input-sm ">
-                                                    </span>
+                                                    {{--<span x-show="field.show{{$column}}">
+                                                        <input :id="`{{$column}}${index}`" x-model="field.{{$column}}" value="" name="{{$column}}[]" @if($readonly) type="hidden" @else  type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif style="width: 100%;" class="form-control input-sm ">
+                                                    </span>--}}
                                                 </template>
 
 
@@ -193,11 +206,11 @@
         </div>
     </div>
 
+    <script src="{{ asset('assets/admin/layout/scripts/contract-virtual-select.js') }}"></script>
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
         }
-
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
         var bill_codes = JSON.parse('{!! json_encode($bill_codes) !!}');
@@ -225,36 +238,66 @@
                 count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
 
-                addNewBillCode(){
-                    var data = $("#billcodeform").serialize();
-
-                    var actionUrl = '/merchant/billcode/new';
-                    $.ajax({
-                        type: "POST",
-                        url: actionUrl,
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            bill_code : $('#new_bill_code').val(),
-                            bill_description : $('#new_bill_description').val(),
-                            project_id : $('#project_id').val()
-                        },
-                        success: function (data) {
-                            console.log(data);
-                        }
-                    });
-
+                ...contractVirtualSelect ,
+                addNewBillCode(token){
+                    console.log(token);
                     let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
+                    let goAhead = true;
+                    if(new_bill_code === '') {
+                        $('#new_bill_code_message').html('Please enter bill code');
+                        goAhead = false
+                    }else{
+                        $('#new_bill_code_message').html('');
+                    }
+                    if( new_bill_description === ''){
+                        $('#new_bill_description_message').html('Please enter bill description');
+                        goAhead = false
+                    }else {
+                        $('#new_bill_description_message').html('');
+                    }
 
-                    let label = new_bill_code + ' | ' + new_bill_description
+                    if(goAhead) {
 
-                    bill_codes.push(
-                        {label: label, value : new_bill_code, description : new_bill_description }
-                    )
+                        let actionUrl = '/merchant/billcode/new';
+                        $.ajax({
+                            type: "POST",
+                            url: actionUrl,
+                            data: {
+                                _token: token,
+                                bill_code: new_bill_code,
+                                bill_description: new_bill_description,
+                                project_id: $('#project_id').val()
+                            },
+                            success: function (data) {
+                                console.log(data);
+                            }
+                        });
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
 
-                    // initializeBillCodes();
+                        let label = new_bill_code + ' | ' + new_bill_description
+
+                        bill_codes.push(
+                            { value: new_bill_code, label: label, description: new_bill_description }
+                        )
+
+                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+
+                        // initializeBillCodes();
+                        return false;
+                    }
+                },
+                closeBillCodePanel() {
+                    let selectedId = $('#selectedBillCodeId').val();
+
+                    var selectedBillCode = document.querySelector('#'+selectedId);
+                    selectedBillCode.reset();
+
+                    document.getElementById("panelWrapIdBillCode").style.boxShadow = "none";
+                    document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
+                    $("#billcodeform").trigger("reset");
+                    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+
                     return false;
                 },
                 updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
@@ -264,9 +307,13 @@
                         let billCodeSelector = document.querySelector('#bill_code' + v);
 
                         if(selectedId === 'bill_code'+v ) {
-                            billCodeSelector.setOptions(optionArray, selectedValue);
-                            this.fields[v].bill_code = billCodeSelector.value;
-                            particularsArray[v].bill_code = billCodeSelector.value;
+
+                            billCodeSelector.setOptions(optionArray);
+                            billCodeSelector.setValue(selectedValue);
+                            // billCodeSelector.setDisplayValue(selectedValue + '|'+selectedDescription)
+                            only_bill_codes.push($('#new_bill_code').val())
+                            this.fields[v].bill_code = $('#new_bill_code').val();
+                            particularsArray[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].description = selectedDescription;
                             $('#description'+v).val(selectedDescription)
                             closeSidePanelBillCode()
@@ -279,74 +326,12 @@
                     $('#new_bill_description').val(null);
                     $('#selectedBillCodeId').val(null);
                 },
-                initializeDropdowns(){
-                    for(let v=0; v < this.fields.length; v++){
-                        this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
-                        this.virtualSelect(v, 'group', groups, this.fields[v].group)
-                        // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
-                        this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
-                    }
-                },
-                virtualSelect(id, type, options, selectedValue){
-                    VirtualSelect.init({
-                        ele: '#'+type+id,
-                        options: options,
-                        dropboxWrapper: 'body',
-                        allowNewOption: true,
-                        multiple:false,
-                        selectedValue : selectedValue,
-                        additionalClasses : 'vs-option'
-                    });
-
-                    $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
-                        $(this).addClass('form-control input-sm');
-                    })
-
-                    $('#'+type+id).change(function () {
-                        if(type === 'bill_code') {
-                            particularsArray[id].bill_code = this.value
-                            let displayValue = this.getDisplayValue().split('|');
-                            if(displayValue[1] !== undefined) {
-                                $('#description'+id).val(displayValue[1].trim())
-                                particularsArray[id].description = displayValue[1].trim();
-                            }
-                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
-                                only_bill_codes.push(this.value)
-                                $('#new_bill_code').val(this.value)
-                                $('#selectedBillCodeId').val(type + id)
-                                billIndex(0, 0, 0)
-                            }
-                        }
-                        if(type === 'group'){
-                            if(!groups.includes(this.value) && this.value !== '') {
-                                groups.push(this.value)
-                                for (let g = 0; g < particularsArray.length; g++) {
-                                    let groupSelector = document.querySelector('#group' + g);
-                                    console.log('group'+id, 'group'+g)
-                                    if('group'+id === 'group'+g)
-                                        groupSelector.setOptions(groups, this.value);
-                                    else
-                                        groupSelector.setOptions( groups, particularsArray[g].group);
-                                }
-                            }
-                            particularsArray[id].group = this.value
-                        }
-
-                        if(type === 'bill_type'){
-                            console.log(fields);
-                            particularsArray[id].bill_type = this.value
-                            if(this.value === 'Calculated')
-                                fields[id].bill_type = this.value
-                        }
-
-                        if(type === 'bill_code_detail'){
-                            particularsArray[id].bill_code_detail = this.value
-                        }
-                    });
-
-                },
                 updateBillType(){
 
+                },
+                checkBillType(field){
+                  if(field.bill_type === 'Calculated')  field.showoriginal_contract_amount = false
+                    else  field.showoriginal_contract_amount = true
                 },
                 calc(field) {
                     try {
@@ -422,7 +407,13 @@
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
                         }else {
-                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            if( parseInt(this.fields[p].original_contract_amount) > 0 )
+                                $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            else {
+                                $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                                addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
+                                valid = false
+                            }
                         }
                         // this.fields[p].group = particularsArray[p].group
                     }
@@ -444,9 +435,9 @@
                         },
                         success: function(data) {
                             if(back === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 1, 'contract_id' => $contract_id]) }}';
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 1, 'contract_id' => $contract_id]) }}';
                             if(next === 1)
-                                window.location = '{{ route('contract.create.new', ['step' => 3, 'contract_id' => $contract_id]) }}'
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 3, 'contract_id' => $contract_id]) }}'
                         }
                     })
                 },
@@ -475,7 +466,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
                     particularsArray.push({
@@ -494,7 +485,7 @@
                         'cost_code' : null,
                         'cost_type' : null,
                         'group' : null,
-                        'bill_code_detail' : null,
+                        'bill_code_detail' : 'Yes',
                         'show':false
                     })
 
@@ -505,7 +496,7 @@
                     this.virtualSelect(id, 'bill_code', bill_codes)
                     this.virtualSelect(id, 'group', groups)
                     // this.virtualSelect(id, 'bill_type', bill_types)
-                    this.virtualSelect(id, 'bill_code_detail', bill_code_details)
+                    this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
                 },
                 removeRow(id){
                     this.fields.splice(id, 1);
@@ -548,23 +539,41 @@
                 },
 
                 setAOriginalContractAmount() {
-                    selected_field_int = document.getElementById('selected_field_int').value;
-                    calc_amount = document.getElementById("calc_amount").value;
-                    document.getElementById('original_contract_amount'+selected_field_int).type = 'hidden';
-                    try{
-                        this.fields[selected_field_int].original_contract_amount = calc_amount;
-                        this.fields[selected_field_int].showoriginal_contract_amount = false;
-                    }catch(o){}
+                    let valid = true;
+                    if ($('input[name^=calc-checkbox]:checked').length <= 0) {
+                        $('#calc_checkbox_error').html('Please select atleast one particular');
+                        valid = false;
+                    }else
+                        $('#calc_checkbox_error').html('');
 
-                    setOriginalContractAmount();
-                    this.calc(this.fields[selected_field_int]);
-                    this.saveParticulars();
-                    this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                    this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === 0 || $('#calc_perc').val() < 0 ) {
+                        $('#calc_perc_error').html('Please enter percentage');
+                        valid = false
+                    }else
+                        $('#calc_perc_error').html('');
+
+                    if(valid) {
+                        selected_field_int = document.getElementById('selected_field_int').value;
+                        calc_amount = document.getElementById("calc_amount").value;
+                        // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
+                        try {
+                            this.fields[selected_field_int].original_contract_amount = calc_amount;
+                            this.fields[selected_field_int].showoriginal_contract_amount = false;
+                        } catch (o) {
+                        }
+
+                        setOriginalContractAmount();
+                        this.calc(this.fields[selected_field_int]);
+                        this.saveParticulars();
+                        this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
+                        this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                    }
 
                 },
                 OpenAddCaculated(field) {
                     console.log(field.introw);
+                    field.showoriginal_contract_amount = false;
+                    //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
                     this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
                     document.getElementById('selected_field_int').value = field.introw;
                     this.OpenAddCaculatedRow(field.introw);
@@ -614,7 +623,8 @@
                 OpenAddCaculatedRow(row) {
                     this.proindexContract(row, row)
 
-                },proindexContract(ind, select_id) {
+                },
+                proindexContract(ind, select_id) {
                     product_index = ind;
                     currect_select_dropdwn_id = select_id;
                     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";

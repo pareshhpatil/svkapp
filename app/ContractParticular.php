@@ -56,7 +56,7 @@ class ContractParticular extends Model
         'cost_code' => null,
         'cost_type' => null,
         'group' => null,
-        'bill_code_detail' => null,
+        'bill_code_detail' => 'Yes',
         'show' => false
     ];
 

@@ -53,6 +53,8 @@
                                data-provide="datepicker" data-date-autoclose="true"
                                data-date-today-highlight="true"
                                onchange="this.dispatchEvent(new InputEvent('input'))"/>
+                        {{--<input id="contract_date" class="form-control form-control-inline" type="text"  data-date-format="{{ Session::get('default_date_format')}}"
+                               required @if($contract_date != null) value='<x-localize :date="$contract_date" type="date" />' @endif/>--}}
                         @error('contract_date')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -67,7 +69,10 @@
                                data-date-today-highlight="true" @if($bill_date != null)  value='<x-localize :date="$bill_date" type="date" />' @endif
                                onchange="this.dispatchEvent(new InputEvent('input'))"
                         />
+                        {{--<input id="billing_date" class="form-control form-control-inline" type="text"  data-date-format="{{ Session::get('default_date_format')}}"
+                               required @if($bill_date != null)  value='<x-localize :date="$bill_date" type="date" />' @endif/>--}}
                         @error('bill_date')<div class="text-danger">{{ $message }}</div>@enderror
+                        <div class="text-danger" id="billing_date_error"></div>
                     </div>
                 </div>
 
@@ -140,7 +145,7 @@
                         project_id: data,
                     },
                     success: function(data) {
-                        console.log(data);
+                        // console.log(data);
                         $('#project_name').val(data.project.project_name)
                         $('#customer_id').val(data.project.customer_id)
                         let company_name = (data.project.company_name === null) ? data.project.customer_id : data.project.customer_company_code
@@ -152,8 +157,16 @@
                     }
                 });
             });
-            // }
+
+
         });
+        function validateDates(){
+            if(Date.parse($('#contract_date').val()) > Date.parse($('#billing_date').val())) {
+                $('#billing_date_error').html('Billing date should be greater than or equal to Contract date')
+                return false
+            }else $('#billing_date_error').html('');
+            return true;
+        }
     </script>
 </div>
 <div class="portlet light bordered">
@@ -162,7 +175,7 @@
             <div class="col-md-12">
                 <div class="pull-right">
                     <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                    <button type="submit" class="btn blue">Add particulars</button>
+                    <button type="submit" class="btn blue" onclick="return validateDates()">Add particulars</button>
                 </div>
             </div>
         </div>

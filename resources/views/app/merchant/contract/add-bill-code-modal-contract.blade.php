@@ -113,7 +113,7 @@
         <div class='cnt223'>
             <h3 class="modal-title">Add bill code
 
-            <a class="close " data-toggle="modal"  onclick="return closeSidePanelBillCode();">
+            <a class="close " data-toggle="modal" @click="return closeBillCodePanel();">
                     <button type="button" class="close" aria-hidden="true"></button></a>
             </h3>
             <hr>
@@ -132,6 +132,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="45" name="bill_code" id="new_bill_code" class="form-control" placeholder="Enter bill code">
+                                            <div class="text-danger" id="new_bill_code_message"></div>
                                         </div>
                                     </div>
                                     <!-- <div class="form-group">
@@ -146,6 +147,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="100" name="bill_description" id="new_bill_description" class="form-control" placeholder="Enter bill description">
+                                            <div class="text-danger" id="new_bill_description_message"></div>
                                             <input type="hidden" id="selectedBillCodeId" value=""/>
                                         </div>
                                     </div>
@@ -156,8 +158,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="pull-right">
-                                        <a href="#" onclick="return closeSidePanelBillCode();" class="btn default">Cancel</a>
-                                        <input type="button" value="Add bill code" @click="return addNewBillCode();" class="btn blue" />
+                                        <a href="#" @click="return closeBillCodePanel();" class="btn default">Cancel</a>
+                                        <input type="button" value="Add bill code" @click="return addNewBillCode('{{ csrf_token() }}');" class="btn blue" />
                                     </div>
                                 </div>
                             </div>

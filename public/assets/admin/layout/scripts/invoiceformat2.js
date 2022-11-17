@@ -464,7 +464,7 @@ function addRowinCalcTable(ind) {
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
             try {
-                var bill_code = document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+                var bill_code = particularray[int].bill_code;
             } catch (o) {
                 var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
             }
@@ -773,13 +773,16 @@ function editCaculatedRow(row) {
     OpenAddCaculatedRow(row)
     document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row).value
     calc_json = document.getElementById("calculated_row" + row).value;
-    calc_json = JSON.parse(calc_json)
-
-    for (const element of calc_json) {
-        amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
-        document.getElementById("calc" + element).checked = true
-        inputCalcClicked(element, amount_value)
+    if(calc_json!="")
+    {
+        calc_json = JSON.parse(calc_json)
+        for (const element of calc_json) {
+            amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
+            document.getElementById("calc" + element).checked = true
+            inputCalcClicked(element, amount_value)
+        }
     }
+    
 
 }
 
@@ -2013,7 +2016,7 @@ function calculatetax(tax_applicable_val, tax_applicable_attr, is_update = '') {
                             if (is_update_particulars == 1) {
                                 $('input[name="tax_applicable[]"]')[i].value = particular_total;
                             } else {
-                                tax_app = $('input[name="tax_applicable[]"]')[i].value;
+                   ,             tax_app = $('input[name="tax_applicable[]"]')[i].value;
                             }
                         }
                     }
@@ -3159,6 +3162,7 @@ function deleteattchment()
     if (index >-1) {
         pathlist.splice(index, 1);
     }
+<<<<<<< HEAD
     for(var i=0;i<pathlist.length;i++)
     {
         if(lists!='')
@@ -3171,6 +3175,19 @@ function deleteattchment()
     }
    
     document.getElementById('attach-'+attach_pos).value=lists;
+=======
+    for (var i = 0; i < pathlist.length; i++) {
+        if (lists != '') {
+            lists = lists + ',' + pathlist[i];
+        } else {
+            lists = pathlist[i];
+        }
+    }
+    if (particularray !== undefined) {
+        particularray[attach_pos].attachments = lists;
+    }
+    document.getElementById('attach-' + attach_pos).value = lists;
+>>>>>>> b66b693dcbec7ca6486e6658d8f59cdcc17e486d
     setBillCodeMenuData();
 }
 

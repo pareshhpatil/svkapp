@@ -393,7 +393,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
-  Route::any('order/create{version}', 'OrderController@create')->name('create.orderv2');
+  Route::any('order/create', 'OrderController@create')->name('create.orderv2');
   Route::any('order/update/{link}', 'OrderController@update')->name('update.order');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
   Route::any('order/save', 'OrderController@save')->name('save.order');
