@@ -172,7 +172,7 @@
                                     </div>
                                     <div id="yesview"  style="display:none;">
                                     <div class="row w-full   bg-white  shadow-2xl font-rubik m-2 py-10" style="max-width: 1400px;">
-                                        <div class="tabbable-line col-md-2 col-sm-3 col-xs-3">
+                                        <div class="tabbable-line col-md-2 col-sm-3 col-xs-3 mt-1">
            
                                             <div class="container_2 page-sidebar1 navbar-collapse collapse" >
 
@@ -212,8 +212,10 @@
 <script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
 
 <script>
+   
     var newdocfileslist=[];
  var billcode='';
+ var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
  const { Compressor } = Uppy;
 //uppy file upload code
 var uppy_attach = new Uppy.Uppy({ 
@@ -221,11 +223,29 @@ var uppy_attach = new Uppy.Uppy({
     autoProceed: true,
     restrictions: {
         maxFileSize: 9000000,
-        maxNumberOfFiles: 10,
+        maxNumberOfFiles: '{{env('INVOICE_ATTACHMENT_LIMIT')}}',
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
     },
     onBeforeFileAdded: (currentFile, files) => {
+        var remainleng=0;
+        if(document.getElementById("attach-"+attach_pos).value!='')
+            remainleng=document.getElementById("attach-"+attach_pos).value.split(",").length;
+            
+        var counts=envlimit-remainleng;
+        console.log('path limit'+remainleng);
+       console.log('env limit'+envlimit);
+       console.log('remain limit'+counts);
+      
+        if(remainleng==envlimit)
+        {
+            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            return Promise.reject('too few files')
+        }else if (Object.keys(files).length > counts-1) 
+         {
+            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+       return Promise.reject('too few files')
+     }
         try{
              name = document.getElementById("bill_code"+attach_pos).value + '_' + currentFile.name
         }catch(o)
@@ -246,7 +266,7 @@ var uppy_attach = new Uppy.Uppy({
 });
 uppy_attach.use( Compressor, {
   quality: 0.6,
-  limit: 10,
+  limit: '{{env('INVOICE_ATTACHMENT_LIMIT')}}',
 });
 uppy_attach.use(Uppy.Dashboard, {
     target: '#drag-drop-area-bill', 
@@ -332,6 +352,7 @@ uppy_attach.on('complete', (result) => {
     //console.log('failed files:', result.failed)
 });
 uppy_attach.on('error', (error) => {
+    document.getElementById("up-error").innerHTML = error;
     ///console.error(error.stack);
 });
 </script>
