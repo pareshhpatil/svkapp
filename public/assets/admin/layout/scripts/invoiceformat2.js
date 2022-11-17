@@ -3181,7 +3181,7 @@ function deleteattchment()
 function setBillCodeMenuData()
 {
     
-    current_bill_name=document.getElementById('description'+attach_pos).innerText;
+    current_bill_name=document.getElementById('description'+attach_pos).value;
     var sortname=current_bill_name.length>10?current_bill_name.slice(0,10)+'...':current_bill_name;
     var paths= document.getElementById('attach-'+attach_pos).value;
    
@@ -3234,7 +3234,7 @@ if(pathlist[0]!='')
                        
           '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
               
-          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
+          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+filename.substring(0,35)+'</h4>'+
               '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
                
                   '</div></div>'+
