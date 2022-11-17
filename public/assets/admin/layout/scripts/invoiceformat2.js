@@ -3162,7 +3162,6 @@ function deleteattchment()
     if (index >-1) {
         pathlist.splice(index, 1);
     }
-<<<<<<< HEAD
     for(var i=0;i<pathlist.length;i++)
     {
         if(lists!='')
@@ -3175,21 +3174,9 @@ function deleteattchment()
     }
    
     document.getElementById('attach-'+attach_pos).value=lists;
-=======
-    for (var i = 0; i < pathlist.length; i++) {
-        if (lists != '') {
-            lists = lists + ',' + pathlist[i];
-        } else {
-            lists = pathlist[i];
-        }
-    }
-    if (particularray !== undefined) {
-        particularray[attach_pos].attachments = lists;
-    }
-    document.getElementById('attach-' + attach_pos).value = lists;
->>>>>>> b66b693dcbec7ca6486e6658d8f59cdcc17e486d
     setBillCodeMenuData();
 }
+
 
 function setBillCodeMenuData()
 {
