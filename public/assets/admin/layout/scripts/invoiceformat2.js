@@ -2016,7 +2016,7 @@ function calculatetax(tax_applicable_val, tax_applicable_attr, is_update = '') {
                             if (is_update_particulars == 1) {
                                 $('input[name="tax_applicable[]"]')[i].value = particular_total;
                             } else {
-                   ,             tax_app = $('input[name="tax_applicable[]"]')[i].value;
+                                tax_app = $('input[name="tax_applicable[]"]')[i].value;
                             }
                         }
                     }
