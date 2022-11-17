@@ -3007,6 +3007,9 @@ class InvoiceController extends AppController
     public function preview($link)
     {
         $request_id = Encrypt::decode($link);
+        if (strlen($request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $customer = $this->invoiceModel->getTableRow('customer', 'customer_id', $invoice->customer_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
