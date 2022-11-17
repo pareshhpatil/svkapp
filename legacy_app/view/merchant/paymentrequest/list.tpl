@@ -108,7 +108,7 @@
                                         Amount
                                     </th>
                                     <th>
-                                        cost
+                                        Net billing
                                     </th>
                                     <th>
                                         Due date

@@ -573,7 +573,7 @@ function showupdatebillcode(ind, project_id, code, desc) {
     document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-    document.getElementById("project_id").value = project_id;
+    document.getElementById("project_id_update").value = project_id;
     document.getElementById("bill_id").value = ind;
     document.getElementById("bill_code").value = code
     document.getElementById("bill_description").value = desc;;
@@ -772,14 +772,6 @@ function updatebillcode() {
                 alert(data);
 
                 if (data[2] > 0) {
-
-
-
-
-
-
-
-
                 }
                 closeSideUpdatePanelBillCode()
             }
@@ -3089,13 +3081,14 @@ function imposeMinMax(el) {
 
 function validateDate() {
 
-    var end_date = document.getElementById('end_date').value;
-    var start_date = document.getElementById('start_date').value;
+    var end_date = Date.parse(document.getElementById('end_date').value);
+    var start_date = Date.parse(document.getElementById('start_date').value);
 
     if (end_date <= start_date) {
-        return true;
-    } else {
-        alert("Project end date cant be before project start date");
+        document.getElementById('project_date_error').style.display = "block";
         return false;
+    } else {
+        return true;
+
     }
 }

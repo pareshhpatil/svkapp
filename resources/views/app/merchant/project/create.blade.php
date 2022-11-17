@@ -11,6 +11,10 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="row">
         @include('layouts.alerts')
+        <div id="project_date_error" class="alert alert-block alert-danger fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert"></button>
+            <p>Error! Project end date cant be before project start date</p>
+        </div>
         <div class="col-md-12">
             <div class="portlet light bordered">
                 <div class="portlet-body form">
@@ -62,7 +66,7 @@
                                         <label class="control-label col-md-3">End Date <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input class="form-control date-picker" id="end_date"  type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date" />
+                                            <input class="form-control date-picker" id="end_date" type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date" />
                                         </div>
                                     </div>
                                     <div class="form-group">
