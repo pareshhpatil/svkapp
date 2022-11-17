@@ -276,7 +276,7 @@
                         let label = new_bill_code + ' | ' + new_bill_description
 
                         bill_codes.push(
-                            {label: label, value: new_bill_code, description: new_bill_description}
+                            { value: new_bill_code, label: label, description: new_bill_description }
                         )
 
                         this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
@@ -292,7 +292,10 @@
                         let billCodeSelector = document.querySelector('#bill_code' + v);
 
                         if(selectedId === 'bill_code'+v ) {
-                            billCodeSelector.setOptions(optionArray, $('#new_bill_code').val());
+                            console.log(optionArray);
+                            billCodeSelector.setOptions(optionArray);
+                            billCodeSelector.setValue(selectedValue);
+                            // billCodeSelector.setDisplayValue(selectedValue + '|'+selectedDescription)
                             only_bill_codes.push($('#new_bill_code').val())
                             this.fields[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].bill_code = $('#new_bill_code').val();
