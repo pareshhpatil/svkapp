@@ -584,6 +584,7 @@ function showupdatebillcode(ind, project_id, code, desc) {
 function showupdatebillcodeattachment(pos) {
     attach_pos=pos;
     billcode=document.getElementById("bill_code"+attach_pos).value;
+    document.getElementById("up-error").innerHTML = "";
     document.getElementById("listtab1").classList.add('active');
     document.getElementById("tab1").classList.add('active');
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
@@ -686,18 +687,33 @@ function closeSidePanelcalc() {
     return false;
 }
 
-function addbillcode() {
+function addbillcode(){
 
     var comefrom = document.getElementById("comefrom").value;
     var pid = document.getElementById("project_id").value;
     var data = $("#billcodeform").serialize();
-
+  try{
+        if(jQuery('input[name="bill_code"]').val()=='')
+        {
+            document.getElementById("bill_code_error").innerHTML="*Bill code required";
+            
+          return false;
+        }else if(jQuery('input[name="bill_description"]').val()=='')
+        {
+            document.getElementById("bill_code_error").innerHTML="*Bill description required";
+            return false;
+        }else
+        {
+            document.getElementById("bill_code_error").innerHTML="";
+        }
+  }catch(o){}
     var actionUrl = '/merchant/billcode/create';
     $.ajax({
         type: "POST",
         url: actionUrl,
         data: data,
         success: function (data) {
+           
 
 try{
             if (document.getElementsByClassName('dataTables_empty'))
@@ -2981,22 +2997,25 @@ function deleteattchment()
 {
     var fullurl= document.getElementById('removepath').value;
     var paths= document.getElementById('attach-'+attach_pos).value;
-   
+
     var pathlist=paths.split(",");
     var lists='';
     var index = pathlist.indexOf(fullurl);
-    if (index !== -1) {
+    
+    if (index >-1) {
         pathlist.splice(index, 1);
     }
     for(var i=0;i<pathlist.length;i++)
     {
         if(lists!='')
          {
-            lists+','+pathlist[i];
+           
+            lists= lists+','+pathlist[i];
          }else{
             lists=pathlist[i];
          }
     }
+   
     document.getElementById('attach-'+attach_pos).value=lists;
     setBillCodeMenuData();
 }
@@ -3032,6 +3051,7 @@ if(pathlist[0]!='')
         {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
             var sortname=filename.length>10?filename.slice(0,10)+'...':filename;
+            var uniq_id=filename.length>7?filename.substring(-7):filename;
             var extension = pathlist[i].split('.').pop();
           var classnm='';
           var frameclassnm='fade';
@@ -3047,27 +3067,27 @@ if(pathlist[0]!='')
 
             ul+= ' <li>'+
           
-         '<a style="color: #636364;"  id="a'+sortname.trim()+'" class="'+classnm+'" href="#tab_'+sortname.trim()+'" data-toggle="tab">'+
-         '<span onclick="removeactive(\''+sortname.trim()+'\',\''+sortname.trim()+'\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+sortname+'</span>'+
+         '<a style="color: #636364;"  id="a'+uniq_id.trim()+'" class="'+classnm+'" href="#tab_'+uniq_id.trim()+'" data-toggle="tab">'+
+         '<span onclick="removeactive(\''+uniq_id.trim()+'\',\''+uniq_id.trim()+'\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+sortname+'</span>'+
           ' </a>  </li>';
        
        
-          framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+sortname.trim()+'" >'+
+          framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+uniq_id.trim()+'" >'+
                        
-          '<div class="grid grid-cols-3  gap-4 mb-2">'+
-              '<div class="col-span-2">'+
+          '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
+              
           '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
-              '</div> <div > <h2 class="pull-right" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
+              '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
                
-                  '</div> </div>'+
-         ' <p class="mt-2">';
+                  '</div></div>'+
+         ' <div class="row"><div>';
          if(extension.toLowerCase()=='pdf')
          {
             framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
          }else{
             framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
          }
-         framedata+= '</p> </div>';
+         framedata+= '</div></div> </div>';
        
         }
         data+=ul+'</ul>';

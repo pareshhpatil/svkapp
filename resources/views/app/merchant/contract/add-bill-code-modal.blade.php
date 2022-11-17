@@ -147,6 +147,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="100" name="bill_description" class="form-control" placeholder="Enter bill description">
+                                          <br/>  <span style="font-size: 12px; color: red;" id="bill_code_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +158,7 @@
                                 <div class="col-md-12">
                                     <div class="pull-right">
                                         <a href="#" onclick="return closeSidePanelBillCode();" class="btn default">Cancel</a>
-                                        <input type="submit" value="Add bill code" onclick="return addbillcode();" class="btn blue" />
+                                        <input type="button" value="Add bill code" onclick="return addbillcode();" class="btn blue" />
                                     </div>
                                 </div>
                             </div>
