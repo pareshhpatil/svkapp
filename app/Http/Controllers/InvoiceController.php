@@ -926,15 +926,13 @@ class InvoiceController extends AppController
 
             $selectedDoc = array();
             $selectnm = '';
-            if (!empty($parentnm))
-            {
-                $docpath='';
+            if (!empty($parentnm)) {
+                $docpath = '';
                 $selectnm = $parentnm;
-            }
-            else if (isset($data['docs'][0]['id'])) {
+            } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
-        
+
 
             if (empty($sub)) {
                 if (isset($data['docs'][0]['menu'][0]['id']))
@@ -1258,12 +1256,10 @@ class InvoiceController extends AppController
             $data = $this->getDataBillCodeAttachment($tt, $doclist, $data);
             $selectedDoc = array();
             $selectnm = '';
-            if (!empty($parentnm))
-            {
-                $docpath='';
+            if (!empty($parentnm)) {
+                $docpath = '';
                 $selectnm = $parentnm;
-            }
-            else if (isset($data['docs'][0]['id'])) {
+            } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
 
@@ -2868,6 +2864,9 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+        if (strlen($request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
