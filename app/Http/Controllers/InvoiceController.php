@@ -927,10 +927,14 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm))
+            {
+                $docpath='';
                 $selectnm = $parentnm;
+            }
             else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
+        
 
             if (empty($sub)) {
                 if (isset($data['docs'][0]['menu'][0]['id']))
@@ -1255,7 +1259,10 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm))
+            {
+                $docpath='';
                 $selectnm = $parentnm;
+            }
             else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
@@ -2440,7 +2447,7 @@ class InvoiceController extends AppController
                         $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                        $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                        $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                     }
                     if (empty($bill_desc)) {
                         if (!empty($data['description']))
@@ -2477,7 +2484,7 @@ class InvoiceController extends AppController
                     $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
 
                     $counts = 0;
                     if (!empty($data['attachments']))
@@ -2537,7 +2544,7 @@ class InvoiceController extends AppController
                     $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                     $counts = 0;
                     if (!empty($data['attachments']))
                         $counts = count(json_decode($data['attachments'], 1));

@@ -517,29 +517,28 @@ var uppy =new Uppy.Uppy({
         maxNumberOfFiles: envlimit,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
-    }
+    },
     onBeforeFileAdded: (currentFile, files) => {
-        var remainleng=document.getElementById("attach-"+attach_pos).value.split(",").length;
+                var remainleng=0;
+        if(document.getElementById("file_upload").value!='')
+            remainleng=document.getElementById("file_upload").value.split(",").length;
+     
         var counts=envlimit-remainleng;
-        console.log('path limit'+remainleng);
-       console.log('env limit'+envlimit);
-       console.log('remain limit'+counts);
-      
         if(remainleng==envlimit)
         {
-            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            uppy.info({
+  message: 'upload limit exceeded',
+  details: 'File couldn’t be uploaded because you can upload only '+envlimit+ 'files',
+}, 'error', 5000)
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
             return Promise.reject('too few files')
-        }else if (Object.keys(files).length > counts) 
+        }else if (Object.keys(files).length > counts-1) 
          {
-            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
        return Promise.reject('too few files')
-     }else
-     {
-        return Promise.resolve()
+     }else{
+        return true; 
      }
-       
-    
-     
     }
 });
 
