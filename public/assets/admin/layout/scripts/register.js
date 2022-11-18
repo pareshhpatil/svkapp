@@ -30,7 +30,7 @@ function GSTAvailable(val) {
         document.getElementById('gst_div').style.display = 'none';
         document.getElementById('cdiv').style.display = 'block';
         document.getElementById('submit-div').style.display = 'block';
-        document.getElementById('gst_number').setAttribute("required", "false");
+        document.getElementById('gst_number').required = false;
         document.getElementById('company_name').value = document.getElementById('exist_company').value;
         document.getElementById("pan").value = '';
     }

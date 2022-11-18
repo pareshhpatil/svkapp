@@ -67,16 +67,21 @@
                                                                                                 ?>" alt="Swipez Online Payment" title="Swipez Online Payment Solutions">
                         </a> -->
 
-                        <li class="dropdown dropdown-user pull-left hidden-lg hidden-sm visible-xs">
-                            <a style="cursor:auto;" class="dropdown-toggle blank">
-                                <?php
-                                if (strlen($this->display_name) > 26) {
-                                    echo substr($this->display_name, 0, 24) . '...';
-                                } else {
-                                    echo $this->display_name;
-                                }
-                                ?>
+                        <li class="dropdown hidden-sm hidden-md">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="" data-close-others="true">
+                                <i class="fa fa-user-circle"></i>
+                                <span><?php echo $this->talk_email_id; ?> </span>
                             </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/merchant/profile/settings">
+                                        <i class="fa fa-cog"></i> Setting </a>
+                                </li>
+                                <li>
+                                    <a href="/logout">
+                                        <i class="fa fa-sign-out"></i> <?php echo $menu['logout']; ?> </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav pull-right">
@@ -118,7 +123,7 @@
                                 </ul>
                             <?php } ?>
                         </li> -->
-                        <li class="dropdown ">
+                        <li class="dropdown hidden-xs">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="" data-close-others="true">
                                 <i class="fa fa-user-circle"></i>
                                 <span><?php echo $this->talk_email_id; ?> </span>

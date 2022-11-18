@@ -32,7 +32,7 @@
         color: #333;
     }
 
-    .table > tbody > tr > td {
+    .table>tbody>tr>td {
         font-size: 12px !important;
         padding: 3px !important;
         border: 1px solid #D9DEDE;
@@ -41,10 +41,9 @@
         vertical-align: middle !important;
     }
 
-    .table > tbody > tr > td > div > label {
+    .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
-
 </style>
 @section('content')
 <div class="page-content">
@@ -90,11 +89,14 @@
     <div class="row">
         <div class="col-md-12">
             @include('layouts.alerts')
-
+            <div id="change_order_amount_error" class="alert alert-block alert-danger fade in" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert"></button>
+                <p>Error! Change Order Amount cannot be 0</p>
+            </div>
             <div class="portlet light bordered">
                 <div class="portlet-body form">
                     <!--<h3 class="form-section">Profile details</h3>-->
-                    <form action="/merchant/order/save" id="frm_expense" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
+                    <form action="/merchant/order/save" id="frm_expense" onsubmit="return changerOrderAmountCheck();loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-body">
                             <!-- Start profile details -->
@@ -219,6 +221,10 @@
                                         <td class="col-id-no">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
+                                        @elseif ($v == 'order_description')
+                                        <td class="col-id-no">
+                                            <input type="text" maxlength="200"  onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        </td>
                                         @else
                                         <td>
                                             <input type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
@@ -314,7 +320,6 @@
     @if(isset($project_id))
     project_id = {!!$project_id!!};
     @endif
-
 </script>
 @section('footer')
 @endsection

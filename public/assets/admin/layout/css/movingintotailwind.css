@@ -1356,7 +1356,7 @@ i.apps {
         font-size: 26px !important;
     }
     .status {
-        width: 100% !important;
+        width: auto !important;
     }
 }
 

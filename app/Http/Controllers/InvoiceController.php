@@ -926,11 +926,13 @@ class InvoiceController extends AppController
 
             $selectedDoc = array();
             $selectnm = '';
-            if (!empty($parentnm))
+            if (!empty($parentnm)) {
+                $docpath = '';
                 $selectnm = $parentnm;
-            else if (isset($data['docs'][0]['id'])) {
+            } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
+
 
             if (empty($sub)) {
                 if (isset($data['docs'][0]['menu'][0]['id']))
@@ -1254,9 +1256,10 @@ class InvoiceController extends AppController
             $data = $this->getDataBillCodeAttachment($tt, $doclist, $data);
             $selectedDoc = array();
             $selectnm = '';
-            if (!empty($parentnm))
+            if (!empty($parentnm)) {
+                $docpath = '';
                 $selectnm = $parentnm;
-            else if (isset($data['docs'][0]['id'])) {
+            } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
             }
 
@@ -2440,7 +2443,7 @@ class InvoiceController extends AppController
                         $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                        $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                        $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                     }
                     if (empty($bill_desc)) {
                         if (!empty($data['description']))
@@ -2477,7 +2480,7 @@ class InvoiceController extends AppController
                     $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
 
                     $counts = 0;
                     if (!empty($data['attachments']))
@@ -2537,7 +2540,7 @@ class InvoiceController extends AppController
                     $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
-                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'), -10) : $nm : '');
+                    $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                     $counts = 0;
                     if (!empty($data['attachments']))
                         $counts = count(json_decode($data['attachments'], 1));
@@ -2861,6 +2864,9 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+        if (strlen($request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
@@ -3001,6 +3007,9 @@ class InvoiceController extends AppController
     public function preview($link)
     {
         $request_id = Encrypt::decode($link);
+        if (strlen($request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $customer = $this->invoiceModel->getTableRow('customer', 'customer_id', $invoice->customer_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);

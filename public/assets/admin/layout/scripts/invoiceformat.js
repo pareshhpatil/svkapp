@@ -460,10 +460,10 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
             else if (index == 'unit') {
-                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'rate') {
-                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
@@ -2568,9 +2568,9 @@ function showEditNote() {
     var value = document.getElementById('covering_select').value;
 
     if (value != '0') {
-        document.getElementById('edit_note_div').style = 'display:block';
+        document.getElementById('edit_note_div').style.display = 'block';
     } else {
-        document.getElementById('edit_note_div').style = 'display:none';
+        document.getElementById('edit_note_div').style.display = 'none';
     }
 
     data = '';
@@ -3071,7 +3071,7 @@ if(pathlist[0]!='')
                        
           '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
               
-          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+pathlist[i].replace(/^.*[\\\/]/, '').substring(0,35)+'</h4>'+
+          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+filename.substring(0,35)+'</h4>'+
               '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
                
                   '</div></div>'+
@@ -3126,4 +3126,20 @@ function validateDate() {
         return true;
 
     }
+}
+
+function changerOrderAmountCheck(){
+    order_value  = document.getElementById('total_change_order_amount').value;
+    if(order_value > 0){
+        return true;
+    }else{
+        document.getElementById('change_order_amount_error').style.display = "block";
+        return false;
+    }
+   
+}
+
+function limitMe(evt, txt) {
+    if (evt.which && evt.which == 8) return true;
+    else return (txt.value.length < txt.getAttribute("maxlength"));
 }
