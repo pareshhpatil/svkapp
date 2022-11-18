@@ -849,6 +849,7 @@ class InvoiceController extends AppController
                 }
             }
 
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
@@ -2360,12 +2361,19 @@ class InvoiceController extends AppController
                 $info["is_online_payment"] = 0;
             }
         }
+        if (substr($info['invoice_number'], 0, 16) == 'System generated') {
+            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', substr($info['invoice_number'], 16));
+            $seq_no = $seq_row->val + 1;
+            $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
+        }
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
         $data['metadata']['header'] = $main_header;
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
+
+
 
         return $data;
     }
