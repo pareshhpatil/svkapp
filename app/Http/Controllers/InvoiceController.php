@@ -676,7 +676,7 @@ class InvoiceController extends AppController
                         array_push($cop_particulars, $co_par);
                     }
                 }
-                
+
                 $result = array();
                 foreach ($cop_particulars as $k => $v) {
                     $id = $v['bill_code'];
@@ -2981,18 +2981,14 @@ class InvoiceController extends AppController
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
             }
-            $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
-
-            foreach (json_decode($change_order_data, true) as $co_data) {
-                array_push($order_id_array, (int)$co_data["order_id"]);
-            }
+            $order_id_array = json_decode($invoice->change_order_id, 1);
         }
         Helpers::hasRole(2, 27);
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
-        
+
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
