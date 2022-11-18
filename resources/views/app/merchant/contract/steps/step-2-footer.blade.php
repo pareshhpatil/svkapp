@@ -1,6 +1,6 @@
 <tfoot>
 <tr class="warning">
-    <th class="col-id-no"></th>
+    <th class="td-c"></th>
     <th class="td-c">Grand total</th>
     <th class="td-c">
         <span id="particulartotaldiv">{{ number_format($contract->contract_amount) }}</span>
