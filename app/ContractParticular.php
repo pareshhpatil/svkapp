@@ -106,4 +106,6 @@ class ContractParticular extends Model
         return [$total, $groups, $particulars];
     }
 
+
+
 }

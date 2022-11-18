@@ -50,7 +50,6 @@
         table thead,
         table tfoot {
             position: sticky;
-            z-index: 3;
         }
         table thead {
             inset-block-start: 0; /* "top" */
@@ -74,7 +73,7 @@
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable">
+            <div class="table-scrollable tableFixHead">
                 <table class="table table-bordered table-hover" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
