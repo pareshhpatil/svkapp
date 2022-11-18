@@ -662,6 +662,7 @@ class InvoiceController extends AppController
 
             $data['contract_particulars'] = json_decode($contract->particulars);
 
+            $data['order_id_array'] = '';
 
             if (isset($data['payment_request_id'])) {
                 $data['contract_particulars'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $data['payment_request_id']);
@@ -671,13 +672,17 @@ class InvoiceController extends AppController
                 $change_order_data = json_decode($change_order_data, true);
 
                 $cop_particulars = [];
+                $order_id_array = [];
                 foreach ($change_order_data as $co_data) {
+                    array_push($order_id_array, (int)$co_data["order_id"]);
                     foreach (json_decode($co_data["particulars"], true) as $co_par) {
                         $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
                         array_push($cop_particulars, $co_par);
                     }
                 }
 
+                $data['order_id_array'] = json_encode($order_id_array);
+                
                 $result = array();
                 foreach ($cop_particulars as $k => $v) {
                     $id = $v['bill_code'];
@@ -692,7 +697,6 @@ class InvoiceController extends AppController
                         }
                     }
                 }
-
                 if ($pre_req_id != false) {
                     $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
                     $cp = array();
@@ -2731,6 +2735,7 @@ class InvoiceController extends AppController
                 }
                 $request->totalcost = str_replace(',', '', $request->totalcost);
                 $this->invoiceModel->updateInvoiceAmount($request_id, $request->totalcost);
+                $this->invoiceModel->updateChangeOrderNo($request_id, $request->order_ids);
                 if ($data['id'] > 0) {
                     $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                 } else {
@@ -2885,9 +2890,9 @@ class InvoiceController extends AppController
             }
         }
 
+        $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-
 
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
@@ -2895,6 +2900,7 @@ class InvoiceController extends AppController
 
             $cop_particulars = [];
             foreach ($change_order_data as $co_data) {
+                array_push($order_id_array, (int)$co_data["order_id"]);
                 foreach (json_decode($co_data["particulars"], true) as $co_par) {
                     $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
                     array_push($cop_particulars, $co_par);
@@ -2948,6 +2954,7 @@ class InvoiceController extends AppController
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
                         $cop[$v["bill_code"]]->bill_type = '';
                         $cop[$v["bill_code"]]->description = $v["description"];
@@ -2981,12 +2988,25 @@ class InvoiceController extends AppController
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
             }
+            $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
+            $change_order_data = json_decode($change_order_data, true);
+
+            $cop_particulars = [];
+            foreach ($change_order_data as $co_data) {
+                array_push($order_id_array, (int)$co_data["order_id"]);
+                foreach (json_decode($co_data["particulars"], true) as $co_par) {
+                    $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
+                    array_push($cop_particulars, $co_par);
+                }
+            }
         }
         Helpers::hasRole(2, 27);
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        
+        $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
         $data['mode'] = 'create';

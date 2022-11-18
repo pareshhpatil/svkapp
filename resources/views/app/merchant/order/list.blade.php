@@ -1,7 +1,6 @@
 @extends('app.master')
 <style>
-    .margin-control-lable
-    {
+    .margin-control-lable {
         margin-right: -50px;
         margin-top: 5px !important;
     }
@@ -84,14 +83,14 @@
                                 @foreach($list as $v)
                                 <tr role="row" class="odd">
                                     <td class="td-c">
-                                     <x-localize :date="$v->created_date" type="date" />
+                                        <x-localize :date="$v->created_date" type="date" />
                                     </td>
                                     <td class="td-c">
                                         @if($v->status == 0)
                                         <a style="font-size: 1.2rem;" href="/merchant/order/update/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         @else
                                         <span style="font-size: 1.2rem;">
-                                        <a style="font-size: 1.2rem;" href="/merchant/order/approved/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
+                                            <a style="font-size: 1.2rem;" href="/merchant/order/approved/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         </span>
                                         @endif
                                         <br>
@@ -114,12 +113,12 @@
                                         ${{number_format($v->total_change_order_amount,2)}}
                                     </td>
                                     <td class="td-c">
-                                     
+
                                         <x-localize :date="$v->order_date" type="date" />
                                     </td>
                                     <td class="td-c">
                                         <x-localize :date="$v->created_date" type="datetime" />
-                                       
+
                                     </td>
                                     <td class="td-c">
                                         @if($v->status == 0)
@@ -145,6 +144,17 @@
                                                     <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
                                                 </li>
 
+                                            </ul>
+                                        </div>
+                                        @elseif($v->status == 1 && $v->invoice_status==0)
+                                        <div class="btn-group dropup">
+                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="#unapprove" onclick="document.getElementById('un_encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Unapprove</a>
+                                                </li>
                                             </ul>
                                         </div>
                                         @endif
@@ -212,6 +222,38 @@
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" id="encrypt_id" name="link" value="">
+                    <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Confirm" class="btn blue">
+                </div>
+            </form>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="unapprove" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/merchant/order/unapprove/">
+                <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Unapprove change order</h4>
+                </div>
+                <div class="modal-body col-md-12">
+
+                    <br>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label margin-control-lable">Message</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control  form-control-inline" rows="3" required name="unapprove_message" placeholder="Please enter a remark"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="un_encrypt_id" name="link" value="">
                     <button type="button" class="btn default" data-dismiss="modal">Close</button>
                     <input type="submit" value="Confirm" class="btn blue">
                 </div>

@@ -348,19 +348,14 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
     </script>
 </div>
 
-
-
-
-
-                        
-
                         <div class="portlet light bordered">
                             <div class="portlet-body form">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
-
+                                        <input type="hidden" name="order_ids" value="{{$order_id_array}}">
+                                        
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>

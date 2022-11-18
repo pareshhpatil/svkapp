@@ -521,6 +521,14 @@ class Invoice extends ParentModel
             ]);
     }
 
+    public function updateChangeOrderNo($request_id, $ids)
+    {
+        DB::table('payment_request')->where('payment_request_id', $request_id)
+            ->update([
+                'change_order_id' => $ids
+            ]);
+    }
+
     public function saveConstructionParticular($data, $request_id, $user_id)
     {
         $id = DB::table('invoice_construction_particular')->insertGetId(

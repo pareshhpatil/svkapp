@@ -710,6 +710,11 @@ class Invoice extends Controller
                     $notification->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
                 }
 
+                $get_payment_request_details['change_order_id'] = json_decode($get_payment_request_details['change_order_id'], 1);
+                foreach ($get_payment_request_details['change_order_id'] as $order_id) {
+                    $this->common->genericupdate('`order`', 'invoice_status', 1, 'order_id', $order_id);
+                }
+
                 //find payment_request_type
                 if ($_POST['payment_request_type'] == 4) {
                     require_once UTIL . 'batch/Batch.php';
