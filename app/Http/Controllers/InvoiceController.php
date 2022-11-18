@@ -2982,15 +2982,9 @@ class InvoiceController extends AppController
                 }
             }
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
-            $change_order_data = json_decode($change_order_data, true);
 
-            $cop_particulars = [];
-            foreach ($change_order_data as $co_data) {
+            foreach (json_decode($change_order_data, true) as $co_data) {
                 array_push($order_id_array, (int)$co_data["order_id"]);
-                foreach (json_decode($co_data["particulars"], true) as $co_par) {
-                    $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
-                    array_push($cop_particulars, $co_par);
-                }
             }
         }
         Helpers::hasRole(2, 27);
