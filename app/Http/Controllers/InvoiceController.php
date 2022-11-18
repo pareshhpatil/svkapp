@@ -2963,7 +2963,7 @@ class InvoiceController extends AppController
             }
             $particulars = json_decode(json_encode($particulars), 1);
             foreach ($particulars as $k => $row) {
-                $ocm = $row['original_contract_amount'];
+                $ocm = (isset($row['original_contract_amount'])) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
