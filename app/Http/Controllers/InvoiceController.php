@@ -662,8 +662,6 @@ class InvoiceController extends AppController
 
             $data['contract_particulars'] = json_decode($contract->particulars);
 
-            $data['order_id_array'] = '';
-
             if (isset($data['payment_request_id'])) {
                 $data['contract_particulars'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $data['payment_request_id']);
             } else {
@@ -672,16 +670,12 @@ class InvoiceController extends AppController
                 $change_order_data = json_decode($change_order_data, true);
 
                 $cop_particulars = [];
-                $order_id_array = [];
                 foreach ($change_order_data as $co_data) {
-                    array_push($order_id_array, (int)$co_data["order_id"]);
                     foreach (json_decode($co_data["particulars"], true) as $co_par) {
                         $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
                         array_push($cop_particulars, $co_par);
                     }
                 }
-
-                $data['order_id_array'] = json_encode($order_id_array);
                 
                 $result = array();
                 foreach ($cop_particulars as $k => $v) {
