@@ -176,12 +176,28 @@ class ContractController extends Controller
 //dd($contract);
         if (is_null($contract))
             $contract = ContractParticular::create($data);
-        else
+        else {
+            $data = $this->checkIfProjectIsChanged($data, $contract);
             $contract->update($data);
+        }
 
         return $contract;
     }
 
+    private function checkIfProjectIsChanged($data, $contract){
+        if ($data['project_id'] != $contract->project_id){
+            $particulars = json_decode($contract->particulars,true);
+            $bill_codes = CsiCode::where('project_id',$data['project_id'])->get()->pluck('code')->toArray();
+            $newParticulars = [];
+            foreach ($particulars as $particular){
+                if (!in_array($particular['bill_code'], $bill_codes))
+                    $particular['bill_code'] = '';
+                $newParticulars[] = $particular;
+            }
+            $data['particulars'] = $newParticulars;
+        }
+        return $data;
+    }
     public function step2Store(Request $request, $contract){
         return $contract;
     }

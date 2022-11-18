@@ -3129,7 +3129,7 @@ function validateDate() {
 }
 
 function changerOrderAmountCheck(){
-    order_value  = document.getElementById('total_change_order_amount').value;
+    order_value  = getamt(document.getElementById('total_change_order_amount').value);
     if(order_value > 0){
         return true;
     }else{
