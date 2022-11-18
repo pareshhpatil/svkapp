@@ -128,7 +128,7 @@
     </div>
 
 </div>
-<div class="portlet light bordered">
+{{--<div class="portlet light bordered">
     <div class="portlet-body form">
     <h3 class="form-section">
         Application and Certificate for Payment
@@ -177,7 +177,7 @@
         </div>
     </div>
 </div>
-</div>
+</div>--}}
 <div class="portlet light bordered">
     <div class="portlet-body form">
         <div class="row">
@@ -216,10 +216,6 @@
                     $('#customer_name').val(data.project.name);
                     $('#customer_email').val(data.project.email);
                     $('#customer_number').val(data.project.mobile);
-                    $('#owner_address').val(data.owner_address);
-                    $('#project_address').val(data.project_address);
-                    $('#contractor_address').val(data.contractor_address);
-                    $('#architect_address').val(data.architect_address);
                 }
             });
         });

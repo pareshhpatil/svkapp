@@ -28,10 +28,6 @@ class ContractParticular extends Model
         'last_update_by',
         'created_date',
         'status',
-        'project_address',
-        'owner_address',
-        'contractor_address',
-        'architect_address'
     ];
 
     protected $rules = [

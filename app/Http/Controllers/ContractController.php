@@ -256,41 +256,13 @@ class ContractController extends Controller
             'contract_date' => 'required',
             'bill_date' => 'required',
             'billing_frequency' => 'required',
-            'project_address' => 'required',
-            'owner_address' => 'required',
-            'contractor_address' => 'required',
-            'architect_address' => 'required'
         ];
     }
 
     public function fetchProject(Request $request): \Illuminate\Http\JsonResponse
     {
         $project = $this->getProject($request->project_id);
-        $contract = null;
-        $owner_address = null;
-        $project_address = null;
-        $contractor_address = null;
-        $architect_address = null;
-
-        if(is_null($request->contract_id))
-            $contract = $this->getLastContractWithSameProject($request->project_id);
-
-        if (is_null($contract) && $request->route_name == 'contract.create.new'){
-            $customer = Customer::find($project->customer_id);
-            $owner_address = $customer->address;
-            $contractor = MerchantBillingProfile::where('merchant_id',$project->merchant_id)->first();
-            $contractor_address = $contractor->address??null;
-        }
-        if (!is_null($contract)) {
-            $owner_address = $contract->owner_address;
-            $contractor_address = $contract->contractor_address;
-            $project_address = $contract->project_address;
-            $architect_address = $contract->architect_address;
-        }
-
-        return response()->json(array('project'=> $project, 'owner_address' => $owner_address,
-            'project_address' => $project_address, 'contractor_address' => $contractor_address,
-            'architect_address' => $architect_address), 200);
+        return response()->json(array('project'=> $project), 200);
     }
 
     public function getLastContractWithSameProject($project_id){
