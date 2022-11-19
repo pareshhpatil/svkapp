@@ -63,6 +63,7 @@ class MasterController extends Controller
     public function masterview($master, $link)
     {
         $id = $this->encrypt->decode($link);
+        $id=1;
         $detail = $this->master_model->getMasterDetail($master, $master . '_id', $id);
         if ($master == 'employee') {
             $transaction_list = $this->master_model->getMaster('transaction', $id, 'employee_id');
@@ -72,6 +73,23 @@ class MasterController extends Controller
         }
         $data['title'] = ucfirst($master) . ' detail';
         $data['det'] = $detail;
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => '',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 4,
+            'margin_right' => 4,
+            'margin_bottom' => 4,
+            'margin_header' => 9,
+            'margin_footer' => 9,
+        ]);
+        $mpdf->WriteHTML(\View::make('master.' . $master . '.view')->with($data)->render());
+        $mpdf->Output();
+       // $mpdf->Output('quotation.pdf', 'D');
+        die();
+
         return view('master.' . $master . '.view', $data);
     }
 
