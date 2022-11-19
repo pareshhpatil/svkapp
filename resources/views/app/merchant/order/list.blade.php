@@ -248,7 +248,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label margin-control-lable">Message</label>
                         <div class="col-md-8">
-                            <textarea class="form-control  form-control-inline" rows="3" required name="unapprove_message" placeholder="Please enter a remark"></textarea>
+                            <textarea class="form-control  form-control-inline" rows="3" name="unapprove_message" placeholder="Please enter a remark"></textarea>
                         </div>
                     </div>
                 </div>
