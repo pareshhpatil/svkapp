@@ -88,6 +88,12 @@
                                     </td>
                                 </tr>
 								
+								@if($company->company_id==1 || $company->company_id==5 || $company->company_id==8 || $company->company_id==57)
+								<tr>
+                                    <td colspan="2" style="padding: 10px;line-height: 15px;"><div class="col-md-12" ><b style="font-weight: bold;">GST Payable on RCM basis by the receiver</b></div></td>
+                                </tr>
+								@endif
+								
 								@if($invoice->company_id==29)
 									<tr>
                                     <td colspan="2" style="padding: 10px;line-height: 15px;"><div class="col-md-12" ><b style="font-weight: bold;">Supply to SEZ Unit or SEZ developer for Authorised operation under letter of undertaking without payment of IGST</b></div></td>

@@ -23,11 +23,14 @@ class DashboardController extends Controller {
 
     public function admin() {
         try {
-            $this->validateSession(array(1, 2));
+            $this->validateSession(array(1, 2,5));
             if ($this->user_type == 1) {
                 $data['title'] = 'Admin Dashboard';
                 return view('dashboard.admin', $data);
-            } else {
+            } elseif($this->user_type == 5) {
+                $data['title'] = 'User Dashboard';
+                return view('dashboard.user', $data);
+            }else {
                 $data['title'] = 'Employee Dashboard';
                 return view('dashboard.employee', $data);
             }

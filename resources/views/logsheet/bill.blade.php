@@ -52,6 +52,7 @@
                                             <p><b>RCM Applicable :</b> Yes</p>
                                         </div>
 										@endif
+										
                                     </td>
                                     <td  style="width: 50%;">
                                         <div class="col-md-12" >
@@ -73,6 +74,11 @@
 										@endif
                                     </td>
                                 </tr>
+								@if($company->company_id==1 || $company->company_id==5 || $company->company_id==8)
+								<tr>
+                                    <td colspan="2"><div class="col-md-12" ><b>GST Payable on RCM basis by the receiver</b></div></td>
+                                </tr>
+								@endif
                                 <tr>
                                     <td colspan="2"><div class="col-md-12" ><b>Receivers Details:</b></div></td>
                                 </tr>

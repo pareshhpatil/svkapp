@@ -102,6 +102,9 @@ class LoginController extends Controller {
             }elseif ($userObj->user_type == 7) {
                 $type = 'company';
             }
+			elseif ($userObj->user_type == 5) {
+                $type = 'admin';
+            }
 			
             header('location: /' . $type . '/dashboard');
             exit;
