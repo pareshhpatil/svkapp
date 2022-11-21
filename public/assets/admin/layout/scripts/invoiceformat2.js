@@ -2823,7 +2823,7 @@ function updateTextView1(val) {
         } catch (o) {
             val = Number(val.replaceAll(',', ''));
         }
-        if (val > 0) {
+        // if (val > 0) {
             try {
                 str = val.toString();
             } catch (o) {
@@ -2850,7 +2850,7 @@ function updateTextView1(val) {
                 }
                 //return number.toLocaleString() + decimal_text;
             }
-        }
+        // }
         return 0.00;
     } else {
         return '';
@@ -2858,6 +2858,11 @@ function updateTextView1(val) {
 
 }
 function getNumber(_str) {
+    if(_str < 0){
+        isNegative = true;
+    }else{
+        isNegative = false;
+    }
     var arr = _str.split('');
     var out = new Array();
     for (var cnt = 0; cnt < arr.length; cnt++) {
@@ -2868,7 +2873,11 @@ function getNumber(_str) {
             out.push(arr[cnt]);
         }
     }
-    return out.join('');
+    if(isNegative){
+        return '-'+out.join('');
+    }else{
+        return out.join('');
+    }
 }
 
 
