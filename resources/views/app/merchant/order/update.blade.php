@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <h3 class="form-section">Add particulars
-                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrder();" class="btn green pull-right mb-1"> Add new row </a>
+                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
                         </h3>
                         <div class="table-scrollable">
                             <table class="table table-bordered table-hover" id="particular_table">
@@ -153,7 +153,7 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">

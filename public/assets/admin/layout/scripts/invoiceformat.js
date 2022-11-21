@@ -459,11 +459,8 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
             else if (index == 'original_contract_amount') {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
-            else if (index == 'unit') {
-                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
-            }
-            else if (index == 'rate') {
-                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" onkeyup="updateTextView($(this));" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            else if (index == 'unit' || index == 'rate') {
+                row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
@@ -2911,9 +2908,10 @@ function updateTextView1(val) {
     try {
         val = val.toFixed(2);
     } catch (o) { }
-    if (val > 0) {
+    //if (val > 0) {
         str = val.toString();
         var num = getNumber(str);
+        console.log(num)
         dotpo = num.indexOf(".");
         decimal_text = '';
         if (dotpo > 0) {
@@ -2928,11 +2926,16 @@ function updateTextView1(val) {
         } else {
             return number.toLocaleString() + decimal_text;
         }
-    }
+    //}
     return 0.00;
 
 }
 function getNumber(_str) {
+    if(_str < 0){
+        isNegative = true;
+    }else{
+        isNegative = false;
+    }
     var arr = _str.split('');
     var out = new Array();
     for (var cnt = 0; cnt < arr.length; cnt++) {
@@ -2943,7 +2946,11 @@ function getNumber(_str) {
             out.push(arr[cnt]);
         }
     }
-    return out.join('');
+    if(isNegative){
+        return '-'+out.join('');
+    }else{
+        return out.join('');
+    }
 }
 
 
@@ -3130,13 +3137,13 @@ function validateDate() {
 
 function changerOrderAmountCheck(){
     order_value  = getamt(document.getElementById('total_change_order_amount').value);
-    if(order_value > 0){
-        return true;
-    }else{
-        document.getElementById('change_order_amount_error').style.display = "block";
-        return false;
-    }
-   
+    // if(order_value > 0){
+    //     return true;
+    // }else{
+    //     document.getElementById('change_order_amount_error').style.display = "block";
+    //     return false;
+    // }
+   return true;
 }
 
 function limitMe(evt, txt) {

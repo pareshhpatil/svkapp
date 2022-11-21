@@ -732,8 +732,6 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 
                                 setParticulars()
                                 {
-                                   
-                                   
                                     particularray.forEach(function(currentValue, index, arr) {
                                             document.getElementById('bill_code'+index).value = currentValue.bill_code;
                                             document.getElementById('attach-'+index).value = currentValue.attachments;
@@ -835,15 +833,14 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                         } catch (o) {}
                                         total = 0;
                                         this.fields.forEach(function(currentValue, index, arr) {
-                                            try {
-                                                oct = Number(getamt(currentValue.net_billed_amount));
-                                            } catch (o) {
-                                                oct = 0;
-                                            }
-                                            if (oct > 0) {
+                                            // try {
+                                            oct = Number(getamt(currentValue.net_billed_amount));
+                                            // } catch (o) {
+                                            //     oct = 0;
+                                            // }
+                                            // if (oct > 0) {
                                                 total = Number(total) + oct;
-
-                                            }
+                                            // }
                                         });
 
                                         document.getElementById('particulartotal').value = updateTextView1(total);
