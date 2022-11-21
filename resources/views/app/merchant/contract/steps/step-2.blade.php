@@ -224,6 +224,8 @@
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
+            console.log(screen.height);
+            $('.tableFixHead').css('max-height', screen.height/2);
         }
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
