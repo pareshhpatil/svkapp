@@ -110,7 +110,7 @@
                                         {{$v->contract_code}}
                                     </td>
                                     <td class="td-c">
-                                        ${{number_format($v->total_change_order_amount,2)}}
+                                        $@if($v->total_change_order_amount < 0)({{str_replace('-','',number_format($v->total_change_order_amount,2))}})@else{{number_format($v->total_change_order_amount,2)}}@endif
                                     </td>
                                     <td class="td-c">
 
