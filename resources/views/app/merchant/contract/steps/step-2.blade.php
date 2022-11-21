@@ -35,6 +35,7 @@
 
         .vs-option, .vscomp-value {
             font-size: 12px !important;
+            z-index: 9999;
         }
 
         .dropdown-menu li > a {
@@ -60,6 +61,10 @@
 
         .tableFixHead {
             max-height: 200px;overflow: auto;
+        }
+
+        .headFootZIndex {
+            z-index: 3;
         }
     </style>
     <div class="portlet light bordered">
@@ -226,6 +231,10 @@
             this.initializeDropdowns();
             console.log(screen.height);
             $('.tableFixHead').css('max-height', screen.height/2);
+          /*  $('.tableFixHead').on('scroll', function(){
+                $('#headerRow').css('z-index',3);
+                $('#footerRow').css('z-index',3);
+            });*/
         }
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
@@ -235,6 +244,7 @@
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
+
         function addPopover(id, message){
             $('#'+id).attr({
                 'data-placement' : 'right',
@@ -243,6 +253,26 @@
                 'data-content' : message,
                 // 'data-original-title'
             }).popover();
+        }
+
+        function elementsOverlap(element, type) {
+            const domRect1 = document.getElementById(element).getBoundingClientRect();
+            const domRect2 = document.getElementById(type+'_head').getBoundingClientRect();
+            const domRect3 = document.getElementById(type+'_foot').getBoundingClientRect();
+
+            let top_diff = domRect1.top - domRect2.top
+            let foot_diff = domRect3.top - domRect1.top
+
+            console.log(top_diff, foot_diff);
+
+
+
+            return !(
+                domRect1.top > domRect2.bottom ||
+                domRect1.right < domRect2.left ||
+                domRect1.bottom < domRect2.top ||
+                domRect1.left > domRect2.right
+            );
         }
 
         function handle_particulars(){
@@ -319,6 +349,23 @@
                             particularsArray[id].bill_code_detail = this.value
                         }
                     });
+
+                    // $('#'+type+id).on('beforeOpen',function () {console.log('beforeOpen');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
+                    //     elementsOverlap( type+id, type);
+                    //     elementsOverlap( type+id, type);
+                    //     // elementsOverlap( type+id, 'footerRow');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    //
+                    // $('#'+type+id).on('afterClose',function () {console.log('afterClose');
+                    //     $('#headerRow').addClass('headFootZIndex');
+                    //     $('#footerRow').addClass('headFootZIndex');
+                    // });
 
                 } ,
                 addNewBillCode(token){
