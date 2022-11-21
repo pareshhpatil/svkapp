@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\ContractParticular;
 use App\CsiCode;
+use App\Customer;
 use App\Libraries\Helpers;
+use App\Merchant;
+use App\MerchantBillingProfile;
 use App\Model\Contract;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
 use App\Project;
 use App\Traits\Contract\ContractParticulars;
+use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Validator;
@@ -142,7 +146,11 @@ class ContractController extends Controller
 
         switch ($step){
             case 1:
-                $contract = $this->step1Store($request,$contract);
+                $response = $this->step1Store($request,$contract);
+                if($response instanceof ContractParticular)
+                    $contract = $response;
+                else return $response;
+
                 $step++;
                 break;
             case 2:
@@ -228,7 +236,7 @@ class ContractController extends Controller
         return Project::where('id', $id)->where('project.is_active', 1)
             ->join('customer', 'customer.customer_id', 'project.customer_id')
             ->select([
-                'id', 'project_id',  'project_name', 'project.customer_id',
+                'id', 'project_id',  'project_name', 'project.customer_id', 'project.merchant_id',
                 'company_name', 'sequence_number',
                 DB::raw("concat(project.customer_id, ' | ' ,company_name) as customer_company_code"),
                 'customer.email', 'customer.mobile', DB::raw("concat(first_name,' ', last_name) as name")
@@ -248,13 +256,50 @@ class ContractController extends Controller
             'contract_date' => 'required',
             'bill_date' => 'required',
             'billing_frequency' => 'required',
+            'project_address' => 'required',
+            'owner_address' => 'required',
+            'contractor_address' => 'required',
+            'architect_address' => 'required'
         ];
     }
 
     public function fetchProject(Request $request): \Illuminate\Http\JsonResponse
     {
         $project = $this->getProject($request->project_id);
-        return response()->json(array('project'=> $project), 200);
+        $contract = null;
+        $owner_address = null;
+        $project_address = null;
+        $contractor_address = null;
+        $architect_address = null;
+
+        if (!is_null($request->contract_id))
+            $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
+
+        if(is_null($request->contract_id) || $contract->project_id != $request->project_id)
+            $contract = $this->getLastContractWithSameProject($request->project_id);
+
+        if (is_null($contract) && $request->route_name == 'contract.create.new'){
+            $customer = Customer::find($project->customer_id);
+            $owner_address = $customer->address;
+            $contractor = MerchantBillingProfile::where('merchant_id',$project->merchant_id)->first();
+            $contractor_address = $contractor->address??null;
+        }
+        if (!is_null($contract)) {
+            $owner_address = $contract->owner_address;
+            $contractor_address = $contract->contractor_address;
+            $project_address = $contract->project_address;
+            $architect_address = $contract->architect_address;
+        }
+
+        return response()->json(array('project'=> $project, 'owner_address' => $owner_address,
+            'project_address' => $project_address, 'contractor_address' => $contractor_address,
+            'architect_address' => $architect_address), 200);
+    }
+
+    public function getLastContractWithSameProject($project_id){
+        return ContractParticular::where('project_id',$project_id)
+            ->where('is_active',1)
+            ->where('status',1)->orderBy('created_date','desc')->first();
     }
 
     public function save(Request $request)
