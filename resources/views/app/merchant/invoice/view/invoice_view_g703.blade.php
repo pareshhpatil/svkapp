@@ -287,31 +287,31 @@
                                     </td>
 
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['c'] }} </p>
+                                        <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['d'] }}</p>
+                                        <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['e'] }}</p>
+                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['f'] }}</p>
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['g'] }}</p>
+                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['g_per'] }}</p>
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',$item['g_per'])}}) @else{{ $item['g_per'] }} @endif</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['h'] }} </p>
+                                        <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['i'] }}</p>
+                                        <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                     </td>
 
                                 </tr>
@@ -332,31 +332,31 @@
                                     </td>
 
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['c'] }} </p>
+                                        <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif </p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['d'] }}</p>
+                                        <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['e'] }}</p>
+                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['f'] }}</p>
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['g'] }}</p>
+                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['g'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['g_per'] }}</p>
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',$item['g_per'])}}) @else{{ $item['g_per'] }} @endif</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> {{ $item['h'] }} </p>
+                                        <p class="text-sm">  @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">{{ $item['i'] }}</p>
+                                        <p class="text-sm"> @if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                     </td>
 
                                 </tr>

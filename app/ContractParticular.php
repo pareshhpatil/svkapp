@@ -27,7 +27,7 @@ class ContractParticular extends Model
         'created_by',
         'last_update_by',
         'created_date',
-        'status'
+        'status',
     ];
 
     protected $rules = [
@@ -60,7 +60,6 @@ class ContractParticular extends Model
         'show' => false
     ];
 
-
     public static $particular_column = [
         'bill_code' => [ 'title'=>'Bill Code', 'type' => 'select' ],
         'bill_type' => [ 'title'=>'Bill Type', 'type' => 'select' ],
@@ -75,7 +74,6 @@ class ContractParticular extends Model
     ];
 
     public static $billing_frequency = [ 1 => 'Weekly', 2 => 'Monthly', 3 => 'Quarterly' ];
-
 
     public static function initializeParticulars($project_id = ''): array
     {
