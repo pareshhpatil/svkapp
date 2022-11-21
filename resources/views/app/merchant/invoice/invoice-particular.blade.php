@@ -135,20 +135,6 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 }
 
 
-table thead,
-table tfoot {
-    position: sticky;
-}
-table thead {
-    inset-block-start: 0; /* "top" */
-}
-table tfoot {
-    inset-block-end: 0; /* "bottom" */
-}
-
-.tableFixHead {
-    max-height: 600px;overflow: auto;
-}
     </style>
 
 
@@ -192,7 +178,7 @@ table tfoot {
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  tableFixHead" >
+            <div class="table-scrollable  " >
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
                         <thead>

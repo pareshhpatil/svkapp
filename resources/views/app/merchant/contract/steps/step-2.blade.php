@@ -517,6 +517,7 @@
                 },
                 async addNewRow() {
                     int = this.fields.length
+                    alert(int);
 
                     this.fields.push({
                         'bill_code' : null,
@@ -640,6 +641,7 @@
                 },
                 OpenAddCaculated(field) {
                     console.log(field.introw);
+                    calcRowInt=field.introw;
                     field.showoriginal_contract_amount = false;
                     //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
                     this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
