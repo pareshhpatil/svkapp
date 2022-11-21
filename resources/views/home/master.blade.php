@@ -390,8 +390,9 @@
                 return false;
             }
         }
-
-        $(function () {
+        var popupCheck = '{{ env('BRIQ_DISABLE_POPUP') }}';
+        if(!popupCheck){
+            $(function () {
             var overlay = $('<div id="overlay"></div>');
             overlay.show();
             if(checkCookie() == false){
@@ -406,6 +407,8 @@
                 });
             }
         });
+        }
+        
     </script>
     <div class='popup'>
         <div class='cnt223'>

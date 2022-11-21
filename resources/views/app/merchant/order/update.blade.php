@@ -17,6 +17,29 @@
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
+    .table thead tr th {
+        font-size: 12px !important;
+        padding: 3px !important;
+        font-weight: 400;
+        color: #333;
+    }
+    .table tfoot tr th {
+        font-size: 1rem !important;
+        padding: 3px !important;
+        font-weight: bold;
+        color: #333;
+    }
+    .table>tbody>tr>td {
+        font-size: 12px !important;
+        padding: 3px !important;
+        border: 1px solid #D9DEDE;
+        border-right: 0px;
+        border-left: 0px;
+        vertical-align: middle !important;
+    }
+    .table>tbody>tr>td>div>label {
+        margin-bottom: 0px !important;
+    }
 </style>
 @section('content')
 <div class="page-content">
@@ -32,7 +55,7 @@
             @include('layouts.alerts')
             <div id="change_order_amount_error" class="alert alert-block alert-danger fade in" style="display:none;">
                 <button type="button" class="close" data-dismiss="alert"></button>
-                <p>Error! Change Order Amount cannot be 0</p>
+                <p>Error! Bill code cannot be blank!</p>
             </div>
             <div class="portlet light bordered">
                 <div class="portlet-body form">
@@ -90,7 +113,7 @@
                             </div>
                         </div>
                         <h3 class="form-section">Add particulars
-                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrder();" class="btn green pull-right mb-1"> Add new row </a>
+                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
                         </h3>
                         <div class="table-scrollable">
                             <table class="table table-bordered table-hover" id="particular_table">
@@ -131,7 +154,7 @@
                                         @foreach($default_particulars as $v=>$r)
                                         @if ($v == 'original_contract_amount')
                                         <td class="td-r">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
                                         @elseif ($v == 'bill_code')
                                         <td class="col-id-no">
@@ -140,39 +163,47 @@
                                                 @foreach($csi_code as $pk=>$vk)
                                                 @if($row[$v]==$vk->code)
                                                 <label selected="" value="{{$vk->code}}">{{$vk->title}} | {{$vk->code}}</label>
-                                                <input type="hidden" name="bill_code[]" value="{{$vk->code}}">
+                                                <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->code}}">
                                                 @endif
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}" class="lable-heading">
+                                                    <p id="description{{$key+1}}"  style="display: none;" class="lable-heading">
+                                                        @isset($row['description'])
                                                         {{$row['description']}}
+                                                        @endisset
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
-                                            <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @else
                                         <td>
-                                            <input type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @endif
                                         @endforeach
                                         <input type="hidden" id="description-hidden{{$key+1}}" name="description[]" value="{{$row['description']}}">
                                         <input type="hidden" id="pint{{$key+1}}" name="pint[]" value="{{$key+1}}">
                                         <td class="td-c">
-                                            <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateChangeOrder();" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                            <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>
+                                            <span id="addRowButton{{$key+1}}">
+                                                @if($key == count($detail->json_particulars)-1)
+                                                    <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
+                                                @endif
+                                            </span>
+{{--                                            <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateRetainage();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a>--}}
                                         </td>
                                         </td>
                                     </tr>

@@ -90,7 +90,7 @@
                                         <span class="text-gray-400 text-font-12">PROJECT NO : <span class="text-gray-900"> {{$v->project_code}}</span></span>
                                     </td>
                                     <td class="td-c">
-                                        ${{number_format($v->contract_amount,2)}}
+                                    $@if($v->contract_amount < 0)({{str_replace('-','',number_format($v->contract_amount,2))}})@else{{number_format($v->contract_amount,2)}}@endif
                                     </td>
                                     <td class="td-c">
                                         <x-localize :date="$v->contract_date" type="date" />

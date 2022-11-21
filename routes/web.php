@@ -400,6 +400,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('order/list', 'OrderController@list')->name('list.order');
   Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
   Route::any('order/approve/', 'OrderController@approve')->name('approve.order');
+  Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');
   Route::any('order/updatesave/', 'OrderController@updatesave')->name('updatesave.order');
   Route::any('/billcode/create/', 'OrderController@billcodesave')->name('billcodesave.order');

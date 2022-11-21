@@ -1,5 +1,4 @@
 <div class="portlet light bordered">
-{{--        {{dd($errors)}}--}}
     <div class="portlet-body form">
         <div class="row">
             <div class="col-md-6">
