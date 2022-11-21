@@ -469,7 +469,7 @@
                             </td>
                             <td style="min-width: 40px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm"></p>
+                                <p class="text-sm">{{ number_format($info['total_g']/$info['total_c'],2)}}</p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
