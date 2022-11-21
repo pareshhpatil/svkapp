@@ -360,10 +360,10 @@ class Helpers
                 if (!isset($_POST[$key][$k])) {
                     $_POST[$key][$k] = 0;
                 }
-                if ($_POST[$key][$k] > 0) {
-                } else {
-                    $_POST[$key][$k] = 0;
-                }
+                // if ($_POST[$key][$k] > 0) {
+                // } else {
+                //     $_POST[$key][$k] = 0;
+                // }
             }
         }
         return (object)$_POST;

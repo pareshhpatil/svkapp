@@ -417,15 +417,16 @@
                         } catch (o) {}
                         total = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
-                            try {
-                                oct = Number(getamt(currentValue.original_contract_amount));
-                            } catch (o) {
-                                oct = 0;
-                            }
-                            if (oct > 0) {
+                            oct = Number(getamt(currentValue.original_contract_amount));
+                            // try {
+                            //     oct = Number(getamt(currentValue.original_contract_amount));
+                            // } catch (o) {
+                            //     oct = 0;
+                            // }
+                            // if (oct > 0) {
                                 total = Number(total) + oct;
 
-                            }
+                            // }
                         });
 
                         document.getElementById('particulartotal').value = updateTextView1(total);
@@ -473,21 +474,21 @@
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
-                        }else {
-                            if( parseInt(this.fields[p].original_contract_amount) > 0 )
-                                $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
-                            else {
-                                $('#cell_original_contract_amount_' + p).addClass(' error-corner');
-                                addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
-                                valid = false
-                            }
                         }
+                        // else {
+                        //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
+                        //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                        //     else {
+                        //         $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                        //         addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
+                        //         valid = false
+                        //     }
+                        // }
                         // this.fields[p].group = particularsArray[p].group
                     }
                     return valid;
                 },
                 saveParticulars(back=0, next=0){
-                    console.log('test');
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
                     var actionUrl = '/merchant/contract/updatesaveV6';
