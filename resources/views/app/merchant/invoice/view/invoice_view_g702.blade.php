@@ -231,7 +231,7 @@ $header='app.patron.invoice.invoice-master';}
                         <div class="grid grid-cols-3 gap-2 mt-1">
                             <div class="col-span-2">
                         <p class="font-bold text-xs mt-1">5. RETAINAGE: </p>
-                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600"> @if($info['total_d']+$info['total_e'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
+                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600"> @if($info['total_i'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
                         <p class="font-bold text-xs mt-1">b. <span class="font-light border-b border-gray-600"> 0 </span><span class="font-light"> % of Stored Material <span class="italic ">(Column F on G703)</span></span>  </p>
                         <p class="font-light text-xs mt-2">Total Retainage <span class="italic ">(Lines 5a + 5b, or Total in Column I of G703)</span> </p>
                     
