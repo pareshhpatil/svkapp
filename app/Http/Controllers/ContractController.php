@@ -256,6 +256,10 @@ class ContractController extends Controller
             'contract_date' => 'required',
             'bill_date' => 'required',
             'billing_frequency' => 'required',
+            'project_address' => 'required',
+            'owner_address' => 'required',
+            'contractor_address' => 'required',
+            'architect_address' => 'required'
         ];
     }
 
