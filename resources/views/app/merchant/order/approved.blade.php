@@ -158,7 +158,7 @@
                                         @foreach($default_particulars as $v=>$r)
                                         @if ($v == 'original_contract_amount')
                                         <td class="td-r">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
                                         @elseif ($v == 'bill_code')
                                         <td class="col-id-no">
@@ -180,11 +180,11 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @else
                                         <td>
@@ -224,14 +224,14 @@
                                     <label class="control-label col-md-4">Original contract value <span class="required">
                                         </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" readonly maxlength="45" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="{{$detail->total_original_contract_amount}}">
+                                        <input type="text" readonly maxlength="45" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="@if($detail->total_original_contract_amount < 0)({{str_replace('-','',number_format($detail->total_original_contract_amount,2))}}) @else{{$detail->total_original_contract_amount}}@endif">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">Total value of the change order <span class="required">
                                         </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" readonly maxlength="45" name="total_change_order_amount" class="form-control" data-cy="total_change_order_amount" id="total_change_order_amount" value="{{$detail->total_change_order_amount}}">
+                                        <input type="text" readonly maxlength="45" name="total_change_order_amount" class="form-control" data-cy="total_change_order_amount" id="total_change_order_amount" value="@if($detail->total_change_order_amount < 0)({{str_replace('-','',number_format($detail->total_change_order_amount,2))}}) @else{{$detail->total_change_order_amount}}@endif">
                                     </div>
                                 </div>
                             </div>
