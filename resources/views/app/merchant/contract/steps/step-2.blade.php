@@ -565,7 +565,6 @@
                 },
                 async addNewRow() {
                     int = this.fields.length
-                    alert(int);
 
                     this.fields.push({
                         'bill_code' : null,
