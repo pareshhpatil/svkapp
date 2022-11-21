@@ -91,7 +91,7 @@
             @include('layouts.alerts')
             <div id="change_order_amount_error" class="alert alert-block alert-danger fade in" style="display:none;">
                 <button type="button" class="close" data-dismiss="alert"></button>
-                <p>Error! Change Order Amount cannot be 0</p>
+                <p>Error! Bill code cannot be blank!</p>
             </div>
             <div class="portlet light bordered">
                 <div class="portlet-body form">
@@ -200,7 +200,7 @@
                                                 @foreach($csi_code as $pk=>$vk)
                                                 @if($row[$v]==$vk->code)
                                                 <label selected="" value="{{$vk->code}}">{{$vk->title}} | {{$vk->code}}</label>
-                                                <input type="hidden" name="bill_code[]" value="{{$vk->code}}">
+                                                <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->code}}">
                                                 @endif
                                                 @endforeach
                                                 @endif
