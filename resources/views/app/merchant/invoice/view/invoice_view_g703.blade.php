@@ -404,7 +404,7 @@
                                         <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif}</p>
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
                                         <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>

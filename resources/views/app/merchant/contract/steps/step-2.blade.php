@@ -679,9 +679,9 @@
                             }
                             var discription = document.getElementById('description' + int).value;
                             //bill_code = document.getElementById('bill_code' + bint).value;
-                            if (amt > 0) {
+                            // if (amt > 0) {
                                 row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
-                            }
+                            // }
                         }
                         newDiv.innerHTML = row;
                         mainDiv.appendChild(newDiv);
