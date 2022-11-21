@@ -138,7 +138,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Owner<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="owner_address" id="owner_address" rows="3" required >{{ $contract->owner_address??old('owner_address') }}</textarea>
+                    <textarea class="form-control" name="owner_address" id="owner_address" rows="3" required placeholder="Add Address" >{{ $contract->owner_address??old('owner_address') }}</textarea>
                     @error('owner_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -148,7 +148,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Project<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="project_address" id="project_address" rows="3" required>{{ $contract->project_address??old('project_address') }}</textarea>
+                    <textarea class="form-control" name="project_address" id="project_address" rows="3" required placeholder="Add Address">{{ $contract->project_address??old('project_address') }}</textarea>
                     @error('project_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -160,7 +160,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Contractor<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="contractor_address" id="contractor_address" rows="3" required>{{ $contract->contractor_address??old('contractor_address') }}</textarea>
+                    <textarea class="form-control" name="contractor_address" id="contractor_address" rows="3" required placeholder="Add Address">{{ $contract->contractor_address??old('contractor_address') }}</textarea>
                     @error('contractor_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -170,7 +170,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Architect<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="architect_address" id="architect_address" rows="3" required>{{ $contract->architect_address??old('architect_address') }}</textarea>
+                    <textarea class="form-control" name="architect_address" id="architect_address" rows="3" required placeholder="Add Address">{{ $contract->architect_address??old('architect_address') }}</textarea>
                     @error('architect_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>

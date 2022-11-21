@@ -33,9 +33,12 @@
             list-style-type: none !important;
         }
 
-        .vs-option, .vscomp-value {
+        .vs-option {
+            /*z-index: 9999;*/
+        }
+
+        .vscomp-value {
             font-size: 12px !important;
-            z-index: 9999;
         }
 
         .dropdown-menu li > a {
@@ -48,15 +51,15 @@
             width: auto;
         }
 
-        table thead,
+        /*table thead,
         table tfoot {
             position: sticky;
         }
         table thead {
-            inset-block-start: 0; /* "top" */
+            inset-block-start: 0; !* "top" *!
         }
         table tfoot {
-            inset-block-end: 0; /* "bottom" */
+            inset-block-end: 0; !* "bottom" *!
         }
 
         .tableFixHead {
@@ -65,7 +68,7 @@
 
         .headFootZIndex {
             z-index: 3;
-        }
+        }*/
     </style>
     <div class="portlet light bordered">
         <div class="portlet-body form">
@@ -230,7 +233,7 @@
         function initializeParticulars(){
             this.initializeDropdowns();
             console.log(screen.height);
-            $('.tableFixHead').css('max-height', screen.height/2);
+            // $('.tableFixHead').css('max-height', screen.height/2);
           /*  $('.tableFixHead').on('scroll', function(){
                 $('#headerRow').css('z-index',3);
                 $('#footerRow').css('z-index',3);
@@ -253,26 +256,6 @@
                 'data-content' : message,
                 // 'data-original-title'
             }).popover();
-        }
-
-        function elementsOverlap(element, type) {
-            const domRect1 = document.getElementById(element).getBoundingClientRect();
-            const domRect2 = document.getElementById(type+'_head').getBoundingClientRect();
-            const domRect3 = document.getElementById(type+'_foot').getBoundingClientRect();
-
-            let top_diff = domRect1.top - domRect2.top
-            let foot_diff = domRect3.top - domRect1.top
-
-            console.log(top_diff, foot_diff);
-
-
-
-            return !(
-                domRect1.top > domRect2.bottom ||
-                domRect1.right < domRect2.left ||
-                domRect1.bottom < domRect2.top ||
-                domRect1.left > domRect2.right
-            );
         }
 
         function handle_particulars(){
@@ -635,6 +618,7 @@
                     this.fields.forEach(function(currentValue, index, arr) {
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
+                        // this.fields[index].introw = index;
                     });
 
                     document.getElementById('particulartotal').value = updateTextView1(total);

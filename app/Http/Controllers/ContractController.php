@@ -272,7 +272,10 @@ class ContractController extends Controller
         $contractor_address = null;
         $architect_address = null;
 
-        if(is_null($request->contract_id))
+        if (!is_null($request->contract_id))
+            $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
+
+        if(is_null($request->contract_id) || $contract->project_id != $request->project_id)
             $contract = $this->getLastContractWithSameProject($request->project_id);
 
         if (is_null($contract) && $request->route_name == 'contract.create.new'){
