@@ -3136,14 +3136,33 @@ function validateDate() {
 }
 
 function changerOrderAmountCheck(){
-    order_value  = getamt(document.getElementById('total_change_order_amount').value);
+    //order_value  = getamt(document.getElementById('total_change_order_amount').value);
     // if(order_value > 0){
     //     return true;
     // }else{
     //     document.getElementById('change_order_amount_error').style.display = "block";
     //     return false;
     // }
-   return true;
+
+    try {
+        billcodeNull = false
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            bill_code = document.getElementById('bill_code' + int).value;
+            if(bill_code == ''){
+                document.getElementById('change_order_amount_error').style.display = "block";
+                billcodeNull = true;
+            }
+        });
+        if(billcodeNull){
+            return false;
+        }else{
+            return true; 
+        }
+    }
+    catch (o) {
+        console.log(o)
+    }
 }
 
 function limitMe(evt, txt) {
