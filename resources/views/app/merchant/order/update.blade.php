@@ -17,18 +17,21 @@
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
+
     .table thead tr th {
         font-size: 12px !important;
         padding: 3px !important;
         font-weight: 400;
         color: #333;
     }
+
     .table tfoot tr th {
         font-size: 1rem !important;
         padding: 3px !important;
         font-weight: bold;
         color: #333;
     }
+
     .table>tbody>tr>td {
         font-size: 12px !important;
         padding: 3px !important;
@@ -37,6 +40,7 @@
         border-left: 0px;
         vertical-align: middle !important;
     }
+
     .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
@@ -168,7 +172,7 @@
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}"  style="display: none;" class="lable-heading">
+                                                    <p id="description{{$key+1}}" style="display: none;" class="lable-heading">
                                                         @isset($row['description'])
                                                         {{$row['description']}}
                                                         @endisset
@@ -200,10 +204,10 @@
                                             <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>
                                             <span id="addRowButton{{$key+1}}">
                                                 @if($key == count($detail->json_particulars)-1)
-                                                    <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
+                                                <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
                                                 @endif
                                             </span>
-{{--                                            <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateRetainage();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a>--}}
+                                            {{-- <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateRetainage();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a>--}}
                                         </td>
                                         </td>
                                     </tr>
@@ -211,12 +215,18 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="warning">
-                                        <th class="col-id-no"></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th>Grand total</th>
+                                        <th class="col-id-no">Grand total</th>
                                         <th class="td-c">
-                                            <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control" readonly>
+                                            <span id="original_contract_amount_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="unit_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="rate_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
                                         <th></th>
                                         <th></th>
@@ -306,5 +316,6 @@
             $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
         }
     });
+    calculateChangeOrder();
 </script>
 @endsection

@@ -501,7 +501,6 @@ function addLastRowAddButton() {
     // let oldrow = numrow ;
     // console.log(oldrow, numrow, $('input[name="pint[]"]').length);
     // if (oldrow == $('input[name="pint[]"]').length )
-    console.log($('input[name="pint[]"]').length);
     $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
 }
 
@@ -1470,8 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value))
-                ;
+            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value));
         });
     }
     catch (o) {
@@ -1479,12 +1477,21 @@ function calculateChangeOrder() {
     }
 
     var total = 0;
+    var original_contract_amount_total = 0;
+    var unit_total = 0;
+    var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
         total = total + getamt(document.getElementById('change_order_amount' + int).value)
+        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
+        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
+        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(original_contract_amount_total);
+        document.getElementById('unit_total').innerHTML = updateTextView1(unit_total);
+        document.getElementById('rate_total').innerHTML = updateTextView1(rate_total);
     }
     catch (o) {
 
@@ -2911,7 +2918,6 @@ function updateTextView1(val) {
     //if (val > 0) {
         str = val.toString();
         var num = getNumber(str);
-        console.log(num)
         dotpo = num.indexOf(".");
         decimal_text = '';
         if (dotpo > 0) {
@@ -3161,7 +3167,7 @@ function changerOrderAmountCheck(){
         }
     }
     catch (o) {
-        console.log(o)
+        //console.log(o)
     }
 }
 
