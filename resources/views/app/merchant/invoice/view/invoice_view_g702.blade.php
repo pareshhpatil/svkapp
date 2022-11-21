@@ -220,10 +220,10 @@ $header='app.patron.invoice.invoice-master';}
                          
                     </div>
                             <div>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_original_contract'],2)}}</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</p>
                                <p class="font-bold text-xs border-b  border-gray-600 mt-1">  {{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{$info['last_month_co_amount']+$info['this_month_co_amount']}}@endif</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format(($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount']),2)}}</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-0.5">  {{$info['currency_icon']}}{{number_format($info['total_g'],2)}}</p> 
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] < 0)({{str_replace('-','',number_format($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'],2))}}) @else{{number_format(($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount']),2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-0.5">  {{$info['currency_icon']}}@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</p> 
                               
                              
                             </div>
@@ -238,9 +238,9 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                                 <p class="font-bold text-xs mt-5"></p>
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}{{number_format($info['total_i'],2)}}</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_f'],2)}}</p> 
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}{{number_format(($info['total_i']+$info['total_f']),2)}}</p> 
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_i'] < 0)({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{number_format($info['total_i'],2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}})@else{{number_format($info['total_f'],2)}}@endif</p> 
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_i'] < 0)({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{number_format(($info['total_i']+$info['total_f']),2)}}@endif</p> 
                               
                              
                             </div>
@@ -253,7 +253,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_g']-($info['total_i']+$info['total_f']),2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_g']-($info['total_i']+$info['total_f']) < 0)({{str_replace('-','',number_format($info['total_g']-($info['total_i']+$info['total_f']),2))}}) @else{{number_format($info['total_g']-($info['total_i']+$info['total_f']),2)}}@endif</p>
                               
                              
                             </div>
@@ -266,7 +266,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_d'],2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_d'] < 0)({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{number_format($info['total_d'],2)}}@endif</p>
                               
                              
                             </div>
@@ -279,7 +279,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border   border-gray-600 mt-0 py-1">  {{$info['currency_icon']}}{{number_format($info['grand_total'],2)}}</p>
+                                <p class="font-bold text-xs border   border-gray-600 mt-0 py-1">  {{$info['currency_icon']}}@if($info['grand_total'] < 0)({{str_replace('-','',number_format($info['grand_total'],2))}}) @else{{number_format($info['grand_total'],2)}}@endif</p>
                               
                              
                             </div>
@@ -292,7 +292,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}@if(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])) < 0) ({{str_replace('-','',number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2))}}) @else{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2)}}@endif</p>
                               
                              
                             </div>
