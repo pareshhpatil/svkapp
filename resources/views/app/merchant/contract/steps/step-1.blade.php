@@ -1,5 +1,4 @@
 <div class="portlet light bordered">
-{{--        {{dd($errors)}}--}}
     <div class="portlet-body form">
         <div class="row">
             <div class="col-md-6">
@@ -128,17 +127,17 @@
     </div>
 
 </div>
-{{--<div class="portlet light bordered">
+<div class="portlet light bordered">
     <div class="portlet-body form">
     <h3 class="form-section">
-        Application and Certificate for Payment
+        Address information
     </h3>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label col-md-4">To Owner<span class="required">*</span></label>
+                <label class="control-label col-md-4">Owner<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="owner_address" id="owner_address" rows="3" required >{{ $contract->owner_address??old('owner_address') }}</textarea>
+                    <textarea class="form-control" name="owner_address" id="owner_address" rows="3" required placeholder="Add Address" >{{ $contract->owner_address??old('owner_address') }}</textarea>
                     @error('owner_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -148,7 +147,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Project<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="project_address" id="project_address" rows="3" required>{{ $contract->project_address??old('project_address') }}</textarea>
+                    <textarea class="form-control" name="project_address" id="project_address" rows="3" required placeholder="Add Address">{{ $contract->project_address??old('project_address') }}</textarea>
                     @error('project_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -158,9 +157,9 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label col-md-4">From Contractor<span class="required">*</span></label>
+                <label class="control-label col-md-4">Contractor<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="contractor_address" id="contractor_address" rows="3" required>{{ $contract->contractor_address??old('contractor_address') }}</textarea>
+                    <textarea class="form-control" name="contractor_address" id="contractor_address" rows="3" required placeholder="Add Address">{{ $contract->contractor_address??old('contractor_address') }}</textarea>
                     @error('contractor_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -168,16 +167,16 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label col-md-4">Via Architect<span class="required">*</span></label>
+                <label class="control-label col-md-4">Architect<span class="required">*</span></label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="architect_address" id="architect_address" rows="3" required>{{ $contract->architect_address??old('architect_address') }}</textarea>
+                    <textarea class="form-control" name="architect_address" id="architect_address" rows="3" required placeholder="Add Address">{{ $contract->architect_address??old('architect_address') }}</textarea>
                     @error('architect_address')<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>--}}
+</div>
 <div class="portlet light bordered">
     <div class="portlet-body form">
         <div class="row">

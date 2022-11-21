@@ -185,7 +185,7 @@ class Invoice extends ParentModel
     public function getProjectDeatils($payment_request_id)
     {
         $retObj = DB::table('payment_request as p')
-            ->select(DB::raw('c.contract_code,c.project_id,c.contract_date,c.bill_date,pro.project_id as project_code,pro.project_name,pro.start_date,pro.end_date'))
+            ->select(DB::raw('c.contract_id,c.contract_code,c.project_id,c.contract_date,c.bill_date,pro.project_id as project_code,pro.project_name,pro.start_date,pro.end_date'))
             ->join('contract as c', 'p.contract_id', '=', 'c.contract_id')
             ->join('project as pro', 'c.project_id', '=', 'pro.id')
             ->where('p.is_active', 1)
@@ -509,7 +509,19 @@ class Invoice extends ParentModel
     }
 
 
-    public function updateInvoiceAmount($request_id, $amount)
+    // public function updateInvoiceAmount($request_id, $amount)
+    // {
+    //     DB::table('payment_request')->where('payment_request_id', $request_id)
+    //         ->update([
+    //             'absolute_cost' => $amount,
+    //             'basic_amount' => $amount,
+    //             'invoice_total' => $amount,
+    //             'swipez_total' => $amount,
+    //             'grand_total' => $amount
+    //         ]);
+    // }
+
+    public function updateInvoiceDetail($request_id, $amount,$ids)
     {
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
@@ -517,7 +529,8 @@ class Invoice extends ParentModel
                 'basic_amount' => $amount,
                 'invoice_total' => $amount,
                 'swipez_total' => $amount,
-                'grand_total' => $amount
+                'grand_total' => $amount,
+                'change_order_id' => $ids
             ]);
     }
 

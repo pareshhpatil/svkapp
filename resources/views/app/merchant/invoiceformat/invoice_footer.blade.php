@@ -132,10 +132,13 @@
                                  <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked  @endif class="make-switch" data-size="small">
                                  <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
                              </div>
+                            
                          </div> 
                          <input type="hidden" name="payment_request_id" value="{{$info['payment_request_id']}}" />
                          <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
+                        
                          <div class="view-footer-btn-rht-align">
+                           
                              @if($info['notify_patron']==1)
                                  <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
                              @else
@@ -165,6 +168,7 @@
                   @endif
                  @if($info['payment_request_status']!=6 && $info['payment_request_status']!=7)
                      <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
+                       
                         <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" 
                              href="/merchant/invoice/update/{{$info['Url']}}">
                              Update @if($info['invoice_type']==1) invoice @else estimate  @endif
@@ -174,23 +178,32 @@
                  @if($info['payment_request_status']!=11)
                      @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file'] ==1)
                          <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif"
-                             href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif>
+                             href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                              Save as PDF
                          </a>
                          <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif"
-                             href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype'])) /{{$info['gtype']}} @endif">
+                             href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}} @endif">
                              Print
                          </a>
                      @else
+                   
                          <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif"
-                             href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">
+                             href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                              Save as PDF
                          </a>
                          <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif"
-                             href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype'])) /{{$info['gtype']}}@endif">
+                             href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
                              Print
                          </a>
                       @endif
+                      @else
+                      <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
+                   
+                      <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif"
+                      href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                      Save as PDF
+                  </a>
+                      </div>
                   @endif
                  
                  @if(isset($info['document_url']) && $info['document_url']!='')

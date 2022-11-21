@@ -171,10 +171,21 @@ class OrderController extends Controller
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
             $request->approved_date = Helpers::sqlDate($request->approved_date);
-            $this->orderModel->approveOrder($id, $request->approved_date);
+            $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
             return redirect('merchant/order/list')->with('success', "Change order has been Approved");
         } else {
             return redirect('merchant/order/list')->with('error', "Change order code can not be Approved");
+        }
+    }
+
+    public function unapprove(Request $request)
+    {
+        if (isset($request->link)) {
+            $id = Encrypt::decode($request->link);
+            $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
+            return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
+        } else {
+            return redirect('merchant/order/list')->with('error', "Change order code can not be Unapproved");
         }
     }
 

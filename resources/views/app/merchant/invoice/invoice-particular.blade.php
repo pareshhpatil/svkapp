@@ -133,6 +133,8 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
     font-size: 12px;
    
 }
+
+
     </style>
 
 
@@ -176,7 +178,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable" >
+            <div class="table-scrollable  " >
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
                         <thead>
@@ -308,27 +310,50 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                     </tbody>
                     <tfoot>
                     <tr class="warning">
-                        <th class="col-id-no"></th>
+                        <th class="col-id-no">Grand total</th>
                         <th ></th>
                         <th>
-                            
+                        <span id="total_oca"></span>
+                        </th>
+                        <th>
+                        <span id="total_acoa"></span>
+                        </th>
+                        <th>
+                        <span id="total_cca"></span>
+                        </th>
+                        <th>
+                        
+                        </th>
+                        <th>
+                        <span id="total_pba"></span>
                         </th>
                         <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th>
+                        <span id="total_cba"></span>
+                        </th>
 
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th class="td-c">Grand total</th>
-                        <th class="td-c"><span id="particulartotaldiv">{{$total}}</span>
-                            <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="{{$total}}" class="form-control " readonly=""></th>
-                        <th></th>
-                        <th></th>
+                        <th>
+                        <span id="total_sm"></span>
+                        </th>
+                        <th>
+                        <span id="total_tb"></span>
+                        </th>
+                        <th class="td-c"></th>
+                        <th>
+                        <span id="total_rapw"></span>
+                        </th>
+                        <th>
+                        <span id="total_rad"></span>
+                        </th>
+                        
+                        <th class="td-c"><span id="particulartotaldiv"></span>
+                            <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly=""></th>
+                        <th>
+                        <span id="total_rra"></span>
+                        </th>
+                        <th>
+                        <span id="total_tor"></span>
+                        </th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -348,19 +373,14 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
     </script>
 </div>
 
-
-
-
-
-                        
-
                         <div class="portlet light bordered">
                             <div class="portlet-body form">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
-
+                                        <input type="hidden" name="order_ids" value="{{$order_id_array}}">
+                                        
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>
@@ -392,6 +412,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
                         function initializeParticulars(){
                             this.initializeDropdowns();
+                            this.calculateTotal();
                         }
                         function initSelect2(){
 
@@ -647,22 +668,7 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                 removeField(id) {
                                     this.fields.splice(id, 1);
                                     particularray.splice(id, 1);
-
-                                    total = 0;
-                                    this.fields.forEach(function(currentValue, index, arr) {
-                                        if(currentValue.net_billed_amount==null)
-                                        {
-                                            net_billed_amount=0;
-                                        }else{
-                                            net_billed_amount=currentValue.net_billed_amount;
-                                        }
-
-                                        total = Number(total) + Number(getamt(net_billed_amount));
-                                    });
-
-                                    document.getElementById('particulartotal').value = updateTextView1(total);
-                                    document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
-
+                                    this.calculateTotal();
                                     numrow = this.fields.length - 1;
                                     this.count = numrow;
 
@@ -737,8 +743,6 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 
                                 setParticulars()
                                 {
-                                   
-                                   
                                     particularray.forEach(function(currentValue, index, arr) {
                                             document.getElementById('bill_code'+index).value = currentValue.bill_code;
                                             document.getElementById('attach-'+index).value = currentValue.attachments;
@@ -838,25 +842,58 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
                                         try {
                                             field.retainage_percent = updateTextView1(getamt(field.retainage_percent));
                                         } catch (o) {}
-                                        total = 0;
-                                        this.fields.forEach(function(currentValue, index, arr) {
-                                            try {
-                                                oct = Number(getamt(currentValue.net_billed_amount));
-                                            } catch (o) {
-                                                oct = 0;
-                                            }
-                                            if (oct > 0) {
-                                                total = Number(total) + oct;
-
-                                            }
-                                        });
-
-                                        document.getElementById('particulartotal').value = updateTextView1(total);
-                                        document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+                                        this.calculateTotal();
                                     } catch (o) {
                                         // alert(o.message);
                                     }
 
+                                },
+
+                                calculateTotal()
+                                {
+                                    total = 0;
+                                    total_oca = 0;
+                                    total_acoa = 0;
+                                    total_cca = 0;
+
+                                    total_pba = 0;
+                                    total_cba = 0;
+                                    total_sm = 0;
+                                    total_tb = 0;
+                                    total_rapw = 0;
+                                    total_rad = 0;
+                                    total_rra = 0;
+                                    total_tor = 0;
+                                        this.fields.forEach(function(currentValue, index, arr) {
+                                                total = Number(total) + getamt(currentValue.net_billed_amount);
+                                                total_oca = Number(total_oca) + getamt(currentValue.original_contract_amount);
+                                                total_acoa = Number(total_acoa) + getamt(currentValue.approved_change_order_amount);
+                                                total_cca = Number(total_cca) + getamt(currentValue.current_contract_amount);
+
+                                                total_pba = Number(total_pba) + getamt(currentValue.previously_billed_amount);
+                                                total_cba = Number(total_cba) + getamt(currentValue.current_billed_amount);
+                                                total_sm = Number(total_sm) + getamt(currentValue.stored_materials);
+                                                total_tb = Number(total_tb) + getamt(currentValue.total_billed);
+                                                total_rapw = Number(total_rapw) + getamt(currentValue.retainage_amount_previously_withheld);
+                                                total_rad = Number(total_rad) + getamt(currentValue.retainage_amount_for_this_draw);
+                                                total_rra = Number(total_rra) + getamt(currentValue.retainage_release_amount);
+                                                total_tor = Number(total_tor) + getamt(currentValue.total_outstanding_retainage);
+
+                                        });
+                                        document.getElementById('particulartotal').value = updateTextView1(total);
+                                        document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+                                        document.getElementById('total_oca').innerHTML = updateTextView1(total_oca);
+                                        document.getElementById('total_acoa').innerHTML = updateTextView1(total_acoa);
+                                        document.getElementById('total_cca').innerHTML = updateTextView1(total_cca);
+
+                                        document.getElementById('total_pba').innerHTML = updateTextView1(total_pba);
+                                        document.getElementById('total_cba').innerHTML = updateTextView1(total_cba);
+                                        document.getElementById('total_sm').innerHTML = updateTextView1(total_sm);
+                                        document.getElementById('total_tb').innerHTML = updateTextView1(total_tb);
+                                        document.getElementById('total_rapw').innerHTML = updateTextView1(total_rapw);
+                                        document.getElementById('total_rad').innerHTML = updateTextView1(total_rad);
+                                        document.getElementById('total_rra').innerHTML = updateTextView1(total_rra);
+                                        document.getElementById('total_tor').innerHTML = updateTextView1(total_tor);
                                 },
 
                                 wait(x) {

@@ -662,7 +662,6 @@ class InvoiceController extends AppController
 
             $data['contract_particulars'] = json_decode($contract->particulars);
 
-
             if (isset($data['payment_request_id'])) {
                 $data['contract_particulars'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $data['payment_request_id']);
             } else {
@@ -692,7 +691,6 @@ class InvoiceController extends AppController
                         }
                     }
                 }
-
                 if ($pre_req_id != false) {
                     $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
                     $cp = array();
@@ -850,6 +848,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
@@ -2236,9 +2235,30 @@ class InvoiceController extends AppController
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $info['constriuction_details'] = $this->getData703($tt);
+            $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
+            $info['project_details'] = $project_details;
 
+            $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+            where MONTH(`order_date`)=MONTH(now()-INTERVAL 1 MONTH) AND `status`=1 AND `is_active`=1 AND `contract_id`='".$info['project_details']->contract_id."'");
+          if($pre_month_change_order_amount[0]->change_order_amount!=null)
+          {
+            $info['last_month_co_amount']=$pre_month_change_order_amount[0]->change_order_amount;
+          }else
+          {
+            $info['last_month_co_amount']=0;
+          }
+          $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+          where MONTH(`order_date`)=MONTH(now()) AND `status`=1 AND `is_active`=1 AND `contract_id`='".$info['project_details']->contract_id."'");
+        if($current_month_change_order_amount[0]->change_order_amount!=null)
+        {
+          $info['this_month_co_amount']=$current_month_change_order_amount[0]->change_order_amount;
+        }else
+        {
+          $info['this_month_co_amount']=0;
+        }
+      
             $sumOfc = 0;
-            $sumOfd = 0;
+           $sumOfd = 0;
             $sumOfe = 0;
             $sumOff = 0;
             $sumOfg = 0;
@@ -2269,8 +2289,7 @@ class InvoiceController extends AppController
 
 
 
-            $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
-            $info['project_details'] = $project_details;
+           
         }
 
 
@@ -2362,12 +2381,19 @@ class InvoiceController extends AppController
                 $info["is_online_payment"] = 0;
             }
         }
+        if (substr($info['invoice_number'], 0, 16) == 'System generated') {
+            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', substr($info['invoice_number'], 16));
+            $seq_no = $seq_row->val + 1;
+            $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
+        }
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
         $data['metadata']['header'] = $main_header;
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
+
+
 
         return $data;
     }
@@ -2730,7 +2756,7 @@ class InvoiceController extends AppController
                     $data['attachments'] = null;
                 }
                 $request->totalcost = str_replace(',', '', $request->totalcost);
-                $this->invoiceModel->updateInvoiceAmount($request_id, $request->totalcost);
+                $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids);
                 if ($data['id'] > 0) {
                     $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                 } else {
@@ -2885,9 +2911,9 @@ class InvoiceController extends AppController
             }
         }
 
+        $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-
 
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
@@ -2895,6 +2921,7 @@ class InvoiceController extends AppController
 
             $cop_particulars = [];
             foreach ($change_order_data as $co_data) {
+                array_push($order_id_array, (int)$co_data["order_id"]);
                 foreach (json_decode($co_data["particulars"], true) as $co_par) {
                     $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
                     array_push($cop_particulars, $co_par);
@@ -2948,6 +2975,7 @@ class InvoiceController extends AppController
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
                         $cop[$v["bill_code"]]->bill_type = '';
                         $cop[$v["bill_code"]]->description = $v["description"];
@@ -2963,7 +2991,7 @@ class InvoiceController extends AppController
             }
             $particulars = json_decode(json_encode($particulars), 1);
             foreach ($particulars as $k => $row) {
-                $ocm = $row['original_contract_amount'];
+                $ocm = (isset($row['original_contract_amount'])) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
@@ -2981,12 +3009,15 @@ class InvoiceController extends AppController
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
             }
+            $order_id_array = json_decode($invoice->change_order_id, 1);
         }
         Helpers::hasRole(2, 27);
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+
+        $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
         $data['mode'] = 'create';

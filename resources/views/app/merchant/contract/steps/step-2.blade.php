@@ -33,7 +33,11 @@
             list-style-type: none !important;
         }
 
-        .vs-option, .vscomp-value {
+        .vs-option {
+            /*z-index: 9999;*/
+        }
+
+        .vscomp-value {
             font-size: 12px !important;
         }
 
@@ -46,6 +50,27 @@
             /*text-align: left;*/
             width: auto;
         }
+
+
+        /*table thead,
+        table tfoot {
+            position: sticky;
+        }
+        table thead {
+            inset-block-start: 0; !* "top" *!
+        }
+        table tfoot {
+            inset-block-end: 0; !* "bottom" *!
+        }
+
+        .tableFixHead {
+            max-height: 200px;overflow: auto;
+        }
+
+        .headFootZIndex {
+            z-index: 3;
+        }*/
+
 
     </style>
     <div class="portlet light bordered">
@@ -210,6 +235,12 @@
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
+            console.log(screen.height);
+            // $('.tableFixHead').css('max-height', screen.height/2);
+          /*  $('.tableFixHead').on('scroll', function(){
+                $('#headerRow').css('z-index',3);
+                $('#footerRow').css('z-index',3);
+            });*/
         }
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
@@ -219,6 +250,7 @@
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
+
         function addPopover(id, message){
             $('#'+id).attr({
                 'data-placement' : 'right',
@@ -303,6 +335,23 @@
                             particularsArray[id].bill_code_detail = this.value
                         }
                     });
+
+                    // $('#'+type+id).on('beforeOpen',function () {console.log('beforeOpen');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
+                    //     elementsOverlap( type+id, type);
+                    //     elementsOverlap( type+id, type);
+                    //     // elementsOverlap( type+id, 'footerRow');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    //
+                    // $('#'+type+id).on('afterClose',function () {console.log('afterClose');
+                    //     $('#headerRow').addClass('headFootZIndex');
+                    //     $('#footerRow').addClass('headFootZIndex');
+                    // });
 
                 } ,
                 addNewBillCode(token){
@@ -416,15 +465,16 @@
                         } catch (o) {}
                         total = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
-                            try {
-                                oct = Number(getamt(currentValue.original_contract_amount));
-                            } catch (o) {
-                                oct = 0;
-                            }
-                            if (oct > 0) {
+                            oct = Number(getamt(currentValue.original_contract_amount));
+                            // try {
+                            //     oct = Number(getamt(currentValue.original_contract_amount));
+                            // } catch (o) {
+                            //     oct = 0;
+                            // }
+                            // if (oct > 0) {
                                 total = Number(total) + oct;
 
-                            }
+                            // }
                         });
 
                         document.getElementById('particulartotal').value = updateTextView1(total);
@@ -472,21 +522,21 @@
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
-                        }else {
-                            if( parseInt(this.fields[p].original_contract_amount) > 0 )
-                                $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
-                            else {
-                                $('#cell_original_contract_amount_' + p).addClass(' error-corner');
-                                addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
-                                valid = false
-                            }
                         }
+                        // else {
+                        //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
+                        //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                        //     else {
+                        //         $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                        //         addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
+                        //         valid = false
+                        //     }
+                        // }
                         // this.fields[p].group = particularsArray[p].group
                     }
                     return valid;
                 },
                 saveParticulars(back=0, next=0){
-                    console.log('test');
                     this.copyBillCodeGroups();
                     let data = JSON.stringify(this.fields);
                     var actionUrl = '/merchant/contract/updatesaveV6';
@@ -515,6 +565,7 @@
                 },
                 async addNewRow() {
                     int = this.fields.length
+                    alert(int);
 
                     this.fields.push({
                         'bill_code' : null,
@@ -572,6 +623,7 @@
                     this.fields.forEach(function(currentValue, index, arr) {
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
+                        // this.fields[index].introw = index;
                     });
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -638,6 +690,7 @@
                 },
                 OpenAddCaculated(field) {
                     console.log(field.introw);
+                    calcRowInt=field.introw;
                     field.showoriginal_contract_amount = false;
                     //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
                     this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
@@ -677,9 +730,9 @@
                             }
                             var discription = document.getElementById('description' + int).value;
                             //bill_code = document.getElementById('bill_code' + bint).value;
-                            if (amt > 0) {
+                            // if (amt > 0) {
                                 row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
-                            }
+                            // }
                         }
                         newDiv.innerHTML = row;
                         mainDiv.appendChild(newDiv);
