@@ -518,7 +518,7 @@
                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                         }
 
-                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '') {
+                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
@@ -663,7 +663,7 @@
                     }else
                         $('#calc_checkbox_error').html('');
 
-                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === 0 || $('#calc_perc').val() < 0 ) {
+                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === '0' || $('#calc_perc').val() < 0 ) {
                         $('#calc_perc_error').html('Please enter percentage');
                         valid = false
                     }else
