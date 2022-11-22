@@ -91,7 +91,7 @@
                                                         onclick="document.getElementById('deleteanchor').href = '/merchant/template/delete/{$v.encrypted_id}'"
                                                         data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
                                                 </li>
-                                                {if $v.template_type!='travel' && $v.template_type!='scan'}
+                                                {* {if $v.template_type!='travel' && $v.template_type!='scan'}
                                                     <li class="divider"></li>
                                                     <li>
                                                         <a href="/merchant/template/saveInvoceJson/v3/{$v.encrypted_id}">
@@ -102,7 +102,7 @@
                                                         <a href="/merchant/template/updateInvoceJson/v3/{$v.encrypted_id}">
                                                             Update Invoice v3 JSON</a>
                                                     </li>
-                                                {/if}
+                                                {/if} *}
                                             </ul>
                                         </div>
 

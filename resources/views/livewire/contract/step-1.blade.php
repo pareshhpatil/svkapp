@@ -35,7 +35,7 @@
                         <select class="form-control" id="billing_frequency" wire:model.defer="billing_frequency">
                             <option value="1">Weekly</option>
                             <option value="2">Monthly</option>
-                            <option value="3">Quaterly</option>
+                            <option value="3">Quarterly</option>
                         </select>
 {{--                        @error('billing_frequency')<div class="text-danger">{{ $message }}</div>@enderror--}}
                     </div>

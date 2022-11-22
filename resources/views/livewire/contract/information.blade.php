@@ -36,7 +36,7 @@
                 <select class="form-control" id="billing_frequency" wire:model.defer="billing_frequency">
                     <option @if($billing_frequency==1) selected @endif value="1">Weekly</option>
                     <option @if($billing_frequency==2) selected @endif value="2">Monthly</option>
-                    <option @if($billing_frequency==3) selected @endif value="3">Quaterly</option>
+                    <option @if($billing_frequency==3) selected @endif value="3">Quarterly</option>
                 </select>
             </div>
         </div>
@@ -85,7 +85,7 @@
             <label class="control-label col-md-4">Company name</label>
             <div class="col-md-8">
                 <div class="input-icon right">
-                    <input type="text" id="customer_code" name="customer_code" readonly class="form-control" value="{{ (!is_null($project) && is_null($project->company_name))? $project->customer_id : $project->customer_company_code??null }}">
+                    <input type="text" id="customer_code" name="customer_code" readonly class="form-control" value="{{ (!is_null($project) && is_null($project->company_name))? $project->customer_code : $project->customer_company_code??null }}">
                 </div>
             </div>
         </div>

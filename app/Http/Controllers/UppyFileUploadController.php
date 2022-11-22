@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class UppyFileUploadController extends Controller
 {
-    public function uploadImage(Request $request, $type = null)
+    public function uploadImage(Request $request, $type = null, $subfolder = null)
     {
         $response['errors'] = '';
         $response['status'] = 300;
@@ -29,8 +29,17 @@ class UppyFileUploadController extends Controller
             $file = $request->file('image');
             $name = $file->getClientOriginalName();
             $name = substr($name, 0, strrpos($name, '.'));
+            if($subfolder=='billcode')
+            {
+                $data=explode("_", $name);
+               $folder=$folder.'/'.$data[0];
+               $name=str_replace($data[0].'_',"",$name);
+               $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';
+            }
             //$encryptedFileName = Encrypt::encode($name);
-            $filenameExt =$name.$randNo;//$dt . $randNo;
+            $filenameExt =str_replace('.','',$name).$randNo;//$dt . $randNo;
+            $filenameExt =str_replace('(','',$filenameExt);
+            $filenameExt =str_replace(')','',$filenameExt);
             $encryptedFileName =$filenameExt; //Encrypt::encode($filenameExt);
             //get file extension
             $fileExtension = $file->getClientOriginalExtension();
@@ -43,10 +52,11 @@ class UppyFileUploadController extends Controller
             if (!in_array($fileExtension, $fileExtensionsAllowed)) {
                 $response['errors'] = $fileExtension . " file extension is not allowed. Please upload a JPEG or PNG file";
             }
-
+            if($type != 'invoice'){
             if ($fileSize > 1000000) {
                 $response['errors'] = "File exceeds maximum size (1MB)";
             }
+        }
 
             if (empty($response['errors'])) {
                 $uploadImg = Storage::disk('s3_expense')->put($filePath, file_get_contents($file));

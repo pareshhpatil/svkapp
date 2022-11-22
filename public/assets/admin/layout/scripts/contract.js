@@ -8,7 +8,7 @@ function projectSelected(project_id) {
             if (data.length > 0) {
                 document.getElementById('project_name').value = data[0].project_name;
                 if (data[0].company_name == null || data[0].company_name == '') {
-                    document.getElementById('customer_code').value = data[0].customer_id
+                    document.getElementById('customer_code').value = data[0].customer_code
                 } else {
                     document.getElementById('customer_code').value = data[0].customer_company_code
                 }

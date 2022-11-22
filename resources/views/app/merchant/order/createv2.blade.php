@@ -32,7 +32,7 @@
         color: #333;
     }
 
-    .table > tbody > tr > td {
+    .table>tbody>tr>td {
         font-size: 12px !important;
         padding: 3px !important;
         border: 1px solid #D9DEDE;
@@ -41,10 +41,9 @@
         vertical-align: middle !important;
     }
 
-    .table > tbody > tr > td > div > label {
+    .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
-
 </style>
 @section('content')
 <div class="page-content">
@@ -90,11 +89,14 @@
     <div class="row">
         <div class="col-md-12">
             @include('layouts.alerts')
-
+            <div id="change_order_amount_error" class="alert alert-block alert-danger fade in" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert"></button>
+                <p>Error! Bill code cannot be blank!</p>
+            </div>
             <div class="portlet light bordered">
                 <div class="portlet-body form">
                     <!--<h3 class="form-section">Profile details</h3>-->
-                    <form action="/merchant/order/save" id="frm_expense" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
+                    <form action="/merchant/order/save" id="frm_expense" onsubmit="return changerOrderAmountCheck();loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-body">
                             <!-- Start profile details -->
@@ -133,7 +135,7 @@
                                         <label class="control-label col-md-4">Change order date<span class="required">*
                                             </span></label>
                                         <div class="col-md-8">
-                                            <input class="form-control form-control-inline date-picker" type="text" required data-cy="order_date" name="order_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Change Order date" value='<x-localize :date=" old('order_date')" type="date" />' />
+                                            <input class="form-control form-control-inline date-picker" type="text" required data-cy="order_date" name="order_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Change Order date" value='<x-localize :date=" old(' order_date')" type="date" />' />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -197,13 +199,13 @@
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
                                                 @if($row[$v]==$vk->code)
-                                                <label selected="" value="{{$vk->code}}">{{$vk->title}} | {{$vk->code}}</label>
-                                                <input type="hidden" name="bill_code[]" value="{{$vk->code}}">
+                                                <label selected="" value="{{$vk->code}}">{{$vk->code}} | {{$vk->title}}</label>
+                                                <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->code}}">
                                                 @endif
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}" class="lable-heading">
+                                                    <p id="description{{$key+1}}" style="display: none;" class="lable-heading">
                                                         @isset($row['description'])
                                                         {{$row['description']}}
                                                         @endisset
@@ -213,11 +215,15 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                        </td>
+                                        @elseif ($v == 'order_description')
+                                        <td class="col-id-no">
+                                            <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @else
                                         <td>
@@ -231,10 +237,10 @@
                                             <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>
                                             <span id="addRowButton{{$key+1}}">
                                                 @if($key == count($detail->json_particulars)-1)
-                                                    <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
+                                                <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
                                                 @endif
                                             </span>
-{{--                                            <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateRetainage();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a>--}}
+                                            {{-- <a data-cy="particular-remove{{$key+1}}" href="javascript:;" onclick="$(this).closest('tr').remove();calculateRetainage();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a>--}}
                                         </td>
                                         </td>
                                     </tr>
@@ -242,10 +248,16 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="warning">
-                                        <th class="col-id-no"></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th>Grand total</th>
+                                        <th class="col-id-no">Grand total</th>
+                                        <th class="td-c">
+                                            <span id="original_contract_amount_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="unit_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="rate_total"></span>
+                                        </th>
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="0" class="form-control input-sm" readonly>
                                         </th>
@@ -314,7 +326,9 @@
     @if(isset($project_id))
     project_id = {!!$project_id!!};
     @endif
-
 </script>
 @section('footer')
+<script>
+    calculateChangeOrder();
+</script>
 @endsection

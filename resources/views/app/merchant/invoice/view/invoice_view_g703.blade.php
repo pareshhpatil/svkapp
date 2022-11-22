@@ -1,11 +1,11 @@
 @php
-$header = 'app.master';
-if ($info['user_type'] == 'merchant') {
     $header = 'app.master';
-} else {
-    $header = 'app.patron.invoice.invoice-master';
-}
-
+    if ($info['user_type'] == 'merchant') {
+        $header = 'app.master';
+    } else {
+        $header = 'app.patron.invoice.invoice-master';
+    }
+    
 @endphp
 
 
@@ -51,6 +51,12 @@ if ($info['user_type'] == 'merchant') {
             <span class="page-title" style="float: left;">{{ $title }}</span>
             {{ Breadcrumbs::render('home.invoice.view', 'Invoice') }}
 
+            @if ($info['payment_request_status'] == 11)
+                <span class=" pull-right badge badge-pill status steps"
+                    style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
+            @endif
+
+
         </div>
     @endif
 
@@ -60,13 +66,19 @@ if ($info['user_type'] == 'merchant') {
     <div class=" w-full flex flex-col items-center justify-center  ">
         <div class="w-full" style="max-width: 1400px;">
             @include('app.merchant.invoiceformat.invoice_header')
-        </div> 
+        </div>
         <div class="w-full mb-2 " style="max-width: 1400px;">
-        @if ($info['payment_request_status']==11)
-            <div class="alert alert-block alert-success fade in">
-                <p>@if($info['invoice_type']==1) Invoice @else estimate @endif preview</p>
-            </div>
-     @endif
+            @if ($info['payment_request_status'] == 11)
+                <div class="alert alert-block alert-success fade in">
+                    <p>
+                        @if ($info['invoice_type'] == 1)
+                            Invoice
+                        @else
+                            estimate
+                        @endif preview
+                    </p>
+                </div>
+            @endif
             <div class="tabbable-line" @if ($info['user_type'] != 'merchant') style="padding-left: 0px;" @endif>
                 <ul class="nav nav-tabs">
                     @if ($info['user_type'] != 'merchant')
@@ -76,11 +88,10 @@ if ($info['user_type'] == 'merchant') {
                         <li class="active">
                             <a href="/patron/invoice/view/{{ $info['Url'] }}/703">703</a>
                         </li>
-                        @isset($metadata['plugin']['has_upload'])
-                            <li>
-                                <a href="/patron/invoice/document/{{ $info['Url'] }}">Attached files</a>
-                            </li>
-                        @endisset
+
+                        <li>
+                            <a href="/patron/invoice/document/{{ $info['Url'] }}">Attached files</a>
+                        </li>
                     @else
                         <li>
                             <a href="/merchant/invoice/viewg702/{{ $info['Url'] }}">702</a>
@@ -88,11 +99,10 @@ if ($info['user_type'] == 'merchant') {
                         <li class="active">
                             <a href="/merchant/invoice/viewg703/{{ $info['Url'] }}">703</a>
                         </li>
-                        @isset($metadata['plugin']['has_upload'])
-                            <li>
-                                <a href="/merchant/invoice/document/{{ $info['Url'] }}">Attached files</a>
-                            </li>
-                        @endisset
+
+                        <li>
+                            <a href="/merchant/invoice/document/{{ $info['Url'] }}">Attached files</a>
+                        </li>
                     @endif
                 </ul>
             </div>
@@ -141,7 +151,9 @@ if ($info['user_type'] == 'merchant') {
                                 <p class="text-xs font-bold">APPLICATION DATE: </p>
                             </td>
                             <td>
-                                <p class="ml-2 text-xs font-bold"><x-localize :date="$info['bill_date']" type="date" /></p>
+                                <p class="ml-2 text-xs font-bold">
+                                    <x-localize :date="$info['bill_date']" type="date" />
+                                </p>
                             </td>
                         </tr>
                         <tr>
@@ -157,7 +169,7 @@ if ($info['user_type'] == 'merchant') {
                                 <p class="text-xs font-bold">ARCHITECT’S PROJECT NO:</p>
                             </td>
                             <td>
-                                <p class=" ml-2 text-xs font-bold">{{ $info['project_details']->project_id }}</p>
+                                <p class=" ml-2 text-xs font-bold">{{ $info['project_details']->project_code }}</p>
                             </td>
                         </tr>
                     </table>
@@ -254,148 +266,167 @@ if ($info['user_type'] == 'merchant') {
                         </tr>
                     </thead>
                     <tbody>
-                      
+
                         @foreach ($info['constriuction_details'] as $key => $item)
-                       @if($item['a']=='heading')
-                        <tr>
-                            <td colspan="10" class="border border-gray-500 px-2 py-2 text-left">
+                            @if ($item['type'] == 'heading')
+                                <tr>
+                                    <td colspan="10" class="border border-gray-500 px-2 py-2 text-left">
 
-                                <p class="text-sm ">{{ $item['b'] }} </p>
-
-
-                            </td>
-                        </tr>
-                        @elseif ($item['a']=='footer')
-                        <tr>
-                            <td colspan="2" class="border border-gray-500 px-2 py-2   text-center text-black">
-
-                              <p class=" font-regular text-xs">  {{ $item['b'] }} </p>
+                                        <p class="text-sm ">{{ $item['b'] }} </p>
 
 
-                            </td>
-                          
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $item['c'] }} </p>
+                                    </td>
+                                </tr>
+                            @elseif ($item['type'] == 'footer')
+                                <tr>
+                                    <td colspan="2" class="border border-gray-500 px-2 py-2   text-center text-black">
 
-                            </td>
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm"> {{ $item['d'] }}</p>
-
-                            </td>
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $item['e'] }}</p>
-                            </td>
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $item['f'] }}</p>
-                            </td>
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $item['g'] }}</p>
-                            </td>
-                            <td class="border border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm"> {{ $item['g_per'] }}</p>
-                 
-                    </td>
-                    <td class="border border-gray-500 px-2 py-2 text-right">
-                        <p class="text-sm"> {{ $item['h'] }} </p>
-                    </td>
-                    <td class="border border-gray-500 px-2 py-2 text-right">
-                        <p class="text-sm">{{ $item['i'] }}</p>
-                    </td>
-
-                    </tr>
-                    @elseif ($item['a']=='combine')
-                    <tr>
-                        <td colspan="2" class=" border border-gray-500 px-2 py-2 text-left">
-
-                            <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b']}}/{{$item['group_name']}}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif </p>
+                                        <p class=" font-regular text-xs"> {{ $item['b'] }} </p>
 
 
-                        </td>
-                      
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm">{{ $item['c'] }} </p>
+                                    </td>
 
-                        </td>
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm"> {{ $item['d'] }}</p>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</p>
 
-                        </td>
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm">{{ $item['e'] }}</p>
-                        </td>
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm">{{ $item['f'] }}</p>
-                        </td>
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm">{{ $item['g'] }}</p>
-                        </td>
-                        <td class="border border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm"> {{ $item['g_per'] }}</p>
-             
-                </td>
-                <td class="border border-gray-500 px-2 py-2 text-right">
-                    <p class="text-sm"> {{ $item['h'] }} </p>
-                </td>
-                <td class="border border-gray-500 px-2 py-2 text-right">
-                    <p class="text-sm">{{ $item['i'] }}</p>
-                </td>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
 
-                </tr>
-                        @else
-                            <tr>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',$item['g_per'])}}) @else{{ $item['g_per'] }} @endif</p>
 
-                                    <p class="text-sm">{{ $item['a'] }} </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
+                                    </td>
 
+                                </tr>
+                            @elseif ($item['type'] == 'combine')
+                                <tr>
+                                    <td colspan="2" class=" border border-gray-500 px-2 py-2 text-left">
 
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
-                                    @if(isset( $item['group_name']))
-                                    <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{$item['group_name']}}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
-                             @else
-                             <p class="text-sm">{{ $item['b'] }} @if(!empty($item['attachment']))<a href="/{{$info['user_type']}}/invoice/document/{{ $info['Url'] }}/{{ strlen($item['b']) > 10 ? substr($item['b'],0,10)."..." : $item['b'] }}/{{$item['attachment']}}"> <i class="fa fa-paperclip" aria-hidden="true"></i></a>@endif</p>
-                             
-                                    @endif
-                                  </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm">{{ $item['c'] }} </p>
-
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm"> {{ $item['d'] }}</p>
-
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm">{{ $item['e'] }}</p>
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm">{{ $item['f'] }}</p>
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm">{{ $item['g'] }}</p>
-                                </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                    <p class="text-sm"> {{ $item['g_per'] }}</p>
-                     
-                        </td>
-                        <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm"> {{ $item['h'] }} </p>
-                        </td>
-                        <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                            <p class="text-sm">{{ $item['i'] }}</p>
-                        </td>
-
-                        </tr>
-                        @endif
-                      
+                                        <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
+                                                <a
+                                                    href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b'])}}/@if(empty($item['group_name'])){{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a'])}}@else{{str_replace(' ', '_', strlen($item['group_name']) > 7 ? substr($item['group_name'], 0, 7) : $item['group_name'])}}@endif/{{ $item['attachment'] }}">
+                                                    <i class="fa fa-paperclip popovers" data-placement="right"
+                                                        data-container="body" data-trigger="hover"
+                                                        data-content="{{ $item['files'] }}" aria-hidden="true"></i></a>
+                                            @endif
+                                        </p>
 
 
+                                    </td>
 
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif </p>
+
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </p>
+
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['g'] }} @endif </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',$item['g_per'])}}) @else{{ $item['g_per'] }} @endif</p>
+
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">  @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
+                                    </td>
+                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
+                                    </td>
+
+                                </tr>
+                            @else
+                                <tr>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
+
+                                        <p class="text-sm">{{ $item['a'] }} </p>
+
+
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
+
+                                        @if (isset($item['group_name']))
+                                            <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
+                                                    <a
+                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ $item['group_name'] }}/{{str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a'])}}/{{ $item['attachment'] }}">
+                                                        <i class="fa fa-paperclip popovers" data-placement="right"
+                                                            data-container="body" data-trigger="hover"
+                                                            data-content="{{ $item['files'] }}"
+                                                            aria-hidden="true"></i></a>
+                                                @endif
+                                            </p>
+                                        @else
+                                            <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
+                                                    <a
+                                                        href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a']) }}/{{ $item['attachment'] }}">
+                                                        <i class="fa fa-paperclip popovers" data-placement="right"
+                                                            data-container="body" data-trigger="hover"
+                                                            data-content="{{ $item['files'] }}"
+                                                            aria-hidden="true"></i></a>
+                                                @endif
+                                            </p>
+                                        @endif
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif </p>
+
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
+
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',$item['g_per'])}}) @else{{ $item['g_per'] }} @endif</p>
+
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm"> @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</p>
+                                    </td>
+                                    <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                        <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
+                                    </td>
+
+                                </tr>
+                            @endif
                         @endforeach
-                      
 
-                      
-                       
+
+
+
 
                         <tr>
                             <td style="min-width: 40px"
@@ -412,37 +443,43 @@ if ($info['user_type'] == 'merchant') {
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_c'],2) }} </p>
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_c'] < 0) ({{str_replace('-','',number_format($info['total_c'],2))}}) @else{{ number_format($info['total_c'], 2) }} @endif
+                                </p>
 
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_d'],2)  }}</p>
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_d'] < 0) ({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{ number_format($info['total_d'], 2) }} @endif
+                                </p>
                             </td>
-                            <td style="min-width: 70px"
+                            <td style="min-width: 90px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_e'],2)  }}
+                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_e'] < 0) ({{str_replace('-','',number_format($info['total_e'],2))}}) @else{{ number_format($info['total_e'], 2) }} @endif
                                 </p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }} {{ number_format($info['total_f'],2)  }}</p>
+                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}}) @else{{ number_format($info['total_f'], 2) }} @endif
+                                </p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_g'],2)  }}</p>
+                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_g'] < 0) ({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{ number_format($info['total_g'], 2) }} @endif
+                                </p>
                             </td>
                             <td style="min-width: 40px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm"></p>
+                                <p class="text-sm">@if($info['total_c']!=0)@if($info['total_g']/$info['total_c'] < 0) ({{str_replace('-','',number_format($info['total_g']/$info['total_c'],2))}}) @else{{ number_format($info['total_g']/$info['total_c'], 2) }} @endif @else 0 @endif</p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_h'],2)  }}</p>
+                                <p class="text-sm"> {{ $info['currency_icon'] }} @if($info['total_h'] < 0) ({{str_replace('-','',number_format($info['total_h'],2))}}) @else{{ number_format($info['total_h'], 2) }} @endif
+                                </p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }}{{ number_format($info['total_i'],2)  }}</p>
+                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{ number_format($info['total_i'], 2) }} @endif
+                                </p>
                             </td>
                         </tr>
 

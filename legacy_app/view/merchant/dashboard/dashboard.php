@@ -100,7 +100,7 @@
                         <?php if ($this->report_days != 7) { ?>
                             <li class="">
                                 <a href="/merchant/dashboard/reportdays/7">
-                                    Current Week
+                                    Last 7 days
                                 </a>
                             </li>
                         <?php } ?>
@@ -174,9 +174,10 @@
 
         <section class="section">
             <div class="row sameheight-container">
-                <?php if ($this->is_legal == 0 || $this->has_invoice == 0 || $this->isCompletedCompayPage == 0) { ?>
+                <?php if ($this->is_legal == 1 || $this->has_invoice == 1 || $this->isCompletedCompayPage == 1) { ?>
                     <!-- this card will appear if and only if user's profile is not completed -->
-                    <div class="col col-12 col-md-4 mt-1">
+                    <!-- this card will appear if and only if user's profile is not completed -->
+                    <!-- <div class="col col-12 col-md-4 mt-1">
                         <div class="card stats" data-exclude="xs">
                             <div class="card-block">
                                 <div class="row row-sm stats-container">
@@ -187,7 +188,7 @@
                                         <div class="progress stat-progress getting-started-progress" style="height:17px;position:relative;margin-top:-5px;margin-bottom:-10px">
                                             <div class="progress-bar" style="width: <?= $this->circular_percentage == 0 ? '1' : $this->circular_percentage; ?>%; "></div>
                                             <h6 style="position:absolute;right:45%;top:-7px; color:white"><?= $this->circular_percentage; ?>%</h6>
-                                        </div>
+                                        </div> -->
                                         <!--
                                     <div class="col-12 no-padding">
                                         <span class="label label-sm label-default pull-right pull-top-1">Last 30 days</span>
@@ -195,8 +196,8 @@
                                         <!-- <div class="mt-2 progress stat-progress">
                                         <div class="progress-bar" style="width: 100%;"></div>
                                     </div> -->
-                                    </div>
-                                    <div class="col-12 mt-4">
+                                   <!--  </div>-->
+                                    <!-- <div class="col-12 mt-4">
                                         <div class="progress-card">
                                             <div class="progress-circle p<?= $this->circular_percentage; ?> <?php if ($this->circular_percentage > 50) { ?> over50 <?php }  ?>">
                                                 <span><?= $this->completion_percentage; ?>%</span>
@@ -234,14 +235,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </div> -->
+                                <!-- </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 <?php } ?>
                 <!--  -->
-                <div class="col col-12 <?php if ($this->is_legal == 0 || $this->has_invoice == 0 || $this->isCompletedCompayPage == 0) { ?> col-md-4 <?php } else { ?> col-md-6 <?php } ?> mt-1">
+                <div class="col col-12 col-md-6 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">
@@ -295,7 +296,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col col-12 <?php if ($this->is_legal == 0 || $this->has_invoice == 0 || $this->isCompletedCompayPage == 0) { ?> col-md-4 <?php } else { ?> col-md-6 <?php } ?> mt-1">
+                <div class="col col-12 col-md-6 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">

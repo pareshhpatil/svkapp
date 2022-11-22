@@ -11,11 +11,15 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="row">
         @include('layouts.alerts')
+        <div id="project_date_error" class="alert alert-block alert-danger fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert"></button>
+            <p>Error! Project end date cant be before project start date</p>
+        </div>
         <div class="col-md-12">
             <div class="portlet light bordered">
                 <div class="portlet-body form">
                     <!--<h3 class="form-section">Profile details</h3>-->
-                    <form action="/merchant/project/store" method="post" class="form-horizontal form-row-sepe">
+                    <form action="/merchant/project/store" method="post" class="form-horizontal form-row-sepe" onsubmit="return validateDate();">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-body">
                             <!-- Start profile details -->
@@ -55,14 +59,14 @@
                                         <label class="control-label col-md-3">Start Date <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input class="form-control date-picker" type="text" name="start_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Start Date" />
+                                            <input class="form-control date-picker" id="start_date" type="text" name="start_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Start Date" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">End Date <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input class="form-control date-picker" type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date" />
+                                            <input class="form-control date-picker" id="end_date" type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -73,7 +77,7 @@
                                             <input class="form-control" type="text" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
                                         </div>
                                         <div class="col-md-2">
-                                            <input class="form-control" type="number" name="sequence_number" placeholder="Sequence number" />
+                                            <input class="form-control" onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Sequence number" />
                                         </div>
                                     </div>
                                 </div>

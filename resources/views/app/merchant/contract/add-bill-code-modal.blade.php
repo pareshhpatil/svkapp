@@ -105,7 +105,7 @@
         text-align: right;
     }
 </style>
-<div class="panel-wrap" id="panelWrapIdBillCode">
+<div class="panel-wrap" style="left:50% !important;" id="panelWrapIdBillCode">
 
 
     
@@ -122,6 +122,7 @@
                     <form class="form-horizontal form-row-sepe" id="billcodeform" name="billcodeform" action="/merchant/billcode/create" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="project_id" value="{{$project_id}}"  id="_project_id" >
+                        <input type="hidden" name="project_id2" value="{{$project_id}}"  id="project_id" >
                         <input type="hidden"  id="comefrom" >
                         <div class="form-body">
                             <!-- Start profile details -->
@@ -146,6 +147,7 @@
                                             </span></label>
                                         <div class="col-md-5">
                                             <input type="text" required="true" maxlength="100" name="bill_description" class="form-control" placeholder="Enter bill description">
+                                          <br/>  <span style="font-size: 12px; color: red;" id="bill_code_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +158,7 @@
                                 <div class="col-md-12">
                                     <div class="pull-right">
                                         <a href="#" onclick="return closeSidePanelBillCode();" class="btn default">Cancel</a>
-                                        <input type="submit" value="Add bill code" onclick="return addbillcode();" class="btn blue" />
+                                        <input type="button" value="Add bill code" onclick="return addbillcode();" class="btn blue" />
                                     </div>
                                 </div>
                             </div>

@@ -17,6 +17,29 @@
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
+    .table thead tr th {
+        font-size: 12px !important;
+        padding: 3px !important;
+        font-weight: 400;
+        color: #333;
+    }
+    .table tfoot tr th {
+        font-size: 1rem !important;
+        padding: 3px !important;
+        font-weight: bold;
+        color: #333;
+    }
+    .table>tbody>tr>td {
+        font-size: 12px !important;
+        padding: 3px !important;
+        border: 1px solid #D9DEDE;
+        border-right: 0px;
+        border-left: 0px;
+        vertical-align: middle !important;
+    }
+    .table>tbody>tr>td>div>label {
+        margin-bottom: 0px !important;
+    }
 </style>
 @section('content')
 <div class="page-content">
@@ -135,7 +158,7 @@
                                         @foreach($default_particulars as $v=>$r)
                                         @if ($v == 'original_contract_amount')
                                         <td class="td-r">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
                                         @elseif ($v == 'bill_code')
                                         <td class="col-id-no">
@@ -149,7 +172,7 @@
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}" class="lable-heading">
+                                                    <p id="description{{$key+1}}" style="display:none;" class="lable-heading">
                                                         {{$row['description']}}
                                                     </p>
                                                 </div>
@@ -157,15 +180,15 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @else
                                         <td>
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control pc-input" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @endif
                                         @endforeach
@@ -201,14 +224,14 @@
                                     <label class="control-label col-md-4">Original contract value <span class="required">
                                         </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" readonly maxlength="45" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="{{$detail->total_original_contract_amount}}">
+                                        <input type="text" readonly maxlength="45" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="@if($detail->total_original_contract_amount < 0)({{str_replace('-','',number_format($detail->total_original_contract_amount,2))}}) @else{{$detail->total_original_contract_amount}}@endif">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">Total value of the change order <span class="required">
                                         </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" readonly maxlength="45" name="total_change_order_amount" class="form-control" data-cy="total_change_order_amount" id="total_change_order_amount" value="{{$detail->total_change_order_amount}}">
+                                        <input type="text" readonly maxlength="45" name="total_change_order_amount" class="form-control" data-cy="total_change_order_amount" id="total_change_order_amount" value="@if($detail->total_change_order_amount < 0)({{str_replace('-','',number_format($detail->total_change_order_amount,2))}}) @else{{$detail->total_change_order_amount}}@endif">
                                     </div>
                                 </div>
                             </div>

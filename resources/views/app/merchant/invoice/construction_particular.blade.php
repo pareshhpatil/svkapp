@@ -129,7 +129,8 @@
                     <label class="row-label" id="{{$k}}_lb{{$int}}">{{$dp->bill_code}}</label><br>
                     <input type="hidden" name="{{$k}}[]" id="{{$k}}{{$int}}" value="{{$dp->bill_code}}">
                     @else
-                    <select required style="width: 100%; min-width: 200px;" onchange="billCode(this.value, {{$int}});" data-cy="particular_item{{$int}}" id="bill_code{{$int}}" name="bill_code[]" data-placeholder="Type or Select" class="form-control  select2me productselect">
+                   <div style="display:flex;">
+                    <select required style="width: 100%; min-width: 200px;"  onchange="billCode(this.value, {{$int}});" data-cy="particular_item{{$int}}" id="bill_code{{$int}}" name="bill_code[]" data-placeholder="Type or Select" class="form-control  select2me productselect pull-left">
                         <option value="">Select Code</option>
                         @if(!empty($csi_code))
                         @php $excode=0; @endphp
@@ -147,6 +148,26 @@
                         @endif
 
                     </select>
+                    @php
+                     $attach=isset($dp->attachments)?$dp->attachments:'';
+                     $count=0;
+                    if(!empty($attach))
+                    {
+                        $attach= str_replace('"', '', $attach);
+                        $attach= str_replace('[', '',$attach);
+                        $attach= str_replace(']', '',$attach);
+                        $datafiles=explode(",",$attach);
+                        $count=count($datafiles);
+
+                    }
+                       
+                    @endphp
+               
+                    <input type="hidden" name="attach[]" id="attach-{{$int}}" value="{{$attach}}">
+                    <a onclick="showupdatebillcodeattachment('{{$int}}');" style="align-self: center; margin-left: 3px;" class="pull-right">
+                    <i id="icon-{{$int}}" class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover"  data-content="{{$count}} @if($count<=1)file @else files @endif"  aria-hidden="true"></i> </a>
+                  
+                </div>
                     <div class="text-center">
 
                         <p id="description{{$int}}" class="lable-heading">

@@ -10,6 +10,8 @@ var tb_col = null;
 var tc_col = null;
 var hb_col = null;
 var fs_col = null;
+var current_bill_name = '';
+var attach_pos = 0;
 var invoice_construction = false;
 var calcRowInt;
 var groups = null;
@@ -130,7 +132,7 @@ function getCGItextReturns(defaultval, type, numrow = 1) {
     if (exist == 0) {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
-    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" class="lable-heading"></p></div></td>';
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" style="display:none;" class="lable-heading"></p></div></td>';
 
     return produ_text;
 }
@@ -163,7 +165,7 @@ function getCGItextReturnsV2(defaultval, type, numrow = 1) {
     if (exist == 0) {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
-    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" class="lable-heading"></p></div></td>';
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" style="display:none;" class="lable-heading"></p></div></td>';
 
     return produ_text;
 }
@@ -261,7 +263,7 @@ function AddInvoiceParticularRowConstruction(defaultval) {
 
 
 
-            
+
             if (index == 'bill_code') {
                 product_text = getCGItext(defaultval, '', numrow);
                 row = row + product_text;
@@ -457,17 +459,14 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
             else if (index == 'original_contract_amount') {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
-            else if (index == 'unit') {
-                row = row + '<td><input id="unit' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
-            }
-            else if (index == 'rate') {
-                row = row + '<td><input id="rate' + numrow + '" onblur="calculateChangeOrder();" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            else if (index == 'unit' || index == 'rate') {
+                row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
-            else if (index == 'order_description'){
-                row = row + '<td><input type="text" data-cy="particular_' + index + numrow + '" className="form-control input-sm" value="" id="order_description'+ numrow +'" name="' + index + '[]" class="form-control input-sm"/></td>'
+            else if (index == 'order_description') {
+                row = row + '<td><input type="text" data-cy="particular_' + index + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="' + index + '[]" class="form-control input-sm"/></td>'
             }
             else {
                 row = row + getParticularValue(index, numrow, readonly);
@@ -480,10 +479,10 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
         '<input type="hidden" id="pint' + numrow + '" name="pint[]" value="' + numrow + '">' +
         '<input type="hidden" name="product_gst[]" value="" data-cy="product_gst' + numrow + '"> ' +
         '<input type="hidden" name="particular_id[]" value="0"><td class="td-c">' +
-        '<button data-cy="particular-remove'+ numrow +'" onclick="$(this).closest(\'tr\').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>' +
-        ' <span id="addRowButton'+numrow+'">' +
+        '<button data-cy="particular-remove' + numrow + '" onclick="$(this).closest(\'tr\').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>' +
+        ' <span id="addRowButton' + numrow + '">' +
         '<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>' +
-        '</span>'+
+        '</span>' +
         '</td>';
     newDiv.innerHTML = row;
     mainDiv.appendChild(newDiv);
@@ -493,17 +492,16 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     setAdvanceDropdownOrder(numrow);
 }
 
-function removePreviousRowAddButton(numrow){
+function removePreviousRowAddButton(numrow) {
     let oldrow = numrow - 1;
     $('#addRowButton' + oldrow).html('');
 }
 
-function addLastRowAddButton(){
+function addLastRowAddButton() {
     // let oldrow = numrow ;
     // console.log(oldrow, numrow, $('input[name="pint[]"]').length);
     // if (oldrow == $('input[name="pint[]"]').length )
-    console.log($('input[name="pint[]"]').length);
-        $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
+    $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
 }
 
 function addCaculatedRow(value, row) {
@@ -571,11 +569,26 @@ function showupdatebillcode(ind, project_id, code, desc) {
     document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-    document.getElementById("project_id").value = project_id;
+    document.getElementById("project_id_update").value = project_id;
     document.getElementById("bill_id").value = ind;
     document.getElementById("bill_code").value = code
     document.getElementById("bill_description").value = desc;;
 
+
+}
+
+function showupdatebillcodeattachment(pos) {
+
+    attach_pos=pos;
+    billcode=document.getElementById("bill_code"+attach_pos).value;
+    document.getElementById("up-error").innerHTML = "";
+    attach_pos = pos;
+    billcode = document.getElementById("bill_code" + attach_pos).value;
+    document.getElementById("listtab1").classList.add('active');
+    document.getElementById("tab1").classList.add('active');
+    document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
+    document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(0%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'none');
 
 }
 
@@ -645,6 +658,18 @@ function closeSidePanelBillCode() {
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
     return false;
 }
+function closeSidePanelBillCodeAttachment() {
+    try {
+        var closebutton = document.getElementsByClassName("uppy-u-reset uppy-c-btn uppy-StatusBar-actionBtn uppy-StatusBar-actionBtn--done")[0].click();
+    } catch (o) { }
+    document.getElementById("listtab2").classList.remove('active');
+    document.getElementById("tab2").classList.remove('active')
+    document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "none";
+    document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(100%)";
+    $("#billcodeform").trigger("reset");
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    return false;
+}
 function closeSideUpdatePanelBillCode() {
     document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "none";
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(100%)";
@@ -661,18 +686,42 @@ function closeSidePanelcalc() {
     return false;
 }
 
-function addbillcode() {
+function addbillcode(){
 
     var comefrom = document.getElementById("comefrom").value;
     var pid = document.getElementById("project_id").value;
     var data = $("#billcodeform").serialize();
-
+  try{
+        if(jQuery('input[name="bill_code"]').val()=='')
+        {
+            document.getElementById("bill_code_error").innerHTML="*Bill code required";
+            
+          return false;
+        }else if(jQuery('input[name="bill_description"]').val()=='')
+        {
+            document.getElementById("bill_code_error").innerHTML="*Bill description required";
+            return false;
+        }else
+        {
+            document.getElementById("bill_code_error").innerHTML="";
+        }
+  }catch(o){}
     var actionUrl = '/merchant/billcode/create';
     $.ajax({
         type: "POST",
         url: actionUrl,
         data: data,
         success: function (data) {
+           
+
+            try {
+                if (document.getElementsByClassName('dataTables_empty')) {
+                    deleteRow = document.getElementsByClassName('dataTables_empty')[0];
+
+                    if (deleteRow.parentNode)
+                        deleteRow.parentNode.removeChild(deleteRow);
+                }
+            } catch (o) { }
 
 
             if (data[2] > 0) {
@@ -738,14 +787,6 @@ function updatebillcode() {
                 alert(data);
 
                 if (data[2] > 0) {
-
-
-
-
-
-
-
-
                 }
                 closeSideUpdatePanelBillCode()
             }
@@ -1267,7 +1308,7 @@ function calculatedRowSummary() {
             per = _('calculated_perc' + int).value;
             let arr1 = [];
             if (rows != '') {
-                 arr1 = JSON.parse(rows);
+                arr1 = JSON.parse(rows);
             }
             ocamount = 0;
             kbamount = 0;
@@ -1284,7 +1325,7 @@ function calculatedRowSummary() {
             $(arr1).each(function (ri, rv) {
                 try {
                     ocamount = ocamount + getamt(_('original_contract_amount' + rv).value);
-                    
+
                     kbamount = kbamount + getamt(_('current_billed_amount' + rv).value);
                     acoamount = acoamount + getamt(_('approved_change_order_amount' + rv).value);
                     ccamount = ccamount + getamt(_('current_contract_amount' + rv).value);
@@ -1296,8 +1337,8 @@ function calculatedRowSummary() {
                     tormount = tormount + getamt(_('total_outstanding_retainage' + rv).value);
                     netamount = netamount + getamt(_('net_billed_amount' + rv).value);
                 } catch (o) {
-                    
-                    calculated_row = _('calculated_row' + int).value;
+
+                   calculated_row = _('calculated_row' + int).value;
                     _('calculated_row' + int).value = calculated_row.replace(',"' + rv + '"', '');
                     calculated_row = _('calculated_row' + int).value;
                     _('calculated_row' + int).value = calculated_row.replace('"' + rv + '"', '');
@@ -1344,7 +1385,7 @@ function calculatedRowSummary() {
 
 function calculatedRowSummaryContract() {
     $('input[name="pint[]"]').each(function (indx, arr) {
-        int = $(this).val();console.log(int);
+        int = $(this).val(); console.log(int);
         bill_type = _('bill_type' + int).value;
         if (bill_type == 'Calculated') {
             rows = _('calculated_row' + int).value;
@@ -1403,9 +1444,9 @@ function calculateRetainageV2() {
             int = $(this).val();
             document.getElementById('retainage_amount' + int).value = updateTextView1(getamt(document.getElementById('retainage_percent' + int).value) * getamt(document.getElementById('original_contract_amount' + int).value) / 100);
             total = total + getamt(document.getElementById('original_contract_amount' + int).value);
-            if(int === $('input[name="pint[]"]').length){
+            if (int === $('input[name="pint[]"]').length) {
 
-                $('#addRowButton'+int).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
+                $('#addRowButton' + int).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
             }
         });
     }
@@ -1428,8 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value))
-                ;
+            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value)) * roundAmount(getamt(document.getElementById('rate' + int).value)));
         });
     }
     catch (o) {
@@ -1437,17 +1477,26 @@ function calculateChangeOrder() {
     }
 
     var total = 0;
+    var original_contract_amount_total = 0;
+    var unit_total = 0;
+    var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
         total = total + getamt(document.getElementById('change_order_amount' + int).value)
+        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
+        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
+        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
-        document.getElementById('particulartotal1').value = updateTextView1(total);
+        document.getElementById('particulartotal1').value = updateTextView1(roundAmount(total));
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(roundAmount(original_contract_amount_total));
+        document.getElementById('unit_total').innerHTML = updateTextView1(roundAmount(unit_total));
+        document.getElementById('rate_total').innerHTML = updateTextView1(roundAmount(rate_total));
     }
     catch (o) {
 
     }
-    document.getElementById('total_change_order_amount').value = updateTextView1(total);
+    document.getElementById('total_change_order_amount').value = updateTextView1(roundAmount(total));
 }
 
 
@@ -1696,9 +1745,6 @@ function calculateamt(type) {
 
 }
 
-function roundAmount(amt) {
-    return (Math.round(100 * amt) / 100).toFixed(2);
-}
 function calculateTax(amount, tax) {
     var tax_amount = Number(amount * tax / 100);
     return roundAmount(tax_amount);
@@ -2523,9 +2569,9 @@ function showEditNote() {
     var value = document.getElementById('covering_select').value;
 
     if (value != '0') {
-        document.getElementById('edit_note_div').style = 'display:block';
+        document.getElementById('edit_note_div').style.display = 'block';
     } else {
-        document.getElementById('edit_note_div').style = 'display:none';
+        document.getElementById('edit_note_div').style.display = 'none';
     }
 
     data = '';
@@ -2866,7 +2912,7 @@ function updateTextView1(val) {
     try {
         val = val.toFixed(2);
     } catch (o) { }
-    if (val > 0) {
+    //if (val > 0) {
         str = val.toString();
         var num = getNumber(str);
         dotpo = num.indexOf(".");
@@ -2883,11 +2929,16 @@ function updateTextView1(val) {
         } else {
             return number.toLocaleString() + decimal_text;
         }
-    }
+    //}
     return 0.00;
 
 }
 function getNumber(_str) {
+    if(_str < 0){
+        isNegative = true;
+    }else{
+        isNegative = false;
+    }
     var arr = _str.split('');
     var out = new Array();
     for (var cnt = 0; cnt < arr.length; cnt++) {
@@ -2898,7 +2949,11 @@ function getNumber(_str) {
             out.push(arr[cnt]);
         }
     }
-    return out.join('');
+    if(isNegative){
+        return '-'+out.join('');
+    }else{
+        return out.join('');
+    }
 }
 
 
@@ -2940,4 +2995,184 @@ function templateChange(template_id) {
 function assignProjectID() {
     project_id = document.getElementById('project_id').value;
     document.getElementById('project_prefix').value = project_id
+}
+
+
+function deleteattchment()
+{
+    var fullurl= document.getElementById('removepath').value;
+    var paths= document.getElementById('attach-'+attach_pos).value;
+
+    var pathlist=paths.split(",");
+    var lists='';
+    var index = pathlist.indexOf(fullurl);
+    
+    if (index >-1) {
+        pathlist.splice(index, 1);
+    }
+    for(var i=0;i<pathlist.length;i++)
+    {
+        if(lists!='')
+         {
+           
+            lists= lists+','+pathlist[i];
+         }else{
+            lists=pathlist[i];
+         }
+    }
+   
+    document.getElementById('attach-'+attach_pos).value=lists;
+    setBillCodeMenuData();
+}
+
+function setBillCodeMenuData()
+{
+    
+    current_bill_name=document.getElementById('description'+attach_pos).innerText;
+    var sortname=current_bill_name.length>10?current_bill_name.slice(0,10)+'...':current_bill_name;
+    var paths= document.getElementById('attach-'+attach_pos).value;
+   
+    var pathlist=paths.split(",");
+   
+    var ul='';
+  var data= ' <li>'+
+                                                
+   ' <a onclick="myFunction(\''+sortname.trim()+'\',\''+sortname.trim()+'\')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="'+current_bill_name+'">'+
+     ' <label   id="l'+sortname.trim()+'" class=" tree_label  active1 ">'+sortname+'</label>'+
+     ' <div id="arrow'+sortname.trim()+'" style="float: right;" class="fa fa-angle-down  active1 "></div> </a>';
+     
+     var framedata='';   
+if(pathlist[0]!='')
+{
+    var counts='0 file';
+    if(pathlist.length>1)
+    counts=pathlist.length+' files';
+    else
+    counts=pathlist.length+' file';
+
+    document.getElementById("icon-"+attach_pos).setAttribute("data-content", ""+counts);
+   var ul='<ul id="ul'+sortname.trim()+'" style="display: block">';
+        for(var i=0;i<pathlist.length;i++)
+        {
+            var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
+            var sortname=filename.length>10?filename.slice(0,10)+'...':filename;
+            var uniq_id=filename.length>7?filename.substring(-7):filename;
+            var extension = pathlist[i].split('.').pop();
+          var classnm='';
+          var frameclassnm='fade';
+          if(i==0)
+          {
+             classnm='aclass active1';
+             frameclassnm='active';
+          }else
+          {
+            classnm='';
+            frameclassnm='fade';
+          }
+
+            ul+= ' <li>'+
+          
+         '<a style="color: #636364;"  id="a'+uniq_id.trim()+'" class="'+classnm+'" href="#tab_'+uniq_id.trim()+'" data-toggle="tab">'+
+         '<span onclick="removeactive(\''+uniq_id.trim()+'\',\''+uniq_id.trim()+'\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+sortname+'</span>'+
+          ' </a>  </li>';
+       
+       
+          framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+uniq_id.trim()+'" >'+
+                       
+          '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
+              
+          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+filename.substring(0,35)+'</h4>'+
+              '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
+               
+                  '</div></div>'+
+         ' <div class="row"><div>';
+         if(extension.toLowerCase()=='pdf')
+         {
+            framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
+         }else{
+            framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
+         }
+         framedata+= '</div></div> </div>';
+       
+        }
+        data+=ul+'</ul>';
+    }
+if(framedata=='')
+{
+    document.getElementById('yesview').style.display="none";
+    document.getElementById('noview').style.display="block";
+}else{
+    document.getElementById('yesview').style.display="block";
+    document.getElementById('noview').style.display="none";
+}
+
+    data+='</li>'; 
+    document.getElementById('ulmenu').innerHTML = data;
+    document.getElementById('frame_view').innerHTML =framedata;
+
+}
+
+
+function imposeMinMax(el) {
+    if (el.value != "") {
+        if (parseInt(el.value) < parseInt(el.min)) {
+            el.value = el.min;
+        }
+        if (parseInt(el.value) > parseInt(el.max)) {
+            el.value = el.max;
+        }
+    }
+}
+
+function validateDate() {
+
+    var end_date = Date.parse(document.getElementById('end_date').value);
+    var start_date = Date.parse(document.getElementById('start_date').value);
+
+    if (end_date <= start_date) {
+        document.getElementById('project_date_error').style.display = "block";
+        return false;
+    } else {
+        return true;
+
+    }
+}
+
+function changerOrderAmountCheck(){
+    //order_value  = getamt(document.getElementById('total_change_order_amount').value);
+    // if(order_value > 0){
+    //     return true;
+    // }else{
+    //     document.getElementById('change_order_amount_error').style.display = "block";
+    //     return false;
+    // }
+
+    try {
+        billcodeNull = false
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            bill_code = document.getElementById('bill_code' + int).value;
+            if(bill_code == ''){
+                document.getElementById('change_order_amount_error').style.display = "block";
+                billcodeNull = true;
+            }
+        });
+        if(billcodeNull){
+            return false;
+        }else{
+            return true; 
+        }
+    }
+    catch (o) {
+        //console.log(o)
+    }
+}
+
+function limitMe(evt, txt) {
+    if (evt.which && evt.which == 8) return true;
+    else return (txt.value.length < txt.getAttribute("maxlength"));
+}
+
+function roundAmount(amt) {
+    return (Math.round(amt)).toFixed(2);
 }

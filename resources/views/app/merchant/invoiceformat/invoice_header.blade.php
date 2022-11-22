@@ -40,7 +40,7 @@
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
         <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype'])) /{{$info['gtype']}}@endif">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -62,7 +62,7 @@
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
         <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/@if(isset($info['gtype']))/{{$info['gtype']}}@endif">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">
@@ -82,7 +82,7 @@
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
         <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Save as PDF</a>
-        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2/@if(isset($info['gtype']))/{{$info['gtype']}}@endif">
+        <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print</a>
     </p>
     <div style="font-size: 0px;">

@@ -1,3 +1,26 @@
+<style>
+   
+    @media screen and (min-width: 0px) and (max-width: 700px) {
+        .mobile {
+    display: block!important;
+} 
+.desk {
+    display: none!important;
+
+    }
+}
+
+@media screen and (min-width: 701px) {
+    .mobile {
+    display: none!important;
+} 
+.desk {
+    display: block!important;
+
+    }  /* hide it elsewhere */
+}
+    </style>
+
 <div>
     <div class="portlet  col-md-12">
 
@@ -339,15 +362,32 @@
 
             <div id="pgiscovering" @isset($plugins['has_covering_note']) @else style="display: none;" @endif>
                 <hr>
-                <div class="mb-2">
+                <div class="mb-2 desk">
                     <span class="form-section base-font">Covering note </span>
+                   
+                    <div class=" pull-right ml-1">
+                        <input type="checkbox" @isset($plugins['has_covering_note']) checked @endif id="iscovering" name="is_covering" onchange="disablePlugin(this.checked, 'plg10');
+                        showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    </div>
+                  
+                    <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
+                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right ">Add new note </a>
+                  
+                </div>
+                <div class="mb-2 mobile">
+                    <span class="form-section base-font">Covering note </span>
+                    
                     <div class="pull-right ml-1">
                         <input type="checkbox" @isset($plugins['has_covering_note']) checked @endif id="iscovering" name="is_covering" onchange="disablePlugin(this.checked, 'plg10');
                         showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                     </div>
-                    <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
-                    <a data-toggle="modal" href="#new_covering" class="btn mb-1 green pull-right ">Add new note </a>
+                    <div class="mt-1">
+                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green  ">Add new note </a>
+                   
+                    <a href="/merchant/coveringnote/dynamicvariable" class=" btn btn-sm mb-1 green">Dynamic variables </a>
+                    </div>
                 </div>
+               
                 <div class="row mb-2">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">Select covering note</label>

@@ -27,7 +27,11 @@ class ContractParticular extends Model
         'created_by',
         'last_update_by',
         'created_date',
-        'status'
+        'status',
+        'project_address',
+        'owner_address',
+        'contractor_address',
+        'architect_address'
     ];
 
     protected $rules = [
@@ -39,4 +43,69 @@ class ContractParticular extends Model
     ];
 
     public $timestamps = false;
+
+    public static $row = [
+        'bill_code' => null,
+        'calculated_perc' => null,
+        'calculated_row' => null,
+        'description' => null,
+        'introw' => 0,
+        'pint' => 0,
+        'bill_type' => null,
+        'original_contract_amount' => null,
+        'retainage_percent' => null,
+        'retainage_amount' => null,
+        'project' => null,
+        'project_code' => null,
+        'cost_code' => null,
+        'cost_type' => null,
+        'group' => null,
+        'bill_code_detail' => 'Yes',
+        'show' => false
+    ];
+
+    public static $particular_column = [
+        'bill_code' => [ 'title'=>'Bill Code', 'type' => 'select' ],
+        'bill_type' => [ 'title'=>'Bill Type', 'type' => 'select' ],
+        'original_contract_amount' => [ 'title'=> 'Original Contract Amount', 'type' => 'input', 'visible' => false ],
+        'retainage_percent' => [ 'title'=> 'Retainage %', 'type' => 'input', 'visible' => false ] ,
+        'retainage_amount' => [ 'title'=> 'Retainage amount', 'type' => 'input' ] ,
+        'project' => [ 'title'=> 'Project id', 'type' => 'input', 'visible' => false ] ,
+        'cost_code' => [ 'title'=> 'Cost Code', 'type' => 'input', 'visible' => false ] ,
+        'cost_type' => [ 'title'=> 'Cost Type', 'type' => 'input', 'visible' => false ] ,
+        'group' => [ 'title'=> 'Sub total group', 'type' => 'select' ] ,
+        'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ]
+    ];
+
+    public static $billing_frequency = [ 1 => 'Weekly', 2 => 'Monthly', 3 => 'Quarterly' ];
+
+    public static function initializeParticulars($project_id = ''): array
+    {
+        $particulars = [];
+        $particulars[] = self::$row;
+        if ($project_id != '')
+            $particulars[0]['project'] = $project_id;
+        return $particulars;
+    }
+
+    public function calculateTotal(){
+        $total =0;
+        $groups = [];
+        $particulars = json_decode($this->particulars??[], true);
+        if(!empty($particulars)) {
+            foreach ($particulars as $key => $row) {
+                if ($row['bill_code'] != '') {
+                    if ($row['group'] != '') {
+                        if (!in_array($row['group'], $groups)) {
+                            $groups[] = $row['group'];
+                        }
+                    }
+                    $total = $total + str_replace(',', '', $row['original_contract_amount']);
+                    $particulars[$key]['original_contract_amount'] = str_replace(',', '', $row['original_contract_amount']);
+                }
+            }
+        }
+        return [$total, $groups, $particulars];
+    }
+
 }

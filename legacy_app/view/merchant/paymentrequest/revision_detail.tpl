@@ -319,20 +319,12 @@ New Timeline
                                                         Cost Type
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 1
+                                                        Group 
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 2
+                                                        Bill code detail
                                                     </th>
-                                                    <th class="td-c ">
-                                                        Group Code 3
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 4
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 5
-                                                    </th>
+                                                   
                                                 </tr>
                                             </thead>
 
@@ -398,20 +390,12 @@ New Timeline
                                                         {$p.old_value.cost_type}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.old_value.group_code1}
+                                                        {$p.old_value.group}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.old_value.group_code2}
+                                                        {$p.old_value.bill_code_detail}
                                                     </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code3}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code4}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code5}
-                                                    </td>
+                                                    
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -482,20 +466,12 @@ New Timeline
                                                         Cost Type
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 1
+                                                        Group 
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 2
+                                                        Bill code detail
                                                     </th>
-                                                    <th class="td-c ">
-                                                        Group Code 3
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 4
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 5
-                                                    </th>
+                                                    
                                                 </tr>
                                             </thead>
 
@@ -561,19 +537,10 @@ New Timeline
                                                         {$p.new_value.cost_type}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.new_value.group_code1}
+                                                        {$p.new_value.group}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.new_value.group_code2}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code3}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code4}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code5}
+                                                        {$p.new_value.bill_code_detail}
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -645,20 +612,12 @@ New Timeline
                                                         Cost Type
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 1
+                                                        Group 
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 2
+                                                        Bill code detail
                                                     </th>
-                                                    <th class="td-c ">
-                                                        Group Code 3
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 4
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 5
-                                                    </th>
+                                                    
                                                 </tr>
                                             </thead>
 
@@ -724,20 +683,12 @@ New Timeline
                                                         {$p.new_value.cost_type}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.new_value.group_code1}
+                                                        {$p.new_value.group}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.new_value.group_code2}
+                                                        {$p.new_value.bill_code_detail}
                                                     </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code3}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code4}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.new_value.group_code5}
-                                                    </td>
+                                                   
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -808,20 +759,12 @@ New Timeline
                                                         Cost Type
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 1
+                                                        Group 
                                                     </th>
                                                     <th class="td-c ">
-                                                        Group Code 2
+                                                        Bill code detail
                                                     </th>
-                                                    <th class="td-c ">
-                                                        Group Code 3
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 4
-                                                    </th>
-                                                    <th class="td-c ">
-                                                        Group Code 5
-                                                    </th>
+                                                    
                                                 </tr>
                                             </thead>
 
@@ -887,20 +830,12 @@ New Timeline
                                                         {$p.old_value.cost_type}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.old_value.group_code1}
+                                                        {$p.old_value.group}
                                                     </td>
                                                     <td class="td-c ">
-                                                        {$p.old_value.group_code2}
+                                                        {$p.old_value.bill_code_detail}
                                                     </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code3}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code4}
-                                                    </td>
-                                                    <td class="td-c ">
-                                                        {$p.old_value.group_code5}
-                                                    </td>
+                                                    
                                                 </tr>
                                             </tbody>
                                         </table>

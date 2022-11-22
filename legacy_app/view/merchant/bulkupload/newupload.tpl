@@ -46,7 +46,7 @@
                                                             class="form-control select2me" data-placeholder="Select...">
                                                             <option value=""></option>
                                                             {foreach from=$templatelist item=v}
-                                                                {if $v.template_type!='travel_ticket_booking' && $v.template_type!='scan' && $v.template_type!='event'}
+                                                                {if $v.template_type!='travel_ticket_booking' && $v.template_type!='scan' && $v.template_type!='construction' && $v.template_type!='event'}
                                                                     {if {{$template_selected}=={$v.template_id}}}
                                                                         <option selected value="{$v.template_id}" selected>
                                                                             {$v.template_name}</option>

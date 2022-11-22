@@ -50,9 +50,9 @@ class Helpers
         $registered_on =  Session::get('created_date');
         $is_smart_look_active = env('IS_SMART_LOOK_ACTIVE');
         $registered_after = '2021-11-01';
-        
-        if ($is_paid_package==0 && $is_smart_look_active==1 && $registered_after <= $registered_on) {
-            View::share('show_smart_look_script',true);
+
+        if ($is_paid_package == 0 && $is_smart_look_active == 1 && $registered_after <= $registered_on) {
+            View::share('show_smart_look_script', true);
         }
 
         if (Session::has('customer_default_column')) {
@@ -112,7 +112,7 @@ class Helpers
         }
     }
 
-    public static function APIrequest($url, $post_string, $method = "POST", $token = false, $header= null)
+    public static function APIrequest($url, $post_string, $method = "POST", $token = false, $header = null)
     {
         if ($token == false) {
             $token = self::getApiToken();
@@ -121,11 +121,11 @@ class Helpers
             $api_url = $url;
         }
 
-        if($header == null){
+        if ($header == null) {
             $header_cond = array(
                 "Authorization: Bearer " . $token
             );
-        }else{
+        } else {
             $header_cond = $header;
         }
         $curl = curl_init();
@@ -345,13 +345,28 @@ class Helpers
 
     public static function stringShort($value)
     {
-        if(strlen($value)>10)
-        {
-            return substr($value,0,10).'..';
-        }else
-        {
+        if (strlen($value) > 10) {
+            return substr($value, 0, 10) . '..';
+        } else {
             return $value;
         }
+    }
+
+    public static function  setArrayZeroValue($array)
+    {
+        foreach ($array as $key) {
+            foreach ($_POST[$key] as $k => $row) {
+                $_POST[$key][$k] = str_replace(',', '', $_POST[$key][$k]);
+                if (!isset($_POST[$key][$k])) {
+                    $_POST[$key][$k] = 0;
+                }
+                // if ($_POST[$key][$k] > 0) {
+                // } else {
+                //     $_POST[$key][$k] = 0;
+                // }
+            }
+        }
+        return (object)$_POST;
     }
 }
 

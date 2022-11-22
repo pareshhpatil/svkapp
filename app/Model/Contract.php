@@ -79,7 +79,7 @@ class Contract extends ParentModel
             $project_cond = "AND a.project_id = '$project'";
         }
 
-        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,  concat(first_name,' ', last_name) name
+        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
         FROM contract a
         join project b on a.project_id  = b.id
         join customer c on a.customer_id  = c.customer_id
@@ -95,8 +95,8 @@ class Contract extends ParentModel
 
     public function getAllProjectDetails($project_id)
     {
-        $retObj =  DB::select("SELECT id, project_id,  project_name, a.customer_id, b.company_name,a.sequence_number,
-        concat(a.customer_id, ' | ' , b.company_name) customer_company_code, email, mobile, concat(first_name,' ', last_name) name
+        $retObj =  DB::select("SELECT id, project_id,  project_name, a.customer_id, b.customer_code, b.company_name,a.sequence_number,
+        concat(b.customer_code, ' | ' , b.company_name) customer_company_code, email, mobile, concat(first_name,' ', last_name) name
         FROM project a
         JOIN customer b on a.customer_id  = b.customer_id
         where id = '$project_id'
@@ -130,8 +130,6 @@ class Contract extends ParentModel
                 'code' => $data->bill_code,
                 'title' => $data->bill_description,
                 'description' => $data->bill_description,
-                'merchant_id' => $merchant_id,
-                'project_id' => $data->project_id,
                 'last_update_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s')
             ]);

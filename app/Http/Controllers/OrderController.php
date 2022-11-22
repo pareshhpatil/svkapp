@@ -65,6 +65,7 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
             $row->json_particulars = json_decode($row->particulars, true);
+
             $data['detail'] = $row;
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row->project_id);
@@ -87,7 +88,7 @@ class OrderController extends Controller
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
 
-        return view('app/merchant/order/' . $title.$version, $data);
+        return view('app/merchant/order/createv2', $data);
     }
 
     public function save(Request $request)
@@ -171,10 +172,21 @@ class OrderController extends Controller
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
             $request->approved_date = Helpers::sqlDate($request->approved_date);
-            $this->orderModel->approveOrder($id, $request->approved_date);
+            $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
             return redirect('merchant/order/list')->with('success', "Change order has been Approved");
         } else {
             return redirect('merchant/order/list')->with('error', "Change order code can not be Approved");
+        }
+    }
+
+    public function unapprove(Request $request)
+    {
+        if (isset($request->link)) {
+            $id = Encrypt::decode($request->link);
+            $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
+            return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
+        } else {
+            return redirect('merchant/order/list')->with('error', "Change order code can not be Unapproved");
         }
     }
 

@@ -66,7 +66,7 @@ class Order extends ParentModel
             $project_cond = "AND a.contract_id = '$contract'";
         }
         
-        $retObj =  DB::select("SELECT a.*,c.company_name, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id
+        $retObj =  DB::select("SELECT a.*,c.company_name, a.invoice_status, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id, c.customer_code
         FROM `order` a
         join contract b on a.contract_id  = b.contract_id
         join project p on b.project_id  = p.id
@@ -80,13 +80,14 @@ class Order extends ParentModel
         return $retObj;
     }
 
-    public function approveOrder($order_id, $date)
+    public function changeOrderApproveStatus($order_id, $date, $status, $unapprove_message)
     {
         DB::table('order')
             ->where('order_id', $order_id)
             ->update([
-                'status' => '1',
-                'approved_date' => $date
+                'status' => $status,
+                'approved_date' => $date,
+                'unapprove_message' => $unapprove_message
             ]);
     }
 }

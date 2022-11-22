@@ -499,9 +499,9 @@
 
               </script>
 
-<script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
 <script>
-
+ var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
 //var newdocfileslist=[];
 var docfileslist=[];
 @if(isset($docfile))
@@ -510,13 +510,35 @@ var docfileslist=[];
 
 
 //uppy file upload code
-var uppy = Uppy.Core({ 
+var uppy =new Uppy.Uppy({ 
     autoProceed: true,
     restrictions: {
         maxFileSize: 3000000,
-        maxNumberOfFiles: 10,
+        maxNumberOfFiles: envlimit,
         minNumberOfFiles: 1,
         allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
+    },
+    onBeforeFileAdded: (currentFile, files) => {
+                var remainleng=0;
+        if(document.getElementById("file_upload").value!='')
+            remainleng=document.getElementById("file_upload").value.split(",").length;
+     
+        var counts=envlimit-remainleng;
+        if(remainleng==envlimit)
+        {
+            uppy.info({
+  message: 'upload limit exceeded',
+  details: 'File couldn’t be uploaded because you can upload only '+envlimit+ 'files',
+}, 'error', 5000)
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            return Promise.reject('too few files')
+        }else if (Object.keys(files).length > counts-1) 
+         {
+           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+       return Promise.reject('too few files')
+     }else{
+        return true; 
+     }
     }
 });
 
@@ -545,7 +567,10 @@ uppy.use(Uppy.Dashboard, {
     //         done: 'Cancel'
     // }}
 });
-
+uppy.use( Compressor, {
+  quality: 0.6,
+  limit: envlimit,
+});
 uppy.use(Uppy.XHRUpload, { 
     headers: {
         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -673,3 +698,4 @@ document.getElementById("file_upload").value =filesnm;
 
 @include('app.merchant.contract.add-calculation-modal')
 @include('app.merchant.contract.add-bill-code-modal')
+@include('app.merchant.invoice.add-attachment-billcode-modal')

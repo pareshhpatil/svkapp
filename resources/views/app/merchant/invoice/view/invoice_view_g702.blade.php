@@ -49,6 +49,10 @@ $header='app.patron.invoice.invoice-master';}
       
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.invoice.view','Invoice') }}
+
+        @if ($info['payment_request_status']==11)
+            <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
+            @endif
       
     </div>
    @endif
@@ -73,11 +77,11 @@ $header='app.patron.invoice.invoice-master';}
             <li >
                 <a href="/patron/invoice/view/{{$info['Url']}}/703">703</a>
             </li>
-            @isset($metadata['plugin']['has_upload'])
+           
             <li >
                 <a href="/patron/invoice/document/{{$info['Url']}}">Attached files</a>
             </li>
-            @endisset
+          
             @else
             <li class="active">
                 <a href="/merchant/invoice/viewg702/{{$info['Url']}}">702</a>
@@ -85,11 +89,11 @@ $header='app.patron.invoice.invoice-master';}
             <li >
                 <a href="/merchant/invoice/viewg703/{{$info['Url']}}">703</a>
             </li>
-            @isset($metadata['plugin']['has_upload'])
+          
             <li >
                 <a href="/merchant/invoice/document/{{$info['Url']}}">Attached files</a>
             </li>
-            @endisset
+          
             @endif
         </ul>
     </div>
@@ -112,11 +116,11 @@ $header='app.patron.invoice.invoice-master';}
                 <table width="100%">
                     <tr>
                         <td width="25%">
-                            <p class="text-xs font-bold">TO OWNER: {{$metadata['customer'][1]['value'] }}</p>
+                            <p class="text-xs font-bold">TO OWNER: </p>
                            
                         </td>
                         <td width="25%">
-                            <p class="text-xs font-bold">PROJECT: {{$info['project_details']->project_name}} </p>
+                            <p class="text-xs font-bold">PROJECT: </p>
                         </td>
                         <td width="25%" class="text-left">
                             <p class="text-xs font-bold">APPLICATION NO: {{$info['invoice_number']?$info['invoice_number']:'NA'}}</p>
@@ -124,14 +128,17 @@ $header='app.patron.invoice.invoice-master';}
                         <td width="25%" class="text-right"> <p class="text-xs font-bold">Distribution to:</p></td>
                     </tr>
                     <tr>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
+                        <td width="25%"   rowspan="2" style="vertical-align: baseline;">
+                            <p class="text-xs  mt-1">{{$metadata['customer'][1]['value'] }}</p>
+                            <span class="text-xs">{{$info['project_details']->owner_address}}</span>
                         </td>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
+                        <td width="25%" rowspan="2" style="vertical-align: baseline;">
+                            <p class="text-xs">{{$info['project_details']->project_name}} </p>
+                            <span class="text-xs">{{$info['project_details']->project_address}}</span>
                         </td>
+                      
                         <td width="25%" class="text-left">
-                            <p class="text-xs font-bold">PERIOD TO: {{$info['cycle_name']}}</p>
+                            <p class="text-xs font-bold">PERIOD TO: <x-localize :date="$info['bill_date']" type="date" /></p>
                         </td>
                         <td width="25%" class="text-right">
                         <label class="text-xs mr-2 mt-1">OWNER</label> <input class=""   type="checkbox" value="" id="flexCheckDefault3">
@@ -139,12 +146,7 @@ $header='app.patron.invoice.invoice-master';}
                         </td>
                     </tr>
                     <tr>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
-                        </td>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
-                        </td>
+                        
                         <td width="25%" class="text-left">
                             <p class="text-xs font-bold">CONTRACT FOR:</p>
                         </td>
@@ -155,7 +157,7 @@ $header='app.patron.invoice.invoice-master';}
                     </tr>
                     <tr>
                         <td width="25%">
-                            <p class="text-xs font-bold ">FROM CONTRACTOR: {{$metadata['header'][0]['value'] }}</p>
+                            <p class="text-xs font-bold ">FROM CONTRACTOR: </p>
                         </td>
                         <td width="25%">
                             <p class="text-xs font-bold">VIA ARCHITECT:</p>
@@ -168,26 +170,23 @@ $header='app.patron.invoice.invoice-master';}
    
                         </td>    </tr>
                     <tr>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
+                        <td width="25%" rowspan="2" style="vertical-align: baseline;">
+                            <p class="text-xs">{{$metadata['header'][0]['value'] }}</p>
+                            <span class="text-xs">{{$info['project_details']->contractor_address}}</span>
+                         
                         </td>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
+                        <td width="25%" rowspan="2" style="vertical-align: baseline;">
+                            <span class="text-xs">{{$info['project_details']->architect_address}}</span>
                         </td>
                         <td width="25%" class="text-left">
-                            <p class="text-xs font-bold">PROJECT NOS: {{$info['project_details']->project_id}}</p>
+                            <p class="text-xs font-bold">PROJECT NOS: {{$info['project_details']->project_code}}</p>
                         </td>
                         <td width="25%" class="text-right"> 
                             <label class="text-xs mr-2 mt-1">FIELD</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">
    
                         </td>    </tr>
                     <tr>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
-                        </td>
-                        <td width="25%">
-                            <p class="text-xs font-bold"></p>
-                        </td>
+                       
                         <td width="25%" class="text-left">
                             <p class="text-xs font-bold"></p>
                         </td>
@@ -215,10 +214,10 @@ $header='app.patron.invoice.invoice-master';}
                          
                     </div>
                             <div>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_original_contract'],2)}}</p>
-                               <p class="font-bold text-xs border-b  border-gray-600 mt-1">  {{$info['currency_icon']}}0</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_original_contract'],2)}}</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_g'],2)}}</p> 
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</p>
+                               <p class="font-bold text-xs border-b  border-gray-600 mt-1">  {{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] < 0)({{str_replace('-','',number_format($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'],2))}}) @else{{number_format(($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount']),2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-0.5">  {{$info['currency_icon']}}@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</p> 
                               
                              
                             </div>
@@ -226,16 +225,16 @@ $header='app.patron.invoice.invoice-master';}
                         <div class="grid grid-cols-3 gap-2 mt-1">
                             <div class="col-span-2">
                         <p class="font-bold text-xs mt-1">5. RETAINAGE: </p>
-                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600"> 0 </span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
+                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600"> @if($info['total_i'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
                         <p class="font-bold text-xs mt-1">b. <span class="font-light border-b border-gray-600"> 0 </span><span class="font-light"> % of Stored Material <span class="italic ">(Column F on G703)</span></span>  </p>
                         <p class="font-light text-xs mt-2">Total Retainage <span class="italic ">(Lines 5a + 5b, or Total in Column I of G703)</span> </p>
                     
                     </div>
                             <div>
-                              
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}{{number_format(($info['total_d']+$info['total_e']),2)}}</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}{{number_format($info['total_f'],2)}}</p> 
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}{{number_format($info['total_i'],2)}}</p> 
+                                <p class="font-bold text-xs mt-5"></p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_i'] < 0)({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{number_format($info['total_i'],2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}})@else{{number_format($info['total_f'],2)}}@endif</p> 
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_i']+$info['total_f'] < 0)({{str_replace('-','',number_format($info['total_i']+$info['total_f'],2))}}) @else{{number_format(($info['total_i']+$info['total_f']),2)}}@endif</p> 
                               
                              
                             </div>
@@ -248,7 +247,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}{{number_format($info['total_g']-($info['total_d']+$info['total_e']+$info['total_f']),2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_g']-($info['total_i']+$info['total_f']) < 0)({{str_replace('-','',number_format($info['total_g']-($info['total_i']+$info['total_f']),2))}}) @else{{number_format($info['total_g']-($info['total_i']+$info['total_f']),2)}}@endif</p>
                               
                              
                             </div>
@@ -261,7 +260,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}{{number_format($info['total_d'],2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_d'] < 0)({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{number_format($info['total_d'],2)}}@endif</p>
                               
                              
                             </div>
@@ -274,7 +273,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border   border-gray-600 mt-1 py-1">  {{$info['currency_icon']}}{{number_format($info['grand_total'],2)}}</p>
+                                <p class="font-bold text-xs border   border-gray-600 mt-0 py-1">  {{$info['currency_icon']}}@if($info['grand_total'] < 0)({{str_replace('-','',number_format($info['grand_total'],2))}}) @else{{number_format($info['grand_total'],2)}}@endif</p>
                               
                              
                             </div>
@@ -287,35 +286,49 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}{{number_format($info['total_original_contract']-($info['total_g']-($info['total_d']+$info['total_e']+$info['total_f'])),2)}}</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}@if(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])) < 0) ({{str_replace('-','',number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2))}}) @else{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2)}}@endif</p>
                               
                              
                             </div>
                         </div>
                         <table class="mt-2 w-full border-collapse border border-gray-500 overflow-hidden">
                             <tr>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">CHANGE ORDER SUMMARY </p></td>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">ADDITIONS </p></td>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">DEDUCTIONS </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">CHANGE ORDER SUMMARY </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">ADDITIONS </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">DEDUCTIONS </p></td>
                             </tr>
                             <tr>
-                                <td class="border-collapse border-r border-gray-500"><p class="text-xs">Total changes approved in previous months by Owner </p></td>
-                                <td class="border-collapse border-r border-gray-500"><p class="text-xs">{{$info['currency_icon']}}0 </p></td>
-                                <td><p class="text-xs">{{$info['currency_icon']}}0</p> </td>
+                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">Total changes approved in previous months by Owner </p></td>
+                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else 0 @endif </p></td>
+                                <td class="py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else 0 @endif</p> </td>
                             </tr>
                             <tr>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">Total approved this month </p></td>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">{{$info['currency_icon']}}{{number_format($info['total_approve'],2)}} </p></td>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">{{$info['currency_icon']}}0 </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">Total approved this month </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else 0 @endif </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else 0 @endif </p></td>
                             </tr>
                             <tr>
-                                <td class="text-right border-collapse border-r border-gray-500"><p class="text-xs">TOTAL</p> </td>
-                                <td class="border-collapse border-r border-gray-500"><p class="text-xs">{{$info['currency_icon']}}{{number_format($info['total_approve'],2)}} </p></td>
-                                <td><p class="text-xs">{{$info['currency_icon']}}0 </p></td>
+                                <td class="text-right border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">TOTAL</p> </td>
+                                @php
+                                    $tt=0;
+                                    $tt1=0;
+                                    if($info['this_month_co_amount']>0)
+                                    $tt=$info['this_month_co_amount'];
+                                    else {
+                                        $tt1=$info['this_month_co_amount'];
+                                    }
+                                    if($info['last_month_co_amount']>0)
+                                    $tt=$tt+$info['last_month_co_amount'];
+                                    else {
+                                        $tt1=$tt1+$info['last_month_co_amount'];
+                                    }
+                                @endphp
+                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}{{number_format($tt,2)}} </p></td>
+                                <td class="py-1 px-1"><p class="text-xs">{{$info['currency_icon']}}({{str_replace('-','',number_format($tt1,2))}}) </p></td>
                             </tr>
                             <tr>
-                                <td class="border-collapse border border-gray-500"><p class="text-xs">NET CHANGES by Change Order</p> </td>
-                                <td colspan="2" class=" border-collapse border border-gray-500" ><p class="text-xs">{{$info['currency_icon']}}{{number_format($info['total_approve'],2)}}</p> </td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">NET CHANGES by Change Order</p> </td>
+                                <td colspan="2" class=" border-collapse border border-gray-500 py-1 px-1" ><p class="text-xs">{{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif</p> </td>
                                 
                             </tr>
                         </table>
@@ -360,7 +373,7 @@ that current payment shown herein is now due.</p>
      </div>
         <div>
           
-            <p class="font-bold text-xs border-b   border-gray-600 mt-1">{{$info['currency_icon']}}{{number_format($info['grand_total'],2)}}</p>
+            <p class="font-bold text-xs border-b   border-gray-600 mt-1">{{$info['currency_icon']}}@if($info['grand_total'] < 0)({{str_replace('-','',number_format($info['grand_total'],2))}})  @else{{number_format($info['grand_total'],2)}} @endif</p>
           
          
         </div>

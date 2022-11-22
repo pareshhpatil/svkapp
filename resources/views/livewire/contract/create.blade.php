@@ -258,7 +258,6 @@
                                 getParticularsInfo(){
                                     previewArray = particularray;
                                      for(let i=0;i<particularray.length;i++) {
-                                         console.log(this.fields[i]);
                                          particularray[i].bill_type = this.fields[i].bill_type;
                                          particularray[i].original_contract_amount = (this.fields[i].original_contract_amount === '' || this.fields[i].original_contract_amount === null)?0 : this.fields[i].original_contract_amount;
                                          particularray[i].retainage_percent = (this.fields[i].retainage_percent === '' || this.fields[i].retainage_percent === null || this.fields[i].retainage_percent === undefined)?0 : this.fields[i].retainage_percent;
