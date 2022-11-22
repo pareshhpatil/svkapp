@@ -28,6 +28,9 @@
         color: #18AEBF !important;
         width: auto !important;
     }
+    .uppy-Informer {
+    bottom: 160px !important; 
+    }
 </style>
 @endsection
 
@@ -608,15 +611,13 @@
         var counts=envlimit-remainleng;
         if(remainleng==envlimit)
         {
-            uppy.info({
-  message: 'upload limit exceeded',
-  details: 'File couldn’t be uploaded because you can upload only '+envlimit+ 'files',
-}, 'error', 5000)
+           // uppy.info('you can upload only '+envlimit+ ' files', 'error', 10000)
            // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
             return Promise.reject('too few files')
         }else if (Object.keys(files).length > counts-1) 
          {
-           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            
+          //  uppy.info('you can upload only '+envlimit+ ' files', 'error', 10000)
        return Promise.reject('too few files')
      }else{
         return true; 
@@ -631,9 +632,8 @@
             target: 'body',
             trigger: '.UppyModalOpenerBtn',
             inline: false,
-            height: 40,
-            maxHeight: 200,
-
+            
+            
             hideAfterFinish: true,
             showProgressDetails: false,
             hideUploadButton: false,
@@ -641,7 +641,10 @@
             hidePauseResumeButton: false,
             hideCancelButton: false,
         });
-
+        window.uppy.getPlugin('Dashboard').setOptions({
+    note: 'Max upload limit '+envlimit+' files(image & pdf) only',
+  
+  });
         uppy.use(Uppy.XHRUpload, {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
