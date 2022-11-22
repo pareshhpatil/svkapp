@@ -51,7 +51,6 @@
             width: auto;
         }
 
-
         table thead,
         table tfoot {
             position: sticky;
@@ -70,6 +69,14 @@
         .headFootZIndex {
             z-index: 3;
         }
+
+        .biggerHead {
+            text-align: left !important;
+            padding-left: 5px !important;
+            vertical-align: middle !important;
+            font-weight: bold !important;
+        }
+
 
 
     </style>
@@ -337,10 +344,10 @@
                         }
                     });
 
-                    // $('#'+type+id).on('beforeOpen',function () {console.log('beforeOpen');
-                    //     $('#headerRow').removeClass('headFootZIndex');
-                    //     $('#footerRow').removeClass('headFootZIndex');
-                    // });
+                    $('#'+type+id).on('beforeOpen',function () {
+                        let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#'+dropboxContainer).css('z-index',4)
+                    });
                     // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
                     //     elementsOverlap( type+id, type);
                     //     elementsOverlap( type+id, type);
