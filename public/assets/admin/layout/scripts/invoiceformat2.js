@@ -765,7 +765,7 @@ function setOriginalContractAmount() {
     calcRowArray = JSON.stringify(calcRowArray);
     console.log(calcRowInt);
     document.getElementById("calculated_row" + calcRowInt).value = calcRowArray;
-    document.getElementById("calculated_perc" + calcRowInt).value = parseInt(document.getElementById("calc_perc").value);
+    document.getElementById("calculated_perc" + calcRowInt).value = parseFloat(document.getElementById("calc_perc").value).toFixed(2);
     closeSidePanelcalc()
     clearCalcTable();
     calculateRetainage();
