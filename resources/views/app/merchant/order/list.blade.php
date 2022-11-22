@@ -110,8 +110,7 @@
                                         {{$v->contract_code}}
                                     </td>
                                     <td class="td-c">
-                                        $@if($v->total_change_order_amount < 0)({{str_replace('-','',number_format($v->total_change_order_amount,2))}})@else{{number_format($v->total_change_order_amount,2)}}@endif
-                                    </td>
+                                        $@if($v->total_change_order_amount < 0)({{str_replace('-','',number_format($v->total_change_order_amount,2))}})@else{{number_format($v->total_change_order_amount,2)}}@endif </td>
                                     <td class="td-c">
 
                                         <x-localize :date="$v->order_date" type="date" />
@@ -207,8 +206,10 @@
                 <div class="modal-body col-md-12">
 
                     <div class="col-md-12">
-                        Once a change order is approved it cannot be edited. The changes made in this change order will automatically reflect in the next invoice created for this project.
+                        Once a change order is approved, the changes will automatically reflect in the next invoice created for this project. Edits/updates can be made to an approved change order, only after it has been unapproved.
                     </div>
+                    <br>
+                    <br>
                     <br>
                     <br>
                     <br>

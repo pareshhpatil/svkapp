@@ -2116,7 +2116,7 @@ class InvoiceController extends AppController
 
         if (isset($plugin['has_signature'])) {
             if ($plugin['has_signature'] == 1) {
-                $info['signature'] = $plugin['signature'];
+                $info['signature'] = isset($plugin['signature']) ? $plugin['signature']: '';
             }
         }
 

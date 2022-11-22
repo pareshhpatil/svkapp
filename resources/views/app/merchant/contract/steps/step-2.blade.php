@@ -33,7 +33,11 @@
             list-style-type: none !important;
         }
 
-        .vs-option, .vscomp-value {
+        .vs-option {
+            /*z-index: 9999;*/
+        }
+
+        .vscomp-value {
             font-size: 12px !important;
         }
 
@@ -47,7 +51,27 @@
             width: auto;
         }
 
-        
+
+        /*table thead,
+        table tfoot {
+            position: sticky;
+        }
+        table thead {
+            inset-block-start: 0; !* "top" *!
+        }
+        table tfoot {
+            inset-block-end: 0; !* "bottom" *!
+        }
+
+        .tableFixHead {
+            max-height: 200px;overflow: auto;
+        }
+
+        .headFootZIndex {
+            z-index: 3;
+        }*/
+
+
     </style>
     <div class="portlet light bordered">
         <div class="portlet-body form">
@@ -211,6 +235,12 @@
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
+            console.log(screen.height);
+            // $('.tableFixHead').css('max-height', screen.height/2);
+          /*  $('.tableFixHead').on('scroll', function(){
+                $('#headerRow').css('z-index',3);
+                $('#footerRow').css('z-index',3);
+            });*/
         }
 
         var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
@@ -220,6 +250,7 @@
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
+
         function addPopover(id, message){
             $('#'+id).attr({
                 'data-placement' : 'right',
@@ -304,6 +335,23 @@
                             particularsArray[id].bill_code_detail = this.value
                         }
                     });
+
+                    // $('#'+type+id).on('beforeOpen',function () {console.log('beforeOpen');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
+                    //     elementsOverlap( type+id, type);
+                    //     elementsOverlap( type+id, type);
+                    //     // elementsOverlap( type+id, 'footerRow');
+                    //     $('#headerRow').removeClass('headFootZIndex');
+                    //     $('#footerRow').removeClass('headFootZIndex');
+                    // });
+                    //
+                    // $('#'+type+id).on('afterClose',function () {console.log('afterClose');
+                    //     $('#headerRow').addClass('headFootZIndex');
+                    //     $('#footerRow').addClass('headFootZIndex');
+                    // });
 
                 } ,
                 addNewBillCode(token){
@@ -574,6 +622,7 @@
                     this.fields.forEach(function(currentValue, index, arr) {
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
+                        // this.fields[index].introw = index;
                     });
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -640,6 +689,7 @@
                 },
                 OpenAddCaculated(field) {
                     console.log(field.introw);
+                    calcRowInt=field.introw;
                     field.showoriginal_contract_amount = false;
                     //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
                     this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));

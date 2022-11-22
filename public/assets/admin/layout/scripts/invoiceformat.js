@@ -501,7 +501,6 @@ function addLastRowAddButton() {
     // let oldrow = numrow ;
     // console.log(oldrow, numrow, $('input[name="pint[]"]').length);
     // if (oldrow == $('input[name="pint[]"]').length )
-    console.log($('input[name="pint[]"]').length);
     $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
 }
 
@@ -1470,8 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value))
-                ;
+            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value)) * roundAmount(getamt(document.getElementById('rate' + int).value)));
         });
     }
     catch (o) {
@@ -1479,17 +1477,26 @@ function calculateChangeOrder() {
     }
 
     var total = 0;
+    var original_contract_amount_total = 0;
+    var unit_total = 0;
+    var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
         total = total + getamt(document.getElementById('change_order_amount' + int).value)
+        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
+        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
+        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
-        document.getElementById('particulartotal1').value = updateTextView1(total);
+        document.getElementById('particulartotal1').value = updateTextView1(roundAmount(total));
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(roundAmount(original_contract_amount_total));
+        document.getElementById('unit_total').innerHTML = updateTextView1(roundAmount(unit_total));
+        document.getElementById('rate_total').innerHTML = updateTextView1(roundAmount(rate_total));
     }
     catch (o) {
 
     }
-    document.getElementById('total_change_order_amount').value = updateTextView1(total);
+    document.getElementById('total_change_order_amount').value = updateTextView1(roundAmount(total));
 }
 
 
@@ -1738,9 +1745,6 @@ function calculateamt(type) {
 
 }
 
-function roundAmount(amt) {
-    return (Math.round(100 * amt) / 100).toFixed(2);
-}
 function calculateTax(amount, tax) {
     var tax_amount = Number(amount * tax / 100);
     return roundAmount(tax_amount);
@@ -2911,7 +2915,6 @@ function updateTextView1(val) {
     //if (val > 0) {
         str = val.toString();
         var num = getNumber(str);
-        console.log(num)
         dotpo = num.indexOf(".");
         decimal_text = '';
         if (dotpo > 0) {
@@ -3136,17 +3139,40 @@ function validateDate() {
 }
 
 function changerOrderAmountCheck(){
-    order_value  = getamt(document.getElementById('total_change_order_amount').value);
+    //order_value  = getamt(document.getElementById('total_change_order_amount').value);
     // if(order_value > 0){
     //     return true;
     // }else{
     //     document.getElementById('change_order_amount_error').style.display = "block";
     //     return false;
     // }
-   return true;
+
+    try {
+        billcodeNull = false
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            bill_code = document.getElementById('bill_code' + int).value;
+            if(bill_code == ''){
+                document.getElementById('change_order_amount_error').style.display = "block";
+                billcodeNull = true;
+            }
+        });
+        if(billcodeNull){
+            return false;
+        }else{
+            return true; 
+        }
+    }
+    catch (o) {
+        //console.log(o)
+    }
 }
 
 function limitMe(evt, txt) {
     if (evt.which && evt.which == 8) return true;
     else return (txt.value.length < txt.getAttribute("maxlength"));
+}
+
+function roundAmount(amt) {
+    return (Math.round(amt)).toFixed(2);
 }

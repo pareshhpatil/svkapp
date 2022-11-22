@@ -92,34 +92,7 @@
 
 }
 
-element.style {
-}
-.vscomp-option-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    width: 100%;
-}
-.vscomp-wrapper *, .vscomp-wrapper *::before, .vscomp-wrapper *::after {
-    box-sizing: border-box;
-}
-a, button, code, img, input, label, li, p, pre, select, span, table, td, textarea, th, ul {
-    -webkit-border-radius: 0!important;
-    -moz-border-radius: 0!important;
-    border-radius: 0!important;
-}
-* {
-    cursor: default !important;
-}
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
+
 .vscomp-option {
     height: 40px !important;
 }
@@ -135,20 +108,6 @@ a, button, code, img, input, label, li, p, pre, select, span, table, td, textare
 }
 
 
-table thead,
-table tfoot {
-    position: sticky;
-}
-table thead {
-    inset-block-start: 0; /* "top" */
-}
-table tfoot {
-    inset-block-end: 0; /* "bottom" */
-}
-
-.tableFixHead {
-    max-height: 600px;overflow: auto;
-}
     </style>
 
 
@@ -192,7 +151,7 @@ table tfoot {
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  tableFixHead" >
+            <div class="table-scrollable  " >
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
                         <thead>

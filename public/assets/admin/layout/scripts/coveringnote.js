@@ -55,7 +55,7 @@ function saveCovering(value)
                 option.value = obj.id;
                 option.selected = 1;
                 x.add(option);
-                document.getElementById('edit_note_div').style='display:block';
+                document.getElementById('edit_note_div').style.display = 'block';
                 
                 document.getElementById(value+'cclosebutton').click();
                 document.getElementById(value+'covering_error').style.display = 'none';
