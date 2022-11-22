@@ -703,9 +703,11 @@ class UserController extends Controller
             try {
                 $verifiedIdToken = $auth->verifyIdToken($decrypt_token["result"]["token"]);
             } catch (InvalidToken $e) {
-                echo 'The token is invalid: ' . $e->getMessage();
+                log::error('BRIQ login error: The token is invalid: '.$e->getMessage());
+                return view('errors/404');  
             } catch (\InvalidArgumentException $e) {
-                echo 'The token could not be parsed: ' . $e->getMessage();
+                log::error('BRIQ login error: The token could not be parsed:'.$e->getMessage());
+                return view('errors/404');  
             } 
 
             $uid = $verifiedIdToken->claims()->get('sub');
@@ -714,7 +716,7 @@ class UserController extends Controller
             $email = $user->email;
     
             $redirect_url =  $this->setTokenLoginDetails(env('BRIQ_DEFAULT_LOGIN_USER'), null);
-            return redirect(env('APP_URL') . $redirect_url);
+            return redirect($redirect_url);
         }else{
           return view('errors/404');  
         }
