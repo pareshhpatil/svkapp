@@ -80,10 +80,10 @@ body{
                 <table width="100%" >
                     <tr>
                         <td style="font-size: 12px; font-weight: 700" width="25%">
-                           TO OWNER: {{$metadata['customer'][1]['value'] }} 
+                           TO OWNER:  
                         </td>
                         <td style="font-size: 12px;font-weight: 700 " width="25%">
-                            PROJECT: {{$info['project_details']->project_name}}  
+                            PROJECT:   
                         </td>
                         <td width="25%" style="font-size: 12px;font-weight: 700 ">
                             APPLICATION NO: {{$info['invoice_number']?$info['invoice_number']:'NA'}}
@@ -92,11 +92,13 @@ body{
                            Distribution to:</td>
                     </tr>
                     <tr>
-                        <td width="25%" style="font-size: 12px; ">
-                            
+                        <td width="25%"  rowspan="2" style="vertical-align: baseline;font-size: 12px;">
+                            {{$metadata['customer'][1]['value'] }}<br/>
+                            {{$info['project_details']->owner_address}}
                         </td>
-                        <td width="25%">
-                           
+                        <td width="25%"  rowspan="2" style="vertical-align: baseline;font-size: 12px;">
+                            {{$info['project_details']->project_name}}<br/>
+                            {{$info['project_details']->project_address}}
                         </td>
                         <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
                          PERIOD TO: <x-localize :date="$info['bill_date']" type="date" />
@@ -110,12 +112,7 @@ body{
                                                </td>
                     </tr>
                     <tr>
-                        <td width="25%">
-                           
-                        </td>
-                        <td width="25%">
-                           
-                        </td>
+                       
                         <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
                            CONTRACT FOR: 
                         </td>
@@ -126,7 +123,7 @@ body{
                     </tr>
                     <tr>
                         <td width="25%" style="font-size: 12px; font-weight: 700">
-                         FROM CONTRACTOR: {{$metadata['header'][0]['value'] }}
+                         FROM CONTRACTOR: 
                         </td>
                         <td width="25%" style="font-size: 12px;font-weight: 700 ">
                             VIA ARCHITECT:
@@ -143,11 +140,12 @@ body{
                                                    </td>
                                                     </tr>
                     <tr>
-                        <td width="25%">
-                            
+                        <td width="25%" rowspan="2" style="vertical-align: baseline;font-size: 12px;">
+                            {{$metadata['header'][0]['value'] }} <br/>
+                            {{$info['project_details']->contractor_address}} 
                         </td>
-                        <td width="25%">
-                        
+                        <td width="25%" rowspan="2" style="vertical-align: baseline;font-size: 12px;">
+                            {{$info['project_details']->architect_address}}
                         </td>
                         <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
                            PROJECT NOS: {{$info['project_details']->project_code}}
@@ -160,12 +158,7 @@ body{
                                
                                                    </td>   </tr>
                     <tr>
-                        <td width="25%">
-                          
-                        </td>
-                        <td width="25%">
-                           
-                        </td>
+                       
                         <td width="25%" style="text-align: left">
                            
                         </td>
@@ -196,10 +189,12 @@ body{
                         <div style="margin-top: 0px; font-size: 12px; font-weight: 700">4. TOTAL COMPLETED & STORED TO DATE<span style="font-weight: 300;font-style: italic;"> (Column G on G703)</span> 
                          </div>                    </td>
                             <td style="width: 30%">
+
                                <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</div>
                                <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{$info['last_month_co_amount']+$info['this_month_co_amount']}}@endif</div>
                                <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] < 0)({{str_replace('-','',number_format($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'],2))}}) @else{{number_format(($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount']),2)}}@endif</div>
                                <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</div>  
+
                             </td>
                         </tr>
                             </table>
@@ -207,7 +202,7 @@ body{
                                 <tr>
                                 <td >
                         <div style="margin-top: 0px; font-size: 12px; font-weight: 700">5. RETAINAGE: </div>
-                        <div style="margin-top: 0px; font-size: 12px; font-weight: 700">a. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> @if($info['total_d']+$info['total_e'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span style="font-weight: 300;"> % of Completed Work</span> <span style="font-weight: 300;font-style: italic;"> (Columns D + E on G703)</span>  </div>
+                        <div style="margin-top: 0px; font-size: 12px; font-weight: 700">a. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> @if($info['total_i'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span style="font-weight: 300;"> % of Completed Work</span> <span style="font-weight: 300;font-style: italic;"> (Columns D + E on G703)</span>  </div>
                         <div style="margin-top: 0px; font-size: 12px; font-weight: 700">b. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> 0 </span><span style="font-weight: 300"> % of Stored Material </span><span style="font-weight: 300;font-style: italic;">(Column F on G703)</span>  </div>
                         <div style="margin-top: 8px; font-size: 12px; font-weight: 300">Total Retainage <span style="font-weight: 300;font-style: italic;">(Lines 5a + 5b, or Total in Column I of G703)</span>
                          </div>             
@@ -302,7 +297,7 @@ body{
                             </tr>
                             <tr>
                                 <td style="font-size: 12px;padding: 2px;">NET CHANGES by Change Order </td>
-                                <td colspan="2" style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{$info['last_month_co_amount']+$info['this_month_co_amount']}}@endif </td>                            </tr>
+                                <td colspan="2" style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif </td>                            </tr>
                         </table>   
                     </td>
                     <td style="width:50%; padding-left: 10px;">

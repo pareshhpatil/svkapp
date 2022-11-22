@@ -117,6 +117,9 @@
     .right-value {
         text-align: right;
     }
+    .uppy-Informer {
+    bottom: 140px !important; 
+    }
 </style>
 <div class="panel-wrap" id="panelWrapIdBillCodeAttachment">
 
@@ -239,11 +242,11 @@ var uppy_attach = new Uppy.Uppy({
       
         if(remainleng==envlimit)
         {
-            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            document.getElementById("up-error").innerHTML = "*Limit exceeded! maximum "+envlimit+" files allowed";
             return Promise.reject('too few files')
         }else if (Object.keys(files).length > counts-1) 
          {
-            document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+            document.getElementById("up-error").innerHTML = "*Limit exceeded! maximum "+envlimit+" files allowed";
        return Promise.reject('too few files')
      }
         try{
