@@ -463,13 +463,13 @@
 
                         } catch (o) {}
                         try {
-                            field.retainage_amount = updateTextView1(getamt(field.original_contract_amount) * getamt(field.retainage_percent) / 100);
+                            field.retainage_amount = updateTextView1(roundAmount( getamt(field.original_contract_amount) * roundAmount( getamt(field.retainage_percent)) / 100) );
                         } catch (o) {}
                         try {
-                            field.original_contract_amount = updateTextView1(getamt(field.original_contract_amount));
+                            field.original_contract_amount = updateTextView1(roundAmount(getamt(field.original_contract_amount)));
                         } catch (o) {}
                         try {
-                            field.retainage_percent = updateTextView1(getamt(field.retainage_percent));
+                            field.retainage_percent = updateTextView1(roundAmount(getamt(field.retainage_percent)));
                         } catch (o) {}
                         var total = 0;
                         var totalretainage = 0;
@@ -537,11 +537,12 @@
                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                         }
 
-                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '') {
+                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
-                        }
+                        }else
+                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
                         // else {
                         //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
                         //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
@@ -682,7 +683,7 @@
                     }else
                         $('#calc_checkbox_error').html('');
 
-                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === 0 || $('#calc_perc').val() < 0 ) {
+                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === '0' || $('#calc_perc').val() < 0 ) {
                         $('#calc_perc_error').html('Please enter percentage');
                         valid = false
                     }else
