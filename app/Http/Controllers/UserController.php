@@ -8,7 +8,7 @@ use App\Libraries\DataValidation as Valid;
 use App\Libraries\Helpers;
 use Google_Client;
 use Log;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as SwipezAuth;
 use Illuminate\Support\Facades\Session;
 use Exception;
 use Artesaos\SEOTools\Facades\SEOMeta;
@@ -18,6 +18,9 @@ use App\Jobs\MerchantRegistrationNotification;
 use Validator;
 use Illuminate\Http\Request;
 use DateTime;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Auth;
+use Firebase\Auth\Token\Exception\InvalidToken;
 
 class UserController extends Controller
 {
@@ -559,8 +562,8 @@ class UserController extends Controller
     public function setTokenLoginDetails($user_id, $service_id)
     {
         $id = $this->user_model->getColumnValue('user', 'user_id', $user_id, 'id');
-        Auth::loginUsingId($id);
-        $user = Auth::user();
+        SwipezAuth::loginUsingId($id);
+        $user = SwipezAuth::user();
 
         $this->setLoginSession($user);
         if (Session::has('redirect_package_id')) {
@@ -577,7 +580,7 @@ class UserController extends Controller
 
     public function logoutUser()
     {
-        Auth::logout();
+        SwipezAuth::logout();
         Session::flush();
         return redirect('/login', 301);
     }
@@ -668,7 +671,7 @@ class UserController extends Controller
 
     public function paymentLogin($link)
     {
-        if (Auth::check()) {
+        if (SwipezAuth::check()) {
             return redirect('/merchant/package/confirm/' . $link);
         }
         Session::put('redirect_package_id', $link);
@@ -685,5 +688,47 @@ class UserController extends Controller
         $data['loader'] = true;
         $data['detail'] = $detail;
         return view('home/packagelogin', $data);
+    }
+
+    public function checkToken(Request $request)
+    {
+        $encrypt_token = $request->token;
+        $encrypt_token = str_replace(' ', '+', $encrypt_token);
+        $decrypt_token = $this->decryptBriqToken($encrypt_token);
+
+        if($decrypt_token["result"]["status"] == 'success'){
+            $factory = (new Factory)->withServiceAccount(env('FIREBASE_CREDENTIALS'));
+            $auth = $factory->createAuth();
+
+            try {
+                $verifiedIdToken = $auth->verifyIdToken($decrypt_token["result"]["token"]);
+            } catch (InvalidToken $e) {
+                echo 'The token is invalid: ' . $e->getMessage();
+            } catch (\InvalidArgumentException $e) {
+                echo 'The token could not be parsed: ' . $e->getMessage();
+            } 
+
+            $uid = $verifiedIdToken->claims()->get('sub');
+            $user = $auth->getUser($uid);
+            $user_uid = $user->uid;
+            $email = $user->email;
+    
+            $redirect_url =  $this->setTokenLoginDetails(env('BRIQ_DEFAULT_LOGIN_USER'), null);
+            return redirect(env('APP_URL') . $redirect_url);
+        }else{
+          return view('errors/404');  
+        }
+               
+    }
+
+    function decryptBriqToken($encrypt_token)
+    {
+        $response = Helpers::APIrequest(env('BRIQ_GCP_TOKEN_DECRYPT_URL'), '{"data": {"token":"'.$encrypt_token.'"}}', "POST", true,  array("Content-Type: application/json"));
+        $response = json_decode($response, 1);
+        if ($response['result']['status'] == 'success') {
+            return $response;
+        } else {
+            log::error('BRIQ token decrypt error');
+        }
     }
 }

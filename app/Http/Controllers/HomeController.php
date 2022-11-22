@@ -1755,7 +1755,7 @@ class HomeController extends Controller
     {
         SEOMeta::setTitle('Swipez Partner Benefits and Offers');
         SEOMeta::setDescription('Swipez Partner Benefits and Offers');
-        SEOMeta::addKeyword(['Swipez Benefits','Swipez Products','Swipez Business Benefits','Swipez Billing Software Benefits','Swipez Payment Gateway Benefits','Swipez GST Billing Software Benefits']);
+        SEOMeta::addKeyword(['Swipez Benefits', 'Swipez Products', 'Swipez Business Benefits', 'Swipez Billing Software Benefits', 'Swipez Payment Gateway Benefits', 'Swipez GST Billing Software Benefits']);
         SEOMeta::addMeta('application-name', $value = 'Swipez Benefits', $name = 'name');
         SEOMeta::addMeta('name', $value = 'Swipez Benefits', $name = 'itemprop');
         SEOMeta::addMeta('description', $value = 'Swipez Partner Benefits and Offers', $name = 'itemprop');
@@ -1781,7 +1781,7 @@ class HomeController extends Controller
     {
         SEOMeta::setTitle('Swipez Integrations | Connect your favourite tools');
         SEOMeta::setDescription('Connect your favourite tools');
-        SEOMeta::addKeyword(['Swipez Integration Software', 'Swipez API Integration Software', 'API Integration for payment gateway', 'API Integration for e invoicing', 'API integration for Billing Software','API integration for GST Billing Software', 'API integration', 'Billing Software API Integration']);
+        SEOMeta::addKeyword(['Swipez Integration Software', 'Swipez API Integration Software', 'API Integration for payment gateway', 'API Integration for e invoicing', 'API integration for Billing Software', 'API integration for GST Billing Software', 'API integration', 'Billing Software API Integration']);
         SEOMeta::addMeta('application-name', $value = 'Swipez Integrations', $name = 'name');
         SEOMeta::addMeta('name', $value = 'Swipez Integrations', $name = 'itemprop');
         SEOMeta::addMeta('description', $value = 'Connect your favourite tools', $name = 'itemprop');
@@ -2121,7 +2121,7 @@ class HomeController extends Controller
     {
         SEOMeta::setTitle('Top QuickBooks Alternative | Features & Comparison  Swipez.in');
         SEOMeta::setDescription('Swipez accounting software is a powerful, easy-to-use tool. Small business owners and entrepreneurs are choosing to Swipez as a QuickBooks alternative Billing Software.');
-        SEOMeta::addKeyword(['Online Invoicing', 'Recurring invoicing', 'Free invoice software', 'Online Invoices', 'Online Invoices Software', 'Create invoices online', 'Free online invoice Maker', 'Free invoice generator', 'Invoice Generator', 'online invoicing software', 'online invoicing software india', 'free invoicing software', 'Online invoicing generator', 'Create Invoices Online','Quickbooks Alternative','Quickbooks Alternative India','Online Accounting Software']);
+        SEOMeta::addKeyword(['Online Invoicing', 'Recurring invoicing', 'Free invoice software', 'Online Invoices', 'Online Invoices Software', 'Create invoices online', 'Free online invoice Maker', 'Free invoice generator', 'Invoice Generator', 'online invoicing software', 'online invoicing software india', 'free invoicing software', 'Online invoicing generator', 'Create Invoices Online', 'Quickbooks Alternative', 'Quickbooks Alternative India', 'Online Accounting Software']);
         SEOMeta::addMeta('application-name', $value = 'Swipez GST return filing software', $name = 'name');
         SEOMeta::addMeta('name', $value = 'Swipez Billing software', $name = 'itemprop');
         SEOMeta::addMeta('description', $value = 'Automated GST filing solution for your business.', $name = 'itemprop');
