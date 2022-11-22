@@ -52,24 +52,24 @@
         }
 
 
-        /*table thead,
+        table thead,
         table tfoot {
             position: sticky;
         }
         table thead {
-            inset-block-start: 0; !* "top" *!
+            inset-block-start: 0; /* "top" */
         }
         table tfoot {
-            inset-block-end: 0; !* "bottom" *!
+            inset-block-end: 0; /* "bottom" */
         }
 
         .tableFixHead {
-            max-height: 200px;overflow: auto;
+            overflow: auto;
         }
 
         .headFootZIndex {
             z-index: 3;
-        }*/
+        }
 
 
     </style>
@@ -84,7 +84,7 @@
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable">
+            <div class="table-scrollable tableFixHead">
                 <table class="table table-bordered table-hover" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
@@ -235,8 +235,8 @@
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
-            console.log(screen.height);
-            // $('.tableFixHead').css('max-height', screen.height/2);
+            this.calculateTotalRetainage();
+             $('.tableFixHead').css('max-height', screen.height/2);
           /*  $('.tableFixHead').on('scroll', function(){
                 $('#headerRow').css('z-index',3);
                 $('#footerRow').css('z-index',3);
@@ -269,6 +269,7 @@
                 group_name : null,
                 count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
+                totalretainage : null,
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
@@ -463,9 +464,12 @@
                         try {
                             field.retainage_percent = updateTextView1(getamt(field.retainage_percent));
                         } catch (o) {}
-                        total = 0;
+                        var total = 0;
+                        var totalretainage = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
-                            oct = Number(getamt(currentValue.original_contract_amount));
+                            let oct = Number(getamt(currentValue.original_contract_amount));
+                            let retainage_amount = Number(getamt(currentValue.retainage_amount));
+
                             // try {
                             //     oct = Number(getamt(currentValue.original_contract_amount));
                             // } catch (o) {
@@ -473,16 +477,24 @@
                             // }
                             // if (oct > 0) {
                                 total = Number(total) + oct;
-
+                                totalretainage = Number(totalretainage) + retainage_amount;
+                            console.log(totalretainage);
                             // }
                         });
-
+                        this.totalretainage = totalretainage;
                         document.getElementById('particulartotal').value = updateTextView1(total);
                         document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+                        document.getElementById('retainagetotaldiv').innerHTML = updateTextView1(totalretainage);
                     } catch (o) {
                         // alert(o.message);
                     }
 
+                },
+                calculateTotalRetainage(){
+                    this.totalretainage = 0;
+                   for(let r=0; r < this.fields.length; r++) {
+                       this.totalretainage = Number(this.totalretainage) + Number(getamt(this.fields[r].retainage_amount));
+                   }
                 },
                 removeValidationError(fieldName, id){
                     if($('#'+fieldName+id).val() !== null && $('#'+fieldName+id).val() !== '') {
@@ -681,6 +693,7 @@
 
                         setOriginalContractAmount();
                         this.calc(this.fields[selected_field_int]);
+                        this.calculateTotalRetainage();
                         this.saveParticulars();
                         this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                         this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
