@@ -455,13 +455,13 @@
 
                         } catch (o) {}
                         try {
-                            field.retainage_amount = updateTextView1(getamt(field.original_contract_amount) * getamt(field.retainage_percent) / 100);
+                            field.retainage_amount = updateTextView1(roundAmount( getamt(field.original_contract_amount) *  getamt(field.retainage_percent) / 100) );
                         } catch (o) {}
                         try {
-                            field.original_contract_amount = updateTextView1(getamt(field.original_contract_amount));
+                            field.original_contract_amount = updateTextView1(roundAmount(getamt(field.original_contract_amount)));
                         } catch (o) {}
                         try {
-                            field.retainage_percent = updateTextView1(getamt(field.retainage_percent));
+                            field.retainage_percent = updateTextView1(parseFloat(getamt(field.retainage_percent)).toFixed(2));
                         } catch (o) {}
                         total = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
