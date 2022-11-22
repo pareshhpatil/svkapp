@@ -519,4 +519,4 @@ Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'Booki
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
 
 
-Route::get('login2', 'HomeController@loginFirebase')->name('home.loginFirebase');
+Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');

@@ -10,44 +10,12 @@ use Log;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\MerchantPagesController;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Auth;
-use Firebase\Auth\Token\Exception\InvalidToken;
 
 class HomeController extends Controller
 {
     public function __construct()
     {
         $this->setCampaignId();
-    }
-
-    public function loginFirebase()
-    {
-        $factory = (new Factory)->withServiceAccount(env('FIREBASE_CREDENTIALS'));
-        $auth = $factory->createAuth();
-
-        
-        $signInResult = $auth->signInWithEmailAndPassword('abhijeet@swipez.in', '123456');
-        dd($signInResult);
-
-        // $uid = 'abhijeet@swipez.in';
-        // $customToken = $auth->createCustomToken($uid);
-        // $customTokenString = $customToken->toString();
-
-        try {
-            $verifiedIdToken = $auth->verifyIdToken($signInResult->idToken());
-        } catch (InvalidToken $e) {
-            echo 'The token is invalid: ' . $e->getMessage();
-        } catch (\InvalidArgumentException $e) {
-            echo 'The token could not be parsed: ' . $e->getMessage();
-        } 
-        // if you're using lcobucci/jwt ^4.0
-        $uid = $verifiedIdToken->claims()->get('sub');
-        // or, if you're using lcobucci/jwt ^3.0
-        $uid = $verifiedIdToken->claims()->get('sub');
-
-        $user = $auth->getUser($uid);
-        dd($user);
     }
 
     /**
