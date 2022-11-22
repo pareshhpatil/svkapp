@@ -78,7 +78,7 @@
                             <td>{{$item->car_type}}</td>
                             <td>{{$item->car_no}}</td>
                             <td>
-                                <a href="#" onclick="document.getElementById('deleteanchor').href = '#'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/mis/deletecompanymis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
 
                         </tr>

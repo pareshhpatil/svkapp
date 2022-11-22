@@ -310,6 +310,15 @@ class MisController extends Controller
         header('Location: /admin/mis/listmis');
         exit;
     }
+    public function deletecompanymis($link)
+    {
+        $this->validateSession(array(1, 2));
+        $id = $this->encrypt->decode($link);
+        $this->master_model->deleteReccord('company_mis', 'id', $id, $this->user_id);
+        $this->setSuccess('MIS has been deleted successfully');
+        header('Location: /admin/mis/listmiscompany');
+        exit;
+    }
 
     public function exportExcel($column, $name)
     {

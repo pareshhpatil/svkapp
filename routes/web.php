@@ -106,6 +106,7 @@ Route::post('/admin/mis/confirmcompanymis', 'MisController@confirmcompanymis');
 Route::post('/admin/mis/savemis', 'MisController@savemis');
 Route::post('/admin/mis/savecompanymis', 'MisController@savecompanymis');
 Route::get('/admin/mis/deletemis/{id}', 'MisController@deletemis');
+Route::get('/admin/mis/deletecompanymis/{id}', 'MisController@deletecompanymis');
 
 Route::any('/admin/mis/createcompanymis', 'MisController@createcompanymis');
 
