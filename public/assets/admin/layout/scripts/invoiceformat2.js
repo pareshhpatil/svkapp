@@ -1606,7 +1606,7 @@ function calculateamt(type) {
 }
 
 function roundAmount(amt) {
-    return (Math.round(amt)).toFixed(2);
+    return (Math.round(100 * amt) / 100).toFixed(2);
 }
 function calculateTax(amount, tax) {
     var tax_amount = Number(amount * tax / 100);

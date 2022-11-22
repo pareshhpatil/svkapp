@@ -463,13 +463,13 @@
 
                         } catch (o) {}
                         try {
-                            field.retainage_amount = updateTextView1(roundAmount( getamt(field.original_contract_amount) * roundAmount( getamt(field.retainage_percent)) / 100) );
+                            field.retainage_amount = updateTextView1(roundAmount( getamt(field.original_contract_amount) *  getamt(field.retainage_percent) / 100) );
                         } catch (o) {}
                         try {
                             field.original_contract_amount = updateTextView1(roundAmount(getamt(field.original_contract_amount)));
                         } catch (o) {}
                         try {
-                            field.retainage_percent = updateTextView1(roundAmount(getamt(field.retainage_percent)));
+                            field.retainage_percent = updateTextView1(parseFloat(getamt(field.retainage_percent)).toFixed(2));
                         } catch (o) {}
                         var total = 0;
                         var totalretainage = 0;
@@ -485,7 +485,6 @@
                             // if (oct > 0) {
                                 total = Number(total) + oct;
                                 totalretainage = Number(totalretainage) + retainage_amount;
-                            console.log(totalretainage);
                             // }
                         });
                         this.totalretainage = totalretainage;
@@ -693,8 +692,9 @@
                         selected_field_int = document.getElementById('selected_field_int').value;
                         calc_amount = document.getElementById("calc_amount").value;
                         // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
+
                         try {
-                            this.fields[selected_field_int].original_contract_amount = calc_amount;
+                            this.fields[selected_field_int].original_contract_amount = roundAmount(calc_amount);
                             this.fields[selected_field_int].showoriginal_contract_amount = false;
                         } catch (o) {
                         }
