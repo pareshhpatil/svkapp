@@ -92,34 +92,7 @@
 
 }
 
-element.style {
-}
-.vscomp-option-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    width: 100%;
-}
-.vscomp-wrapper *, .vscomp-wrapper *::before, .vscomp-wrapper *::after {
-    box-sizing: border-box;
-}
-a, button, code, img, input, label, li, p, pre, select, span, table, td, textarea, th, ul {
-    -webkit-border-radius: 0!important;
-    -moz-border-radius: 0!important;
-    border-radius: 0!important;
-}
-* {
-    cursor: default !important;
-}
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
+
 .vscomp-option {
     height: 40px !important;
 }
