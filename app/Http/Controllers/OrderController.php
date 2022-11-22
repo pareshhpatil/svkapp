@@ -45,7 +45,7 @@ class OrderController extends Controller
         $particulars = null;
 
         Session::put('valid_ajax', 'expense');
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3, 180]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 180]);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
 
@@ -192,7 +192,7 @@ class OrderController extends Controller
     public function update($link)
     {
         $title = 'Update';
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3]);
         $id = Encrypt::decode($link);
         $model = new Master();
         $row = $model->getTableRow('order', 'order_id', $id);
@@ -229,7 +229,7 @@ class OrderController extends Controller
     public function approved($link)
     {
         $title = 'Approved';
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3]);
         $id = Encrypt::decode($link);
         $model = new Master();
         $row = $model->getTableRow('order', 'order_id', $id);

@@ -210,6 +210,7 @@ function AddInvoiceParticularRowConstruction(defaultval) {
     var newDiv = document.createElement('tr');
     var i;
     var row = '';
+
     read_cols = ["current_contract_amount", "previously_billed_percent", "previously_billed_amount", "retainage_amount_previously_withheld", "current_billed_amount", "net_billed_amount", "total_billed", "retainage_amount_for_this_draw", "total_outstanding_retainage"];
     number_cols = ["original_contract_amount", "approved_change_order_amount", "previously_billed_percent", "previously_billed_amount", "current_billed_percent", "retainage_percent", "retainage_amount_previously_withheld", "retainage_release_amount"];
     var numrow = Number($('input[name="particular_id[]"]').length + 1);
@@ -228,12 +229,24 @@ function AddInvoiceParticularRowConstruction(defaultval) {
 
 
 
+
             if (index == 'bill_code') {
                 product_text = getCGItext(defaultval, '', numrow);
                 row = row + product_text;
             }
             else if (index == 'bill_type') {
                 row = row + '<td><select style="width:100%;" onchange="addCaculatedRow(this.value,' + numrow + ');" id="bill_type' + numrow + '" required name="' + index + '[]" data-cy="particular_' + index + numrow + '" data-placeholder="Select Bill Type" class="form-control" ><option value="0">Select..</option><option value="% Complete">% Complete</option><option value="Unit">Unit</option><option value="Calculated">Calculated</option>';
+            }
+            else if (index == 'group') {
+                row = row + '<td><select style="width:100%;"  id="group' + numrow + '" required name="' + index + '[]" data-cy="particular_' + index + numrow + '" data-placeholder="Select Group" class="form-control" ><option value="">Select..</option>';
+                try {
+                    for (const element of groups) {
+                        row = row + '<option value="' + element + '">' + element + '</option>';
+                    }
+                } catch (o) { }
+            }
+            else if (index == 'bill_code_detail') {
+                row = row + '<td><select style="width:100%;"  id="bill_code_detail' + numrow + '" required name="' + index + '[]" data-cy="particular_' + index + numrow + '" data-placeholder="Select Group" class="form-control" ><option value="0">Select..</option><option value="Yes">Yes</option><option value="No">No</option>';
             }
             else {
                 row = row + getParticularValue(index, numrow, readonly);
@@ -1337,8 +1350,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value))
-                ;
+            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value));
         });
     }
     catch (o) {
@@ -1346,12 +1358,21 @@ function calculateChangeOrder() {
     }
 
     var total = 0;
+    var original_contract_amount_total = 0;
+    var unit_total = 0;
+    var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
         total = total + getamt(document.getElementById('change_order_amount' + int).value)
+        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
+        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
+        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(original_contract_amount_total);
+        document.getElementById('unit_total').innerHTML = updateTextView1(unit_total);
+        document.getElementById('rate_total').innerHTML = updateTextView1(rate_total);
     }
     catch (o) {
 
@@ -3283,4 +3304,207 @@ function closeSidePanelBillCodeAttachment() {
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
     return false;
+}
+
+function getCGItextReturnsV2(defaultval, type, numrow = 1) {
+    if (typeof type === 'undefined') {
+        type = '';
+    }
+    var exist = 0;
+    var produ_text = '<td class="col-id-no" scope="row">' +
+        '<select style="width:100%;" required id="bill_code' + numrow + '" ' +
+        'onchange="billCode(this.value,' + numrow + ');"  name="' + type + 'bill_code[]" data-cy="particular_product' + numrow + '" ' +
+        'data-placeholder="Type or Select" class="form-control input-sm productselect" >';
+    if (csi_codes != null) {
+        $.each(csi_codes, function (value, arr) {
+            var selected = '';
+            try {
+                if (arr.code != '') {
+                    if (defaultval == arr.code) {
+                        selected = 'selected';
+                        exist = 1;
+                    }
+
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.code + '">' + arr.title + ' | ' + arr.code + '</option>';
+                }
+            } catch (o) {
+            }
+        });
+    }
+    if (exist == 0) {
+        produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
+    }
+    produ_text = produ_text + '</select><div class="text-center"><p id="description' + numrow + '" style="display:none;" class="lable-heading"></p></div></td>';
+
+    return produ_text;
+}
+
+function AddInvoiceParticularRowOrderV2(defaultval) {
+    //var x = document.getElementById("particular_table").rows.length;
+    if (typeof defaultval === 'undefined') {
+        defaultval = '';
+    }
+    var rate_exist = false;
+    var tax_amt_readonly = '';
+    var discount_amt_readonly = '';
+    var mainDiv = document.getElementById('new_particular');
+    var newDiv = document.createElement('tr');
+    var i;
+    var row = '';
+    read_cols = ["retainage_amount"];
+    var numrow = Number($('input[name="particular_id[]"]').length + 1);
+    while (_('pint' + numrow)) {
+        numrow = Number(numrow + 1);
+    }
+    particular_col_array = {
+        "bill_code": "Bill Code",
+        "original_contract_amount": "Original Contract Amount",
+        "unit": "Unit",
+        "rate": "Rate",
+        "change_order_amount": "Chnage Order Amount",
+        "order_description": "Description",
+    };
+    $.each(particular_col_array, function (index, value) {
+        if (index != 'sr_no') {
+            readonly = '';
+            if (read_cols.includes(index)) {
+                readonly = 'readonly';
+            }
+            if (index == 'bill_code') {
+                product_text = getCGItextReturnsV2(defaultval, '', numrow);
+                row = row + product_text;
+            }
+            else if (index == 'original_contract_amount') {
+                row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
+            }
+            else if (index == 'unit' || index == 'rate') {
+                row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            }
+            else if (index == 'change_order_amount') {
+                row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+            }
+            else if (index == 'order_description') {
+                row = row + '<td><input type="text" data-cy="particular_' + index + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="' + index + '[]" class="form-control input-sm"/></td>'
+            }
+            else {
+                row = row + getParticularValue(index, numrow, readonly);
+            }
+        }
+    });
+    row = row + '<input type="hidden" value=0 id="calculated_perc' + numrow + '" name="calculated_perc[]">' +
+        '<input type="hidden" value=0 id="calculated_row' + numrow + '" name="calculated_row[]">' +
+        '<input type="hidden" id="description-hidden' + numrow + '" name="description[]" value="' + numrow + '">' +
+        '<input type="hidden" id="pint' + numrow + '" name="pint[]" value="' + numrow + '">' +
+        '<input type="hidden" name="product_gst[]" value="" data-cy="product_gst' + numrow + '"> ' +
+        '<input type="hidden" name="particular_id[]" value="0"><td class="td-c">' +
+        '<button data-cy="particular-remove' + numrow + '" onclick="$(this).closest(\'tr\').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>' +
+        ' <span id="addRowButton' + numrow + '">' +
+        '<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>' +
+        '</span>' +
+        '</td>';
+    newDiv.innerHTML = row;
+    mainDiv.appendChild(newDiv);
+
+    removePreviousRowAddButton(numrow);
+
+    setAdvanceDropdownOrder(numrow);
+}
+
+function addLastRowAddButton() {
+    // let oldrow = numrow ;
+    // console.log(oldrow, numrow, $('input[name="pint[]"]').length);
+    // if (oldrow == $('input[name="pint[]"]').length )
+    $('#addRowButton' + $('input[name="pint[]"]').length).html('<a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>');
+}
+
+
+function setAdvanceDropdownOrder(numrow) {
+    try {
+        $('.productselect').select2({
+            tags: true,
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
+            }
+        }).on('select2:open', function (e) {
+            pind = $(this).index();
+            var index = $(".productselect").index(this);
+            if (document.getElementById('prolist' + pind)) {
+            } else {
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',' + project_id + ');">Add new bill code</a> </div>');
+            }
+        });
+    } catch (o) {
+    }
+}
+
+function imposeMinMax(el) {
+    if (el.value != "") {
+        if (parseInt(el.value) < parseInt(el.min)) {
+            el.value = el.min;
+        }
+        if (parseInt(el.value) > parseInt(el.max)) {
+            el.value = el.max;
+        }
+    }
+}
+
+function validateDate() {
+
+    var end_date = Date.parse(document.getElementById('end_date').value);
+    var start_date = Date.parse(document.getElementById('start_date').value);
+
+    if (end_date <= start_date) {
+        document.getElementById('project_date_error').style.display = "block";
+        return false;
+    } else {
+        return true;
+
+    }
+}
+
+function changerOrderAmountCheck(){
+    //order_value  = getamt(document.getElementById('total_change_order_amount').value);
+    // if(order_value > 0){
+    //     return true;
+    // }else{
+    //     document.getElementById('change_order_amount_error').style.display = "block";
+    //     return false;
+    // }
+
+    try {
+        billcodeNull = false
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            bill_code = document.getElementById('bill_code' + int).value;
+            if(bill_code == ''){
+                document.getElementById('change_order_amount_error').style.display = "block";
+                billcodeNull = true;
+            }
+        });
+        if(billcodeNull){
+            return false;
+        }else{
+            return true; 
+        }
+    }
+    catch (o) {
+        //console.log(o)
+    }
+}
+
+function limitMe(evt, txt) {
+    if (evt.which && evt.which == 8) return true;
+    else return (txt.value.length < txt.getAttribute("maxlength"));
+}
+
+function removePreviousRowAddButton(numrow) {
+    let oldrow = numrow - 1;
+    $('#addRowButton' + oldrow).html('');
 }
