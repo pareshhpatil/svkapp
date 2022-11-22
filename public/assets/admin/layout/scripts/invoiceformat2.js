@@ -1350,7 +1350,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value));
+            document.getElementById('change_order_amount' + int).value = roundAmount(updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value)));
         });
     }
     catch (o) {
@@ -1363,10 +1363,10 @@ function calculateChangeOrder() {
     var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
-        total = total + getamt(document.getElementById('change_order_amount' + int).value)
-        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
-        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
-        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
+        total = roundAmount(total + getamt(document.getElementById('change_order_amount' + int).value));
+        original_contract_amount_total = roundAmount(original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value));
+        unit_total = roundAmount(unit_total + getamt(document.getElementById('unit' + int).value));
+        rate_total = roundAmount(rate_total + getamt(document.getElementById('rate' + int).value));
     });
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);
@@ -1627,7 +1627,7 @@ function calculateamt(type) {
 }
 
 function roundAmount(amt) {
-    return (Math.round(100 * amt) / 100).toFixed(2);
+    return (Math.round(amt)).toFixed(2);
 }
 function calculateTax(amount, tax) {
     var tax_amount = Number(amount * tax / 100);
@@ -2872,7 +2872,7 @@ function updateTextView1(val) {
                 //return number.toLocaleString() + decimal_text;
             }
         // }
-        return 0.00;
+        //return 0.00;
     } else {
         return '';
     }
