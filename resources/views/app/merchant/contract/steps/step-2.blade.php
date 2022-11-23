@@ -694,7 +694,7 @@
                         // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
 
                         try {
-                            this.fields[selected_field_int].original_contract_amount = roundAmount(calc_amount);
+                            this.fields[selected_field_int].original_contract_amount = calc_amount;
                             this.fields[selected_field_int].showoriginal_contract_amount = false;
                         } catch (o) {
                         }
