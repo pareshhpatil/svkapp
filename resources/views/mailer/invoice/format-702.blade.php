@@ -209,8 +209,8 @@ body{
                             $cper=round((($info['total_i']/($info['total_d']+$info['total_e']))*100));}
 
                             $a5=0;
-                            if($cper>0)
-                            $a5=($info['total_d']+$info['total_e'])/$cper;
+                            $single_per=($info['total_d']+$info['total_e'])/100;
+                            $a5=$single_per*$cper;
 
 
                         @endphp
