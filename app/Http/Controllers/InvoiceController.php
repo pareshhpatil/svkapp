@@ -926,7 +926,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-                $docpath = '';
+               // $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
@@ -1256,7 +1256,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-                $docpath = '';
+              //  $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];

@@ -541,3 +541,5 @@ Route::any('/merchant/transaction/booking/cancellations', 'BookingCalendarContro
 Route::any('/merchant/transaction/booking/cancellations/list/{from}/{to}/{status}', 'BookingCalendarController@cancellationlistData')->middleware("auth");
 Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'BookingCalendarController@cancellationRefund')->middleware("auth");
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
+
+Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');

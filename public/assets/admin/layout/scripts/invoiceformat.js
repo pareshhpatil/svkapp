@@ -1469,7 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value)) * roundAmount(getamt(document.getElementById('rate' + int).value)));
+            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value)));
         });
     }
     catch (o) {
