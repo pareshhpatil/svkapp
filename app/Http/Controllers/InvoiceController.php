@@ -926,7 +926,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-                $docpath = '';
+               // $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
@@ -1256,7 +1256,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-                $docpath = '';
+              //  $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
@@ -2116,7 +2116,7 @@ class InvoiceController extends AppController
 
         if (isset($plugin['has_signature'])) {
             if ($plugin['has_signature'] == 1) {
-                $info['signature'] = $plugin['signature'];
+                $info['signature'] = isset($plugin['signature']) ? $plugin['signature']: '';
             }
         }
 
