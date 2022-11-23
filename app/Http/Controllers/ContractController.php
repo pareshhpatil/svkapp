@@ -9,6 +9,7 @@ use App\Libraries\Helpers;
 use App\Merchant;
 use App\MerchantBillingProfile;
 use App\Model\Contract;
+use App\Model\CostType;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
@@ -137,6 +138,13 @@ class ContractController extends Controller
         return view('app/merchant/contract/createv6' , $data);
     }
 
+    public function getCostTypes(): array
+    {
+        return CostType::where('created_by', $this->merchant_id)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
+    }
+
     public function store(Request $request){
 
         $step = $request->step;
@@ -206,6 +214,7 @@ class ContractController extends Controller
         }
         return $data;
     }
+
     public function step2Store(Request $request, $contract){
         return $contract;
     }
@@ -215,6 +224,7 @@ class ContractController extends Controller
 
         $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);
         $data['bill_codes'] = $this->getBillCodes($contract->project_id);
+        $data['cost_types'] = $this->getCostTypes();
         $data['project_id'] = $contract->project_id;
         $data['total'] = $total;
         $data['groups'] = $groups;
