@@ -109,7 +109,9 @@
                         </thead>
                     @endif
                     <tbody id="preview_data">
+                    @php $totalRetainageAmount = 0 @endphp
                     @foreach($particulars as $particular)
+                        @php $totalRetainageAmount += $particular['retainage_amount'] @endphp
                         <tr>
                             <td class="td-c">{{ $particular['bill_code'] }}</td>
                             <td class="td-c">{{ $particular['bill_type'] }}</td>
@@ -132,7 +134,7 @@
                                 <span id="particulartotaldiv">{{ number_format($contract->contract_amount) }}</span>
                                 <input type="hidden" id="particulartotal" data-cy="particular-total1" name="contract_amount" value="{{ $contract->contract_amount }}">
                             </th>
-                            <th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+                            <th></th><th><span id="particulartotaldiv">{{ number_format($totalRetainageAmount) }}</span></th><th></th><th></th><th></th><th></th><th></th>
 
                         </tr>
                     </tfoot>

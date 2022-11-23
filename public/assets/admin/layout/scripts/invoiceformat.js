@@ -1469,7 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value));
+            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value)));
         });
     }
     catch (o) {
@@ -1488,15 +1488,15 @@ function calculateChangeOrder() {
         rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
-        document.getElementById('particulartotal1').value = updateTextView1(total);
-        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(original_contract_amount_total);
-        document.getElementById('unit_total').innerHTML = updateTextView1(unit_total);
-        document.getElementById('rate_total').innerHTML = updateTextView1(rate_total);
+        document.getElementById('particulartotal1').value = updateTextView1(roundAmount(total));
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(roundAmount(original_contract_amount_total));
+        document.getElementById('unit_total').innerHTML = updateTextView1(roundAmount(unit_total));
+        document.getElementById('rate_total').innerHTML = updateTextView1(roundAmount(rate_total));
     }
     catch (o) {
 
     }
-    document.getElementById('total_change_order_amount').value = updateTextView1(total);
+    document.getElementById('total_change_order_amount').value = updateTextView1(roundAmount(total));
 }
 
 
@@ -1745,9 +1745,6 @@ function calculateamt(type) {
 
 }
 
-function roundAmount(amt) {
-    return (Math.round(100 * amt) / 100).toFixed(2);
-}
 function calculateTax(amount, tax) {
     var tax_amount = Number(amount * tax / 100);
     return roundAmount(tax_amount);
@@ -3174,4 +3171,8 @@ function changerOrderAmountCheck(){
 function limitMe(evt, txt) {
     if (evt.which && evt.which == 8) return true;
     else return (txt.value.length < txt.getAttribute("maxlength"));
+}
+
+function roundAmount(amt) {
+    return (Math.round(amt)).toFixed(2);
 }

@@ -23,6 +23,7 @@
         padding: 3px !important;
         font-weight: 400;
         color: #333;
+        background:#eee;
     }
 
     .table tfoot tr th {
@@ -43,6 +44,24 @@
 
     .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
+    }
+
+    table thead,
+    table tfoot {
+        position: sticky;
+    }
+    table thead {
+        inset-block-start: 0; /* "top" */
+    }
+    table tfoot {
+        inset-block-end: 0; /* "bottom" */
+    }
+
+    .tableFixHead {
+        overflow: auto !important;
+    }
+    .headFootZIndex {
+            z-index: 3;
     }
 </style>
 @section('content')
@@ -151,10 +170,10 @@
                         <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
                         </h3>
-                        <div class="table-scrollable">
+                        <div class="table-scrollable tableFixHead">
                             <table class="table table-bordered table-hover" id="particular_table">
 
-                                <thead>
+                                <thead class="headFootZIndex">
                                     <tr>
                                         <th class="td-c col-id-no" scope="row">
                                             Bill code
@@ -199,7 +218,7 @@
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
                                                 @if($row[$v]==$vk->code)
-                                                <label selected="" value="{{$vk->code}}">{{$vk->title}} | {{$vk->code}}</label>
+                                                <label selected="" value="{{$vk->code}}">{{$vk->code}} | {{$vk->title}}</label>
                                                 <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->code}}">
                                                 @endif
                                                 @endforeach
@@ -246,7 +265,7 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
+                                <tfoot class="headFootZIndex">
                                     <tr class="warning">
                                         <th class="col-id-no">Grand total</th>
                                         <th class="td-c">
@@ -330,5 +349,6 @@
 @section('footer')
 <script>
     calculateChangeOrder();
+    $('.tableFixHead').css('max-height', screen.height/2);
 </script>
 @endsection

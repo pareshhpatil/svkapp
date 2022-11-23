@@ -21,6 +21,7 @@
         "google/apiclient": "^2.4",
         "guzzlehttp/guzzle": "^7.0.1",
         "kelvinmo/simplejwt": "0.3.*",
+        "kreait/firebase-php": "^5.19",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
@@ -45,7 +46,8 @@
         "stripe/stripe-php": "^7.100",
         "symfony/security-csrf": "^5.0",
         "web-token/jwt-encryption": "^2.0",
-        "yajra/laravel-datatables-oracle": "^9.19"
+        "yajra/laravel-datatables-oracle": "^9.19",
+        "swipezdev/short-url-package-creator": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
@@ -97,7 +99,9 @@
             "type": "composer",
             "url": "https://packagist.org"
             },
-            { "packagist": false }
+            { "packagist": false },
+            { "type": "vcs", "url": "git@github.com:swipezdev/short-url-package-creator.git" }
+
     ]
 	
 	

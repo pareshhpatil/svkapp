@@ -211,6 +211,8 @@
                     <br>
                     <br>
                     <br>
+                    <br>
+                    <br>
                     <div class="form-group">
                         <label class="control-label col-md-4 margin-control-lable">Approval date
                             <i class="popovers fa fa-info-circle support blue" data-placement="top" data-container="body" data-trigger="hover" data-content="Approval date" data-original-title="" title=""></i></label>

@@ -65,6 +65,7 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
             $row->json_particulars = json_decode($row->particulars, true);
+
             $data['detail'] = $row;
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row->project_id);
