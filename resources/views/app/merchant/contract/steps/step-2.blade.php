@@ -641,7 +641,7 @@
                     this.fields.forEach(function(currentValue, index, arr) {
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
-                        this.fields[index].introw = index;
+                        // this.fields[index].introw = index;
                     });
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
