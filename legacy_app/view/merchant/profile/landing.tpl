@@ -77,6 +77,9 @@
                             <a href="/merchant/master/delivery-partner/list" class="dc-link"> Delivery partners</a>
                         </p>
                     {/if}
+                    <p>
+                        <a href="/merchant/costtype/index" class="dc-link"> Cost Type</a>
+                    </p>
                     {* <p>
                         <a href="/merchant/hsn-sac-code/index" class="dc-link" > HSN/SAC codes</a>
                     </p> *}

@@ -20,7 +20,13 @@ class DBWrapper
         require_once UTIL . "ConfigReader.php";
 
         $configReader = new ConfigReader();
-        $dbArr = $configReader->getDBConfig();
+        $dbArr = [
+            'URL' => '127.0.0.1',
+            'SCHEMA' => 'swipez',
+            'USER' => 'root',
+            'CRED' => 'swipezapp'
+        ];
+        //$dbArr = $configReader->getDBConfig();
         $logPath = $configReader->getLogConfig();
 
         // Configure PDO attributes
