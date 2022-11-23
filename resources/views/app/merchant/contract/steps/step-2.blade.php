@@ -51,25 +51,32 @@
             width: auto;
         }
 
-
-        /*table thead,
+        table thead,
         table tfoot {
             position: sticky;
         }
         table thead {
-            inset-block-start: 0; !* "top" *!
+            inset-block-start: 0; /* "top" */
         }
         table tfoot {
-            inset-block-end: 0; !* "bottom" *!
+            inset-block-end: 0; /* "bottom" */
         }
 
         .tableFixHead {
-            max-height: 200px;overflow: auto;
+            overflow: auto;
         }
 
         .headFootZIndex {
             z-index: 3;
-        }*/
+        }
+
+        .biggerHead {
+            text-align: left !important;
+            padding-left: 15px !important;
+            vertical-align: middle !important;
+            font-weight: 500 !important;
+        }
+
 
 
     </style>
@@ -84,7 +91,7 @@
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable">
+            <div class="table-scrollable tableFixHead">
                 <table class="table table-bordered table-hover" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
@@ -235,8 +242,8 @@
     <script>
         function initializeParticulars(){
             this.initializeDropdowns();
-            console.log(screen.height);
-            // $('.tableFixHead').css('max-height', screen.height/2);
+            this.calculateTotalRetainage();
+             $('.tableFixHead').css('max-height', screen.height/2);
           /*  $('.tableFixHead').on('scroll', function(){
                 $('#headerRow').css('z-index',3);
                 $('#footerRow').css('z-index',3);
@@ -269,6 +276,7 @@
                 group_name : null,
                 count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
+                totalretainage : null,
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
@@ -336,10 +344,10 @@
                         }
                     });
 
-                    // $('#'+type+id).on('beforeOpen',function () {console.log('beforeOpen');
-                    //     $('#headerRow').removeClass('headFootZIndex');
-                    //     $('#footerRow').removeClass('headFootZIndex');
-                    // });
+                    $('#'+type+id).on('beforeOpen',function () {
+                        let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#'+dropboxContainer).css('z-index',4)
+                    });
                     // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
                     //     elementsOverlap( type+id, type);
                     //     elementsOverlap( type+id, type);
@@ -463,9 +471,12 @@
                         try {
                             field.retainage_percent = updateTextView1(parseFloat(getamt(field.retainage_percent)).toFixed(2));
                         } catch (o) {}
-                        total = 0;
+                        var total = 0;
+                        var totalretainage = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
-                            oct = Number(getamt(currentValue.original_contract_amount));
+                            let oct = Number(getamt(currentValue.original_contract_amount));
+                            let retainage_amount = Number(getamt(currentValue.retainage_amount));
+
                             // try {
                             //     oct = Number(getamt(currentValue.original_contract_amount));
                             // } catch (o) {
@@ -473,16 +484,23 @@
                             // }
                             // if (oct > 0) {
                                 total = Number(total) + oct;
-
+                                totalretainage = Number(totalretainage) + retainage_amount;
                             // }
                         });
-
+                        this.totalretainage = totalretainage;
                         document.getElementById('particulartotal').value = updateTextView1(total);
                         document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+                        document.getElementById('retainagetotaldiv').innerHTML = updateTextView1(totalretainage);
                     } catch (o) {
                         // alert(o.message);
                     }
 
+                },
+                calculateTotalRetainage(){
+                    this.totalretainage = 0;
+                   for(let r=0; r < this.fields.length; r++) {
+                       this.totalretainage = Number(this.totalretainage) + Number(getamt(this.fields[r].retainage_amount));
+                   }
                 },
                 removeValidationError(fieldName, id){
                     if($('#'+fieldName+id).val() !== null && $('#'+fieldName+id).val() !== '') {
@@ -522,7 +540,8 @@
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
                             valid = false
-                        }
+                        }else
+                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
                         // else {
                         //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
                         //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
@@ -622,7 +641,7 @@
                     this.fields.forEach(function(currentValue, index, arr) {
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
-                        // this.fields[index].introw = index;
+                        this.fields[index].introw = index;
                     });
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -673,14 +692,16 @@
                         selected_field_int = document.getElementById('selected_field_int').value;
                         calc_amount = document.getElementById("calc_amount").value;
                         // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
+
                         try {
-                            this.fields[selected_field_int].original_contract_amount = calc_amount;
+                            this.fields[selected_field_int].original_contract_amount = roundAmount(calc_amount);
                             this.fields[selected_field_int].showoriginal_contract_amount = false;
                         } catch (o) {
                         }
 
                         setOriginalContractAmount();
                         this.calc(this.fields[selected_field_int]);
+                        this.calculateTotalRetainage();
                         this.saveParticulars();
                         this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                         this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
