@@ -287,14 +287,24 @@
                     }
                 },
                 virtualSelect(id, type, options, selectedValue){
+                    let allowNewOption= true;
+                    let search= true;
+                    if(type === 'bill_code_detail'){
+                         allowNewOption= false;
+                         search= false;
+                    }
+
                     VirtualSelect.init({
                         ele: '#'+type+id,
                         options: options,
                         dropboxWrapper: 'body',
-                        allowNewOption: true,
+                        allowNewOption: allowNewOption,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option'
+                        additionalClasses : 'vs-option',
+                        searchPlaceholderText : 'Search or Add new',
+                        noOptionsText : 'Add new value',
+                        search:search,
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
