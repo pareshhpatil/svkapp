@@ -1609,12 +1609,20 @@ class InvoiceController extends AppController
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
+                    try{
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    }catch(Exception $o){}
                 }
             } else {
                 $info['image_path'] = '';
             }
-
+if($type=='703' || $type=='703')
+{
+    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+    try{
+    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
+}catch(Exception $o){}
+}
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
@@ -1698,9 +1706,18 @@ class InvoiceController extends AppController
             $info['logo'] = '';
             if (isset($info['image_path'])) {
                 if ($info['image_path'] != '') {
+                    try{
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                }catch(Exception $o){}
                 }
             }
+            if($type=='703' || $type=='703')
+{
+    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+    try{
+    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
+}catch(Exception $o){}
+}
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
