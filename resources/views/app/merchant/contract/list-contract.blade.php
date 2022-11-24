@@ -77,7 +77,7 @@
                                     <td class="td-c">
                                         <a style="font-size: 1.2rem;" href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         <br>
-                                        <span class="text-gray-400 text-font-12">{{$customer_code}} : <span class="text-gray-900"> {{$v->contract_code}}</span></span>
+                                        <span class="text-gray-400 text-font-12">{{$customer_code}} : <span class="text-gray-900"> {{$v->customer_code}}</span></span>
                                     </td>
                                     <td class="td-c">
                                         CONTRACT
