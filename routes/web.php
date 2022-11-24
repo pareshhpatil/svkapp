@@ -550,3 +550,4 @@ Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'Booki
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
+

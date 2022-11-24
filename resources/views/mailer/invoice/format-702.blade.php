@@ -201,16 +201,29 @@ body{
                             <table style="width:100%">
                                 <tr>
                                 <td >
+                                    @php
+                            $cper=0;
+                            if(($info['total_d']+$info['total_e']) <= 0){
+                            $cper=0;}
+                            else{
+                            $cper=round((($info['total_i']/($info['total_d']+$info['total_e']))*100));}
+
+                            $a5=0;
+                            $single_per=($info['total_d']+$info['total_e'])/100;
+                            $a5=$single_per*$cper;
+
+
+                        @endphp
                         <div style="margin-top: 0px; font-size: 12px; font-weight: 700">5. RETAINAGE: </div>
-                        <div style="margin-top: 0px; font-size: 12px; font-weight: 700">a. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> @if($info['total_i'] <= 0) 0 @else{{round(($info['total_d']+$info['total_e'])/$info['total_i'])}} @endif</span><span style="font-weight: 300;"> % of Completed Work</span> <span style="font-weight: 300;font-style: italic;"> (Columns D + E on G703)</span>  </div>
+                        <div style="margin-top: 0px; font-size: 12px; font-weight: 700">a. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> {{$cper}}</span><span style="font-weight: 300;"> % of Completed Work</span> <span style="font-weight: 300;font-style: italic;"> (Columns D + E on G703)</span>  </div>
                         <div style="margin-top: 0px; font-size: 12px; font-weight: 700">b. <span style="border-bottom-width: 1px; border-color: #4b5563; font-weight: 300"> 0 </span><span style="font-weight: 300"> % of Stored Material </span><span style="font-weight: 300;font-style: italic;">(Column F on G703)</span>  </div>
                         <div style="margin-top: 8px; font-size: 12px; font-weight: 300">Total Retainage <span style="font-weight: 300;font-style: italic;">(Lines 5a + 5b, or Total in Column I of G703)</span>
                          </div>             
                         </td>
                             <td style="width: 30%"> 
-                               <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_i'] < 0)({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{number_format($info['total_i'],2)}}@endif</div>
+                               <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($a5 < 0)({{str_replace('-','',number_format($a5,2))}}) @else{{number_format($a5,2)}}@endif</div>
                                <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}})@else{{number_format($info['total_f'],2)}}@endif</div>
-                               <div style="margin-top: 8px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_i']+$info['total_f'] < 0)({{str_replace('-','',number_format($info['total_i']+$info['total_f'],2))}}) @else{{number_format(($info['total_i']+$info['total_f']),2)}}@endif</div> 
+                               <div style="margin-top: 8px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($a5+$info['total_f'] < 0)({{str_replace('-','',number_format($a5+$info['total_f'],2))}}) @else{{number_format(($a5+$info['total_f']),2)}}@endif</div> 
                             </td>
                             </tr>
                             </table>
@@ -221,7 +234,7 @@ body{
                         <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 4 minus Line 5 Total)</div>
                                         </td>
                             <td style="width: 30%"> 
-                           <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_g']-($info['total_i']+$info['total_f']) < 0)({{str_replace('-','',number_format($info['total_g']-($info['total_i']+$info['total_f']),2))}}) @else{{number_format($info['total_g']-($info['total_i']+$info['total_f']),2)}}@endif</div>  
+                           <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_g']-($a5+$info['total_f']) < 0)({{str_replace('-','',number_format($info['total_g']-($a5+$info['total_f']),2))}}) @else{{number_format($info['total_g']-($a5+$info['total_f']),2)}}@endif</div>  
                             </td>
                             </tr>    
                         </table>
@@ -255,7 +268,7 @@ body{
                         <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 3 minus Line 6)</div>
                                                     </td>
                             <td style="width: 30%">  
-                                                              <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])) < 0) ({{str_replace('-','',number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2))}}) @else{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($info['total_i']+$info['total_f'])),2)}}@endif</div>     
+                                                              <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])) < 0) ({{str_replace('-','',number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])),2))}}) @else{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])),2)}}@endif</div>     
                             </td>
                         </tr>
                             </table>

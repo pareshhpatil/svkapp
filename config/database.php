@@ -63,6 +63,26 @@ return [
             ]) : [],
         ],
 
+        'swipez_shorturl' => [
+            'driver' => 'mysql',
+            'url' => env('SHORTURL_DATABASE_URL'),
+            'host' => env('SHORTURL_DB_HOST', '127.0.0.1'),
+            'port' => env('SHORTURL_DB_PORT', '3306'),
+            'database' => env('SHORTURL_DB_DATABASE', 'forge'),
+            'username' => env('SHORTURL_DB_USERNAME', 'forge'),
+            'password' => env('SHORTURL_DB_PASSWORD', ''),
+            'unix_socket' => env('SHORTURL_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
