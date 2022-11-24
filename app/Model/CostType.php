@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * @property mixed $id
@@ -29,8 +30,8 @@ class CostType extends ParentModel
     public function saveCostType($request, $user_id)
     {
         DB::table($this->table)->insertGetId([
-            'name' => $request->name,
-            'abbrevation' => $request->abbrevation,
+            'name' => $request->get('name'),
+            'abbrevation' => $request->get('abbrevation'),
             'created_by' => $user_id,
             'last_update_by' => $user_id,
             'created_date' => date('Y-m-d H:i:s')
@@ -39,13 +40,14 @@ class CostType extends ParentModel
 
     public function updateCostType($id, $request, $user_id)
     {
+
         DB::table($this->table)->where('id', $id)
             ->update([
-            'name' => $request->name,
-            'abbrevation' => $request->abbrevation,
-            'created_by' => $user_id,
-            'last_update_by' => $user_id,
-            'created_date' => date('Y-m-d H:i:s')
-        ]);
+                'name' => $request->get('name'),
+                'abbrevation' => $request->get('abbrevation'),
+                'created_by' => $user_id,
+                'last_update_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]);
     }
 }

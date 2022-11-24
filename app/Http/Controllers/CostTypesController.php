@@ -9,6 +9,7 @@ use App\Model\InvoiceFormat;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -65,8 +66,9 @@ class CostTypesController extends AppController
         try {
             $rules = [
                 'name' => 'required',
-                'abbrevation' => 'required'
+                'abbrevation' => 'unique:cost_types|max:2'
             ];
+
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
@@ -74,6 +76,26 @@ class CostTypesController extends AppController
                     ->withInput()
                     ->withErrors($validator->messages());
             }
+
+            $abbrevation = $request->get('abbrevation');
+            if (empty($abbrevation)) {
+                $abbrevation = Str::upper(substr($request->get('name'), 0, 1));
+            }
+
+            //Check If abbrevation already exists
+            $exists = CostType::query()
+                                ->where('abbrevation', $abbrevation)
+                                ->exists();
+
+            if($exists) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors([
+                        'abbrevation' => 'The abbrevation has already been taken.'
+                    ]);
+            }
+
+            $request->merge(['abbrevation' => $abbrevation]);
 
             $model = new CostType();
 
@@ -108,7 +130,7 @@ class CostTypesController extends AppController
         try {
             $rules = [
                 'name' => 'required',
-                'abbrevation' => 'required'
+                'abbrevation' => 'max:2'
             ];
             $validator = Validator::make($request->all(), $rules);
 
@@ -117,6 +139,28 @@ class CostTypesController extends AppController
                     ->withInput()
                     ->withErrors($validator->messages());
             }
+
+            $abbrevation = $request->get('abbrevation');
+            if (empty($abbrevation)) {
+                $abbrevation = Str::upper(substr($request->get('name'), 0, 1));
+            }
+
+
+            //Check If abbrevation already exists
+            $exists = CostType::query()
+                ->where('id', '!=', $id)
+                ->where('abbrevation', $abbrevation)
+                ->exists();
+
+            if($exists) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors([
+                        'abbrevation' => 'The abbrevation has already been taken.'
+                    ]);
+            }
+
+            $request->merge(['abbrevation' => $abbrevation]);
 
             $model = new CostType();
 
