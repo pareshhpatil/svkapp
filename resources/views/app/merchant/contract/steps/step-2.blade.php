@@ -260,6 +260,7 @@
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
         var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
+        var needValidationOnStep2 = {!! json_encode($needValidationOnStep2) !!};
 
         function addPopover(id, message){
             $('#'+id).attr({
@@ -306,7 +307,6 @@
                         selectedValue : selectedValue,
                         additionalClasses : 'vs-option',
                         searchPlaceholderText : 'Search or Add new',
-                        noOptionsText : 'Add new value',
                         search:search,
                     });
 
@@ -488,7 +488,7 @@
                         try {
                             field.retainage_percent = updateTextView1(parseFloat(getamt(field.retainage_percent)).toFixed(2));
                         } catch (o) {}
-                        var total = 0;
+                        var total = 0;ste
                         var totalretainage = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
                             let oct = Number(getamt(currentValue.original_contract_amount));
@@ -553,6 +553,14 @@
                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                         }
 
+                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
+                            $('#cell_cost_type_' + p).addClass(' error-corner');
+                            addPopover('cell_bill_type_' + p, "Please select Cost type");
+                            valid = false
+                        }else{
+                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
+                        }
+
                         if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
@@ -597,7 +605,10 @@
                     if(this.validateParticulars()) this.saveParticulars(0,1);
                 },
                 back(){
-                    if(this.validateParticulars()) this.saveParticulars(1,0);
+                    if(needValidationOnStep2) {
+                        if (this.validateParticulars())
+                            this.saveParticulars(1, 0);
+                    }else this.saveParticulars(1, 0);
                 },
                 async addNewRow() {
                     int = this.fields.length

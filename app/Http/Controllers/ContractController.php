@@ -106,10 +106,13 @@ class ContractController extends Controller
 
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
-        if (Route::getCurrentRoute()->getName() == 'contract.create.new' )
+        if (Route::getCurrentRoute()->getName() == 'contract.create.new' ) {
             $title = "Create";
-        else
+            $needValidationOnStep2 = false;
+        }else {
             $title = "Update";
+            $needValidationOnStep2 = true;
+        }
 
         $contract = null;
         $project = null;
@@ -130,6 +133,7 @@ class ContractController extends Controller
         $data['contract_id'] = $contract_id;
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
+        $data['needValidationOnStep2'] = $needValidationOnStep2;
 
         if ($step == 2 || $step == 3){
             $data = $this->step2Data($data, $contract, $project->project_id??'');

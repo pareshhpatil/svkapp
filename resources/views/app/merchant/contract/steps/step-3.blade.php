@@ -118,12 +118,12 @@
                         <tr>
                             <td class="td-c">{{ $particular['bill_code'] }}</td>
                             <td class="td-c">{{ $particular['bill_type'] }}</td>
+                            <td class="td-c">{{ $costTypeArr[$particular['cost_type']]??null }}</td>
                             <td class="td-c">{{ $particular['original_contract_amount'] }}</td>
                             <td class="td-c">{{ $particular['retainage_percent'] }}</td>
                             <td class="td-c">{{ $particular['retainage_amount'] }}</td>
                             <td class="td-c">{{ $particular['project_code']??$particular['project'] }}</td>
                             <td class="td-c">{{ $particular['cost_code'] }} </td>
-                            <td class="td-c">{{ $costTypeArr[$particular['cost_type']] }}</td>
                             <td class="td-c">{{ $particular['group'] }}</td>
                             <td class="td-c"> {{ $particular['bill_code_detail'] }}</td>
                         </tr>
