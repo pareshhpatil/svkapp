@@ -144,7 +144,7 @@ class ContractController extends Controller
 
     public function getCostTypes(): array
     {
-        return CostType::where('created_by', $this->merchant_id)
+        return CostType::where('merchant_id', $this->merchant_id)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
     }
