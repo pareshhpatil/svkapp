@@ -52,7 +52,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                         <table >
                             <tr>
                             <td>
-                                <img style="height: 40px" src="{{ asset('images/logo-703.PNG') }}" alt="">
+                                <img style="height: 40px" src="data:image/png;base64,{{$info['logo']}}" alt="">
                             </td>
                             <td>
                                 <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;font-size:24px;">Document G703® – 1992</div>
