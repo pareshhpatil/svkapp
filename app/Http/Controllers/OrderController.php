@@ -72,9 +72,10 @@ class OrderController extends Controller
             $data['project_id'] = $row->project_id;
 
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row->project_id);
-            $data['cost_type_list'] = $model->getCostTypeList($this->merchant_id);
-            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
         } else {
             $data['contract_id'] = '';
         }
@@ -217,10 +218,14 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
             $data['project_id'] = $row2->project_id;
@@ -258,10 +263,14 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
             $data['project_id'] = 0;
