@@ -1469,7 +1469,7 @@ function calculateChangeOrder() {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(roundAmount(getamt(document.getElementById('unit' + int).value) * getamt(document.getElementById('rate' + int).value)));
+            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
         });
     }
     catch (o) {
@@ -1488,15 +1488,15 @@ function calculateChangeOrder() {
         rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
     });
     try {
-        document.getElementById('particulartotal1').value = updateTextView1(roundAmount(total));
-        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(roundAmount(original_contract_amount_total));
-        document.getElementById('unit_total').innerHTML = updateTextView1(roundAmount(unit_total));
-        document.getElementById('rate_total').innerHTML = updateTextView1(roundAmount(rate_total));
+        document.getElementById('particulartotal1').value = updateTextView1(total);
+        document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(original_contract_amount_total);
+        document.getElementById('unit_total').innerHTML = updateTextView1(unit_total);
+        document.getElementById('rate_total').innerHTML = updateTextView1(rate_total);
     }
     catch (o) {
 
     }
-    document.getElementById('total_change_order_amount').value = updateTextView1(roundAmount(total));
+    document.getElementById('total_change_order_amount').value = updateTextView1(total);
 }
 
 
