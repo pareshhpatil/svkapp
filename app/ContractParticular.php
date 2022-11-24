@@ -67,12 +67,12 @@ class ContractParticular extends Model
     public static $particular_column = [
         'bill_code' => [ 'title'=>'Bill code', 'type' => 'select' ],
         'bill_type' => [ 'title'=>'Bill type', 'type' => 'select' ],
+        'cost_type' => [ 'title'=> 'Cost type', 'type' => 'select' ] ,
         'original_contract_amount' => [ 'title'=> 'Original contract amount', 'type' => 'input', 'visible' => false ],
         'retainage_percent' => [ 'title'=> 'Retainage %', 'type' => 'input', 'visible' => false ] ,
         'retainage_amount' => [ 'title'=> 'Retainage amount', 'type' => 'input' ] ,
         'project' => [ 'title'=> 'Project id', 'type' => 'input', 'visible' => false ] ,
         'cost_code' => [ 'title'=> 'Cost code', 'type' => 'input', 'visible' => false ] ,
-        'cost_type' => [ 'title'=> 'Cost type', 'type' => 'input', 'visible' => false ] ,
         'group' => [ 'title'=> 'Sub total group', 'type' => 'select' ] ,
         'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ]
     ];
