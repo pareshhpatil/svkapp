@@ -310,9 +310,8 @@ table thead,
                                             <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                             </template>
-                                        @else
-                                        @if($dropdown==false)
-                                        <template x-if="field.bill_type!='Cost'">
+                                            @elseif($k=='current_billed_percent')
+                                            <template x-if="field.bill_type!='Cost'">
                                         <span x-show="field.txt{{$k}}">
                                         <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
@@ -320,10 +319,14 @@ table thead,
 
                                         <template x-if="field.bill_type=='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`"  type="hidden"  type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${index}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                         </template>
-                                            
+                                        @else
+                                        @if($dropdown==false)
+                                        <span x-show="field.txt{{$k}}">
+                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                    </span>
                                         @endif
                                         @endif
                                     </td>
@@ -993,12 +996,16 @@ table thead,
                                 },
 
                                 OpenAddCost(field) {
-                                    this.billed_transactions=billed_transactions_array;
+                                    this.billed_transactions=[];
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
                                     OpenAdCostRow();
-                                    this.virtualSelect('', 'cost_codes', cost_codes, field.bill_code);
-                                    this.virtualSelect('', 'cost_types', cost_types, field.cost_type);
+                                    console.log(particularray[field.pint].cost_type);
+                                    this.virtualSelect('', 'cost_codes', cost_codes, particularray[field.pint].bill_code,null);
+                                    this.virtualSelect('', 'cost_types', cost_types, field.cost_type,null);
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
+                                        this.billed_transactions.push(currentValue);
+                                        });
                                 },
                                 allcostCheck()
                                 {
@@ -1159,9 +1166,9 @@ table thead,
                                 this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                             }
                         },
-                        virtualSelect(id, type, options, selectedValue){
+                        virtualSelect(id, type, options, selectedValue,dropboxWrapper='body'){
                             allowNewOption= true;
-                                search= true;
+                            search= true;
                             if(type!='bill_code')
                             {
                             if(type=='bill_code_detail')
@@ -1178,7 +1185,7 @@ table thead,
                         ele: '#'+type+id,
                         options: options,
                         name: type+'[]',
-                        dropboxWrapper: 'body',
+                        dropboxWrapper: dropboxWrapper,
                         allowNewOption: allowNewOption,
                         search:search,
                         multiple:false,

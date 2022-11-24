@@ -91,7 +91,7 @@
     <div class="panel-wrap" id="panelWrapIdcost">
         <div class="panel">
             <div class='cnt223'>
-                <h3 class="modal-title">Add cost
+                <h3 class="modal-title">Add current billed amount
                     <a class="close " data-toggle="modal" onclick="return closeSidePanelcost();">
                         <button type="button" class="close" aria-hidden="true"></button></a>
 
@@ -103,9 +103,11 @@
 
                         <div class="row">
                             <div class="col-md-3">
+                             Select cost code   
                             <div id="cost_codes" x-model="cost_bill_code" ></div>
                             </div>
                             <div class="col-md-3">
+                                Select cost type
                             <div id="cost_types" x-model="cost_cost_type" ></div>
                             </div>
                         </div>
