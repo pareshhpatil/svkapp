@@ -110,6 +110,10 @@
                                 Select cost type
                             <div id="cost_types" x-model="cost_cost_type" ></div>
                             </div>
+                            <div class="col-md-2">
+                                <br>
+                            <a href="#" @click="filterCost('aa')" id="filterbutton" style="display: none;" ></a>
+                            </div>
                         </div>
                         </div>
                         </div>

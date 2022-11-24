@@ -298,7 +298,7 @@ table thead,
                                                     <a :id="`add-cost${index}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
                                                     <a :id="`remove-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
                                                     <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                    <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCost(field)">Edit</a>
+                                                    <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
                                                 </div>
                                                 <span x-show="field.txt{{$k}}">
                                             <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
@@ -446,6 +446,7 @@ table thead,
                        var groups = JSON.parse('{!! json_encode($groups) !!}');
                        var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
                       var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
+                      var billed_transactions_filter=[];
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
                        var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
                        var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
@@ -498,6 +499,7 @@ table thead,
                                 bill_codes : JSON.parse('{!! json_encode($csi_codes) !!}'),
                                 groups : JSON.parse('{!! json_encode($groups) !!}'),
                                 billed_transactions : null,
+                                billed_transactions_id_array : [],
                                 test : null,
                                 count: particularray.length - 1,
                                 group_name: '',
@@ -973,7 +975,7 @@ table thead,
                                   //  _("lbl_current_billed_amount" + cost_selected_id).innerHTML = calc_amount;
                                     this.fields[cost_selected_id].billed_transaction_ids = document.getElementById('billed_transaction_ids').value;
                                    // document.getElementById('billed_transaction_ids' + cost_selected_id).value = document.getElementById('billed_transaction_ids').value;
-                                   // this.calc(this.fields[cost_selected_id]);
+                                    this.calc(this.fields[cost_selected_id]);
                                    this.billed_transactions=billed_transactions_array;
                                     this.closeSidePanelcost();
                                 },
@@ -995,17 +997,129 @@ table thead,
                                     editCaculatedRow(field.pint);
                                 },
 
-                                OpenAddCost(field) {
+                                async OpenAddCost(field,type='new') {
                                     this.billed_transactions=[];
+                                    billed_transactions_filter=[];
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
-                                    OpenAdCostRow();
-                                    console.log(particularray[field.pint].cost_type);
-                                    this.virtualSelect('', 'cost_codes', cost_codes, particularray[field.pint].bill_code,null);
-                                    this.virtualSelect('', 'cost_types', cost_types, field.cost_type,null);
+                                    
+                                    cost_code_selected=particularray[field.pint].bill_code;
+                                    cost_type_selected=field.cost_type;
+                                    this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
+                                    this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+
+                                    document.querySelector('#cost_codes').setValue(cost_code_selected);
+                                    document.querySelector('#cost_types').setValue(cost_type_selected);
+
                                     billed_transactions_array.forEach(function(currentValue, index, arr) {
-                                        this.billed_transactions.push(currentValue);
+                                        billed_transactions_filter.push(currentValue);
+                                    });
+                                    this.filterCost(type);
+                                    OpenAdCostRow();
+                                    const x = await this.wait(10);
+                                    if(type=='edit')
+                                    {
+                                    var exist_array=[];
+                                    if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                                    {
+                                        var exist_array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                    }
+                                    ids=[];
+                                    total=0;
+                                    this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                    if(exist_array.includes(currentValue.id))
+                                    {
+                                        total = Number(total) + getamt(currentValue.amount);
+                                        ids.push(currentValue.id);
+                                        currentValue.checked=true;
+                                    }
+                                    });
+                                    billed_transactions_id_array=this.billed_transactions_id_array;
+                                    billed_transactions=this.billed_transactions;
+                                    exist_array.forEach(function(currentValue, index, arr) {
+                                        if(!billed_transactions_id_array.includes(currentValue))
+                                    {
+                                        billed_transactions_filter.forEach(function(cv, idx, arra) {
+                                            if(currentValue==cv.id)
+                                            {
+                                                cv.checked=true;
+                                                total = Number(total) + getamt(cv.amount);
+                                                ids.push(cv.id);
+                                                billed_transactions.push(cv);
+                                            }
                                         });
+                                        
+                                    }
+
+                                    });
+
+                                    this.billed_transactions= billed_transactions;
+
+                                    _('billed_transaction_ids').value=JSON.stringify(ids);
+                                    _('cost_amount').value=updateTextView1(total);
+
+                                    }
+                                    
+                                },
+                                filterCost(type)
+                                {   
+                                    
+                                    _('allCheckboxcost').checked=false;
+                                    this.allcostCheck();
+                                    var billed_transactions_id_array=[];
+                                    var array=[];
+                                    var ignore_array=[];
+                                    var int=_('cost_selected_id').value;
+
+                                    this.fields.forEach(function(currentValue, index, arr) {
+                                        if(index!=int)
+                                        {
+                                        if(currentValue.billed_transaction_ids!='' && currentValue.billed_transaction_ids !=null)
+                                        {
+                                        var array=JSON.parse(currentValue.billed_transaction_ids);
+                                        array.forEach(function(arrv, ii, aaa) {
+                                            ignore_array.push(arrv);
+                                        });
+                                        }
+                                    }
+                                    });
+                                  
+                                    cost_code_selected= document.getElementsByName('cost_codes[]')[0].value;
+                                    cost_type_selected= document.getElementsByName('cost_types[]')[0].value;
+                                    billed_transactions_filter.forEach(function(currentValue, index, arr) {
+                                        var filter=true;
+                                        if(cost_code_selected!='')
+                                        {
+                                            if(cost_code_selected!=currentValue.cost_code)
+                                            {
+                                                filter=false;
+                                            }
+                                        }
+
+                                        if(cost_type_selected!='')
+                                        {
+                                            if(cost_type_selected!=currentValue.cost_type)
+                                            {
+                                                filter=false;
+                                            }
+                                        }
+
+                                        if(ignore_array.includes(currentValue.id))
+                                        {
+                                            filter=false;
+                                        }
+
+
+                                        if(filter==true)
+                                        {
+                                            array.push(currentValue);
+                                            billed_transactions_id_array.splice(index, 0, currentValue.id);
+                                        }
+
+                                    });
+                                    this.billed_transactions=array;
+                                    this.billed_transactions_id_array=billed_transactions_id_array;
+                                    
                                 },
                                 allcostCheck()
                                 {
@@ -1055,26 +1169,52 @@ table thead,
                                 },
                                 EditCost(field) {
                                     var array=[];
+                                    this.billed_transactions=[];
+                                    billed_transactions_filter=[];
                                     if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
                                     {
                                         var array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
                                     }
-                                    console.log(array);
                                     ids=[];
                                     total=0;
-                                    this.billed_transactions=billed_transactions_array;
-                                    this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
                                     if(array.includes(currentValue.id))
                                     {
                                         currentValue.checked=true;
-                                        ids.push(currentValue.id);
                                         total = Number(total) + getamt(currentValue.amount);
+                                        billed_transactions_filter.push(currentValue);
+                                        ids.push(currentValue.id);
                                     }
                                     });
                                     _('billed_transaction_ids').value=JSON.stringify(ids);
                                     _('cost_amount').value=updateTextView1(total);
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
+
+
+                                    //////
+                                    
+                                    cost_code_selected=particularray[field.pint].bill_code;
+                                    cost_type_selected=field.cost_type;
+                                    this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
+                                    this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+
+                                    document.querySelector('#cost_codes').setValue(cost_code_selected);
+                                    document.querySelector('#cost_types').setValue(cost_type_selected);
+
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
+                                        if(!array.includes(currentValue.id))
+                                    {
+                                        if(currentValue.status==0)
+                                        {
+                                            billed_transactions_filter.push(currentValue);
+                                        }
+                                    }
+                                    });
+                                    this.filterCost();
+
+
+                                    ////
 
                                     OpenAdCostRow();
                                 },
@@ -1237,6 +1377,10 @@ table thead,
 
                         if(type === 'bill_code_detail'){
                             particularray[id].bill_code_detail = this.value
+                        }
+
+                        if(type === 'cost_codes' || type === 'cost_types'){
+                            _('filterbutton').click();
                         }
                     });
 

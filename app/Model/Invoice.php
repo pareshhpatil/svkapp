@@ -483,13 +483,11 @@ class Invoice extends ParentModel
     }
 
 
-    public function getBilledTransactions($project_id,$date)
+    public function getBilledTransactions($project_id,$date,$payment_request_id)
     {
         $retObj = DB::table('billed_transaction')
             ->select('*')
-            ->where('project_id', $project_id)
-            ->where('date', $date)
-            ->where('is_active', 1)
+            ->whereRaw("payment_request_id='".$payment_request_id."' or (project_id='".$project_id."' and date='".$date."' and status=0 and is_active=1)")
             ->get();
         return $retObj;
     }
@@ -543,6 +541,26 @@ class Invoice extends ParentModel
                 'swipez_total' => $amount,
                 'grand_total' => $amount,
                 'change_order_id' => $ids
+            ]);
+    }
+
+
+    public function updateBilledTransactionStatus($request_id,$project_id)
+    {
+        DB::table('billed_transaction')->where('payment_request_id', $request_id)
+        ->where('project_id', $project_id)
+            ->update([
+                'status' => 0,
+                'payment_request_id' => ''
+            ]);
+    }
+
+    public function updateBilledTransactionRequestID($request_id,$arrays)
+    {
+        DB::table('billed_transaction')->wherein('id', $arrays)
+            ->update([
+                'status' => 1,
+                'payment_request_id' => $request_id
             ]);
     }
 

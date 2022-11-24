@@ -2703,7 +2703,10 @@ class InvoiceController extends AppController
         }
 
         $this->invoiceModel->updateTable('invoice_construction_particular', 'payment_request_id', $request_id, 'is_active', 0);
+        $project_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $invoice->contract_id, 'project_id');
+        $this->invoiceModel->updateBilledTransactionStatus($request_id, $project_id);
         if ($type == null) {
+            $billed_transaction_ids = [];
             foreach ($request->bill_code as $k => $bill_code) {
                 $request = Helpers::setArrayZeroValue(array(
                     'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc'
@@ -2739,6 +2742,14 @@ class InvoiceController extends AppController
                 $data['calculated_perc'] = $request->calculated_perc[$k];
                 $data['calculated_row'] = $request->calculated_row[$k];
                 $data['billed_transaction_ids'] = $request->billed_transaction_ids[$k];
+                $ids = json_decode($data['billed_transaction_ids'], 1);
+                if (!empty($ids)) {
+                    if (empty($billed_transaction_ids)) {
+                        $billed_transaction_ids = $ids;
+                    } else {
+                        $billed_transaction_ids = array_merge($billed_transaction_ids, $ids);
+                    }
+                }
                 if ($request->attachments[$k] != '') {
                     $data['attachments'] = json_encode(explode(',', $request->attachments[$k]));
                     $data['attachments'] = str_replace('\\', '',  $data['attachments']);
@@ -2755,6 +2766,9 @@ class InvoiceController extends AppController
                 } else {
                     $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
                 }
+            }
+            if (!empty($billed_transaction_ids)) {
+                $this->invoiceModel->updateBilledTransactionRequestID($request_id, $billed_transaction_ids);
             }
             if ($revision == true) {
                 $this->storeRevision($request_id, $revision_data);
@@ -2893,7 +2907,7 @@ class InvoiceController extends AppController
         $csi_codes = $this->invoiceModel->getBillCodes($contract->project_id);
 
 
-        $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date);
+        $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
         $cost_codes = [];
         $cost_types = [];
         foreach ($billed_transactions as $row) {
@@ -3013,6 +3027,12 @@ class InvoiceController extends AppController
                     $particulars[$k]['count'] = count($attachment);
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
+
+                foreach($row as $kr=>$kv)
+                {
+                    $particulars[$k][$kr]=($particulars[$k][$kr]=='0.00')?'': $particulars[$k][$kr];
+                }
+
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
         }
@@ -3022,10 +3042,9 @@ class InvoiceController extends AppController
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
         $data['billed_transactions'] = $billed_transactions;
-        $cost_types_array=[];
-        foreach($cost_types as $row)
-        {
-            $cost_types_array[]=array('label'=>$row,'value'=>$row);
+        $cost_types_array = [];
+        foreach ($cost_types as $row) {
+            $cost_types_array[] = array('label' => $row, 'value' => $row);
         }
         $data['cost_types'] = $cost_types_array;
         $data['cost_codes'] = $cost_codes;
