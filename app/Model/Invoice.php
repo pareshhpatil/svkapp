@@ -482,6 +482,18 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+
+    public function getBilledTransactions($project_id,$date)
+    {
+        $retObj = DB::table('billed_transaction')
+            ->select('*')
+            ->where('project_id', $project_id)
+            ->where('date', $date)
+            ->where('is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
     public function validateUpdateConstructionInvoice($contract_id, $merchant_id)
     {
         $retObj = DB::table('payment_request')

@@ -2899,6 +2899,8 @@ class InvoiceController extends AppController
         $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
         $csi_codes = $this->invoiceModel->getBillCodes($contract->project_id);
 
+        
+        $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id,$invoice->bill_date);
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $particulars[] = [];
         $groups = [];
@@ -3017,6 +3019,7 @@ class InvoiceController extends AppController
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
 
+        $data['billed_transactions'] = $billed_transactions;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
