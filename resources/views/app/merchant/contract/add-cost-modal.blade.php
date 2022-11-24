@@ -98,7 +98,27 @@
                 </h3>
                 <hr>
                 <div class="portlet light bordered ">
+
                     <div class="portlet-body form">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                            <div id="cost_codes" x-model="cost_bill_code" ></div>
+                            </div>
+                            <div class="col-md-3">
+                            <div id="cost_types" x-model="cost_cost_type" ></div>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+
+                <div class="portlet light bordered ">
+
+                    <div class="portlet-body form">
+
+                        
+
+
                         <h3 class="form-section">Billed transactions</h3>
                         <div class="table-scrollable">
                             <table class="table table-bordered table-hover" id="particular_table1">

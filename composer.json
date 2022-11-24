@@ -100,7 +100,8 @@
             "url": "https://packagist.org"
             },
             { "packagist": false },
-            { "type": "vcs", "url": "https://github.com/swipezdev/short-url-package-creator.git" }
+            { "type": "vcs", "url": "git@github.com:swipezdev/short-url-package-creator.git" }
+
     ]
 	
 	

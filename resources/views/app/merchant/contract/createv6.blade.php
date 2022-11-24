@@ -136,7 +136,7 @@
         <div class="page-content">
             <!-- BEGIN PAGE HEADER-->
             <div class="page-bar">
-                <span class="page-title" style="float: left;">{{$title}}</span>
+                <span class="page-title" style="float: left;">{{$title}} contract</span>
                 {{ Breadcrumbs::render('home.contractcreate') }}
                 <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step {{ $step }} of 3</span>
             </div>

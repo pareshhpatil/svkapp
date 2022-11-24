@@ -577,6 +577,7 @@ class Invoice extends ParentModel
                 'bill_code_detail' => $data['bill_code_detail'],
                 'calculated_perc' => $data['calculated_perc'],
                 'calculated_row' => $data['calculated_row'],
+                'billed_transaction_ids' => $data['billed_transaction_ids'],
                 'attachments' => $data['attachments'],
                 'created_by' => $user_id,
                 'last_update_by' => $user_id,
@@ -619,6 +620,7 @@ class Invoice extends ParentModel
                     'bill_code_detail' => $data['bill_code_detail'],
                     'calculated_perc' => $data['calculated_perc'],
                     'calculated_row' => $data['calculated_row'],
+                    'billed_transaction_ids' => $data['billed_transaction_ids'],
                     'attachments' => $data['attachments'],
                     'last_update_by' => $user_id,
                 ]

@@ -17,6 +17,7 @@
             padding: 3px;
             font-weight: 400;
             color: #333;
+            background:#eee;
         }
 
         .table > tbody > tr > td {
@@ -108,6 +109,33 @@
 }
 
 
+table thead,
+        table tfoot {
+            position: sticky;
+        }
+        table thead {
+            inset-block-start: 0; /* "top" */
+        }
+        table tfoot {
+            inset-block-end: 0; /* "bottom" */
+        }
+
+        .tableFixHead {
+            overflow: auto;
+        }
+
+        .headFootZIndex {
+            z-index: 3;
+        }
+
+        .biggerHead {
+            /*  text-align: left !important;*/
+            padding-left: 15px !important;
+            vertical-align: middle !important;
+            font-weight: 500 !important;
+        }
+
+
     </style>
 
 
@@ -151,15 +179,15 @@
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  " >
+            <div class="table-scrollable  tableFixHead" >
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
-                        <thead>
+                        <thead class="headFootZIndex">
                         <tr>
                             @foreach($particular_column as $k=>$v)
                                 @if($k!='description')
-                                    <th  @if($k=='bill_code') class="td-c col-id-no" style="min-width:200px ;" @elseif($k=='bill_type') class="td-c" style="min-width:120px ;" @else class="td-c" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
-                                        <span class="popovers" data-placement="top" data-container="body" data-trigger="hover" data-content="{{$v}}" data-original-title=""> {{Helpers::stringShort($v)}}</span>
+                                    <th  @if($k=='bill_code') class="td-c col-id-no biggerHead" style="min-width:200px ;" @elseif($k=='bill_type') class="td-c biggerHead" style="min-width:120px ;" @else class="td-c biggerHead" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
+                                    {!! (strlen($v) > 10) ? str_replace( ' ', '<br>', $v) : $v !!}
                                     </th>
                                 @endif
                             @endforeach
@@ -312,7 +340,7 @@
                         </tr>
                     </template>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="headFootZIndex">
                     <tr class="warning">
                         <th class="col-id-no">Grand total</th>
                         <th ></th>
@@ -416,10 +444,14 @@
                        var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
                       var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
+                       var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
+                       var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
                         function initializeParticulars(){
                             this.initializeDropdowns();
                             this.calculateTotal();
+                            $('.tableFixHead').css('max-height', screen.height/2);
                         }
+
                         function initSelect2(){
 
                             if(particularray.length > 1) {
@@ -478,8 +510,9 @@
                                 bill_types: ['% Complete', 'Unit', 'Calculated'],
                                 grand_total: 0,
                                 project:null,
-
-
+                                addbuttonactive:true,
+                                cost_bill_code:null,
+                                cost_cost_type:null,
 
                                 addNewBillCode(){
                     var data = $("#billcodeform").serialize();
@@ -964,6 +997,8 @@
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
                                     OpenAdCostRow();
+                                    this.virtualSelect('', 'cost_codes', cost_codes, field.bill_code);
+                                    this.virtualSelect('', 'cost_types', cost_types, field.cost_type);
                                 },
                                 allcostCheck()
                                 {
@@ -1012,7 +1047,12 @@
                                     this.calc(field);
                                 },
                                 EditCost(field) {
-                                    var array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                    var array=[];
+                                    if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                                    {
+                                        var array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                    }
+                                    console.log(array);
                                     ids=[];
                                     total=0;
                                     this.billed_transactions=billed_transactions_array;
@@ -1069,7 +1109,11 @@
                                     console.log('I will get evaluated when initializing each "dropdown" component.')
                                 },
                                 async addNewField() {
-                                    document.getElementById('perror').style.display = 'none';
+                                    
+                                    if(this.addbuttonactive==true)
+                                    {
+                                    this.addbuttonactive=false;
+                                        document.getElementById('perror').style.display = 'none';
                                         project_code = '{{$project_code}}';
                                         this.bill_codes = csi_codes;
                                         int = this.fields.length-1;
@@ -1100,11 +1144,12 @@
                                         const x = await this.wait(10);
                                         id = this.fields.length - 1;
                                         this.count = id;
-                                        console.log(bill_codes);
                                         this.virtualSelect(id, 'bill_code', bill_codes)
                                         this.virtualSelect(id, 'group', groups)
                                         // this.virtualSelect(id, 'bill_type', bill_types)
-                                        this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
+                                        this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes');
+                                        this.addbuttonactive=true;
+                                    }
                                 },
                                 initializeDropdowns(){
                             for(let v=0; v < this.fields.length; v++){
@@ -1186,6 +1231,11 @@
                         if(type === 'bill_code_detail'){
                             particularray[id].bill_code_detail = this.value
                         }
+                    });
+
+                    $('#'+type+id).on('beforeOpen',function () {
+                        let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#'+dropboxContainer).css('z-index',4)
                     });
 
                 }
