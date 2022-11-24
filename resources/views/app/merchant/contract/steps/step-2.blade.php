@@ -480,15 +480,15 @@
 
                         } catch (o) {}
                         try {
-                            field.retainage_amount = updateTextView1(roundAmount( getamt(field.original_contract_amount) *  getamt(field.retainage_percent) / 100) );
+                            field.retainage_amount = updateTextView1( getamt(field.original_contract_amount) *  getamt(field.retainage_percent) / 100 );
                         } catch (o) {}
                         try {
-                            field.original_contract_amount = updateTextView1(roundAmount(getamt(field.original_contract_amount)));
+                            field.original_contract_amount = updateTextView1(getamt(field.original_contract_amount));
                         } catch (o) {}
                         try {
-                            field.retainage_percent = updateTextView1(parseFloat(getamt(field.retainage_percent)).toFixed(2));
+                            field.retainage_percent = updateTextView1(getamt(field.retainage_percent));
                         } catch (o) {}
-                        var total = 0;ste
+                        var total = 0;
                         var totalretainage = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
                             let oct = Number(getamt(currentValue.original_contract_amount));
@@ -631,7 +631,7 @@
                         'group' : null,
                         'bill_code_detail' : 'Yes',
                         'show':false
-                    })
+                    });
                     particularsArray.push({
                         'bill_code' : null,
                         'calculated_perc' : null,
@@ -650,7 +650,7 @@
                         'group' : null,
                         'bill_code_detail' : 'Yes',
                         'show':false
-                    })
+                    });
 
                     let id = particularsArray.length - 1;
                     this.count = id;
