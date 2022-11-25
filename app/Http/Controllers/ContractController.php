@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
 use App\ContractParticular;
 use App\CsiCode;
 use App\Customer;
@@ -9,7 +10,7 @@ use App\Libraries\Helpers;
 use App\Merchant;
 use App\MerchantBillingProfile;
 use App\Model\Contract;
-use App\Model\CostType;
+use App\Model\Merchant\CostType;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
@@ -144,7 +145,7 @@ class ContractController extends Controller
 
     public function getCostTypes(): array
     {
-        return CostType::where('merchant_id', $this->merchant_id)
+        return CostType::where(IColumn::MERCHANT_ID, $this->merchant_id)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
     }

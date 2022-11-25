@@ -440,3 +440,10 @@ Breadcrumbs::for('merchant.region-setting.index', function ($trail) {
     $trail->push('Region setting');
 
 });
+
+Breadcrumbs::for('merchant.cost-types.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Data configuration');
+    $trail->push('Cost Types');
+});

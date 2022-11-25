@@ -26,4 +26,15 @@ yarn-error.log
 /bootstrap/cache/livewire-components.php
 /bootstrap/cache/packages.php
 /bootstrap/cache/services.php
+
+/storage/logs/*
+/storage/debugbar
+/storage/framework/cache/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/storage/framework/sessions/*
+
 .idea
+public/assets/.DS_Store
+public/.DS_Store
+.DS_Store

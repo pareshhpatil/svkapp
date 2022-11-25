@@ -24,7 +24,9 @@ class Encrypt {
             return false;
         }
         $value = (string) $value;
-        $ciphertext = sodium_crypto_secretbox($value,  env('ENCRYPT_NONCE'), env('ENCRYPT_KEY'));
+
+        $ciphertext = sodium_crypto_secretbox($value,  "4f7be50f3d256c6104ffe3f4", "fce42da6c88468b47c571c4b5e447bdf");
+        //$ciphertext = sodium_crypto_secretbox($value,  env('ENCRYPT_NONCE'), env('ENCRYPT_KEY'));
         return trim(self::safe_b64encode($ciphertext));
     }
 
@@ -33,7 +35,8 @@ class Encrypt {
             return false;
         }
         $ciphertext = self::safe_b64decode($value);
-        $decrypttext = sodium_crypto_secretbox_open($ciphertext, env('ENCRYPT_NONCE'), env('ENCRYPT_KEY'));
+        $decrypttext = sodium_crypto_secretbox_open($ciphertext, "4f7be50f3d256c6104ffe3f4", "fce42da6c88468b47c571c4b5e447bdf");
+        //$decrypttext = sodium_crypto_secretbox_open($ciphertext, env('ENCRYPT_NONCE'), env('ENCRYPT_KEY'));
         return trim($decrypttext);
     }
 
