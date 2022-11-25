@@ -17,6 +17,7 @@
             padding: 3px;
             font-weight: 400;
             color: #333;
+            background:#eee;
         }
 
         .table > tbody > tr > td {
@@ -108,6 +109,33 @@
 }
 
 
+table thead,
+        table tfoot {
+            position: sticky;
+        }
+        table thead {
+            inset-block-start: 0; /* "top" */
+        }
+        table tfoot {
+            inset-block-end: 0; /* "bottom" */
+        }
+
+        .tableFixHead {
+            overflow: auto;
+        }
+
+        .headFootZIndex {
+            z-index: 3;
+        }
+
+        .biggerHead {
+            /*  text-align: left !important;*/
+            padding-left: 15px !important;
+            vertical-align: middle !important;
+            font-weight: 500 !important;
+        }
+
+
     </style>
 
 
@@ -151,15 +179,15 @@
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  " >
+            <div class="table-scrollable  tableFixHead" >
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
-                        <thead>
+                        <thead class="headFootZIndex">
                         <tr>
                             @foreach($particular_column as $k=>$v)
                                 @if($k!='description')
-                                    <th  @if($k=='bill_code') class="td-c col-id-no" style="min-width:200px ;" @elseif($k=='bill_type') class="td-c" style="min-width:120px ;" @else class="td-c" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
-                                        <span class="popovers" data-placement="top" data-container="body" data-trigger="hover" data-content="{{$v}}" data-original-title=""> {{Helpers::stringShort($v)}}</span>
+                                    <th  @if($k=='bill_code') class="td-c col-id-no biggerHead" style="min-width:200px ;" @elseif($k=='bill_type') class="td-c biggerHead" style="min-width:120px ;" @else class="td-c biggerHead" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
+                                    {!! (strlen($v) > 10) ? str_replace( ' ', '<br>', $v) : $v !!}
                                     </th>
                                 @endif
                             @endforeach
@@ -204,6 +232,7 @@
                                             <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
                                             <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
                                             <input type="hidden" name="description[]"  x-model="field.description" :id="`description${index}`">
+                                            <input type="hidden" name="billed_transaction_ids[]"  x-model="field.billed_transaction_ids" :id="`billed_transaction_ids${index}`">
                                             <div class="text-center" style="display: none;">
                                                 <p :id="`description-hidden${index}`" x-text="field.description"></p>
                                             </div>
@@ -216,6 +245,7 @@
                                                 <option value="% Complete">% Complete</option>
                                                 <option value="Unit">Unit</option>
                                                 <option value="Calculated">Calculated</option>
+                                                <option value="Cost">Cost</option>
                                             </select>
                                         @elseif($k=='bill_code_detail')
                                         <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
@@ -224,13 +254,16 @@
                                                 <template x-if="field.bill_type!='Calculated'">
                                                     <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
                                                 </template>
+                                            @elseif($k=='current_billed_amount')
+                                                <template x-if="field.bill_type=='Cost'">
+                                                    <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                                </template>
                                             @else
                                                 <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}" @if($k == 'project') @update-csi-codes.window="field.{{$k}} = this.project"  @endif> </span>
                                             @endif
                                         @endif
 
                                         @if($k=='original_contract_amount')
-
                                             <template x-if="field.bill_type=='Calculated'">
                                                 <div>
                                                     <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$k}}"></span><br>
@@ -259,10 +292,39 @@
                                             <input :id="`id${index}`" type="hidden"  x-model="field.id" name="id[]">
                                             <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.pint" name="pint[]">
 
+                                            @elseif($k=='current_billed_amount')
+                                            <template x-if="field.bill_type=='Cost'">
+                                                <div>
+                                                    <a :id="`add-cost${index}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
+                                                    <a :id="`remove-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
+                                                    <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                    <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
+                                                </div>
+                                                <span x-show="field.txt{{$k}}">
+                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        </span>
+                                            </template>
+                                            <template x-if="field.bill_type!='Cost'">
+                                            <span  x-text="field.{{$k}}"> </span>
+                                        <span x-show="field.txt{{$k}}">
+                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        </span>
+                                            </template>
+                                            @elseif($k=='current_billed_percent')
+                                            <template x-if="field.bill_type!='Cost'">
+                                        <span x-show="field.txt{{$k}}">
+                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                    </span>
+                                        </template>
 
+                                        <template x-if="field.bill_type=='Cost'">
+                                        <span x-show="field.txt{{$k}}">
+                                        <input :id="`{{$k}}${index}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                    </span>
+                                        </template>
                                         @else
                                         @if($dropdown==false)
-                                            <span x-show="field.txt{{$k}}">
+                                        <span x-show="field.txt{{$k}}">
                                         <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                         @endif
@@ -281,7 +343,7 @@
                         </tr>
                     </template>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="headFootZIndex">
                     <tr class="warning">
                         <th class="col-id-no">Grand total</th>
                         <th ></th>
@@ -341,6 +403,7 @@
     </div>
     @include('app.merchant.contract.add-group-modal')
     @include('app.merchant.contract.add-calculation-modal2')
+    @include('app.merchant.contract.add-cost-modal')
     <script>
 
     </script>
@@ -382,11 +445,17 @@
                        var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
                        var groups = JSON.parse('{!! json_encode($groups) !!}');
                        var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
+                      var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
+                      var billed_transactions_filter=[];
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
+                       var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
+                       var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
                         function initializeParticulars(){
                             this.initializeDropdowns();
                             this.calculateTotal();
+                            $('.tableFixHead').css('max-height', screen.height/2);
                         }
+
                         function initSelect2(){
 
                             if(particularray.length > 1) {
@@ -429,6 +498,8 @@
                                 fields : JSON.parse('{!! json_encode($particulars) !!}'),
                                 bill_codes : JSON.parse('{!! json_encode($csi_codes) !!}'),
                                 groups : JSON.parse('{!! json_encode($groups) !!}'),
+                                billed_transactions : null,
+                                billed_transactions_id_array : [],
                                 test : null,
                                 count: particularray.length - 1,
                                 group_name: '',
@@ -444,8 +515,9 @@
                                 bill_types: ['% Complete', 'Unit', 'Calculated'],
                                 grand_total: 0,
                                 project:null,
-
-
+                                addbuttonactive:true,
+                                cost_bill_code:null,
+                                cost_cost_type:null,
 
                                 addNewBillCode(){
                     var data = $("#billcodeform").serialize();
@@ -756,7 +828,7 @@
                                                 field.retainage_percent='';
                                             }
                                             field.retainage_amount = updateTextView1(getamt(field.original_contract_amount) * getamt(field.retainage_percent) / 100);
-                                        } catch (o) {alert(1);}
+                                        } catch (o) {}
 
                                         try {
                                             if(field.approved_change_order_amount==null)
@@ -767,12 +839,16 @@
                                         } catch (o) {}
 
                                         try {
-                                            if(field.current_billed_percent==null)
+                                            if(field.bill_type!='Cost')
                                             {
-                                                field.current_billed_percent='';
+                                                if(field.current_billed_percent==null)
+                                                {
+                                                    field.current_billed_percent='';
+                                                }
+                                                field.current_billed_amount = updateTextView1(getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100);
                                             }
-                                            field.current_billed_amount = updateTextView1(getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100);
-                                        } catch (o) {alert(3);}
+                                            
+                                        } catch (o) {}
 
                                         try {
                                             if(field.previously_billed_amount==null)
@@ -891,10 +967,21 @@
                                     this.calc(this.fields[selected_field_int]);
 
                                 },
+                                setCostAmount() {
+                                    cost_selected_id = document.getElementById('cost_selected_id').value;
+                                    calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
+                                    this.fields[cost_selected_id].current_billed_amount = calc_amount;
+                                  //  document.getElementById("current_billed_amount" + cost_selected_id).value = calc_amount;
+                                  //  _("lbl_current_billed_amount" + cost_selected_id).innerHTML = calc_amount;
+                                    this.fields[cost_selected_id].billed_transaction_ids = document.getElementById('billed_transaction_ids').value;
+                                   // document.getElementById('billed_transaction_ids' + cost_selected_id).value = document.getElementById('billed_transaction_ids').value;
+                                    this.calc(this.fields[cost_selected_id]);
+                                   this.billed_transactions=billed_transactions_array;
+                                    this.closeSidePanelcost();
+                                },
                                 OpenAddCaculated(field) {
                                     console.log(field.pint);
                                     this.selected_field_int = field.pint;
-                                    console.log(document.getElementById('selected_field_int'));
                                     document.getElementById('selected_field_int').value = field.pint;
                                     OpenAddCaculatedRow(field.pint);
                                 },
@@ -908,6 +995,228 @@
                                 EditCaculated(field) {
                                     document.getElementById('selected_field_int').value = field.pint;
                                     editCaculatedRow(field.pint);
+                                },
+
+                                async OpenAddCost(field,type='new') {
+                                    this.billed_transactions=[];
+                                    billed_transactions_filter=[];
+                                    this.selected_field_int = field.pint;
+                                    document.getElementById('cost_selected_id').value = field.pint;
+                                    
+                                    cost_code_selected=particularray[field.pint].bill_code;
+                                    cost_type_selected=field.cost_type;
+                                    this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
+                                    this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+
+                                    document.querySelector('#cost_codes').setValue(cost_code_selected);
+                                    document.querySelector('#cost_types').setValue(cost_type_selected);
+
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
+                                        billed_transactions_filter.push(currentValue);
+                                    });
+                                    this.filterCost(type);
+                                    OpenAdCostRow();
+                                    const x = await this.wait(10);
+                                    if(type=='edit')
+                                    {
+                                    var exist_array=[];
+                                    if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                                    {
+                                        var exist_array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                    }
+                                    ids=[];
+                                    total=0;
+                                    this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                    if(exist_array.includes(currentValue.id))
+                                    {
+                                        total = Number(total) + getamt(currentValue.amount);
+                                        ids.push(currentValue.id);
+                                        currentValue.checked=true;
+                                    }
+                                    });
+                                    billed_transactions_id_array=this.billed_transactions_id_array;
+                                    billed_transactions=this.billed_transactions;
+                                    exist_array.forEach(function(currentValue, index, arr) {
+                                        if(!billed_transactions_id_array.includes(currentValue))
+                                    {
+                                        billed_transactions_filter.forEach(function(cv, idx, arra) {
+                                            if(currentValue==cv.id)
+                                            {
+                                                cv.checked=true;
+                                                total = Number(total) + getamt(cv.amount);
+                                                ids.push(cv.id);
+                                                billed_transactions.push(cv);
+                                            }
+                                        });
+                                        
+                                    }
+
+                                    });
+
+                                    this.billed_transactions= billed_transactions;
+
+                                    _('billed_transaction_ids').value=JSON.stringify(ids);
+                                    _('cost_amount').value=updateTextView1(total);
+
+                                    }
+                                    
+                                },
+                                filterCost(type)
+                                {   
+                                    
+                                    _('allCheckboxcost').checked=false;
+                                    this.allcostCheck();
+                                    var billed_transactions_id_array=[];
+                                    var array=[];
+                                    var ignore_array=[];
+                                    var int=_('cost_selected_id').value;
+
+                                    this.fields.forEach(function(currentValue, index, arr) {
+                                        if(index!=int)
+                                        {
+                                        if(currentValue.billed_transaction_ids!='' && currentValue.billed_transaction_ids !=null)
+                                        {
+                                        var array=JSON.parse(currentValue.billed_transaction_ids);
+                                        array.forEach(function(arrv, ii, aaa) {
+                                            ignore_array.push(arrv);
+                                        });
+                                        }
+                                    }
+                                    });
+                                  
+                                    cost_code_selected= document.getElementsByName('cost_codes[]')[0].value;
+                                    cost_type_selected= document.getElementsByName('cost_types[]')[0].value;
+                                    billed_transactions_filter.forEach(function(currentValue, index, arr) {
+                                        var filter=true;
+                                        if(cost_code_selected!='')
+                                        {
+                                            if(cost_code_selected!=currentValue.cost_code)
+                                            {
+                                                filter=false;
+                                            }
+                                        }
+
+                                        if(cost_type_selected!='')
+                                        {
+                                            if(cost_type_selected!=currentValue.cost_type)
+                                            {
+                                                filter=false;
+                                            }
+                                        }
+
+                                        if(ignore_array.includes(currentValue.id))
+                                        {
+                                            filter=false;
+                                        }
+
+
+                                        if(filter==true)
+                                        {
+                                            array.push(currentValue);
+                                            billed_transactions_id_array.splice(index, 0, currentValue.id);
+                                        }
+
+                                    });
+                                    this.billed_transactions=array;
+                                    this.billed_transactions_id_array=billed_transactions_id_array;
+                                    
+                                },
+                                allcostCheck()
+                                {
+                                    var check=_('allCheckboxcost').checked;
+                                    if(check)
+                                    {
+                                        this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                            currentValue.checked=true;
+                                        });
+                                    }else
+                                    {
+                                        this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                            currentValue.checked=false;
+                                        });
+                                    }
+                                    this.costCalc();
+                                },
+                                costCalc()
+                                {
+                                    total=0;
+                                    ids=[];
+                                    this.billed_transactions.forEach(function(currentValue, index, arr) {
+                                        if(currentValue.checked!=undefined)
+                                        {
+                                            if(currentValue.checked==true)
+                                            {
+                                                ids.push(currentValue.id);
+                                                total = Number(total) + getamt(currentValue.amount);
+                                            }
+                                        }
+                                        });
+                                        _('billed_transaction_ids').value=JSON.stringify(ids);
+                                        _('cost_amount').value=updateTextView1(total);
+                                },
+                                closeSidePanelcost()
+                                {
+                                    document.getElementById("panelWrapIdcost").style.boxShadow = "none";
+                                    document.getElementById("panelWrapIdcost").style.transform = "translateX(100%)";
+                                    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+                                    _('allCheckboxcost').checked=false;
+                                    this.allcostCheck();
+                                },
+                                RemoveCost(field) {
+                                    this.fields[field.pint].current_billed_amount = '';
+                                    this.fields[field.pint].billed_transaction_ids = '';
+                                    this.calc(field);
+                                },
+                                EditCost(field) {
+                                    var array=[];
+                                    this.billed_transactions=[];
+                                    billed_transactions_filter=[];
+                                    if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                                    {
+                                        var array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                    }
+                                    ids=[];
+                                    total=0;
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
+                                    if(array.includes(currentValue.id))
+                                    {
+                                        currentValue.checked=true;
+                                        total = Number(total) + getamt(currentValue.amount);
+                                        billed_transactions_filter.push(currentValue);
+                                        ids.push(currentValue.id);
+                                    }
+                                    });
+                                    _('billed_transaction_ids').value=JSON.stringify(ids);
+                                    _('cost_amount').value=updateTextView1(total);
+                                    this.selected_field_int = field.pint;
+                                    document.getElementById('cost_selected_id').value = field.pint;
+
+
+                                    //////
+                                    
+                                    cost_code_selected=particularray[field.pint].bill_code;
+                                    cost_type_selected=field.cost_type;
+                                    this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
+                                    this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+
+                                    document.querySelector('#cost_codes').setValue(cost_code_selected);
+                                    document.querySelector('#cost_types').setValue(cost_type_selected);
+
+                                    billed_transactions_array.forEach(function(currentValue, index, arr) {
+                                        if(!array.includes(currentValue.id))
+                                    {
+                                        if(currentValue.status==0)
+                                        {
+                                            billed_transactions_filter.push(currentValue);
+                                        }
+                                    }
+                                    });
+                                    this.filterCost();
+
+
+                                    ////
+
+                                    OpenAdCostRow();
                                 },
 
                                 select2Dropdown(id) {
@@ -947,7 +1256,11 @@
                                     console.log('I will get evaluated when initializing each "dropdown" component.')
                                 },
                                 async addNewField() {
-                                    document.getElementById('perror').style.display = 'none';
+                                    
+                                    if(this.addbuttonactive==true)
+                                    {
+                                    this.addbuttonactive=false;
+                                        document.getElementById('perror').style.display = 'none';
                                         project_code = '{{$project_code}}';
                                         this.bill_codes = csi_codes;
                                         int = this.fields.length-1;
@@ -978,11 +1291,12 @@
                                         const x = await this.wait(10);
                                         id = this.fields.length - 1;
                                         this.count = id;
-                                        console.log(bill_codes);
                                         this.virtualSelect(id, 'bill_code', bill_codes)
                                         this.virtualSelect(id, 'group', groups)
                                         // this.virtualSelect(id, 'bill_type', bill_types)
-                                        this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
+                                        this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes');
+                                        this.addbuttonactive=true;
+                                    }
                                 },
                                 initializeDropdowns(){
                             for(let v=0; v < this.fields.length; v++){
@@ -992,9 +1306,9 @@
                                 this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                             }
                         },
-                        virtualSelect(id, type, options, selectedValue){
+                        virtualSelect(id, type, options, selectedValue,dropboxWrapper='body'){
                             allowNewOption= true;
-                                search= true;
+                            search= true;
                             if(type!='bill_code')
                             {
                             if(type=='bill_code_detail')
@@ -1011,7 +1325,7 @@
                         ele: '#'+type+id,
                         options: options,
                         name: type+'[]',
-                        dropboxWrapper: 'body',
+                        dropboxWrapper: dropboxWrapper,
                         allowNewOption: allowNewOption,
                         search:search,
                         multiple:false,
@@ -1064,6 +1378,15 @@
                         if(type === 'bill_code_detail'){
                             particularray[id].bill_code_detail = this.value
                         }
+
+                        if(type === 'cost_codes' || type === 'cost_types'){
+                            _('filterbutton').click();
+                        }
+                    });
+
+                    $('#'+type+id).on('beforeOpen',function () {
+                        let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#'+dropboxContainer).css('z-index',4)
                     });
 
                 }
