@@ -285,10 +285,10 @@
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
-                        this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
-                        this.virtualSelect(v, 'group', groups, this.fields[v].group)
-                        this.virtualSelect(v, 'cost_type', cost_types, this.fields[v].cost_type)
-                        this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
+                        this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code)
+                        this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group)
+                        this.virtualSelect(this.fields[v].introw, 'cost_type', cost_types, this.fields[v].cost_type)
+                        this.virtualSelect(this.fields[v].introw, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                     }
                 },
                 virtualSelect(id, type, options, selectedValue){
@@ -518,7 +518,8 @@
                 calculateTotalRetainage(){
                     this.totalretainage = 0;
                    for(let r=0; r < this.fields.length; r++) {
-                       this.totalretainage = Number(this.totalretainage) + Number(getamt(roundAmount(this.fields[r].retainage_amount)));
+                       console.log(this.fields[r].retainage_amount);
+                       this.totalretainage = Number(this.totalretainage) + Number(roundAmount(getamt(this.fields[r].retainage_amount)));
                    }
                 },
                 removeValidationError(fieldName, id){
@@ -614,7 +615,8 @@
                 },
                 async addNewRow() {
                     // int = this.fields.length
-                    let lastRow = this.fields[this.fields.length]
+                    let lastRow = this.fields[this.fields.length-1]
+
                     let int = lastRow.introw + 1
 
                     this.fields.push({
@@ -660,10 +662,10 @@
                     this.count = id;
 
                     const x = await this.wait(10);
-                    this.virtualSelect(id, 'bill_code', bill_codes)
-                    this.virtualSelect(id, 'group', groups)
-                    this.virtualSelect(id, 'cost_type', cost_types)
-                    this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
+                    this.virtualSelect(int, 'bill_code', bill_codes)
+                    this.virtualSelect(int, 'group', groups)
+                    this.virtualSelect(int, 'cost_type', cost_types)
+                    this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes')
                 },
                 removeRow(field){
                     let id = field.introw;
@@ -671,11 +673,27 @@
                     particularsArray.splice(id, 1);
 
                     total = 0;
-                    this.fields.forEach(function(currentValue, index, arr) {
+                    for( let f =0; f < this.fields.length; f++){
+                        let currentValue = this.fields[f];
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
+                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                        if(calculatedRowValue !== '') {
+                            var rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                            if(rowsIncludedInCalculation.includes(id)) {
+                                const index = rowsIncludedInCalculation.indexOf(id);
+                                if (index > -1) {
+                                    rowsIncludedInCalculation.splice(index, 1);
+                                }
+                            }
+                            let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+                            $('#calculated_row'+currentValue.introw).val( rowsArray );
+                            currentValue.calculated_row = rowsArray;
+
+                        }
                         // this.fields[index].introw = index;
-                    });
+                    };
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
                     document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
