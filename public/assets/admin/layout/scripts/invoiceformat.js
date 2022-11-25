@@ -170,6 +170,37 @@ function getCGItextReturnsV2(defaultval, type, numrow = 1) {
     return produ_text;
 }
 
+function getCostTypeCode(defaultval, type, numrow = 1) {
+    if (typeof type === 'undefined') {
+        type = '';
+    }
+    var exist = 0;
+    var produ_text = '<td class="col-id-no" scope="row">' +
+        '<select style="width:100%;" required id="cost_type' + numrow + '" ' +
+        'name="' + type + 'cost_type[]" data-cy="particular_product' + numrow + '" ' +
+        'data-placeholder="Type or Select" class="form-control input-sm productselect" >';
+    if (cost_type_list != null) {
+        $.each(cost_type_list, function (value, arr) {
+            var selected = '';
+            try {
+                if (arr.code != '') {
+                    if (defaultval == arr.id) {
+                        selected = 'selected';
+                        exist = 1;
+                    }
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.name + '</option>';
+                }
+            } catch (o) {
+            }
+        });
+    }
+    if (exist == 0) {
+        produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
+    }
+    produ_text = produ_text + '</select></td>';
+    return produ_text;
+}
+
 function AddInvoiceParticularRow(defaultval) {
     //var x = document.getElementById("particular_table").rows.length;
     if (typeof defaultval === 'undefined') {
@@ -445,6 +476,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
         "rate": "Rate",
         "change_order_amount": "Chnage Order Amount",
         "order_description": "Description",
+        "cost_type": "Cost Type",
     };
     $.each(particular_col_array, function (index, value) {
         if (index != 'sr_no') {
@@ -454,6 +486,10 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
             }
             if (index == 'bill_code') {
                 product_text = getCGItextReturnsV2(defaultval, '', numrow);
+                row = row + product_text;
+            }
+            else if (index == 'cost_type') {
+                product_text = getCostTypeCode(defaultval, '', numrow);
                 row = row + product_text;
             }
             else if (index == 'original_contract_amount') {
