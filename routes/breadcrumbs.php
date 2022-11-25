@@ -367,6 +367,13 @@ Breadcrumbs::for('home.billcodelist', function ($trail) {
     $trail->push('Bill code list');
     
 });
+Breadcrumbs::for('home.billtransaction', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Project');
+    $trail->push('Project List', '/merchant/project/list');
+    $trail->push('Bill transaction');
+    
+});
 
 Breadcrumbs::for('home.projectcreate', function ($trail) {
     $trail->parent('home');
