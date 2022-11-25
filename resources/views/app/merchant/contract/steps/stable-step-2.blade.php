@@ -110,22 +110,22 @@
                                         @if(in_array($column, $number_array))
                                             @php $number='type=number step=0.00'; @endphp
                                         @endif
-                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${index}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif" x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif" x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
-                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" ></div>
-                                                <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
-                                                <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                                <input type="hidden" name="description[]"  x-value="field.description" :id="`description${index}`">
+                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" ></div>
+                                                <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
+                                                <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
+                                                <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
                                                 <div class="text-center" style="display: none;">
-                                                    <p :id="`description-hidden${index}`" x-text="field.description"></p>
+                                                    <p :id="`description-hidden${field.introw}`" x-text="field.description"></p>
                                                 </div>
                                             @break
 
                                             @case('bill_type')
-{{--                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
-{{--                                            <input type="hidden" :id="`checkBillType${index}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
-                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type">
+{{--                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
+{{--                                            <input type="hidden" :id="`checkBillType${field.introw}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
+                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type">
                                                     <option value="">Select..</option>
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
@@ -135,12 +135,12 @@
                                             @break
 
                                             @case('group')
-                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}"></div>
+                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}"></div>
                                             @break
 
                                             @case('bill_code_detail')
-                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
-                                                {{--<select required style="width: 100%; min-width: 200px;" :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
+                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
+                                                {{--<select required style="width: 100%; min-width: 200px;" :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
                                                     <option value="">Select..</option>
                                                     <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
@@ -149,8 +149,8 @@
 
                                             @case('original_contract_amount')
                                                 <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
-                                                        @keyup="removeValidationError(`{{$column}}`, `${index}`)"
+                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        @keyup="removeValidationError(`{{$column}}`, `${field.introw}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
                                                                style="width: 100%;" class="form-control input-sm " x-show="field.showoriginal_contract_amount">
@@ -158,8 +158,8 @@
                                                 <template x-if="field.bill_type!='Calculated'">
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                     {{--<span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
-                                                        @keyup="removeValidationError(`{{$column}}`, `${index}`)"
+                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        @keyup="removeValidationError(`{{$column}}`, `${field.introw}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
                                                                style="width: 100%;" class="form-control input-sm ">
@@ -168,23 +168,23 @@
 
                                                 <template x-if="field.bill_type=='Calculated'">
                                                     <div>
-                                                        <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$column}}"></span><br>
-                                                        {{--<a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCalculated(field)">Add calculation</a>
-                                                        <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="removeCalculated(field)">Remove</a>
-                                                        <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCalculated(field)">Edit</a>--}}
-                                                        <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
-                                                        <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
-                                                        <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                        <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
+                                                        <span :id="`lbl_original_contract_amount${field.introw}`" x-text="field.{{$column}}"></span><br>
+                                                        {{--<a :id="`add-calc${field.introw}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCalculated(field)">Add calculation</a>
+                                                        <a :id="`remove-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="removeCalculated(field)">Remove</a>
+                                                        <span :id="`pipe-calc${field.introw}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                        <a :id="`edit-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCalculated(field)">Edit</a>--}}
+                                                        <a :id="`add-calc${field.introw}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
+                                                        <a :id="`remove-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                        <span :id="`pipe-calc${field.introw}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                        <a :id="`edit-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                     </div>
                                                     {{--<span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${index}`" x-model="field.{{$column}}" value="" name="{{$column}}[]" @if($readonly) type="hidden" @else  type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif style="width: 100%;" class="form-control input-sm ">
+                                                        <input :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" value="" name="{{$column}}[]" @if($readonly) type="hidden" @else  type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif style="width: 100%;" class="form-control input-sm ">
                                                     </span>--}}
                                                 </template>
 
 
-                                                <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.introw" name="pint[]">
+                                                <input :id="`introw${field.introw}`" type="hidden" :value="index" x-model="field.introw" name="pint[]">
                                             @break
 
                                             @case('retainage_amount')
@@ -192,13 +192,13 @@
                                             @break
 
                                             @case('cost_type')
-                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
+                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
                                             @break
 
                                             @default
                                                 <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                 <span x-show="field.show{{$column}}">
-                                                    <input :id="`{{$column}}${index}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm ">
+                                                    <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm ">
                                                 </span>
                                             @break
                                         @endswitch
@@ -207,7 +207,7 @@
                                 @endforeach
 
                                 <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                    <button type="button" class="btn btn-xs red" @click="removeRow(index)">&times;</button>
+                                    <button type="button" class="btn btn-xs red" @click="removeRow(field)">&times;</button>
                                     <template x-if="count === index">
                                     <span>
                                         <a href="javascript:;" @click="await addNewRow();" class="btn btn-xs green">+</a>
@@ -613,7 +613,9 @@
                     }else this.saveParticulars(1, 0);
                 },
                 async addNewRow() {
-                    int = this.fields.length
+                    // int = this.fields.length
+                    let lastRow = this.fields[this.fields.length]
+                    let int = lastRow.introw + 1
 
                     this.fields.push({
                         'bill_code' : null,
@@ -663,7 +665,8 @@
                     this.virtualSelect(id, 'cost_type', cost_types)
                     this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
                 },
-                removeRow(id){
+                removeRow(field){
+                    let id = field.introw;
                     this.fields.splice(id, 1);
                     particularsArray.splice(id, 1);
 
@@ -774,9 +777,9 @@
                             oca = document.getElementById('original_contract_amount' + int).value;
                             amt = getamt(oca);
                             try {
-                                var bill_code = particularsArray[int].bill_code; //document.getElementById('select2-bill_code' + int + '-container').innerHTML;
+                                var bill_code = particularsArray[indx].bill_code; //document.getElementById('select2-bill_code' + int + '-container').innerHTML;
                             } catch (o) {
-                                var bill_code = particularsArray[int].bill_code;//document.getElementById('select2-billcode' + int + '-container').innerHTML;
+                                var bill_code = particularsArray[indx].bill_code;//document.getElementById('select2-billcode' + int + '-container').innerHTML;
                             }
                             var discription = document.getElementById('description' + int).value;
                             //bill_code = document.getElementById('bill_code' + bint).value;
