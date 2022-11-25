@@ -300,9 +300,7 @@ table thead,
                                                     <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                     <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
                                                 </div>
-                                                <span x-show="field.txt{{$k}}">
                                             <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                        </span>
                                             </template>
                                             <template x-if="field.bill_type!='Cost'">
                                             <span  x-text="field.{{$k}}"> </span>
