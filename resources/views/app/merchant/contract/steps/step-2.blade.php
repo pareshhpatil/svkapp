@@ -517,7 +517,7 @@
                 calculateTotalRetainage(){
                     this.totalretainage = 0;
                    for(let r=0; r < this.fields.length; r++) {
-                       this.totalretainage = Number(this.totalretainage) + Number(getamt(this.fields[r].retainage_amount));
+                       this.totalretainage = Number(this.totalretainage) + Number(getamt(roundAmount(this.fields[r].retainage_amount)));
                    }
                 },
                 removeValidationError(fieldName, id){
