@@ -245,6 +245,7 @@ table thead,
                                                 <option value="% Complete">% Complete</option>
                                                 <option value="Unit">Unit</option>
                                                 <option value="Calculated">Calculated</option>
+                                                <option value="Cost">Cost</option>
                                             </select>
                                         @elseif($k=='bill_code_detail')
                                         <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
