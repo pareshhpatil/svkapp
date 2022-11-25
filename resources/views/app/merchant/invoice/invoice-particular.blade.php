@@ -1378,7 +1378,7 @@ table thead,
                         }
 
                         if(type === 'cost_codes' || type === 'cost_types'){
-                            _('filterbutton').click();
+                            //_('filterbutton').click();
                         }
                     });
 

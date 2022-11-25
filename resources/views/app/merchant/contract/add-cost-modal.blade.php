@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-md-2">
                                 <br>
-                            <a href="#" @click="filterCost('aa')" id="filterbutton" style="display: none;" ></a>
+                            <a href="#" @click="filterCost('aa')" id="filterbutton" class="btn btn-sm blue"  >Search</a>
                             </div>
                         </div>
                         </div>
