@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\Models\IColumn;
 use App\Interfaces\Merchant\DBRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -13,13 +14,16 @@ class DBRepository implements DBRepositoryInterface
     */
     protected $model;
 
+    protected $merchantID;
+
     /**
      * DBRepository constructor.
      * @param Model $model
      */
-    public function __construct(Model $model)
+    public function __construct(Model $model, $merchantID)
     {
         $this->model = $model;
+        $this->merchantID = $merchantID;
     }
 
     /**
@@ -27,7 +31,8 @@ class DBRepository implements DBRepositoryInterface
      */
     public function all()
     {
-        return $this->model->get();
+        return $this->model->where(IColumn::MERCHANT_ID, $this->merchantID)
+                            ->get();
     }
 
     /**
@@ -36,9 +41,8 @@ class DBRepository implements DBRepositoryInterface
      */
     public function create(array $data)
     {
-        return $this->model->insert($data);
+        return $this->model->fill($data)->save();
     }
-
 
     /**
      * @param array $data
@@ -49,13 +53,12 @@ class DBRepository implements DBRepositoryInterface
     public function update(array $data, $id)
     {
         try {
-            $result =  $this->model->where('id', $id)->update($data);
+            return $this->model
+                        ->where(IColumn::ID, $id)
+                        ->update($data);
         } catch (\Exception $exception) {
-
-            throw new \Exception('Unable to update data');
+            throw new \Exception($exception->getMessage());
         }
-
-        return $result;
     }
 
     /**
@@ -64,7 +67,13 @@ class DBRepository implements DBRepositoryInterface
      */
     public function show($id)
     {
-        return $this->model->findOrFail($id);
+        try {
+            return $this->model
+                        ->where(IColumn::MERCHANT_ID, $this->merchantID)
+                        ->findOrFail($id);
+        } catch (\Exception $exception) {
+            throw new \Exception('Unable to update data');
+        }
     }
 
     /**
@@ -73,7 +82,8 @@ class DBRepository implements DBRepositoryInterface
      */
     public function delete($id)
     {
-        return $this->model->destroy($id);
+        return $this->model
+                    ->destroy($id);
     }
 
 }

@@ -421,7 +421,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('cost-types/create', 'Merchant\CostTypesController@create');
   Route::post('cost-types/create', 'Merchant\CostTypesController@store');
   Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit');
-  Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update');
+  Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 });
 
 Route::group(['prefix' => 'patron'], function () {

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\IModel;
 use App\Http\Controllers\AppController;
-use App\Http\Requests\Merchant\CostTypeCreateRequest;
-use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
-use App\Model\CostType;
+use App\Model\Merchant\CostType;
 use App\Repositories\Merchant\CostTypeRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -81,7 +80,7 @@ class CostTypesController extends AppController
 
             //Check If abbrevation already exists
             $exists = CostType::query()
-                                ->where('abbrevation', $abbrevation)
+                                ->where(IColumn::ABBREVATION, $abbrevation)
                                 ->exists();
 
             if($exists) {
@@ -92,16 +91,12 @@ class CostTypesController extends AppController
                     ]);
             }
 
-            $request->merge(['abbrevation' => $abbrevation]);
-
-
             $this->repository->create([
                 'name' => $request->get('name'),
-                'abbrevation' => $request->get('abbrevation'),
+                'abbrevation' => $abbrevation,
                 'merchant_id' => $this->merchant_id,
                 'created_by' => $this->user_id,
-                'last_update_by' => $this->user_id,
-                'created_date' => date('Y-m-d H:i:s')
+                'last_update_by' => $this->user_id
             ]);
 
             return redirect()->to('merchant/cost-types/index')->with('success', "Cost type has been created");
@@ -118,12 +113,16 @@ class CostTypesController extends AppController
      */
     public function edit($id)
     {
-        $title = 'Update Cost Type';
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        try {
+            $title = 'Update Cost Type';
+            $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $data['costType'] = $this->repository->show($id);
+            $data['costType'] = $this->repository->show($id);
 
-        return view('app/merchant/cost-types/edit', $data);
+            return view('app/merchant/cost-types/edit', $data);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
     }
 
 
@@ -149,8 +148,8 @@ class CostTypesController extends AppController
 
             //Check If abbrevation already exists
             $exists = CostType::query()
-                ->where('id', '!=', $id)
-                ->where('abbrevation', $abbrevation)
+                ->where(IColumn::ID, IModel::NOT_EQUALS_TO, $id)
+                ->where(IColumn::ABBREVATION, $abbrevation)
                 ->exists();
 
             if($exists) {
@@ -161,19 +160,15 @@ class CostTypesController extends AppController
                     ]);
             }
 
-            $request->merge(['abbrevation' => $abbrevation]);
-
-            $this->repository->create([
+            $this->repository->update([
                 'name' => $request->get('name'),
-                'abbrevation' => $request->get('abbrevation'),
+                'abbrevation' => $abbrevation,
                 'merchant_id' => $this->merchant_id,
                 'last_update_by' => $this->user_id,
-                'last_update_date' => date('Y-m-d H:i:s')
-            ]);
+            ], $id);
 
             return redirect()->to('merchant/cost-types/index')->with('success', "Cost type has been updated");
         } catch (Exception $exception) {
-            dd($exception);
             Log::error($exception->getMessage());
 
             return redirect()->to('merchant/cost-types/index')->with('error', "Something went wrong!");

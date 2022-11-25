@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Libraries\Encrypt;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        require __DIR__ . '/../Helpers/helpers.php';
     }
 
     /**
