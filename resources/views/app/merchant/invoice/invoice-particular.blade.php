@@ -1168,7 +1168,7 @@ table thead,
                                     this.allcostCheck();
                                 },
                                 RemoveCost(field) {
-                                    if(field.pint>field.pint)
+                                    if(field.pint>0)
                                     {}else{field.pint=0}
                                     this.fields[field.pint].current_billed_amount = '';
                                     this.fields[field.pint].billed_transaction_ids = '';
