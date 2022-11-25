@@ -998,6 +998,13 @@ table thead,
                                 async OpenAddCost(field,type='new') {
                                     this.billed_transactions=[];
                                     billed_transactions_filter=[];
+                                    if(field.pint>0)
+                                    {
+                                       // var int=field.pint;
+                                    }else
+                                    {
+                                         field.pint=0;
+                                    }
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
                                     
