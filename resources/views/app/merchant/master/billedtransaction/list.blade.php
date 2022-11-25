@@ -66,7 +66,7 @@
                                     {{$v->cost_code}}
                                 </td> 
                                  <td class="td-c">
-                                    {{$v->cost_type}}
+                                    {{$v->cost_type_label}}
                                 </td> 
                                  <td class="td-c">
                                  {{number_format($v->rate,2)}}

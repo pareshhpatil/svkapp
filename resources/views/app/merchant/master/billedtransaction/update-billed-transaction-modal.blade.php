@@ -135,7 +135,7 @@
                                         <label class="control-label col-md-3">Bill Code <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                        <select  name="cost_code" id="bill_code" data-search="true"  required title="Pick an invoice format"  data-placeholder="Select code">
+                                        <select  name="cost_code" id="bill_code" data-search="true"  required   data-placeholder="Select code">
                                             @if(!empty($code_list))
                                             @foreach($code_list as $v)
                                             <option value="{{$v->code}}">{{$v->code}} | {{$v->title}}</option>
@@ -148,7 +148,13 @@
                                         <label class="control-label col-md-3">Cost type <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="100" name="cost_type" id="cost_type" class="form-control" placeholder="Enter cost type">
+                                        <select  name="cost_type" id="cost_type" data-search="true"  required   data-placeholder="Select cost type">
+                                            @if(!empty($cost_type))
+                                            @foreach($cost_type as $v)
+                                            <option value="{{$v['value']}}">{{$v['label']}}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -209,18 +215,26 @@
 </div>
 
 <script>
-    function showbilltransaction(val='') {
+    function showbilltransaction(val='',cost_type='') {
 document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
 document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
 $('.page-sidebar-wrapper').css('pointer-events', 'none');
 
 VirtualSelect.init({ ele: '#bill_code' });
+VirtualSelect.init({ ele: '#cost_type' });
 if(val!='')
 {
     document.querySelector('#bill_code').setValue(val);
 }else
 {
     document.querySelector('#bill_code').reset();
+}
+if(cost_type!='')
+{
+    document.querySelector('#cost_type').setValue(cost_type);
+}else
+{
+    document.querySelector('#cost_type').reset();
 }
 
 }
@@ -233,9 +247,8 @@ document.getElementById("date").value = date;
 document.getElementById("rate").value = rate;
 document.getElementById("unit").value = unit;
 document.getElementById("amount").value = amount;
-document.getElementById("cost_type").value = cost_type;
 document.getElementById("description").value = description;
-showbilltransaction(cost_code);
+showbilltransaction(cost_code,cost_type);
 
 }
 

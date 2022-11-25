@@ -199,9 +199,9 @@ table thead,
                     @endif
 
                     @php 
-                    $readonly_array=array('retainage_amount','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail');
+                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
 //                    @endphp
 
                     <tbody>
@@ -248,6 +248,8 @@ table thead,
                                                 <option value="Cost">Cost</option>
                                             </select>
                                         @elseif($k=='bill_code_detail')
+                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
+                                        @elseif($k=='cost_type')
                                         <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                         @else
                                             @if($k=='original_contract_amount')
@@ -448,6 +450,7 @@ table thead,
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
                        var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
                        var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
+                       var merchant_cost_types = JSON.parse('{!! json_encode($merchant_cost_types) !!}');
                         function initializeParticulars(){
                             this.initializeDropdowns();
                             this.calculateTotal();
@@ -1280,8 +1283,8 @@ table thead,
                                             bill_type: '',
                                             group: '',
                                             override: true,
-                                            bill_code_detail: '',
                                             bill_code_detail: 'Yes',
+                                            cost_type: '',
                                             project: project_code
                                         });
                                         particularray.push({
@@ -1292,7 +1295,8 @@ table thead,
                                             bill_type: '',
                                             override: true,
                                             group: '',
-                                            bill_code_detail: '',
+                                            bill_code_detail: 'Yes',
+                                            cost_type: '',
                                             project: project_code
                                         })
                                         const x = await this.wait(10);
@@ -1300,6 +1304,7 @@ table thead,
                                         this.count = id;
                                         this.virtualSelect(id, 'bill_code', bill_codes)
                                         this.virtualSelect(id, 'group', groups)
+                                        this.virtualSelect(id, 'cost_type', merchant_cost_types)
                                         // this.virtualSelect(id, 'bill_type', bill_types)
                                         this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes');
                                         this.addbuttonactive=true;
@@ -1309,6 +1314,7 @@ table thead,
                             for(let v=0; v < this.fields.length; v++){
                                 this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
                                 this.virtualSelect(v, 'group', groups, this.fields[v].group)
+                                this.virtualSelect(v, 'cost_type', merchant_cost_types,this.fields[v].cost_type)
                                 // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
                                 this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                             }
@@ -1361,18 +1367,10 @@ table thead,
                             }
                         }
                         if(type === 'group'){
-                            if(!groups.includes(this.value) && this.value !== '') {
-                                groups.push(this.value)
-                                for (let g = 0; g < particularray.length; g++) {
-                                    let groupSelector = document.querySelector('#group' + g);
-                                    console.log('group'+id, 'group'+g)
-                                    if('group'+id === 'group'+g)
-                                        groupSelector.setOptions(groups, this.value);
-                                    else
-                                        groupSelector.setOptions( groups, particularray[g].group);
-                                }
-                            }
                             particularray[id].group = this.value
+                        }
+                        if(type === 'cost_type'){
+                            particularray[id].cost_type = this.value
                         }
 
                         if(type === 'bill_type'){
