@@ -482,6 +482,16 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+
+    public function getBilledTransactions($project_id,$date,$payment_request_id)
+    {
+        $retObj = DB::table('billed_transaction')
+            ->select('*')
+            ->whereRaw("payment_request_id='".$payment_request_id."' or (project_id='".$project_id."' and date='".$date."' and status=0 and is_active=1)")
+            ->get();
+        return $retObj;
+    }
+
     public function validateUpdateConstructionInvoice($contract_id, $merchant_id)
     {
         $retObj = DB::table('payment_request')
@@ -534,6 +544,26 @@ class Invoice extends ParentModel
             ]);
     }
 
+
+    public function updateBilledTransactionStatus($request_id,$project_id)
+    {
+        DB::table('billed_transaction')->where('payment_request_id', $request_id)
+        ->where('project_id', $project_id)
+            ->update([
+                'status' => 0,
+                'payment_request_id' => ''
+            ]);
+    }
+
+    public function updateBilledTransactionRequestID($request_id,$arrays)
+    {
+        DB::table('billed_transaction')->wherein('id', $arrays)
+            ->update([
+                'status' => 1,
+                'payment_request_id' => $request_id
+            ]);
+    }
+
     public function saveConstructionParticular($data, $request_id, $user_id)
     {
         $id = DB::table('invoice_construction_particular')->insertGetId(
@@ -565,6 +595,7 @@ class Invoice extends ParentModel
                 'bill_code_detail' => $data['bill_code_detail'],
                 'calculated_perc' => $data['calculated_perc'],
                 'calculated_row' => $data['calculated_row'],
+                'billed_transaction_ids' => $data['billed_transaction_ids'],
                 'attachments' => $data['attachments'],
                 'created_by' => $user_id,
                 'last_update_by' => $user_id,
@@ -607,6 +638,7 @@ class Invoice extends ParentModel
                     'bill_code_detail' => $data['bill_code_detail'],
                     'calculated_perc' => $data['calculated_perc'],
                     'calculated_row' => $data['calculated_row'],
+                    'billed_transaction_ids' => $data['billed_transaction_ids'],
                     'attachments' => $data['attachments'],
                     'last_update_by' => $user_id,
                 ]

@@ -43,6 +43,25 @@ class Master extends ParentModel
             ]);
     }
 
+
+    public function saveBilledTransaction($data, $user_id)
+    {
+        $data['last_update_by'] = $user_id;
+        if ($data['id'] > 0) {
+            DB::table('billed_transaction')
+                ->where('id', $data['id'])
+                ->update($data);
+        } else {
+            unset($data['id']);
+            $data['created_by'] = $user_id;
+            $data['created_date'] = date('Y-m-d H:i:s');
+            DB::table('billed_transaction')->insertGetId(
+                $data
+            );
+        }
+
+    }
+
     public function getProjectList($merchant_id)
     {
 
@@ -104,5 +123,21 @@ class Master extends ParentModel
             ->update([
                 'val' => $val
             ]);
+    }
+
+
+    public function getProjectCodeList($merchant_id, $project_id, $table = 'csi_code')
+    {
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('project_id', $project_id)
+            ->get();
+        if ($retObj->isEmpty()) {
+            return array();
+        } else {
+            return $retObj;
+        }
     }
 }
