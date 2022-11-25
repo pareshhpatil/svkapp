@@ -35,6 +35,18 @@ INSERT INTO `customer_column_metadata`(`merchant_id`,`column_datatype`,`position
 `created_by`,`created_date`,`last_update_by`,`last_update_date`)VALUES(@merchant_id,'gst','L','GST number','Custom',
 @merchant_id,CURRENT_TIMESTAMP(),@merchant_id,CURRENT_TIMESTAMP());
 
+INSERT INTO `cost_types`(`name`,`abbrevation`,`merchant_id`,`created_by`,`created_date`,`last_update_by`,`last_update_date`)
+VALUES('Labor', 'L', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, CURRENT_TIMESTAMP());
+
+INSERT INTO `cost_types`(`name`,`abbrevation`,`merchant_id`,`created_by`,`created_date`,`last_update_by`,`last_update_date`)
+VALUES('Subcontractor', 'S', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, CURRENT_TIMESTAMP());
+
+INSERT INTO `cost_types`(`name`,`abbrevation`,`merchant_id`,`created_by`,`created_date`,`last_update_by`,`last_update_date`)
+VALUES('Material', 'M', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, CURRENT_TIMESTAMP());
+
+INSERT INTO `cost_types`(`name`,`abbrevation`,`merchant_id`,`created_by`,`created_date`,`last_update_by`,`last_update_date`)
+VALUES('Equipment', 'E', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, CURRENT_TIMESTAMP());
+
 SET @templatename = 'Invoice';
 SET @template_type = 'isp';
 SET @main_header_id = '9~10~11~12';

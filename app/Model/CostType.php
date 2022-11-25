@@ -9,9 +9,11 @@ use Illuminate\Support\Str;
  * @property mixed $id
  * @property mixed $name
  * @property mixed $abbrevation
+ * @property mixed $merchant_id
  * @property mixed $created_by
  * @property mixed $last_update_by
  * @property false|mixed|string $created_date
+ * @property false|mixed|string $last_update_date
  *
  */
 class CostType extends ParentModel
@@ -21,22 +23,9 @@ class CostType extends ParentModel
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'last_update_date';
 
-    public function getCostTypeList()
-    {
-        return self::query()
-            ->get(['id', 'name', 'abbrevation']);
-    }
-
-    public function saveCostType($request, $user_id)
-    {
-        DB::table($this->table)->insertGetId([
-            'name' => $request->get('name'),
-            'abbrevation' => $request->get('abbrevation'),
-            'created_by' => $user_id,
-            'last_update_by' => $user_id,
-            'created_date' => date('Y-m-d H:i:s')
-        ]);
-    }
+    protected $fillable = [
+        'name'
+    ];
 
     public function updateCostType($id, $request, $user_id)
     {

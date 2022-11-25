@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\AppController;
+use App\Http\Requests\Merchant\CostTypeCreateRequest;
+use App\Libraries\Encrypt;
+use App\Libraries\Helpers;
 use App\Model\CostType;
-use App\Model\Master;
-use App\Model\InvoiceFormat;
-use Illuminate\Http\Request;
+use App\Repositories\Merchant\CostTypeRepository;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Validator;
-use App\Libraries\Helpers;
-use App\Libraries\Encrypt;
-use Illuminate\Support\Facades\Session;
 
 class CostTypesController extends AppController
 {
-    protected $userID;
-    protected $merchantID;
+    protected $repository;
 
-    public function __construct()
+    public function __construct(CostTypeRepository $repository)
     {
-        $this->merchantID = Encrypt::decode(Session::get('merchant_id'));
-        $this->userID = Encrypt::decode(Session::get('userid'));
+        $this->repository = $repository;
+
+        parent::__construct();
     }
 
     /***
@@ -32,11 +32,10 @@ class CostTypesController extends AppController
     public function index()
     {
         $title = 'Cost Type list';
+
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $CostTypes = (new CostType())->getCostTypeList();
-
-        $data['costTypes'] = $CostTypes;
+        $data['costTypes'] = $this->repository->all();
         $data['datatablejs'] = 'table-no-export';
 
         return view('app/merchant/cost-types/index', $data);
@@ -47,7 +46,7 @@ class CostTypesController extends AppController
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function getCreate()
+    public function create()
     {
         $title = 'Create Cost Type';
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
@@ -56,12 +55,10 @@ class CostTypesController extends AppController
     }
 
     /**
-     * Master a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function createCostTypes(Request $request)
+    public function store(Request $request)
     {
         try {
             $rules = [
@@ -97,35 +94,40 @@ class CostTypesController extends AppController
 
             $request->merge(['abbrevation' => $abbrevation]);
 
-            $model = new CostType();
 
-            $model->saveCostType($request, $this->userID);
+            $this->repository->create([
+                'name' => $request->get('name'),
+                'abbrevation' => $request->get('abbrevation'),
+                'merchant_id' => $this->merchant_id,
+                'created_by' => $this->user_id,
+                'last_update_by' => $this->user_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]);
 
-            return redirect()->route('merchant.cost-types.index')->with('success', "Cost type has been created");
+            return redirect()->to('merchant/cost-types/index')->with('success', "Cost type has been created");
         } catch (Exception $exception) {
+
             Log::error($exception->getMessage());
 
-            return redirect()->route('merchant.cost-types.index')->with('error', "Something went wrong!");
+            return redirect()->to('merchant/cost-types')->with('error', "Something went wrong!");
         }
     }
 
     /**
      * @return \Illuminate\Contracts\View\View
      */
-    public function getUpdate($id)
+    public function edit($id)
     {
         $title = 'Update Cost Type';
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $CostType = CostType::find($id);
-
-        $data['costType'] = $CostType;
+        $data['costType'] = $this->repository->show($id);
 
         return view('app/merchant/cost-types/edit', $data);
     }
 
 
-    public function updateCostType($id, Request $request)
+    public function update($id, Request $request)
     {
         try {
             $rules = [
@@ -145,7 +147,6 @@ class CostTypesController extends AppController
                 $abbrevation = Str::upper(substr($request->get('name'), 0, 1));
             }
 
-
             //Check If abbrevation already exists
             $exists = CostType::query()
                 ->where('id', '!=', $id)
@@ -162,15 +163,20 @@ class CostTypesController extends AppController
 
             $request->merge(['abbrevation' => $abbrevation]);
 
-            $model = new CostType();
+            $this->repository->create([
+                'name' => $request->get('name'),
+                'abbrevation' => $request->get('abbrevation'),
+                'merchant_id' => $this->merchant_id,
+                'last_update_by' => $this->user_id,
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]);
 
-            $model->updateCostType($id, $request, $this->userID);
-
-            return redirect()->route('merchant.cost-types.index')->with('success', "Cost type has been updated");
+            return redirect()->to('merchant/cost-types/index')->with('success', "Cost type has been updated");
         } catch (Exception $exception) {
+            dd($exception);
             Log::error($exception->getMessage());
 
-            return redirect()->route('merchant.cost-types.index')->with('error', "Something went wrong!");
+            return redirect()->to('merchant/cost-types/index')->with('error', "Something went wrong!");
         }
     }
 }

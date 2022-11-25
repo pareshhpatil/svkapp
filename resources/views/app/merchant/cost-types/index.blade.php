@@ -5,7 +5,7 @@
         <div class="page-bar">
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render() }}
-            <a href="{{ route('merchant.cost-types.create') }}"  data-toggle="modal" class="btn blue pull-right"> Create Cost Type </a>
+            <a href="{{ url('/merchant/cost-types/create') }}"  data-toggle="modal" class="btn blue pull-right"> Create Cost Type </a>
         </div>
         <!-- BEGIN SEARCH CONTENT-->
         <div class="row">
@@ -34,7 +34,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <form action="" method="">
                                 @foreach($costTypes as $v)
                                     <tr>
                                         <td class="td-c">
@@ -55,14 +54,14 @@
                                                     &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="{{ route('merchant.cost-types.update', ['id' => $v->id]) }}" onclick="setUpdateMaster('{{$v->encrypted_id}}','{{$v->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
+                                                    <li>
+                                                        <a href="{{ url('merchant/cost-types/'. $v->id .'/edit') }}" onclick="setUpdateMaster('{{$v->encrypted_id}}','{{$v->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
-                            </form>
                             </tbody>
                         </table>
                     </div>
