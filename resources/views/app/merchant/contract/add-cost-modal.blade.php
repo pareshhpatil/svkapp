@@ -92,7 +92,7 @@
         <div class="panel">
             <div class='cnt223'>
                 <h3 class="modal-title">Current billed amount
-                    <a class="close " data-toggle="modal" onclick="return closeSidePanelcost();">
+                    <a class="close " data-toggle="modal" @click="closeSidePanelcost();">
                         <button type="button" class="close" aria-hidden="true"></button></a>
 
                 </h3>
