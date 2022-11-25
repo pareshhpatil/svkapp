@@ -67,7 +67,7 @@
                                                                                                 ?>" alt="Swipez Online Payment" title="Swipez Online Payment Solutions">
                         </a> -->
 
-                        <li class="dropdown hidden-sm hidden-md">
+                        <li class="dropdown hidden-sm hidden-md hidden-lg">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="" data-close-others="true">
                                 <i class="fa fa-user-circle"></i>
                                 <span><?php echo $this->talk_email_id; ?> </span>

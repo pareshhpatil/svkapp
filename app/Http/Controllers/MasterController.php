@@ -257,7 +257,7 @@ class MasterController extends AppController
             $data['list'] = $list;
             $data['datatablejs'] = 'table-no-export';
 
-            return view('app/merchant/code/list', $data);
+            return view('app/merchant/master/code/list', $data);
         } else {
             return redirect('/404');
         }
@@ -288,9 +288,45 @@ class MasterController extends AppController
             $project_id = Encrypt::encode($project_id);
             $this->masterModel->deleteTableRow('csi_code', 'id', $id, $this->merchant_id, $this->user_id);
 
-            return redirect('/merchant/code/list/' . $project_id)->with('success', "Record has been deleted");
+            return redirect('/merchant/master/code/list/' . $project_id)->with('success', "Record has been deleted");
         } else {
-            return redirect('/merchant/code/list/' . $project_id)->with('error', "Record code can not be deleted");
+            return redirect('/merchant/master/code/list/' . $project_id)->with('error', "Record code can not be deleted");
         }
+    }
+
+    public function billedtransactionList($link)
+    {
+        $project_id = Encrypt::decode($link);
+        if ($project_id != '') {
+            $title =  'Billed transactions';
+            $data = Helpers::setBladeProperties($title,  [],  []);
+            $model = new Master();
+            $list = $model->getProjectBillTransactionList($this->merchant_id, $project_id);
+            foreach ($list as $ck => $row) {
+                $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+            }
+            $code_list = $model->getProjectCodeList($this->merchant_id, $project_id);
+            $cost_type = $model->getCostTypes($this->merchant_id);
+            $data['cost_type'] = $cost_type;
+            $data['project_id'] = $project_id;
+            $data['list'] = $list;
+            $data['code_list'] = $code_list;
+            $data['datatablejs'] = 'table-no-export';
+
+            return view('app/merchant/master/billedtransaction/list', $data);
+        } else {
+            return redirect('/404');
+        }
+    }
+
+
+    public function billedtransactionUpdate(Request $request)
+    {
+            $data=$request->all();
+            unset($data['_token']);
+            $data['date'] = Helpers::sqlDate($request->date);
+            $data['merchant_id'] = $this->merchant_id;
+            $this->masterModel->saveBilledTransaction($data,$this->user_id);
+            return redirect('/merchant/billedtransaction/list/'.Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
     }
 }

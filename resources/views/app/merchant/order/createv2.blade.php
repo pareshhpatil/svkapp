@@ -194,6 +194,9 @@
                                             Description
                                         </th>
                                         <th class="td-c">
+                                            Cost Type
+                                        </th>
+                                        <th class="td-c">
 
                                         </th>
                                     </tr>
@@ -243,6 +246,19 @@
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        </td> 
+                                        @elseif ($v == 'cost_type')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                @if(!empty($cost_type_list))
+                                                @foreach($cost_type_list as $pk=>$vk)
+                                                @if($row[$v]==$vk->id)
+                                                <label selected="" value="{{$vk->id}}">{{$vk->name}}</label>
+                                                <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                            </div>
                                         </td>
                                         @else
                                         <td>
@@ -280,6 +296,7 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="0" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -341,6 +358,9 @@
     mode = '{{$mode}}';
     @if(isset($csi_code))
     csi_codes = {!!$csi_code_json!!};
+    @endif
+    @if(isset($cost_type_list))
+    cost_type_list = {!!$cost_type_list_json!!};
     @endif
     @if(isset($project_id))
     project_id = {!!$project_id!!};

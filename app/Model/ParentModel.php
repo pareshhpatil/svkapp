@@ -203,20 +203,7 @@ class ParentModel extends Model
             return $retObj;
         }
     }
-    public function getProjectCodeList($merchant_id, $project_id)
-    {
-        $retObj = DB::table('csi_code')
-            ->select(DB::raw('*'))
-            ->where('is_active', 1)
-            ->where('merchant_id', $merchant_id)
-            ->where('project_id', $project_id)
-            ->get();
-        if ($retObj->isEmpty()) {
-            return array();
-        } else {
-            return $retObj;
-        }
-    }
+
     public function getMerchantParentProducts($merchant_id, $table)
     {
         $retObj = DB::table($table)

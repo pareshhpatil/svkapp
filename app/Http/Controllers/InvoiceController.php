@@ -23,6 +23,8 @@ use Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
+use App\Model\CostType;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
 class InvoiceController extends AppController
@@ -926,7 +928,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-               // $docpath = '';
+                // $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
@@ -1256,7 +1258,7 @@ class InvoiceController extends AppController
             $selectedDoc = array();
             $selectnm = '';
             if (!empty($parentnm)) {
-              //  $docpath = '';
+                //  $docpath = '';
                 $selectnm = $parentnm;
             } else if (isset($data['docs'][0]['id'])) {
                 $selectnm = $data['docs'][0]['id'];
@@ -2133,7 +2135,7 @@ if($type=='703' || $type=='703')
 
         if (isset($plugin['has_signature'])) {
             if ($plugin['has_signature'] == 1) {
-                $info['signature'] = isset($plugin['signature']) ? $plugin['signature']: '';
+                $info['signature'] = isset($plugin['signature']) ? $plugin['signature'] : '';
             }
         }
 
@@ -2256,26 +2258,22 @@ if($type=='703' || $type=='703')
             $info['project_details'] = $project_details;
 
             $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-            where MONTH(`order_date`)=MONTH(now()-INTERVAL 1 MONTH) AND `status`=1 AND `is_active`=1 AND `contract_id`='".$info['project_details']->contract_id."'");
-          if($pre_month_change_order_amount[0]->change_order_amount!=null)
-          {
-            $info['last_month_co_amount']=$pre_month_change_order_amount[0]->change_order_amount;
-          }else
-          {
-            $info['last_month_co_amount']=0;
-          }
-          $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-          where MONTH(`order_date`)=MONTH(now()) AND `status`=1 AND `is_active`=1 AND `contract_id`='".$info['project_details']->contract_id."'");
-        if($current_month_change_order_amount[0]->change_order_amount!=null)
-        {
-          $info['this_month_co_amount']=$current_month_change_order_amount[0]->change_order_amount;
-        }else
-        {
-          $info['this_month_co_amount']=0;
-        }
-      
+            where MONTH(`order_date`)=MONTH(now()-INTERVAL 1 MONTH) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+            if ($pre_month_change_order_amount[0]->change_order_amount != null) {
+                $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
+            } else {
+                $info['last_month_co_amount'] = 0;
+            }
+            $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+          where MONTH(`order_date`)=MONTH(now()) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+            if ($current_month_change_order_amount[0]->change_order_amount != null) {
+                $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
+            } else {
+                $info['this_month_co_amount'] = 0;
+            }
+
             $sumOfc = 0;
-           $sumOfd = 0;
+            $sumOfd = 0;
             $sumOfe = 0;
             $sumOff = 0;
             $sumOfg = 0;
@@ -2303,10 +2301,6 @@ if($type=='703' || $type=='703')
             $info['total_i'] = $sumOfi;
             $info['total_original_contract'] = $sumOforg;
             $info['total_approve'] = $total_appro;
-
-
-
-           
         }
 
 
@@ -2728,7 +2722,10 @@ if($type=='703' || $type=='703')
         }
 
         $this->invoiceModel->updateTable('invoice_construction_particular', 'payment_request_id', $request_id, 'is_active', 0);
+        $project_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $invoice->contract_id, 'project_id');
+        $this->invoiceModel->updateBilledTransactionStatus($request_id, $project_id);
         if ($type == null) {
+            $billed_transaction_ids = [];
             foreach ($request->bill_code as $k => $bill_code) {
                 $request = Helpers::setArrayZeroValue(array(
                     'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc'
@@ -2763,6 +2760,15 @@ if($type=='703' || $type=='703')
                 $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
                 $data['calculated_perc'] = $request->calculated_perc[$k];
                 $data['calculated_row'] = $request->calculated_row[$k];
+                $data['billed_transaction_ids'] = $request->billed_transaction_ids[$k];
+                $ids = json_decode($data['billed_transaction_ids'], 1);
+                if (!empty($ids)) {
+                    if (empty($billed_transaction_ids)) {
+                        $billed_transaction_ids = $ids;
+                    } else {
+                        $billed_transaction_ids = array_merge($billed_transaction_ids, $ids);
+                    }
+                }
                 if ($request->attachments[$k] != '') {
                     $data['attachments'] = json_encode(explode(',', $request->attachments[$k]));
                     $data['attachments'] = str_replace('\\', '',  $data['attachments']);
@@ -2779,6 +2785,9 @@ if($type=='703' || $type=='703')
                 } else {
                     $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
                 }
+            }
+            if (!empty($billed_transaction_ids)) {
+                $this->invoiceModel->updateBilledTransactionRequestID($request_id, $billed_transaction_ids);
             }
             if ($revision == true) {
                 $this->storeRevision($request_id, $revision_data);
@@ -2902,6 +2911,13 @@ if($type=='703' || $type=='703')
         }
     }
 
+    public function getCostTypes(): array
+    {
+        return CostType::where('merchant_id', $this->merchant_id)->where('is_active', 1)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
+    }
+
 
 
     public function particular($link)
@@ -2916,7 +2932,20 @@ if($type=='703' || $type=='703')
         $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
         $csi_codes = $this->invoiceModel->getBillCodes($contract->project_id);
 
+
+        $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
+        $cost_codes = [];
+        $cost_types = [];
+        foreach ($billed_transactions as $row) {
+            if (!in_array($row->cost_code, $cost_codes)) {
+                $cost_codes[] = $row->cost_code;
+            }
+            if (!in_array($row->cost_type, $cost_types)) {
+                $cost_types[] = $row->cost_type;
+            }
+        }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
         $total = 0;
@@ -3025,6 +3054,12 @@ if($type=='703' || $type=='703')
                     $particulars[$k]['count'] = count($attachment);
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
+
+                foreach($row as $kr=>$kv)
+                {
+                    $particulars[$k][$kr]=($particulars[$k][$kr]=='0.00')?'': $particulars[$k][$kr];
+                }
+
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
         }
@@ -3033,7 +3068,11 @@ if($type=='703' || $type=='703')
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
-
+        $data['billed_transactions'] = $billed_transactions;
+        
+        $data['merchant_cost_types'] = $merchant_cost_types;
+        $data['cost_types'] = $cost_types;
+        $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
