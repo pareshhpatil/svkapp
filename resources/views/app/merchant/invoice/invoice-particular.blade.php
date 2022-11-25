@@ -347,6 +347,7 @@ table thead,
                     <tr class="warning">
                         <th class="col-id-no">Grand total</th>
                         <th ></th>
+                        <th></th>
                         <th>
                         <span id="total_oca"></span>
                         </th>
@@ -389,7 +390,6 @@ table thead,
                         <th>
                         <span id="total_tor"></span>
                         </th>
-                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
