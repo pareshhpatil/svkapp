@@ -77,8 +77,6 @@
             font-weight: 500 !important;
         }
 
-
-
     </style>
     <div class="portlet light bordered">
         <div class="portlet-body form">
@@ -192,6 +190,10 @@
                                                 <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                             @break
 
+                                            @case('cost_type')
+                                                <div :id="`{{$column}}${index}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
+                                            @break
+
                                             @default
                                                 <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                 <span x-show="field.show{{$column}}">
@@ -256,7 +258,9 @@
         var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
+        var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
+        var needValidationOnStep2 = {!! json_encode($needValidationOnStep2) !!};
 
         function addPopover(id, message){
             $('#'+id).attr({
@@ -282,19 +286,28 @@
                     for(let v=0; v < this.fields.length; v++){
                         this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
                         this.virtualSelect(v, 'group', groups, this.fields[v].group)
-                        // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
+                        this.virtualSelect(v, 'cost_type', cost_types, this.fields[v].cost_type)
                         this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                     }
                 },
                 virtualSelect(id, type, options, selectedValue){
+                    let allowNewOption= true;
+                    let search= true;
+                    if(type === 'bill_code_detail' || type === 'cost_type'){
+                         allowNewOption= false;
+                         search= false;
+                    }
+
                     VirtualSelect.init({
                         ele: '#'+type+id,
                         options: options,
                         dropboxWrapper: 'body',
-                        allowNewOption: true,
+                        allowNewOption: allowNewOption,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option'
+                        additionalClasses : 'vs-option',
+                        searchPlaceholderText : 'Search or Add new',
+                        search:search,
                     });
 
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
@@ -341,6 +354,10 @@
 
                         if(type === 'bill_code_detail'){
                             particularsArray[id].bill_code_detail = this.value
+                        }
+
+                        if(type === 'cost_type'){
+                            particularsArray[id].cost_type = this.value
                         }
                     });
 
@@ -470,6 +487,7 @@
                         } catch (o) {}
                         try {
                             field.retainage_percent = getamt(field.retainage_percent);
+
                         } catch (o) {}
                         var total = 0;
                         var totalretainage = 0;
@@ -536,6 +554,14 @@
                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                         }
 
+                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
+                            $('#cell_cost_type_' + p).addClass(' error-corner');
+                            addPopover('cell_bill_type_' + p, "Please select Cost type");
+                            valid = false
+                        }else{
+                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
+                        }
+
                         if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
                             $('#cell_original_contract_amount_' + p).addClass(' error-corner');
                             addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
@@ -580,7 +606,10 @@
                     if(this.validateParticulars()) this.saveParticulars(0,1);
                 },
                 back(){
-                    if(this.validateParticulars()) this.saveParticulars(1,0);
+                    if(needValidationOnStep2) {
+                        if (this.validateParticulars())
+                            this.saveParticulars(1, 0);
+                    }else this.saveParticulars(1, 0);
                 },
                 async addNewRow() {
                     int = this.fields.length
@@ -603,7 +632,7 @@
                         'group' : null,
                         'bill_code_detail' : 'Yes',
                         'show':false
-                    })
+                    });
                     particularsArray.push({
                         'bill_code' : null,
                         'calculated_perc' : null,
@@ -622,7 +651,7 @@
                         'group' : null,
                         'bill_code_detail' : 'Yes',
                         'show':false
-                    })
+                    });
 
                     let id = particularsArray.length - 1;
                     this.count = id;
@@ -630,7 +659,7 @@
                     const x = await this.wait(10);
                     this.virtualSelect(id, 'bill_code', bill_codes)
                     this.virtualSelect(id, 'group', groups)
-                    // this.virtualSelect(id, 'bill_type', bill_types)
+                    this.virtualSelect(id, 'cost_type', cost_types)
                     this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
                 },
                 removeRow(id){
@@ -656,7 +685,7 @@
                         this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].description = particularsArray[p].description;
                         this.fields[p].group = particularsArray[p].group;
-                        /*this.fields[p].bill_type = particularsArray[p].bill_type;*/
+                        this.fields[p].cost_type = particularsArray[p].cost_type;
                         this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
 
                         let oriContractAmt = this.fields[p].original_contract_amount;

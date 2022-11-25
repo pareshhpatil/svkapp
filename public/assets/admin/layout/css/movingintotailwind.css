@@ -1646,3 +1646,29 @@ i.apps {
 .p-1 {
     padding: 0.65rem !important;
 }
+.vscomp-clear-icon::before, .vscomp-clear-icon::after {
+    height: 8px;
+    left: 5px;
+    top: 2;
+    width: 2px;
+}
+.vscomp-arrow::after {
+    height: 6px;
+    margin-top: -3px;
+    width: 6px;
+}
+.vscomp-clear-button {
+    right: 20px;
+}
+.vscomp-option {
+    height: 30px;
+}
+.vscomp-option {
+    height: 40px !important;
+}
+.vscomp-wrapper {
+    font-size: 12px;
+}
+.vscomp-search-input {
+    font-size: 12px;
+}

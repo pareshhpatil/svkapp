@@ -38,3 +38,4 @@ class CreateCostTypeMigration extends Migration
         Schema::dropIfExists('cost_types');
     }
 }
+

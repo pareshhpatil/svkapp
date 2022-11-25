@@ -9,6 +9,7 @@ use App\Libraries\Helpers;
 use App\Merchant;
 use App\MerchantBillingProfile;
 use App\Model\Contract;
+use App\Model\CostType;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
@@ -105,10 +106,13 @@ class ContractController extends Controller
 
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
-        if (Route::getCurrentRoute()->getName() == 'contract.create.new' )
+        if (Route::getCurrentRoute()->getName() == 'contract.create.new' ) {
             $title = "Create";
-        else
+            $needValidationOnStep2 = false;
+        }else {
             $title = "Update";
+            $needValidationOnStep2 = true;
+        }
 
         $contract = null;
         $project = null;
@@ -129,12 +133,20 @@ class ContractController extends Controller
         $data['contract_id'] = $contract_id;
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
+        $data['needValidationOnStep2'] = $needValidationOnStep2;
 
         if ($step == 2 || $step == 3){
             $data = $this->step2Data($data, $contract, $project->project_id??'');
         }
 
         return view('app/merchant/contract/createv6' , $data);
+    }
+
+    public function getCostTypes(): array
+    {
+        return CostType::where('merchant_id', $this->merchant_id)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
     }
 
     public function store(Request $request){
@@ -206,6 +218,7 @@ class ContractController extends Controller
         }
         return $data;
     }
+
     public function step2Store(Request $request, $contract){
         return $contract;
     }
@@ -215,6 +228,7 @@ class ContractController extends Controller
 
         $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);
         $data['bill_codes'] = $this->getBillCodes($contract->project_id);
+        $data['cost_types'] = $this->getCostTypes();
         $data['project_id'] = $contract->project_id;
         $data['total'] = $total;
         $data['groups'] = $groups;

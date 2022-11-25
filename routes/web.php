@@ -362,6 +362,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/getlist/{id}', 'MasterController@getbillcode'); 
   Route::get('code/delete/{project_id}/{link}', 'MasterController@projectCodeDelete');
   Route::any('/billcode/update/', 'ContractController@billcodeupdate');
+
+
+  Route::get('billedtransaction/list/{id}', 'MasterController@billedtransactionList'); 
+  Route::get('billedtransaction/delete/{link}', 'MasterController@billedtransactionDelete');
+  Route::any('/billedtransaction/update', 'MasterController@billedtransactionUpdate');
   //contract
 //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
 //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
