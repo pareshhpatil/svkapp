@@ -198,7 +198,7 @@
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
                                             <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
-                                            data-placeholder="Type or Select" class="form-control input-sm productselect" >
+                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
                                                 <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))
                                                     @foreach($cost_type_list as $pk=>$vk)
