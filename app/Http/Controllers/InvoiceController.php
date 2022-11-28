@@ -3073,7 +3073,7 @@ if($type=='703' || $type=='703')
         $data['billed_transactions'] = $billed_transactions;
         
         $data['merchant_cost_types'] = $merchant_cost_types;
-        $data['cost_types'] = $cost_types;
+        $data['cost_types'] = $merchant_cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
