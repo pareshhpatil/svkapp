@@ -170,6 +170,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="text-danger" id="cost_checkbox_error"></div>
                         <br>
 
                         <div class="row" style="text-align: end;">

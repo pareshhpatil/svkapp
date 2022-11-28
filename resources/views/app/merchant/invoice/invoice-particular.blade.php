@@ -998,6 +998,11 @@ table thead,
 
                                 },
                                 setCostAmount() {
+                                    if ($('input[name^=cost-checkbox]:checked').length <= 0) {
+                                        $('#cost_checkbox_error').html('Please select atleast one transaction');
+                                    }else
+                                    {
+                                        $('#cost_checkbox_error').html('');
                                     cost_selected_id = document.getElementById('cost_selected_id').value;
                                     calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
                                     this.fields[cost_selected_id].current_billed_amount = calc_amount;
@@ -1008,6 +1013,7 @@ table thead,
                                     this.calc(this.fields[cost_selected_id]);
                                    this.billed_transactions=billed_transactions_array;
                                     this.closeSidePanelcost();
+                                    }
                                 },
                                 OpenAddCaculated(field) {
                                     console.log(field.pint);
