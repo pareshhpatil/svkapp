@@ -160,7 +160,7 @@
                                                 <input type="checkbox" x-model="field.checked" name="cost-checkbox[]" x-value="field.id" :id="index" @change="costCalc();">
                                             </td>
                                             <td class="td-c" x-text="field.cost_code"></td>
-                                            <td class="td-c" x-text="field.cost_type"></td>
+                                            <td class="td-c" x-text="field.cost_type_label"></td>
                                             <td class="td-c" x-text="field.rate"></td>
                                             <td class="td-c" x-text="field.unit"></td>
                                             <td class="td-c" x-text="field.amount"></td>
