@@ -179,7 +179,7 @@ table thead,
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  tableFixHead" >
+            <div class="table-scrollable  tableFixHead" id="table-scroll">
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
                         <thead class="headFootZIndex">
@@ -750,12 +750,24 @@ table thead,
                                         }else{
                                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                                         }
+
+                                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
+                                            $('#cell_cost_type_' + p).addClass(' error-corner');
+                                            addPopover('cell_cost_type_' + p, "Please select Cost type");
+                                            this.goAhead = false;
+                                        }else{
+                                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
+                                        }
                                         
                                     }
                                     if( this.goAhead==true)
                                     {
                                         document.getElementById("frm_invoice").submit();
+                                    }else
+                                    {
+                                        document.getElementById('table-scroll').scrollLeft=0;
                                     }
+                                    
 
                                 },
                                 removeValidationError(fieldName, id){
