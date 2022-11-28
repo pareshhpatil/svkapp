@@ -2940,9 +2940,7 @@ if($type=='703' || $type=='703')
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
             }
-            if (!in_array($row->cost_type, $cost_types)) {
-                $cost_types[] = $row->cost_type;
-            }
+            
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $merchant_cost_types = $this->getCostTypes();
@@ -3043,6 +3041,7 @@ if($type=='703' || $type=='703')
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
             }
+            $mode='Preview';
         } else {
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
@@ -3062,6 +3061,7 @@ if($type=='703' || $type=='703')
 
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
+            $mode='Save';
         }
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -3071,7 +3071,7 @@ if($type=='703' || $type=='703')
         $data['billed_transactions'] = $billed_transactions;
         
         $data['merchant_cost_types'] = $merchant_cost_types;
-        $data['cost_types'] = $cost_types;
+        $data['cost_types'] = $merchant_cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
@@ -3087,6 +3087,7 @@ if($type=='703' || $type=='703')
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
+        $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-particular', $data);
     }

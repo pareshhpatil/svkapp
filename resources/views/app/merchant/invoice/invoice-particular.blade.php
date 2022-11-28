@@ -179,7 +179,7 @@ table thead,
                        class="btn green pull-right mb-1"> Add new row </a>
                 </div>
             </div>
-            <div class="table-scrollable  tableFixHead" >
+            <div class="table-scrollable  tableFixHead" id="table-scroll">
                 <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
                     @if(!empty($particular_column))
                         <thead class="headFootZIndex">
@@ -419,7 +419,7 @@ table thead,
                                         
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
-                                            <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>
+                                            <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
                                     </div>
                                 </div>
@@ -750,12 +750,24 @@ table thead,
                                         }else{
                                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                                         }
+
+                                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
+                                            $('#cell_cost_type_' + p).addClass(' error-corner');
+                                            addPopover('cell_cost_type_' + p, "Please select Cost type");
+                                            this.goAhead = false;
+                                        }else{
+                                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
+                                        }
                                         
                                     }
                                     if( this.goAhead==true)
                                     {
                                         document.getElementById("frm_invoice").submit();
+                                    }else
+                                    {
+                                        document.getElementById('table-scroll').scrollLeft=0;
                                     }
+                                    
 
                                 },
                                 removeValidationError(fieldName, id){
@@ -957,6 +969,22 @@ table thead,
                                 setAOriginalContractAmount() {
                                     selected_field_int = document.getElementById('selected_field_int').value;
                                     calc_amount = document.getElementById("calc_amount").value;
+
+                                    let valid = true;
+                                    if ($('input[name^=calc-checkbox]:checked').length <= 0) {
+                                        $('#calc_checkbox_error').html('Please select atleast one particular');
+                                        valid = false;
+                                    }else
+                                        $('#calc_checkbox_error').html('');
+
+                                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === '0' ) {
+                                        $('#calc_perc_error').html('Please enter percentage');
+                                        valid = false
+                                    }else
+                                        $('#calc_perc_error').html('');
+
+                                    if(valid) {
+
                                     try{
                                         this.fields[selected_field_int].original_contract_amount = calc_amount;
                                     }catch(o){}
@@ -966,9 +994,15 @@ table thead,
                                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
                                     this.calc(this.fields[selected_field_int]);
+                                 }
 
                                 },
                                 setCostAmount() {
+                                    if ($('input[name^=cost-checkbox]:checked').length <= 0) {
+                                        $('#cost_checkbox_error').html('Please select atleast one transaction');
+                                    }else
+                                    {
+                                        $('#cost_checkbox_error').html('');
                                     cost_selected_id = document.getElementById('cost_selected_id').value;
                                     calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
                                     this.fields[cost_selected_id].current_billed_amount = calc_amount;
@@ -979,6 +1013,7 @@ table thead,
                                     this.calc(this.fields[cost_selected_id]);
                                    this.billed_transactions=billed_transactions_array;
                                     this.closeSidePanelcost();
+                                    }
                                 },
                                 OpenAddCaculated(field) {
                                     console.log(field.pint);
