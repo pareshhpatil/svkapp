@@ -135,26 +135,28 @@
                                         <label class="control-label col-md-3">Bill Code <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                        <select  name="cost_code" id="bill_code" data-search="true"  required   data-placeholder="Select code">
+                                        <select  name="cost_code" id="bill_code" data-search="true"     data-placeholder="Select code">
                                             @if(!empty($code_list))
                                             @foreach($code_list as $v)
                                             <option value="{{$v->code}}">{{$v->code}} | {{$v->title}}</option>
                                             @endforeach
                                             @endif
                                         </select>
+                                        <div class="text-danger" id="cost_code_error"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Cost type <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                        <select  name="cost_type" id="cost_type" data-search="true"  required   data-placeholder="Select cost type">
+                                        <select  name="cost_type" id="cost_type" data-search="true"     data-placeholder="Select cost type">
                                             @if(!empty($cost_type))
                                             @foreach($cost_type as $v)
                                             <option value="{{$v['value']}}">{{$v['label']}}</option>
                                             @endforeach
                                             @endif
                                         </select>
+                                        <div class="text-danger" id="cost_type_error"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -187,10 +189,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Bill Description <span class="required">*
+                                        <label class="control-label col-md-3">Bill Description <span class="required">
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="100" name="description" id="description" class="form-control" placeholder="Enter description">
+                                            <input type="text"  maxlength="100" name="description" id="description" class="form-control" placeholder="Enter description">
                                         </div>
                                     </div>
                                 </div>

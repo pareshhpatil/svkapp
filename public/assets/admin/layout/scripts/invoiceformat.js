@@ -810,9 +810,13 @@ function addbillcode(){
 function updatebillcode() {
 
     var pid = document.getElementById("project_id").value;
+   var bill_code= document.querySelector('#bill_code').value;
+   var cost_type= document.querySelector('#cost_type').value;
+   if(bill_code!='' && cost_type!='')
+   {
+   
     $("#billcodeform").submit(function (e) {
         e.preventDefault();
-
         var form = $(this);
         var actionUrl = form.attr('action');
         $.ajax({
@@ -823,12 +827,29 @@ function updatebillcode() {
                 alert(data);
 
                 if (data[2] > 0) {
+
                 }
                 closeSideUpdatePanelBillCode()
             }
         });
 
     });
+}else{
+    if(bill_code=='')
+   {
+    $('#cost_code_error').html('Please select cost code');
+   }else{
+    $('#cost_code_error').html('');
+   }
+   if(cost_type=='')
+   {
+    $('#cost_type_error').html('Please select cost type');
+   }
+   else{
+        $('#cost_type_error').html('');
+   }
+   return false;
+}
 }
 
 
