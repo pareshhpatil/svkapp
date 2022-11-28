@@ -5,6 +5,7 @@ namespace App\Model;
 use Carbon\Carbon;
 use App\Model\ParentModel;
 use Illuminate\Support\Facades\DB;
+use App\Model\CostType;
 
 class Master extends ParentModel
 {
@@ -41,6 +42,25 @@ class Master extends ParentModel
                 'gst' => $data->gst,
                 'last_update_by' => $user_id
             ]);
+    }
+
+
+    public function saveBilledTransaction($data, $user_id)
+    {
+        $data['last_update_by'] = $user_id;
+        if ($data['id'] > 0) {
+            DB::table('billed_transaction')
+                ->where('id', $data['id'])
+                ->update($data);
+        } else {
+            unset($data['id']);
+            $data['created_by'] = $user_id;
+            $data['created_date'] = date('Y-m-d H:i:s');
+            DB::table('billed_transaction')->insertGetId(
+                $data
+            );
+        }
+
     }
 
     public function getProjectList($merchant_id)
@@ -104,5 +124,46 @@ class Master extends ParentModel
             ->update([
                 'val' => $val
             ]);
+    }
+
+
+    public function getProjectCodeList($merchant_id, $project_id, $table = 'csi_code')
+    {
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('project_id', $project_id)
+            ->get();
+        if ($retObj->isEmpty()) {
+            return array();
+        } else {
+            return $retObj;
+        }
+    }
+
+
+    public function getProjectBillTransactionList($merchant_id, $project_id)
+    {
+        $retObj = DB::table('billed_transaction as b')
+            ->select(DB::raw('b.*,concat(c.abbrevation," - ",c.name) as cost_type_label'))
+            ->join('cost_types as c', 'b.cost_type', '=', 'c.id')
+            ->where('b.is_active', 1)
+            ->where('b.merchant_id', $merchant_id)
+            ->where('b.project_id', $project_id)
+            ->get();
+        if ($retObj->isEmpty()) {
+            return array();
+        } else {
+            return $retObj;
+        }
+    }
+  
+
+    public function getCostTypes($merchant_id): array
+    {
+        return CostType::where('merchant_id', $merchant_id)->where('is_active', 1)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
     }
 }

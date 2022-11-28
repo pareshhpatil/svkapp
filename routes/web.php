@@ -362,6 +362,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/getlist/{id}', 'MasterController@getbillcode'); 
   Route::get('code/delete/{project_id}/{link}', 'MasterController@projectCodeDelete');
   Route::any('/billcode/update/', 'ContractController@billcodeupdate');
+
+
+  Route::get('billedtransaction/list/{id}', 'MasterController@billedtransactionList'); 
+  Route::get('billedtransaction/delete/{link}', 'MasterController@billedtransactionDelete');
+  Route::any('/billedtransaction/update', 'MasterController@billedtransactionUpdate');
   //contract
 //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
 //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
@@ -411,6 +416,12 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('/regionSettings', 'RegionSettingController@index')->name('merchant.region-setting.index');
   Route::any('/setting/region/save/', 'RegionSettingController@saveChanges');
 
+  // Cost Type routes
+  Route::get('cost-types/index', 'Merchant\CostTypesController@index')->name('merchant.cost-types.index');
+  Route::get('cost-types/create', 'Merchant\CostTypesController@create');
+  Route::post('cost-types/create', 'Merchant\CostTypesController@store');
+  Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit');
+  Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 });
 
 Route::group(['prefix' => 'patron'], function () {

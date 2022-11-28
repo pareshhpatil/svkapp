@@ -20,11 +20,12 @@ class CreateCostTypeMigration extends Migration
             $table->integer('id', true);
             $table->string('name', 45);
             $table->string('abbrevation', 2);
-            $table->char('merchant_id', 10)->index('merchant_product_category_idx');
+            $table->char('merchant_id', 10)->index('merchant_cost_types_idx');
             $table->string('created_by', 10);
-            $table->timestamp('created_date')->useCurrent();
             $table->string('last_update_by', 10);
-            $table->timestamp('last_update_date')->useCurrentOnUpdate()->useCurrent();
+
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -38,3 +39,4 @@ class CreateCostTypeMigration extends Migration
         Schema::dropIfExists('cost_types');
     }
 }
+

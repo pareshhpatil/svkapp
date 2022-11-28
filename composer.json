@@ -101,9 +101,6 @@
             },
             { "packagist": false },
             { "type": "vcs", "url": "git@github.com:swipezdev/short-url-package-creator.git" }
-
     ]
-	
-	
-	
+
 }

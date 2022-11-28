@@ -130,6 +130,7 @@
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
                                                     <option value="Calculated">Calculated</option>
+                                                    <option value="Cost">Cost</option>
                                                 </select>
                                             @break
 
@@ -505,7 +506,7 @@
                                 totalretainage = Number(totalretainage) + retainage_amount;
                             // }
                         });
-                        this.totalretainage = totalretainage;
+                        this.totalretainage = roundAmount(totalretainage);
                         document.getElementById('particulartotal').value = updateTextView1(total);
                         document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
                         document.getElementById('retainagetotaldiv').innerHTML = updateTextView1(totalretainage);
@@ -517,7 +518,7 @@
                 calculateTotalRetainage(){
                     this.totalretainage = 0;
                    for(let r=0; r < this.fields.length; r++) {
-                       this.totalretainage = Number(this.totalretainage) + Number(getamt(this.fields[r].retainage_amount));
+                       this.totalretainage = Number(this.totalretainage) + Number(getamt(roundAmount(this.fields[r].retainage_amount)));
                    }
                 },
                 removeValidationError(fieldName, id){

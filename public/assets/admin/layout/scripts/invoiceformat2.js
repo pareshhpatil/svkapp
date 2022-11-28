@@ -425,6 +425,12 @@ function OpenAddCaculatedRow(row) {
 
 }
 
+function OpenAdCostRow() {
+    document.getElementById("panelWrapIdcost").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
+    document.getElementById("panelWrapIdcost").style.transform = "translateX(0%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'none');
+}
+
 function proindexContract(ind, select_id) {
     product_index = ind;
     currect_select_dropdwn_id = select_id;
@@ -553,6 +559,7 @@ function closeSidePanelcalc() {
     clearCalcTable();
     return false;
 }
+
 function addbillcode() {
 
     var comefrom = document.getElementById("comefrom").value;
@@ -695,6 +702,30 @@ function selectDeselectAll(value) {
         }
         inputCalcClicked(arr.value, getamt(document.getElementById('original_contract_amount' + arr.value).value))
     });
+}
+
+function selectDeselectAllCost(value) {
+
+    $('input[name="cost-checkbox[]"]').each(function (indx, arr) {
+        if (value.checked) {
+            document.getElementById('cost' + arr.value).checked = true;
+        } else {
+            document.getElementById('cost' + arr.value).checked = false;
+        }
+        inputCostClicked(arr.value, getamt(document.getElementById('original_contract_amount' + arr.value).value))
+    });
+}
+
+function inputCostClicked() {
+    var calc_total = 0;
+
+    $('input[name="cost-checkbox[]"]').each(function (indx, arr) {
+        if (arr.checked) {
+            calc_total = calc_total + getamt(document.getElementById('original_contract_amount' + arr.value).value);
+        }
+    });
+    document.getElementById("calc_amount").value = updateTextView1(calc_total);
+
 }
 
 function inputCalcClicked(row, value) {
@@ -2845,32 +2876,32 @@ function updateTextView1(val) {
             val = Number(val.replaceAll(',', ''));
         }
         // if (val > 0) {
-            try {
-                str = val.toString();
-            } catch (o) {
-                return '';
-            }
+        try {
+            str = val.toString();
+        } catch (o) {
+            return '';
+        }
 
-            var num = getNumber(str);
-            dotpo = num.indexOf(".");
-            decimal_text = '';
-            if (dotpo > 0) {
-                number = Number(num.substring(0, dotpo));
-                decimal_text = num.substring(dotpo);
+        var num = getNumber(str);
+        dotpo = num.indexOf(".");
+        decimal_text = '';
+        if (dotpo > 0) {
+            number = Number(num.substring(0, dotpo));
+            decimal_text = num.substring(dotpo);
 
+        } else {
+            number = Number(num);
+        }
+        if (num == 0) {
+            return 0.00;
+        } else {
+            if (decimal_text != '.00') {
+                return number.toLocaleString() + decimal_text;
             } else {
-                number = Number(num);
+                return number.toLocaleString();
             }
-            if (num == 0) {
-                return 0.00;
-            } else {
-                if (decimal_text != '.00') {
-                    return number.toLocaleString() + decimal_text;
-                } else {
-                    return number.toLocaleString();
-                }
-                //return number.toLocaleString() + decimal_text;
-            }
+            //return number.toLocaleString() + decimal_text;
+        }
         // }
         //return 0.00;
     } else {
@@ -2879,9 +2910,9 @@ function updateTextView1(val) {
 
 }
 function getNumber(_str) {
-    if(_str < 0){
+    if (_str < 0) {
         isNegative = true;
-    }else{
+    } else {
         isNegative = false;
     }
     var arr = _str.split('');
@@ -2894,9 +2925,9 @@ function getNumber(_str) {
             out.push(arr[cnt]);
         }
     }
-    if(isNegative){
-        return '-'+out.join('');
-    }else{
+    if (isNegative) {
+        return '-' + out.join('');
+    } else {
         return out.join('');
     }
 }
@@ -3378,7 +3409,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
             else if (index == 'unit' || index == 'rate') {
-                row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="' + index + numrow + '" onblur="calculateChangeOrder();" numbercom="yes" type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
@@ -3469,7 +3500,7 @@ function validateDate() {
     }
 }
 
-function changerOrderAmountCheck(){
+function changerOrderAmountCheck() {
     //order_value  = getamt(document.getElementById('total_change_order_amount').value);
     // if(order_value > 0){
     //     return true;
@@ -3483,15 +3514,15 @@ function changerOrderAmountCheck(){
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
             bill_code = document.getElementById('bill_code' + int).value;
-            if(bill_code == ''){
+            if (bill_code == '') {
                 document.getElementById('change_order_amount_error').style.display = "block";
                 billcodeNull = true;
             }
         });
-        if(billcodeNull){
+        if (billcodeNull) {
             return false;
-        }else{
-            return true; 
+        } else {
+            return true;
         }
     }
     catch (o) {

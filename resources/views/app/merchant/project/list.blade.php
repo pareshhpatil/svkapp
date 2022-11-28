@@ -75,6 +75,8 @@
                                             </li>
                                             <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                             </li>
+                                            <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
+                                            </li>
                                             <li>
                                                 <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/project/delete/{{$v->encrypted_id}}'"  data-toggle="modal" ><i class="fa fa-times"></i> Delete</a>  
                                             </li>

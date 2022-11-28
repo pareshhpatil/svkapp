@@ -367,6 +367,13 @@ Breadcrumbs::for('home.billcodelist', function ($trail) {
     $trail->push('Bill code list');
     
 });
+Breadcrumbs::for('home.billtransaction', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Project');
+    $trail->push('Project List', '/merchant/project/list');
+    $trail->push('Bill transaction');
+    
+});
 
 Breadcrumbs::for('home.projectcreate', function ($trail) {
     $trail->parent('home');
@@ -432,4 +439,11 @@ Breadcrumbs::for('merchant.region-setting.index', function ($trail) {
     $trail->push('Personal preferences');
     $trail->push('Region setting');
 
+});
+
+Breadcrumbs::for('merchant.cost-types.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Data configuration');
+    $trail->push('Cost Types');
 });
