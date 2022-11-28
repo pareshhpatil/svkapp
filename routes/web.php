@@ -418,9 +418,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   // Cost Type routes
   Route::get('cost-types/index', 'Merchant\CostTypesController@index')->name('merchant.cost-types.index');
-  Route::get('cost-types/create', 'Merchant\CostTypesController@create');
+  Route::get('cost-types/create', 'Merchant\CostTypesController@create')->name('merchant.cost-types.create');
   Route::post('cost-types/create', 'Merchant\CostTypesController@store');
-  Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit');
+  Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit')->name('merchant.cost-types.edit');
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 });
 
