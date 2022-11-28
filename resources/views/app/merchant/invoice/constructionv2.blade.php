@@ -302,6 +302,7 @@
                                         <textarea type="text" name="{{$field_name}}" data-cy="invoice_detail_{{$v->column_name??''}}" class="form-control" placeholder="Enter specific value">{{$v->value}}</textarea>
                                         @elseif($v->column_datatype=="date")
                                         <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
+                                        @if($id=='due_date')<div class="text-danger" id="billing_date_error"></div>@endif
                                         @elseif($v->column_datatype=="time")
                                         <input type="text" {{$req}} autocomplete="off" data-cy="invoice_detail_{{$v->column_name??''}}" value="{{$v->value??''}}" id="{{$id}}" name="{{$field_name}}" class="form-control timepicker timepicker-no-seconds">
                                         @elseif($v->function_id==15)
@@ -475,7 +476,7 @@
                             <input type="hidden" name="contract_id" value="{{$contract_id}}">
                             <input type="hidden" name="template_id" value="{{$template_id}}">
                             <a href="/merchant/collect-payments" class="btn green">Cancel</a>
-                            <button type="submit" class="btn blue">Add particulars</button>
+                            <button type="submit" onclick="return validateDates();" class="btn blue">Add particulars</button>
                         </div>
                     </div>
                 </div>
@@ -580,7 +581,18 @@
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
             }
         });
+
+
+        function validateDates(){
+        if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
+            $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
+            return false
+        }else $('#billing_date_error').html('');
+        return true;
+    }
     </script>
+
+    
 
 
 <script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>

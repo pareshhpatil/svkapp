@@ -288,9 +288,9 @@ class MasterController extends AppController
             $project_id = Encrypt::encode($project_id);
             $this->masterModel->deleteTableRow('csi_code', 'id', $id, $this->merchant_id, $this->user_id);
 
-            return redirect('/merchant/master/code/list/' . $project_id)->with('success', "Record has been deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('success', "Record has been deleted");
         } else {
-            return redirect('/merchant/master/code/list/' . $project_id)->with('error', "Record code can not be deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('error', "Record code can not be deleted");
         }
     }
 
@@ -301,11 +301,13 @@ class MasterController extends AppController
             $title =  'Billed transactions';
             $data = Helpers::setBladeProperties($title,  [],  []);
             $model = new Master();
-            $list = $model->getProjectCodeList($this->merchant_id, $project_id,'billed_transaction');
+            $list = $model->getProjectBillTransactionList($this->merchant_id, $project_id);
             foreach ($list as $ck => $row) {
                 $list[$ck]->encrypted_id = Encrypt::encode($row->id);
             }
             $code_list = $model->getProjectCodeList($this->merchant_id, $project_id);
+            $cost_type = $model->getCostTypes($this->merchant_id);
+            $data['cost_type'] = $cost_type;
             $data['project_id'] = $project_id;
             $data['list'] = $list;
             $data['code_list'] = $code_list;

@@ -128,6 +128,9 @@
                                             Bill code
                                         </th>
                                         <th class="td-c">
+                                            Cost Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
@@ -192,6 +195,22 @@
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
+                                        @elseif ($v == 'cost_type')
+                                        <td class="col-id-no">
+                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
+                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
+                                                <option value="">Type or Select</option>
+                                                @if(!empty($cost_type_list))
+                                                    @foreach($cost_type_list as $pk=>$vk)
+                                                        @if($row[$v]==$vk->id)
+                                                            <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                        @else
+                                                            <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </td>
                                         @else
                                         <td>
                                             <input type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
@@ -228,6 +247,7 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -288,6 +308,9 @@
     mode = '{{$mode}}';
     @if(isset($csi_code))
     csi_codes = {!!$csi_code_json!!};
+    @endif
+    @if(isset($cost_type_list))
+    cost_type_list = {!!$cost_type_list_json!!};
     @endif
     @if(isset($project_id))
     project_id = {!!$project_id!!};

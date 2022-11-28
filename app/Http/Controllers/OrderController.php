@@ -73,12 +73,16 @@ class OrderController extends Controller
 
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
         } else {
             $data['contract_id'] = '';
         }
 
         $data["default_particulars"] = [];
         $data["default_particulars"]["bill_code"] = 'Bill Code';
+        $data["default_particulars"]["cost_type"] = 'Cost Type';
         $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
         $data["default_particulars"]["unit"] = 'Unit';
         $data["default_particulars"]["rate"] = 'Rate';
@@ -117,6 +121,7 @@ class OrderController extends Controller
                 $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
                 $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
                 $row_array["order_description"] = $request->order_description[$skey];
+                $row_array["cost_type"] = $request->cost_type[$skey];
                 $row_array["pint"] = $request->pint[$skey];
                 array_push($main_array, $row_array);
             }
@@ -199,6 +204,11 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('order', 'order_id', $id);
             $row->json_particulars = json_decode($row->particulars, true);
+            foreach($row->json_particulars as &$row_data){
+                if(!isset($row_data["cost_type"])){
+                    $row_data["cost_type"] = null;
+                }
+            }
             $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
             foreach ($cust_list as $cust_data) {
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
@@ -208,6 +218,7 @@ class OrderController extends Controller
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
             $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
             $data["default_particulars"]["unit"] = 'Unit';
             $data["default_particulars"]["rate"] = 'Rate';
@@ -217,6 +228,9 @@ class OrderController extends Controller
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
             $data['project_id'] = $row2->project_id;
@@ -249,15 +263,18 @@ class OrderController extends Controller
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
             $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
             $data["default_particulars"]["unit"] = 'Unit';
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
-
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
             $data['project_id'] = 0;
@@ -292,6 +309,7 @@ class OrderController extends Controller
             $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
             $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
             $row_array["order_description"] = $request->order_description[$skey];
+            $row_array["cost_type"] = $request->cost_type[$skey];
             $row_array["pint"] = $request->pint[$skey];
             array_push($main_array, $row_array);
         }

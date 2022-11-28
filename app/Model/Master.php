@@ -5,6 +5,7 @@ namespace App\Model;
 use Carbon\Carbon;
 use App\Model\ParentModel;
 use Illuminate\Support\Facades\DB;
+use App\Model\CostType;
 
 class Master extends ParentModel
 {
@@ -139,5 +140,30 @@ class Master extends ParentModel
         } else {
             return $retObj;
         }
+    }
+
+
+    public function getProjectBillTransactionList($merchant_id, $project_id)
+    {
+        $retObj = DB::table('billed_transaction as b')
+            ->select(DB::raw('b.*,concat(c.abbrevation," - ",c.name) as cost_type_label'))
+            ->join('cost_types as c', 'b.cost_type', '=', 'c.id')
+            ->where('b.is_active', 1)
+            ->where('b.merchant_id', $merchant_id)
+            ->where('b.project_id', $project_id)
+            ->get();
+        if ($retObj->isEmpty()) {
+            return array();
+        } else {
+            return $retObj;
+        }
+    }
+  
+
+    public function getCostTypes($merchant_id): array
+    {
+        return CostType::where('merchant_id', $merchant_id)->where('is_active', 1)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
     }
 }

@@ -90,4 +90,18 @@ class Order extends ParentModel
                 'unapprove_message' => $unapprove_message
             ]);
     }
+
+    
+    public function getCostTypeList($merchant_id)
+    {
+        $retObj = DB::table('cost_types')
+            ->select(DB::raw('*'))
+            ->where('created_by', $merchant_id)
+            ->get();
+        if ($retObj->isEmpty()) {
+            return array();
+        } else {
+            return $retObj;
+        }
+    }
 }

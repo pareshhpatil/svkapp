@@ -143,7 +143,7 @@
                                             Description
                                         </th>
                                         <th class="td-c">
-
+                                            Cost Type
                                         </th>
                                     </tr>
                                 </thead>
@@ -185,6 +185,19 @@
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        </td>
+                                        @elseif ($v == 'cost_type')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                @if(!empty($cost_type_list))
+                                                @foreach($cost_type_list as $pk=>$vk)
+                                                @if($row[$v]==$vk->id)
+                                                <label selected="" value="{{$vk->id}}">{{$vk->name}}</label>
+                                                <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                            </div>
                                         </td>
                                         @else
                                         <td>
@@ -266,6 +279,9 @@
     mode = '{{$mode}}';
     @if(isset($csi_code))
     csi_codes = {!!$csi_code_json!!};
+    @endif
+    @if(isset($cost_type_list))
+    cost_type_list = {!!$cost_type_list_json!!};
     @endif
 </script>
 @section('footer')

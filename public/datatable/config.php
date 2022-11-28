@@ -6,36 +6,6 @@ ini_set('error_reporting', 0);
 @session_start();
 date_default_timezone_set("Asia/Kolkata");
 header('Content-Type: application/json');
-$env = getenv('ENV');
-if ($env != 'LOCAL') {
-    if (isset($_SERVER['HTTP_CDN_LOOP'])) {
-        if ($_SERVER['HTTP_CDN_LOOP'] != 'cloudflare') {
-            exit(json_encode(['error' => 'Invalid request']));
-        }
-    } else {
-        exit(json_encode(['error' => 'Invalid request']));
-    }
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        $url_array = parse_url($_SERVER['HTTP_REFERER']);
-        $domain = $url_array['host'];
-        $address = $_SERVER['SERVER_NAME'];
-        if (strpos($domain, $address) == false && $domain != $address) {
-            exit(json_encode([
-                'error' => 'Invalid request'
-            ]));
-        }
-    } else {
-        exit(json_encode(['error' => 'Invalid request']));
-    }
-
-    if (isset($_POST['csrf_token'])) {
-        if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-            exit(json_encode(['error' => 'Invalid request']));
-        }
-    } else {
-        exit(json_encode(['error' => 'Invalid request']));
-    }
-}
 
 if ($_SESSION['user_status'] < 12) {
     exit(json_encode(['error' => 'Invalid request']));

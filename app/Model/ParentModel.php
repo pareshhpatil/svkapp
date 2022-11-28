@@ -203,7 +203,7 @@ class ParentModel extends Model
             return $retObj;
         }
     }
-    
+
     public function getMerchantParentProducts($merchant_id, $table)
     {
         $retObj = DB::table($table)

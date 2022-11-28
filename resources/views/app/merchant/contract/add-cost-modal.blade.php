@@ -91,8 +91,8 @@
     <div class="panel-wrap" id="panelWrapIdcost">
         <div class="panel">
             <div class='cnt223'>
-                <h3 class="modal-title">Add current billed amount
-                    <a class="close " data-toggle="modal" onclick="return closeSidePanelcost();">
+                <h3 class="modal-title">Current billed amount
+                    <a class="close " data-toggle="modal" @click="closeSidePanelcost();">
                         <button type="button" class="close" aria-hidden="true"></button></a>
 
                 </h3>
@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-md-2">
                                 <br>
-                            <a href="#" @click="filterCost('aa')" id="filterbutton" style="display: none;" ></a>
+                            <a href="#" @click="filterCost('aa')" id="filterbutton" class="btn btn-sm blue"  >Search</a>
                             </div>
                         </div>
                         </div>
@@ -136,6 +136,9 @@
                                         <th class="td-c" style="min-width: 150px;">
                                             Cost code
                                         </th>
+                                        <th class="td-c" >
+                                            Cost type
+                                        </th>
                                         <th class="td-c">
                                             Rate
                                         </th>
@@ -157,6 +160,7 @@
                                                 <input type="checkbox" x-model="field.checked" name="cost-checkbox[]" x-value="field.id" :id="index" @change="costCalc();">
                                             </td>
                                             <td class="td-c" x-text="field.cost_code"></td>
+                                            <td class="td-c" x-text="field.cost_type"></td>
                                             <td class="td-c" x-text="field.rate"></td>
                                             <td class="td-c" x-text="field.unit"></td>
                                             <td class="td-c" x-text="field.amount"></td>
