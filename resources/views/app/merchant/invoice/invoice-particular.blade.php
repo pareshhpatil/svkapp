@@ -199,9 +199,9 @@ table thead,
                     @endif
 
                     @php 
-                    $readonly_array=array('retainage_amount','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail');
+                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
 //                    @endphp
 
                     <tbody>
@@ -248,6 +248,8 @@ table thead,
                                                 <option value="Cost">Cost</option>
                                             </select>
                                         @elseif($k=='bill_code_detail')
+                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
+                                        @elseif($k=='cost_type')
                                         <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                         @else
                                             @if($k=='original_contract_amount')
@@ -300,9 +302,7 @@ table thead,
                                                     <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                     <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
                                                 </div>
-                                                <span x-show="field.txt{{$k}}">
                                             <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                        </span>
                                             </template>
                                             <template x-if="field.bill_type!='Cost'">
                                             <span  x-text="field.{{$k}}"> </span>
@@ -347,6 +347,7 @@ table thead,
                     <tr class="warning">
                         <th class="col-id-no">Grand total</th>
                         <th ></th>
+                        <th></th>
                         <th>
                         <span id="total_oca"></span>
                         </th>
@@ -389,7 +390,6 @@ table thead,
                         <th>
                         <span id="total_tor"></span>
                         </th>
-                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -450,6 +450,7 @@ table thead,
                        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
                        var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
                        var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
+                       var merchant_cost_types = JSON.parse('{!! json_encode($merchant_cost_types) !!}');
                         function initializeParticulars(){
                             this.initializeDropdowns();
                             this.calculateTotal();
@@ -1000,6 +1001,13 @@ table thead,
                                 async OpenAddCost(field,type='new') {
                                     this.billed_transactions=[];
                                     billed_transactions_filter=[];
+                                    if(field.pint>0)
+                                    {
+                                       // var int=field.pint;
+                                    }else
+                                    {
+                                         field.pint=0;
+                                    }
                                     this.selected_field_int = field.pint;
                                     document.getElementById('cost_selected_id').value = field.pint;
                                     
@@ -1163,6 +1171,8 @@ table thead,
                                     this.allcostCheck();
                                 },
                                 RemoveCost(field) {
+                                    if(field.pint>0)
+                                    {}else{field.pint=0}
                                     this.fields[field.pint].current_billed_amount = '';
                                     this.fields[field.pint].billed_transaction_ids = '';
                                     this.calc(field);
@@ -1273,8 +1283,8 @@ table thead,
                                             bill_type: '',
                                             group: '',
                                             override: true,
-                                            bill_code_detail: '',
                                             bill_code_detail: 'Yes',
+                                            cost_type: '',
                                             project: project_code
                                         });
                                         particularray.push({
@@ -1285,7 +1295,8 @@ table thead,
                                             bill_type: '',
                                             override: true,
                                             group: '',
-                                            bill_code_detail: '',
+                                            bill_code_detail: 'Yes',
+                                            cost_type: '',
                                             project: project_code
                                         })
                                         const x = await this.wait(10);
@@ -1293,6 +1304,7 @@ table thead,
                                         this.count = id;
                                         this.virtualSelect(id, 'bill_code', bill_codes)
                                         this.virtualSelect(id, 'group', groups)
+                                        this.virtualSelect(id, 'cost_type', merchant_cost_types)
                                         // this.virtualSelect(id, 'bill_type', bill_types)
                                         this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes');
                                         this.addbuttonactive=true;
@@ -1302,6 +1314,7 @@ table thead,
                             for(let v=0; v < this.fields.length; v++){
                                 this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
                                 this.virtualSelect(v, 'group', groups, this.fields[v].group)
+                                this.virtualSelect(v, 'cost_type', merchant_cost_types,this.fields[v].cost_type)
                                 // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
                                 this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
                             }
@@ -1354,18 +1367,10 @@ table thead,
                             }
                         }
                         if(type === 'group'){
-                            if(!groups.includes(this.value) && this.value !== '') {
-                                groups.push(this.value)
-                                for (let g = 0; g < particularray.length; g++) {
-                                    let groupSelector = document.querySelector('#group' + g);
-                                    console.log('group'+id, 'group'+g)
-                                    if('group'+id === 'group'+g)
-                                        groupSelector.setOptions(groups, this.value);
-                                    else
-                                        groupSelector.setOptions( groups, particularray[g].group);
-                                }
-                            }
                             particularray[id].group = this.value
+                        }
+                        if(type === 'cost_type'){
+                            particularray[id].cost_type = this.value
                         }
 
                         if(type === 'bill_type'){
@@ -1380,7 +1385,7 @@ table thead,
                         }
 
                         if(type === 'cost_codes' || type === 'cost_types'){
-                            _('filterbutton').click();
+                            //_('filterbutton').click();
                         }
                     });
 

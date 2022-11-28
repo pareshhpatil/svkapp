@@ -37,7 +37,7 @@ class OrderController extends Controller
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
 
-    public function create($version ='',$errors = null, $link = null, $type = null, Request $request)
+    public function create($version = '', $errors = null, $link = null, $type = null, Request $request)
     {
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -73,6 +73,9 @@ class OrderController extends Controller
 
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
         } else {
             $data['contract_id'] = '';
         }
@@ -84,6 +87,7 @@ class OrderController extends Controller
         $data["default_particulars"]["rate"] = 'Rate';
         $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
         $data["default_particulars"]["order_description"] = 'Description';
+        $data["default_particulars"]["cost_type"] = 'Cost Type';
 
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
@@ -117,6 +121,7 @@ class OrderController extends Controller
                 $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
                 $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
                 $row_array["order_description"] = $request->order_description[$skey];
+                $row_array["cost_type"] = $request->cost_type[$skey];
                 $row_array["pint"] = $request->pint[$skey];
                 array_push($main_array, $row_array);
             }
@@ -195,36 +200,44 @@ class OrderController extends Controller
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
-        $model = new Master();
-        $row = $model->getTableRow('order', 'order_id', $id);
-        $row->json_particulars = json_decode($row->particulars, true);
-        $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
-        foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+        if ($id != '') {
+            $model = new Master();
+            $row = $model->getTableRow('order', 'order_id', $id);
+            $row->json_particulars = json_decode($row->particulars, true);
+            $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+            foreach ($cust_list as $cust_data) {
+                $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+            }
+            $data["cust_list"] = $cust_list;
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+
+            $data["default_particulars"] = [];
+            $data["default_particulars"]["bill_code"] = 'Bill Code';
+            $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
+            $data["default_particulars"]["unit"] = 'Unit';
+            $data["default_particulars"]["rate"] = 'Rate';
+            $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
+            $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
+
+            $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
+            $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
+            $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
+
+            $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
+            $data['project_id'] = $row2->project_id;
+
+            $data['detail'] = $row;
+            $data['detail2'] = $row2;
+            $data['link'] = $link;
+            $data['mode'] = 'update';
+            return view('app/merchant/order/update', $data);
+        } else {
+            return redirect('/404');
         }
-        $data["cust_list"] = $cust_list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
-
-        $data["default_particulars"] = [];
-        $data["default_particulars"]["bill_code"] = 'Bill Code';
-        $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
-        $data["default_particulars"]["unit"] = 'Unit';
-        $data["default_particulars"]["rate"] = 'Rate';
-        $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
-        $data["default_particulars"]["order_description"] = 'Description';
-
-        $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
-        $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
-        $data['csi_code_json'] = json_encode($data['csi_code']);
-        
-        $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
-        $data['project_id'] = $row2->project_id;
-
-        $data['detail'] = $row;
-        $data['detail2'] = $row2;
-        $data['link'] = $link;
-        $data['mode'] = 'update';
-        return view('app/merchant/order/update', $data);
     }
 
     public function approved($link)
@@ -232,35 +245,43 @@ class OrderController extends Controller
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
-        $model = new Master();
-        $row = $model->getTableRow('order', 'order_id', $id);
-        $row->json_particulars = json_decode($row->particulars, true);
-        $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
-        foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+        if ($id != '') {
+            $model = new Master();
+            $row = $model->getTableRow('order', 'order_id', $id);
+            $row->json_particulars = json_decode($row->particulars, true);
+            $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+            foreach ($cust_list as $cust_data) {
+                $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+            }
+            $data["cust_list"] = $cust_list;
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+
+            $data["default_particulars"] = [];
+            $data["default_particulars"]["bill_code"] = 'Bill Code';
+            $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
+            $data["default_particulars"]["unit"] = 'Unit';
+            $data["default_particulars"]["rate"] = 'Rate';
+            $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
+            $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["cost_type"] = 'Cost Type';
+
+            $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
+            $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
+            $data['csi_code_json'] = json_encode($data['csi_code']);
+
+            $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
+            $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
+
+            $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
+            $data['project_id'] = 0;
+            $data['detail'] = $row;
+            $data['detail2'] = $row2;
+            $data['link'] = $link;
+            $data['mode'] = 'update';
+            return view('app/merchant/order/approved', $data);
+        } else {
+            return redirect('/404');
         }
-        $data["cust_list"] = $cust_list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
-
-        $data["default_particulars"] = [];
-        $data["default_particulars"]["bill_code"] = 'Bill Code';
-        $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
-        $data["default_particulars"]["unit"] = 'Unit';
-        $data["default_particulars"]["rate"] = 'Rate';
-        $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
-        $data["default_particulars"]["order_description"] = 'Description';
-
-        $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
-        $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
-        $data['csi_code_json'] = json_encode($data['csi_code']);
-
-        $data['project_details'] = $model->getTableRow('project', 'id', $row2->project_id);
-        $data['project_id'] = 0;
-        $data['detail'] = $row;
-        $data['detail2'] = $row2;
-        $data['link'] = $link;
-        $data['mode'] = 'update';
-        return view('app/merchant/order/approved', $data);
     }
 
     public function updatesave(Request $request)
@@ -284,6 +305,7 @@ class OrderController extends Controller
             $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
             $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
             $row_array["order_description"] = $request->order_description[$skey];
+            $row_array["cost_type"] = $request->cost_type[$skey];
             $row_array["pint"] = $request->pint[$skey];
             array_push($main_array, $row_array);
         }

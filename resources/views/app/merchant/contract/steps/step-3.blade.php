@@ -109,18 +109,21 @@
                         </thead>
                     @endif
                     <tbody id="preview_data">
-                    @php $totalRetainageAmount = 0 @endphp
+                    @php $totalRetainageAmount = 0;
+                    $costTypeArr = array_combine(array_column($cost_types,'value'), array_column($cost_types,'label'))
+                    @endphp
+
                     @foreach($particulars as $particular)
                         @php $totalRetainageAmount += $particular['retainage_amount'] @endphp
                         <tr>
                             <td class="td-c">{{ $particular['bill_code'] }}</td>
                             <td class="td-c">{{ $particular['bill_type'] }}</td>
+                            <td class="td-c">{{ $costTypeArr[$particular['cost_type']]??null }}</td>
                             <td class="td-c">{{ $particular['original_contract_amount'] }}</td>
                             <td class="td-c">{{ $particular['retainage_percent'] }}</td>
                             <td class="td-c">{{ $particular['retainage_amount'] }}</td>
                             <td class="td-c">{{ $particular['project_code']??$particular['project'] }}</td>
                             <td class="td-c">{{ $particular['cost_code'] }} </td>
-                            <td class="td-c">{{ $particular['cost_type'] }}</td>
                             <td class="td-c">{{ $particular['group'] }}</td>
                             <td class="td-c"> {{ $particular['bill_code_detail'] }}</td>
                         </tr>
@@ -130,11 +133,12 @@
                         <tr class="warning">
                             <th class="td-c"></th>
                             <th class="td-c">Grand total</th>
+                            <th></th>
                             <th class="td-c">
                                 <span id="particulartotaldiv">{{ number_format($contract->contract_amount) }}</span>
                                 <input type="hidden" id="particulartotal" data-cy="particular-total1" name="contract_amount" value="{{ $contract->contract_amount }}">
                             </th>
-                            <th></th><th><span id="particulartotaldiv">{{ number_format($totalRetainageAmount) }}</span></th><th></th><th></th><th></th><th></th><th></th>
+                           <th></th><th><span id="particulartotaldiv">{{ number_format($totalRetainageAmount) }}</span></th><th></th><th></th><th></th><th></th>
 
                         </tr>
                     </tfoot>

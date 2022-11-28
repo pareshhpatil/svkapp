@@ -23,6 +23,8 @@ use Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
+use App\Model\CostType;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
 class InvoiceController extends AppController
@@ -1609,12 +1611,20 @@ class InvoiceController extends AppController
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
+                    try{
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    }catch(Exception $o){}
                 }
             } else {
                 $info['image_path'] = '';
             }
-
+if($type=='703' || $type=='703')
+{
+    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+    try{
+    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
+}catch(Exception $o){}
+}
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
@@ -1698,9 +1708,18 @@ class InvoiceController extends AppController
             $info['logo'] = '';
             if (isset($info['image_path'])) {
                 if ($info['image_path'] != '') {
+                    try{
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                }catch(Exception $o){}
                 }
             }
+            if($type=='703' || $type=='703')
+{
+    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+    try{
+    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
+}catch(Exception $o){}
+}
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
@@ -2892,6 +2911,13 @@ class InvoiceController extends AppController
         }
     }
 
+    public function getCostTypes(): array
+    {
+        return CostType::where('merchant_id', $this->merchant_id)->where('is_active', 1)
+                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
+                ->get()->toArray();
+    }
+
 
 
     public function particular($link)
@@ -2919,6 +2945,7 @@ class InvoiceController extends AppController
             }
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
         $total = 0;
@@ -3042,11 +3069,9 @@ class InvoiceController extends AppController
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
         $data['billed_transactions'] = $billed_transactions;
-        $cost_types_array = [];
-        foreach ($cost_types as $row) {
-            $cost_types_array[] = array('label' => $row, 'value' => $row);
-        }
-        $data['cost_types'] = $cost_types_array;
+        
+        $data['merchant_cost_types'] = $merchant_cost_types;
+        $data['cost_types'] = $cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
