@@ -122,6 +122,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="text-danger" id="calc_checkbox_error"></div>
                     <br>
                     <div class="row" style="text-align: end;">
                         <div class="col-md-3 col-md-offset-6">
@@ -138,7 +139,9 @@
                         </div>
                         <div class="col-lg-3">
                             <input class="form-control right-value" onchange="calculatePercContract(this.value)" id="calc_perc" type="number" value="">
+                            <div class="text-danger" id="calc_perc_error"></div>
                         </div>
+                        
                     </div>
                     <br>
                     <div class="row" style="text-align: end;">

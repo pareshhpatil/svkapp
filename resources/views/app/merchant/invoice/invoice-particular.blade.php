@@ -419,7 +419,7 @@ table thead,
                                         
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
                                             <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
-                                            <a  @click="return setParticulars();" class="btn blue" >Preview invoice</a>
+                                            <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
                                     </div>
                                 </div>
@@ -957,6 +957,22 @@ table thead,
                                 setAOriginalContractAmount() {
                                     selected_field_int = document.getElementById('selected_field_int').value;
                                     calc_amount = document.getElementById("calc_amount").value;
+
+                                    let valid = true;
+                                    if ($('input[name^=calc-checkbox]:checked').length <= 0) {
+                                        $('#calc_checkbox_error').html('Please select atleast one particular');
+                                        valid = false;
+                                    }else
+                                        $('#calc_checkbox_error').html('');
+
+                                    if($('#calc_perc').val() === '' || $('#calc_perc').val() === null || $('#calc_perc').val() === '0' ) {
+                                        $('#calc_perc_error').html('Please enter percentage');
+                                        valid = false
+                                    }else
+                                        $('#calc_perc_error').html('');
+
+                                    if(valid) {
+
                                     try{
                                         this.fields[selected_field_int].original_contract_amount = calc_amount;
                                     }catch(o){}
@@ -966,6 +982,7 @@ table thead,
                                     this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
                                     this.calc(this.fields[selected_field_int]);
+                                 }
 
                                 },
                                 setCostAmount() {
