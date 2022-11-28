@@ -288,9 +288,9 @@ class MasterController extends AppController
             $project_id = Encrypt::encode($project_id);
             $this->masterModel->deleteTableRow('csi_code', 'id', $id, $this->merchant_id, $this->user_id);
 
-            return redirect('/merchant/master/code/list/' . $project_id)->with('success', "Record has been deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('success', "Record has been deleted");
         } else {
-            return redirect('/merchant/master/code/list/' . $project_id)->with('error', "Record code can not be deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('error', "Record code can not be deleted");
         }
     }
 

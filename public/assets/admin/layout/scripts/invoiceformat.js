@@ -178,7 +178,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
     var produ_text = '<td class="col-id-no" scope="row">' +
         '<select style="width:100%;" required id="cost_type' + numrow + '" ' +
         'name="' + type + 'cost_type[]" data-cy="particular_product' + numrow + '" ' +
-        'data-placeholder="Type or Select" class="form-control input-sm productselect" >';
+        'data-placeholder="Type or Select" class="form-control input-sm productselect2" >';
     if (cost_type_list != null) {
         $.each(cost_type_list, function (value, arr) {
             var selected = '';
@@ -188,7 +188,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
                         selected = 'selected';
                         exist = 1;
                     }
-                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.name + '</option>';
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.abbrevation + ' - ' + arr.name + '</option>';
                 }
             } catch (o) {
             }
@@ -471,12 +471,12 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     }
     particular_col_array = {
         "bill_code": "Bill Code",
+        "cost_type": "Cost Type",
         "original_contract_amount": "Original Contract Amount",
         "unit": "Unit",
         "rate": "Rate",
         "change_order_amount": "Chnage Order Amount",
-        "order_description": "Description",
-        "cost_type": "Cost Type",
+        "order_description": "Description"
     };
     $.each(particular_col_array, function (index, value) {
         if (index != 'sr_no') {
@@ -2573,6 +2573,20 @@ function setAdvanceDropdownOrder(numrow) {
             if (document.getElementById('prolist' + pind)) {
             } else {
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',' + project_id + ');">Add new bill code</a> </div>');
+            }
+        });
+
+        $('.productselect2').select2({
+            tags: true,
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
             }
         });
     } catch (o) {
