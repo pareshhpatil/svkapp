@@ -3043,6 +3043,7 @@ if($type=='703' || $type=='703')
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
             }
+            $mode='Preview';
         } else {
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
@@ -3062,6 +3063,7 @@ if($type=='703' || $type=='703')
 
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
+            $mode='Save';
         }
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -3087,6 +3089,7 @@ if($type=='703' || $type=='703')
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
+        $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-particular', $data);
     }
