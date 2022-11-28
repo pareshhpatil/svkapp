@@ -204,6 +204,11 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('order', 'order_id', $id);
             $row->json_particulars = json_decode($row->particulars, true);
+            foreach($row->json_particulars as &$row_data){
+                if(!isset($row_data["cost_type"])){
+                    $row_data["cost_type"] = null;
+                }
+            }
             $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
             foreach ($cust_list as $cust_data) {
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
