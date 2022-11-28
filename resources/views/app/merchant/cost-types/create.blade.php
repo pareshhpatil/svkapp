@@ -3,6 +3,7 @@
 @section('content')
     <div class="page-content">
         <div class="page-bar">
+            <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render() }}
         </div>
         <!-- BEGIN SEARCH CONTENT-->
