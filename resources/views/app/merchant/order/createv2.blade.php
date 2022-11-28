@@ -179,6 +179,9 @@
                                             Bill code
                                         </th>
                                         <th class="td-c">
+                                            Cost Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
@@ -192,9 +195,6 @@
                                         </th>
                                         <th class="td-c">
                                             Description
-                                        </th>
-                                        <th class="td-c">
-                                            Cost Type
                                         </th>
                                         <th class="td-c">
 

@@ -471,12 +471,12 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     }
     particular_col_array = {
         "bill_code": "Bill Code",
+        "cost_type": "Cost Type",
         "original_contract_amount": "Original Contract Amount",
         "unit": "Unit",
         "rate": "Rate",
         "change_order_amount": "Chnage Order Amount",
-        "order_description": "Description",
-        "cost_type": "Cost Type",
+        "order_description": "Description"
     };
     $.each(particular_col_array, function (index, value) {
         if (index != 'sr_no') {
