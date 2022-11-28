@@ -485,9 +485,10 @@ class Invoice extends ParentModel
 
     public function getBilledTransactions($project_id,$date,$payment_request_id)
     {
-        $retObj = DB::table('billed_transaction')
-            ->select('*')
-            ->whereRaw("payment_request_id='".$payment_request_id."' or (project_id='".$project_id."' and date='".$date."' and status=0 and is_active=1)")
+        $retObj = DB::table('billed_transaction as d')
+            ->select('d.*,CONCAT(abbrevation, " - ", name) as cost_type')
+            ->join('cost_types as i', 'd.cost_type', '=', 'i.id')
+            ->whereRaw("d.payment_request_id='".$payment_request_id."' or (d.project_id='".$project_id."' and d.date='".$date."' and d.status=0 and d.is_active=1)")
             ->get();
         return $retObj;
     }

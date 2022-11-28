@@ -2940,9 +2940,7 @@ if($type=='703' || $type=='703')
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
             }
-            if (!in_array($row->cost_type, $cost_types)) {
-                $cost_types[] = $row->cost_type;
-            }
+            
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $merchant_cost_types = $this->getCostTypes();
