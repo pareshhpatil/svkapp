@@ -117,8 +117,10 @@ class ContractController extends Controller
 
         $contract = null;
         $project = null;
-        if ($contract_id) {
-            $contract = ContractParticular::find( Encrypt::decode($contract_id) );
+        
+        $contract_id = Encrypt::decode($contract_id);
+        if ($contract_id != '' ) {
+            $contract = ContractParticular::find($contract_id);
             $project = $this->getProject($contract->project_id);
         }
 
@@ -131,7 +133,7 @@ class ContractController extends Controller
         $data['title'] = $title;
         $data['contract'] = $contract;
         $data['step'] = $step;
-        $data['contract_id'] = $contract_id;
+        $data['contract_id'] = Encrypt::encode($contract_id);
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
         $data['needValidationOnStep2'] = $needValidationOnStep2;
