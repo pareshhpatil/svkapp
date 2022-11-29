@@ -6,6 +6,7 @@ use App\Model\Master;
 use App\Model\InvoiceFormat;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -186,17 +187,31 @@ class MasterController extends AppController
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
-        } else {
-            $model = new InvoiceFormat();
-            if ($request->sequence_number == '') {
-                $request->sequence_number = 0;
-            }
-            $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
-            $request->start_date = Helpers::sqlDate($request->start_date);
-            $request->end_date = Helpers::sqlDate($request->end_date);
-            $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
-            return redirect('merchant/project/list')->with('success', "Project has been created");
         }
+
+        $projectID = $request->get('project_id');
+
+        $exists = DB::table('project')
+            ->where('merchant_id', $this->merchant_id)
+            ->where('project_id', $projectID)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'project_id' => 'Project ID already exists'
+            ]);
+        }
+
+        $model = new InvoiceFormat();
+        if ($request->sequence_number == '') {
+            $request->sequence_number = 0;
+        }
+        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
+        $request->start_date = Helpers::sqlDate($request->start_date);
+        $request->end_date = Helpers::sqlDate($request->end_date);
+        $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
+
+        return redirect('merchant/project/list')->with('success', "Project has been created");
     }
 
     public function projectupdate($link)
