@@ -559,9 +559,13 @@ table thead,
                         let billCodeSelector = document.querySelector('#bill_code' + v);
 
                         if(selectedId === 'bill_code'+v ) {
-                            billCodeSelector.setOptions(optionArray, selectedValue);
-                            this.fields[v].bill_code = billCodeSelector.value;
-                            particularray[v].bill_code = billCodeSelector.value;
+
+                            billCodeSelector.setOptions(optionArray);
+                            billCodeSelector.setValue(selectedValue);
+                            // billCodeSelector.setDisplayValue(selectedValue + '|'+selectedDescription)
+                            only_bill_codes.push($('#new_bill_code').val())
+                            this.fields[v].bill_code = $('#new_bill_code').val();
+                            particularray[v].bill_code = $('#new_bill_code').val();
                             particularray[v].description = selectedDescription;
                             $('#description'+v).val(selectedDescription)
                             closeSidePanelBillCode()
