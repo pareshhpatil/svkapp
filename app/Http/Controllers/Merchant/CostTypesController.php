@@ -61,8 +61,7 @@ class CostTypesController extends AppController
     {
         try {
             $rules = [
-                'name' => 'required',
-                'abbrevation' => 'unique:cost_types|max:2'
+                'name' => 'required'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -79,17 +78,17 @@ class CostTypesController extends AppController
             }
 
             //Check If abbrevation already exists
-            $exists = CostType::query()
-                                ->where(IColumn::ABBREVATION, $abbrevation)
-                                ->exists();
+            // $exists = CostType::query()
+            //                     ->where(IColumn::ABBREVATION, $abbrevation)
+            //                     ->exists();
 
-            if($exists) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'abbrevation' => 'The abbrevation has already been taken.'
-                    ]);
-            }
+            // if($exists) {
+            //     return redirect()->back()
+            //         ->withInput()
+            //         ->withErrors([
+            //             'abbrevation' => 'The abbrevation has already been taken.'
+            //         ]);
+            // }
 
             $this->repository->create([
                 'name' => $request->get('name'),
@@ -143,18 +142,18 @@ class CostTypesController extends AppController
             }
 
             //Check If abbrevation already exists
-            $exists = CostType::query()
-                ->where(IColumn::ID, IModel::NOT_EQUALS_TO, $id)
-                ->where(IColumn::ABBREVATION, $abbrevation)
-                ->exists();
+            // $exists = CostType::query()
+            //     ->where(IColumn::ID, IModel::NOT_EQUALS_TO, $id)
+            //     ->where(IColumn::ABBREVATION, $abbrevation)
+            //     ->exists();
 
-            if($exists) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'abbrevation' => 'The abbrevation has already been taken.'
-                    ]);
-            }
+            // if($exists) {
+            //     return redirect()->back()
+            //         ->withInput()
+            //         ->withErrors([
+            //             'abbrevation' => 'The abbrevation has already been taken.'
+            //         ]);
+            // }
 
             $this->repository->update([
                 'name' => $request->get('name'),

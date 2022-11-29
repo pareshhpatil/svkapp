@@ -269,6 +269,7 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
