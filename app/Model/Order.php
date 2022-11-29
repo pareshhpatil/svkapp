@@ -96,7 +96,8 @@ class Order extends ParentModel
     {
         $retObj = DB::table('cost_types')
             ->select(DB::raw('*'))
-            ->where('created_by', $merchant_id)
+            ->where('merchant_id', $merchant_id)
+            ->where('is_active', 1)
             ->get();
         if ($retObj->isEmpty()) {
             return array();
