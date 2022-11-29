@@ -755,13 +755,7 @@ table thead,
                                             $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                                         }
 
-                                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
-                                            $('#cell_cost_type_' + p).addClass(' error-corner');
-                                            addPopover('cell_cost_type_' + p, "Please select Cost type");
-                                            this.goAhead = false;
-                                        }else{
-                                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
-                                        }
+                                        
                                         
                                     }
                                     if( this.goAhead==true)
