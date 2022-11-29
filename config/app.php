@@ -50,6 +50,7 @@ return [
     'APP_URL' => env('SWIPEZ_BASE_URL', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
     'merchant_subdomain' => false,
+    'short_url_domain' =>env('SHORT_URL_DOMAIN'),
     /*
       |--------------------------------------------------------------------------
       | Application Timezone
