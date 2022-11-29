@@ -113,16 +113,12 @@ class CostTypesController extends AppController
      */
     public function edit($id)
     {
-        try {
-            $title = 'Update Cost Type';
-            $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $title = 'Update Cost Type';
+        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-            $data['costType'] = $this->repository->show($id);
+        $data['costType'] = $this->repository->show($id);
 
-            return view('app/merchant/cost-types/edit', $data);
-        } catch (Exception $exception) {
-            dd($exception);
-        }
+        return view('app/merchant/cost-types/edit', $data);
     }
 
 
