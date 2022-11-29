@@ -235,6 +235,7 @@
                                 <tfoot>
                                     <tr class="warning">
                                         <th class="col-id-no">Grand total</th>
+                                        <th></th>
                                         <th class="td-c">
                                             <span id="original_contract_amount_total"></span>
                                         </th>
@@ -247,7 +248,6 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
