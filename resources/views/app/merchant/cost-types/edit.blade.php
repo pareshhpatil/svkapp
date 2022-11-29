@@ -38,7 +38,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="control-label col-md-4">Abbrevation <span class="required">*</span></label>
+                                                    <label class="control-label col-md-4">Abbrevation </label>
                                                     <div class="col-md-8">
                                                         <input type="text" minlength="1" maxlength="2" name="abbrevation" class="form-control" value="{{$costType->abbrevation}}" placeholder="Cost type Abbrevation">
                                                     </div>
