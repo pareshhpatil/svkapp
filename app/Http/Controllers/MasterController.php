@@ -308,6 +308,13 @@ class MasterController extends AppController
             return redirect('/merchant/code/list/' . $project_id)->with('error', "Record code can not be deleted");
         }
     }
+    public function billedtransactionDelete($id)
+    {
+        $project_id = $this->masterModel->getColumnValue('billed_transaction', 'id', $id, 'project_id');
+        $project_id = Encrypt::encode($project_id);
+        $this->masterModel->deleteTableRow('billed_transaction', 'id', $id, $this->merchant_id, $this->user_id);
+        return redirect('/merchant/billedtransaction/list/' . $project_id)->with('success', "Record has been deleted");
+    }
 
     public function billedtransactionList($link)
     {
@@ -337,11 +344,11 @@ class MasterController extends AppController
 
     public function billedtransactionUpdate(Request $request)
     {
-            $data=$request->all();
-            unset($data['_token']);
-            $data['date'] = Helpers::sqlDate($request->date);
-            $data['merchant_id'] = $this->merchant_id;
-            $this->masterModel->saveBilledTransaction($data,$this->user_id);
-            return redirect('/merchant/billedtransaction/list/'.Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
+        $data = $request->all();
+        unset($data['_token']);
+        $data['date'] = Helpers::sqlDate($request->date);
+        $data['merchant_id'] = $this->merchant_id;
+        $this->masterModel->saveBilledTransaction($data, $this->user_id);
+        return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
     }
 }
