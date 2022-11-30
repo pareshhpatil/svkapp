@@ -1576,9 +1576,8 @@ function calculateChangeOrder(type=null) {
 
 function formatDisplayNegativeNumber(val){
     val  = getamt(val)
-
     if(val < 0){
-        newVal = "(" + val.replaceAll("-", "") + ")";
+        newVal = "(" + val.toString().replace("-", "") + ")";
     }else{
         newVal = val
     }
