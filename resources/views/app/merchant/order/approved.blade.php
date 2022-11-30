@@ -180,11 +180,11 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
@@ -293,7 +293,6 @@
 </script>
 @section('footer')
 <script>
-   
-   calculateChangeOrder();
+   calculateChangeOrder('approved');
 </script>
 @endsection

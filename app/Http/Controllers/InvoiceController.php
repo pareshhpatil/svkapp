@@ -3022,6 +3022,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                         $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
+                        $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
                         $cop[$v["bill_code"]]->bill_type = '';
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->calculated_perc = '';

@@ -1522,7 +1522,7 @@ function calculateRetainageV2() {
     document.getElementById('contract_amount').value = updateTextView1(total);
 }
 
-function calculateChangeOrder() {
+function calculateChangeOrder(type=null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
@@ -1554,6 +1554,27 @@ function calculateChangeOrder() {
 
     }
     document.getElementById('total_change_order_amount').value = updateTextView1(total);
+
+    if(type == 'approved'){
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            document.getElementById('change_order_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('change_order_amount' + int).value)
+            document.getElementById('original_contract_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('original_contract_amount' + int).value)
+            document.getElementById('unit' + int).value = formatDisplayNegativeNumber(document.getElementById('unit' + int).value)
+            document.getElementById('rate' + int).value = formatDisplayNegativeNumber(document.getElementById('rate' + int).value)
+        });
+    }
+}
+
+function formatDisplayNegativeNumber(val){
+
+    if(val < 0){
+        newVal = "(" + val.replace("-", "") + ")";
+    }else{
+        newVal = val
+    }
+
+    return newVal;
 }
 
 
@@ -3001,7 +3022,7 @@ function updateTextView1(val) {
             return number.toLocaleString() + decimal_text;
         }
     //}
-    return 0.00;
+    //return 0.00;
 
 }
 function getNumber(_str) {
