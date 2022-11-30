@@ -1017,6 +1017,7 @@ table thead,
                                     console.log(field.pint);
                                     this.selected_field_int = field.pint;
                                     document.getElementById('selected_field_int').value = field.pint;
+                                    calcRowInt=field.pint;
                                     OpenAddCaculatedRow(field.pint);
                                 },
                                 RemoveCaculated(field) {
