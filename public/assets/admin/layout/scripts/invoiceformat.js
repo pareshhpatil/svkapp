@@ -1562,14 +1562,23 @@ function calculateChangeOrder(type=null) {
             document.getElementById('original_contract_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('original_contract_amount' + int).value)
             document.getElementById('unit' + int).value = formatDisplayNegativeNumber(document.getElementById('unit' + int).value)
             document.getElementById('rate' + int).value = formatDisplayNegativeNumber(document.getElementById('rate' + int).value)
+
         });
+        
+        document.getElementById('total_change_order_amount').value =  formatDisplayNegativeNumber(document.getElementById('total_change_order_amount').value);
+
+        document.getElementById('particulartotal1').value = formatDisplayNegativeNumber(document.getElementById('particulartotal1').value)
+        document.getElementById('original_contract_amount_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('original_contract_amount_total').value)
+        document.getElementById('unit_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('unit_total').value)
+        document.getElementById('rate_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('rate_total').value)
     }
 }
 
 function formatDisplayNegativeNumber(val){
+    val  = getamt(val)
 
     if(val < 0){
-        newVal = "(" + val.replace("-", "") + ")";
+        newVal = "(" + val.replaceAll("-", "") + ")";
     }else{
         newVal = val
     }

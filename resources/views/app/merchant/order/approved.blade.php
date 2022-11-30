@@ -192,7 +192,7 @@
                                                 @if(!empty($cost_type_list))
                                                 @foreach($cost_type_list as $pk=>$vk)
                                                 @if($row[$v]==$vk->id)
-                                                <label selected="" value="{{$vk->id}}">{{$vk->name}}</label>
+                                                <label selected="" value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</label>
                                                 <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
                                                 @endif
                                                 @endforeach
