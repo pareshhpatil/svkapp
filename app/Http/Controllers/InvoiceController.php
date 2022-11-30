@@ -3050,7 +3050,6 @@ class InvoiceController extends AppController
                     $int = $int + 1;
                 }
             }
-            $mode = 'Preview';
         } else {
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
@@ -3068,8 +3067,8 @@ class InvoiceController extends AppController
                 }
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
-            $mode = 'Save';
         }
+        $mode = ($invoice->payment_request_status == 11) ? 'Preview' : 'Save';
         Helpers::hasRole(2, 27);
         $title = 'create';
 
