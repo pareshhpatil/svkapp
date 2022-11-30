@@ -2983,7 +2983,7 @@ class InvoiceController extends AppController
             foreach ($result as $key => $value) {
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
-                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"]);
+                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
                 }
             }
