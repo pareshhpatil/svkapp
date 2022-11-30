@@ -87,7 +87,7 @@
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script> 
         <![endif]-->
-        
+
         <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
         <!-- IMPORTANT! Load jquery-ui.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
