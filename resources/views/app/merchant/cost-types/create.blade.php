@@ -32,14 +32,14 @@
                                                 <div class="form-group">
                                                     <label class="control-label col-md-4">Name <span class="required">*</span></label>
                                                     <div class="col-md-8">
-                                                        <input type="text" minlength="2" maxlength="50" name="name" class="form-control" placeholder="Cost type name">
+                                                        <input type="text" minlength="2" maxlength="50" name="name" class="form-control" placeholder="Cost type name" value="{{ old('name') }}">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label class="control-label col-md-4">Abbrevation </label>
                                                     <div class="col-md-8">
-                                                        <input type="text" minlength="1" maxlength="2" name="abbrevation" class="form-control" placeholder="Cost type Abbrevation">
+                                                        <input type="text" minlength="1" maxlength="2" name="abbrevation" class="form-control" placeholder="Cost type Abbrevation" value="{{ old('abbrevation') }}">
                                                     </div>
                                                 </div>
 
