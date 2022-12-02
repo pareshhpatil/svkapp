@@ -150,6 +150,7 @@
                         <div class="col-lg-3">
                             <input class="form-control right-value" id="calc_amount" disabled type="text" value="0">
                             <input id="selected_field_int"  type="hidden" value="0">
+                            <input id="selected_field_index"  type="hidden" value="0">
                         </div>
                     </div>
                     <br>
