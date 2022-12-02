@@ -896,11 +896,14 @@ class InvoiceController extends AppController
                 $pos = 1;
 
                 foreach ($data['files'] as $files) {
-
+                    $nm = '';
+                    if(!empty($files)) {
+                        $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    }
 
                     $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files), 0, strrpos(basename($files), '.')), -10));
                     $menus1['full'] = basename($files);
-                    $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    
                     $menus1['title'] = strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4)) < 10 ? substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4) : $nm . '...';
 
 
@@ -2479,7 +2482,10 @@ class InvoiceController extends AppController
 
                     $attach_count += $counts;
                     if (empty($isattach)) {
-                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        $nm = '';
+                        if(!empty($data['attachments'])) {
+                            $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        }
 
 
                         $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2516,8 +2522,11 @@ class InvoiceController extends AppController
                     $single_data['d'] = number_format($data['previously_billed_amount'], 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
 
@@ -2576,7 +2585,10 @@ class InvoiceController extends AppController
                     $single_data['f'] = number_format($data['stored_materials'], 2);
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                     //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2754,6 +2766,8 @@ class InvoiceController extends AppController
                 $data['net_billed_amount'] = $request->net_billed_amount[$k];
                 $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                 $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
+                $data['previously_stored_materials'] = $request->previously_stored_materials[$k];
+                $data['current_stored_materials'] = $request->current_stored_materials[$k];
                 $data['stored_materials'] = $request->stored_materials[$k];
                 $data['project'] = $request->project[$k];
                 $data['cost_code'] = $request->cost_code[$k];
