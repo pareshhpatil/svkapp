@@ -168,7 +168,7 @@
                                 @include('app.merchant.contract.steps.step-1')
                             @break
                             @case(2)
-                                @include('app.merchant.contract.steps.step-2')
+                                @include('app.merchant.contract.steps.stable-step-2')
                             @break
                             @case(3)
                                 @include('app.merchant.contract.steps.step-3')

@@ -149,7 +149,7 @@
 
                                             @case('original_contract_amount')
                                                 <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars(); reflectOriginalContractAmountChange(field, index)" @endif
                                                         @keyup="removeValidationError(`{{$column}}`, `${field.introw}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
@@ -173,10 +173,10 @@
                                                         <a :id="`remove-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="removeCalculated(field)">Remove</a>
                                                         <span :id="`pipe-calc${field.introw}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                         <a :id="`edit-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCalculated(field)">Edit</a>--}}
-                                                        <a :id="`add-calc${field.introw}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
-                                                        <a :id="`remove-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                        <a :id="`add-calc${field.introw}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field, index)">Add calculation</a>
+                                                        <a :id="`remove-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field, index)">Remove</a>
                                                         <span :id="`pipe-calc${field.introw}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                        <a :id="`edit-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
+                                                        <a :id="`edit-calc${field.introw}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field, index)">Edit</a>
                                                     </div>
                                                     {{--<span x-show="field.show{{$column}}">
                                                         <input :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" value="" name="{{$column}}[]" @if($readonly) type="hidden" @else  type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif style="width: 100%;" class="form-control input-sm ">
@@ -184,7 +184,8 @@
                                                 </template>
 
 
-                                                <input :id="`introw${field.introw}`" type="hidden" :value="index" x-model="field.introw" name="pint[]">
+                                                <input :id="`introw${field.introw}`" type="hidden" :value="field.introw" x-model="field.introw" name="pint[]">
+                                                <input :id="`index${field.introw}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
                                             @break
 
                                             @case('retainage_amount')
@@ -207,7 +208,7 @@
                                 @endforeach
 
                                 <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                    <button type="button" class="btn btn-xs red" @click="removeRow(field)">&times;</button>
+                                    <button type="button" class="btn btn-xs red" @click="removeRow(field, index)">&times;</button>
                                     <template x-if="count === index">
                                     <span>
                                         <a href="javascript:;" @click="await addNewRow();" class="btn btn-xs green">+</a>
@@ -259,6 +260,7 @@
         var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
+
         var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
         var needValidationOnStep2 = {!! json_encode($needValidationOnStep2) !!};
@@ -273,6 +275,35 @@
             }).popover();
         }
 
+        function updateBillCodeDropdowns(optionArray, newBillCode){
+            let selectedId = $('#selectedBillCodeId').val();
+
+            for(let v=0; v < particularsArray.length; v++){
+                let currentField = particularsArray[v];
+                let billCodeSelector = document.querySelector('#bill_code' + currentField.introw);
+
+                if(selectedId === 'bill_code'+ currentField.introw ) {
+
+                    billCodeSelector.setOptions(optionArray);
+                    billCodeSelector.setValue(newBillCode.id);
+
+                    only_bill_codes.push(newBillCode.id)
+
+                    particularsArray[v].bill_code = newBillCode.code;
+                    particularsArray[v].description = newBillCode.description;
+                    $('#description' + currentField.introw).val( newBillCode.description )
+
+                }
+                else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+
+            }
+            closeSidePanelBillCode();
+
+            $('#new_bill_code').val(null);
+            $('#new_bill_description').val(null);
+            $('#selectedBillCodeId').val(null);
+        }
+
         function handle_particulars(){
             return {
                 fields : JSON.parse('{!! json_encode($particulars) !!}'),
@@ -285,13 +316,15 @@
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
-                        this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
-                        this.virtualSelect(v, 'group', groups, this.fields[v].group)
-                        this.virtualSelect(v, 'cost_type', cost_types, this.fields[v].cost_type)
-                        this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
+                        console.log('Initializing dropdowns' + this.fields[v].introw);
+
+                        this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code, v)
+                        this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group, v)
+                        this.virtualSelect(this.fields[v].introw, 'cost_type', cost_types, this.fields[v].cost_type, v)
+                        this.virtualSelect(this.fields[v].introw, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail, v)
                     }
                 },
-                virtualSelect(id, type, options, selectedValue){
+                virtualSelect(id, type, options, selectedValue, index){
                     let allowNewOption= true;
                     let search= true;
                     if(type === 'bill_code_detail' || type === 'cost_type'){
@@ -316,15 +349,20 @@
                     })
 
                     $('#'+type+id).change(function () {
+
+                        if(index === undefined || index === null) {
+                            index = $('#index'+id).val();
+                        }
+
                         if(type === 'bill_code') {
-                            particularsArray[id].bill_code = this.value
+                            particularsArray[index].bill_code = this.value
                             let displayValue = this.getDisplayValue().split('|');
                             if(displayValue[1] !== undefined) {
                                 $('#description'+id).val(displayValue[1].trim())
-                                particularsArray[id].description = displayValue[1].trim();
+                                particularsArray[index].description = displayValue[1].trim();
                             }
 
-                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
                                 $('#selectedBillCodeId').val(type + id)
@@ -343,22 +381,22 @@
                                         groupSelector.setOptions( groups, particularsArray[g].group);
                                 }
                             }
-                            particularsArray[id].group = this.value
+                            particularsArray[index].group = this.value
                         }
 
                         if(type === 'bill_type'){
-                            console.log(fields);
-                            particularsArray[id].bill_type = this.value
+
+                            particularsArray[index].bill_type = this.value
                             if(this.value === 'Calculated')
-                                fields[id].bill_type = this.value
+                                fields[index].bill_type = this.value
                         }
 
                         if(type === 'bill_code_detail'){
-                            particularsArray[id].bill_code_detail = this.value
+                            particularsArray[index].bill_code_detail = this.value
                         }
 
                         if(type === 'cost_type'){
-                            particularsArray[id].cost_type = this.value
+                            particularsArray[index].cost_type = this.value
                         }
                     });
 
@@ -381,7 +419,7 @@
 
                 } ,
                 addNewBillCode(token){
-                    console.log(token);
+
                     let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
                     let goAhead = true;
@@ -411,26 +449,22 @@
                                 project_id: $('#project_id').val()
                             },
                             success: function (data) {
-                                console.log(data);
+                                let label = new_bill_code + ' | ' + new_bill_description
+
+                                bill_codes.push(
+                                    { value: data.billCode.id, label: label, description: new_bill_description }
+                                )
+                                updateBillCodeDropdowns(bill_codes, data.billCode)
+
                             }
                         });
 
-
-                        let label = new_bill_code + ' | ' + new_bill_description
-
-                        bill_codes.push(
-                            { value: new_bill_code, label: label, description: new_bill_description }
-                        )
-
-                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
-
-                        // initializeBillCodes();
                         return false;
                     }
                 },
                 closeBillCodePanel() {
                     let selectedId = $('#selectedBillCodeId').val();
-
+                    console.log(selectedId);
                     var selectedBillCode = document.querySelector('#'+selectedId);
                     selectedBillCode.reset();
 
@@ -441,13 +475,14 @@
 
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+               /* updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
-                        let billCodeSelector = document.querySelector('#bill_code' + v);
+                        let currentField = this.fields[v];
+                        let billCodeSelector = document.querySelector('#bill_code' + currentField.introw);
 
-                        if(selectedId === 'bill_code'+v ) {
+                        if(selectedId === 'bill_code'+ currentField.introw ) {
 
                             billCodeSelector.setOptions(optionArray);
                             billCodeSelector.setValue(selectedValue);
@@ -456,17 +491,18 @@
                             this.fields[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].description = selectedDescription;
-                            $('#description'+v).val(selectedDescription)
-                            closeSidePanelBillCode()
+                            $('#description' + currentField.introw).val(selectedDescription)
+
                         }
                         else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
 
                     }
+                    closeSidePanelBillCode();
 
                     $('#new_bill_code').val(null);
                     $('#new_bill_description').val(null);
                     $('#selectedBillCodeId').val(null);
-                },
+                },*/
                 updateBillType(){
 
                 },
@@ -492,6 +528,7 @@
                         } catch (o) {}
                         var total = 0;
                         var totalretainage = 0;
+
                         this.fields.forEach(function(currentValue, index, arr) {
                             let oct = Number(getamt(currentValue.original_contract_amount));
                             let retainage_amount = Number(getamt(currentValue.retainage_amount));
@@ -518,7 +555,8 @@
                 calculateTotalRetainage(){
                     this.totalretainage = 0;
                    for(let r=0; r < this.fields.length; r++) {
-                       this.totalretainage = Number(this.totalretainage) + Number(getamt(roundAmount(this.fields[r].retainage_amount)));
+                       // console.log(this.fields[r].retainage_amount);
+                       this.totalretainage = Number(this.totalretainage) + Number(roundAmount(getamt(this.fields[r].retainage_amount)));
                    }
                 },
                 removeValidationError(fieldName, id){
@@ -534,9 +572,10 @@
                     });
                 },
                 validateParticulars(){
+
                     let valid = true;
-                    this.copyBillCodeGroups();
-                    for(let p=0; p < this.fields.length;p++){
+                    this.copyBillCodeGroups();console.log(this.fields);
+                    for(let p=0; p < this.fields.length; p++){
 
                         if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
                             $('#cell_bill_code_' + p).addClass(' error-corner');
@@ -614,7 +653,8 @@
                 },
                 async addNewRow() {
                     // int = this.fields.length
-                    let lastRow = this.fields[this.fields.length]
+                    let lastRow = this.fields[this.fields.length-1]
+
                     let int = lastRow.introw + 1
 
                     this.fields.push({
@@ -658,24 +698,42 @@
 
                     let id = particularsArray.length - 1;
                     this.count = id;
-
+                    console.log(int);
                     const x = await this.wait(10);
-                    this.virtualSelect(id, 'bill_code', bill_codes)
-                    this.virtualSelect(id, 'group', groups)
-                    this.virtualSelect(id, 'cost_type', cost_types)
-                    this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes')
+                    this.virtualSelect(int, 'bill_code', bill_codes,null)
+                    this.virtualSelect(int, 'group', groups, null)
+                    this.virtualSelect(int, 'cost_type', cost_types, null)
+                    this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes', null)
                 },
-                removeRow(field){
+                removeRow(field, index){
                     let id = field.introw;
-                    this.fields.splice(id, 1);
-                    particularsArray.splice(id, 1);
+                    this.fields.splice(index, 1);
+                    particularsArray.splice(index, 1);
 
-                    total = 0;
-                    this.fields.forEach(function(currentValue, index, arr) {
+                    let total = 0;
+                    for( let f =0; f < this.fields.length; f++){
+                        let currentValue = this.fields[f];
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                         total = Number(total) + Number(getamt(amount));
+                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                        if(calculatedRowValue !== '') {
+                            var rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                            if(rowsIncludedInCalculation.includes(id)) {
+                                const index = rowsIncludedInCalculation.indexOf(id);
+                                if (index > -1) {
+                                    rowsIncludedInCalculation.splice(index, 1);
+                                    let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+                                    $('#calculated_row'+currentValue.introw).val( rowsArray );
+                                    currentValue.calculated_row = rowsArray;
+                                    this.reCalculateCalculatedRowValue(currentValue);
+                                }
+                            }
+
+                        }
+                        this.calc(currentValue);
                         // this.fields[index].introw = index;
-                    });
+                    }
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
                     document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
@@ -683,8 +741,48 @@
                     numrow = this.fields.length - 1;
                     this.count = numrow;
                 },
+                reflectOriginalContractAmountChange(field, index){
+                    let id = field.introw;
+
+                    let total = 0;
+                    for( let f =0; f < this.fields.length; f++){
+                        let currentValue = this.fields[f];
+                        let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                        total = Number(total) + Number(getamt(amount));
+                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                        if(calculatedRowValue !== '') {
+                            let rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                            if(rowsIncludedInCalculation.includes(id)) {
+                                const index = rowsIncludedInCalculation.indexOf(id);
+                                if (index > -1) {
+                                    this.reCalculateCalculatedRowValue(currentValue);
+                                }
+                            }
+                        }
+                        this.calc(currentValue);
+                        // this.fields[index].introw = index;
+                    }
+                    document.getElementById('particulartotal').value = updateTextView1(total);
+                    document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+
+                },
+                reCalculateCalculatedRowValue(field){
+
+                    let rowsIncludedInCalculation = JSON.parse($('#calculated_row'+field.introw).val());
+                    let total = 0;
+                    for(let r=0; r < rowsIncludedInCalculation.length; r++){
+                        total += getamt( this.fields[r].original_contract_amount )
+                    }
+                    let calculatedAmt = (total * parseFloat($('#calculated_perc' + field.introw).val()) / 100);
+                    console.log(calculatedAmt);
+
+                    field.original_contract_amount = getamt(calculatedAmt);
+                    $('#lbl_original_contract_amount' + field.introw).html(calculatedAmt);
+                    $('#original_contract_amount'+field.introw).val(calculatedAmt)
+
+                },
                 copyBillCodeGroups() {
-                    console.log(this.fields);
                     for(let p=0; p < this.fields.length; p++){
                         this.fields[p].bill_code = particularsArray[p].bill_code;
                         this.fields[p].description = particularsArray[p].description;
@@ -722,58 +820,141 @@
                         $('#calc_perc_error').html('');
 
                     if(valid) {
-                        selected_field_int = document.getElementById('selected_field_int').value;
-                        calc_amount = document.getElementById("calc_amount").value;
-                        // document.getElementById('original_contract_amount' + selected_field_int).type = 'hidden';
+                        let selected_field_int =  $('#selected_field_int').val();
+                        let selected_field_index = $('#selected_field_index').val();
+
+                        let calc_amount = document.getElementById("calc_amount").value;
 
                         try {
-                            this.fields[selected_field_int].original_contract_amount = calc_amount;
-                            this.fields[selected_field_int].showoriginal_contract_amount = false;
+                            this.fields[selected_field_index].original_contract_amount = calc_amount;
+                            this.fields[selected_field_index].showoriginal_contract_amount = false;
                         } catch (o) {
                         }
 
-                        setOriginalContractAmount();
-                        this.calc(this.fields[selected_field_int]);
+                        this.setCalculatedOriginalContractAmount(selected_field_int, selected_field_index);
+                        // this.calc(this.fields[selected_field_index]);
+                        this.reflectOriginalContractAmountChange(this.fields[selected_field_index], selected_field_index);
                         this.calculateTotalRetainage();
                         this.saveParticulars();
-                        this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                        this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                        this.fields[selected_field_index].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
+                        this.fields[selected_field_index].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
                     }
 
                 },
-                OpenAddCaculated(field) {
-                    console.log(field.introw);
+                setCalculatedOriginalContractAmount(introw, index) {
+                    console.log(introw);
+
+                    try {
+                        document.getElementById("original_contract_amount" + introw).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
+                    } catch (o) {
+
+                    }
+
+                    document.getElementById("lbl_original_contract_amount" + introw).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+
+                    try {
+                        document.getElementById("project" + introw).readOnly = true;
+                        document.getElementById("cost_code" + introw).readOnly = true;
+                        document.getElementById("cost_type" + introw).readOnly = true;
+
+                    } catch (o) {
+
+                    }
+                    document.getElementById("add-calc" + introw).style.display = 'none';
+                    document.getElementById("remove-calc" + introw).style.display = 'inline-block';
+                    document.getElementById("edit-calc" + introw).style.display = 'inline-block';
+                    document.getElementById("edit-calc" + introw).innerHTML = 'Edit';
+                    document.getElementById("pipe-calc" + introw).style.display = 'inline-block';
+                    document.getElementById("edit-calc" + introw).innerHTML = 'Edit';
+                    let calcRowArray = [];
+                    $('input[name="calc-pint[]"]').each(function (indx, arr) {
+                        let int = $(this).val();
+
+                        var checkBox = document.getElementById("calc" + int);
+                        if (checkBox.checked == true) {
+                            calcRowArray.push(parseInt(int))
+                        }
+                    });
+                    calcRowArray = JSON.stringify(calcRowArray);
+                    console.log(calcRowArray);
+                    // console.log(calcRowInt);
+                    document.getElementById("calculated_row" + introw).value = calcRowArray;
+                    document.getElementById("calculated_perc" + introw).value = parseFloat(document.getElementById("calc_perc").value).toFixed(2);
+                    closeSidePanelcalc()
+                    clearCalcTable();
+                    calculateRetainage();
+                    try {
+                        document.getElementById("exicon" + introw).style.display = 'inline-block';
+                    } catch (o) { }
+                    try {
+                        if (invoice_construction == true) {
+                            calculateConstruction();
+                        } else {
+                            calculatedRowSummaryContract()
+                        }
+                    } catch (o) { }
+                    return false;
+                },
+                OpenAddCaculated(field, index) {
                     calcRowInt=field.introw;
                     field.showoriginal_contract_amount = false;
                     //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
-                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
+                    this.selected_field_int = field.introw;
                     document.getElementById('selected_field_int').value = field.introw;
-                    this.OpenAddCaculatedRow(field.introw);
+                    document.getElementById('selected_field_index').value = index;
+                    this.OpenAddCaculatedRow(field.introw, index);
                 },
-                RemoveCaculated(field) {
-                    this.fields[field.introw].original_contract_amount = 0;
+                RemoveCaculated(field, index) {
+                    this.fields[index].original_contract_amount = 0;
                     document.getElementById('lbl_original_contract_amount' + field.introw).innerHTML = '';
                     this.fields[field.introw].showoriginal_contract_amount = false;
                     RemoveCaculatedRow(field.introw);
                     this.calc(field)
                 },
-                EditCaculated(field) {
+                EditCaculated(field, index) {
                     document.getElementById('selected_field_int').value = field.introw;
-                    this.editCaculatedRow(field.introw);
+                    document.getElementById('selected_field_index').value = index;
+                    this.editCaculatedRow(field.introw, index);
                 },
-                addRowinCalcTable(ind) {
+                addRowinCalcTable(ind, index) {
                     clearCalcTable();
                     calcRowInt = ind
+                    $('#selected_field_index' ).val(index);
                     var mainDiv = document.getElementById('new_particular1');
 
-                    $('input[name="pint[]"]').each(function (indx, arr) {
+                    for(let i = 0; i < particularsArray.length; i++) {
+                        let newDiv = document.createElement('tr');
+                        let row = '';
+                        let particular = particularsArray[i];
+                        if (ind !== particular.introw) {
+
+
+                            let oca = document.getElementById('original_contract_amount' + particular.introw).value;
+                            let amt = getamt(oca);
+                            let displayValue = document.querySelector('#bill_code' + particular.introw ).getDisplayValue().split('|');
+                            let bill_code = displayValue[0];
+                            var discription = displayValue[1];
+
+                            row = row + '<td class="td-c">' +
+                                '<input type="hidden" name="calc-pint[]" value="' + particular.introw + '" id="calc-pint' + particular.introw + '">' +
+                                '<input type="checkbox" name="calc-checkbox[]" value="' + particular.introw + '" id="calc' + particular.introw + '" onclick="inputCalcClicked(' + particular.introw + ',' + getamt(document.getElementById('original_contract_amount' + particular.introw).value) + ')"></td>' +
+                                '<td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td>' +
+                                '<td class="td-c">$' + document.getElementById('original_contract_amount' + particular.introw).value + '</td>'
+
+
+                        }
+                        newDiv.innerHTML = row;
+                        mainDiv.appendChild(newDiv);
+                    }
+
+                    /*$('input[name="pint[]"]').each(function (indx, arr) {
                         var newDiv = document.createElement('tr');
                         row = '';
                         int = ($(this).val() === null || $(this).val() == '') ? 0 : $(this).val();
 
                         bint = Number(int) + 2;
                         if (ind != int) {
-                            console.log('original_contract_amount' + int);
+
                             oca = document.getElementById('original_contract_amount' + int).value;
                             amt = getamt(oca);
                             try {
@@ -784,31 +965,35 @@
                             var discription = document.getElementById('description' + int).value;
                             //bill_code = document.getElementById('bill_code' + bint).value;
                             // if (amt > 0) {
-                                row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
+                                row = row + '<td class="td-c">' +
+                                    '<input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '">' +
+                                    '<input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td>' +
+                                    '<td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td>' +
+                                    '<td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
                             // }
                         }
                         newDiv.innerHTML = row;
                         mainDiv.appendChild(newDiv);
 
-                    });
+                    });*/
                 },
-                OpenAddCaculatedRow(row) {
-                    this.proindexContract(row, row)
+                OpenAddCaculatedRow(row, index) {
+                    this.proindexContract(row, row, index)
 
                 },
-                proindexContract(ind, select_id) {
+                proindexContract(ind, select_id, index) {
                     product_index = ind;
                     currect_select_dropdwn_id = select_id;
                     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
                     document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
                     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-                    this.addRowinCalcTable(ind)
+                    this.addRowinCalcTable(ind, index)
 
                 },
-                editCaculatedRow(row) {
-                    this.OpenAddCaculatedRow(row)
+                editCaculatedRow(row, index) {
+                    this.OpenAddCaculatedRow(row, index)
                     document.getElementById("calc_perc").value = document.getElementById("calculated_perc" + row).value
-                    calc_json = document.getElementById("calculated_row" + row).value;
+                    let calc_json = document.getElementById("calculated_row" + row).value;
                     calc_json = JSON.parse(calc_json)
 
                     for (const element of calc_json) {

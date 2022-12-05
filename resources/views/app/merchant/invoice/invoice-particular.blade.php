@@ -473,6 +473,35 @@ table thead,
                             }
                         }
 
+                       function updateBillCodeDropdowns(optionArray, newBillCode){
+                           let selectedId = $('#selectedBillCodeId').val();
+
+                           for(let v=0; v < particularray.length; v++){
+                               let currentField = particularray[v];
+                               let billCodeSelector = document.querySelector('#bill_code' + v);
+
+                               if(selectedId === 'bill_code'+ v ) {
+
+                                   billCodeSelector.setOptions(optionArray);
+                                   billCodeSelector.setValue(newBillCode.id);
+
+                                   only_bill_codes.push(newBillCode.id)
+
+                                   particularray[v].bill_code = newBillCode.code;
+                                   particularray[v].description = newBillCode.description;
+                                   $('#description' + v).val( newBillCode.description )
+
+                               }
+                               else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
+
+                           }
+                           closeSidePanelBillCode();
+
+                           $('#new_bill_code').val(null);
+                           $('#new_bill_description').val(null);
+                           $('#selectedBillCodeId').val(null);
+                       }
+
                        /*$('#cell_bill_code_' + p).addClass(' error-corner');
                        this.goAhead = false;
                        }else $('#cell_bill_code_' + p).removeClass(' error-corner');
@@ -540,11 +569,16 @@ table thead,
                             project_id : this.project_id
                         },
                         success: function (data) {
-                            console.log(data);
+                            let label = data.billCode.code + ' | ' + data.billCode.description
+
+                            bill_codes.push(
+                                { value: data.billCode.id, label: label, description: data.billCode.description }
+                            )
+                            updateBillCodeDropdowns(bill_codes, data.billCode)
                         }
                     });
 
-                    let new_bill_code = $('#new_bill_code').val();
+                    /*let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
 
                     let label = new_bill_code + ' | ' + new_bill_description
@@ -553,12 +587,12 @@ table thead,
                         {label: label, value : new_bill_code, description : new_bill_description }
                     )
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);*/
 
                     // initializeBillCodes();
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+               /* updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
@@ -583,7 +617,7 @@ table thead,
                     $('#new_bill_code').val(null);
                     $('#new_bill_description').val(null);
                     $('#selectedBillCodeId').val(null);
-                },
+                },*/
                                 goToParticulars() {
                                     this.resetFlags();
                                     /*if (this.project_id === null || this.project_id === '') {
@@ -1406,7 +1440,7 @@ table thead,
                                 $('#description'+id).val(displayValue[1].trim())
                                 particularray[id].description = displayValue[1].trim();
                             }
-                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
                                 console.log(this.value); 
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)

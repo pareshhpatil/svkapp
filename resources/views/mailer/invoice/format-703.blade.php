@@ -55,7 +55,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                 <img style="height: 40px" src="data:image/png;base64,{{$info['logo']}}" alt="">
                             </td>
                             <td>
-                                <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;font-size:24px;">Document G703® – 1992</div>
+                                <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
                             </td> 
                             </tr>
                         </table>

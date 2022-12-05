@@ -475,7 +475,7 @@ class Invoice extends ParentModel
     public function getBillCodes($project_id)
     {
         $retObj = DB::table('csi_code')
-            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
             ->where('project_id', $project_id)
             ->where('is_active', 1)
             ->get();

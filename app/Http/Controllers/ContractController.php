@@ -243,7 +243,7 @@ class ContractController extends Controller
     public function getBillCodes($project_id)
     {
         return CsiCode::where('project_id', $project_id)
-            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
             ->where('merchant_id', $this->merchant_id)
             ->where('is_active', 1)
             ->get()->toArray();
@@ -633,7 +633,7 @@ class ContractController extends Controller
             'merchant_id' => $this->merchant_id
         ]);
 
-        return response()->json(['message' => 'Bill code is created successfully']);
+        return response()->json(['message' => 'Bill code is created successfully', 'billCode' => $billCode]);
     }
 
     public function billcodeupdate(Request $request)

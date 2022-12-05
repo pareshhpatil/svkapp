@@ -325,6 +325,17 @@ class User extends ParentModel
         return $retObj[0];
     }
 
+    public function briqRegister($email, $first_name, $last_name, $mobile_code, $mobile, $password, $company_name, $plan_id, $campaign_id, $service_id)
+    {
+        $mobile_code = '+' . substr($mobile_code, 0, 4);
+        $first_name = addslashes($first_name);
+        $last_name = addslashes($last_name);
+        $company_name = addslashes($company_name);
+        $retObj = DB::select("call `briq_merchant_register`('" . $email . "','" . $first_name . "','" . $last_name . "','" . $mobile_code . "','" . $mobile . "','" . $password . "','" . $company_name . "','" . $plan_id . "','" . $campaign_id . "',0,'" . $service_id . "');");
+        return $retObj[0];
+    }
+
+
     public function subuserRegister($user_id, $email, $first_name, $last_name, $mobile, $password)
     {
         $first_name = addslashes($first_name);

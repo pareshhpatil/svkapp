@@ -110,13 +110,16 @@
                     @endif
                     <tbody id="preview_data">
                     @php $totalRetainageAmount = 0;
-                    $costTypeArr = array_combine(array_column($cost_types,'value'), array_column($cost_types,'label'))
+                    $costTypeArr = array_combine(array_column($cost_types,'value'), array_column($cost_types,'label'));
+                    $billTypeArr = array_combine(array_column($bill_codes,'value'), array_column($bill_codes,'label'))
                     @endphp
 
                     @foreach($particulars as $particular)
-                        @php $totalRetainageAmount += $particular['retainage_amount'] @endphp
+                        @php $totalRetainageAmount += $particular['retainage_amount'];
+                        $billCodeArr = explode('|', $billTypeArr[$particular['bill_code']]);
+                        @endphp
                         <tr>
-                            <td class="td-c">{{ $particular['bill_code'] }}</td>
+                            <td class="td-c">{{ trim($billCodeArr[0]) }}</td>
                             <td class="td-c">{{ $particular['bill_type'] }}</td>
                             <td class="td-c">{{ $costTypeArr[$particular['cost_type']]??null }}</td>
                             <td class="td-c">{{ $particular['original_contract_amount'] }}</td>

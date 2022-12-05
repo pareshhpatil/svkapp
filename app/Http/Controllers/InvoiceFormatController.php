@@ -31,97 +31,97 @@ class InvoiceFormatController extends AppController
      * 
      * @return void
      */
-
-
     public function create($link, Request $request)
     {
-
         $template_id = Encrypt::decode($link);
 
-        if (strlen($template_id) == 10) {
-            $data = $this->setBladeProperties('Create format', [], [1]);
-            #get invoice format detail
-            $data['detail'] = $this->formatModel->getTableRow('system_template', 'system_template_id', $template_id);
-            $data['detail']->template_name = '';
-            $data['detail']->default_particular = '';
-            $data['detail']->default_tax = '';
-            // $data['detail']->plugin = '';
-
-            #get default billing profile
-            $defaultProfile = $this->formatModel->getMerchantDefaultProfile($this->merchant_id);
-            $data['defaultProfileId'] = ($defaultProfile != false) ? $defaultProfile->id : 0;
-
-            #get pre define system column metadata
-            $metarows = $this->formatModel->getSystemMetadata($template_id);
-            $data['metadata'] = $this->setMetadata($metarows);
-            foreach ($data['metadata']['H'] as $key => $row) {
-                if ($row->function_id == 9) {
-                    $data['metadata']['H'][$key]->param = 'system_generated';
-                }
-            }
-            $data['metadata']['M'] = [];
-
-            #get pre define system fields
-            $formatCol = $this->formatModel->getTemplateMandatoryFields();
-            $data['formatColumns'] = $this->setMetadata($formatCol);
-            $data['template_id'] = '';
-            $data['vd_sec'] = true;
-            $data['link'] = $link;
-            $data['jsfile'] = ['template', 'coveringnote'];
-            $data['vd_title'] = "VEHICLE DETAILS";
-            $data['richtext'] = true;
-            $data['mode'] = 'create';
-            $data['detail']->custmized_receipt_fields = '';
-            $data['defaultReceiptFields'] = $this->setDefaultReceiptFields();
-            $data['logo'] = '';
-            if (isset($request->design_name)) {
-                if ($request->design_name == 'travel') {
-                    $data['designname'] = '';
-                } else {
-                    $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
-                }
-            }
-
-            $data['colorname'] =  isset($request->design_color) ? $request->design_color : '';
-            $data['footernote'] = 'Thank you for your purchase.';
-            $formateData = '';
-            if (isset($request->design_name))
-                $formateData = $this->formatModel->getSystemTemplateDesignName($request->design_name);
-
-            if ($formateData) {
-                $title = (array)$formateData;
-                $data['typename'] = $title['title'];
-            } else
-                $data['typename'] = '';
-
-            $data['from'] =  'create';
-            $added_available_fields = array();
-            $data['drawCustomerRows'] = '';
-            $data['drawBillingRows'] = '';
-            $data['available_fields'] = json_encode($added_available_fields, 1);
-
-            $data['customerColumns'] = $this->formatModel->getTableList('customer_mandatory_column', 'is_active', 1);
-
-            $data["product_list"] = [];
-            $product_list = $this->invoiceModel->getAllParentProducts($this->merchant_id);
-            if (!empty($product_list)) {
-                $products = array();
-                foreach ($product_list as $pr) {
-                    $pr->product_name = str_replace("'", "", $pr->product_name);
-                    $products[$pr->product_name] = array(
-                        'price' => $pr->price, 'sac_code' => $pr->sac_code,
-                        'gst_percent' => $pr->gst_percent, 'unit_type' => $pr->unit_type, 'available_stock' => $pr->available_stock,
-                        'enable_stock' => $pr->has_stock_keeping, 'name' => $pr->product_name,
-                        'mrp' => $pr->mrp, 'product_expiry_date' => $pr->product_expiry_date, 'product_number' => $pr->product_number
-                    );
-                }
-                $data["product_json"] = json_encode($products);
-                $data["product_list"] = $products;
-            }
-            return view('app/merchant/invoiceformat/create', $data);
-        } else {
+        if (strlen($template_id) != 10) {
             return redirect('/404');
         }
+
+        $data = $this->setBladeProperties('Create format', [], [1]);
+        #get invoice format detail
+        $data['detail'] = $this->formatModel->getTableRow('system_template', 'system_template_id', $template_id);
+        $data['detail']->selected_template_name = $data['detail']->template_name;
+        $data['detail']->template_name = '';
+        $data['detail']->default_particular = '';
+        $data['detail']->default_tax = '';
+
+        // $data['detail']->plugin = '';
+
+        #get default billing profile
+        $defaultProfile = $this->formatModel->getMerchantDefaultProfile($this->merchant_id);
+        $data['defaultProfileId'] = ($defaultProfile != false) ? $defaultProfile->id : 0;
+
+        #get pre define system column metadata
+        $metarows = $this->formatModel->getSystemMetadata($template_id);
+        $data['metadata'] = $this->setMetadata($metarows);
+        foreach ($data['metadata']['H'] as $key => $row) {
+            if ($row->function_id == 9) {
+                $data['metadata']['H'][$key]->param = 'system_generated';
+            }
+        }
+        $data['metadata']['M'] = [];
+
+        #get pre define system fields
+        $formatCol = $this->formatModel->getTemplateMandatoryFields();
+        $data['formatColumns'] = $this->setMetadata($formatCol);
+        $data['template_id'] = '';
+        $data['vd_sec'] = true;
+        $data['link'] = $link;
+        $data['jsfile'] = ['template', 'coveringnote'];
+        $data['vd_title'] = "VEHICLE DETAILS";
+        $data['richtext'] = true;
+        $data['mode'] = 'create';
+        $data['detail']->custmized_receipt_fields = '';
+        $data['defaultReceiptFields'] = $this->setDefaultReceiptFields();
+        $data['logo'] = '';
+        if (isset($request->design_name)) {
+            if ($request->design_name == 'travel') {
+                $data['designname'] = '';
+            } else {
+                $data['designname'] =  isset($request->design_name) ? $request->design_name : '';
+            }
+        }
+
+        $data['colorname'] =  isset($request->design_color) ? $request->design_color : '';
+        $data['footernote'] = 'Thank you for your purchase.';
+        $formateData = '';
+        if (isset($request->design_name))
+            $formateData = $this->formatModel->getSystemTemplateDesignName($request->design_name);
+
+        if ($formateData) {
+            $title = (array)$formateData;
+            $data['typename'] = $title['title'];
+        } else
+            $data['typename'] = '';
+
+        $data['from'] =  'create';
+        $added_available_fields = array();
+        $data['drawCustomerRows'] = '';
+        $data['drawBillingRows'] = '';
+        $data['available_fields'] = json_encode($added_available_fields, 1);
+
+        $data['customerColumns'] = $this->formatModel->getTableList('customer_mandatory_column', 'is_active', 1);
+
+        $data["product_list"] = [];
+        $product_list = $this->invoiceModel->getAllParentProducts($this->merchant_id);
+        if (!empty($product_list)) {
+            $products = array();
+            foreach ($product_list as $pr) {
+                $pr->product_name = str_replace("'", "", $pr->product_name);
+                $products[$pr->product_name] = array(
+                    'price' => $pr->price, 'sac_code' => $pr->sac_code,
+                    'gst_percent' => $pr->gst_percent, 'unit_type' => $pr->unit_type, 'available_stock' => $pr->available_stock,
+                    'enable_stock' => $pr->has_stock_keeping, 'name' => $pr->product_name,
+                    'mrp' => $pr->mrp, 'product_expiry_date' => $pr->product_expiry_date, 'product_number' => $pr->product_number
+                );
+            }
+            $data["product_json"] = json_encode($products);
+            $data["product_list"] = $products;
+        }
+
+        return view('app/merchant/invoiceformat/create', $data);
     }
 
     public function chooseDesign($from, $link)

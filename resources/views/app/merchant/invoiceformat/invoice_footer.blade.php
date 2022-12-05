@@ -554,8 +554,8 @@
                                                     class="displayonly" value="0" />
                                                 <input name="deduct_text" id="deduct_text" type="hidden"
                                                     class="displayonly" value="" />
-                                                <button data-dismiss="modal" aria-hidden="true"
-                                                    class="btn green pull-right">Cancel</button>
+                                                    <button type="submit" class="btn blue center pull-right mr-1">Settle
+                                                    Invoice</button>
                                                     @isset($metadata['plugin']['has_partial'])
                                                 @if($metadata['plugin']['has_partial']==1)
                                                     <button type="submit" name="is_partial"
@@ -563,8 +563,10 @@
                                                  @endif
                                                  @endisset
 
-                                                <button type="submit" class="btn blue center pull-right mr-1">Settle
-                                                    Invoice</button>
+                                                
+
+                                                    <button data-dismiss="modal" aria-hidden="true"
+                                                    class="btn green pull-right mr-1">Cancel</button>
 
                                             </div>
                                             <div class="col-md-2">
