@@ -13,6 +13,7 @@ use App\Libraries\Helpers;
 use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
 use App\Http\Traits\InvoiceFormatTrait;
+use Illuminate\Support\Arr;
 use Validator;
 use Exception;
 use Illuminate\Support\Facades\Session;
@@ -1596,7 +1597,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-
+        
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -1608,6 +1609,7 @@ class InvoiceController extends AppController
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
             $info['logo'] = '';
+
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
@@ -1619,7 +1621,8 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
-            if ($type == '703' || $type == '703') {
+
+            if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
@@ -1633,7 +1636,7 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-
+            
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
@@ -1897,7 +1900,7 @@ class InvoiceController extends AppController
         $responce_tax =  $this->invoiceModel->getInvoiceTax($payment_request_id);
         $responce_meta =  $this->invoiceModel->getInvoiceMetadata($info['template_id'], $payment_request_id);
         $cust_values = $this->invoiceModel->getCustomerbreckup($info['customer_id']);
-
+    
         $info['user_type'] = $user_type;
         $info['staging'] = $staging;
         $data['links'] = $payment_request_id;
@@ -2399,6 +2402,11 @@ class InvoiceController extends AppController
             $seq_no = $seq_row->val + 1;
             $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
         }
+
+        //get less Previous certificates for payment from previous invoice
+        $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
+
+        $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
@@ -2409,6 +2417,68 @@ class InvoiceController extends AppController
 
 
         return $data;
+    }
+
+    /**
+     * @param $contract_id
+     * @param $customer_id
+     * @return int|string
+     */
+    private function getLessPreviousCertificatesForPayment($contract_id, $customer_id)
+    {
+        $less_previous_certificates_for_payment = 0;
+        $query = <<<SQL
+SELECT
+	rank_sequence,
+	payment_request_id
+	FROM (
+		SELECT *,   
+    ROW_NUMBER() OVER(PARTITION BY contract_id ORDER BY created_date DESC) AS rank_sequence  
+FROM payment_request where customer_id=$customer_id and contract_id='$contract_id'
+	) AS t
+	WHERE
+	rank_sequence = 2;
+SQL;
+        $prevPaymentRequestRow = $this->invoiceModel->querylist($query);
+
+        if(!empty($prevPaymentRequestRow)) {
+            $prevPaymentRequest = Arr::first($prevPaymentRequestRow);
+            $prevPaymentRequestID = $prevPaymentRequest->payment_request_id;
+
+            $prevOrderParticularQuery = <<<SQL
+SELECT * from invoice_construction_particular 
+         where payment_request_id = '$prevPaymentRequestID'
+SQL;
+            $prevOrderParticularRequestRow = $this->invoiceModel->querylist($prevOrderParticularQuery);
+            $prevOrderParticulars = collect($prevOrderParticularRequestRow);
+
+            $prev_total_d = 0;
+            $prev_total_e = 0;
+            $prev_total_f = 0;
+            $prev_total_g = 0;
+            $prev_total_i = 0;
+            foreach ($prevOrderParticulars as $prevOrderParticular) {
+                $prev_total_d += $prevOrderParticular->previously_billed_amount;
+                $prev_total_e += $prevOrderParticular->current_billed_amount;
+                $prev_total_f += $prevOrderParticular->stored_materials;
+                $prev_total_g += $prevOrderParticular->previously_billed_amount +
+                    $prevOrderParticular->current_billed_amount +
+                    $prevOrderParticular->stored_materials;
+                $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
+
+            }
+
+            $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100));
+
+            $single_per = ($prev_total_d+$prev_total_e) / 100;
+
+
+            $a5=$single_per*$cper;
+
+            $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+        }
+        
+        return $less_previous_certificates_for_payment;
     }
 
 
