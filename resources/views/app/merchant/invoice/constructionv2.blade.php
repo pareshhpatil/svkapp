@@ -222,7 +222,7 @@
                                 <label class="control-label col-md-4">Project name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->project_name}} | {{$contract_detail->project_id}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->project_name??null}} | {{$contract_detail->project_id??null}}">
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@
                                 <label class="control-label col-md-4">Company name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->company_name}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->company_name??null}}">
                                     </div>
                                 </div>
                             </div>
@@ -238,7 +238,7 @@
                                 <label class="control-label col-md-4">Contract code</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->contract_code}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$contract_detail->contract_code??null}}">
                                     </div>
                                 </div>
                             </div>
@@ -246,8 +246,8 @@
                                 <label class="control-label col-md-4">Client code</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->customer_code}}">
-                                        <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->customer_code??null}}">
+                                        <input type="hidden" name="customer_id" value="{{$customer->customer_id??null}}">
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +255,7 @@
                                 <label class="control-label col-md-4">Client name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->first_name}} {{$customer->last_name}}">
+                                        <input type="text" readonly class="form-control cust_det" value="{{$customer->first_name??null}} {{$customer->last_name??null}}">
                                     </div>
                                 </div>
                             </div>

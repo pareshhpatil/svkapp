@@ -419,7 +419,7 @@
 
                 } ,
                 addNewBillCode(token){
-                    console.log(token);
+
                     let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
                     let goAhead = true;
