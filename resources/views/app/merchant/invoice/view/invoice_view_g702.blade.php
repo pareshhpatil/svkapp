@@ -248,8 +248,8 @@ $header='app.patron.invoice.invoice-master';}
                             <div>
                                 <p class="font-bold text-xs mt-5"></p>
                                 <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5 < 0)({{str_replace('-','',number_format($a5,2))}}) @else{{number_format($a5,2)}}@endif</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}})@else{{number_format($info['total_f'],2)}}@endif</p> 
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5+$info['total_f'] < 0)({{str_replace('-','',number_format($a5+$info['total_f'],2))}}) @else{{number_format(($a5+$info['total_f']),2)}}@endif</p> 
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}})@else{{number_format($info['total_i'],2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5+$info['total_i'] < 0)({{str_replace('-','',number_format($a5+$info['total_i'],2))}}) @else{{number_format(($a5+$info['total_i']),2)}}@endif</p>
                               
                              
                             </div>
@@ -275,8 +275,8 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                               
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_d'] < 0)({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{number_format($info['total_d'],2)}}@endif</p>
-                              
+{{--                                <p class="font-bold text-xs border-b   border-gray-600 mt-1"> {{$info['currency_icon']}}@if($info['total_d'] < 0)({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{number_format($info['total_d'],2)}}@endif</p>--}}
+                              <p class="font-bold text-xs border-b border-gray-600 mt-1">{{$info['currency_icon']}}{{ $info['less_previous_certificates_for_payment'] }}</p>
                              
                             </div>
                         </div>
