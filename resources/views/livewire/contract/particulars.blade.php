@@ -416,7 +416,7 @@
                         }).on('select2:open', function(e) {
                             pind = $(this).index();
                             if (document.getElementById('prolist' + pind)) {} else {
-                                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+                                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">AddM new bill code</a> </div>');
                             }
                         });
                         /*.on('change', function () {

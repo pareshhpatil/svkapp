@@ -223,7 +223,7 @@
                                          }).on('select2:open', function (e) {
                                              pind = $(this).index();
                                              if (document.getElementById('prolist' + pind)) { } else {
-                                                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+                                                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Addk new bill code</a> </div>');
                                              }
                                          }).on('select2:select', function (e){
                                              let data = $('#billcode' + id).select2('val');
@@ -459,7 +459,7 @@
                                         }).on('select2:open', function(e) {
                                             pind = $(this).index();
                                             if (document.getElementById('prolist' + pind)) {} else {
-                                                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+                                                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">AddL new bill code</a> </div>');
                                             }
                                         });
                                         /*.on('change', function () {

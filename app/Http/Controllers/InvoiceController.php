@@ -52,7 +52,7 @@ class InvoiceController extends AppController
      * 
      * @return void
      */
-    public function create(Request $request, $type = 'invoice', $invoice_type = 1)
+    public function createlegacy(Request $request, $type = 'invoice', $invoice_type = 1)
     {
         if (env('INVOICE_VERSION') == '2') {
             return redirect('/merchant/invoice/createv2');
@@ -168,11 +168,8 @@ class InvoiceController extends AppController
 
 
 
-    public function updatev2(Request $request, $link = null)
-    {
-        return $this->createv2($request, $link, 1);
-    }
-    public function createv2(Request $request, $link = null, $update = null)
+   
+    public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
         $invoice_number = '';
@@ -183,6 +180,18 @@ class InvoiceController extends AppController
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+            if ($update == 1) {
+                $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
+                if ($req_id != false) {
+                    if ($request_id != $req_id) {
+                        $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
+                        $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
+                        Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
+                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                        return redirect('/merchant/paymentrequest/viewlist');
+                    }
+                }
+            }
             $request->template_id = $invoice->template_id;
             $request->contract_id = $invoice->contract_id;
             $request->currency = $invoice->currency;
@@ -357,13 +366,6 @@ class InvoiceController extends AppController
      */
     public function update($link, $staging = 0, $revision = 0)
     {
-
-        if ($revision != 1) {
-            if (env('INVOICE_VERSION') == '2') {
-                return redirect('/merchant/invoice/updatev2/' . $link);
-            }
-        }
-
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -374,6 +376,13 @@ class InvoiceController extends AppController
             if ($info->message != 'success') {
                 return redirect('/error')->with('errorTitle', 'Invalid URL');
             }
+            if ($revision != 1) {
+                $request = new \Illuminate\Http\Request();
+                if ($info->template_type=='construction') {
+                    return $this->create($request, $link, 1);
+                }
+            }
+            
             $req_types = array(1 => 'invoice', 2 => 'estimate', 4 => 'subscription');
             $type =  $req_types[$info->invoice_type];
 

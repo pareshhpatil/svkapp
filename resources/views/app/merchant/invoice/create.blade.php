@@ -250,7 +250,7 @@
                                         @if($v->column_datatype=="textarea")
                                         <textarea type="text" name="{{$field_name}}" data-cy="invoice_detail_{{$v->column_name??''}}" class="form-control" placeholder="Enter specific value">{{$v->value}}</textarea>
                                         @elseif($v->column_datatype=="date")
-                                        <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker" {!!$validate->date!!} data-date-format="{{ Session::get('default_date_format')}}">
+                                        <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker"  data-date-format="{{ Session::get('default_date_format')}}">
                                         @elseif($v->column_datatype=="time")
                                         <input type="text" {{$req}} autocomplete="off" data-cy="invoice_detail_{{$v->column_name??''}}" value="{{$v->value??''}}" id="{{$id}}" name="{{$field_name}}" class="form-control timepicker timepicker-no-seconds">
                                         @elseif($v->function_id==15)

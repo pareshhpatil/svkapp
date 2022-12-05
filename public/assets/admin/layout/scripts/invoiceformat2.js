@@ -2251,6 +2251,14 @@ function showLedger() {
     return false;
 }
 
+function closeSidePanelLedger() {
+    document.getElementById("panelLedger").style.boxShadow = "none";
+    document.getElementById("panelLedger").style.transform = "translateX(100%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    CloseCoverNote();
+    return false;
+}
+
 function calculateFranchiseSale() {
     var total_gross = 0;
     $('input[name="gross_sale[]"]').each(function (indx, arr) {
