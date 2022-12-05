@@ -2469,15 +2469,17 @@ SQL;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
 
             }
+            
+            if($prev_total_d + $prev_total_e > 0) {
+                $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
 
-            $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100));
-
-            $single_per = ($prev_total_d+$prev_total_e) / 100;
+                $single_per = ($prev_total_d+$prev_total_e) / 100;
 
 
-            $a5=$single_per*$cper;
+                $a5=$single_per*$cper;
 
-            $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+            }
         }
         
         return $less_previous_certificates_for_payment;
