@@ -329,8 +329,7 @@ class CompanyProfileController extends AppController
         $data['first_name'] = Session::get('display_name');
         $data['last_name'] = Session::get('last_name');
         $data['mobile'] = Session::get('mobile');
-        $data['groove'] = true;
-        // dd($item_list);
+
         return view('app/merchant/collect-payment/index', $data);
     }
 
