@@ -13,7 +13,5 @@ class CsiCode extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'code', 'title', 'description', 'project_id', 'merchant_id'
-    ];
+    protected $guarded = [];  
 }

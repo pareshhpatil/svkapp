@@ -12,6 +12,9 @@ class Project extends Model
     use HasFactory;
 
     protected $table = 'project';
+    
+    protected $guarded = [];  
+    public $timestamps = false;
 
     public function customer(): HasOne
     {
