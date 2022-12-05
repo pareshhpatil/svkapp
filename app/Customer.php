@@ -9,6 +9,8 @@ class Customer extends Model
     protected $table = 'customer';
     protected $primaryKey = 'customer_id';
 
+    protected $guarded = [];  
+    
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'last_update_date';
 
