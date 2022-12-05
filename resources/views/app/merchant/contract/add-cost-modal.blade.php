@@ -92,7 +92,7 @@
         <div class="panel">
             <div class='cnt223'>
                 <h3 class="modal-title">Current billed amount
-                    <a class="close " data-toggle="modal" onclick="return closeSidePanelcost();">
+                    <a class="close " data-toggle="modal" @click="closeSidePanelcost();">
                         <button type="button" class="close" aria-hidden="true"></button></a>
 
                 </h3>
@@ -160,7 +160,7 @@
                                                 <input type="checkbox" x-model="field.checked" name="cost-checkbox[]" x-value="field.id" :id="index" @change="costCalc();">
                                             </td>
                                             <td class="td-c" x-text="field.cost_code"></td>
-                                            <td class="td-c" x-text="field.cost_type"></td>
+                                            <td class="td-c" x-text="field.cost_type_label"></td>
                                             <td class="td-c" x-text="field.rate"></td>
                                             <td class="td-c" x-text="field.unit"></td>
                                             <td class="td-c" x-text="field.amount"></td>
@@ -170,6 +170,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="text-danger" id="cost_checkbox_error"></div>
                         <br>
 
                         <div class="row" style="text-align: end;">

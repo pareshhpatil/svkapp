@@ -1,7 +1,7 @@
 @extends('app.master')
 
 @section('content')
-<script src="/assets/admin/layout/scripts/invoiceformat.js?version=16650658059" type="text/javascript"></script>
+<script src="/assets/admin/layout/scripts/invoiceformat.js?version=1665065805936" type="text/javascript"></script>
 <div class="page-content">
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>

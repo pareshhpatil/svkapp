@@ -364,16 +364,17 @@
             </div>
             <div class="modal-body">
 
-                <div class="portlet ">
-                    <div class="portlet-title">
+                <div class=" ">
+                    <div >
                         <div class="form-section">
                             Offline payment
+                            <hr>
                         </div>
 
                     </div>
                     <div class="portlet-body">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <form class="form-horizontal" action="/merchant/paymentrequest/respond" method="post"
                                     onsubmit="document.getElementById('respond').style.display = 'none';
                                               document.getElementById('loader').style.display = 'block';">
@@ -385,7 +386,7 @@
                                         @isset($metadata['plugin']['deductible'])
                                         @if(!empty($metadata['plugin']['deductible']))
                                             <div class="form-group">
-                                                <label for="inputPassword12" class="col-md-5 control-label">Select
+                                                <label for="inputPassword12" class="col-md-4 control-label">Select
                                                     deductible <span class="required">*
                                                     </span></label>
                                                 <div class="col-md-5">
@@ -403,7 +404,7 @@
                                          @endif
                                          @endisset
                                         <div class="form-group">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Transaction
+                                            <label for="inputPassword12" class="col-md-4 control-label">Transaction
                                                 type<span class="required">*
                                                 </span></label>
                                             <div class="col-md-5">
@@ -418,7 +419,7 @@
                                         </div>
                                         
                                         <div class="form-group" id="cod_status" style="display: none;">
-                                            <label for="inputPassword12" class="col-md-5 control-label">COD Status</label>
+                                            <label for="inputPassword12" class="col-md-4 control-label">COD Status</label>
                                             <div class="col-md-5">
                                                 <select class="form-control input-sm" name="cod_status"
                                                     data-placeholder="Select status">
@@ -430,7 +431,7 @@
                                         </div>
                                     
                                         <div class="form-group" id="bank_transaction_no">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Bank ref
+                                            <label for="inputPassword12" class="col-md-4 control-label">Bank ref
                                                 no</label>
                                             <div class="col-md-5">
                                                 <input class="form-control form-control-inline input-sm"
@@ -440,7 +441,7 @@
                                         </div>
                                         <div id="cheque_no" style="display: none;">
                                             <div class="form-group">
-                                                <label for="inputPassword12" class="col-md-5 control-label">Cheque
+                                                <label for="inputPassword12" class="col-md-4 control-label">Cheque
                                                     no</label>
                                                 <div class="col-md-5">
                                                     <input class="form-control form-control-inline input-sm"
@@ -449,7 +450,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="inputPassword12" class="col-md-5 control-label">Cheque
+                                                <label for="inputPassword12" class="col-md-4 control-label">Cheque
                                                     status</label>
                                                 <div class="col-md-5">
                                                     <select class="form-control input-sm" name="cheque_status"
@@ -462,7 +463,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group" id="cash_paid_to" style="display: none;">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Cash paid
+                                            <label for="inputPassword12" class="col-md-4 control-label">Cash paid
                                                 to</label>
                                             <div class="col-md-5">
                                                 <input class="form-control form-control-inline input-sm"
@@ -471,7 +472,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Date <span
+                                            <label for="inputPassword12" class="col-md-4 control-label">Date <span
                                                     class="required">*
                                                 </span></label>
                                             <div class="col-md-5">
@@ -482,7 +483,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group" id="bank_name">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Bank
+                                            <label for="inputPassword12" class="col-md-4 control-label">Bank
                                                 name</label>
                                             <div class="col-md-5">
                                             <input class="form-control form-control-inline input-sm"
@@ -491,7 +492,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Amount <span
+                                            <label for="inputPassword12" class="col-md-4 control-label">Amount <span
                                                     class="required">*
                                                 </span></label>
                                             <div class="col-md-5">
@@ -502,7 +503,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Send the receipt
+                                            <label for="inputPassword12" class="col-md-4 control-label">Send the receipt
                                                 to customer <span class="required">
                                                 </span></label>
                                             <div class="col-md-5">
@@ -513,7 +514,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group" id="document_div">
-                                            <label for="inputPassword12" class="col-md-5 control-label">Notify customer
+                                            <label for="inputPassword12" class="col-md-4 control-label">Notify customer
                                                 on <span class="required">
                                                 </span></label>
                                             <div class="col-md-5">
@@ -525,8 +526,8 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="col-md-5"></div>
-                                            <div class="col-md-7 center">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8 center">
                                                 <input type="hidden" name="payment_req_id"
                                                     value="{{$info['payment_request_id']}}" />
                                                 <input type="hidden" class="displayonly" id="bill_total"
@@ -554,7 +555,7 @@
                                                 <input name="deduct_text" id="deduct_text" type="hidden"
                                                     class="displayonly" value="" />
                                                 <button data-dismiss="modal" aria-hidden="true"
-                                                    class="btn green">Cancel</button>
+                                                    class="btn green pull-right">Cancel</button>
                                                     @isset($metadata['plugin']['has_partial'])
                                                 @if($metadata['plugin']['has_partial']==1)
                                                     <button type="submit" name="is_partial"
@@ -562,7 +563,7 @@
                                                  @endif
                                                  @endisset
 
-                                                <button type="submit" class="btn blue center middle">Settle
+                                                <button type="submit" class="btn blue center pull-right mr-1">Settle
                                                     Invoice</button>
 
                                             </div>

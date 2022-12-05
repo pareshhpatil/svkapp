@@ -179,6 +179,9 @@
                                             Bill code
                                         </th>
                                         <th class="td-c">
+                                            Cost Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
@@ -192,9 +195,6 @@
                                         </th>
                                         <th class="td-c">
                                             Description
-                                        </th>
-                                        <th class="td-c">
-                                            Cost Type
                                         </th>
                                         <th class="td-c">
 
@@ -248,17 +248,20 @@
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td> 
                                         @elseif ($v == 'cost_type')
-                                        <td class="col-id-no">
-                                            <div class="text-center">
+                                        <td class="col-id-no" scope="row">
+                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
+                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
+                                                <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))
-                                                @foreach($cost_type_list as $pk=>$vk)
-                                                @if($row[$v]==$vk->id)
-                                                <label selected="" value="{{$vk->id}}">{{$vk->name}}</label>
-                                                <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
+                                                    @foreach($cost_type_list as $pk=>$vk)
+                                                        @if($row[$v]==$vk->id)
+                                                            <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                        @else
+                                                            <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                        @endif
+                                                    @endforeach
                                                 @endif
-                                                @endforeach
-                                                @endif
-                                            </div>
+                                            </select>
                                         </td>
                                         @else
                                         <td>
@@ -284,6 +287,7 @@
                                 <tfoot class="headFootZIndex">
                                     <tr class="warning">
                                         <th class="col-id-no">Grand total</th>
+                                        <th></th>
                                         <th class="td-c">
                                             <span id="original_contract_amount_total"></span>
                                         </th>
@@ -296,7 +300,6 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="0" class="form-control input-sm" readonly>
                                         </th>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>

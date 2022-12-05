@@ -128,6 +128,9 @@
                                             Bill code
                                         </th>
                                         <th class="td-c">
+                                            Cost Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
@@ -141,9 +144,6 @@
                                         </th>
                                         <th class="td-c">
                                             Description
-                                        </th>
-                                        <th class="td-c">
-                                            Cost Type
                                         </th>
                                     </tr>
                                 </thead>
@@ -180,11 +180,11 @@
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
                                         <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else{{$row[$v]}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
@@ -192,7 +192,7 @@
                                                 @if(!empty($cost_type_list))
                                                 @foreach($cost_type_list as $pk=>$vk)
                                                 @if($row[$v]==$vk->id)
-                                                <label selected="" value="{{$vk->id}}">{{$vk->name}}</label>
+                                                <label selected="" value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</label>
                                                 <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
                                                 @endif
                                                 @endforeach
@@ -213,12 +213,19 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="warning">
-                                        <th class="col-id-no"></th>
+                                    <th class="col-id-no">Grand total</th>
                                         <th></th>
-                                        <th></th>
-                                        <th>Grand total</th>
                                         <th class="td-c">
-                                            <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control" readonly>
+                                            <span id="original_contract_amount_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="unit_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <span id="rate_total"></span>
+                                        </th>
+                                        <th class="td-c">
+                                            <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
                                         <th></th>
                                         <th></th>
@@ -286,26 +293,6 @@
 </script>
 @section('footer')
 <script>
-    project_id = '{{$detail2->project_id}}'
-    projectSelected(project_id)
-    $('.productselect').select2({
-        tags: true,
-        insertTag: function(data, tag) {
-            var $found = false;
-            $.each(data, function(index, value) {
-                if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
-                    $found = true;
-                }
-            });
-            if (!$found) data.unshift(tag);
-        }
-    }).on('select2:open', function(e) {
-        pind = $(this).index();
-        var index = $(".productselect").index(this);
-        index += 1;
-        if (document.getElementById('prolist' + pind)) {} else {
-            $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
-        }
-    });
+   calculateChangeOrder('approved');
 </script>
 @endsection

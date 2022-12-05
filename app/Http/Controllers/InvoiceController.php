@@ -1611,20 +1611,21 @@ class InvoiceController extends AppController
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
-                    try{
-                    $info['logo'] = base64_encode(file_get_contents($imgpath));
-                    }catch(Exception $o){}
+                    try {
+                        $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    } catch (Exception $o) {
+                    }
                 }
             } else {
                 $info['image_path'] = '';
             }
-if($type=='703' || $type=='703')
-{
-    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
-    try{
-    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
-}catch(Exception $o){}
-}
+            if ($type == '703' || $type == '703') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $info['logo'] = base64_encode(file_get_contents($imgpath));
+                } catch (Exception $o) {
+                }
+            }
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
@@ -1708,18 +1709,19 @@ if($type=='703' || $type=='703')
             $info['logo'] = '';
             if (isset($info['image_path'])) {
                 if ($info['image_path'] != '') {
-                    try{
-                    $info['logo'] = base64_encode(file_get_contents($imgpath));
-                }catch(Exception $o){}
+                    try {
+                        $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    } catch (Exception $o) {
+                    }
                 }
             }
-            if($type=='703' || $type=='703')
-{
-    $imgpath = env('APP_URL') . '/images/logo-703.PNG';
-    try{
-    $info['logo'] = base64_encode(file_get_contents($imgpath)); 
-}catch(Exception $o){}
-}
+            if ($type == '703' || $type == '703') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $info['logo'] = base64_encode(file_get_contents($imgpath));
+                } catch (Exception $o) {
+                }
+            }
             $info['signimg'] = '';
             if (isset($info['signature']['signature_file'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
@@ -2914,8 +2916,8 @@ if($type=='703' || $type=='703')
     public function getCostTypes(): array
     {
         return CostType::where('merchant_id', $this->merchant_id)->where('is_active', 1)
-                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
-                ->get()->toArray();
+            ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label')])
+            ->get()->toArray();
     }
 
 
@@ -2939,9 +2941,6 @@ if($type=='703' || $type=='703')
         foreach ($billed_transactions as $row) {
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
-            }
-            if (!in_array($row->cost_type, $cost_types)) {
-                $cost_types[] = $row->cost_type;
             }
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
@@ -2984,7 +2983,7 @@ if($type=='703' || $type=='703')
             foreach ($result as $key => $value) {
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
-                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"]);
+                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
                 }
             }
@@ -3023,6 +3022,7 @@ if($type=='703' || $type=='703')
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                         $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
+                        $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
                         $cop[$v["bill_code"]]->bill_type = '';
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
@@ -3036,12 +3036,19 @@ if($type=='703' || $type=='703')
                 }
             }
             $particulars = json_decode(json_encode($particulars), 1);
+            $int = 0;
             foreach ($particulars as $k => $row) {
                 $ocm = (isset($row['original_contract_amount'])) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
+                if (isset($row['pint'])) {
+                    $int = $row['pint'];
+                } else {
+                    $particulars[$k]['pint'] = $int + 1;
+                    $int = $int + 1;
+                }
             }
         } else {
             $particulars = json_decode(json_encode($invoice_particulars), 1);
@@ -3055,23 +3062,22 @@ if($type=='703' || $type=='703')
                     $particulars[$k]['attachments'] = implode(',', $attachment);
                 }
 
-                foreach($row as $kr=>$kv)
-                {
-                    $particulars[$k][$kr]=($particulars[$k][$kr]=='0.00')?'': $particulars[$k][$kr];
+                foreach ($row as $kr => $kv) {
+                    $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
                 }
-
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
         }
+        $mode = ($invoice->payment_request_status == 11) ? 'Preview' : 'Save';
         Helpers::hasRole(2, 27);
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
         $data['billed_transactions'] = $billed_transactions;
-        
+
         $data['merchant_cost_types'] = $merchant_cost_types;
-        $data['cost_types'] = $cost_types;
+        $data['cost_types'] = $merchant_cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
@@ -3087,6 +3093,7 @@ if($type=='703' || $type=='703')
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
+        $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-particular', $data);
     }

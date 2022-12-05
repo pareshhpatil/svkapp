@@ -416,6 +416,12 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('/regionSettings', 'RegionSettingController@index')->name('merchant.region-setting.index');
   Route::any('/setting/region/save/', 'RegionSettingController@saveChanges');
 
+  // Cost Type routes
+  Route::get('cost-types/index', 'Merchant\CostTypesController@index')->name('merchant.cost-types.index');
+  Route::get('cost-types/create', 'Merchant\CostTypesController@create')->name('merchant.cost-types.create');
+  Route::post('cost-types/create', 'Merchant\CostTypesController@store');
+  Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit')->name('merchant.cost-types.edit');
+  Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 });
 
 Route::group(['prefix' => 'patron'], function () {

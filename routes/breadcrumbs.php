@@ -440,3 +440,21 @@ Breadcrumbs::for('merchant.region-setting.index', function ($trail) {
     $trail->push('Region setting');
 
 });
+
+Breadcrumbs::for('merchant.cost-types.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Cost Types');
+});
+
+Breadcrumbs::for('merchant.cost-types.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Cost Types', url('/merchant/cost-types/index'));
+});
+
+Breadcrumbs::for('merchant.cost-types.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Cost Types', url('/merchant/cost-types/index'));
+});

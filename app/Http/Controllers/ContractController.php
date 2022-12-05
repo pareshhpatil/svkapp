@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
 use App\ContractParticular;
 use App\CsiCode;
 use App\Customer;
@@ -9,7 +10,7 @@ use App\Libraries\Helpers;
 use App\Merchant;
 use App\MerchantBillingProfile;
 use App\Model\Contract;
-use App\Model\CostType;
+use App\Model\Merchant\CostType;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Libraries\Encrypt;
@@ -116,8 +117,10 @@ class ContractController extends Controller
 
         $contract = null;
         $project = null;
-        if ($contract_id) {
-            $contract = ContractParticular::find( Encrypt::decode($contract_id) );
+        
+        $contract_id = Encrypt::decode($contract_id);
+        if ($contract_id != '' ) {
+            $contract = ContractParticular::find($contract_id);
             $project = $this->getProject($contract->project_id);
         }
 
@@ -130,7 +133,7 @@ class ContractController extends Controller
         $data['title'] = $title;
         $data['contract'] = $contract;
         $data['step'] = $step;
-        $data['contract_id'] = $contract_id;
+        $data['contract_id'] = Encrypt::encode($contract_id);
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
         $data['needValidationOnStep2'] = $needValidationOnStep2;
@@ -144,7 +147,7 @@ class ContractController extends Controller
 
     public function getCostTypes(): array
     {
-        return CostType::where('merchant_id', $this->merchant_id)
+        return CostType::where(IColumn::MERCHANT_ID, $this->merchant_id)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
     }
@@ -240,7 +243,7 @@ class ContractController extends Controller
     public function getBillCodes($project_id)
     {
         return CsiCode::where('project_id', $project_id)
-            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
             ->where('merchant_id', $this->merchant_id)
             ->where('is_active', 1)
             ->get()->toArray();
@@ -630,7 +633,7 @@ class ContractController extends Controller
             'merchant_id' => $this->merchant_id
         ]);
 
-        return response()->json(['message' => 'Bill code is created successfully']);
+        return response()->json(['message' => 'Bill code is created successfully', 'billCode' => $billCode]);
     }
 
     public function billcodeupdate(Request $request)

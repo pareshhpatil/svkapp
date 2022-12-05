@@ -1,6 +1,7 @@
 <?php
 
 use  App\Http\Controllers\InvoiceController;
+use Swipez\ShortUrl\ShortUrl;
 
 /**
  * Secure controller class to handle  payment gateways response 
@@ -660,10 +661,7 @@ class Notification
 
     function saveShortUrl($url)
     {
-        $long_url[] = $url;
-        include_once SWIPEZ_UTIL_PATH . '/src/shorturl/SwipezShortURLWrapper.php';
-        $shortUrlWrap = new SwipezShortURLWrapper();
-        $shortUrls = $shortUrlWrap->SaveUrl($long_url);
-        return $shortUrls[0];
+        $shorUrl = new ShortUrl();
+        return $shorUrl->SaveUrl($url);
     }
 }

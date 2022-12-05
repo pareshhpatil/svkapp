@@ -6,6 +6,7 @@ use App\Model\Master;
 use App\Model\InvoiceFormat;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -186,17 +187,31 @@ class MasterController extends AppController
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
-        } else {
-            $model = new InvoiceFormat();
-            if ($request->sequence_number == '') {
-                $request->sequence_number = 0;
-            }
-            $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
-            $request->start_date = Helpers::sqlDate($request->start_date);
-            $request->end_date = Helpers::sqlDate($request->end_date);
-            $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
-            return redirect('merchant/project/list')->with('success', "Project has been created");
         }
+
+        $projectID = $request->get('project_id');
+
+        $exists = DB::table('project')
+            ->where('merchant_id', $this->merchant_id)
+            ->where('project_id', $projectID)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'project_id' => 'Project ID already exists'
+            ]);
+        }
+
+        $model = new InvoiceFormat();
+        if ($request->sequence_number == '') {
+            $request->sequence_number = 0;
+        }
+        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
+        $request->start_date = Helpers::sqlDate($request->start_date);
+        $request->end_date = Helpers::sqlDate($request->end_date);
+        $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
+
+        return redirect('merchant/project/list')->with('success', "Project has been created");
     }
 
     public function projectupdate($link)
@@ -288,10 +303,17 @@ class MasterController extends AppController
             $project_id = Encrypt::encode($project_id);
             $this->masterModel->deleteTableRow('csi_code', 'id', $id, $this->merchant_id, $this->user_id);
 
-            return redirect('/merchant/master/code/list/' . $project_id)->with('success', "Record has been deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('success', "Record has been deleted");
         } else {
-            return redirect('/merchant/master/code/list/' . $project_id)->with('error', "Record code can not be deleted");
+            return redirect('/merchant/code/list/' . $project_id)->with('error', "Record code can not be deleted");
         }
+    }
+    public function billedtransactionDelete($id)
+    {
+        $project_id = $this->masterModel->getColumnValue('billed_transaction', 'id', $id, 'project_id');
+        $project_id = Encrypt::encode($project_id);
+        $this->masterModel->deleteTableRow('billed_transaction', 'id', $id, $this->merchant_id, $this->user_id);
+        return redirect('/merchant/billedtransaction/list/' . $project_id)->with('success', "Record has been deleted");
     }
 
     public function billedtransactionList($link)
@@ -322,11 +344,11 @@ class MasterController extends AppController
 
     public function billedtransactionUpdate(Request $request)
     {
-            $data=$request->all();
-            unset($data['_token']);
-            $data['date'] = Helpers::sqlDate($request->date);
-            $data['merchant_id'] = $this->merchant_id;
-            $this->masterModel->saveBilledTransaction($data,$this->user_id);
-            return redirect('/merchant/billedtransaction/list/'.Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
+        $data = $request->all();
+        unset($data['_token']);
+        $data['date'] = Helpers::sqlDate($request->date);
+        $data['merchant_id'] = $this->merchant_id;
+        $this->masterModel->saveBilledTransaction($data, $this->user_id);
+        return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
     }
 }

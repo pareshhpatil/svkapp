@@ -149,7 +149,7 @@
 
                                             @case('original_contract_amount')
                                                 <span x-show="field.show{{$column}}">
-                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars();" @endif
+                                                        <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);saveParticulars(); reflectOriginalContractAmountChange(field, index)" @endif
                                                         @keyup="removeValidationError(`{{$column}}`, `${field.introw}`)"
                                                                x-model="field.{{$column}}"
                                                                value="" name="{{$column}}[]"
@@ -185,6 +185,7 @@
 
 
                                                 <input :id="`introw${field.introw}`" type="hidden" :value="field.introw" x-model="field.introw" name="pint[]">
+                                                <input :id="`index${field.introw}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
                                             @break
 
                                             @case('retainage_amount')
@@ -259,6 +260,7 @@
         var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
         var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
+
         var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
         var needValidationOnStep2 = {!! json_encode($needValidationOnStep2) !!};
@@ -271,6 +273,35 @@
                 'data-content' : message,
                 // 'data-original-title'
             }).popover();
+        }
+
+        function updateBillCodeDropdowns(optionArray, newBillCode){
+            let selectedId = $('#selectedBillCodeId').val();
+
+            for(let v=0; v < particularsArray.length; v++){
+                let currentField = particularsArray[v];
+                let billCodeSelector = document.querySelector('#bill_code' + currentField.introw);
+
+                if(selectedId === 'bill_code'+ currentField.introw ) {
+
+                    billCodeSelector.setOptions(optionArray);
+                    billCodeSelector.setValue(newBillCode.id);
+
+                    only_bill_codes.push(newBillCode.id)
+
+                    particularsArray[v].bill_code = newBillCode.code;
+                    particularsArray[v].description = newBillCode.description;
+                    $('#description' + currentField.introw).val( newBillCode.description )
+
+                }
+                else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+
+            }
+            closeSidePanelBillCode();
+
+            $('#new_bill_code').val(null);
+            $('#new_bill_description').val(null);
+            $('#selectedBillCodeId').val(null);
         }
 
         function handle_particulars(){
@@ -318,6 +349,11 @@
                     })
 
                     $('#'+type+id).change(function () {
+
+                        if(index === undefined || index === null) {
+                            index = $('#index'+id).val();
+                        }
+
                         if(type === 'bill_code') {
                             particularsArray[index].bill_code = this.value
                             let displayValue = this.getDisplayValue().split('|');
@@ -326,7 +362,7 @@
                                 particularsArray[index].description = displayValue[1].trim();
                             }
 
-                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
                                 $('#selectedBillCodeId').val(type + id)
@@ -349,7 +385,7 @@
                         }
 
                         if(type === 'bill_type'){
-                            console.log(fields);
+
                             particularsArray[index].bill_type = this.value
                             if(this.value === 'Calculated')
                                 fields[index].bill_type = this.value
@@ -413,24 +449,22 @@
                                 project_id: $('#project_id').val()
                             },
                             success: function (data) {
-                                console.log(data);
+                                let label = new_bill_code + ' | ' + new_bill_description
+
+                                bill_codes.push(
+                                    { value: data.billCode.id, label: label, description: new_bill_description }
+                                )
+                                updateBillCodeDropdowns(bill_codes, data.billCode)
+
                             }
                         });
 
-                        let label = new_bill_code + ' | ' + new_bill_description
-
-                        bill_codes.push(
-                            { value: new_bill_code, label: label, description: new_bill_description }
-                        )
-                        this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
-
-                        // initializeBillCodes();
                         return false;
                     }
                 },
                 closeBillCodePanel() {
                     let selectedId = $('#selectedBillCodeId').val();
-
+                    console.log(selectedId);
                     var selectedBillCode = document.querySelector('#'+selectedId);
                     selectedBillCode.reset();
 
@@ -441,13 +475,14 @@
 
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+               /* updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
-                        let billCodeSelector = document.querySelector('#bill_code' + v);
+                        let currentField = this.fields[v];
+                        let billCodeSelector = document.querySelector('#bill_code' + currentField.introw);
 
-                        if(selectedId === 'bill_code'+v ) {
+                        if(selectedId === 'bill_code'+ currentField.introw ) {
 
                             billCodeSelector.setOptions(optionArray);
                             billCodeSelector.setValue(selectedValue);
@@ -456,17 +491,18 @@
                             this.fields[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].bill_code = $('#new_bill_code').val();
                             particularsArray[v].description = selectedDescription;
-                            $('#description'+v).val(selectedDescription)
-                            closeSidePanelBillCode()
+                            $('#description' + currentField.introw).val(selectedDescription)
+
                         }
                         else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
 
                     }
+                    closeSidePanelBillCode();
 
                     $('#new_bill_code').val(null);
                     $('#new_bill_description').val(null);
                     $('#selectedBillCodeId').val(null);
-                },
+                },*/
                 updateBillType(){
 
                 },
@@ -536,9 +572,10 @@
                     });
                 },
                 validateParticulars(){
+
                     let valid = true;
-                    this.copyBillCodeGroups();
-                    for(let p=0; p < this.fields.length;p++){
+                    this.copyBillCodeGroups();console.log(this.fields);
+                    for(let p=0; p < this.fields.length; p++){
 
                         if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
                             $('#cell_bill_code_' + p).addClass(' error-corner');
@@ -663,17 +700,17 @@
                     this.count = id;
                     console.log(int);
                     const x = await this.wait(10);
-                    this.virtualSelect(int, 'bill_code', bill_codes, id)
-                    this.virtualSelect(int, 'group', groups, id)
-                    this.virtualSelect(int, 'cost_type', cost_types, id)
-                    this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes', id)
+                    this.virtualSelect(int, 'bill_code', bill_codes,null)
+                    this.virtualSelect(int, 'group', groups, null)
+                    this.virtualSelect(int, 'cost_type', cost_types, null)
+                    this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes', null)
                 },
                 removeRow(field, index){
                     let id = field.introw;
                     this.fields.splice(index, 1);
                     particularsArray.splice(index, 1);
 
-                    total = 0;
+                    let total = 0;
                     for( let f =0; f < this.fields.length; f++){
                         let currentValue = this.fields[f];
                         let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
@@ -686,12 +723,13 @@
                                 const index = rowsIncludedInCalculation.indexOf(id);
                                 if (index > -1) {
                                     rowsIncludedInCalculation.splice(index, 1);
+                                    let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+                                    $('#calculated_row'+currentValue.introw).val( rowsArray );
+                                    currentValue.calculated_row = rowsArray;
+                                    this.reCalculateCalculatedRowValue(currentValue);
                                 }
                             }
-                            let rowsArray = JSON.stringify(rowsIncludedInCalculation);
-                            $('#calculated_row'+currentValue.introw).val( rowsArray );
-                            currentValue.calculated_row = rowsArray;
-                            this.reCalculateCalculatedRowValue(currentValue);
+
                         }
                         this.calc(currentValue);
                         // this.fields[index].introw = index;
@@ -702,6 +740,32 @@
 
                     numrow = this.fields.length - 1;
                     this.count = numrow;
+                },
+                reflectOriginalContractAmountChange(field, index){
+                    let id = field.introw;
+
+                    let total = 0;
+                    for( let f =0; f < this.fields.length; f++){
+                        let currentValue = this.fields[f];
+                        let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                        total = Number(total) + Number(getamt(amount));
+                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                        if(calculatedRowValue !== '') {
+                            let rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                            if(rowsIncludedInCalculation.includes(id)) {
+                                const index = rowsIncludedInCalculation.indexOf(id);
+                                if (index > -1) {
+                                    this.reCalculateCalculatedRowValue(currentValue);
+                                }
+                            }
+                        }
+                        this.calc(currentValue);
+                        // this.fields[index].introw = index;
+                    }
+                    document.getElementById('particulartotal').value = updateTextView1(total);
+                    document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
+
                 },
                 reCalculateCalculatedRowValue(field){
 
@@ -768,7 +832,8 @@
                         }
 
                         this.setCalculatedOriginalContractAmount(selected_field_int, selected_field_index);
-                        this.calc(this.fields[selected_field_index]);
+                        // this.calc(this.fields[selected_field_index]);
+                        this.reflectOriginalContractAmountChange(this.fields[selected_field_index], selected_field_index);
                         this.calculateTotalRetainage();
                         this.saveParticulars();
                         this.fields[selected_field_index].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
@@ -784,7 +849,7 @@
                     } catch (o) {
 
                     }
-                    console.log(document.getElementById("calc_amount").value);
+
                     document.getElementById("lbl_original_contract_amount" + introw).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
 
                     try {
@@ -834,7 +899,7 @@
                     calcRowInt=field.introw;
                     field.showoriginal_contract_amount = false;
                     //document.getElementById('original_contract_amount' + field.introw).type = 'hidden';
-                    this.selected_field_int = field.introw;console.log(document.getElementById('selected_field_int'));
+                    this.selected_field_int = field.introw;
                     document.getElementById('selected_field_int').value = field.introw;
                     document.getElementById('selected_field_index').value = index;
                     this.OpenAddCaculatedRow(field.introw, index);
@@ -866,8 +931,9 @@
 
                             let oca = document.getElementById('original_contract_amount' + particular.introw).value;
                             let amt = getamt(oca);
-                            let bill_code = particular.bill_code;
-                            var discription = particular.description;
+                            let displayValue = document.querySelector('#bill_code' + particular.introw ).getDisplayValue().split('|');
+                            let bill_code = displayValue[0];
+                            var discription = displayValue[1];
 
                             row = row + '<td class="td-c">' +
                                 '<input type="hidden" name="calc-pint[]" value="' + particular.introw + '" id="calc-pint' + particular.introw + '">' +

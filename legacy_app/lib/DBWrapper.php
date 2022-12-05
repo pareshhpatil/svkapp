@@ -20,6 +20,7 @@ class DBWrapper
         require_once UTIL . "ConfigReader.php";
 
         $configReader = new ConfigReader();
+        
         $dbArr = $configReader->getDBConfig();
         $logPath = $configReader->getLogConfig();
 

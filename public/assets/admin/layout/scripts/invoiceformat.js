@@ -178,7 +178,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
     var produ_text = '<td class="col-id-no" scope="row">' +
         '<select style="width:100%;" required id="cost_type' + numrow + '" ' +
         'name="' + type + 'cost_type[]" data-cy="particular_product' + numrow + '" ' +
-        'data-placeholder="Type or Select" class="form-control input-sm productselect" >';
+        'data-placeholder="Type or Select" class="form-control input-sm productselect2" >';
     if (cost_type_list != null) {
         $.each(cost_type_list, function (value, arr) {
             var selected = '';
@@ -188,7 +188,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
                         selected = 'selected';
                         exist = 1;
                     }
-                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.name + '</option>';
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.abbrevation + ' - ' + arr.name + '</option>';
                 }
             } catch (o) {
             }
@@ -471,12 +471,12 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     }
     particular_col_array = {
         "bill_code": "Bill Code",
+        "cost_type": "Cost Type",
         "original_contract_amount": "Original Contract Amount",
         "unit": "Unit",
         "rate": "Rate",
         "change_order_amount": "Chnage Order Amount",
-        "order_description": "Description",
-        "cost_type": "Cost Type",
+        "order_description": "Description"
     };
     $.each(particular_col_array, function (index, value) {
         if (index != 'sr_no') {
@@ -810,9 +810,13 @@ function addbillcode(){
 function updatebillcode() {
 
     var pid = document.getElementById("project_id").value;
+   var bill_code= document.querySelector('#bill_code').value;
+   var cost_type= document.querySelector('#cost_type').value;
+   if(bill_code!='' && cost_type!='')
+   {
+   
     $("#billcodeform").submit(function (e) {
         e.preventDefault();
-
         var form = $(this);
         var actionUrl = form.attr('action');
         $.ajax({
@@ -823,12 +827,29 @@ function updatebillcode() {
                 alert(data);
 
                 if (data[2] > 0) {
+
                 }
                 closeSideUpdatePanelBillCode()
             }
         });
 
     });
+}else{
+    if(bill_code=='')
+   {
+    $('#cost_code_error').html('Please select cost code');
+   }else{
+    $('#cost_code_error').html('');
+   }
+   if(cost_type=='')
+   {
+    $('#cost_type_error').html('Please select cost type');
+   }
+   else{
+        $('#cost_type_error').html('');
+   }
+   return false;
+}
 }
 
 
@@ -1501,7 +1522,7 @@ function calculateRetainageV2() {
     document.getElementById('contract_amount').value = updateTextView1(total);
 }
 
-function calculateChangeOrder() {
+function calculateChangeOrder(type=null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
@@ -1533,6 +1554,35 @@ function calculateChangeOrder() {
 
     }
     document.getElementById('total_change_order_amount').value = updateTextView1(total);
+
+    if(type == 'approved'){
+        $('input[name="pint[]"]').each(function (indx, arr) {
+            int = $(this).val();
+            document.getElementById('change_order_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('change_order_amount' + int).value)
+            document.getElementById('original_contract_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('original_contract_amount' + int).value)
+            document.getElementById('unit' + int).value = formatDisplayNegativeNumber(document.getElementById('unit' + int).value)
+            document.getElementById('rate' + int).value = formatDisplayNegativeNumber(document.getElementById('rate' + int).value)
+
+        });
+        
+        document.getElementById('total_change_order_amount').value =  formatDisplayNegativeNumber(document.getElementById('total_change_order_amount').value);
+
+        document.getElementById('particulartotal1').value = formatDisplayNegativeNumber(document.getElementById('particulartotal1').value)
+        document.getElementById('original_contract_amount_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('original_contract_amount_total').value)
+        document.getElementById('unit_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('unit_total').value)
+        document.getElementById('rate_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('rate_total').value)
+    }
+}
+
+function formatDisplayNegativeNumber(val){
+    val  = getamt(val)
+    if(val < 0){
+        newVal = "(" + val.toString().replace("-", "") + ")";
+    }else{
+        newVal = val
+    }
+
+    return newVal;
 }
 
 
@@ -2575,6 +2625,20 @@ function setAdvanceDropdownOrder(numrow) {
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',' + project_id + ');">Add new bill code</a> </div>');
             }
         });
+
+        $('.productselect2').select2({
+            tags: true,
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
+            }
+        });
     } catch (o) {
     }
 }
@@ -2966,7 +3030,7 @@ function updateTextView1(val) {
             return number.toLocaleString() + decimal_text;
         }
     //}
-    return 0.00;
+    //return 0.00;
 
 }
 function getNumber(_str) {
