@@ -199,8 +199,8 @@ table thead,
                     @endif
 
                     @php 
-                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
 //                    @endphp
 
@@ -368,6 +368,12 @@ table thead,
                         <span id="total_cba"></span>
                         </th>
 
+                        <th>
+                            <span id="c_total_sm"></span>
+                        </th>
+                        <th>
+                            <span id="prev_total_sm"></span>
+                        </th>
                         <th>
                         <span id="total_sm"></span>
                         </th>
@@ -741,6 +747,8 @@ table thead,
                                          particularray[i].retainage_amount = this.fields[i].retainage_amount;
                                          particularray[i].retainage_amount_for_this_draw = this.fields[i].retainage_amount_for_this_draw;
                                          particularray[i].retainage_percent = this.fields[i].retainage_percent;
+                                         particularray[i].current_stored_materials = this.fields[i].current_stored_materials;
+                                         particularray[i].previously_stored_materials = this.fields[i].previously_stored_materials;
                                          particularray[i].stored_materials = this.fields[i].stored_materials;
                                          particularray[i].total_billed = this.fields[i].total_billed;
                                          particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
@@ -881,6 +889,14 @@ table thead,
                                                 field.approved_change_order_amount='';
                                             }
                                             field.current_contract_amount = updateTextView1(getamt(field.original_contract_amount) + getamt(field.approved_change_order_amount));
+                                        } catch (o) {}
+
+                                        try {
+                                            if(field.stored_materials==null)
+                                            {
+                                                field.stored_materials='';
+                                            }
+                                            field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
                                         } catch (o) {}
 
                                         try {
