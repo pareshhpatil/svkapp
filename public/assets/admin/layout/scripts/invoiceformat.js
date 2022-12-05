@@ -156,7 +156,7 @@ function getCGItextReturnsV2(defaultval, type, numrow = 1) {
                         exist = 1;
                     }
 
-                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.code + '">' + arr.title + ' | ' + arr.code + '</option>';
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.title + ' | ' + arr.code + '</option>';
                 }
             } catch (o) {
             }

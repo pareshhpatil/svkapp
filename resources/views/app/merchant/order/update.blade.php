@@ -168,9 +168,9 @@
                                             <div class="text-center">
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
-                                                @if($row[$v]==$vk->code)
-                                                <label selected="" value="{{$vk->code}}">{{$vk->code}} | {{$vk->title}}</label>
-                                                <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->code}}">
+                                                @if($row[$v]==$vk->id)
+                                                <label selected="" value="{{$vk->id}}">{{$vk->code}} | {{$vk->title}}</label>
+                                                <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->id}}">
                                                 @endif
                                                 @endforeach
                                                 @endif
