@@ -124,9 +124,8 @@
                                                         </div>
                                                     </div>
                                                     <div id="gst_div" class="form-group display-none"
-                                                        {if $info.entity_type>0 && $account.gst_available==0} 
-                                                        {else}
-                                                        style="display: block;" {/if}>
+                                                        
+                                                        style="display: block;" >
                                                         <label class="control-label col-md-5">GST Number <span
                                                                 class="required">*
                                                             </span>
