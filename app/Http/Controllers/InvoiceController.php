@@ -3032,10 +3032,12 @@ SQL;
         $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
         $cost_codes = [];
         $cost_types = [];
-        foreach ($billed_transactions as $row) {
+        foreach ($billed_transactions as $k=>$row) {
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
             }
+            $billed_transactions[$k]->rate=number_format($row->rate);
+            $billed_transactions[$k]->amount=number_format($row->amount);
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $merchant_cost_types = $this->getCostTypes();

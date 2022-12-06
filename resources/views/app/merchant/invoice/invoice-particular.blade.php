@@ -932,7 +932,7 @@ table thead,
                                             {
                                                 field.retainage_percent='';
                                             }
-                                            field.retainage_amount_for_this_draw = updateTextView1(getamt(field.total_billed)  * getamt(field.retainage_percent) / 100);
+                                            field.retainage_amount_for_this_draw = updateTextView1((getamt(field.current_billed_amount)  * getamt(field.retainage_percent) / 100)-getamt(field.retainage_amount_previously_withheld));
                                         } catch (o) {alert(5);}
 
                                         try {
