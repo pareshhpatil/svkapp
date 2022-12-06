@@ -47,10 +47,10 @@ class InvoiceController extends AppController
 
     }
     /**
-     * Renders form to create invoice 
+     * Renders form to create invoice
      *
      * @param $type - Invoice or Estimate or Subscription
-     * 
+     *
      * @return void
      */
     public function createlegacy(Request $request, $type = 'invoice', $invoice_type = 1)
@@ -169,7 +169,7 @@ class InvoiceController extends AppController
 
 
 
-   
+
     public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
@@ -362,7 +362,7 @@ class InvoiceController extends AppController
      * Renders form to update invoice
      *
      * @param $link - encrypted link
-     * 
+     *
      * @return void
      */
     public function update($link, $staging = 0, $revision = 0)
@@ -383,7 +383,7 @@ class InvoiceController extends AppController
                     return $this->create($request, $link, 1);
                 }
             }
-            
+
             $req_types = array(1 => 'invoice', 2 => 'estimate', 4 => 'subscription');
             $type =  $req_types[$info->invoice_type];
 
@@ -913,7 +913,7 @@ class InvoiceController extends AppController
 
                     $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files), 0, strrpos(basename($files), '.')), -10));
                     $menus1['full'] = basename($files);
-                    
+
                     $menus1['title'] = strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4)) < 10 ? substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4) : $nm . '...';
 
 
@@ -1609,7 +1609,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-        
+
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -1647,7 +1647,7 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-            
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
@@ -1911,7 +1911,7 @@ class InvoiceController extends AppController
         $responce_tax =  $this->invoiceModel->getInvoiceTax($payment_request_id);
         $responce_meta =  $this->invoiceModel->getInvoiceMetadata($info['template_id'], $payment_request_id);
         $cust_values = $this->invoiceModel->getCustomerbreckup($info['customer_id']);
-    
+
         $info['user_type'] = $user_type;
         $info['staging'] = $staging;
         $data['links'] = $payment_request_id;
@@ -2478,18 +2478,19 @@ SQL;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
 
             }
-            
+
             if($prev_total_d + $prev_total_e > 0) {
                 $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
 
                 $single_per = ($prev_total_d+$prev_total_e) / 100;
+
 
                 $a5=$single_per*$cper;
 
                 $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
             }
         }
-        
+
         return $less_previous_certificates_for_payment;
     }
 
@@ -2601,13 +2602,6 @@ SQL;
                     $single_data['d'] = number_format($data['previously_billed_amount'], 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
-
-                    $nm = '';
-                    if(!empty($data['attachments'])) {
-                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
-                    }
-//                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
-
 
                     $nm = '';
                     if(!empty($data['attachments'])) {
@@ -3086,7 +3080,7 @@ SQL;
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
                         $kdata["cost_type"]=isset($kdata["cost_type"])? $kdata["cost_type"] : '';
-                        
+
                         $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
                 }
