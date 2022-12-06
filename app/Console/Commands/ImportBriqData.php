@@ -45,13 +45,14 @@ class ImportBriqData extends Command
     public function handle()
     {
         $merchant_id = $this->option('merchant_id');
-        $this->insertData( $merchant_id);
+        $merchant_data = $this->user_model->getTableRow('merchant', 'merchant_id', $merchant_id);
+        $user_id = $merchant_data->user_id;
+
+        $this->insertData( $merchant_id,  $user_id);
        
     }
 
-    function insertData( $merchant_id){
-        $merchant_data = $this->user_model->getTableRow('merchant', 'merchant_id', $merchant_id);
-        $user_id = $merchant_data->user_id;
+    function insertData( $merchant_id,  $user_id){
 
         Excel::import(new CustomerImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_CUSTOMER_FILE'));
         echo $merchant_id;

@@ -101,8 +101,14 @@ class Xway extends Controller
                 $stripe = new \Stripe\StripeClient(
                     env('STRIPE_SECRET')
                 );
-                $payment_intent = $stripe->paymentIntents->retrieve(
+
+                $checkout_session  = $stripe->checkout->sessions->retrieve(
                     $intent,
+                    []
+                  );
+
+                $payment_intent = $stripe->paymentIntents->retrieve(
+                    $checkout_session->payment_intent,
                     []
                 );
                 $transaction_id = $payment_intent->metadata->transaction_id;
