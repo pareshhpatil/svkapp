@@ -170,6 +170,7 @@ class InvoiceController extends AppController
 
 
 
+
     public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
@@ -2267,7 +2268,8 @@ class InvoiceController extends AppController
                 }
             }
         } else if ($info['template_type'] == 'construction') {
-            $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+            $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+            //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $info['constriuction_details'] = $this->getData703($tt);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
@@ -2594,7 +2596,7 @@ SQL;
                         $grouping_data[] = $single_data;
                     }
                     $single_data = array();
-                    $single_data['a'] = $data['bill_code'];
+                    $single_data['a'] = $data['code'];// $data['bill_code'];
                     $single_data['type'] = '';
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
@@ -2656,7 +2658,7 @@ SQL;
                     }
                 } else {
                     $single_data = array();
-                    $single_data['a'] = $data['bill_code'];
+                    $single_data['a'] = $data['code'];//$data['bill_code'];
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
@@ -2776,6 +2778,7 @@ SQL;
         } else {
             $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
             $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
+
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
         }
