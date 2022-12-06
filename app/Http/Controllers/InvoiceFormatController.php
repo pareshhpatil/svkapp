@@ -326,6 +326,7 @@ class InvoiceFormatController extends AppController
             $data['defaultReceiptFields'] = $this->setDefaultReceiptFields();
             $data['logo'] = '';
             $data['drawCustomerRows'] = '';
+            $data['detail']->selected_template_name = $data['detail']->template_name;
             $data['drawBillingRows'] = '';
             $data['from'] =  'update';
             $data['footernote'] = isset($data['detail']->footer_note) ? $data['detail']->footer_note : '';
