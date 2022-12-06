@@ -498,6 +498,7 @@ class Invoice extends ParentModel
         $retObj = DB::table('payment_request')
             ->where('contract_id', $contract_id)
             ->where('merchant_id', $merchant_id)
+            ->whereNotIn('payment_request_status', [3,11])
             ->max('payment_request_id');
         if (!empty($retObj)) {
             return $retObj;

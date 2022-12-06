@@ -181,7 +181,7 @@ class InvoiceController extends AppController
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-            if ($update == 1) {
+            if ($update == 1 && $invoice->payment_request_status!=11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
                 if ($req_id != false) {
                     if ($request_id != $req_id) {
