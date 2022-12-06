@@ -269,7 +269,7 @@ class InvoiceController extends AppController
             Redis::set('merchantMenuList' . $this->merchant_id, json_encode($item_list));
         }
 
-        $request->session()->put('breadcrumbs', $breadcrumbs);
+        Session::put('breadcrumbs', $breadcrumbs);
         if (isset($request->template_id)) {
             $formatModel = new InvoiceFormat();
             $template_id = $request->template_id;
@@ -378,7 +378,7 @@ class InvoiceController extends AppController
                 return redirect('/error')->with('errorTitle', 'Invalid URL');
             }
             if ($revision != 1) {
-                $request = new \Illuminate\Http\Request();
+                $request = new Request();
                 if ($info->template_type=='construction') {
                     return $this->create($request, $link, 1);
                 }
