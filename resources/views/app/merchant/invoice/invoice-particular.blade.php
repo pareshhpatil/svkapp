@@ -198,11 +198,11 @@
                                                     </thead>
                                                 @endif
 
-                                                @php
-                                                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                                                    $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                                                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
-                                //                    @endphp
+                    @php 
+                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
+                   @endphp
 
                                                 <tbody>
                                                 <template x-for="(field, index) in fields" :key="index">
@@ -369,67 +369,67 @@
                                                         <span id="total_cba"></span>
                                                     </th>
 
-                                                    <th>
-                                                        <span id="total_sm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_tb"></span>
-                                                    </th>
-                                                    <th class="td-c"></th>
-                                                    <th>
-                                                        <span id="total_rapw"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_rad"></span>
-                                                    </th>
-
-                                                    <th class="td-c"><span id="particulartotaldiv"></span>
-                                                        <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly=""></th>
-                                                    <th>
-                                                        <span id="total_rra"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_tor"></span>
-                                                    </th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                @include('app.merchant.contract.add-group-modal')
-                                @include('app.merchant.contract.add-calculation-modal2')
-                                @include('app.merchant.contract.add-cost-modal')
-                                <script>
+                        <th>
+                        <span id="total_sm"></span>
+                        </th>
+                        <th>
+                        <span id="total_tb"></span>
+                        </th>
+                        <th class="td-c"></th>
+                        <th>
+                        <span id="total_rapw"></span>
+                        </th>
+                        <th>
+                        <span id="total_rad"></span>
+                        </th>
+                        
+                        <th class="td-c"><span id="particulartotaldiv"></span>
+                            <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly=""></th>
+                        <th>
+                        <span id="total_rra"></span>
+                        </th>
+                        <th>
+                        <span id="total_tor"></span>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    @include('app.merchant.contract.add-group-modal')
+    @include('app.merchant.contract.add-calculation-modal2')
+    @include('app.merchant.contract.add-cost-modal')
+    <script>
 
                                 </script>
                             </div>
 
-                            <div class="portlet light bordered">
-                                <div class="portlet-body form">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
-                                                <input type="hidden" name="order_ids" value="{{$order_id_array}}">
-
-                                                <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                                <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
-                                                <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
-                                            </div>
+                        <div class="portlet light bordered">
+                            <div class="portlet-body form">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                        <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
+                                        <input type="hidden" name="order_ids" value="{{$order_id_array}}">
+                                        
+                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
+                                            <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
+                                            <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-
-                    </div>
-                    @include('app.merchant.contract.add-bill-code-modal-contract')
+                        </div>
+                    </form>
+                    
+                </div>
+                @include('app.merchant.contract.add-bill-code-modal-contract')
 
                 </div>
             </div>
@@ -695,17 +695,17 @@
                             $('#bill_code' + id).select2({
                                 insertTag: function (data, tag) {
 
-                                }
-                            }).on('select2:open', function (e) {
-                                pind = $(this).index();
-                                if (document.getElementById('prolist' + pind)) { } else {
-                                    $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
-                                }
-                            }).on('select2:select', function (e){
-                                let data = $('#bill_code' + id).select2('val');
-                                let dataArray = data.split('|')
-                                particularray[id]['bill_code'] = dataArray[0].trim();
-                                particularray[id]['bill_code_text'] = data;
+                                             }
+                                         }).on('select2:open', function (e) {
+                                             pind = $(this).index();
+                                             if (document.getElementById('prolist' + pind)) { } else {
+                                                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+                                             }
+                                         }).on('select2:select', function (e){
+                                             let data = $('#bill_code' + id).select2('val');
+                                             let dataArray = data.split('|')
+                                             particularray[id]['bill_code'] = dataArray[0].trim();
+                                             particularray[id]['bill_code_text'] = data;
 
                                 if(data.length > 0) {
                                     $('#cell_bill_code_' + id).removeClass(' error-corner').popover('destroy');
@@ -715,47 +715,47 @@
                         } catch (o) { }
 
 
-
-                    },
-                    getParticularsInfo(){
-                        previewArray = particularray;
-
-                        for(let i=0;i<particularray.length;i++) {
-                            particularray[i].bill_type = this.fields[i].bill_type;
-                            particularray[i].original_contract_amount = (this.fields[i].original_contract_amount === '' || this.fields[i].original_contract_amount === null)?0 : this.fields[i].original_contract_amount;
-                            particularray[i].retainage_percent = (this.fields[i].retainage_percent === '' || this.fields[i].retainage_percent === null || this.fields[i].retainage_percent === undefined)?0 : this.fields[i].retainage_percent;
-                            particularray[i].retainage_amount = (this.fields[i].retainage_amount === '' || this.fields[i].retainage_amount === null || this.fields[i].retainage_amount === undefined)?0 : this.fields[i].retainage_amount;
-                            particularray[i].project = this.fields[i].project;
-                            particularray[i].project_code = this.fields[i].project;
-                            particularray[i].cost_code = (this.fields[i].cost_code === undefined) ? '' : this.fields[i].cost_code ;
-                            particularray[i].cost_type = (this.fields[i].cost_type === undefined) ? '' : this.fields[i].cost_type ;
-                            particularray[i].calculated_perc = this.fields[i].calculated_perc;
-                            particularray[i].calculated_row = this.fields[i].calculated_row;
-                            particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
-                            particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
-                            particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
-                            particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
-                            particularray[i].description = this.fields[i].description;
-                            particularray[i].net_billed_amount = this.fields[i].net_billed_amount;
-                            particularray[i].original_contract_amount = this.fields[i].original_contract_amount;
-                            particularray[i].previously_billed_amount = this.fields[i].previously_billed_amount;
-                            particularray[i].retainage_amount = this.fields[i].retainage_amount;
-                            particularray[i].retainage_amount_for_this_draw = this.fields[i].retainage_amount_for_this_draw;
-                            particularray[i].retainage_percent = this.fields[i].retainage_percent;
-                            particularray[i].stored_materials = this.fields[i].stored_materials;
-                            particularray[i].total_billed = this.fields[i].total_billed;
-                            particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
-                            particularray[i].txtoriginal_contract_amount = this.fields[i].txtoriginal_contract_amount;
-                            particularray[i].bill_code_detail = (this.fields[i].bill_code_detail === '' || this.fields[i].bill_code_detail === null)? 'Yes' : this.fields[i].bill_code_detail ;
-                        }
-                        return particularray
-                    },
-                    removeField(id) {
-                        this.fields.splice(id, 1);
-                        particularray.splice(id, 1);
-                        this.calculateTotal();
-                        numrow = this.fields.length - 1;
-                        this.count = numrow;
+                                     
+                                 },
+                                getParticularsInfo(){
+                                    previewArray = particularray;
+                                    
+                                     for(let i=0;i<particularray.length;i++) {
+                                         particularray[i].bill_type = this.fields[i].bill_type;
+                                         particularray[i].original_contract_amount = (this.fields[i].original_contract_amount === '' || this.fields[i].original_contract_amount === null)?0 : this.fields[i].original_contract_amount;
+                                         particularray[i].retainage_percent = (this.fields[i].retainage_percent === '' || this.fields[i].retainage_percent === null || this.fields[i].retainage_percent === undefined)?0 : this.fields[i].retainage_percent;
+                                         particularray[i].retainage_amount = (this.fields[i].retainage_amount === '' || this.fields[i].retainage_amount === null || this.fields[i].retainage_amount === undefined)?0 : this.fields[i].retainage_amount;
+                                         particularray[i].project = this.fields[i].project;
+                                         particularray[i].project_code = this.fields[i].project;
+                                         particularray[i].cost_code = (this.fields[i].cost_code === undefined) ? '' : this.fields[i].cost_code ;
+                                         particularray[i].cost_type = (this.fields[i].cost_type === undefined) ? '' : this.fields[i].cost_type ;
+                                         particularray[i].calculated_perc = this.fields[i].calculated_perc;
+                                         particularray[i].calculated_row = this.fields[i].calculated_row;
+                                         particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
+                                         particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
+                                         particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
+                                         particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
+                                         particularray[i].description = this.fields[i].description;
+                                         particularray[i].net_billed_amount = this.fields[i].net_billed_amount;
+                                         particularray[i].original_contract_amount = this.fields[i].original_contract_amount;
+                                         particularray[i].previously_billed_amount = this.fields[i].previously_billed_amount;
+                                         particularray[i].retainage_amount = this.fields[i].retainage_amount;
+                                         particularray[i].retainage_amount_for_this_draw = this.fields[i].retainage_amount_for_this_draw;
+                                         particularray[i].retainage_percent = this.fields[i].retainage_percent;
+                                         particularray[i].stored_materials = this.fields[i].stored_materials;
+                                         particularray[i].total_billed = this.fields[i].total_billed;
+                                         particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
+                                         particularray[i].txtoriginal_contract_amount = this.fields[i].txtoriginal_contract_amount;
+                                         particularray[i].bill_code_detail = (this.fields[i].bill_code_detail === '' || this.fields[i].bill_code_detail === null)? 'Yes' : this.fields[i].bill_code_detail ;
+                                     }
+                                     return particularray
+                                 },
+                                removeField(id) {
+                                    this.fields.splice(id, 1);
+                                    particularray.splice(id, 1);
+                                    this.calculateTotal();
+                                    numrow = this.fields.length - 1;
+                                    this.count = numrow;
 
                     },
                     addGroup(field) {
@@ -896,29 +896,29 @@
 
                             } catch (o) {}
 
-                            try {
-                                if(field.previously_billed_amount==null)
-                                {
-                                    field.previously_billed_amount='';
-                                }
-                                if(field.current_billed_amount==null)
-                                {
-                                    field.current_billed_amount='';
-                                }
-                                if(field.stored_materials==null)
-                                {
-                                    field.stored_materials='';
-                                }
-                                field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.stored_materials));
-                            } catch (o) {alert(4);}
+                                        try {
+                                            if(field.previously_billed_amount==null)
+                                            {
+                                                field.previously_billed_amount='';
+                                            }
+                                            if(field.current_billed_amount==null)
+                                            {
+                                                field.current_billed_amount='';
+                                            }
+                                            if(field.stored_materials==null)
+                                            {
+                                                field.stored_materials='';
+                                            }
+                                            field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.stored_materials));
+                                        } catch (o) {alert(4);}
 
-                            try {
-                                if(field.retainage_percent==null)
-                                {
-                                    field.retainage_percent='';
-                                }
-                                field.retainage_amount_for_this_draw = updateTextView1(getamt(field.total_billed)  * getamt(field.retainage_percent) / 100);
-                            } catch (o) {alert(5);}
+                                        try {
+                                            if(field.retainage_percent==null)
+                                            {
+                                                field.retainage_percent='';
+                                            }
+                                            field.retainage_amount_for_this_draw = updateTextView1(getamt(field.total_billed)  * getamt(field.retainage_percent) / 100);
+                                        } catch (o) {alert(5);}
 
                             try {
 
@@ -1301,19 +1301,19 @@
                             $('#bill_code' + id).select2({
                                 insertTag: function(data, tag) {
 
-                                }
-                            }).on('select2:open', function(e) {
-                                pind = $(this).index();
-                                if (document.getElementById('prolist' + pind)) {} else {
-                                    $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
-                                }
-                            });
-                            /*.on('change', function () {
-                                                        let valueArr = $(this).val().split(' | ');
-                                                        // this.fields[id].bill_code = valueArr[0];
-                                                        console.log(this.fields.length);
-                                                    });*/
-                        } catch (o) {}
+                                            }
+                                        }).on('select2:open', function(e) {
+                                            pind = $(this).index();
+                                            if (document.getElementById('prolist' + pind)) {} else {
+                                                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + id + ',' + id + ',0);">Add new bill code</a> </div>');
+                                            }
+                                        });
+                                        /*.on('change', function () {
+                                                                    let valueArr = $(this).val().split(' | ');
+                                                                    // this.fields[id].bill_code = valueArr[0];
+                                                                    console.log(this.fields.length);
+                                                                });*/
+                                    } catch (o) {}
 
                         try {
                             // $('#billtype' + id).select2({

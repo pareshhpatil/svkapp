@@ -95,6 +95,7 @@ function formatTimeString2($timeStamp)
 
 function formatDateString($date)
 {
+    $date_value = $date;
     $default_timezone = $_SESSION['default_timezone'];
     $default_date_format = $_SESSION['default_date_format'];
     $default_date_format =  str_replace('yyyy', 'Y', $default_date_format);
@@ -102,7 +103,9 @@ function formatDateString($date)
     $date = Carbon::parse($date)->format($default_date_format);
     $date = Carbon::createFromFormat($default_date_format, $date, 'UTC');
     $date = $date->setTimezone($default_timezone)->format($default_date_format);
-
+    if ($date == '') {
+        return formatTimeString($date_value);
+    }
     return  $date;
 }
 

@@ -156,7 +156,7 @@ function getCGItextReturnsV2(defaultval, type, numrow = 1) {
                         exist = 1;
                     }
 
-                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.code + '">' + arr.title + ' | ' + arr.code + '</option>';
+                    produ_text = produ_text + '<option ' + selected + ' value="' + arr.id + '">' + arr.title + ' | ' + arr.code + '</option>';
                 }
             } catch (o) {
             }
@@ -2394,6 +2394,14 @@ function showLedger() {
     return false;
 }
 
+function closeSidePanelLedger() {
+    document.getElementById("panelLedger").style.boxShadow = "none";
+    document.getElementById("panelLedger").style.transform = "translateX(100%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    CloseCoverNote();
+    return false;
+}
+
 function calculateFranchiseSale() {
     var total_gross = 0;
     $('input[name="gross_sale[]"]').each(function (indx, arr) {
@@ -2545,7 +2553,7 @@ function saveTax() {
     return false;
 }
 
-function setAdvanceDropdown(numrow) {
+function setAdvanceDropdown() {
     try {
 
 
@@ -2565,10 +2573,9 @@ function setAdvanceDropdown(numrow) {
         }).on('select2:open', function (e) {
             pind = $(this).index();
             var index = $(".productselect").index(this);
-            index += 1;
             if (document.getElementById('prolist' + pind)) {
             } else {
-                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="proindex(' + index + ',' + index + ');">Add new product</a> </div>');
             }
         });
 

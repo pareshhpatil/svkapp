@@ -367,7 +367,7 @@
                         pind = $(this).index();
                         var index = $(".productselect").index(this);
                         if (document.getElementById('prolist' + pind)) {} else {
-                            $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',0);">Add new bill code</a> </div>');
+                            $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',0);">Addb new bill code</a> </div>');
                         }
                     }).on('change', function(e) {
                         iid = $(this).attr("id");

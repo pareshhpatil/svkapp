@@ -74,10 +74,8 @@
     <div class="panel">
         <header class="cd-panel__header">
             <h3 class="page-title">Customer Ledger
-                {{-- <a href="javascript:;" class="btn btn-sm red" id="close"> <i class="fa fa-times"> </i></a> --}}
-                <a href="javascript:;" class="remove" data-original-title="Close" title="" onclick="return hideLedger();">
-                    <i class="fa fa-times"> </i>
-                </a>
+            <a class="close " data-toggle="modal" onclick="return closeSidePanelLedger();">
+                    <button type="button" class="close" aria-hidden="true"></button></a>
             </h3>
             <hr>
         </header>

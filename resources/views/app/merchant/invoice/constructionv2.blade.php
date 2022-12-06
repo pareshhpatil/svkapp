@@ -264,6 +264,7 @@
                         </div>
                         <div class="col-md-6" data-tour="invoice-create-billing-information">
 
+                            <input type="hidden" id="customer_id" value="{{$customer->customer_id}}">
                             <input type="hidden" name="billing_profile_id" value="{{$billing_profile_id}}">
                             <input type="hidden" name="currency" value="{{$currency}}">
                             @php $is_carry=0; @endphp
@@ -578,7 +579,7 @@
             var index = $(".productselect").index(this);
             index += 1;
             if (document.getElementById('prolist' + pind)) {} else {
-                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Add new bill code</a> </div>');
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Addf new bill code</a> </div>');
             }
         });
 
@@ -772,3 +773,5 @@
         }
     </script>
     @endsection
+
+    @livewire('format.customer-ledger')

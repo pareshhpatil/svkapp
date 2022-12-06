@@ -86,7 +86,7 @@ class CostTypesController extends AppController
                  return redirect()->back()
                      ->withInput()
                      ->withErrors([
-                         'abbrevation' => 'The abbrevation has already been taken.'
+                         'abbrevation' => 'The abbreviation has already been taken.'
                      ]);
              }
 
@@ -151,7 +151,7 @@ class CostTypesController extends AppController
                  return redirect()->back()
                      ->withInput()
                      ->withErrors([
-                         'abbrevation' => 'The abbrevation has already been taken.'
+                         'abbrevation' => 'The abbreviation has already been taken.'
                      ]);
              }
 

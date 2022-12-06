@@ -252,7 +252,7 @@
                                                                 <input type="text" {$req} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif"
                                                                     id="{{ $id }}" name="{{ $field_name }}"
                                                                     autocomplete="off" class="form-control date-picker"
-                                                                    {!! $validate->date !!} data-date-format="{{ Session::get('default_date_format')}}">
+                                                                     data-date-format="{{ Session::get('default_date_format')}}">
                                                             @elseif($v->column_datatype == 'time')
                                                                 <input type="text" {$req} autocomplete="off"
                                                                     value="{{ $v->value ?? '' }}" id="{{ $id }}"

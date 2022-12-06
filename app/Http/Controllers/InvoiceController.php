@@ -53,7 +53,7 @@ class InvoiceController extends AppController
      * 
      * @return void
      */
-    public function create(Request $request, $type = 'invoice', $invoice_type = 1)
+    public function createlegacy(Request $request, $type = 'invoice', $invoice_type = 1)
     {
         if (env('INVOICE_VERSION') == '2') {
             return redirect('/merchant/invoice/createv2');
@@ -169,11 +169,8 @@ class InvoiceController extends AppController
 
 
 
-    public function updatev2(Request $request, $link = null)
-    {
-        return $this->createv2($request, $link, 1);
-    }
-    public function createv2(Request $request, $link = null, $update = null)
+   
+    public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
         $invoice_number = '';
@@ -184,6 +181,18 @@ class InvoiceController extends AppController
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+            if ($update == 1) {
+                $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
+                if ($req_id != false) {
+                    if ($request_id != $req_id) {
+                        $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
+                        $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
+                        Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
+                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                        return redirect('/merchant/paymentrequest/viewlist');
+                    }
+                }
+            }
             $request->template_id = $invoice->template_id;
             $request->contract_id = $invoice->contract_id;
             $request->currency = $invoice->currency;
@@ -260,7 +269,7 @@ class InvoiceController extends AppController
             Redis::set('merchantMenuList' . $this->merchant_id, json_encode($item_list));
         }
 
-        $request->session()->put('breadcrumbs', $breadcrumbs);
+        Session::put('breadcrumbs', $breadcrumbs);
         if (isset($request->template_id)) {
             $formatModel = new InvoiceFormat();
             $template_id = $request->template_id;
@@ -358,13 +367,6 @@ class InvoiceController extends AppController
      */
     public function update($link, $staging = 0, $revision = 0)
     {
-
-        if ($revision != 1) {
-            if (env('INVOICE_VERSION') == '2') {
-                return redirect('/merchant/invoice/updatev2/' . $link);
-            }
-        }
-
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -375,6 +377,13 @@ class InvoiceController extends AppController
             if ($info->message != 'success') {
                 return redirect('/error')->with('errorTitle', 'Invalid URL');
             }
+            if ($revision != 1) {
+                $request = new Request();
+                if ($info->template_type=='construction') {
+                    return $this->create($request, $link, 1);
+                }
+            }
+            
             $req_types = array(1 => 'invoice', 2 => 'estimate', 4 => 'subscription');
             $type =  $req_types[$info->invoice_type];
 
@@ -897,11 +906,14 @@ class InvoiceController extends AppController
                 $pos = 1;
 
                 foreach ($data['files'] as $files) {
-
+                    $nm = '';
+                    if(!empty($files)) {
+                        $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    }
 
                     $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files), 0, strrpos(basename($files), '.')), -10));
                     $menus1['full'] = basename($files);
-                    $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    
                     $menus1['title'] = strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4)) < 10 ? substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4) : $nm . '...';
 
 
@@ -1621,7 +1633,6 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
-
             if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
@@ -1718,7 +1729,7 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            if ($type == '703' || $type == '703') {
+            if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
@@ -2467,15 +2478,16 @@ SQL;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
 
             }
+            
+            if($prev_total_d + $prev_total_e > 0) {
+                $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
 
-            $cper = ($prev_total_d + $prev_total_e) ? round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100)) : 0;
+                $single_per = ($prev_total_d+$prev_total_e) / 100;
 
-            $single_per = ($prev_total_d+$prev_total_e) / 100;
+                $a5=$single_per*$cper;
 
-
-            $a5=$single_per*$cper;
-
-            $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+            }
         }
         
         return $less_previous_certificates_for_payment;
@@ -2549,7 +2561,10 @@ SQL;
 
                     $attach_count += $counts;
                     if (empty($isattach)) {
-                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        $nm = '';
+                        if(!empty($data['attachments'])) {
+                            $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        }
 
 
                         $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2586,12 +2601,18 @@ SQL;
                     $single_data['d'] = number_format($data['previously_billed_amount'], 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
+
                     $nm = '';
                     if(!empty($data['attachments'])) {
                         $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                     }
 //                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
+
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
 
@@ -2831,6 +2852,8 @@ SQL;
                 $data['net_billed_amount'] = $request->net_billed_amount[$k];
                 $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                 $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
+                $data['previously_stored_materials'] = $request->previously_stored_materials[$k];
+                $data['current_stored_materials'] = $request->current_stored_materials[$k];
                 $data['stored_materials'] = $request->stored_materials[$k];
                 $data['project'] = $request->project[$k];
                 $data['cost_code'] = $request->cost_code[$k];
@@ -3015,10 +3038,12 @@ SQL;
         $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
         $cost_codes = [];
         $cost_types = [];
-        foreach ($billed_transactions as $row) {
+        foreach ($billed_transactions as $k=>$row) {
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
             }
+            $billed_transactions[$k]->rate=number_format($row->rate);
+            $billed_transactions[$k]->amount=number_format($row->amount);
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $merchant_cost_types = $this->getCostTypes();
@@ -3060,6 +3085,8 @@ SQL;
             foreach ($result as $key => $value) {
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
+                        $kdata["cost_type"]=isset($kdata["cost_type"])? $kdata["cost_type"] : '';
+                        
                         $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
                 }
@@ -3077,6 +3104,8 @@ SQL;
                         $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
                         $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
                         $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+                        $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->previously_stored_materials;
+                        $particulars[$k]->current_stored_materials = $cp[$v->bill_code]->current_stored_materials;
                     }
                 }
             }
