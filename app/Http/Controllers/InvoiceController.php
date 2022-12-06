@@ -2468,7 +2468,7 @@ SQL;
 
             }
 
-            $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100));
+            $cper = ($prev_total_d + $prev_total_e) ? round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100)) : 0;
 
             $single_per = ($prev_total_d+$prev_total_e) / 100;
 
@@ -2586,7 +2586,11 @@ SQL;
                     $single_data['d'] = number_format($data['previously_billed_amount'], 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
+//                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2646,7 +2650,10 @@ SQL;
                     $single_data['f'] = number_format($data['stored_materials'], 2);
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                     //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
