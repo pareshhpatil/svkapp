@@ -72,7 +72,7 @@ class SSP
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
                     $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link . '/702';
 
-                    if($data[$i]['short_url'] != '') {
+                    if(!empty($data[$i]['short_url'])) {
                         $copy_link = $data[$i]['short_url'];
                     }
 
