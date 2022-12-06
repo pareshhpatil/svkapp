@@ -68,5 +68,6 @@ class CustomerImport implements ToModel, WithStartRow
         
         Excel::import(new ProjectImport($this->merchant_id, $this->user_id, $customer_id), env('BRIQ_TEST_DATA_PROJECT_FILE'));
 
+        return $customer;
     }
 }

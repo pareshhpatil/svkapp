@@ -349,7 +349,7 @@ class PaymentWrapperController extends Controller
             //'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency' => $user_detail['currency'],
+                    'currency' => 'usd',
                     'product_data' => [
                         'name' => $user_detail['@patron_first_name'] . ' ' . $user_detail['@patron_last_name'],
                         'images' => [$pg_details['pg_val5']],
@@ -360,21 +360,22 @@ class PaymentWrapperController extends Controller
 
             ]],
             'payment_intent_data' => [
-                //'application_fee_amount' => 1,
-                'transfer_data' => [
-                    'destination' => $pg_details['pg_val1'],
-                ],
+            //     //'application_fee_amount' => 1,
+            //     // 'transfer_data' => [
+            //     //     'destination' => $pg_details['pg_val1'],
+            //     // ],
                 'metadata' => ['transaction_id' => $transaction_id]
             ],
-            // 'metadata' => ['order_id' => '123'],
+            // 'metadata' => ['transaction_id' => $transaction_id],
             'mode' => 'payment',
             'success_url' => $pg_details['status_url'] . '/' . $transaction_id,
             'cancel_url' => $pg_details['status_url'] . '/' . $transaction_id,
         ]);
+
         if (substr($transaction_id, 0, 1) != 'T') {
-            $this->parentModel->updateTable('xway_transaction', 'xway_transaction_id', $transaction_id, 'pg_ref_no1', $session->payment_intent);
+            $this->parentModel->updateTable('xway_transaction', 'xway_transaction_id', $transaction_id, 'pg_ref_no1', $session->id);
         } else {
-            $this->parentModel->updateTable('payment_transaction', 'pay_transaction_id', $transaction_id, 'pg_ref_no', $session->payment_intent);
+            $this->parentModel->updateTable('payment_transaction', 'pay_transaction_id', $transaction_id, 'pg_ref_no', $session->id);
         }
 
         header('Location: ' . $session->url, true, 303);
