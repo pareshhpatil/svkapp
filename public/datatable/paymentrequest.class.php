@@ -71,6 +71,11 @@ class SSP
                     $link = $encrypt->encode($data[$i]['payment_request_id']);
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
                     $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link . '/702';
+
+                    if($data[$i]['short_url'] != '') {
+                        $copy_link = $data[$i]['short_url'];
+                    }
+
                     $status = $data[$i]['payment_request_status'];
                     $request_type = $data[$i]['invoice_type'];
                     $invoice_type = ($data[$i]['invoice_type'] == 2) ? 'Estimate' : 'Invoice';

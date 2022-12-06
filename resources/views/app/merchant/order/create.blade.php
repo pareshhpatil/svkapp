@@ -171,7 +171,7 @@
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
                                                 @if($row[$v]==$vk->code)
-                                                <label selected="" value="{{$vk->code}}">{{$vk->title}} | {{$vk->code}}</label>
+                                                <label selected="" value="{{$vk->id}}">{{$vk->title}} | {{$vk->code}}</label>
                                                 <input type="hidden" name="bill_code[]" value="{{$vk->code}}">
                                                 @endif
                                                 @endforeach

@@ -906,11 +906,14 @@ class InvoiceController extends AppController
                 $pos = 1;
 
                 foreach ($data['files'] as $files) {
-
+                    $nm = '';
+                    if(!empty($files)) {
+                        $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    }
 
                     $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files), 0, strrpos(basename($files), '.')), -10));
                     $menus1['full'] = basename($files);
-                    $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
+                    
                     $menus1['title'] = strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4)) < 10 ? substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4) : $nm . '...';
 
 
@@ -1630,7 +1633,6 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
-
             if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
@@ -1727,7 +1729,7 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            if ($type == '703' || $type == '703') {
+            if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
@@ -2476,15 +2478,17 @@ SQL;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
 
             }
+            
+            if($prev_total_d + $prev_total_e > 0) {
+                $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
 
-            $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e ))*100));
-
-            $single_per = ($prev_total_d+$prev_total_e) / 100;
+                $single_per = ($prev_total_d+$prev_total_e) / 100;
 
 
-            $a5=$single_per*$cper;
+                $a5=$single_per*$cper;
 
-            $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+            }
         }
         
         return $less_previous_certificates_for_payment;
@@ -2558,7 +2562,10 @@ SQL;
 
                     $attach_count += $counts;
                     if (empty($isattach)) {
-                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        $nm = '';
+                        if(!empty($data['attachments'])) {
+                            $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        }
 
 
                         $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2595,8 +2602,11 @@ SQL;
                     $single_data['d'] = number_format($data['previously_billed_amount'], 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
 
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
 
@@ -2655,7 +2665,10 @@ SQL;
                     $single_data['f'] = number_format($data['stored_materials'], 2);
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                     //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
-                    $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    $nm = '';
+                    if(!empty($data['attachments'])) {
+                        $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                    }
 
 
                     $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
@@ -2833,6 +2846,8 @@ SQL;
                 $data['net_billed_amount'] = $request->net_billed_amount[$k];
                 $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                 $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
+                $data['previously_stored_materials'] = $request->previously_stored_materials[$k];
+                $data['current_stored_materials'] = $request->current_stored_materials[$k];
                 $data['stored_materials'] = $request->stored_materials[$k];
                 $data['project'] = $request->project[$k];
                 $data['cost_code'] = $request->cost_code[$k];
@@ -3079,6 +3094,8 @@ SQL;
                         $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
                         $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
                         $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+                        $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->previously_stored_materials;
+                        $particulars[$k]->current_stored_materials = $cp[$v->bill_code]->current_stored_materials;
                     }
                 }
             }

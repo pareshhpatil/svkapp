@@ -475,7 +475,7 @@ class Invoice extends ParentModel
     public function getBillCodes($project_id)
     {
         $retObj = DB::table('csi_code')
-            ->select(['code as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
             ->where('project_id', $project_id)
             ->where('is_active', 1)
             ->get();
@@ -589,6 +589,8 @@ class Invoice extends ParentModel
                 'net_billed_amount' => $data['net_billed_amount'],
                 'retainage_release_amount' => $data['retainage_release_amount'],
                 'total_outstanding_retainage' => $data['total_outstanding_retainage'],
+                'current_stored_materials' => $data['current_stored_materials'],
+                'previously_stored_materials' => $data['previously_stored_materials'],
                 'stored_materials' => $data['stored_materials'],
                 'project' => $data['project'],
                 'cost_code' => $data['cost_code'],
@@ -631,6 +633,8 @@ class Invoice extends ParentModel
                     'net_billed_amount' => $data['net_billed_amount'],
                     'retainage_release_amount' => $data['retainage_release_amount'],
                     'total_outstanding_retainage' => $data['total_outstanding_retainage'],
+                    'current_stored_materials' => $data['current_stored_materials'],
+                    'previously_stored_materials' => $data['previously_stored_materials'],
                     'stored_materials' => $data['stored_materials'],
                     'project' => $data['project'],
                     'is_active' => 1,

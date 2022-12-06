@@ -22,6 +22,8 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 
+use App\Console\Commands\ImportBriqData;
+
 class UserController extends Controller
 {
 
@@ -297,7 +299,7 @@ class UserController extends Controller
 
         $preference = $this->user_model->getPreferences($user->user_id);
 
-        Session::put('default_timezone', $preference->timezone??  'America/Cancun');
+        Session::put('default_timezone', $preference->timezone ??  'America/Cancun');
         Session::put('default_currency', $preference->currency ?? 'USD');
         Session::put('default_date_format', $preference->date_format ?? 'M d yyyy');
         Session::put('default_time_format', $preference->time_format ?? '24');
@@ -330,7 +332,7 @@ class UserController extends Controller
                     $this->setMasterLogin($user);
                 }
 
-                $paid_package = array(3, 4, 9, 12, 13, 14,15);
+                $paid_package = array(3, 4, 9, 12, 13, 14, 15);
                 Session::forget('package_expire');
                 Session::forget('package_reminder_days');
                 if (in_array($merchant->merchant_plan, $paid_package)) {
@@ -696,36 +698,112 @@ class UserController extends Controller
         $encrypt_token = str_replace(' ', '+', $encrypt_token);
         $decrypt_token = $this->decryptBriqToken($encrypt_token);
 
-        if($decrypt_token["result"]["status"] == 'success'){
+        if ($decrypt_token["result"]["status"] == 'success') {
             $factory = (new Factory)->withServiceAccount(env('FIREBASE_CREDENTIALS'));
             $auth = $factory->createAuth();
 
             try {
                 $verifiedIdToken = $auth->verifyIdToken($decrypt_token["result"]["token"]);
             } catch (InvalidToken $e) {
-                log::error('BRIQ login error: The token is invalid: '.$e->getMessage());
-                return view('errors/404');  
+                log::error('BRIQ login error: The token is invalid: ' . $e->getMessage());
+                return view('errors/404');
+                //return redirect('/login')->withErrors(['Token' => 'Invalid token']);
             } catch (\InvalidArgumentException $e) {
-                log::error('BRIQ login error: The token could not be parsed:'.$e->getMessage());
-                return view('errors/404');  
-            } 
+                log::error('BRIQ login error: The token could not be parsed:' . $e->getMessage());
+                return view('errors/404');
+            }
 
             $uid = $verifiedIdToken->claims()->get('sub');
             $user = $auth->getUser($uid);
             $user_uid = $user->uid;
             $email = $user->email;
-    
-            $redirect_url =  $this->setTokenLoginDetails(env('BRIQ_DEFAULT_LOGIN_USER'), null);
-            return redirect($redirect_url);
-        }else{
-          return view('errors/404');  
+
+            $email = isset($email) ? trim($email) : null;
+
+            if ($email != '' || $email != null) {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $exist_email = $this->user_model->getTableRow('user', 'email_id', $email);
+                    $exist_uid = $this->user_model->getTableRow('user', 'briq_user_id', $user_uid);
+
+                    if (empty($exist_email)) {
+                        if (empty($exist_uid)) {
+                            $data_setup_type =  env('AUTO_SETUP_CONSTRUCTION_TEST_DATA');
+                            if ($data_setup_type == 'BRIQ') {
+                                $briq_user_emails = ['briq.com', 'br.iq'];
+                                $parts = explode('@', $email);
+                                $domain = array_pop($parts);
+                                if (in_array($domain, $briq_user_emails)) {
+                                    //register with data 
+                                    return $this->registerNewBriqUser($email, $user_uid, 1);
+                                } else {
+                                    //register without data 
+                                    return $this->registerNewBriqUser($email, $user_uid, 0);
+                                }
+                            } else if ($data_setup_type == 'ALL') {
+                                //register with data 
+                                return $this->registerNewBriqUser($email, $user_uid, 1);
+                            } else {
+                                // register without data  
+                                return $this->registerNewBriqUser($email, $user_uid, 0);
+                            }
+                        } else {
+                            $this->user_model->updateTable('user', 'briq_user_id', $user_uid, 'email_id', $email);
+                            $redirect_url =  $this->setTokenLoginDetails($exist_uid->user_id, null);
+                            return redirect($redirect_url);
+                        }
+                    } else {
+                        $this->user_model->updateTable('user', 'email_id', $email, 'briq_user_id', $user_uid);
+                        $redirect_url =  $this->setTokenLoginDetails($exist_email->user_id, null);
+                        return redirect($redirect_url);
+                    }
+                } else {
+                    log::error('BRIQ login error: email recieved from firebase is not a valid email: ' . $email);
+                    return view('errors/404');
+                }
+            } else {
+                log::error('BRIQ login error: email recieved from firebase is blank : ' . $email . "checking UID....");
+                $exist_uid = $this->user_model->getTableRow('user', 'briq_user_id', $user_uid);
+                if (empty($exist_uid)) {
+                    log::error('BRIQ login error: UID recieved from firebase is blank : ' . $user_uid);
+                    return view('errors/404');
+                } else {
+                    $redirect_url =  $this->setTokenLoginDetails($exist_uid->user_id, null);
+                    return redirect($redirect_url);
+                }
+            }
+        } else {
+            return view('errors/404');
         }
-               
+    }
+
+    function registerNewBriqUser($email, $uid, $is_data)
+    {
+        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("AUTH: " . env('BRIQ_USER_API_AUTH')));
+        $response = json_decode($response, 1);
+
+        $company_id = $response["user_data"]["company_id"];
+
+        $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
+        if ($result->Message == 'success') {
+            $this->user_model->updateTable('user', 'email_id', $email, 'briq_user_id', $uid);
+            $this->user_model->updateUserDetails($result->user_id, $result->user_id, 12);
+            $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'profile_step', '7');
+            $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'currency', ["USD"]);
+            if($is_data){
+                // insert test data 
+                $imprt_data  = new ImportBriqData();
+                $imprt_data->insertData($result->merchant_id);
+            }
+            $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);
+            return redirect($redirect_url);
+        } else {
+            return Helpers::handleCatch(__METHOD__, $result->Message);
+        }
     }
 
     function decryptBriqToken($encrypt_token)
     {
-        $response = Helpers::APIrequest(env('BRIQ_GCP_TOKEN_DECRYPT_URL'), '{"data": {"token":"'.$encrypt_token.'"}}', "POST", true,  array("Content-Type: application/json"));
+        $response = Helpers::APIrequest(env('BRIQ_GCP_TOKEN_DECRYPT_URL'), '{"data": {"token":"' . $encrypt_token . '"}}', "POST", true,  array("Content-Type: application/json"));
         $response = json_decode($response, 1);
         if ($response['result']['status'] == 'success') {
             return $response;

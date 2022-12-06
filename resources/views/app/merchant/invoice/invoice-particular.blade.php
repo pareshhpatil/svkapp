@@ -199,8 +199,8 @@ table thead,
                     @endif
 
                     @php 
-                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
 //                    @endphp
 
@@ -369,6 +369,12 @@ table thead,
                         </th>
 
                         <th>
+                            <span id="c_total_sm"></span>
+                        </th>
+                        <th>
+                            <span id="prev_total_sm"></span>
+                        </th>
+                        <th>
                         <span id="total_sm"></span>
                         </th>
                         <th>
@@ -467,6 +473,35 @@ table thead,
                             }
                         }
 
+                       function updateBillCodeDropdowns(optionArray, newBillCode){
+                           let selectedId = $('#selectedBillCodeId').val();
+
+                           for(let v=0; v < particularray.length; v++){
+                               let currentField = particularray[v];
+                               let billCodeSelector = document.querySelector('#bill_code' + v);
+
+                               if(selectedId === 'bill_code'+ v ) {
+
+                                   billCodeSelector.setOptions(optionArray);
+                                   billCodeSelector.setValue(newBillCode.id);
+
+                                   only_bill_codes.push(newBillCode.id)
+
+                                   particularray[v].bill_code = newBillCode.code;
+                                   particularray[v].description = newBillCode.description;
+                                   $('#description' + v).val( newBillCode.description )
+
+                               }
+                               else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
+
+                           }
+                           closeSidePanelBillCode();
+
+                           $('#new_bill_code').val(null);
+                           $('#new_bill_description').val(null);
+                           $('#selectedBillCodeId').val(null);
+                       }
+
                        /*$('#cell_bill_code_' + p).addClass(' error-corner');
                        this.goAhead = false;
                        }else $('#cell_bill_code_' + p).removeClass(' error-corner');
@@ -534,11 +569,16 @@ table thead,
                             project_id : this.project_id
                         },
                         success: function (data) {
-                            console.log(data);
+                            let label = data.billCode.code + ' | ' + data.billCode.description
+
+                            bill_codes.push(
+                                { value: data.billCode.id, label: label, description: data.billCode.description }
+                            )
+                            updateBillCodeDropdowns(bill_codes, data.billCode)
                         }
                     });
 
-                    let new_bill_code = $('#new_bill_code').val();
+                    /*let new_bill_code = $('#new_bill_code').val();
                     let new_bill_description = $('#new_bill_description').val();
 
                     let label = new_bill_code + ' | ' + new_bill_description
@@ -547,12 +587,12 @@ table thead,
                         {label: label, value : new_bill_code, description : new_bill_description }
                     )
 
-                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);
+                    this.updateBillCodeDropdowns(bill_codes, new_bill_code, new_bill_description);*/
 
                     // initializeBillCodes();
                     return false;
                 },
-                updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
+               /* updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
                     let selectedId = $('#selectedBillCodeId').val();
 
                     for(let v=0; v < this.fields.length; v++){
@@ -577,7 +617,7 @@ table thead,
                     $('#new_bill_code').val(null);
                     $('#new_bill_description').val(null);
                     $('#selectedBillCodeId').val(null);
-                },
+                },*/
                                 goToParticulars() {
                                     this.resetFlags();
                                     /*if (this.project_id === null || this.project_id === '') {
@@ -707,6 +747,8 @@ table thead,
                                          particularray[i].retainage_amount = this.fields[i].retainage_amount;
                                          particularray[i].retainage_amount_for_this_draw = this.fields[i].retainage_amount_for_this_draw;
                                          particularray[i].retainage_percent = this.fields[i].retainage_percent;
+                                         particularray[i].current_stored_materials = this.fields[i].current_stored_materials;
+                                         particularray[i].previously_stored_materials = this.fields[i].previously_stored_materials;
                                          particularray[i].stored_materials = this.fields[i].stored_materials;
                                          particularray[i].total_billed = this.fields[i].total_billed;
                                          particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
@@ -847,6 +889,14 @@ table thead,
                                                 field.approved_change_order_amount='';
                                             }
                                             field.current_contract_amount = updateTextView1(getamt(field.original_contract_amount) + getamt(field.approved_change_order_amount));
+                                        } catch (o) {}
+
+                                        try {
+                                            if(field.stored_materials==null)
+                                            {
+                                                field.stored_materials='';
+                                            }
+                                            field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
                                         } catch (o) {}
 
                                         try {
@@ -1390,7 +1440,7 @@ table thead,
                                 $('#description'+id).val(displayValue[1].trim())
                                 particularray[id].description = displayValue[1].trim();
                             }
-                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(this.value)) {
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
                                 console.log(this.value); 
                                 only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
