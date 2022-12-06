@@ -892,14 +892,6 @@ table thead,
                                         } catch (o) {}
 
                                         try {
-                                            if(field.stored_materials==null)
-                                            {
-                                                field.stored_materials='';
-                                            }
-                                            field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
-                                        } catch (o) {}
-
-                                        try {
                                             if(field.bill_type!='Cost')
                                             {
                                                 if(field.current_billed_percent==null)
@@ -925,6 +917,7 @@ table thead,
                                                 field.stored_materials='';
                                             }
                                             field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.stored_materials));
+                                            field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
                                         } catch (o) {alert(4);}
 
                                         try {
