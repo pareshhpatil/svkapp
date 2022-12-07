@@ -199,8 +199,8 @@
                                                 @endif
 
                     @php 
-                    $readonly_array=array('retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $disable_array=array('retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
                    @endphp
 
@@ -915,8 +915,8 @@
                                             {
                                                 field.stored_materials='';
                                             }
-                                            field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.stored_materials));
                                             field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
+                                            field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
 
                                         } catch (o) {alert(4);}
 
