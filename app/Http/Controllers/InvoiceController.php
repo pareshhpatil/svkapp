@@ -2176,8 +2176,8 @@ class InvoiceController extends AppController
 
             $main_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
         }
-
-        if (isset($info['plugin']['has_partial'])) {
+       
+        if (isset($plugin['has_partial'])) {
             $partial_payments =  $this->invoiceModel->querylist("call get_partial_payments('" . $payment_request_id . "')");
             $info["partial_payments"] = $partial_payments;
         } else {
