@@ -182,7 +182,7 @@ class InvoiceController extends AppController
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-            if ($update == 1) {
+            if ($update == 1 && $invoice->payment_request_status!=11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
                 if ($req_id != false) {
                     if ($request_id != $req_id) {
@@ -1634,11 +1634,21 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
-            if ($type == '703' || $type == '702') {
+
+            if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
-                    $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    $arrContextOptions=[
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                            "allow_self_signed" => true,
+                        ]
+                    ];
+
+                    $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
                 } catch (Exception $o) {
+                    dd($o);
                 }
             }
             $info['signimg'] = '';
@@ -2167,8 +2177,8 @@ class InvoiceController extends AppController
 
             $main_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
         }
-
-        if (isset($info['plugin']['has_partial'])) {
+       
+        if (isset($plugin['has_partial'])) {
             $partial_payments =  $this->invoiceModel->querylist("call get_partial_payments('" . $payment_request_id . "')");
             $info["partial_payments"] = $partial_payments;
         } else {
@@ -2415,11 +2425,14 @@ class InvoiceController extends AppController
             $seq_no = $seq_row->val + 1;
             $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
         }
-
         //get less Previous certificates for payment from previous invoice
-        $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
-
-        $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+        $info["less_previous_certificates_for_payment"]=0;
+        if(isset($info['project_details']))
+        {
+            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
+            $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+        }
+        
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
@@ -3102,7 +3115,6 @@ SQL;
                         $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
                         $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->previously_stored_materials;
-                        $particulars[$k]->current_stored_materials = $cp[$v->bill_code]->current_stored_materials;
                     }
                 }
             }
