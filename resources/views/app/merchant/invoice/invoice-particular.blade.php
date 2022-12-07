@@ -370,10 +370,10 @@
                                                     </th>
 
                                                     <th>
-                                                        <span id="previous_sm"></span>
+                                                        <span id="total_psm"></span>
                                                     </th>
                                                     <th>
-                                                        <span id="current_sm"></span>
+                                                        <span id="total_csm"></span>
                                                     </th>
                                                     <th>
                         <span id="total_sm"></span>
@@ -916,7 +916,16 @@
                                                 field.stored_materials='';
                                             }
                                             field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.stored_materials));
+                                            field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
+
                                         } catch (o) {alert(4);}
+
+                                        try {
+                                            field.previously_stored_materials = updateTextView1(getamt(field.previously_stored_materials));
+                                        } catch (o) {}
+                                        try {
+                                            field.current_stored_materials = updateTextView1(getamt(field.current_stored_materials));
+                                        } catch (o) {}
 
                                         try {
                                             if(field.retainage_percent==null)
@@ -959,6 +968,8 @@
 
                         total_pba = 0;
                         total_cba = 0;
+                        total_psm = 0;
+                        total_csm = 0;
                         total_sm = 0;
                         total_tb = 0;
                         total_rapw = 0;
@@ -973,6 +984,8 @@
 
                             total_pba = Number(total_pba) + getamt(currentValue.previously_billed_amount);
                             total_cba = Number(total_cba) + getamt(currentValue.current_billed_amount);
+                            total_psm = Number(total_psm) + getamt(currentValue.previously_stored_materials);
+                            total_csm = Number(total_csm) + getamt(currentValue.current_stored_materials);
                             total_sm = Number(total_sm) + getamt(currentValue.stored_materials);
                             total_tb = Number(total_tb) + getamt(currentValue.total_billed);
                             total_rapw = Number(total_rapw) + getamt(currentValue.retainage_amount_previously_withheld);
@@ -989,6 +1002,8 @@
 
                         document.getElementById('total_pba').innerHTML = updateTextView1(total_pba);
                         document.getElementById('total_cba').innerHTML = updateTextView1(total_cba);
+                        document.getElementById('total_psm').innerHTML = updateTextView1(total_psm);
+                        document.getElementById('total_csm').innerHTML = updateTextView1(total_csm);
                         document.getElementById('total_sm').innerHTML = updateTextView1(total_sm);
                         document.getElementById('total_tb').innerHTML = updateTextView1(total_tb);
                         document.getElementById('total_rapw').innerHTML = updateTextView1(total_rapw);
