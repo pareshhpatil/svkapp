@@ -487,7 +487,10 @@ Print<i class="fa fa-print"></i>
                                             <div class="col-md-12">
                                                 <div class="alert alert-warning" id="partial-warning" style="display: none;">
                                                     <div class="media">
-                                                        <p class="media-heading">You have chosen to settle (close) the invoice with an amount lesser than the full amount due. Would you like to mark this invoice as partially paid?</p>
+                                                        <p class="media-heading">
+                                                        Log partial payment?
+                                                        </p>
+                                                        You have chosen to settle (close) the invoice with an amount lesser than the full amount due. Would you like to mark this invoice as partially paid?
                                                     </div>
 
                                                 </div>
