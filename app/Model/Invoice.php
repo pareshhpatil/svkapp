@@ -140,14 +140,22 @@ class Invoice extends ParentModel
 
     public function getPreviousInvoice($merchant_id, $contract_id, $payment_request_id)
     {
+        $currentInvoice = DB::table('payment_request')
+            ->where('merchant_id', $merchant_id)
+            ->where('contract_id', $contract_id)
+            ->where('payment_request_status', $payment_request_id)
+            ->first();
+
         $retObj = DB::table('payment_request')
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
             ->where('payment_request_status', '<>', 11)
             ->where('payment_request_id', '<>', $payment_request_id)
+            ->where('created_date', '<', $currentInvoice->created_date)
             ->orderBy('payment_request_id', 'desc')
             ->first();
+        
         if (!empty($retObj)) {
             return $retObj->payment_request_id;
         } else {
