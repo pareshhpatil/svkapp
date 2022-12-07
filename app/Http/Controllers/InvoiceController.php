@@ -1609,7 +1609,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-        
+        dd($type);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -1637,6 +1637,7 @@ class InvoiceController extends AppController
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    dd($info);
                 } catch (Exception $o) {
                 }
             }
