@@ -908,7 +908,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if($selectedTemplateName != 'G702 / G703')
+                                @if($selectedTemplateType != 'construction')
                                     <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                         <div class="panel  box-plugin">
                                             <div class="panel-body">
@@ -961,7 +961,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if($selectedTemplateName != 'G702 / G703')
+                                @if($selectedTemplateType != 'construction')
                                     <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                         <div class="panel  box-plugin">
                                             <div class="panel-body">
@@ -1020,7 +1020,7 @@
                                 </div>
                                 -->
 
-                                @if($selectedTemplateName != 'G702 / G703')
+                                @if($selectedTemplateType != 'construction')
                                 <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                     <div class="panel  box-plugin">
                                         <div class="panel-body">
@@ -1037,7 +1037,7 @@
                                 @endif
 
 
-                                @if($selectedTemplateName != 'G702 / G703')
+                                @if($selectedTemplateType != 'construction')
                                     <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                         <div class="panel  box-plugin">
                                             <div class="panel-body">

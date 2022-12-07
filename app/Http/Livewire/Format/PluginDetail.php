@@ -11,21 +11,21 @@ class PluginDetail extends Component
     public $plugins = [];
     public $coveringNotes = [];
     public $supplier = [];
-    public $selectedTemplateName = '';
+    public $selectedTemplateType = '';
 
     public function render()
     {
         return view('livewire.format.plugin-detail');
     }
 
-    public function mount($plugin = null, $columns = null, $selectedTemplateName = '')
+    public function mount($plugin = null, $columns = null, $selectedTemplateType = '')
     {
         if ($plugin != null && $plugin != '' && $plugin != 'null') {
             $this->plugins = json_decode($plugin, 1);
         }
 
-        if(!empty($selectedTemplateName)) {
-            $this->selectedTemplateName = $selectedTemplateName;
+        if(!empty($selectedTemplateType)) {
+            $this->selectedTemplateType = $selectedTemplateType;
         }
 
         if ($columns != null) {

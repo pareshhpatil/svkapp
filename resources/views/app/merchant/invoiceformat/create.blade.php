@@ -233,7 +233,7 @@
                                     </div>
                                 </div>
 
-                                @livewire('format.plugin-detail', ['plugin' => $detail->plugin, 'columns' => $metadata['H'], 'selectedTemplateName' => $detail->selected_template_name])
+                                @livewire('format.plugin-detail', ['plugin' => $detail->plugin, 'columns' => $metadata['H'], 'selectedTemplateType' => $detail->template_type])
 
                                 @if (!empty($designname))
                                     <div class="portlet  col-md-12">

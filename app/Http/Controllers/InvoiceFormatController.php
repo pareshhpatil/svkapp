@@ -42,7 +42,6 @@ class InvoiceFormatController extends AppController
         $data = $this->setBladeProperties('Create format', [], [1]);
         #get invoice format detail
         $data['detail'] = $this->formatModel->getTableRow('system_template', 'system_template_id', $template_id);
-        $data['detail']->selected_template_name = $data['detail']->template_name;
         $data['detail']->template_name = '';
         $data['detail']->default_particular = '';
         $data['detail']->default_tax = '';
@@ -297,7 +296,6 @@ class InvoiceFormatController extends AppController
             $data = $this->setBladeProperties('Update format', [], [1]);
             #get invoice format detail
             $data['detail'] = $this->formatModel->getTableRow('invoice_template', 'template_id', $template_id);
-
             #get billing profile
             $data['defaultProfileId'] = $data['detail']->profile_id;
 
