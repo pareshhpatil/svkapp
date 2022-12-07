@@ -52,7 +52,7 @@ class OrderController extends Controller
         $data['particulars'] = $particulars;
         $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
         foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name . ' | ' . $cust_data->customer_code;
+            $cust_data->customer_code =  $cust_data->company_name??null . ' | ' . $cust_data->customer_code??null;
         }
         $data["cust_list"] = $cust_list;
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);

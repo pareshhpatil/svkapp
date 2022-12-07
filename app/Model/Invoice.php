@@ -245,6 +245,17 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+    public function getInvoiceConstructionParticulars($payment_request_id)
+    {
+        $retObj = DB::table('invoice_construction_particular')
+            ->select(DB::raw('invoice_construction_particular.*, csi_code.code'))
+            ->join('csi_code', 'csi_code.id','=', 'invoice_construction_particular.bill_code')
+            ->where('payment_request_id', $payment_request_id)
+            ->where('invoice_construction_particular.is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
 
     public function getTravelInvoiceParticular($payment_request_id)
     {

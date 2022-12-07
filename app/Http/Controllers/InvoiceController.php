@@ -47,10 +47,10 @@ class InvoiceController extends AppController
 
     }
     /**
-     * Renders form to create invoice 
+     * Renders form to create invoice
      *
      * @param $type - Invoice or Estimate or Subscription
-     * 
+     *
      * @return void
      */
     public function createlegacy(Request $request, $type = 'invoice', $invoice_type = 1)
@@ -169,7 +169,8 @@ class InvoiceController extends AppController
 
 
 
-   
+
+
     public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
@@ -362,7 +363,7 @@ class InvoiceController extends AppController
      * Renders form to update invoice
      *
      * @param $link - encrypted link
-     * 
+     *
      * @return void
      */
     public function update($link, $staging = 0, $revision = 0)
@@ -383,7 +384,7 @@ class InvoiceController extends AppController
                     return $this->create($request, $link, 1);
                 }
             }
-            
+
             $req_types = array(1 => 'invoice', 2 => 'estimate', 4 => 'subscription');
             $type =  $req_types[$info->invoice_type];
 
@@ -913,7 +914,7 @@ class InvoiceController extends AppController
 
                     $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files), 0, strrpos(basename($files), '.')), -10));
                     $menus1['full'] = basename($files);
-                    
+
                     $menus1['title'] = strlen(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4)) < 10 ? substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4) : $nm . '...';
 
 
@@ -1920,7 +1921,7 @@ class InvoiceController extends AppController
         $responce_tax =  $this->invoiceModel->getInvoiceTax($payment_request_id);
         $responce_meta =  $this->invoiceModel->getInvoiceMetadata($info['template_id'], $payment_request_id);
         $cust_values = $this->invoiceModel->getCustomerbreckup($info['customer_id']);
-    
+
         $info['user_type'] = $user_type;
         $info['staging'] = $staging;
         $data['links'] = $payment_request_id;
@@ -2175,8 +2176,8 @@ class InvoiceController extends AppController
 
             $main_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
         }
-
-        if (isset($info['plugin']['has_partial'])) {
+       
+        if (isset($plugin['has_partial'])) {
             $partial_payments =  $this->invoiceModel->querylist("call get_partial_payments('" . $payment_request_id . "')");
             $info["partial_payments"] = $partial_payments;
         } else {
@@ -2276,7 +2277,8 @@ class InvoiceController extends AppController
                 }
             }
         } else if ($info['template_type'] == 'construction') {
-            $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+            $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+            //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $info['constriuction_details'] = $this->getData703($tt);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
@@ -2490,7 +2492,7 @@ SQL;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
 
             }
-            
+
             if($prev_total_d + $prev_total_e > 0) {
                 $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
 
@@ -2502,7 +2504,7 @@ SQL;
                 $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
             }
         }
-        
+
         return $less_previous_certificates_for_payment;
     }
 
@@ -2606,7 +2608,7 @@ SQL;
                         $grouping_data[] = $single_data;
                     }
                     $single_data = array();
-                    $single_data['a'] = $data['bill_code'];
+                    $single_data['a'] = $data['code'];// $data['bill_code'];
                     $single_data['type'] = '';
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
@@ -2668,7 +2670,7 @@ SQL;
                     }
                 } else {
                     $single_data = array();
-                    $single_data['a'] = $data['bill_code'];
+                    $single_data['a'] = $data['code'];//$data['bill_code'];
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
@@ -2788,6 +2790,7 @@ SQL;
         } else {
             $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
             $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
+
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
         }
@@ -3092,7 +3095,7 @@ SQL;
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
                         $kdata["cost_type"]=isset($kdata["cost_type"])? $kdata["cost_type"] : '';
-                        
+
                         $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
                 }
