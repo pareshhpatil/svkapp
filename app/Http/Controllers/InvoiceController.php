@@ -1607,11 +1607,11 @@ class InvoiceController extends AppController
         }
     }
 
-    public function download($link, $savepdf = 0, , $type = null)
+    public function download($link, $savepdf = 0, $type = null)
     {
 
         $payment_request_id = Encrypt::decode($link);
-        dd($payment_request_id, $typ);
+        dd($payment_request_id, $type);
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             #get default billing profile
