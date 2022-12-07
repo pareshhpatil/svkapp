@@ -552,7 +552,7 @@ class UserController extends Controller
             if ($detail->status == 0) {
                 $this->user_model->updateTokenStatus($detail->id, 1);
                 $redirect_url = $this->setTokenLoginDetails($detail->user_id, $service_id);
-                return redirect(env('APP_URL') . $redirect_url);
+                return redirect(env('ASSET_URL') . $redirect_url);
             } else {
                 return redirect('/login')->withErrors(['Token' => 'Token expired']);
             }
