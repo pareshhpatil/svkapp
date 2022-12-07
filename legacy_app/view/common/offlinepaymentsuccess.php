@@ -70,8 +70,6 @@ Your Payment is successful. Please quote your receipt number for any queries rel
 
 
 </div>
-      <div class="row3 "><p>Powered by Swipez &copy; <?php echo $this->current_year; ?> OPUS Net Pvt. Handmade in Pune. <img src="/assets/admin/layout/img/logo.png" class="img-responsive pull-right powerbyimg" alt=""/><span class="powerbytxt">powered by</span> </p>
- </div>
   </div>
   
   <!--mid-->
