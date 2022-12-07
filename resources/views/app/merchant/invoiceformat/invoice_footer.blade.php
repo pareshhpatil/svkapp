@@ -206,17 +206,17 @@ $validate=(array)$validate;
 <div class="row no-margin">
     <div class="col-md-12">
         @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file']==1)
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Save as PDF
         </a>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}/2">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/2/{{$info['gtype']}}@endif">
             Print
         </a>
         @else
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Save as PDF
         </a>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}/2">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Print
         </a>
         @endif

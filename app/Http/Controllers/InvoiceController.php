@@ -787,9 +787,10 @@ class InvoiceController extends AppController
             //end code for new design
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
-            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
-
+            
+            $imgpath='';
             if (isset($info['image_path'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
                     $info['image_path'] =  $imgpath;
                 }
@@ -861,7 +862,6 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
@@ -3091,7 +3091,7 @@ class InvoiceController extends AppController
                         $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
                         $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
                         $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
-                        $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->previously_stored_materials;
+                        $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
                     }
                 }
             }
