@@ -452,3 +452,27 @@ function closeRevisionSidePanel() {
     $('.page-header-fixed').css('pointer-events','all');
     return false;
 }
+
+function validatePartial()
+{
+    original_amount=Number(document.getElementById('original_amount').value);
+    total=Number(document.getElementById('total').value);
+    if(original_amount>total)
+    {
+        document.getElementById('partial-warning').style.display='block';
+        document.getElementById('settlebutton').style.display='none';
+        document.getElementById('partialbtn').className='btn blue pull-right mr-1';
+        document.getElementById('settlebuttonconfirm').style.display='block';
+        return false;
+    }
+    return true;
+}
+
+
+function resetSettle()
+{
+    document.getElementById('total').value=document.getElementById('original_amount').value;
+    document.getElementById('partial-warning').style.display='none';
+    
+
+}
