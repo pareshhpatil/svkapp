@@ -785,7 +785,7 @@ function addbillcode(){
                     document.getElementById("description-hidden" + new_bill_index).value = data[1]; // bill desc
                     document.getElementById("description" + new_bill_index).innerHTML = data[1]; // bill desc
                     $('select[name="bill_code[]"]').map(function () {
-                        this.append(new Option(data[0], data[0])); // bill code
+                        this.append(new Option(data[0] + '|' + data[1], data[2])); // bill code
                     }).get();
 
                     $('select[name="bill_code[]"]').each(function (indx, arr) {
@@ -796,8 +796,8 @@ function addbillcode(){
 
                     });
 
-                    if ($('#bill_code' + new_bill_index).find("option[value='" + data[0] + "']").length) {
-                        $('#bill_code' + new_bill_index).val(data[0]).trigger('change');
+                    if ($('#bill_code' + new_bill_index).find("option[value='" + data[2] + "']").length) {
+                        $('#bill_code' + new_bill_index).val(data[2]).trigger('change');
                     }
                 }
             }
