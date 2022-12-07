@@ -1636,7 +1636,6 @@ class InvoiceController extends AppController
 
             if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
-                dd($imgpath);
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
                 } catch (Exception $o) {
@@ -1693,6 +1692,7 @@ class InvoiceController extends AppController
                 define("DOMPDF_DPI", 120);
                 define("DOMPDF_ENABLE_REMOTE", true);
                 if ($info['template_type'] == 'construction') {
+                    dd($data);
                     $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
                     $pdf->setPaper("a4", "landscape");
                 } else {
