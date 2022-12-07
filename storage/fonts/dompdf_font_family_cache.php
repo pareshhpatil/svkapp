@@ -95,6 +95,6 @@
   'rubik' => array(
     'normal' => $fontDir . '/rubik-normal_92ee0565e20ecffd4285678e00cc1cbd',
     'bold' => $fontDir . '/rubik-bold_0770f833e54fb67205acf4979069eb31',
-    '600' => $fontDir . '/rubik-600_0770f833e54fb67205acf4979069eb31',
+    '600' => $fontDir . '/rubik-600_95af036bbc22f425d24d264e4c64a418',
   ),
 ) ?>

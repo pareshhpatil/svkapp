@@ -73,7 +73,7 @@ class UpdateOldParticularsWithNewBillCodeId extends Command
                     ->select(DB::raw('invoice_construction_particular.*'))
                     ->join('payment_request', 'payment_request.payment_request_id', '=', 'invoice_construction_particular.payment_request_id')
                     ->where('payment_request.contract_id', $contract->contract_id)->get();
-dd($invoiceParticulars);
+
                 foreach ($invoiceParticulars as $invoiceParticular) {
                     if (isset($bill_codes[$invoiceParticular->bill_code])) {
                         DB::table('invoice_construction_particular')->where('id', $invoiceParticular->id)->update(['bill_code' => $bill_codes[$invoiceParticular->bill_code]]);
