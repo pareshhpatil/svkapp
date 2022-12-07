@@ -180,9 +180,9 @@
                             <tbody id="new_particular">
                                 @php $discount_perc=0; @endphp
                                 @php $rate=0; @endphp
-                                @if(!empty($contract_particulars))
+                                @if(!empty($invoice_particular))
                                 @php $int=1; @endphp
-                                @foreach($contract_particulars as $dp)
+                                @foreach($invoice_particular as $dp)
                                 <tr>
                                     @foreach($particular_column as $k=>$v)
                                     @php $readonly=''; @endphp
@@ -215,9 +215,9 @@
                                         @else
                                         @if($k=='bill_code')
                                         @if($dp->bill_type=='Calculated')
-                                        <label class="row-label">{{$dp->bill_code}}</label><br>
+                                        <label class="row-label">{{$dp->code}}</label><br>
                                         @else
-                                        {{$dp->$k}}
+                                        {{$dp->code}}
                                         <div class="text-center">
                                             <p id="description{{$int}}" class="lable-heading">
                                                 {{$dp->description}}
