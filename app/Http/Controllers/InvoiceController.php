@@ -1637,7 +1637,14 @@ class InvoiceController extends AppController
             if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
-                    $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    $arrContextOptions=[
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                        ]
+                    ];
+
+                    $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
                     dd($info, base64_encode(file_get_contents($imgpath)));
                 } catch (Exception $o) {
                     dd($o);
