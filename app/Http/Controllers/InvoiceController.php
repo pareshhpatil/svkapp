@@ -1611,7 +1611,7 @@ class InvoiceController extends AppController
     {
 
         $payment_request_id = Encrypt::decode($link);
-        dd($payment_request_id, $type);
+
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             #get default billing profile
@@ -1633,8 +1633,10 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
+
             if ($type == '703' || $type == '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                dd($imgpath);
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
                 } catch (Exception $o) {
