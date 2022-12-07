@@ -482,12 +482,17 @@ function addRowinCalcTable(ind) {
             console.log('original_contract_amount' + int);
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
-            try {
+            let displayValue = document.querySelector('#bill_code' + int ).getDisplayValue().split('|');
+            /*try {
                 var bill_code = particularray[int].bill_code;
             } catch (o) {
                 var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
             }
-            var discription = document.getElementById('description' + int).value;
+            var discription = document.getElementById('description' + int).value;*/
+
+            let bill_code = displayValue[0];
+            var discription = displayValue[1];
+
             //bill_code = document.getElementById('bill_code' + bint).value;
             if (amt > 0) {
                 row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
