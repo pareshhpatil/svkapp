@@ -67,7 +67,6 @@ body{
             <table >
                 <tr>
                 <td>
-                    {{dd($info)}}
                     <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
                 </td>
                 <td>
