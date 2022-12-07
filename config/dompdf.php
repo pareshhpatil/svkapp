@@ -57,8 +57,8 @@ return array(
          * The temporary directory is required to download remote images and when
          * using the PFDLib back end.
          */
-        "temp_dir" => storage_path('images/'),
-        //"temp_dir" => sys_get_temp_dir(),
+        //"temp_dir" => storage_path('images/'),
+        "temp_dir" => sys_get_temp_dir(),
 
         /**
          * ==== IMPORTANT ====
