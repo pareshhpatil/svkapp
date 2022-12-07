@@ -473,6 +473,8 @@ function resetSettle()
 {
     document.getElementById('total').value=document.getElementById('original_amount').value;
     document.getElementById('partial-warning').style.display='none';
-    
+    document.getElementById('settlebutton').style.display='block';
+    document.getElementById('partialbtn').className='btn green pull-right mr-1';
+    document.getElementById('settlebuttonconfirm').style.display='none';
 
 }
