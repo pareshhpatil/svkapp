@@ -788,7 +788,7 @@ class InvoiceController extends AppController
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
             
-            $imgpath='';
+            $imgpath=''
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
@@ -862,7 +862,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            dd($info);
+
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
