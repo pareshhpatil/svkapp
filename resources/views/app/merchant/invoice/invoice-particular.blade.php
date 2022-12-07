@@ -369,7 +369,13 @@
                                                         <span id="total_cba"></span>
                                                     </th>
 
-                        <th>
+                                                    <th>
+                                                        <span id="previous_sm"></span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="current_sm"></span>
+                                                    </th>
+                                                    <th>
                         <span id="total_sm"></span>
                         </th>
                         <th>
