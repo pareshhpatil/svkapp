@@ -1638,6 +1638,7 @@ class InvoiceController extends AppController
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    dd($info, base64_encode(file_get_contents($imgpath)));
                 } catch (Exception $o) {
                 }
             }
@@ -1648,7 +1649,7 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-            dd($info);
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
