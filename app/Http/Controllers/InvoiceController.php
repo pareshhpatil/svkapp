@@ -2413,11 +2413,14 @@ class InvoiceController extends AppController
             $seq_no = $seq_row->val + 1;
             $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
         }
-
         //get less Previous certificates for payment from previous invoice
-        $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
-
-        $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+        $info["less_previous_certificates_for_payment"]=0;
+        if(isset($info['project_details']))
+        {
+            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
+            $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+        }
+        
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
