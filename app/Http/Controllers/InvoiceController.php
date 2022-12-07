@@ -1634,12 +1634,13 @@ class InvoiceController extends AppController
                 $info['image_path'] = '';
             }
 
-            if ($type == '703' || $type == '702') {
+            if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
                     dd($info, base64_encode(file_get_contents($imgpath)));
                 } catch (Exception $o) {
+                    dd($o);
                 }
             }
             $info['signimg'] = '';
