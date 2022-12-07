@@ -1648,7 +1648,6 @@ class InvoiceController extends AppController
 
                     $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
                 } catch (Exception $o) {
-                    dd($o);
                 }
             }
             $info['signimg'] = '';
