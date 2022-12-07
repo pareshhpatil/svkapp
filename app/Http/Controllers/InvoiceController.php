@@ -1635,7 +1635,7 @@ class InvoiceController extends AppController
             }
 
             if ($type === '703' || $type === '702') {
-                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                $imgpath = env('APP_URL') . '/test/logo-703.PNG';
                 try {
                     $arrContextOptions=[
                         "ssl" => [
