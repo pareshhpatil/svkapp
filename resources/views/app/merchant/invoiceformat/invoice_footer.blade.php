@@ -471,7 +471,8 @@ Print<i class="fa fa-print"></i>
                                                 <input type="checkbox" name="send_receipt" onchange="showDocument(this.checked)" data-on-text="&nbsp;Yes&nbsp;&nbsp;" data-off-text="&nbsp;No&nbsp;" value="1" checked class="make-switch" data-size="small">
                                             </div>
                                         </div>
-                                        <div class="form-group" id="document_div">
+                                        <input type="hidden" name="notification_type" value="1">
+                                        <!--<div class="form-group" id="document_div">
                                             <label for="inputPassword12" class="col-md-4 control-label">Notify customer
                                                 on <span class="required">
                                                 </span></label>
@@ -482,7 +483,7 @@ Print<i class="fa fa-print"></i>
                                                     <option value="3">Email & SMS</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-group">
                                             <div class="col-md-12">
                                                 <div class="alert alert-warning" id="partial-warning" style="display: none;">
