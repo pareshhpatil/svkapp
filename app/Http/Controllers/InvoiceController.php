@@ -1609,7 +1609,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-        dd($type);
+
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -1633,12 +1633,21 @@ class InvoiceController extends AppController
             } else {
                 $info['image_path'] = '';
             }
-            if ($type == '703' || $type == '702') {
+
+            if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
-                    $info['logo'] = base64_encode(file_get_contents($imgpath));
-                    dd($info);
+                    $arrContextOptions=[
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                            "allow_self_signed" => true,
+                        ]
+                    ];
+
+                    $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
                 } catch (Exception $o) {
+                    dd($o);
                 }
             }
             $info['signimg'] = '';
@@ -1648,7 +1657,7 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-            
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
