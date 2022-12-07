@@ -138,6 +138,23 @@ class Invoice extends ParentModel
         }
     }
 
+    public function getPreviousInvoice($merchant_id, $contract_id, $payment_request_id)
+    {
+        $retObj = DB::table('payment_request')
+            ->select(DB::raw('payment_request_id'))
+            ->where('merchant_id', $merchant_id)
+            ->where('contract_id', $contract_id)
+            ->where('payment_request_status', '<>', 11)
+            ->where('payment_request_id', '<>', $payment_request_id)
+            ->orderBy('payment_request_id', 'desc')
+            ->first();
+        if (!empty($retObj)) {
+            return $retObj->payment_request_id;
+        } else {
+            return false;
+        }
+    }
+
     public function getOrderbyContract($contract_id, $date)
     {
         $retObj = DB::table('order')
@@ -249,7 +266,7 @@ class Invoice extends ParentModel
     {
         $retObj = DB::table('invoice_construction_particular')
             ->select(DB::raw('invoice_construction_particular.*, csi_code.code'))
-            ->join('csi_code', 'csi_code.id','=', 'invoice_construction_particular.bill_code')
+            ->join('csi_code', 'csi_code.id', '=', 'invoice_construction_particular.bill_code')
             ->where('payment_request_id', $payment_request_id)
             ->where('invoice_construction_particular.is_active', 1)
             ->get();
@@ -486,7 +503,7 @@ class Invoice extends ParentModel
     public function getBillCodes($project_id)
     {
         $retObj = DB::table('csi_code')
-            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description'])
             ->where('project_id', $project_id)
             ->where('is_active', 1)
             ->get();
@@ -494,12 +511,12 @@ class Invoice extends ParentModel
     }
 
 
-    public function getBilledTransactions($project_id,$date,$payment_request_id)
+    public function getBilledTransactions($project_id, $date, $payment_request_id)
     {
         $retObj = DB::table('billed_transaction as d')
             ->select(DB::raw('d.*,CONCAT(i.abbrevation, " - ", i.name) as cost_type_label'))
             ->join('cost_types as i', 'd.cost_type', '=', 'i.id')
-            ->whereRaw("d.payment_request_id='".$payment_request_id."' or (d.project_id='".$project_id."' and d.date='".$date."' and d.status=0 and d.is_active=1)")
+            ->whereRaw("d.payment_request_id='" . $payment_request_id . "' or (d.project_id='" . $project_id . "' and d.date='" . $date . "' and d.status=0 and d.is_active=1)")
             ->get();
         return $retObj;
     }
@@ -509,7 +526,7 @@ class Invoice extends ParentModel
         $retObj = DB::table('payment_request')
             ->where('contract_id', $contract_id)
             ->where('merchant_id', $merchant_id)
-            ->whereNotIn('payment_request_status', [3,11])
+            ->whereNotIn('payment_request_status', [3, 11])
             ->max('payment_request_id');
         if (!empty($retObj)) {
             return $retObj;
@@ -544,7 +561,7 @@ class Invoice extends ParentModel
     //         ]);
     // }
 
-    public function updateInvoiceDetail($request_id, $amount,$ids)
+    public function updateInvoiceDetail($request_id, $amount, $ids)
     {
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
@@ -558,17 +575,17 @@ class Invoice extends ParentModel
     }
 
 
-    public function updateBilledTransactionStatus($request_id,$project_id)
+    public function updateBilledTransactionStatus($request_id, $project_id)
     {
         DB::table('billed_transaction')->where('payment_request_id', $request_id)
-        ->where('project_id', $project_id)
+            ->where('project_id', $project_id)
             ->update([
                 'status' => 0,
                 'payment_request_id' => ''
             ]);
     }
 
-    public function updateBilledTransactionRequestID($request_id,$arrays)
+    public function updateBilledTransactionRequestID($request_id, $arrays)
     {
         DB::table('billed_transaction')->wherein('id', $arrays)
             ->update([

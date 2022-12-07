@@ -182,7 +182,7 @@ class InvoiceController extends AppController
         if ($link != null) {
             $request_id = Encrypt::decode($link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-            if ($update == 1 && $invoice->payment_request_status!=11) {
+            if ($update == 1 && $invoice->payment_request_status != 11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
                 if ($req_id != false) {
                     if ($request_id != $req_id) {
@@ -380,7 +380,7 @@ class InvoiceController extends AppController
             }
             if ($revision != 1) {
                 $request = new Request();
-                if ($info->template_type=='construction') {
+                if ($info->template_type == 'construction') {
                     return $this->create($request, $link, 1);
                 }
             }
@@ -908,7 +908,7 @@ class InvoiceController extends AppController
 
                 foreach ($data['files'] as $files) {
                     $nm = '';
-                    if(!empty($files)) {
+                    if (!empty($files)) {
                         $nm = substr(substr(substr(basename($files), 0, strrpos(basename($files), '.')), 0, -4), 0, 10);
                     }
 
@@ -1638,7 +1638,7 @@ class InvoiceController extends AppController
             if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
-                    $arrContextOptions=[
+                    $arrContextOptions = [
                         "ssl" => [
                             "verify_peer" => false,
                             "verify_peer_name" => false,
@@ -2176,7 +2176,7 @@ class InvoiceController extends AppController
 
             $main_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
         }
-       
+
         if (isset($plugin['has_partial'])) {
             $partial_payments =  $this->invoiceModel->querylist("call get_partial_payments('" . $payment_request_id . "')");
             $info["partial_payments"] = $partial_payments;
@@ -2425,13 +2425,12 @@ class InvoiceController extends AppController
             $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
         }
         //get less Previous certificates for payment from previous invoice
-        $info["less_previous_certificates_for_payment"]=0;
-        if(isset($info['project_details']))
-        {
-            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $info['customer_id']);
+        $info["less_previous_certificates_for_payment"] = 0;
+        if (isset($info['project_details'])) {
+            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
             $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
         }
-        
+
         $info['user_name'] = Session::get('user_name');
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
@@ -2449,34 +2448,14 @@ class InvoiceController extends AppController
      * @param $customer_id
      * @return int|string
      */
-    private function getLessPreviousCertificatesForPayment($contract_id, $customer_id)
+    private function getLessPreviousCertificatesForPayment($contract_id, $payment_request_id)
     {
         $less_previous_certificates_for_payment = 0;
-        $query = <<<SQL
-SELECT
-	rank_sequence,
-	payment_request_id
-	FROM (
-		SELECT *,   
-    ROW_NUMBER() OVER(PARTITION BY contract_id ORDER BY created_date DESC) AS rank_sequence  
-FROM payment_request where customer_id=$customer_id and contract_id='$contract_id'
-	) AS t
-	WHERE
-	rank_sequence = 2;
-SQL;
-        $prevPaymentRequestRow = $this->invoiceModel->querylist($query);
+        $pre_req_id =  $this->invoiceModel->getPreviousInvoice($this->merchant_id, $contract_id, $payment_request_id);
 
-        if(!empty($prevPaymentRequestRow)) {
-            $prevPaymentRequest = Arr::first($prevPaymentRequestRow);
-            $prevPaymentRequestID = $prevPaymentRequest->payment_request_id;
+        if ($pre_req_id != false) {
 
-            $prevOrderParticularQuery = <<<SQL
-SELECT * from invoice_construction_particular 
-         where payment_request_id = '$prevPaymentRequestID'
-SQL;
-            $prevOrderParticularRequestRow = $this->invoiceModel->querylist($prevOrderParticularQuery);
-            $prevOrderParticulars = collect($prevOrderParticularRequestRow);
-
+            $prevOrderParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
             $prev_total_d = 0;
             $prev_total_e = 0;
             $prev_total_f = 0;
@@ -2490,18 +2469,17 @@ SQL;
                     $prevOrderParticular->current_billed_amount +
                     $prevOrderParticular->stored_materials;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
-
             }
 
-            if($prev_total_d + $prev_total_e > 0) {
-                $cper = round((( $prev_total_i / ($prev_total_d + $prev_total_e))*100));
+            if ($prev_total_d + $prev_total_e > 0) {
+                $cper = round((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
 
-                $single_per = ($prev_total_d+$prev_total_e) / 100;
+                $single_per = ($prev_total_d + $prev_total_e) / 100;
 
 
-                $a5=$single_per*$cper;
+                $a5 = $single_per * $cper;
 
-                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5+$prev_total_f),2);
+                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5 + $prev_total_f), 2);
             }
         }
 
@@ -2577,7 +2555,7 @@ SQL;
                     $attach_count += $counts;
                     if (empty($isattach)) {
                         $nm = '';
-                        if(!empty($data['attachments'])) {
+                        if (!empty($data['attachments'])) {
                             $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                         }
 
@@ -2608,7 +2586,7 @@ SQL;
                         $grouping_data[] = $single_data;
                     }
                     $single_data = array();
-                    $single_data['a'] = $data['code'];// $data['bill_code'];
+                    $single_data['a'] = $data['code']; // $data['bill_code'];
                     $single_data['type'] = '';
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
@@ -2618,7 +2596,7 @@ SQL;
                     $single_data['f'] = number_format($data['stored_materials'], 2);
 
                     $nm = '';
-                    if(!empty($data['attachments'])) {
+                    if (!empty($data['attachments'])) {
                         $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                     }
 
@@ -2670,7 +2648,7 @@ SQL;
                     }
                 } else {
                     $single_data = array();
-                    $single_data['a'] = $data['code'];//$data['bill_code'];
+                    $single_data['a'] = $data['code']; //$data['bill_code'];
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
@@ -2680,7 +2658,7 @@ SQL;
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                     //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
                     $nm = '';
-                    if(!empty($data['attachments'])) {
+                    if (!empty($data['attachments'])) {
                         $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                     }
 
@@ -3047,12 +3025,12 @@ SQL;
         $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
         $cost_codes = [];
         $cost_types = [];
-        foreach ($billed_transactions as $k=>$row) {
+        foreach ($billed_transactions as $k => $row) {
             if (!in_array($row->cost_code, $cost_codes)) {
                 $cost_codes[] = $row->cost_code;
             }
-            $billed_transactions[$k]->rate=number_format($row->rate);
-            $billed_transactions[$k]->amount=number_format($row->amount);
+            $billed_transactions[$k]->rate = number_format($row->rate);
+            $billed_transactions[$k]->amount = number_format($row->amount);
         }
         $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
         $merchant_cost_types = $this->getCostTypes();
@@ -3094,7 +3072,7 @@ SQL;
             foreach ($result as $key => $value) {
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
-                        $kdata["cost_type"]=isset($kdata["cost_type"])? $kdata["cost_type"] : '';
+                        $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
                         $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
                     }
