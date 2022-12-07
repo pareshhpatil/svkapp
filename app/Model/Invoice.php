@@ -151,11 +151,17 @@ class Invoice extends ParentModel
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
             ->where('payment_request_status', '<>', 11)
-            ->where('payment_request_id', '<>', $payment_request_id)
-            ->where('created_date', '<', $currentInvoice->created_date)
-            ->orderBy('payment_request_id', 'desc')
-            ->first();
-        
+            ->where('payment_request_id', '<>', $payment_request_id);
+
+        if(!empty($currentInvoice)) {
+            $retObj = $retObj->where('created_date', '<', $currentInvoice->created_date)
+                            ->orderBy('payment_request_id', 'desc')
+                            ->first();
+        } else {
+            $retObj = $retObj->orderBy('payment_request_id', 'desc')
+                            ->first();
+        }
+
         if (!empty($retObj)) {
             return $retObj->payment_request_id;
         } else {
