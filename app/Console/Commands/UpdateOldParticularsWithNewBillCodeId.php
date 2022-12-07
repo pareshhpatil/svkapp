@@ -42,41 +42,59 @@ class UpdateOldParticularsWithNewBillCodeId extends Command
      */
     public function handle()
     {
-        $contracts = ContractParticular::where('particulars', '!=', '')->get();
-        foreach ($contracts as $contract) {
-            $bill_codes = CsiCode::where('project_id', $contract->project_id)->get()->pluck('id', 'code');
-            $particulars  = json_decode($contract->particulars);
+        DB::beginTransaction();
+        try {
 
-            $orders = Order::where('contract_id', $contract->contract_id)->get();
-            foreach ($orders as $order) {
-                $orderParticulars = json_decode($order->particulars);
-                $newOrderParticulars = [];
-                foreach ($orderParticulars as $orderParticular) {
-                    $code = $orderParticular['bill_code'];
-                    if (isset($bill_codes[$code]))
-                        $orderParticular['bill_code'] = $bill_codes[$code];
-                    $newOrderParticulars[] = $orderParticular;
+
+            $contracts = ContractParticular::where('particulars', '!=', '')->get();
+            foreach ($contracts as $contract) {
+
+                $bill_codes = CsiCode::where('project_id', $contract->project_id)->get()->pluck('id', 'code');
+                $particulars = json_decode($contract->particulars, 1);
+
+                $orders = DB::table('order')->where('contract_id', $contract->contract_id)->get();
+                foreach ($orders as $order) {
+                    $orderParticulars = json_decode($order->particulars, 1);
+                    $newOrderParticulars = [];
+                    foreach ($orderParticulars as $orderParticular) {
+                        $code = $orderParticular['bill_code'];
+
+                        if (isset($bill_codes[$code]))
+                            $orderParticular['bill_code'] = $bill_codes[$code];
+                        $newOrderParticulars[] = $orderParticular;
+                    }
+
+                    DB::table('order')->where('order_id', $order->order_id)->update(['particulars' => json_encode($newOrderParticulars)]);
+
                 }
-                $order->update(['particulars' => json_encode($newOrderParticulars)]);
-            }
 
-            $invoices = PaymentRequest::where('contract_id', $contract->contract_id)->get();
-            foreach ($invoices as $invoice) {
-                $invoiceParticulars = DB::table('invoice_construction_particular')->where('payment_request_id', $invoice->payment_request_id)->get();
+
+                $invoiceParticulars = DB::table('invoice_construction_particular')
+                    ->select(DB::raw('invoice_construction_particular.*'))
+                    ->join('payment_request', 'payment_request.payment_request_id', '=', 'invoice_construction_particular.payment_request_id')
+                    ->where('payment_request.contract_id', $contract->contract_id)->get();
+dd($invoiceParticulars);
                 foreach ($invoiceParticulars as $invoiceParticular) {
-                    if(isset($bill_codes[$invoiceParticular->bill_code]))
-                        $invoiceParticular->update(['bill_code' => $bill_codes[$invoiceParticular->bill_code]]);
+                    if (isset($bill_codes[$invoiceParticular->bill_code])) {
+                        DB::table('invoice_construction_particular')->where('id', $invoiceParticular->id)->update(['bill_code' => $bill_codes[$invoiceParticular->bill_code]]);
+                    }
                 }
-            }
 
-            $newParticulars = [];
-            foreach ($particulars as $particular) {
-                $code = $particular['bill_code'];
-                if (isset($bill_codes[$code]))
-                    $particular['bill_code'] = $bill_codes[$code];
-                $newParticulars[] = $particular;
+
+                $newParticulars = [];
+                foreach ($particulars as $particular) {
+                    $code = $particular['bill_code'];
+                    if (isset($bill_codes[$code]))
+                        $particular['bill_code'] = $bill_codes[$code];
+                    $newParticulars[] = $particular;
+                }
+                $contract->update(['particulars' => json_encode($newParticulars)]);
+
             }
-            $contract->update(['particulars' => json_encode($newParticulars)]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            dd($e);
         }
     }
 }
