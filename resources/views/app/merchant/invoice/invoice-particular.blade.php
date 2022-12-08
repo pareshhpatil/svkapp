@@ -425,7 +425,7 @@
                                         <input type="hidden" name="order_ids" value="{{$order_id_array}}">
                                         
                                             <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                            <a class="btn green" href="/merchant/invoice/createv2/{{$link}}">Back</a>
+                                            <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
                                     </div>
