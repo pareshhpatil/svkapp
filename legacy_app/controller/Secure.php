@@ -261,8 +261,13 @@ class Secure extends Controller
                     env('STRIPE_SECRET')
                 );
                 $pg_type = $this->session->get('transaction_type');
-                $payment_intent = $stripe->paymentIntents->retrieve(
+                   $checkout_session  = $stripe->checkout->sessions->retrieve(
                     $intent,
+                    []
+                  );
+
+                $payment_intent = $stripe->paymentIntents->retrieve(
+                    $checkout_session->payment_intent,
                     []
                 );
                 if (!empty($transaction)) {

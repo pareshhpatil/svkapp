@@ -515,7 +515,7 @@ VALUES(:payment_id,:entity,:currency,:status,:order_id,:amount,:card_id,:bank,:w
             SwipezLogger::error(__CLASS__, '[E509]Error while saving stripe ret bank detail for transaction_id[' . $transaction_id . ']' . $e->getMessage());
         }
 
-        if ($data->status == 'succeeded') {
+        if ($data->status == 'succeeded' || $data->status == 'processing') {
             $response['status'] = 'success';
         } else {
             $response['status'] = 'failed';
