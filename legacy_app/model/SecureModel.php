@@ -620,9 +620,11 @@ VALUES(:payment_id,:entity,:currency,:status,:order_id,:amount,:card_id,:bank,:w
 
             SwipezLogger::error(__CLASS__, '[E195-1]Error while saving EBS request response from EBS Error:' . $e->getMessage());
         }
-        if ($payment_intent->status == 'succeeded' || $payment_intent->status == 'processing') {
+        if ($payment_intent->status == 'succeeded') {
             $response['status'] = 'success';
-        } else {
+        } else if($payment_intent->status == 'processing'){
+            $response['status'] = 'processing';
+        }else {
             $response['status'] = 'failed';
         }
 
