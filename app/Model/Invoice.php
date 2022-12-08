@@ -611,6 +611,8 @@ class Invoice extends ParentModel
     public function saveConstructionParticular($data, $request_id, $user_id)
     {
         $storedMaterial = (float)str_replace(',', '', $data['stored_materials']);
+        $current_stored_materials = (float)str_replace(',', '', $data['current_stored_materials']);
+        $previously_stored_materials = (float)str_replace(',', '', $data['previously_stored_materials']);
         $id = DB::table('invoice_construction_particular')->insertGetId(
             [
                 'payment_request_id' => $request_id,
@@ -632,8 +634,8 @@ class Invoice extends ParentModel
                 'net_billed_amount' => $data['net_billed_amount'],
                 'retainage_release_amount' => $data['retainage_release_amount'],
                 'total_outstanding_retainage' => $data['total_outstanding_retainage'],
-                'current_stored_materials' => (float)$data['current_stored_materials'],
-                'previously_stored_materials' => (float)$data['previously_stored_materials'],
+                'current_stored_materials' => $current_stored_materials,
+                'previously_stored_materials' => $previously_stored_materials,
                 'stored_materials' => $storedMaterial,
                 'project' => $data['project'],
                 'cost_code' => $data['cost_code'],
