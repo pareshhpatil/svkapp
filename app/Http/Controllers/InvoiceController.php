@@ -464,7 +464,7 @@ class InvoiceController extends AppController
 
             if ($info->template_type == 'construction') {
                 $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
-                $data['invoice_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+                $data['invoice_particular'] = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             }
 
             $exist_particular_ids = [];
@@ -2676,7 +2676,7 @@ class InvoiceController extends AppController
                     $per = 0;
                     if ($data['current_contract_amount'] > 0)
                         $per = number_format(($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']) / $data['current_contract_amount'], 2);
-
+                        $per=str_replace(',', '', $per);
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']), 2);
                     $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
@@ -2891,7 +2891,13 @@ class InvoiceController extends AppController
         $user_id = $this->user_id;
         $new_payment_request = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $req_id);
         $new_payment_request = json_decode(json_encode($new_payment_request), 1);
-        $result = array_diff($revision['payment_request'], $new_payment_request);
+        $result1 = array_diff($revision['payment_request'], $new_payment_request);
+        $result2 = array_diff($new_payment_request, $revision['payment_request']);
+        if (!empty($result2)) {
+            $result = array_merge($result1, $result2);
+        } else {
+            $result = $result1;
+        }
         $revision_array = [];
         $revision_column_json = null;
         if (env('APP_ENV') != 'LOCAL') {
