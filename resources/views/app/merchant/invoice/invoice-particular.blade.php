@@ -199,8 +199,8 @@
                                                 @endif
 
                     @php 
-                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount','current_billed_amount','total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                     $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
                    @endphp
 
@@ -240,7 +240,7 @@
                                                                     @elseif($k=='group')
                                                                         <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
                                                                     @elseif($k=='bill_type')
-                                                                        <select required style="width: 100%; min-width: 15  0px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
+                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
                                                                             <option value="">Select..</option>
                                                                             <option value="% Complete">% Complete</option>
                                                                             <option value="Unit">Unit</option>
@@ -258,7 +258,7 @@
                                                                             </template>
                                                                         @elseif($k=='current_billed_amount')
                                                                             <template x-if="field.bill_type=='Cost'">
-                                                                                <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}"> </span>
+                                                                                <span {{--x-show="!field.txt{{$k}}"--}} x-text="field.{{$k}}"> </span>
                                                                             </template>
                                                                         @else
                                                                             <span x-show="! field.txt{{$k}}" x-text="field.{{$k}}" @if($k == 'project') @update-csi-codes.window="field.{{$k}} = this.project"  @endif> </span>
@@ -287,7 +287,7 @@
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Calculated'">
                                         <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;checkCurrentBillAmount(field,index);calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
 
@@ -296,6 +296,9 @@
 
 
                                                                     @elseif($k=='current_billed_amount')
+                                                                            <span x-show="field.txt{{$k}} && field.bill_type !='Cost'">
+                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillPercentage(field, index);calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        </span>
                                                                         <template x-if="field.bill_type=='Cost'">
                                                                             <div>
                                                                                 <a :id="`add-cost${index}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
@@ -303,18 +306,18 @@
                                                                                 <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
                                                                                 <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
                                                                             </div>
-                                                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+{{--                                                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">--}}
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Cost'">
-                                                                            <span  x-text="field.{{$k}}"> </span>
-                                                                            <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
-                                        </span>
+                                                                            <span  x-text="field.{{$k}}" x-show="!field.txt{{$k}}"> </span>
+                                                                            {{--<span x-show="field.txt{{$k}}">
+                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        </span>--}}
                                                                         </template>
                                                                     @elseif($k=='current_billed_percent')
                                                                         <template x-if="field.bill_type!='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
 
@@ -865,6 +868,30 @@
                         this.selected_group.bill_code = bill_code_name;
                     },
 
+                    calculateCurrentBillPercentage(field, index){
+                        $('#cell_current_billed_amount_' + index).removeClass(' error-corner').popover('destroy');
+
+                        if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
+                            console.log(typeof field.current_billed_amount , field.current_contract_amount);
+                            if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
+                                $('#cell_current_billed_amount_' + index).addClass(' error-corner');
+                                addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
+                                this.goAhead = false;
+                                return false;
+                            }
+                            field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
+                        }
+                    },
+                    calculateCurrentBillAmount(field){
+                        if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
+                            field.current_billed_amount = updateTextView1 ( getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100 );
+                    },
+                    checkCurrentBillAmount(field, index){
+                        if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
+                            this.calculateCurrentBillAmount(field)
+                        else
+                            this.calculateCurrentBillPercentage(field, index)
+                    },
                     calc(field) {
                         try {
                             try {
@@ -890,17 +917,26 @@
                                 field.current_contract_amount = updateTextView1(getamt(field.original_contract_amount) + getamt(field.approved_change_order_amount));
                             } catch (o) {}
 
-                            try {
+                            /*try {
                                 if(field.bill_type!='Cost')
                                 {
-                                    if(field.current_billed_percent==null)
+                                    /!*if(field.current_billed_percent === null )
                                     {
                                         field.current_billed_percent='';
                                     }
-                                    field.current_billed_amount = updateTextView1(getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100);
+                                    field.current_billed_amount = updateTextView1(getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100);*!/
+                                    console.log(field.current_billed_percent);
+                                    if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
+                                        field.current_billed_amount = updateTextView1(getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100);
+
+                                    if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
+                                        field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
+                                    }
+
+
                                 }
 
-                            } catch (o) {}
+                            } catch (o) {}*/
 
                                         try {
                                             if(field.previously_billed_amount==null)
@@ -1066,6 +1102,7 @@
                             // document.getElementById('billed_transaction_ids' + cost_selected_id).value = document.getElementById('billed_transaction_ids').value;
                             this.calc(this.fields[cost_selected_id]);
                             this.billed_transactions=billed_transactions_array;
+                            this.fields[cost_selected_id].txtcurrent_billed_amount = false;
                             this.closeSidePanelcost();
                         }
                     },
