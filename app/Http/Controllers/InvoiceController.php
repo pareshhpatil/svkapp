@@ -2676,7 +2676,7 @@ class InvoiceController extends AppController
                     $per = 0;
                     if ($data['current_contract_amount'] > 0)
                         $per = number_format(($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']) / $data['current_contract_amount'], 2);
-
+                        $per=str_replace(',', '', $per);
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials']), 2);
                     $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
