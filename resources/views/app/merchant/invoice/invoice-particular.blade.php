@@ -287,7 +287,7 @@
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Calculated'">
                                         <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;checkCurrentBillAmount(field,index);calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);calculateCurrentBillAmount(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
 
@@ -872,7 +872,7 @@
                         $('#cell_current_billed_amount_' + index).removeClass(' error-corner').popover('destroy');
 
                         if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
-                            console.log(typeof field.current_billed_amount , field.current_contract_amount);
+
                             if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
                                 $('#cell_current_billed_amount_' + index).addClass(' error-corner');
                                 addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
