@@ -145,7 +145,7 @@ class Transaction extends Controller
                 $int = 0;
                 foreach ($transactionlist as &$item) {
                     $transactionlist[$int]['created_at'] = $this->generic->formatTimeString($item['date']);
-                    $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['absolute_cost']);
+                    $transactionlist[$int]['display_amount'] = number_format($item['absolute_cost']);
                     $int++;
                 }
             }
