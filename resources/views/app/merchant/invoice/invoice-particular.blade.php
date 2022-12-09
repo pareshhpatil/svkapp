@@ -806,10 +806,6 @@
                             }else {
                                 $('#cell_current_billed_amount_' + p).removeClass(' error-corner');
                             }
-
-
-
-
                         }
                         if( this.goAhead === true)
                         {
@@ -981,8 +977,15 @@
                                         } catch (o) {alert(5);}
 
                             try {
+                                // "Total Outstanding Retainage" = "Retainage Amount Previously Withheld" + "Retainage Amount for this draw" - "Retainage Release Amount"
+                                // field.total_outstanding_retainage = field.retainage_amount_for_this_draw;
+                                if(field.retainage_amount_previously_withheld === undefined || field.retainage_amount_previously_withheld === null)
+                                    field.retainage_amount_previously_withheld = 0;
 
-                                field.total_outstanding_retainage = field.retainage_amount_for_this_draw;
+                                if(field.retainage_release_amount === undefined || field.retainage_release_amount === null)
+                                    field.retainage_release_amount = 0;
+
+                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_release_amount) );
                             } catch (o) {alert(6);}
 
                             try {

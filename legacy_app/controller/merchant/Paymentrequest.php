@@ -178,7 +178,7 @@ class Paymentrequest extends Controller
                 $this->session->remove('help_hero_popup');
             }
 
-            $info = $this->common->getPaymentRequestDetails($payment_request_id, $this->merchant_id);dd($payment_request_id, $this->merchant_id);
+            $info = $this->common->getPaymentRequestDetails($payment_request_id, $this->merchant_id);
             if ($info['message'] != 'success' || $info['template_type'] == 'event') {
                 $this->setInvalidLinkError();
             }
