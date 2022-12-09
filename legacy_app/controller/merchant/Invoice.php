@@ -703,6 +703,7 @@ class Invoice extends Controller
             }
 
             $result = $this->model->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $get_payment_request_details['invoice_type'], $invoice_values, $get_payment_request_details['invoice_number'], $get_payment_request_details['payment_request_status'], $_POST['payment_request_type']);
+
             if ($result['message'] == 'success') {
                 if (isset($notify_patron) && $notify_patron == 1) {
                     $notification = $this->getNotificationObj();
