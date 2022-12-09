@@ -1084,6 +1084,7 @@
                             this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
                             this.calc(this.fields[selected_field_int]);
+                            this.calculateCurrentBillAmount(this.fields[selected_field_int])
                         }
 
                     },
@@ -1113,10 +1114,12 @@
                     },
                     RemoveCaculated(field) {
                         this.fields[field.pint].original_contract_amount = 0;
-                        this.fields[field.pint].current_contract_amount = 0;
-                        document.getElementById('lbl_current_contract_amount' + field.pint).innerHTML = '';
+                        // this.fields[field.pint].current_contract_amount = 0;
+                        // document.getElementById('lbl_current_contract_amount' + field.pint).innerHTML = '';
                         document.getElementById('lbl_original_contract_amount' + field.pint).innerHTML = '';
                         RemoveCaculatedRow(field.pint);
+                        this.calc(field);
+                        this.calculateCurrentBillAmount(field);
                     },
                     EditCaculated(field) {
                         document.getElementById('selected_field_int').value = field.pint;
