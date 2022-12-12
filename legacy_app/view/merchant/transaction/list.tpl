@@ -260,7 +260,7 @@
                                                         &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu" style="right:auto">
-                                                        {if {$v.status}=="Offline failed" || $v.status=="Paid offline"}
+                                                        {if {$v.status} != "Paid offline"}
                                                             <li>
                                                                 <a id="{$v.pay_transaction_id}" title="Update transaction"
                                                                     onclick="updateRespond(this.id);">

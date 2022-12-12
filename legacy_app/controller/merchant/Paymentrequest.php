@@ -178,7 +178,7 @@ class Paymentrequest extends Controller
                 $this->session->remove('help_hero_popup');
             }
 
-            $info = $this->common->getPaymentRequestDetails($payment_request_id, $this->merchant_id);dd($payment_request_id, $this->merchant_id);
+            $info = $this->common->getPaymentRequestDetails($payment_request_id, $this->merchant_id);
             if ($info['message'] != 'success' || $info['template_type'] == 'event') {
                 $this->setInvalidLinkError();
             }
@@ -419,7 +419,9 @@ class Paymentrequest extends Controller
                 $this->common->queryexecute("select delete_ledger('" . $payment_request_id . "',1)");
                 $this->common->queryexecute("call `stock_management`('" . $this->merchant_id . "','" . $payment_request_id . "',3,2);");
                 $this->session->set('successMessage', 'Invoice have been deleted.');
-                header("Location:" . $_SERVER["HTTP_REFERER"]);
+                //Temporary comment this line
+//                header("Location:" . $_SERVER["HTTP_REFERER"]);
+                header('Location: /merchant/paymentrequest/viewlist');
             }
         } catch (Exception $e) {
             Sentry\captureException($e);

@@ -272,4 +272,19 @@ class PaymentRequestModel extends Model
             $this->setGenericError();
         }
     }
+
+    public function getPaymentRequestRow($payment_request_id)
+    {
+        try {
+            $sql = "select * from payment_request where payment_request_id=:payment_request_id";
+            $params = array(':payment_request_id' => $payment_request_id);
+            $this->db->exec($sql, $params);
+            return $this->db->resultset();
+        } catch (Exception $e) {
+            Sentry\captureException($e);
+
+            SwipezLogger::error(__CLASS__, '[E114]Error while updating payment request status payment request id: ' . $payment_request_id . ' status: ' . $status . ' Error: ' . $e->getMessage());
+            $this->setGenericError();
+        }
+    }
 }
