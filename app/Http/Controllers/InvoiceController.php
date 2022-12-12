@@ -2390,9 +2390,9 @@ class InvoiceController extends AppController
             case 1:
                 $info["error"] = 'This invoice has already been paid online.';
                 break;
-            case 2:
-                $info["error"] =  'This invoice has already been settled.';
-                break;
+//            case 2:
+//                $info["error"] =  'This invoice has already been settled.';
+//                break;
             case 3:
                 $info["error"] =  'This invoice has already been deleted.';
                 break;

@@ -419,7 +419,9 @@ class Paymentrequest extends Controller
                 $this->common->queryexecute("select delete_ledger('" . $payment_request_id . "',1)");
                 $this->common->queryexecute("call `stock_management`('" . $this->merchant_id . "','" . $payment_request_id . "',3,2);");
                 $this->session->set('successMessage', 'Invoice have been deleted.');
-                header("Location:" . $_SERVER["HTTP_REFERER"]);
+                //Temporary comment this line
+//                header("Location:" . $_SERVER["HTTP_REFERER"]);
+                header('Location: /merchant/paymentrequest/viewlist');
             }
         } catch (Exception $e) {
             Sentry\captureException($e);
