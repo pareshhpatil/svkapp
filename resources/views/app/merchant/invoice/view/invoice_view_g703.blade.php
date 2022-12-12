@@ -450,7 +450,7 @@
                             </td>
                             <td style="min-width: 90px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_e'] < 0) ({{str_replace('-','',number_format($info['total_e'],2))}}) @else{{ number_format($info['total_e'], 2) }} @endif
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_e'] < 0)({{str_replace('-','',number_format($info['total_e'],2))}}) @else{{ number_format($info['total_e'], 2) }}@endif
                                 </p>
                             </td>
                             <td style="min-width: 70px"
