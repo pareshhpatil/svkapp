@@ -527,7 +527,7 @@ Print<i class="fa fa-print"></i>
                                             Invoice</button>
                                         <button id="settlebuttonconfirm" style="display: none;" type="submit" onclick="return validatePartial();" class="btn green center pull-right mr-1">Settle
                                             Invoice</button>
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2' || $info['payment_request_status'] == '7')
                                             <button id="partialbtn" type="submit" name="is_partial" class="btn green pull-right mr-1">Save Partial Payment</button>
                                         @else
                                             @isset($metadata['plugin']['has_partial'])
