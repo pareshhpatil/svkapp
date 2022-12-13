@@ -835,7 +835,9 @@ class InvoiceController extends AppController
             $info['gtype'] = '703';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
-            $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            if(!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
 
             //end code for new design
             $banklist = $this->parentModel->getConfigList('Bank_name');

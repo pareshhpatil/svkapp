@@ -164,14 +164,13 @@ class PaymentRequestModel extends Model
         }
     }
 
-    public function respondUpdate($amount, $bank_name, $OfflineRespondId, $date, $response_type, $bankTransactionNo, $chequeNo, $cheque_status, $cashPaidTo, $user_id, $cod_status = null)
+    public function respondUpdate($amount, $bank_name, $offlineRespondID, $paymentRequestID, $date, $offline_response_type, $bankTransactionNo, $chequeNo, $cheque_status, $cashPaidTo, $coupon_id, $discount, $user_id, $deduct_amount = 0, $deduct_text = '', $is_partial_payment = 0, $cod_status = null)
     {
         try {
-            $this->closeConnection();
-            $this->db = new DBWrapper();
             $chequeNo = ($chequeNo > 0) ? $chequeNo : 0;
             $status = ($cheque_status == 'Bounced') ? 0 : 1;
-            switch ($response_type) {
+            switch ($offline_response_type) {
+                case 5:
                 case 1:
                     $chequeNo = 0;
                     $cashPaidTo = '';
@@ -185,29 +184,57 @@ class PaymentRequestModel extends Model
                     $chequeNo = 0;
                     $cheque_status = '';
                     break;
-                case 5:
-                    $chequeNo = 0;
-                    $cashPaidTo = '';
-                    $cheque_status = '';
-                    break;
             }
             if (strlen($this->system_user_id) > 9) {
                 $update_by = $this->system_user_id;
             } else {
                 $update_by = $user_id;
             }
-            $sql = "UPDATE `offline_response` SET offline_response_type=:offline_response_type,settlement_date=:settlement_date,bank_transaction_no=:bankTransactionNo,"
-                . "cheque_no=:chequeNo,cheque_status=:cheque_status,transaction_status=:status,cash_paid_to=:cashPaidTo,bank_name=:bank_name,amount=:amount,is_active=1,last_update_by=:update_by,cod_status=:cod_status WHERE offline_response_id=:offline_response_id;";
-            $params = array(
-                ':offline_response_type' => $response_type, ':settlement_date' => $date, ':bankTransactionNo' => $bankTransactionNo, ':chequeNo' => $chequeNo, ':cheque_status' => $cheque_status, ':status' => $status,
-                ':cashPaidTo' => $cashPaidTo, ':amount' => $amount, ':bank_name' => $bank_name, ':offline_response_id' => $OfflineRespondId, ':update_by' => $update_by, ':cod_status' => $cod_status
-            );
+
+            //Comment Prev Query
+//            $sql = "UPDATE offline_response SET offline_response_type=:offline_response_type,settlement_date=:settlement_date,bank_transaction_no=:bankTransactionNo,"
+//                . "cheque_no=:chequeNo,cheque_status=:cheque_status,transaction_status=:status,cash_paid_to=:cashPaidTo,bank_name=:bank_name,amount=:amount,is_active=1,last_update_by=:update_by,cod_status=:cod_status,is_partial_payment=:is_partial_payment WHERE offline_response_id=:offlineRespondID";
+//            $params = array(
+//                ':offline_response_type' => $offline_response_type, ':settlement_date' => $date, ':bankTransactionNo' => $bankTransactionNo, ':chequeNo' => $chequeNo, ':cheque_status' => $cheque_status, ':status' => $status,
+//                ':cashPaidTo' => $cashPaidTo, ':amount' => $amount, ':bank_name' => $bank_name, ':offline_response_id' => $offlineRespondID, ':update_by' => $update_by, ':cod_status' => $cod_status, ':is_partial_payment' => $is_partial_payment
+//            );
+
+            $sql = "update offline_response set amount=:amount, offline_response_type=:offline_response_type, settlement_date=:settlement_date, bank_transaction_no=:bankTransactionNo, cheque_no=:chequeNo, cheque_status=:cheque_status, transaction_status=:status, cash_paid_to=:cashPaidTo, bank_name=:bank_name, amount=:amount, is_active=1, last_update_by=:update_by, cod_status=:cod_status, is_partial_payment=:is_partial_payment where offline_response_id=:offline_response_id";
+            $params = array(':offline_response_id' => $offlineRespondID, ':amount' => $amount, ':offline_response_type' => $offline_response_type, ':settlement_date' => $date, ':bankTransactionNo' => $bankTransactionNo, ':chequeNo' => $chequeNo, ':cheque_status' => $cheque_status, ':status' => $status, ':cashPaidTo' => $cashPaidTo, ':bank_name' => $bank_name, ':amount' => $amount, ':update_by' => $update_by, ':cod_status' => $cod_status, ':is_partial_payment' => $is_partial_payment);
+
             $this->db->exec($sql, $params);
+
+            $this->db->closeStmt();
+
+            //Gte Updated Offline Response Row
+            $getOfflineResponseSQL = "select * from offline_response where offline_response_id=:offline_response_id";
+            $getOfflineResponseParams = array(':offline_response_id' => $offlineRespondID);
+            $this->db->exec($getOfflineResponseSQL, $getOfflineResponseParams);
+            $offlineRespondRow  = $this->db->resultset();
+
+            //Get Customer Row
+            $customerID = $offlineRespondRow[0]['customer_id'] ?? '';
+            $getCustomerSQL = "select customer_code as user_code, concat(first_name,' ',last_name) as patron_name, email, mobile from customer where customer_id=:customer_id";
+            $getCustomerParams = array(':customer_id' => $customerID);
+            $this->db->exec($getCustomerSQL, $getCustomerParams);
+            $customerRow = $this->db->resultset();
+
+            return [
+              'message' => 'success',
+              'offline_response_id' => $offlineRespondID,
+              "user_code" => $customerRow[0]['user_code'],
+              "patron_name" => $customerRow[0]['patron_name'],
+              "email_id" => $customerRow[0]['email'],
+              "mobile" => $customerRow[0]['mobile'],
+            ];
+
         } catch (Exception $e) {
             Sentry\captureException($e);
 
             SwipezLogger::error(__CLASS__, '[E144]Error while updating respond Error: for user id[' . $user_id . ']' . $e->getMessage());
             $this->setGenericError();
+
+            return [];
         }
     }
 
