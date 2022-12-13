@@ -44,9 +44,9 @@ class SSP
                     } elseif ($column['datatype'] == 'money') {
                         //$row[$column['dt']] = moneyFormatIndia($data[$i][$column['db']]);
                         if($data[$i]['currency_icon'] == '$'){
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]) . '</span>';
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . number_format($data[$i][$column['db']]) . '</span>';
                         }else{
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . moneyFormatIndia($data[$i][$column['db']]) . '</span>';
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . moneyFormatIndia($data[$i][$column['db']]) . '</span>';
                         }
                         
                     }
