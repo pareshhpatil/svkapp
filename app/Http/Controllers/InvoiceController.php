@@ -830,7 +830,7 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-
+            dd($info, $payment_request_id, $this->merchant_id);
             $info = (array)$info;
             $info['gtype'] = '703';
 
@@ -843,7 +843,6 @@ class InvoiceController extends AppController
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
 
-            dd($info);
             $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'] ?? '';
 
             if (isset($info['image_path'])) {
