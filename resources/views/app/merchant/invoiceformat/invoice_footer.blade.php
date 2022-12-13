@@ -519,10 +519,12 @@ Print<i class="fa fa-print"></i>
                                         <input type="hidden" class="displayonly" id="c_fixed_amount" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['fixed_amount']}}@endif" />
                                         <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$info['Url']}}" />
                                         <input type="hidden" class="displayonly" id="is_partial_field" name="is_partial" value="0" />
-                                        <input type="hidden" class="displayonly" id="offline_response_id" name="offline_response_id" value="{{$info['offline_response_id']}}" />
+                                        @if(!empty($info['offline_response_id']))
+                                            <input type="hidden" class="displayonly" id="offline_response_id" name="offline_response_id" value="{{$info['offline_response_id']}}" />
+                                        @endif
                                         <input name="deduct_amount" id="deduct_amount" type="hidden" class="displayonly" value="0" />
                                         <input name="deduct_text" id="deduct_text" type="hidden" class="displayonly" value="" />
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2' && !empty($info['offline_response_id']))
                                             <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/transaction/delete/{{$info['offline_response_id']}}'" class="btn delete pull-right mr-1">Delete Transaction</a>
                                         @endif
                                         <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
