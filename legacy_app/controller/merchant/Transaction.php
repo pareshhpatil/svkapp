@@ -436,6 +436,16 @@ class Transaction extends Controller
                     header('Location: /merchant/transaction/bulklist/' . $this->encrypt->encode($bulk_id));
                     die();
                 }
+
+                //Get Payment Request Row
+                $paymentRequestRow = $requestModel->getPaymentRequestRow($_POST['payment_request_id']);
+                $invoiceTotal = $paymentRequestRow[0]['invoice_total'] ?? 0;
+
+                //If amount less than total invoice then set payment_request_status to partially paid
+                if($invoiceTotal > $_POST['amount']) {
+                    $requestModel->updatePaymentRequestStatus($_POST['payment_request_id'], 7);
+                }
+
                 $result = $requestModel->respondUpdate($_POST['amount'], $_POST['bank_name'], $_POST['offline_response_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cheque_status'], $_POST['cash_paid_to'], $this->session->get('userid'), $_POST['cod_status']);
                 $payment_request_id = $this->common->getRowValue('payment_request_id', 'offline_response', 'offline_response_id', $_POST['offline_response_id']);
                 $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
