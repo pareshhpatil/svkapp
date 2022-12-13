@@ -843,7 +843,7 @@ class InvoiceController extends AppController
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
             
-            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'] ?? '';
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
 
             if (isset($info['image_path'])) {
                 if ($info['image_path'] != '') {
