@@ -830,7 +830,7 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-            dd($info, $payment_request_id, $this->merchant_id);
+            
             $info = (array)$info;
             $info['gtype'] = '703';
 
