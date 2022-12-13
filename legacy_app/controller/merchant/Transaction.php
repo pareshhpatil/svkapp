@@ -803,7 +803,14 @@ class Transaction extends Controller
                 }
                 $this->session->set('successMessage', 'Offline transaction deleted successfully.');
                 $payment_request_id = $this->common->getRowValue('payment_request_id', 'offline_response', 'offline_response_id', $transaction_id);
-                $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
+                $pluginValue = $this->common->getRowValue('plugin_value', 'payment_request', 'payment_request_id', $payment_request_id);
+                $pluginsArray = json_decode($pluginValue, true);
+
+                if(array_key_exists('has_partial', $pluginsArray)) {
+                    $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
+                } else {
+                    $this->common->queryexecute("call set_partialypaid_amount_without_plugin('" . $payment_request_id . "');");
+                }
 
                 // Temporary comment this line
                 //header('Location:/merchant/transaction/viewlist' . $page_type);
