@@ -26,6 +26,7 @@ class VerifyCsrfToken extends Middleware {
         '/webhook/payoneer/status',
         '/webhook/payoneer/account/status',
         '/setu/webhook/notifications',
+        '/stripe/webhook/notifications',
         '/payment-gateway',
         '/merchant/billcode/create',
         '/merchant/uppyfileupload/uploadImage/*',
