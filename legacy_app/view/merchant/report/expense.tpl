@@ -173,7 +173,7 @@
                                         {$v.invoice_no}
                                     </td>
                                     <td class="td-c">
-                                        {$v.total_amount}
+                                        {$v.total_amount|number_format:2:".":","}
                                     </td>
                                     <td class="td-c">
                                         {if $v.payment_status==1}
@@ -191,13 +191,13 @@
                                     {foreach from=$column_select item=cv}
                                         {if $cv=='gst'}
                                             <td class="td-c">
-                                                {$v.sgst_amount}
+                                                {$v.sgst_amount|number_format:2:".":","}
                                             </td>
                                             <td class="td-c">
-                                                {$v.cgst_amount}
+                                                {$v.cgst_amount|number_format:2:".":","}
                                             </td>
                                             <td class="td-c">
-                                                {$v.igst_amount}
+                                                {$v.igst_amount|number_format:2:".":","}
                                             </td>
                                         {else}
                                             <td class="td-c">

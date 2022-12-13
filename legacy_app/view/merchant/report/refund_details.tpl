@@ -103,10 +103,10 @@
                                             {$v.company_name} 
                                         </td>
                                         <td>
-                                            {$v.transaction_amount} 
+                                            {$v.transaction_amount|number_format:2:".":","} 
                                         </td>
                                         <td>
-                                            {$v.refund_amount} 
+                                            {$v.refund_amount|number_format:2:".":","} 
                                         </td>
                                         <td>
                                             {if $v.refund_status==1}

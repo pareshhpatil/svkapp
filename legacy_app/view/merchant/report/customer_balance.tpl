@@ -70,7 +70,7 @@
                                             {$v.customer_name}
                                         </td>
                                         <td>
-                                            {$v.invoice_balance} 
+                                            {$v.invoice_balance|number_format:2:".":","} 
                                         </td>
                                         <td>
                                             00.00

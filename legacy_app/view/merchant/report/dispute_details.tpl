@@ -96,7 +96,7 @@
                                         {$v.company_name}
                                     </td>
                                     <td>
-                                        {$v.transaction_amount}
+                                        {$v.transaction_amount|number_format:2:".":","}
                                     </td>
 
                                     <td>
