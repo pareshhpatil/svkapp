@@ -798,7 +798,10 @@ class Transaction extends Controller
                 $this->session->set('successMessage', 'Offline transaction deleted successfully.');
                 $payment_request_id = $this->common->getRowValue('payment_request_id', 'offline_response', 'offline_response_id', $transaction_id);
                 $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
-                header('Location:/merchant/transaction/viewlist' . $page_type);
+
+                // Temporary comment this line
+                //header('Location:/merchant/transaction/viewlist' . $page_type);
+                header("Location:" . $_SERVER["HTTP_REFERER"]);
             }
         } catch (Exception $e) {
             Sentry\captureException($e);
