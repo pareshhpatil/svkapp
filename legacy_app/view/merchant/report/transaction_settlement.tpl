@@ -150,7 +150,7 @@
                                         {$v.captured}
                                     </td>
                                     <td>
-                                        {$v.tdr}
+                                        {$v.tdr |number_format:2:".":","}
                                         {$totaltdr=$totaltdr+$tdr}
                                     </td>
                                     <td>
@@ -158,7 +158,7 @@
                                         {$totalst=$totalst+$st}
                                     </td>
                                     <td>
-                                        {$settled}
+                                        {$settled |number_format:2:".":","}
                                         {$total=$total+$settled}
                                     </td>
 
@@ -192,13 +192,13 @@
                                         <td style="display: none;">
                                         </td>
                                         <td>
-                                            <b>-{$last_tdr|number_format:2}</b>
+                                            <b>-{$last_tdr|number_format:2:".":","}</b>
                                         </td>
                                         <td>
-                                            <b> -{$last_st|number_format:2} </b>
+                                            <b> -{$last_st|number_format:2:".":","} </b>
                                         </td>
                                         <td>
-                                            <b>{$last_total|number_format:2}</b>
+                                            <b>{$last_total|number_format:2:".":","}</b>
                                         </td>
                                     </tr>
                                 {/if}
@@ -234,13 +234,13 @@
                                     <td style="display: none;">
                                     </td>
                                     <td>
-                                        <b>-{$totaltdr|number_format:2}</b>
+                                        <b>-{$totaltdr|number_format:2:".":","}</b>
                                     </td>
                                     <td>
-                                        <b> -{$totalst|number_format:2} </b>
+                                        <b> -{$totalst|number_format:2:".":","} </b>
                                     </td>
                                     <td>
-                                        <b>{$total|number_format:2}</b>
+                                        <b>{$total|number_format:2:".":","}</b>
                                     </td>
                                 </tr>
                             {/if}

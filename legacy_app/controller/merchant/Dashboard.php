@@ -168,16 +168,23 @@ class Dashboard extends Controller
                 $report_currency = $this->view->currency[0];
             }
             //find merchant display url
+            $this->view->currency_icon = $this->common->getRowValue('icon', 'currency', 'code', $report_currency);
             $display_url = $this->session->get('display_url');
             $this->view->display_url = $display_url;
             $this->view->total_customer = $this->model->getCustomerCount($merchant_id);
             $total_invoice_sum = $this->model->getTotalInvoiceSum($merchant_id, $report_days, $report_currency);
             $total_paid_sum = $this->model->getPaidInvoiceSum($merchant_id, $report_days, $report_currency);
-            $this->view->total_invoice_sum = $this->moneyFormatIndia(number_format($total_invoice_sum, 0));
-            $this->view->total_paid_sum = $this->moneyFormatIndia(number_format($total_paid_sum, 0));
+            if($this->view->currency_icon == '$'){
+                $this->view->total_invoice_sum = number_format($total_invoice_sum);
+                $this->view->total_paid_sum = number_format($total_paid_sum,2);
+                $this->view->total_customer_display = number_format($this->view->total_customer);
+            }else{
+                $this->view->total_invoice_sum = $this->moneyFormatIndia(number_format($total_invoice_sum, 0));
+                $this->view->total_paid_sum = $this->moneyFormatIndia(number_format($total_paid_sum, 0));
+                $this->view->total_customer_display = $this->moneyFormatIndia($this->view->total_customer);
+            }
             $this->view->paid_per = round($total_paid_sum * 100 / $total_invoice_sum);
             
-            $this->view->total_customer_display = $this->moneyFormatIndia($this->view->total_customer);
             if ($total_invoice_sum == 0) {
                 $this->view->has_invoice = $this->model->getInvoiceCount($merchant_id);
             } else {
@@ -298,9 +305,15 @@ class Dashboard extends Controller
             if ($pending_settlement < 0) {
                 $pending_settlement = 0;
             }
-            $this->view->pending_settlement = $this->moneyFormatIndia(number_format($pending_settlement, 0));
-            $this->view->transaction = $this->moneyFormatIndia(number_format($online_trans, 0));
-            $this->view->settlement = $this->moneyFormatIndia(number_format($settlement, 0));
+            if($this->view->currency_icon == '$'){
+                $this->view->pending_settlement = number_format($pending_settlement,2);
+                $this->view->transaction = number_format($online_trans,2);
+                $this->view->settlement = number_format($settlement,2);
+            }else{
+                $this->view->pending_settlement = $this->moneyFormatIndia(number_format($pending_settlement, 0));
+                $this->view->transaction = $this->moneyFormatIndia(number_format($online_trans, 0));
+                $this->view->settlement = $this->moneyFormatIndia(number_format($settlement, 0));
+            }
             $this->view->settlement_per = round($settlement * 100 / $online_trans);
             if ($this->view->settlement_per > 100) {
                 $this->view->settlement_per = 100;
@@ -318,7 +331,6 @@ class Dashboard extends Controller
 
             $this->view->report_days = $report_days;
             $this->view->report_currency = $report_currency;
-            $this->view->currency_icon = $this->common->getRowValue('icon', 'currency', 'code', $report_currency);
 
             $this->view->selectedMenu = array(1);
             $this->view->merchantType = $this->session->get('merchant_type');

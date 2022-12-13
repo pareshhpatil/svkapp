@@ -211,12 +211,12 @@ $header='app.patron.invoice.invoice-master';}
                         <p class="font-bold text-xs mt-1">2. NET CHANGE BY CHANGE ORDERS  </p>
                         <p class="font-bold text-xs mt-1">3. CONTRACT SUM TO DATE <span class="font-light italic">(Line 1 ± 2)</span>  </p>
                         <p class="font-bold text-xs mt-1">4. TOTAL COMPLETED & STORED TO DATE<span class="font-light italic "> (Column G on G703)</span>  </p>
-                         
+                         @php $contract_sum_to_date = $info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] @endphp
                     </div>
                             <div>
                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</p>
                                <p class="font-bold text-xs border-b  border-gray-600 mt-1">  {{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] < 0)({{str_replace('-','',number_format($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'],2))}}) @else{{number_format(($info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount']),2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if( $contract_sum_to_date < 0)({{str_replace('-','',number_format($contract_sum_to_date,2))}}) @else{{number_format(($contract_sum_to_date),2)}}@endif</p>
                                <p class="font-bold text-xs border-b   border-gray-600 mt-0.5">  {{$info['currency_icon']}}@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</p> 
                               
                              
@@ -230,7 +230,7 @@ $header='app.patron.invoice.invoice-master';}
                             if(($info['total_d']+$info['total_e']) <= 0){
                             $cper=0;}
                             else{
-                            $cper=round((($info['total_i']/($info['total_d']+$info['total_e']))*100));}
+                            $cper=number_format((($info['total_i']/($info['total_d']+$info['total_e']))*100),2);}
 
                             $a5=0;
                             $single_per=($info['total_d']+$info['total_e'])/100;
@@ -248,8 +248,9 @@ $header='app.patron.invoice.invoice-master';}
                             <div>
                                 <p class="font-bold text-xs mt-5"></p>
                                 <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5 < 0)({{str_replace('-','',number_format($a5,2))}}) @else{{number_format($a5,2)}}@endif</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}})@else{{number_format($info['total_i'],2)}}@endif</p>
-                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5+$info['total_i'] < 0)({{str_replace('-','',number_format($a5+$info['total_i'],2))}}) @else{{number_format(($a5+$info['total_i']),2)}}@endif</p>
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}})@else{{number_format($info['total_f'],2)}}@endif</p>
+                                @php $total_retainage = $a5+$info['total_f']; if($total_retainage == 0) $total_retainage = $info['total_i']; @endphp
+                               <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($total_retainage < 0)({{str_replace('-','',number_format($total_retainage,2))}}) @else{{number_format(($total_retainage),2)}}@endif</p>
                               
                              
                             </div>
@@ -261,8 +262,8 @@ $header='app.patron.invoice.invoice-master';}
                        
                     </div>
                             <div>
-                              
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if($info['total_g']-($a5+$info['total_f']) < 0)({{str_replace('-','',number_format($info['total_g']-($a5+$info['total_f']),2))}}) @else{{number_format($info['total_g']-($a5+$info['total_f']),2)}}@endif</p>
+                              @php $total_earned_less_retain = $info['total_g']-($total_retainage)  @endphp
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}@if( $total_earned_less_retain < 0)({{str_replace('-','',number_format( $total_earned_less_retain , 2))}}) @else{{number_format( $total_earned_less_retain ,2)}}@endif</p>
                               
                              
                             </div>
@@ -300,8 +301,8 @@ $header='app.patron.invoice.invoice-master';}
                        
                     </div>
                             <div>
-                              
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}@if(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])) < 0) ({{str_replace('-','',number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])),2))}}) @else{{number_format(($info['total_original_contract']+($info['last_month_co_amount']+$info['this_month_co_amount']))-($info['total_g']-($a5+$info['total_f'])),2)}}@endif</p>
+                              @php $balance_to_finish = $contract_sum_to_date - $total_earned_less_retain; @endphp
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-4">  {{$info['currency_icon']}}@if($balance_to_finish < 0) ({{str_replace('-','',number_format($balance_to_finish,2))}}) @else{{number_format($balance_to_finish,2)}}@endif</p>
                               
                              
                             </div>

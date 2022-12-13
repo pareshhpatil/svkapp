@@ -541,6 +541,7 @@ Route::get('/partner-benefits/sms', 'HomeController@swipez_sms');
 Route::get('/partner-benefits/website-builder', 'HomeController@website_builder');
 
 Route::post('/setu/webhook/notifications', 'MerchantPagesController@setu');
+Route::any('/stripe/webhook/notifications', 'MerchantPagesController@stripe');
 Route::post('payment-gateway', 'MerchantPagesController@merchantPaymentGateway')->name('mpages.paymentgateway');
 Route::post('upipgtrack', 'MerchantPagesController@upipgtrack')->name('mpages.upipgtrack');
 

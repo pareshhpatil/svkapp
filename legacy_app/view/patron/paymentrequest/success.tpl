@@ -344,7 +344,7 @@
                                                     Payment Amount
                                                 </td>
                                                 <td>
-                                                    {$response.currency_icon} {$response.amount}/-
+                                                    {$response.currency_icon} {$response.amount|number_format:2:".":","}/-
                                                 </td>
                                             </tr>
                                             {if $response.deduct_amount>0}

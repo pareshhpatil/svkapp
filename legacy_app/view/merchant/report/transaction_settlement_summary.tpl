@@ -128,16 +128,16 @@
                                         {$v.total_capture}
                                     </td>
                                     <td>
-                                        {$v.total_tdr}
+                                        {$v.total_tdr|number_format:2:".":","}
                                     </td>
                                     <td>
                                         {$v.total_service_tax}
                                     </td>
                                     <td>
-                                        {$v.settlement_amount}
+                                        {$v.settlement_amount|number_format:2:".":","}
                                     </td>
                                     <td>
-                                        {$v.requested_settlement_amount}
+                                        {$v.requested_settlement_amount|number_format:2:".":","}
                                     </td>
                                     {if $show_narrative==1}
                                         <td>

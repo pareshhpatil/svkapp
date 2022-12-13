@@ -145,7 +145,7 @@ class Transaction extends Controller
                 $int = 0;
                 foreach ($transactionlist as &$item) {
                     $transactionlist[$int]['created_at'] = $this->generic->formatTimeString($item['date']);
-                    $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['absolute_cost']);
+                    $transactionlist[$int]['display_amount'] = number_format($item['absolute_cost']);
                     $int++;
                 }
             }
@@ -299,6 +299,8 @@ class Transaction extends Controller
     public function xway($xwaytype = null)
     {
         try {
+            
+            $this->view->currency = $this->session->get('currency')[0];
             $this->hasRole(1, 9);
             $this->view->selectedMenu = array(6, 32);
             $merchant_id = $this->session->get('merchant_id');
@@ -358,7 +360,11 @@ class Transaction extends Controller
             $int = 0;
             foreach ($transactionlist as $item) {
                 $transactionlist[$int]['created_at'] = $this->generic->formatTimeString($item['date']);
-                $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['amount']);
+                if($this->view->currency == 'USD'){
+                    $transactionlist[$int]['display_amount'] = number_format($item['amount']);
+                }else{
+                    $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['amount']);
+                }
                 $int++;
             }
 

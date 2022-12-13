@@ -180,10 +180,10 @@
                                             {$v.status}
                                         </td>
                                         <td>
-                                            {$v.basic_amount}
+                                            {$v.basic_amount|number_format:2:".":","}
                                         </td>
                                         <td>
-                                            {$v.invoice_amount}
+                                            {$v.invoice_amount|number_format:2:".":","}
                                         </td>
                                         {$add='__'}
                                         {foreach from=$column_select item=cl}
