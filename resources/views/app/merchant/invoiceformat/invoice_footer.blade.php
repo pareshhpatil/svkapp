@@ -215,7 +215,7 @@ $validate=(array)$validate;
         @else
             @if($info['payment_request_status'] == '2')
                 <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#respond">
-                    Settle
+                    Update Transaction
                 </a>
             @endif
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
@@ -527,8 +527,11 @@ Print<i class="fa fa-print"></i>
                                         @if($info['payment_request_status'] == '2' && !empty($info['offline_response_id']))
                                             <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/transaction/delete/{{$info['offline_response_id']}}'" class="btn delete pull-right mr-1">Delete Transaction</a>
                                         @endif
-                                        <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
-                                            Invoice</button>
+                                        @if($info['payment_request_status'] != '2')
+                                            <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
+                                                Invoice</button>
+                                        @endif
+
                                         <button id="settlebuttonconfirm" style="display: none;" type="submit" onclick="return validatePartial();" class="btn green center pull-right mr-1">Settle
                                             Invoice</button>
                                         @if($info['payment_request_status'] == '2' || $info['payment_request_status'] == '7')
