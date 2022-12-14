@@ -156,10 +156,10 @@ if($_SESSION['session_date_format'] == 'M d yyyy'){
                                                         b=b.replace(/\D/g, "");
                                                         return intVal(a) + intVal(b);
                                                 }, 0);
-                                        total = settings.json.totalSum.toLocaleString('en-IN', {
+                                        total = settings.json.totalSum.toLocaleString('en-US', {
                                                 maximumFractionDigits: 2,
                                         });
-                                        pagetotal = pageTotal.toLocaleString('en-IN', {
+                                        pagetotal = pageTotal.toLocaleString('en-US', {
                                                 maximumFractionDigits: 2,
                                         });
                                         // Update footer

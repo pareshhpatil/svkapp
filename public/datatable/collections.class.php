@@ -39,7 +39,11 @@ class SSP
                     } elseif ($column['datatype'] == 'specialDate') {
                         $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
-                        $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . moneyFormatIndia($data[$i][$column['db']]) . '</span>';
+                        if($data[$i]['currency_icon'] == '$'){
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . number_format($data[$i][$column['db']]) . '</span>';
+                        }else{
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . moneyFormatIndia($data[$i][$column['db']]) . '</span>';
+                        }
                     }
                 } else {
                     $value = $data[$i][$columns[$j]['db']];

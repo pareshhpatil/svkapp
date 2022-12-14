@@ -239,6 +239,8 @@ class Customer extends Controller
     function view($link)
     {
         try {
+            
+            $this->smarty->assign("currency", $this->session->get('currency')[0] == 'USD' ? '$' : $this->session->get('currency')[0]);
             $this->hasRole(1, 15);
             $customer_id = $this->encrypt->decode($link);
             $details = $this->model->getCustomerDeatils($customer_id, $this->merchant_id);

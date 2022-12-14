@@ -231,7 +231,7 @@
                                         {/if}
                                     </td>
                                     <td class="td-c">
-                                        {$v.amount|string_format:"%.2f"}
+                                    {$currency} {$v.amount|number_format:2:".":","}
                                     </td>
                                     <td class="td-c">
                                         {if $v.type==1}
