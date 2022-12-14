@@ -145,7 +145,7 @@ class Transaction extends Controller
                 $int = 0;
                 foreach ($transactionlist as &$item) {
                     $transactionlist[$int]['created_at'] = $this->generic->formatTimeString($item['date']);
-                    $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['absolute_cost']);
+                    $transactionlist[$int]['display_amount'] = number_format($item['absolute_cost']);
                     $int++;
                 }
             }
@@ -299,6 +299,8 @@ class Transaction extends Controller
     public function xway($xwaytype = null)
     {
         try {
+            
+            $this->view->currency = $this->session->get('currency')[0];
             $this->hasRole(1, 9);
             $this->view->selectedMenu = array(6, 32);
             $merchant_id = $this->session->get('merchant_id');
@@ -358,7 +360,11 @@ class Transaction extends Controller
             $int = 0;
             foreach ($transactionlist as $item) {
                 $transactionlist[$int]['created_at'] = $this->generic->formatTimeString($item['date']);
-                $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['amount']);
+                if($this->view->currency == 'USD'){
+                    $transactionlist[$int]['display_amount'] = number_format($item['amount']);
+                }else{
+                    $transactionlist[$int]['display_amount'] = $this->generic->moneyFormatIndia($item['amount']);
+                }
                 $int++;
             }
 
@@ -430,6 +436,16 @@ class Transaction extends Controller
                     header('Location: /merchant/transaction/bulklist/' . $this->encrypt->encode($bulk_id));
                     die();
                 }
+
+                //Get Payment Request Row
+                $paymentRequestRow = $requestModel->getPaymentRequestRow($_POST['payment_request_id']);
+                $invoiceTotal = $paymentRequestRow[0]['invoice_total'] ?? 0;
+
+                //If amount less than total invoice then set payment_request_status to partially paid
+                if($invoiceTotal > $_POST['amount']) {
+                    $requestModel->updatePaymentRequestStatus($_POST['payment_request_id'], 7);
+                }
+
                 $result = $requestModel->respondUpdate($_POST['amount'], $_POST['bank_name'], $_POST['offline_response_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cheque_status'], $_POST['cash_paid_to'], $this->session->get('userid'), $_POST['cod_status']);
                 $payment_request_id = $this->common->getRowValue('payment_request_id', 'offline_response', 'offline_response_id', $_POST['offline_response_id']);
                 $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
@@ -787,8 +803,18 @@ class Transaction extends Controller
                 }
                 $this->session->set('successMessage', 'Offline transaction deleted successfully.');
                 $payment_request_id = $this->common->getRowValue('payment_request_id', 'offline_response', 'offline_response_id', $transaction_id);
-                $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
-                header('Location:/merchant/transaction/viewlist' . $page_type);
+                $pluginValue = $this->common->getRowValue('plugin_value', 'payment_request', 'payment_request_id', $payment_request_id);
+                $pluginsArray = json_decode($pluginValue, true);
+
+                if(array_key_exists('has_partial', $pluginsArray)) {
+                    $this->common->queryexecute("call set_partialypaid_amount('" . $payment_request_id . "');");
+                } else {
+                    $this->common->queryexecute("call set_partialypaid_amount_without_plugin('" . $payment_request_id . "');");
+                }
+
+                // Temporary comment this line
+                //header('Location:/merchant/transaction/viewlist' . $page_type);
+                header("Location:" . $_SERVER["HTTP_REFERER"]);
             }
         } catch (Exception $e) {
             Sentry\captureException($e);

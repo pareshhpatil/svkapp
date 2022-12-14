@@ -184,7 +184,11 @@ class Transaction extends Controller
                     if ($success == null) {
                         $this->smarty->display(VIEW . 'merchant/transaction/receipt.tpl');
                     } else {
-                        $this->smarty->display(VIEW . 'patron/paymentrequest/success.tpl');
+						if($success == 'processing'){
+							$this->smarty->display(VIEW . 'patron/paymentrequest/processing.tpl');
+						}else{
+							$this->smarty->display(VIEW . 'patron/paymentrequest/success.tpl');
+						}
                     }
                 } else {
                     $this->smarty->display(VIEW . 'merchant/transaction/offlinereceipt.tpl');

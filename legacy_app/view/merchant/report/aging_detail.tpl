@@ -162,7 +162,7 @@
                                         {$v.age} 
                                     </td>
                                     <td>
-                                    {$v.currency_icon}   {$v.amount} 
+                                    {$v.currency_icon}   {$v.amount|number_format:2:".":","} 
                                     </td>
 
                                 </tr>

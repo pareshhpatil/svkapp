@@ -822,7 +822,7 @@ class Secure extends Controller
             if ($result['request_type'] == 2) {
                 $this->handleAppTransaction($notification, $result, $transaction_link);
             }
-            if ($result['status'] == 'success') {
+            if ($result['status'] == 'success' || $result['status'] == 'processing') {
                 SwipezLogger::info(__CLASS__, 'Transaction success Transaction id: ' . $result['transaction_id'] . 'Payment request id:' . $result['payment_request_id']);
                 $plugin = json_decode($result['plugin_value'], 1);
                 if ($plugin['franchise_notify_sms'] == 1 && $result['franchise_mobile'] != '') {
@@ -872,7 +872,11 @@ class Secure extends Controller
                 $this->session->remove('event_payment_post');
                 $this->session->remove('req_confirm_post');
                 $this->session->remove('coupon_id');
-                header('Location:/patron/transaction/receipt/' . $transaction_link . '/success');
+				$success_type = '/success';
+				if($result['status'] == 'processing'){
+					$success_type = '/processing';
+				}
+                header('Location:/patron/transaction/receipt/' . $transaction_link . $success_type);
             } else {
                 SwipezLogger::info(__CLASS__, 'Transaction failed Transaction id: ' . $result['transaction_id'] . 'Payment request id:' . $result['payment_request_id']);
                 $payment_request_id = $this->encrypt->encode($result['payment_request_id']);

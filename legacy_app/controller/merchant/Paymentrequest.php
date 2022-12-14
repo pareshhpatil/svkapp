@@ -460,13 +460,29 @@ class Paymentrequest extends Controller
                 $date = new DateTime($_POST['date']);
 
                 $is_partial = (isset($_POST['is_partial']) > 0) ? 1 : 0;
-                $result = $this->model->respond($_POST['amount'], $_POST['bank_name'], $_POST['payment_req_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cash_paid_to'], $coupon_id, $discount, $this->user_id, $_POST['deduct_amount'], $_POST['deduct_text'], $_POST['cheque_status'], $is_partial, $_POST['cod_status']);
+
+                $PaymentRequestRow = $this->model->getPaymentRequestRow($_POST['payment_req_id']);
+                if($PaymentRequestRow[0]['payment_request_status'] == '2' && $PaymentRequestRow[0]['grand_total'] > $_POST['amount']) {
+                    if(!empty($_POST['offline_response_id'])) {
+                        $offlineResponseId = $this->encrypt->decode($_POST['offline_response_id']);
+                        $result = $this->model->respondUpdate($_POST['amount'], $_POST['bank_name'], $offlineResponseId, $_POST['payment_req_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cash_paid_to'], $coupon_id, $discount, $this->user_id, $_POST['deduct_amount'], $_POST['deduct_text'], $_POST['cheque_status'], 1, $_POST['cod_status']);
+                    }
+
+                } else {
+                    $result = $this->model->respond($_POST['amount'], $_POST['bank_name'], $_POST['payment_req_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cash_paid_to'], $coupon_id, $discount, $this->user_id, $_POST['deduct_amount'], $_POST['deduct_text'], $_POST['cheque_status'], $is_partial, $_POST['cod_status']);
+                }
+                //$result = $this->model->respond($_POST['amount'], $_POST['bank_name'], $_POST['payment_req_id'], $date->format('Y-m-d'), $_POST['response_type'], $_POST['bank_transaction_no'], $_POST['cheque_no'], $_POST['cash_paid_to'], $coupon_id, $discount, $this->user_id, $_POST['deduct_amount'], $_POST['deduct_text'], $_POST['cheque_status'], $is_partial, $_POST['cod_status']);
+
                 if ($result['message'] != 'success') {
                     SwipezLogger::error(__CLASS__, '[E012]Error while merchant respond payment request Merchant id: ' . $this->merchant_id . ' Error: ' . json_encode($result));
                     Sentry\captureMessage('Payment request settelement Merchant id: ' . $this->merchant_id . ' Error: ' . json_encode($result));
                     $this->setGenericError();
                 } else {
-                    $this->common->queryexecute("call set_partialypaid_amount('" . $_POST['payment_req_id'] . "');");
+                    if($is_partial) {
+                        $this->common->queryexecute("call set_partialypaid_amount_without_plugin('" . $_POST['payment_req_id'] . "');");
+                    } else {
+                        $this->common->queryexecute("call set_partialypaid_amount('" . $_POST['payment_req_id'] . "');");
+                    }
                     $this->smarty->assign("success", 'Offline transaction save successfully.');
                     $file_name = null;
 

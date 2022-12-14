@@ -13,9 +13,7 @@
                 {/if}
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert"></button>
-                    <strong></strong>{if $response.amount>0} Your payment has been successfully processed by our banking
-                    partner. <br>{/if}An email receipt has been sent by Swipez with these details on your registered
-                    email ID.
+                    <strong></strong>{if $response.amount>0} Payment processed<br>{/if}
                 </div>
                 <div class="portlet light bordered">
                     <div class="portlet-body form">
@@ -43,9 +41,7 @@
                             <h3 class="font-blue-madison">Thank you</h3>
 
                             <p>
-                                Your Payment is successful. Please quote your receipt number for any queries relating to
-                                this transaction in future. Please note that this receipt is valid subject to the
-                                realisation of your payment.
+                                Your payment has been processed. It can take up to 4-5 working days for the payment to reflect. Our systems will automatically reconcile this transaction and notify the status via email.
                             </p>
 
                             {if !empty($attendee_details)}

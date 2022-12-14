@@ -120,10 +120,10 @@
                                         {$v.bill_date}
                                     </td>
                                     <td>
-                                        {$v.grand_total}
+                                        {$v.grand_total|number_format:2:".":","}
                                     </td>
                                     <td>
-                                        {$v.amount}
+                                        {$v.amount|number_format:2:".":","}
                                     </td>
                                     <td>
                                         {{$v.grand_total-$v.amount}|string_format:"%.2f"}

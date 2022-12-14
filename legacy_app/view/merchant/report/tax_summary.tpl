@@ -86,10 +86,10 @@
                                         {$v.tax_percent} 
                                     </td>
                                     <td>
-                                        {$v.total_applicable} 
+                                        {$v.total_applicable|number_format:2:".":","} 
                                     </td>
                                     <td>
-                                        {$v.total_amount} 
+                                        {$v.total_amount|number_format:2:".":","} 
                                     </td>
                                 </tr>
                             {/foreach}

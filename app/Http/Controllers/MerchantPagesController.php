@@ -466,4 +466,11 @@ class MerchantPagesController extends Controller
             }
         }
     }
+
+    public function stripe(Request $request)
+    {
+		
+        return $request;
+        
+    }
 }

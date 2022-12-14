@@ -201,7 +201,7 @@
                                             {$v.mobile}
                                         </td>
                                         <td>
-                                            {$v.display_amount}
+                                        {$v.currency_icon} {$v.display_amount}
                                         </td>
                                         <td>
                                             {$v.created_at}
