@@ -215,7 +215,7 @@ $validate=(array)$validate;
         @else
             @if($info['payment_request_status'] == '2')
                 <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#respond">
-                    Settle
+                    Update Transaction
                 </a>
             @endif
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
@@ -361,7 +361,7 @@ Print<i class="fa fa-print"></i>
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form class="form-horizontal" action="/merchant/paymentrequest/respond" method="post" onsubmit="document.getElementById('respond').style.display = 'none';
+                        <form class="form-horizontal" id="respond-form" action="/merchant/paymentrequest/respond" method="post" onsubmit="document.getElementById('respond').style.display = 'none';
                                       document.getElementById('loader').style.display = 'block';">
                             <div class="form-body">
                                 <div class="alert alert-danger display-hide">
@@ -518,21 +518,28 @@ Print<i class="fa fa-print"></i>
                                         <input type="hidden" class="displayonly" id="grand_total" value="{{$info['grand_total']}}" />
                                         <input type="hidden" class="displayonly" id="c_fixed_amount" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['fixed_amount']}}@endif" />
                                         <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$info['Url']}}" />
+                                        <input type="hidden" class="displayonly" id="is_partial_field" name="is_partial" value="0" />
+                                        @if(!empty($info['offline_response_id']))
+                                            <input type="hidden" class="displayonly" id="offline_response_id" name="offline_response_id" value="{{$info['offline_response_id']}}" />
+                                        @endif
                                         <input name="deduct_amount" id="deduct_amount" type="hidden" class="displayonly" value="0" />
                                         <input name="deduct_text" id="deduct_text" type="hidden" class="displayonly" value="" />
-                                        @if($info['payment_request_status'] == '2')
-                                            <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/paymentrequest/delete/{{\App\Libraries\Encrypt::encode($info['payment_request_id'])}}'" class="btn delete pull-right mr-1">Delete</a>
+                                        @if($info['payment_request_status'] == '2' && !empty($info['offline_response_id']))
+                                            <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/transaction/delete/{{$info['offline_response_id']}}'" class="btn swipez-draft-btn pull-right mr-1">Delete Transaction</a>
                                         @endif
-                                        <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
-                                            Invoice</button>
+                                        @if($info['payment_request_status'] != '2')
+                                            <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
+                                                Invoice</button>
+                                        @endif
+
                                         <button id="settlebuttonconfirm" style="display: none;" type="submit" onclick="return validatePartial();" class="btn green center pull-right mr-1">Settle
                                             Invoice</button>
                                         @if($info['payment_request_status'] == '2' || $info['payment_request_status'] == '7')
-                                            <button id="partialbtn" type="submit" name="is_partial" class="btn green pull-right mr-1">Save Partial Payment</button>
+                                            <button id="partialbtn" type="button" onclick="savePartialPayment();" class="btn green pull-right mr-1">Save Partial Payment</button>
                                         @else
                                             @isset($metadata['plugin']['has_partial'])
                                                 @if($metadata['plugin']['has_partial']==1)
-                                                    <button id="partialbtn" type="submit" name="is_partial" class="btn green pull-right mr-1">Save Partial Payment</button>
+                                                    <button id="partialbtn" type="button" onclick="savePartialPayment();" class="btn green pull-right mr-1">Save Partial Payment</button>
                                                 @endif
                                             @endisset
                                         @endif
@@ -807,10 +814,10 @@ Print<i class="fa fa-print"></i>
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Delete Invoice</h4>
+                <h4 class="modal-title">Delete Transaction</h4>
             </div>
             <div class="modal-body">
-                Are you sure you would not like to use this Invoice in the future?
+                Are you sure want to delete transaction?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn default" data-dismiss="modal">Close</button>
@@ -834,4 +841,16 @@ if (check == true) {
 document.getElementById(id).value = val;
 document.getElementById('is_enable_payments_').value = val;
 }
+
+function savePartialPayment() {
+    $("#is_partial_field").val('1');
+    $("#respond-form").submit();
+}
 </script>
+    <style>
+        .swipez-draft-btn {
+            color: #611818;
+            background: #FFFFFF;
+            border: 1px solid #FCE8E8;
+        }
+    </style>

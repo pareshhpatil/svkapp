@@ -199,22 +199,22 @@
                                     Amount
                                 </th>
                             </tr>
-                            @foreach ($info['partial_payments'] as $item=>$v)
+                            @foreach ($info['partial_payments'] as $item)
                                 <tr>
                                     <td class="td-c">
-                                        {{$v['transaction_id']}}
+                                        {{$item->transaction_id ?? ''}}
                                     </td>
                                     <td class="td-c">
-                                       {{$v['payment_date']}}
+                                        {{$item->payment_date ?? ''}}
                                     </td>
                                     <td class="td-c">
-                                        {{$v['payment_mode']}}
+                                        {{$item->payment_mode ?? ''}}
                                     </td>
                                     <td class="td-c">
-                                        {{$v['amount']}}
+                                        {{$item->amount ?? ''}}
                                     </td>
                                 </tr>
-                           @endforeach
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

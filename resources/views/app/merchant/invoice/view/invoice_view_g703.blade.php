@@ -281,7 +281,7 @@
                                 <tr>
                                     <td colspan="2" class="border border-gray-500 px-2 py-2   text-center text-black">
 
-                                        <p class=" font-regular text-xs"> {{ $item['b'] }} </p>
+                                        <p class=" font-regular text-xs"> {{ $item['b'] }}</p>
 
 
                                     </td>
@@ -303,8 +303,13 @@
                                     <td class="border border-gray-500 px-2 py-2 text-right">
                                         <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
                                     </td>
+                                    @php
+                                        $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                        $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                        $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                    @endphp
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per'] * 100, 2))}}) @else{{ number_format($item['g_per'] * 100,2) }} @endif%</p>
+                                        <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}}) @else{{ number_format($sub_total_g_by_c * 100,2) }} @endif%</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
@@ -455,12 +460,12 @@
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}}) @else{{ number_format($info['total_f'], 2) }} @endif
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}}) @else{{ number_format($info['total_f'], 2) }} @endif
                                 </p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_g'] < 0) ({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{ number_format($info['total_g'], 2) }} @endif
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_g'] < 0) ({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{ number_format($info['total_g'], 2) }} @endif
                                 </p>
                             </td>
                             <td style="min-width: 40px"
@@ -469,12 +474,12 @@
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm"> {{ $info['currency_icon'] }} @if($info['total_h'] < 0) ({{str_replace('-','',number_format($info['total_h'],2))}}) @else{{ number_format($info['total_h'], 2) }} @endif
+                                <p class="text-sm"> {{ $info['currency_icon'] }}@if($info['total_h'] < 0) ({{str_replace('-','',number_format($info['total_h'],2))}}) @else{{ number_format($info['total_h'], 2) }} @endif
                                 </p>
                             </td>
                             <td style="min-width: 70px"
                                 class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
-                                <p class="text-sm">{{ $info['currency_icon'] }} @if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{ number_format($info['total_i'], 2) }} @endif
+                                <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{ number_format($info['total_i'], 2) }} @endif
                                 </p>
                             </td>
                         </tr>

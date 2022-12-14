@@ -799,13 +799,24 @@
                                 $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
                             }
 
-                            if(getamt(this.fields[p].current_billed_amount) > getamt(this.fields[p].current_contract_amount)) {
+                            let valid_current_billed_amount = true;
+                            if((getamt(this.fields[p].current_billed_amount) < 0 && getamt(this.fields[p].current_contract_amount) < 0)) {
+                                if(getamt(this.fields[p].current_billed_amount) < getamt(this.fields[p].current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }else {
+                                if(getamt(this.fields[p].current_billed_amount) > getamt(this.fields[p].current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }
+
+                            if(!valid_current_billed_amount){
                                 $('#cell_current_billed_amount_' + p).addClass(' error-corner');
                                 addPopover('cell_current_billed_amount_' + p, 'Current billed amount should be less than current contract amount');
                                 this.goAhead = false;
                             }else {
                                 $('#cell_current_billed_amount_' + p).removeClass(' error-corner');
                             }
+
+
                         }
                         if( this.goAhead === true)
                         {
@@ -878,24 +889,27 @@
 
                         if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
 
-                            if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
+                            let valid_current_billed_amount = true
+                            if((getamt(field.current_billed_amount) < 0 && getamt(field.current_contract_amount) < 0) ) {
+                                if(getamt(field.current_billed_amount) < getamt(field.current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }else {
+                                if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }
+
+                            if(!valid_current_billed_amount){
                                 $('#cell_current_billed_amount_' + index).addClass(' error-corner');
                                 addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
                                 this.goAhead = false;
-                                return false;
                             }
+
                             field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
                         }
                     },
                     calculateCurrentBillAmount(field){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
                             field.current_billed_amount = updateTextView1 ( getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100 );
-                    },
-                    checkCurrentBillAmount(field, index){
-                        if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
-                            this.calculateCurrentBillAmount(field)
-                        else
-                            this.calculateCurrentBillPercentage(field, index)
                     },
                     calc(field) {
                         try {
