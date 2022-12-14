@@ -525,7 +525,7 @@ Print<i class="fa fa-print"></i>
                                         <input name="deduct_amount" id="deduct_amount" type="hidden" class="displayonly" value="0" />
                                         <input name="deduct_text" id="deduct_text" type="hidden" class="displayonly" value="" />
                                         @if($info['payment_request_status'] == '2' && !empty($info['offline_response_id']))
-                                            <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/transaction/delete/{{$info['offline_response_id']}}'" class="btn delete pull-right mr-1">Delete Transaction</a>
+                                            <a href="#delete-confirm-modal" id="deletebtn"  data-toggle="modal" onclick="document.getElementById('deleteanchor').href = '/merchant/transaction/delete/{{$info['offline_response_id']}}'" class="btn swipez-draft-btn pull-right mr-1">Delete Transaction</a>
                                         @endif
                                         @if($info['payment_request_status'] != '2')
                                             <button id="settlebutton" type="submit" onclick="return validatePartial();" class="btn blue center pull-right mr-1">Settle
@@ -847,3 +847,10 @@ function savePartialPayment() {
     $("#respond-form").submit();
 }
 </script>
+    <style>
+        .swipez-draft-btn {
+            color: #611818;
+            background: #FFFFFF;
+            border: 1px solid #FCE8E8;
+        }
+    </style>
