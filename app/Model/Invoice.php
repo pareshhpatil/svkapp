@@ -717,10 +717,11 @@ class Invoice extends ParentModel
         return $id;
     }
 
-    public function getPaymentRequestOfflineResponse($payment_request_id)
+    public function getPaymentRequestOfflineResponse($payment_request_id, $merchant_id)
     {
         $row = DB::table('offline_response')
                         ->where('payment_request_id', $payment_request_id)
+                        ->where('merchant_id', $merchant_id)
                         ->orderBy('last_update_date', 'DESC')
                         ->first();
 

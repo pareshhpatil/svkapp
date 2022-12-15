@@ -608,7 +608,7 @@ function showupdatebillcode(ind, project_id, code, desc) {
     document.getElementById("project_id_update").value = project_id;
     document.getElementById("bill_id").value = ind;
     document.getElementById("bill_code").value = code
-    document.getElementById("bill_description").value = desc;;
+    document.getElementById("bill_description").value = desc;
 
 
 }
