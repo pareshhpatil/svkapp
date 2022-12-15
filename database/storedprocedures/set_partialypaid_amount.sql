@@ -20,6 +20,18 @@ end if;
 if(@grand_total<=@paid_amt and @payment_request_status=7)then
 SET @payment_request_status=2;
 end if;
+if(@grand_total>@paid_amt and @payment_request_status=7)then
+SET @payment_request_status=7;
+end if;
+if(@grand_total>@paid_amt and @payment_request_status=2)then
+SET @payment_request_status=7;
+end if;
+if(@grand_total>@paid_amt and @payment_request_status=0)then
+SET @payment_request_status=7;
+end if;
+if(@paid_amt=0 and @payment_request_status=7)then
+SET @payment_request_status=0;
+end if;
 update payment_request set paid_amount =@paid_amt,payment_request_status=@payment_request_status where payment_request_id=_payment_request_id;
 end if;
 END
