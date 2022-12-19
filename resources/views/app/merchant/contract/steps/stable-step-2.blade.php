@@ -351,7 +351,9 @@
                     $('#'+type+id).change(function () {
 
                         if(index === undefined || index === null) {
+                            console.log('Id : '+id);
                             index = $('#index'+id).val();
+                            console.log('Index : '+index);
                         }
 
                         if(type === 'bill_code') {
@@ -373,9 +375,9 @@
                             if(!groups.includes(this.value) && this.value !== '') {
                                 groups.push(this.value)
                                 for (let g = 0; g < particularsArray.length; g++) {
-                                    let groupSelector = document.querySelector('#group' + g);
-                                    console.log('group'+id, 'group'+g)
-                                    if('group'+id === 'group'+g)
+                                    let groupSelector = document.querySelector('#group' + particularsArray[g].introw);
+
+                                    if('group'+id === 'group' + particularsArray[g].introw)
                                         groupSelector.setOptions(groups, this.value);
                                     else
                                         groupSelector.setOptions( groups, particularsArray[g].group);
