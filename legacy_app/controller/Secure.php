@@ -261,10 +261,10 @@ class Secure extends Controller
                     env('STRIPE_SECRET')
                 );
                 $pg_type = $this->session->get('transaction_type');
-                   $checkout_session  = $stripe->checkout->sessions->retrieve(
+                $checkout_session  = $stripe->checkout->sessions->retrieve(
                     $intent,
                     []
-                  );
+                );
 
                 $payment_intent = $stripe->paymentIntents->retrieve(
                     $checkout_session->payment_intent,
@@ -872,10 +872,10 @@ class Secure extends Controller
                 $this->session->remove('event_payment_post');
                 $this->session->remove('req_confirm_post');
                 $this->session->remove('coupon_id');
-				$success_type = '/success';
-				if($result['status'] == 'processing'){
-					$success_type = '/processing';
-				}
+                $success_type = '/success';
+                if ($result['status'] == 'processing') {
+                    $success_type = '/processing';
+                }
                 header('Location:/patron/transaction/receipt/' . $transaction_link . $success_type);
             } else {
                 SwipezLogger::info(__CLASS__, 'Transaction failed Transaction id: ' . $result['transaction_id'] . 'Payment request id:' . $result['payment_request_id']);
@@ -1197,6 +1197,113 @@ class Secure extends Controller
             Sentry\captureException($e);
 
             SwipezLogger::error(__CLASS__, '[E2012+98]Webhook response Redirected : Data ' . json_encode($result));
+        }
+    }
+
+    function stripewebhook()
+    {
+        try {
+            // $response = '{
+            //     "id": "evt_3MGijxAFPg6szKs90QiILBf9",
+            //     "object": "event",
+            //     "api_version": "2022-11-15",
+            //     "created": 1671454084,
+            //     "data": {
+            //       "object": {
+            //         "id": "pi_3MGijxAFPg6szKs908NS8CEl",
+            //         "object": "payment_intent",
+            //         "amount": 2535942,
+            //         "amount_capturable": 0,
+            //         "amount_details": {
+            //           "tip": [
+            //           ]
+            //         },
+            //         "amount_received": 2535942,
+            //         "application": null,
+            //         "application_fee_amount": null,
+            //         "automatic_payment_methods": null,
+            //         "canceled_at": null,
+            //         "cancellation_reason": null,
+            //         "capture_method": "automatic",
+            //         "client_secret": "pi_3MGijxAFPg6szKs908NS8CEl_secret_041k1xIBebAyPTV7oFwVkUle3",
+            //         "confirmation_method": "automatic",
+            //         "created": 1671454005,
+            //         "currency": "usd",
+            //         "customer": null,
+            //         "description": null,
+            //         "invoice": null,
+            //         "last_payment_error": null,
+            //         "latest_charge": "py_3MGijxAFPg6szKs90JOk3AL4",
+            //         "livemode": false,
+            //         "metadata": {
+            //           "transaction_id": "T000205892"
+            //         },
+            //         "next_action": null,
+            //         "on_behalf_of": null,
+            //         "payment_method": "pm_1MGik9AFPg6szKs9af2Lm16m",
+            //         "payment_method_options": {
+            //           "us_bank_account": {
+            //             "financial_connections": {
+            //               "permissions": [
+            //                 "payment_method"
+            //               ]
+            //             },
+            //             "verification_method": "automatic"
+            //           }
+            //         },
+            //         "payment_method_types": [
+            //           "us_bank_account"
+            //         ],
+            //         "processing": null,
+            //         "receipt_email": null,
+            //         "review": null,
+            //         "setup_future_usage": null,
+            //         "shipping": null,
+            //         "source": null,
+            //         "statement_descriptor": null,
+            //         "statement_descriptor_suffix": null,
+            //         "status": "succeeded",
+            //         "transfer_data": null,
+            //         "transfer_group": null
+            //       }
+            //     },
+            //     "livemode": false,
+            //     "pending_webhooks": 1,
+            //     "request": {
+            //       "id": null,
+            //       "idempotency_key": null
+            //     },
+            //     "type": "payment_intent.succeeded"
+            //   }';
+            
+
+            $payment_intent_id = $_POST["data"]["object"]["id"];
+            $status = $_POST["data"]["object"]["status"];
+            $transaction_id = $_POST["data"]["object"]["metadata"]["transaction_id"];
+
+            if (strlen($transaction_id) == 10) {
+                if ($status == 'succeeded') {
+                    require_once UTIL . 'ReconcileWrapper.php';
+                    $reconcile = new ReconcileWrapper();
+                    $reconcile->transactionIds = "'" . $transaction_id . "'";
+                    $transaction_rows = $reconcile->fetchSwipezDataFromDB();
+                    if (!empty($transaction_rows)) {
+                        $reconcile->ReconcileIncompleteTransaction($transaction_rows, 'Swipez');
+                       
+                    }
+                    return $_POST;
+                } else {
+                    return $_POST;
+                    // require_once CONTROLLER . 'Notification.php';
+                    // $notification = new Notification($app_url, 'cron');
+                    // $notification->sendMailReceipt($row['pay_transaction_id']);
+                }
+            }
+        } catch (Exception $e) {
+            Sentry\captureException($e);
+
+            SwipezLogger::error(__CLASS__, '[E510+5]Error while easebuzz response Error: ' . $e->getMessage());
+            $this->paymentError();
         }
     }
 

@@ -102,6 +102,11 @@ class ReconcileWrapper
                             $result = $this->saveRazorpayResponse($response, $row['pay_transaction_id']);
                             break;
                         case 11:
+                            $response['orderId'] = $row['pay_transaction_id'];
+                            $response['orderAmount'] = $row['amount'];
+                            $response['txTime'] = $response['created_date'];
+                            $response['referenceId'] = $row['pg_ref_no'];
+                            $response['txMsg'] = NULL;
                             $result = $this->saveStripeResponse($response, $row['pay_transaction_id']);
                             break;
                         case 12:
@@ -122,7 +127,8 @@ class ReconcileWrapper
                             break;
                     }
                     if (!empty($result)) {
-                        if ($response['STATUS'] == 'TXN_SUCCESS') {
+                        if ($response['STATUS'] == 'TXN_SUCCESS' || $response['status'] == 'succeeded') {
+                            
                             $this->total_reconciled_transactions = $this->total_reconciled_transactions + 1;
                             SwipezLogger::info(__CLASS__, '[E33]Received response from PG Customer name:' . $result['patron_name'] . ' Email:' . $result['patron_email'] . ' Transaction id:' . $row['pay_transaction_id']);
                             $form_detail = $model->getSingleValue('form_builder_transaction', 'transaction_id', $row['pay_transaction_id']);
@@ -173,7 +179,6 @@ class ReconcileWrapper
                                 $wrapper = new InvoiceWrapper($model);
                                 $wrapper->getPackageInvoiceDetails($row['pay_transaction_id']);
                             }
-
                             $this->sendNotification($result, $response, $row, $type);
                             if ($this->mode == 2) {
                                 return "Reconciled transaction :" . $row['pay_transaction_id'];
@@ -674,17 +679,23 @@ class ReconcileWrapper
 
     public function getStripeResponse($order_id, $val1, $val2, $account_id)
     {
-        // dd($order_id);
+        
         try {
             $stripe = new \Stripe\StripeClient(
                 env('STRIPE_SECRET')
             );
-            $payment = $stripe->paymentIntents->retrieve(
+
+            $checkout_session  = $stripe->checkout->sessions->retrieve(
                 $order_id,
                 []
+              );
+
+            $payment = $stripe->paymentIntents->retrieve(
+                $checkout_session->payment_intent,
+                []
             );
-            // dd($payment);
-            // $payment = $api->order->fetch($order_id)->payments($order_id);
+
+
             SwipezLogger::info(__CLASS__, 'Stripe payment response for ' . $order_id . ' ' . json_encode($payment));
             $success = 0;
             $success_row = array();
@@ -700,9 +711,7 @@ class ReconcileWrapper
             return $success_row;
         } catch (Exception $e) {
             Sentry\captureException($e);
-            print "Failed while get atom api response";
-
-            SwipezLogger::error(__CLASS__, '[E38]Exception occured while get atom api response Transaction_id: ' . $transaction_id . ' Error: ' . $ex->getMessage());
+            SwipezLogger::error(__CLASS__, '[E38]Exception occured while get atom api response Transaction_id: ' . $order_id . ' Error: ' . $e->getMessage());
         }
     }
 
@@ -873,6 +882,7 @@ VALUES(:payment_id,:entity,:currency,:status,:order_id,:amount,:card_id,:bank,:w
             } else {
                 $response = $this->saveXwayResponse($response, $datetime, $transaction_id, $data->id, $data->id, $amount, 9998, '', $response['status'], '', $data->charges->data[0]->payment_method_details->type);
             }
+            return $response;
         } catch (Exception $e) {
             Sentry\captureException($e);
 
