@@ -861,7 +861,7 @@
                     {
                         particularray.forEach(function(currentValue, index, arr) {
                             document.getElementById('bill_code'+index).value = currentValue.bill_code;
-                            document.getElementById('attach-'+index).value = currentValue.attachments;
+                            //document.getElementById('attach-'+index).value = currentValue.attachments;
                         });
                         this.validateParticulars();
                     },
