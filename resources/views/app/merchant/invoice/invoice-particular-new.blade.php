@@ -933,7 +933,7 @@
                     {
                         particularray.forEach(function(currentValue, index, arr) {
                             document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
-                            document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
+                            // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
                         });
                         this.validateParticulars();
                     },
