@@ -198,11 +198,11 @@
                                                     </thead>
                                                 @endif
 
-                    @php 
-                    $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                    $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
-                   @endphp
+                                                @php
+                                                $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                                                $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
+                                               @endphp
 
                                                 <tbody>
                                                 <template x-for="(field, index) in fields" :key="index">
@@ -221,26 +221,26 @@
                                                                 @if(in_array($k, $dropdown_array))
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
-                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${index}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
+                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
-                                                                            <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
-                                                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${index}`" value=""/>
-                                                                            <a @click="showupdatebillcodeattachment(`${index}`);" :id="`attacha-${index}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
-                                                                                <i :id="`icon-${index}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
+                                                                            <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                            <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${field.pint}`" value=""/>
+                                                                            <a @click="showupdatebillcodeattachment(`${field.pint}`);" :id="`attacha-${field.pint}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
+                                                                                <i :id="`icon-${field.pint}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
                                                                             </a>
-                                                                            <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${index}`">
-                                                                            <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${index}`">
-                                                                            <input type="hidden" name="description[]"  x-model="field.description" :id="`description${index}`">
-                                                                            <input type="hidden" name="billed_transaction_ids[]"  x-model="field.billed_transaction_ids" :id="`billed_transaction_ids${index}`">
+                                                                            <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.pint}`">
+                                                                            <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.pint}`">
+                                                                            <input type="hidden" name="description[]"  x-model="field.description" :id="`description${field.pint}`">
+                                                                            <input type="hidden" name="billed_transaction_ids[]"  x-model="field.billed_transaction_ids" :id="`billed_transaction_ids${field.pint}`">
                                                                             <div class="text-center" style="display: none;">
-                                                                                <p :id="`description-hidden${index}`" x-text="field.description"></p>
+                                                                                <p :id="`description-hidden${field.pint}`" x-text="field.description"></p>
                                                                             </div>
                                                                         </div>
                                                                     @elseif($k=='group')
-                                                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
+                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
                                                                     @elseif($k=='bill_type')
-                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${index}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
+                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
                                                                             <option value="">Select..</option>
                                                                             <option value="% Complete">% Complete</option>
                                                                             <option value="Unit">Unit</option>
@@ -248,9 +248,9 @@
                                                                             <option value="Cost">Cost</option>
                                                                         </select>
                                                                     @elseif($k=='bill_code_detail')
-                                                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
+                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
                                                                     @elseif($k=='cost_type')
-                                                                        <div :id="`{{$k}}${index}`" x-model="field.{{$k}}" ></div>
+                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
                                                                     @else
                                                                         @if($k=='original_contract_amount')
                                                                             <template x-if="field.bill_type!='Calculated'">
@@ -268,68 +268,69 @@
                                                                     @if($k=='original_contract_amount')
                                                                         <template x-if="field.bill_type=='Calculated'">
                                                                             <div>
-                                                                                <span :id="`lbl_original_contract_amount${index}`" x-text="field.{{$k}}"></span><br>
-                                                                                <a :id="`add-calc${index}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
+                                                                                <span :id="`lbl_original_contract_amount${field.pint}`" x-text="field.{{$k}}"></span><br>
+                                                                                <a :id="`add-calc${field.pint}`" style=" padding-top: 5px;" x-show="!field.original_contract_amount" href="javascript:;" @click="OpenAddCaculated(field)">Add calculation</a>
                                                                                 <template x-if="field.override==false">
-                                                                                    <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Override</a>
-                                                                                    <span :id="`pipe-calc${index}`"  style="margin-left: 4px; color:#859494;display: none;"> | </span>
-                                                                                    <a :id="`remove-calc${index}`"  style="padding-top:5px;display: none;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                                                    <a :id="`edit-calc${field.pint}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Override</a>
+                                                                                    <span :id="`pipe-calc${field.pint}`"  style="margin-left: 4px; color:#859494;display: none;"> | </span>
+                                                                                    <a :id="`remove-calc${field.pint}`"  style="padding-top:5px;display: none;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
                                                                                 </template>
                                                                                 <template x-if="field.override==true">
-                                                                                    <a :id="`remove-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
-                                                                                    <span :id="`pipe-calc${index}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                                                    <a :id="`edit-calc${index}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
+                                                                                    <a :id="`remove-calc${field.pint}`" x-show="field.original_contract_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCaculated(field)">Remove</a>
+                                                                                    <span :id="`pipe-calc${field.pint}`" x-show="field.original_contract_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                                                    <a :id="`edit-calc${field.pint}`" x-show="field.original_contract_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="EditCaculated(field)">Edit</a>
                                                                                 </template>
                                                                             </div>
                                                                             <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Calculated'">
                                         <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);calculateCurrentBillAmount(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);calculateCurrentBillAmount(field);saveParticulars();reflectOriginalContractAmountChange(field, index)" @endif @keyup="removeValidationError(`{{$k}}`, `${field.pint}`)" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
 
-                                                                        <input :id="`id${index}`" type="hidden"  x-model="field.id" name="id[]">
-                                                                        <input :id="`introw${index}`" type="hidden" :value="index" x-model="field.pint" name="pint[]">
+                                                                        <input :id="`id${field.pint}`" type="hidden"  x-model="field.id" name="id[]">
+                                                                        <input :id="`introw${field.pint}`" type="hidden" :value="field.pint" x-model="field.pint" name="pint[]">
+                                                                        <input :id="`index${field.pint}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
 
 
                                                                     @elseif($k=='current_billed_amount')
                                                                             <span x-show="field.txt{{$k}} && field.bill_type !='Cost'">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillPercentage(field, index);calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillPercentage(field, index);calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${field.pint}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         <template x-if="field.bill_type=='Cost'">
                                                                             <div>
-                                                                                <a :id="`add-cost${index}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
-                                                                                <a :id="`remove-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
-                                                                                <span :id="`pipe-cost${index}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                                                <a :id="`edit-cost${index}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
+                                                                                <a :id="`add-cost${field.pint}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
+                                                                                <a :id="`remove-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
+                                                                                <span :id="`pipe-cost${field.pint}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
+                                                                                <a :id="`edit-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
                                                                             </div>
-{{--                                                                            <input :id="`{{$k}}${index}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">--}}
+{{--                                                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">--}}
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Cost'">
                                                                             <span  x-text="field.{{$k}}" x-show="!field.txt{{$k}}"> </span>
                                                                             {{--<span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${index}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);saveParticulars();" @endif @keyup="removeValidationError(`{{$k}}`, `${field.pint}`)" x-model="field.{{$k}}" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>--}}
                                                                         </template>
                                                                     @elseif($k=='current_billed_percent')
                                                                         <template x-if="field.bill_type!='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
 
                                                                         <template x-if="field.bill_type=='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${index}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -451,6 +452,7 @@
              });*/
             csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
             var particularray = JSON.parse('{!! json_encode($particulars) !!}');
+            console.log(particularray);
             var previewArray = [];
             var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
             var groups = JSON.parse('{!! json_encode($groups) !!}');
@@ -478,13 +480,14 @@
             }
 
             function updateBillCodeDropdowns(optionArray, newBillCode){
+
                 let selectedId = $('#selectedBillCodeId').val();
 
                 for(let v=0; v < particularray.length; v++){
                     let currentField = particularray[v];
-                    let billCodeSelector = document.querySelector('#bill_code' + v);
+                    let billCodeSelector = document.querySelector('#bill_code' + currentField.pint);
 
-                    if(selectedId === 'bill_code'+ v ) {
+                    if(selectedId === 'bill_code'+ currentField.pint ) {
 
                         billCodeSelector.setOptions(optionArray);
                         billCodeSelector.setValue(newBillCode.id);
@@ -574,7 +577,7 @@
                             },
                             success: function (data) {
                                 let label = data.billCode.code + ' | ' + data.billCode.description
-
+                                console.log(label)
                                 bill_codes.push(
                                     { value: data.billCode.id, label: label, description: data.billCode.description }
                                 )
@@ -762,9 +765,76 @@
                                 removeField(id) {
                                     this.fields.splice(id, 1);
                                     particularray.splice(id, 1);
+                                    this.reCalculateOriginalContractAmount(id);
                                     this.calculateTotal();
                                     numrow = this.fields.length - 1;
                                     this.count = numrow;
+
+                    },
+                    reCalculateOriginalContractAmount(id){
+                        let total = 0;
+                        for( let f =0; f < this.fields.length; f++){
+                            let currentValue = this.fields[f];
+                            let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                            total = Number(total) + Number(getamt(amount));
+                            let calculatedRowValue = $('#calculated_row'+currentValue.pint).val()
+                            if(calculatedRowValue !== '') {
+                                var rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                                if(rowsIncludedInCalculation.includes(id)) {
+                                    const index = rowsIncludedInCalculation.indexOf(id);
+                                    if (index > -1) {
+                                        rowsIncludedInCalculation.splice(index, 1);
+                                        let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+                                        $('#calculated_row'+currentValue.pint).val( rowsArray );
+                                        currentValue.calculated_row = rowsArray;
+                                        this.reCalculateCalculatedRowValue(currentValue);
+                                    }
+                                }
+
+                            }
+                            this.calc(currentValue);
+                            // this.fields[index].introw = index;
+                        }
+                    },
+                    reCalculateCalculatedRowValue(field){
+
+                        let rowsIncludedInCalculation = JSON.parse($('#calculated_row'+field.pint).val());
+                        let total = 0;
+                        for(let r=0; r < rowsIncludedInCalculation.length; r++){
+                            total += getamt( this.fields[r].original_contract_amount )
+                        }
+                        let calculatedAmt = (total * parseFloat($('#calculated_perc' + field.pint).val()) / 100);
+
+                        field.original_contract_amount = getamt(calculatedAmt);
+                        $('#lbl_original_contract_amount' + field.pint).html(calculatedAmt);
+                        $('#original_contract_amount'+field.pint).val(calculatedAmt)
+                        this.calc(field)
+                    },
+                    reflectOriginalContractAmountChange(field, index){
+                        let id = field.pint;
+
+                        let total = 0;
+                        for( let f =0; f < this.fields.length; f++){
+                            let currentValue = this.fields[f];
+                            let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                            total = Number(total) + Number(getamt(amount));
+                            let calculatedRowValue = $('#calculated_row'+currentValue.pint).val()
+                            if(calculatedRowValue !== '') {
+                                let rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+
+                                if(rowsIncludedInCalculation.includes(id)) {
+                                    const index = rowsIncludedInCalculation.indexOf(id);
+                                    if (index > -1) {
+                                        this.reCalculateCalculatedRowValue(currentValue);
+                                    }
+                                }
+                            }
+                            this.calc(currentValue);
+                            // this.fields[index].introw = index;
+                        }
+                        document.getElementById('particulartotal').value = updateTextView1(total);
+                        document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
 
                     },
                     addGroup(field) {
@@ -784,22 +854,24 @@
                     validateParticulars(){
                         this.goAhead = true;
                         for(let p=0; p < particularray.length;p++){
+                            let pint = this.fields[p].pint;
                             if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
-                                $('#cell_bill_code_' + p).addClass(' error-corner');
-                                addPopover('cell_bill_code_' + p, "Please select Bill code");
+                                $('#cell_bill_code_' + pint).addClass(' error-corner');
+                                addPopover('cell_bill_code_' + pint, "Please select Bill code");
                                 this.goAhead = false;
                             }else{
-                                $('#cell_bill_code_' + p).removeClass(' error-corner').popover('destroy')
+                                $('#cell_bill_code_' + pint).removeClass(' error-corner').popover('destroy')
                             }
                             if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
-                                $('#cell_bill_type_' + p).addClass(' error-corner');
-                                addPopover('cell_bill_type_' + p, "Please select Bill type");
+                                $('#cell_bill_type_' + pint).addClass(' error-corner');
+                                addPopover('cell_bill_type_' + pint, "Please select Bill type");
                                 this.goAhead = false;
                             }else{
-                                $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
+                                $('#cell_bill_type_' + pint).removeClass(' error-corner').popover('destroy')
                             }
+
                             if(this.fields[p].current_billed_amount !== null && this.fields[p].current_billed_amount !== undefined && this.fields[p].current_billed_amount !== '' ){
-                             
+
                                 let valid_current_billed_amount = true;
                                 if((getamt(this.fields[p].current_billed_amount) < 0 && getamt(this.fields[p].current_contract_amount) < 0)) {
                                     if(getamt(this.fields[p].current_billed_amount) < getamt(this.fields[p].current_contract_amount))
@@ -817,7 +889,6 @@
                                     $('#cell_current_billed_amount_' + p).removeClass(' error-corner');
                                 }
                             }
-
                         }
                         if( this.goAhead === true)
                         {
@@ -861,8 +932,8 @@
                     setParticulars()
                     {
                         particularray.forEach(function(currentValue, index, arr) {
-                            document.getElementById('bill_code'+index).value = currentValue.bill_code;
-                            //document.getElementById('attach-'+index).value = currentValue.attachments;
+                            document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
+                            // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
                         });
                         this.validateParticulars();
                     },
@@ -888,29 +959,26 @@
                     calculateCurrentBillPercentage(field, index){
                         $('#cell_current_billed_amount_' + index).removeClass(' error-corner').popover('destroy');
 
-                        if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
+                        if(field.current_billed_amount !== null || field.current_billed_amount !== 0 || field.current_billed_amount !== undefined){
 
-                            let valid_current_billed_amount = true
-                            if((getamt(field.current_billed_amount) < 0 && getamt(field.current_contract_amount) < 0) ) {
-                                if(getamt(field.current_billed_amount) < getamt(field.current_contract_amount))
-                                    valid_current_billed_amount = false;
-                            }else {
-                                if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount))
-                                    valid_current_billed_amount = false;
-                            }
-
-                            if(!valid_current_billed_amount){
+                            if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
                                 $('#cell_current_billed_amount_' + index).addClass(' error-corner');
                                 addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
                                 this.goAhead = false;
+                                return false;
                             }
-
                             field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
                         }
                     },
                     calculateCurrentBillAmount(field){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
                             field.current_billed_amount = updateTextView1 ( getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100 );
+                    },
+                    checkCurrentBillAmount(field, index){
+                        if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
+                            this.calculateCurrentBillAmount(field)
+                        else
+                            this.calculateCurrentBillPercentage(field, index)
                     },
                     calc(field) {
                         try {
@@ -1086,7 +1154,7 @@
                     setAOriginalContractAmount() {
                         selected_field_int = document.getElementById('selected_field_int').value;
                         calc_amount = document.getElementById("calc_amount").value;
-
+                        let fieldIndex = $('#index'+selected_field_int).val();
                         let valid = true;
                         if ($('input[name^=calc-checkbox]:checked').length <= 0) {
                             $('#calc_checkbox_error').html('Please select atleast one particular');
@@ -1103,15 +1171,17 @@
                         if(valid) {
 
                             try{
-                                this.fields[selected_field_int].original_contract_amount = calc_amount;
+                                this.fields[fieldIndex].original_contract_amount = calc_amount;
                             }catch(o){}
 
                             setOriginalContractAmount();
-                            this.fields[selected_field_int].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
-                            this.fields[selected_field_int].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
 
-                            this.calc(this.fields[selected_field_int]);
-                            this.calculateCurrentBillAmount(this.fields[selected_field_int])
+                            this.fields[fieldIndex].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
+                            this.fields[fieldIndex].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+
+                            this.calc(this.fields[fieldIndex]);
+                            this.calculateCurrentBillAmount(this.fields[fieldIndex]);
+                            this.reflectOriginalContractAmountChange(this.fields[fieldIndex], fieldIndex);
                         }
 
                     },
@@ -1121,16 +1191,17 @@
                         }else
                         {
                             $('#cost_checkbox_error').html('');
-                            cost_selected_id = document.getElementById('cost_selected_id').value;
-                            calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
-                            this.fields[cost_selected_id].current_billed_amount = calc_amount;
+                            let cost_selected_id = document.getElementById('cost_selected_id').value;
+                            let calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
+                            let fieldIndex = $('#index'+cost_selected_id).val()
+                            this.fields[fieldIndex].current_billed_amount = calc_amount;
                             //  document.getElementById("current_billed_amount" + cost_selected_id).value = calc_amount;
                             //  _("lbl_current_billed_amount" + cost_selected_id).innerHTML = calc_amount;
-                            this.fields[cost_selected_id].billed_transaction_ids = document.getElementById('billed_transaction_ids').value;
+                            this.fields[fieldIndex].billed_transaction_ids = document.getElementById('billed_transaction_ids').value;
                             // document.getElementById('billed_transaction_ids' + cost_selected_id).value = document.getElementById('billed_transaction_ids').value;
-                            this.calc(this.fields[cost_selected_id]);
+                            this.calc(this.fields[fieldIndex]);
                             this.billed_transactions=billed_transactions_array;
-                            this.fields[cost_selected_id].txtcurrent_billed_amount = false;
+                            this.fields[fieldIndex].txtcurrent_billed_amount = false;
                             this.closeSidePanelcost();
                         }
                     },
@@ -1183,9 +1254,10 @@
                         if(type=='edit')
                         {
                             var exist_array=[];
-                            if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                            let fieldIndex = field.pint;
+                            if(this.fields[fieldIndex].billed_transaction_ids!='' && this.fields[fieldIndex].billed_transaction_ids !=null)
                             {
-                                var exist_array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                var exist_array=JSON.parse(this.fields[fieldIndex].billed_transaction_ids);
                             }
                             ids=[];
                             total=0;
@@ -1328,8 +1400,9 @@
                     RemoveCost(field) {
                         if(field.pint>0)
                         {}else{field.pint=0}
-                        this.fields[field.pint].current_billed_amount = '';
-                        this.fields[field.pint].billed_transaction_ids = '';
+                        let fieldIndex = $('#index'+field.pint).val();
+                        this.fields[fieldIndex].current_billed_amount = '';
+                        this.fields[fieldIndex].billed_transaction_ids = '';
                         this.calc(field);
                     },
                     EditCost(field) {
@@ -1377,9 +1450,6 @@
                             }
                         });
                         this.filterCost();
-
-
-                        ////
 
                         OpenAdCostRow();
                     },
@@ -1457,24 +1527,24 @@
                             const x = await this.wait(10);
                             id = this.fields.length - 1;
                             this.count = id;
-                            this.virtualSelect(id, 'bill_code', bill_codes)
-                            this.virtualSelect(id, 'group', groups)
-                            this.virtualSelect(id, 'cost_type', merchant_cost_types)
+                            this.virtualSelect(pint, 'bill_code', bill_codes,null,'body',id)
+                            this.virtualSelect(pint, 'group', groups,null,'body',id)
+                            this.virtualSelect(pint, 'cost_type', merchant_cost_types,null,'body',id)
                             // this.virtualSelect(id, 'bill_type', bill_types)
-                            this.virtualSelect(id, 'bill_code_detail', bill_code_details,'Yes');
+                            this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
                             this.addbuttonactive=true;
                         }
                     },
                     initializeDropdowns(){
                         for(let v=0; v < this.fields.length; v++){
-                            this.virtualSelect(v, 'bill_code', bill_codes, this.fields[v].bill_code)
-                            this.virtualSelect(v, 'group', groups, this.fields[v].group)
-                            this.virtualSelect(v, 'cost_type', merchant_cost_types,this.fields[v].cost_type)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,null,v)
+                            this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,null,v)
+                            this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,null,v)
                             // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
-                            this.virtualSelect(v, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,null,v)
                         }
                     },
-                    virtualSelect(id, type, options, selectedValue,dropboxWrapper='body'){
+                    virtualSelect(id, type, options, selectedValue,dropboxWrapper='body',index){
                         allowNewOption= true;
                         search= true;
                         if(type!='bill_code')
@@ -1507,11 +1577,11 @@
 
                         $('#'+type+id).change(function () {
                             if(type === 'bill_code') {
-                                particularray[id].bill_code = this.value
+                                particularray[index].bill_code = this.value
                                 let displayValue = this.getDisplayValue().split('|');
                                 if(displayValue[1] !== undefined) {
                                     $('#description'+id).val(displayValue[1].trim())
-                                    particularray[id].description = displayValue[1].trim();
+                                    particularray[index].description = displayValue[1].trim();
                                 }
                                 if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
                                     console.log(this.value);
@@ -1522,21 +1592,21 @@
                                 }
                             }
                             if(type === 'group'){
-                                particularray[id].group = this.value
+                                particularray[index].group = this.value
                             }
                             if(type === 'cost_type'){
-                                particularray[id].cost_type = this.value
+                                particularray[index].cost_type = this.value
                             }
 
                             if(type === 'bill_type'){
                                 console.log(fields);
-                                particularray[id].bill_type = this.value
+                                particularray[index].bill_type = this.value
                                 if(this.value === 'Calculated')
                                     fields[id].bill_type = this.value
                             }
 
                             if(type === 'bill_code_detail'){
-                                particularray[id].bill_code_detail = this.value
+                                particularray[index].bill_code_detail = this.value
                             }
 
                             if(type === 'cost_codes' || type === 'cost_types'){
@@ -1545,6 +1615,7 @@
                         });
 
                         $('#'+type+id).on('beforeOpen',function () {
+                            console.log('#'+type+id)
                             let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
                             $('#'+dropboxContainer).css('z-index',4)
                         });

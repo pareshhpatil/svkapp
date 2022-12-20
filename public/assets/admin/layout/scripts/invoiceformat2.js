@@ -475,11 +475,11 @@ function addRowinCalcTable(ind) {
     $('input[name="pint[]"]').each(function (indx, arr) {
         var newDiv = document.createElement('tr');
         row = '';
-        int = ($(this).val() === null || $(this).val() == '') ? 0 : $(this).val();
+        int = ($(this).val() === null || $(this).val() === '') ? '' : $(this).val();
 
         bint = Number(int) + 2;
         if (ind != int) {
-            console.log('original_contract_amount' + int);
+
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
             let displayValue = document.querySelector('#bill_code' + int ).getDisplayValue().split('|');
@@ -495,7 +495,13 @@ function addRowinCalcTable(ind) {
 
             //bill_code = document.getElementById('bill_code' + bint).value;
             if (amt > 0) {
-                row = row + '<td class="td-c"><input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '"><input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')"></td><td class="td-c">' + bill_code + '</td><td class="td-c">' + discription + '</td><td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
+                row = row + '<td class="td-c">' +
+                    '<input type="hidden" name="calc-pint[]" value="' + int + '" id="calc-pint' + int + '">' +
+                    '<input type="checkbox" name="calc-checkbox[]" value="' + int + '" id="calc' + int + '" onclick="inputCalcClicked(' + int + ',' + getamt(document.getElementById('original_contract_amount' + int).value) + ')">' +
+                    '</td>' +
+                    '<td class="td-c">' + bill_code + '</td>' +
+                    '<td class="td-c">' + discription + '</td>' +
+                    '<td class="td-c">$' + document.getElementById('original_contract_amount' + int).value + '</td>'
             }
         }
         newDiv.innerHTML = row;
@@ -833,7 +839,8 @@ function editCaculatedRow(row) {
     calc_json = document.getElementById("calculated_row" + row).value;
     if (calc_json != "") {
         calc_json = JSON.parse(calc_json)
-        for (const element of calc_json) {
+        for (let element of calc_json) {
+            // if(element === 0 || element === null) element = ''
             amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
             document.getElementById("calc" + element).checked = true
             inputCalcClicked(element, amount_value)
@@ -1335,7 +1342,7 @@ function calculatedRowSummary() {
 function calculatedRowSummaryContract() {
     $('input[name="pint[]"]').each(function (indx, arr) {
         let int = $(this).val();
-        if (int === '' || int === null) int = 0;
+        if (int === 0 || int === null) int = '';
         bill_type = _('bill_type' + int).value;
         if (bill_type == 'Calculated') {
             rows = _('calculated_row' + int).value;
@@ -1378,7 +1385,7 @@ function calculateRetainage() {
     var total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
-        if (int === '' || int === null) int = 0;
+        if (int === 0 || int === null) int = '';
         total = total + getamt(document.getElementById('original_contract_amount' + int).value)
     });
     calculatedRowSummaryContract()
