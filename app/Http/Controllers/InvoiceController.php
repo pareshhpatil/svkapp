@@ -3199,7 +3199,7 @@ class InvoiceController extends AppController
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
-        return view('app/merchant/invoice/invoice-particular', $data);
+        return view('app/merchant/invoice/invoice-particular-new', $data);
     }
 
     public function preview($link)
