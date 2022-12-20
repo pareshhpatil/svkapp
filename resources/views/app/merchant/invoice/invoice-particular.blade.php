@@ -888,7 +888,7 @@
                     calculateCurrentBillPercentage(field, index){
                         $('#cell_current_billed_amount_' + index).removeClass(' error-corner').popover('destroy');
 
-                        if(field.current_billed_amount !== null || field.current_billed_amount !== 0){
+                        if(field.current_billed_amount !== null && field.current_billed_amount !== 0){
 
                             let valid_current_billed_amount = true
                             if((getamt(field.current_billed_amount) < 0 && getamt(field.current_contract_amount) < 0) ) {
