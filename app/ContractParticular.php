@@ -61,7 +61,7 @@ class ContractParticular extends Model
         'cost_type' => null,
         'group' => null,
         'bill_code_detail' => 'Yes',
-        'show' => false
+        'show' => false,
     ];
 
     public static $particular_column = [
@@ -74,7 +74,7 @@ class ContractParticular extends Model
         'project' => [ 'title'=> 'Project id', 'type' => 'input', 'visible' => false ] ,
         'cost_code' => [ 'title'=> 'Cost code', 'type' => 'input', 'visible' => false ] ,
         'group' => [ 'title'=> 'Sub total group', 'type' => 'select' ] ,
-        'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ]
+        'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ],
     ];
 
     public static $billing_frequency = [ 1 => 'Weekly', 2 => 'Monthly', 3 => 'Quarterly' ];

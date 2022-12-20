@@ -1439,9 +1439,6 @@
                         });
                         this.filterCost();
 
-
-                        ////
-
                         OpenAdCostRow();
                     },
 

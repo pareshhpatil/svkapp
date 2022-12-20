@@ -98,7 +98,7 @@
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
                                 @php $readonly_array=array('retainage_amount','bill_code_detail','group','bill_type','bill_code');
-                                         $number_array=array('original_contract_amount','retainage_percent');
+                                     $number_array=array('original_contract_amount','retainage_percent');
 //                                  @endphp
                                 @foreach($particular_column as $column => $details)
                                     @php $readonly=false; @endphp
@@ -316,7 +316,6 @@
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
-                        console.log('Initializing dropdowns' + this.fields[v].introw);
 
                         this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code, v)
                         this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group, v)
@@ -351,9 +350,7 @@
                     $('#'+type+id).change(function () {
 
                         if(index === undefined || index === null) {
-                            console.log('Id : '+id);
                             index = $('#index'+id).val();
-                            console.log('Index : '+index);
                         }
 
                         if(type === 'bill_code') {
@@ -466,7 +463,7 @@
                 },
                 closeBillCodePanel() {
                     let selectedId = $('#selectedBillCodeId').val();
-                    console.log(selectedId);
+
                     var selectedBillCode = document.querySelector('#'+selectedId);
                     selectedBillCode.reset();
 
@@ -700,7 +697,7 @@
 
                     let id = particularsArray.length - 1;
                     this.count = id;
-                    console.log(int);
+
                     const x = await this.wait(10);
                     this.virtualSelect(int, 'bill_code', bill_codes,null)
                     this.virtualSelect(int, 'group', groups, null)
@@ -777,7 +774,7 @@
                         total += getamt( this.fields[r].original_contract_amount )
                     }
                     let calculatedAmt = (total * parseFloat($('#calculated_perc' + field.introw).val()) / 100);
-                    console.log(calculatedAmt);
+
 
                     field.original_contract_amount = getamt(calculatedAmt);
                     $('#lbl_original_contract_amount' + field.introw).html(calculatedAmt);
@@ -844,7 +841,6 @@
 
                 },
                 setCalculatedOriginalContractAmount(introw, index) {
-                    console.log(introw);
 
                     try {
                         document.getElementById("original_contract_amount" + introw).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
@@ -878,7 +874,7 @@
                         }
                     });
                     calcRowArray = JSON.stringify(calcRowArray);
-                    console.log(calcRowArray);
+
                     // console.log(calcRowInt);
                     document.getElementById("calculated_row" + introw).value = calcRowArray;
                     document.getElementById("calculated_perc" + introw).value = parseFloat(document.getElementById("calc_perc").value).toFixed(2);
