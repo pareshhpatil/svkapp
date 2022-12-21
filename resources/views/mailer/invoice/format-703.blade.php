@@ -31,7 +31,7 @@
 }
 body{
     font-family: Roboto;
-    letter-spacing: 0px;
+    letter-spacing: 0;
     line-height: 75%;
 }
 

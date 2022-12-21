@@ -228,7 +228,7 @@ var uppy_attach = new Uppy.Uppy({
         maxFileSize: 9000000,
         maxNumberOfFiles: '{{env('INVOICE_ATTACHMENT_LIMIT')}}',
         minNumberOfFiles: 1,
-        allowedFileTypes: ['.jpg','.png','.jpeg','.pdf']
+        allowedFileTypes: ['.jpg','.png','.jpeg','.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.csv']
     },
     onBeforeFileAdded: (currentFile, files) => {
         var remainleng=0;
