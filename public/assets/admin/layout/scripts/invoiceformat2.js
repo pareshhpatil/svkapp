@@ -3320,7 +3320,11 @@ function setBillCodeMenuData() {
 
                 '</div></div>' +
                 ' <div class="row"><div>';
-            if (extension.toLowerCase() == 'pdf') {
+            const newFileTypes = ['doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'];
+            let extensionInLowerCase = extension.toLowerCase();
+            if(newFileTypes.includes(extensionInLowerCase)) {
+                framedata += '<a href="' + pathlist[i] + '">Download file</a>';
+            } else if (extensionInLowerCase == 'pdf') {
                 framedata += '<iframe src="' + pathlist[i] + '" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
             } else {
                 framedata += '<img src="' + pathlist[i] + '" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';

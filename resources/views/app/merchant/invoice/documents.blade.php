@@ -135,7 +135,14 @@ $header='app.patron.invoice.invoice-master';}
                             <hr>
                             
                             <p class="mt-2">
-                                @if(strtolower(pathinfo($item, PATHINFO_EXTENSION))=='pdf')
+                                @if(strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'doc' ||
+                           strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'docx' ||
+                           strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'xls' ||
+                           strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'xlsx' ||
+                           strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'txt' ||
+                           strtolower(pathinfo($item, PATHINFO_EXTENSION))=='csv')
+                                    <a href="{{$item}}">Download file</a>
+                                @elseif(strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'pdf')
                                 <iframe src="{{$item}}" class="w-full" height="800px">
                                 </iframe>
                                 @else
