@@ -896,7 +896,7 @@ class InvoiceController extends AppController
 
             $info = (array)$info;
             $info['its_from'] = 'real';
-            $info['gtype'] = 'attachments';
+            $info['gtype'] = 'attachment';
             $plugin_array = json_decode($plugin_value, 1);
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
