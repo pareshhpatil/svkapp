@@ -576,42 +576,41 @@
                     });
                 },
                 validateParticulars(){
-
                     let valid = true;
-                    this.copyBillCodeGroups();console.log(this.fields);
+                    this.copyBillCodeGroups();
                     for(let p=0; p < this.fields.length; p++){
-
+                        let introw = this.fields[p].introw;
                         if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
-                            $('#cell_bill_code_' + p).addClass(' error-corner');
-                            addPopover('cell_bill_code_' + p, "Please select Bill code");
+                            $('#cell_bill_code_' + introw).addClass(' error-corner');
+                            addPopover('cell_bill_code_' + introw, "Please select Bill code");
                             valid = false
                         }else{
-                            $('#cell_bill_code_' + p).removeClass(' error-corner').popover('destroy')
+                            $('#cell_bill_code_' + introw).removeClass(' error-corner').popover('destroy')
                             // this.fields[p].bill_code = this.fields[p].bill_code
                         }
 
                         if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
-                            $('#cell_bill_type_' + p).addClass(' error-corner');
-                            addPopover('cell_bill_type_' + p, "Please select Bill type");
+                            $('#cell_bill_type_' + introw).addClass(' error-corner');
+                            addPopover('cell_bill_type_' + introw, "Please select Bill type");
                             valid = false
                         }else{
-                            $('#cell_bill_type_' + p).removeClass(' error-corner').popover('destroy')
+                            $('#cell_bill_type_' + introw).removeClass(' error-corner').popover('destroy')
                         }
 
                         if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
-                            $('#cell_cost_type_' + p).addClass(' error-corner');
-                            addPopover('cell_bill_type_' + p, "Please select Cost type");
+                            $('#cell_cost_type_' + introw).addClass(' error-corner');
+                            addPopover('cell_bill_type_' + introw, "Please select Cost type");
                             valid = false
                         }else{
-                            $('#cell_cost_type_' + p).removeClass(' error-corner').popover('destroy')
+                            $('#cell_cost_type_' + introw).removeClass(' error-corner').popover('destroy')
                         }
 
                         if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
-                            $('#cell_original_contract_amount_' + p).addClass(' error-corner');
-                            addPopover('cell_original_contract_amount_' + p, "Please enter original contract amount");
+                            $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
+                            addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
                             valid = false
                         }else
-                            $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            $('#cell_original_contract_amount_' + introw).removeClass(' error-corner').popover('destroy')
                         // else {
                         //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
                         //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
