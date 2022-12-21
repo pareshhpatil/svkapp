@@ -584,6 +584,8 @@ function proindexContract(ind, select_id) {
     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#panelWrapIdcalc").css('pointer-events', 'auto');
     addRowinCalcTable(ind)
 }
 
@@ -593,6 +595,8 @@ function billIndex(ind, select_id, project_id) {
     document.getElementById("panelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#panelWrapIdBillCode").css('pointer-events', 'auto');
     if (project_id != '0' && project_id != '') {
         document.getElementById("_project_id").value = project_id;
     }
@@ -605,6 +609,8 @@ function showupdatebillcode(ind, project_id, code, desc) {
     document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#updatepanelWrapIdBillCode").css('pointer-events', 'auto');
     document.getElementById("project_id_update").value = project_id;
     document.getElementById("bill_id").value = ind;
     document.getElementById("bill_code").value = code
@@ -692,6 +698,7 @@ function closeSidePanelBillCode() {
     document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     return false;
 }
 function closeSidePanelBillCodeAttachment() {
@@ -711,6 +718,7 @@ function closeSideUpdatePanelBillCode() {
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(100%)";
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     return false;
 }
 
@@ -718,10 +726,10 @@ function closeSidePanelcalc() {
     document.getElementById("panelWrapIdcalc").style.boxShadow = "none";
     document.getElementById("panelWrapIdcalc").style.transform = "translateX(100%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     clearCalcTable();
     return false;
 }
-
 function addbillcode(){
 
     var comefrom = document.getElementById("comefrom").value;
@@ -2363,6 +2371,8 @@ function showLedger() {
         document.getElementById("panelLedger").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
         document.getElementById("panelLedger").style.transform = "translateX(0%)";
         $('.page-sidebar-wrapper').css('pointer-events', 'none');
+        $('.page-content-wrapper').css('pointer-events', 'none');
+        $('#panelLedger').css('pointer-events', 'auto');
         $.ajax({
             type: 'GET',
             url: '/merchant/customer/getCustomerLedger/' + customer_id,
@@ -2398,6 +2408,7 @@ function closeSidePanelLedger() {
     document.getElementById("panelLedger").style.boxShadow = "none";
     document.getElementById("panelLedger").style.transform = "translateX(100%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     CloseCoverNote();
     return false;
 }
@@ -2748,13 +2759,18 @@ function AddCoveringNote() {
     document.getElementById("panelWrapIdaddcovernote").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdaddcovernote").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $('#panelWrapIdaddcovernote').css('pointer-events', 'auto');
+    $("#confirm_box").css('pointer-events', 'auto');
 }
 function EditCoveringNote() {
 
     document.getElementById("panelWrapIdeditcovernote").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdeditcovernote").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $('#panelWrapIdeditcovernote').css('pointer-events', 'auto');
+    $("#confirm_box").css('pointer-events', 'auto');
     showEditNote();
 }
 function closeSidePanelcover() {
@@ -2763,6 +2779,7 @@ function closeSidePanelcover() {
     document.getElementById("panelWrapIdeditcovernote").style.boxShadow = "none";
     document.getElementById("panelWrapIdeditcovernote").style.transform = "translateX(100%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     CloseCoverNote();
     return false;
 }

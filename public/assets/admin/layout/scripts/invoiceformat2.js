@@ -429,6 +429,8 @@ function OpenAdCostRow() {
     document.getElementById("panelWrapIdcost").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdcost").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#panelWrapIdcost").css('pointer-events', 'auto');
 }
 
 function proindexContract(ind, select_id) {
@@ -437,6 +439,8 @@ function proindexContract(ind, select_id) {
     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#panelWrapIdcalc").css('pointer-events', 'auto');
     addRowinCalcTable(ind)
 }
 
@@ -446,6 +450,8 @@ function billIndex(ind, select_id, project_id) {
     document.getElementById("panelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#panelWrapIdBillCode").css('pointer-events', 'auto');
     if (project_id != '0' && project_id != '') {
         document.getElementById("_project_id").value = project_id;
 
@@ -459,6 +465,8 @@ function showupdatebillcode(ind, project_id, code, desc) {
     document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#updatepanelWrapIdBillCode").css('pointer-events', 'auto');
     document.getElementById("project_id").value = project_id;
     document.getElementById("bill_id").value = ind;
     document.getElementById("bill_code").value = code
@@ -553,6 +561,7 @@ function closeSidePanelBillCode() {
     document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     return false;
 }
 function closeSideUpdatePanelBillCode() {
@@ -560,6 +569,7 @@ function closeSideUpdatePanelBillCode() {
     document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(100%)";
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     return false;
 }
 
@@ -567,6 +577,7 @@ function closeSidePanelcalc() {
     document.getElementById("panelWrapIdcalc").style.boxShadow = "none";
     document.getElementById("panelWrapIdcalc").style.transform = "translateX(100%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     clearCalcTable();
     return false;
 }
@@ -3241,8 +3252,8 @@ function showupdatebillcodeattachment(pos) {
     document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
     document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(0%)";
     $('.page-sidebar-wrapper').css('pointer-events', 'none');
-
-
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $('#panelWrapIdBillCodeAttachment').css('pointer-events', 'auto');
 
 }
 
@@ -3363,6 +3374,7 @@ function closeSidePanelBillCodeAttachment() {
     document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(100%)";
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
     return false;
 }
 

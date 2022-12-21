@@ -92,8 +92,9 @@
             height: 30px;
 
         }
-
-
+        .vs-option {
+            z-index: 99;
+        }
         .vscomp-option {
             height: 40px !important;
         }
@@ -452,7 +453,7 @@
              });*/
             csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
             var particularray = JSON.parse('{!! json_encode($particulars) !!}');
-            console.log(particularray);
+            //console.log(particularray);
             var previewArray = [];
             var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
             var groups = JSON.parse('{!! json_encode($groups) !!}');
@@ -577,7 +578,7 @@
                             },
                             success: function (data) {
                                 let label = data.billCode.code + ' | ' + data.billCode.description
-                                console.log(label)
+                                //console.log(label)
                                 bill_codes.push(
                                     { value: data.billCode.id, label: label, description: data.billCode.description }
                                 )
@@ -698,7 +699,7 @@
                         $('#paticulars_error').hide()
                     },
                     goToNextStep() {
-                        console.log(this.goAhead, this.step);
+                        //console.log(this.goAhead, this.step);
                         if (this.goAhead) this.step++;
                     },
                     particularsDropdowns(id = null) {
@@ -1394,8 +1395,22 @@
                         document.getElementById("panelWrapIdcost").style.boxShadow = "none";
                         document.getElementById("panelWrapIdcost").style.transform = "translateX(100%)";
                         $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+                        $('.page-content-wrapper').css('pointer-events', 'auto');
                         _('allCheckboxcost').checked=false;
                         this.allcostCheck();
+                    },
+                    closeBillCodePanel() {
+                        let selectedId = $('#selectedBillCodeId').val();
+                        //console.log(selectedId);
+                        var selectedBillCode = document.querySelector('#'+selectedId);
+                        selectedBillCode.reset();
+
+                        document.getElementById("panelWrapIdBillCode").style.boxShadow = "none";
+                        document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
+                        $("#billcodeform").trigger("reset");
+                        $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+                        $('.page-content-wrapper').css('pointer-events', 'auto');
+                        return false;
                     },
                     RemoveCost(field) {
                         if(field.pint>0)
@@ -1537,11 +1552,11 @@
                     },
                     initializeDropdowns(){
                         for(let v=0; v < this.fields.length; v++){
-                            this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,null,v)
-                            this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,null,v)
-                            this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,null,v)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,'body',v)
                             // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
-                            this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,null,v)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,'body',v)
                         }
                     },
                     virtualSelect(id, type, options, selectedValue,dropboxWrapper='body',index){
@@ -1584,7 +1599,7 @@
                                     particularray[index].description = displayValue[1].trim();
                                 }
                                 if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
-                                    console.log(this.value);
+                                    //console.log(this.value);
                                     only_bill_codes.push(this.value)
                                     $('#new_bill_code').val(this.value)
                                     $('#selectedBillCodeId').val(type + id)
@@ -1599,7 +1614,7 @@
                             }
 
                             if(type === 'bill_type'){
-                                console.log(fields);
+                                //console.log(fields);
                                 particularray[index].bill_type = this.value
                                 if(this.value === 'Calculated')
                                     fields[id].bill_type = this.value
@@ -1615,7 +1630,7 @@
                         });
 
                         $('#'+type+id).on('beforeOpen',function () {
-                            console.log('#'+type+id)
+                            //console.log('#'+type+id)
                             let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
                             $('#'+dropboxContainer).css('z-index',4)
                         });
