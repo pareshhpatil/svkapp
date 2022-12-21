@@ -236,12 +236,27 @@ $validate=(array)$validate;
                     Update Transaction
                 </a>
             @endif
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-            Save as PDF
-        </a>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-            Print
-        </a>
+                <div class="btn-group pull-right">
+                    <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
+                        Download <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
+                        <li>
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                Download {{$info['gtype']}}
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                                Download Full PDF
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                Print
+            </a>
         @endif
     </div>
 </div>

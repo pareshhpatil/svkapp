@@ -62,10 +62,16 @@
         .toc-wrapper {
             padding: 50px;
             font-family: 'Roboto', sans-serif;
+            color: #5C6B6B;
         }
 
         .toc-wrapper .title {
             font-size: 28px;
+            text-align: center;
+        }
+
+        .toc-wrapper .title-toc {
+            margin: 20px 0;
         }
 
         .toc-list > li {
@@ -89,6 +95,16 @@
             margin: 20px 20px 30px;
             text-align: center;
         }
+
+        .attachment-item-wrapper {
+            width: 70%;
+            height: 70%;
+        }
+
+        .attachment-item-image {
+            max-width: 80%;
+            max-height: 80%;
+        }
     </style>
 
 </head>
@@ -97,7 +113,7 @@
     <div role="article" aria-roledescription="email" aria-label="" lang="en"> <!doctype html>
         <div class="toc-wrapper">
             <h2 class="title">{{ $info['project_details']->project_name }} | {{ $info['invoice_number'] }} | {{ $info['cycle_name'] }}</h2>
-
+            <h4 class="title-toc">Table of Content</h4>
             <ol class="toc-list">
                 <li class="toc-list-item">
                     <a href="#link_to_702" class="toc-list-item-link">
@@ -698,7 +714,10 @@
                         <br />
                         <br />
                         <br />
-                        <img class="attachment-item-image" src="data:image/{{$attachment['fileType']}};base64, {{$attachment['fileContent']}}" alt="">
+                        <div class="attachment-item-wrapper">
+                            <img class="attachment-item-image" src="data:image/{{$attachment['fileType']}};base64, {{$attachment['fileContent']}}" alt="">
+                        </div>
+
                         <br />
                     @endif
                     <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $attachment['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
