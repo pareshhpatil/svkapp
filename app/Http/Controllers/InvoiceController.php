@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
+use Aws\S3\S3Client;
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
 use App\Model\InvoiceFormat;
@@ -14,6 +17,7 @@ use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
 use App\Http\Traits\InvoiceFormatTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Validator;
 use Exception;
 use Illuminate\Support\Facades\Session;
@@ -892,7 +896,7 @@ class InvoiceController extends AppController
 
             $info = (array)$info;
             $info['its_from'] = 'real';
-            $info['gtype'] = '703';
+            $info['gtype'] = 'attachment';
             $plugin_array = json_decode($plugin_value, 1);
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
@@ -1845,7 +1849,134 @@ class InvoiceController extends AppController
         }
     }
 
+    /**
+     * @param $link
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function downloadFullInvoice($link)
+    {
+        $payment_request_id = Encrypt::decode($link);
 
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+            #get default billing profile
+
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info = (array)$info;
+
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            $logoPath = env('APP_URL') . '/images/logo-703.PNG';
+            try {
+                $arrContextOptions = [
+                    "ssl" => [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false,
+                        "allow_self_signed" => true,
+                    ]
+                ];
+
+                $info['logo'] = base64_encode(file_get_contents($logoPath, false, stream_context_create($arrContextOptions)));
+            } catch (Exception $o) {
+            }
+
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+
+            $attachmentArray = [];
+            $IAM_KEY = config('filesystems.disks.s3_expense.key');
+            $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
+            $region = config('filesystems.disks.s3_expense.region');
+
+            $s3 = S3Client::factory(
+                array(
+                    'credentials' => array(
+                        'key' => $IAM_KEY,
+                        'secret' => $IAM_SECRET
+                    ),
+                    'version' => 'latest',
+                    'region'  => $region
+                )
+            );
+
+            foreach($constructionParticulars as $constructionParticular) {
+                $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
+                $particularAttachments = json_decode($constructionParticular->attachments);
+                if(!empty($particularAttachments)) {
+                    foreach($particularAttachments as $particularAttachment) {
+                        $urlExplode = explode('/', $particularAttachment);
+                        $file = end($urlExplode);
+                        $fileExplode = explode('.', $file);
+
+                        $fileName = Arr::first($fileExplode);
+                        $fileType = Arr::last($fileExplode);
+                        $fileContent = '';
+
+                        if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                            $filePath = 'invoices/' . $billCode->id . '/' . $file;
+                            $bucketName = 'uat.expense';
+
+                            $result = $s3->getObject(array(
+                                'Bucket' => $bucketName,
+                                'Key'    => $filePath
+                            ));
+
+                            $body = $result->get('Body');
+                            $fileContent = base64_encode($body->getContents());
+                        }
+
+                        $attachmentArray[] = [
+                            'billCodeId' => $billCode->id,
+                            'billCode' => $billCode->title,
+                            'groupName' => $constructionParticular->group,
+                            'fileName' => $fileName,
+                            'fileNameSlug' => Str::slug($fileName, '-'),
+                            'fileType' => $fileType,
+                            'fileContent' => $fileContent,
+                            'url' => $particularAttachment
+                        ];
+                    }
+                }
+
+            }
+
+            $info['attachments'] = $attachmentArray;
+
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+
+            $data['viewtype'] = 'pdf';
+            define("DOMPDF_ENABLE_HTML5PARSER", true);
+            define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+            define("DOMPDF_UNICODE_ENABLED", true);
+            define("DOMPDF_DPI", 120);
+            define("DOMPDF_ENABLE_REMOTE", true);
+
+            if ($info['template_type'] == 'construction') {
+                $pdf = DOMPDF::loadView('mailer.invoice.full-invoice', $data);
+                $pdf->setPaper("a4", "landscape");
+            }
+
+
+            $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+
+//            return view('mailer.invoice.full-invoice', $data);
+            return $pdf->download($name . '.pdf');
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Payment request ID'
+        ]);
+    }
 
     public function sendEmail($link, $subject)
     {

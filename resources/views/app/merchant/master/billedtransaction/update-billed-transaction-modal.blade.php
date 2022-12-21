@@ -221,6 +221,8 @@
 document.getElementById("updatepanelWrapIdBillCode").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
 document.getElementById("updatepanelWrapIdBillCode").style.transform = "translateX(0%)";
 $('.page-sidebar-wrapper').css('pointer-events', 'none');
+$('.page-content-wrapper').css('pointer-events', 'none');
+$('#updatepanelWrapIdBillCode').css('pointer-events', 'auto');
 
 VirtualSelect.init({ ele: '#bill_code' });
 VirtualSelect.init({ ele: '#cost_type' });

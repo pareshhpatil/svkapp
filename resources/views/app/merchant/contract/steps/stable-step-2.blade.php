@@ -34,7 +34,7 @@
         }
 
         .vs-option {
-            /*z-index: 9999;*/
+            z-index: 99;
         }
 
         .vscomp-value {
@@ -98,7 +98,7 @@
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
                                 @php $readonly_array=array('retainage_amount','bill_code_detail','group','bill_type','bill_code');
-                                     $number_array=array('original_contract_amount','retainage_percent');
+                                         $number_array=array('original_contract_amount','retainage_percent');
 //                                  @endphp
                                 @foreach($particular_column as $column => $details)
                                     @php $readonly=false; @endphp
@@ -125,7 +125,7 @@
                                             @case('bill_type')
 {{--                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>--}}
 {{--                                            <input type="hidden" :id="`checkBillType${field.introw}`" x-model="field.checkBillType" x-init="$watch(field.checkBillType, (value, oldValue) => console.log(value, oldValue))"/>--}}
-                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type">
+                                                <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control input-sm billTypeSelect bill_type" x-on:change="changeBillType(field, index)">
                                                     <option value="">Select..</option>
                                                     <option value="% Complete">% Complete</option>
                                                     <option value="Unit">Unit</option>
@@ -316,6 +316,7 @@
 
                 initializeDropdowns(){
                     for(let v=0; v < this.fields.length; v++){
+                        //console.log('Initializing dropdowns' + this.fields[v].introw);
 
                         this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code, v)
                         this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group, v)
@@ -348,7 +349,7 @@
                     })
 
                     $('#'+type+id).change(function () {
-
+                        
                         if(index === undefined || index === null) {
                             index = $('#index'+id).val();
                         }
@@ -384,7 +385,6 @@
                         }
 
                         if(type === 'bill_type'){
-
                             particularsArray[index].bill_type = this.value
                             if(this.value === 'Calculated')
                                 fields[index].bill_type = this.value
@@ -463,7 +463,7 @@
                 },
                 closeBillCodePanel() {
                     let selectedId = $('#selectedBillCodeId').val();
-
+                    //console.log(selectedId);
                     var selectedBillCode = document.querySelector('#'+selectedId);
                     selectedBillCode.reset();
 
@@ -471,7 +471,7 @@
                     document.getElementById("panelWrapIdBillCode").style.transform = "translateX(100%)";
                     $("#billcodeform").trigger("reset");
                     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
-
+                    $('.page-content-wrapper').css('pointer-events', 'auto');
                     return false;
                 },
                /* updateBillCodeDropdowns(optionArray, selectedValue, selectedDescription){
@@ -506,8 +506,13 @@
 
                 },
                 checkBillType(field){
-                  if(field.bill_type === 'Calculated')  field.showoriginal_contract_amount = false
+                  if(field.bill_type === 'Calculated') field.showoriginal_contract_amount = false 
                     else  field.showoriginal_contract_amount = true
+                },
+                changeBillType(field,index) {
+                    if(field.bill_type === 'Calculated') {
+                        this.RemoveCaculated(field,index);
+                    }
                 },
                 calc(field) {
                     try {
@@ -571,7 +576,6 @@
                     });
                 },
                 validateParticulars(){
-
                     let valid = true;
                     this.copyBillCodeGroups();
                     for(let p=0; p < this.fields.length; p++){
@@ -697,7 +701,7 @@
 
                     let id = particularsArray.length - 1;
                     this.count = id;
-
+                    console.log(int);
                     const x = await this.wait(10);
                     this.virtualSelect(int, 'bill_code', bill_codes,null)
                     this.virtualSelect(int, 'group', groups, null)
@@ -774,7 +778,7 @@
                         total += getamt( this.fields[r].original_contract_amount )
                     }
                     let calculatedAmt = (total * parseFloat($('#calculated_perc' + field.introw).val()) / 100);
-
+                    console.log(calculatedAmt);
 
                     field.original_contract_amount = getamt(calculatedAmt);
                     $('#lbl_original_contract_amount' + field.introw).html(calculatedAmt);
@@ -841,6 +845,7 @@
 
                 },
                 setCalculatedOriginalContractAmount(introw, index) {
+                    console.log(introw);
 
                     try {
                         document.getElementById("original_contract_amount" + introw).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
@@ -874,7 +879,7 @@
                         }
                     });
                     calcRowArray = JSON.stringify(calcRowArray);
-
+                    console.log(calcRowArray);
                     // console.log(calcRowInt);
                     document.getElementById("calculated_row" + introw).value = calcRowArray;
                     document.getElementById("calculated_perc" + introw).value = parseFloat(document.getElementById("calc_perc").value).toFixed(2);
@@ -985,6 +990,8 @@
                     document.getElementById("panelWrapIdcalc").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
                     document.getElementById("panelWrapIdcalc").style.transform = "translateX(0%)";
                     $('.page-sidebar-wrapper').css('pointer-events', 'none');
+                    $('.page-content-wrapper').css('pointer-events', 'none');
+                    $('#panelWrapIdcalc').css('pointer-events', 'auto');
                     this.addRowinCalcTable(ind, index)
 
                 },
