@@ -8,6 +8,9 @@
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light dark">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!--[if mso]>
     <noscript>
         <xml>
@@ -21,24 +24,14 @@
     </style>
     <![endif]-->
     <style>
-        @font-face {
-            font-family: 'Rubik';
-            font-style: normal;
+        {{--@font-face {--}}
+        {{--    font-family: 'Roboto';--}}
+        {{--    font-style: normal;--}}
 
 
-            src: url({{ storage_path('fonts\Roboto-Bold.ttf') }}) format("truetype");
-            font-weight: 600;
-        }
-        body{
-            font-family: Roboto;
-            letter-spacing: 0;
-            line-height: 75%;
-        }
-
-        .page-break {
-            page-break-after: always;
-        }
-
+        {{--    src: url({{ storage_path('fonts\Roboto-Bold.ttf') }}) format("truetype");--}}
+        {{--    font-weight: 600;--}}
+        {{--}--}}
 
         @if($viewtype=='print')
             @page {
@@ -50,8 +43,15 @@
             }
         @endif
 
-        body {
+        body{
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0;
+            line-height: 75%;
             margin: 10px 20px 5px;
+        }
+
+        .page-break {
+            page-break-after: always;
         }
 
         .toc-list-item-link {
@@ -139,18 +139,18 @@
         {{--  702 Part  --}}
         <div id="link_to_702">
             <div style="display: flex; background-color: #f3f4f6;">
-                <div id="tab" style="width: 100%; background-color: #fff; padding: 10px;">
+                <div id="tab" style="width: 100%; background-color: #fff; padding: 0 10px 5px;">
                     <table >
                         <tr>
                             <td>
-                                <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
+                                <img style="height: 38px" src="data:image/png;base64, {{$info['logo']}}" alt="">
                             </td>
                             <td>
                                 <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;">Document G702® – 1992</div>
                             </td>
                         </tr>
                     </table>
-                    <div style="font-size:20px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Application and Certificate for Payment </div>
+                    <div style="font-size:21px;margin-top: 10px; text-align: left; font-weight: 700; color: #000">Application and Certificate for Payment </div>
                     <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827"></div>
                     <div>
                         <table width="100%" >
@@ -235,16 +235,16 @@
                     <table style="width:100%">
                         <tr>
                             <td style="width:50%; padding-right: 10px;">
-                                <div style="font-size: 16px;font-weight: 600;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</div>
+                                <h4 style="font-size: 14px;font-weight: 700;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</h4>
                                 <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
                                     AIA Document G703®, Continuation Sheet, is attached.</div>
                                 <table style="width:100%">
                                     <tr>
                                         <td >
-                                            <div style="margin-top: 0; font-size: 12px; font-weight: 700">1. ORIGINAL CONTRACT SUM  </div>
-                                            <div style="margin-top: 0; font-size: 12px; font-weight: 700">2. NET CHANGE BY CHANGE ORDERS  </div>
-                                            <div style="margin-top: 0; font-size: 12px; font-weight: 700">3. CONTRACT SUM TO DATE <span style="font-weight: 300;font-style: italic;">(Line 1 ± 2)</span>  </div>
-                                            <div style="margin-top: 0; font-size: 12px; font-weight: 700">4. TOTAL COMPLETED & STORED TO DATE<span style="font-weight: 300;font-style: italic;"> (Column G on G703)</span>
+                                            <div style="margin-top: 0; font-size: 10px; font-weight: 700">1. ORIGINAL CONTRACT SUM  </div>
+                                            <div style="margin-top: 0; font-size: 10px; font-weight: 700">2. NET CHANGE BY CHANGE ORDERS  </div>
+                                            <div style="margin-top: 0; font-size: 10px; font-weight: 700">3. CONTRACT SUM TO DATE <span style="font-weight: 300;font-style: italic;">(Line 1 ± 2)</span>  </div>
+                                            <div style="margin-top: 0; font-size: 10px; font-weight: 700">4. TOTAL COMPLETED & STORED TO DATE<span style="font-weight: 300;font-style: italic;"> (Column G on G703)</span>
                                             </div>                    </td>
                                         <td style="width: 30%">
                                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">  <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</div>
@@ -386,14 +386,14 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <div style="margin-top: 0; font-size: 12px">State of:</div>
-                                <div style="margin-top: 3px; font-size: 12px">County of:</div>
-                                <div style="margin-top: 3px; font-size: 12px">Subscribed and sworn to before me this        <span style="margin-left: 32px"> day of</span></div>
-                                <div style="margin-top: 3px; font-size: 12px">Notary Public:</div>
-                                <div style="margin-top: 0; font-size: 12px">My commission expires:</div>
+                                <div style="margin-top: 0; font-size: 10px">State of:</div>
+                                <div style="margin-top: 3px; font-size: 10px">County of:</div>
+                                <div style="margin-top: 3px; font-size: 10px">Subscribed and sworn to before me this        <span style="margin-left: 32px"> day of</span></div>
+                                <div style="margin-top: 3px; font-size: 10px">Notary Public:</div>
+                                <div style="margin-top: 0; font-size: 10px">My commission expires:</div>
                                 <div style="margin-top: 2px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
-                                <div style="font-size: 16px;font-weight: 600;margin-top: 5px;">ARCHITECT’S CERTIFICATE FOR PAYMENT</div>
-                                <div style="margin-top:3px;font-size: 12px">In accordance with the Contract Documents, based on on-site observations and the data comprising this application, the Architect certifies to the Owner that to the best of the Architect’s knowledge,
+                                <div style="font-size: 14px;font-weight: 700;margin-top: 5px;">ARCHITECT’S CERTIFICATE FOR PAYMENT</div>
+                                <div style="margin-top:3px;font-size: 10px">In accordance with the Contract Documents, based on on-site observations and the data comprising this application, the Architect certifies to the Owner that to the best of the Architect’s knowledge,
                                     information and belief the Work has progressed as indicated, the quality of the Work is in
                                     accordance with the Contract Documents, and the Contractor is entitled to payment of the
                                     AMOUNT CERTIFIED. </div>
@@ -428,12 +428,12 @@
                     </table>
 
                     <div style="margin-top: 0; height: 2px; width: 100%; background-color: #111827"></div>
-                    <div style="margin-top: 4px">
-                        <div style="line-height: 12px">
-                            <span style="font-size: 12px"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span>
-                            <span style="font-size: 12px; color: #ef4444"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
+                    <div style="margin-top: 2px">
+                        <div style="line-height: 10px">
+                            <span style="font-size: 10px"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span>
+                            <span style="font-size: 10px; color: #ef4444"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
                     “AIA Contract Documents” are registered trademarks and may not be used without permission.</span>
-                            <span style="font-size: 12px"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span>
+                            <span style="font-size: 10px"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span>
                         </div>
                     </div>
                 </div>
@@ -443,18 +443,18 @@
         {{--  703 Part  --}}
         <div id="link_to_703">
             <div style="display: flex; background-color: #f3f4f6; padding: 8px">
-                <div id="tab" style="width: 100%; background-color: #fff; padding: 16px">
+                <div id="tab-703" style="width: 100%; background-color: #fff; padding: 16px">
                     <table >
                         <tr>
                             <td>
                                 <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
                             </td>
                             <td>
-                                <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
+                                <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;">Document G703® – 1992</div>
                             </td>
                         </tr>
                     </table>
-                    <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Continuation Sheet</div>
+                    <div style="font-size:21px;margin-top: 10px; text-align: left; font-weight: 700; color: #000">Continuation Sheet</div>
                     <div style="margin-top: 5px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
                     <table style="width:100%">
                         <td>
@@ -468,27 +468,27 @@
                             <table cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
                                     <td>
-                                        <div style="font-size: 12px; font-weight: 600">APPLICATION NO: </div>
+                                        <div style="font-size: 12px; font-weight: 700">APPLICATION NO: </div>
                                     </td>
-                                    <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$info['invoice_number']?$info['invoice_number']:'NA'}}</td>
+                                    <td style="padding-left:5px;font-size: 12px; font-weight: 700">{{$info['invoice_number']?$info['invoice_number']:'NA'}}</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div style="font-size: 12px; font-weight: 600">APPLICATION DATE:</div>
+                                        <div style="font-size: 12px; font-weight: 700">APPLICATION DATE:</div>
                                     </td>
-                                    <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$info['bill_date']" type="date" /></td>
+                                    <td style="padding-left:5px;font-size: 12px; font-weight: 700"><x-localize :date="$info['bill_date']" type="date" /></td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div style="font-size: 12px; font-weight: 600">PERIOD TO:</div>
+                                        <div style="font-size: 12px; font-weight: 700">PERIOD TO:</div>
                                     </td>
-                                    <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$info['cycle_name']}}</td>
+                                    <td style="padding-left:5px;font-size: 12px; font-weight: 700">{{$info['cycle_name']}}</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div style="font-size: 12px; font-weight: 600">ARCHITECT’S PROJECT NO:</div>
+                                        <div style="font-size: 12px; font-weight: 700">ARCHITECT’S PROJECT NO:</div>
                                     </td>
-                                    <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$info['project_details']->project_code}}</td>
+                                    <td style="padding-left:5px;font-size: 12px; font-weight: 700">{{$info['project_details']->project_code}}</td>
                                 </tr>
                             </table>
                         </td>
@@ -691,7 +691,7 @@
                     <hr>
                     <div style="margin-top: 8px">
                         <div style="line-height: 12px">
-                            <span style="font-size: 12px; font-weight: 600">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
+                            <span style="font-size: 12px; font-weight: 700">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
                                     of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American
                                     Institute of Architects,” “AIA,” the AIA Logo, “G703,”
                                     and “AIA Contract Documents” are registered trademarks and may not be used without
