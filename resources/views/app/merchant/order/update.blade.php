@@ -9,7 +9,30 @@
         margin-bottom: 0px;
         margin-top: 5px;
     }
+    table thead,
+    table tfoot {
+        position: sticky;
+    }
+    table thead {
+        inset-block-start: 0; /* "top" */
+    }
+    table tfoot {
+        inset-block-end: 0; /* "bottom" */
+    }
 
+    .tableFixHead {
+        overflow: auto !important;
+    }
+    .table thead tr th {
+        font-size: 12px;
+        padding: 3px;
+        font-weight: 400;
+        color: #333;
+        background:#eee;
+    }
+    .headFootZIndex {
+        z-index: 3;
+    }
     .col-id-no {
         position: sticky !important;
         left: 0;
@@ -119,10 +142,9 @@
                         <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
                         </h3>
-                        <div class="table-scrollable">
+                        <div class="table-scrollable tableFixHead">
                             <table class="table table-bordered table-hover" id="particular_table">
-
-                                <thead>
+                                <thead class="headFootZIndex">
                                     <tr>
                                         <th class="td-c col-id-no" scope="row">
                                             Bill code
@@ -232,7 +254,7 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
+                                <tfoot class="headFootZIndex">
                                     <tr class="warning">
                                         <th class="col-id-no">Grand total</th>
                                         <th></th>
@@ -320,6 +342,7 @@
 <script>
     project_id = '{{$detail2->project_id}}'
     projectSelected(project_id)
+    $('.tableFixHead').css('max-height', screen.height/2);
     $('.productselect').select2({
         tags: true,
         insertTag: function(data, tag) {

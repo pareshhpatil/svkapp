@@ -95,6 +95,8 @@
         .vs-option {
             z-index: 99;
         }
+        .vs-option1 {
+        }
         .vscomp-option {
             height: 40px !important;
         }
@@ -1213,7 +1215,8 @@
                         OpenAddCaculatedRow(field.pint);
                     },
                     RemoveCaculated(field) {
-                        this.fields[field.pint].original_contract_amount = 0;
+                        let index = $('#index'+field.pint).val();
+                        this.fields[index].original_contract_amount = 0;
                         // this.fields[field.pint].current_contract_amount = 0;
                         // document.getElementById('lbl_current_contract_amount' + field.pint).innerHTML = '';
                         document.getElementById('lbl_original_contract_amount' + field.pint).innerHTML = '';
@@ -1580,6 +1583,13 @@
                             allowNewOption= false;
                             search= false;
                         }
+
+                        if(type === 'bill_code') {
+                            vs_class = 'vs-option'
+                        }else {
+                            vs_class = 'vs-option1'
+                        }
+
                         VirtualSelect.init({
                             ele: '#'+type+id,
                             options: options,
@@ -1589,7 +1599,7 @@
                             search:search,
                             multiple:false,
                             selectedValue : selectedValue,
-                            additionalClasses : 'vs-option',
+                            additionalClasses : vs_class,
                         });
 
                         $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
