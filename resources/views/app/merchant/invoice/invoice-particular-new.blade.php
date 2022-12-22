@@ -241,7 +241,7 @@
                                                                     @elseif($k=='group')
                                                                         <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
                                                                     @elseif($k=='bill_type')
-                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm">
+                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
                                                                             <option value="">Select..</option>
                                                                             <option value="% Complete">% Complete</option>
                                                                             <option value="Unit">Unit</option>
@@ -1420,6 +1420,11 @@
                         this.fields[fieldIndex].current_billed_amount = '';
                         this.fields[fieldIndex].billed_transaction_ids = '';
                         this.calc(field);
+                    },
+                    changeBillType(field,index) {
+                        if(field.bill_type === 'Calculated') {
+                            this.RemoveCaculated(field);
+                        }
                     },
                     EditCost(field) {
                         var array=[];
