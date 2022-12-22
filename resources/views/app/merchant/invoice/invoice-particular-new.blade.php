@@ -339,7 +339,7 @@
                                                             @endif
                                                         @endforeach
                                                         <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                                            <button type="button" class="btn btn-xs red" @click="removeField(index)">&times;</button>
+                                                            <button type="button" class="btn btn-xs red" @click="removeField(field.pint)">&times;</button>
                                                             <template x-if="count===index">
                                         <span>
                                             <a href="javascript:;" @click="await addNewField();" class="btn btn-xs green">+</a>
@@ -764,8 +764,9 @@
                                      return particularray
                                  },
                                 removeField(id) {
-                                    this.fields.splice(id, 1);
-                                    particularray.splice(id, 1);
+                                    let index = $('#index'+id).val();
+                                    this.fields.splice(index, 1);
+                                    particularray.splice(index, 1);
                                     this.reCalculateOriginalContractAmount(id);
                                     this.calculateTotal();
                                     numrow = this.fields.length - 1;
@@ -798,8 +799,7 @@
                             // this.fields[index].introw = index;
                         }
                     },
-                    reCalculateCalculatedRowValue(field){
-
+                    reCalculateCalculatedRowValue(field){ console.log(field);
                         let rowsIncludedInCalculation = JSON.parse($('#calculated_row'+field.pint).val());
                         let total = 0;
                         for(let r=0; r < rowsIncludedInCalculation.length; r++){
@@ -810,7 +810,8 @@
                         field.original_contract_amount = getamt(calculatedAmt);
                         $('#lbl_original_contract_amount' + field.pint).html(calculatedAmt);
                         $('#original_contract_amount'+field.pint).val(calculatedAmt)
-                        this.calc(field)
+                        this.calc(field);
+                        this.calculateCurrentBillAmount(field);
                     },
                     reflectOriginalContractAmountChange(field, index){
                         let id = field.pint;

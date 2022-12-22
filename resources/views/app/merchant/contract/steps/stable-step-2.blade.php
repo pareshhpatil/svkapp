@@ -727,7 +727,9 @@
                                 if (index > -1) {
                                     rowsIncludedInCalculation.splice(index, 1);
                                     let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+
                                     $('#calculated_row'+currentValue.introw).val( rowsArray );
+
                                     currentValue.calculated_row = rowsArray;
                                     this.reCalculateCalculatedRowValue(currentValue);
                                 }
@@ -838,14 +840,13 @@
                         // this.calc(this.fields[selected_field_index]);
                         this.reflectOriginalContractAmountChange(this.fields[selected_field_index], selected_field_index);
                         this.calculateTotalRetainage();
-                        this.saveParticulars();
                         this.fields[selected_field_index].calculated_perc = document.getElementById('calculated_perc' + selected_field_int).value;
                         this.fields[selected_field_index].calculated_row = document.getElementById('calculated_row' + selected_field_int).value;
+                        this.saveParticulars();
                     }
 
                 },
                 setCalculatedOriginalContractAmount(introw, index) {
-                    console.log(introw);
 
                     try {
                         document.getElementById("original_contract_amount" + introw).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
