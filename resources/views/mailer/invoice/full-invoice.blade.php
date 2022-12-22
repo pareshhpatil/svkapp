@@ -702,31 +702,33 @@
                 </div>
             </div>
         </div>
-        <div class="page-break"></div>
-        {{-- Attachment Pages --}}
-        @foreach($info['attachments'] as $k => $attachment)
-            <div id="{{ $k .'-'.$attachment['fileNameSlug'] }}">
-                <div class="attachment-item">
-                    <h3 class="attachment-title">{{$attachment['fileName']}} | {{$attachment['groupName']}} | {{$attachment['billCode']}}</h3>
-                    <br />
-                    @if($attachment['fileType'] == 'jpeg' || $attachment['fileType'] == 'jpg' || $attachment['fileType'] == 'png')
+        @if(count($info['attachments']) > 0)
+            <div class="page-break"></div>
+            {{-- Attachment Pages --}}
+            @foreach($info['attachments'] as $k => $attachment)
+                <div id="{{ $k .'-'.$attachment['fileNameSlug'] }}">
+                    <div class="attachment-item">
+                        <h3 class="attachment-title">{{$attachment['fileName']}} | {{$attachment['groupName']}} | {{$attachment['billCode']}}</h3>
                         <br />
-                        <br />
-                        <br />
-                        <br />
-                        <div class="attachment-item-wrapper">
-                            <img class="attachment-item-image" src="data:image/{{$attachment['fileType']}};base64, {{$attachment['fileContent']}}" alt="">
-                        </div>
+                        @if($attachment['fileType'] == 'jpeg' || $attachment['fileType'] == 'jpg' || $attachment['fileType'] == 'png')
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div class="attachment-item-wrapper">
+                                <img class="attachment-item-image" src="data:image/{{$attachment['fileType']}};base64, {{$attachment['fileContent']}}" alt="">
+                            </div>
 
-                        <br />
-                    @endif
-                    <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $attachment['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+                            <br />
+                        @endif
+                        <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $attachment['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+                    </div>
                 </div>
-            </div>
-            @if($k != count($info['attachments']) - 1)
-                <div class="page-break"></div>
-            @endif
-        @endforeach
+                @if($k != count($info['attachments']) - 1)
+                    <div class="page-break"></div>
+                @endif
+            @endforeach
+        @endif
     </div>
 </body>
 </html>
