@@ -3341,7 +3341,11 @@ function setBillCodeMenuData() {
             const newFileTypes = ['doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'];
             let extensionInLowerCase = extension.toLowerCase();
             if(newFileTypes.includes(extensionInLowerCase)) {
-                framedata += '<a href="' + pathlist[i] + '">Download file</a>';
+                let splitPath = pathlist[i].split('/');
+                let fileName = splitPath[splitPath.length - 1];
+                let folder = splitPath[splitPath.length - 2];
+
+                framedata += '<a href="/merchant/invoice/document/download/' + folder + '_' + fileName + '" target="_blank">Download file</a>';
             } else if (extensionInLowerCase == 'pdf') {
                 framedata += '<iframe src="' + pathlist[i] + '" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
             } else {
