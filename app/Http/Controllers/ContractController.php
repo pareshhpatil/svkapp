@@ -195,8 +195,8 @@ class ContractController extends Controller
         $data['bill_date'] = Helpers::sqlDate($data['bill_date']);
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
-        $data['created_date'] = date('Y-m-d H:i:s');
-//dd($contract);
+        $data['created_date'] = date('Y-m-d H:i:s'); 
+        
         if (is_null($contract))
             $contract = ContractParticular::create($data);
         else {

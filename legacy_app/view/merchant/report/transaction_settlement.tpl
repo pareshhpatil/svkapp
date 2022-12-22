@@ -150,7 +150,7 @@
                                         {$v.captured}
                                     </td>
                                     <td>
-                                        {$v.tdr |number_format:2:".":","}
+                                        {$v.tdr|number_format:2:".":","}
                                         {$totaltdr=$totaltdr+$tdr}
                                     </td>
                                     <td>
@@ -158,7 +158,7 @@
                                         {$totalst=$totalst+$st}
                                     </td>
                                     <td>
-                                        {$settled |number_format:2:".":","}
+                                        {$settled|number_format:2:".":","}
                                         {$total=$total+$settled}
                                     </td>
 
