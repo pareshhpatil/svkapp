@@ -706,11 +706,10 @@ class UserController extends Controller
                 $verifiedIdToken = $auth->verifyIdToken($decrypt_token["result"]["token"]);
             } catch (InvalidToken $e) {
                 log::error('BRIQ login error: The token is invalid: ' . $e->getMessage());
-                return view('errors/404');
-                //return redirect('/login')->withErrors(['Token' => 'Invalid token']);
+                return view('errors/briq-register');
             } catch (\InvalidArgumentException $e) {
                 log::error('BRIQ login error: The token could not be parsed:' . $e->getMessage());
-                return view('errors/404');
+                return view('errors/briq-register');
             }
 
             $uid = $verifiedIdToken->claims()->get('sub');
@@ -758,21 +757,21 @@ class UserController extends Controller
                     }
                 } else {
                     log::error('BRIQ login error: email recieved from firebase is not a valid email: ' . $email);
-                    return view('errors/404');
+                    return view('errors/briq-register');
                 }
             } else {
                 log::error('BRIQ login error: email recieved from firebase is blank : ' . $email . "checking UID....");
                 $exist_uid = $this->user_model->getTableRow('user', 'briq_user_id', $user_uid);
                 if (empty($exist_uid)) {
                     log::error('BRIQ login error: UID recieved from firebase is blank : ' . $user_uid);
-                    return view('errors/404');
+                    return view('errors/briq-register');
                 } else {
                     $redirect_url =  $this->setTokenLoginDetails($exist_uid->user_id, null);
                     return redirect($redirect_url);
                 }
             }
         } else {
-            return view('errors/404');
+            return view('errors/briq-register');
         }
     }
 
@@ -796,6 +795,12 @@ class UserController extends Controller
                 $imprt_data->insertData($result->merchant_id,$result->user_id );
             }
             $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);
+
+            Session::put('default_timezone', 'America/Cancun');
+            Session::put('default_currency', 'USD');
+            Session::put('default_date_format', 'M d yyyy');
+            Session::put('default_time_format', '24');
+
             return redirect($redirect_url);
         } else {
             return Helpers::handleCatch(__METHOD__, $result->Message);
@@ -810,6 +815,7 @@ class UserController extends Controller
             return $response;
         } else {
             log::error('BRIQ token decrypt error');
+            return view('errors/briq-register');
         }
     }
 }

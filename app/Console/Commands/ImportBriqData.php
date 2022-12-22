@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Imports\CustomerImport;
+use App\Imports\CostTypeImport;
 
 use App\Model\User;
 
@@ -55,6 +56,7 @@ class ImportBriqData extends Command
     function insertData( $merchant_id,  $user_id){
 
         Excel::import(new CustomerImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_CUSTOMER_FILE'));
+        Excel::import(new CostTypeImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_COST_TYPE_FILE'));
         echo $merchant_id;
         return true;
 
