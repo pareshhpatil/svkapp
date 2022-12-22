@@ -36,7 +36,8 @@
         .vs-option {
             z-index: 99;
         }
-
+        .vs-option1 {
+        }
         .vscomp-value {
             font-size: 12px !important;
         }
@@ -332,6 +333,12 @@
                          search= false;
                     }
 
+                    if(type === 'bill_code') {
+                        vs_class = 'vs-option'
+                    }else {
+                        vs_class = 'vs-option1'
+                    }
+
                     VirtualSelect.init({
                         ele: '#'+type+id,
                         options: options,
@@ -339,7 +346,7 @@
                         allowNewOption: allowNewOption,
                         multiple:false,
                         selectedValue : selectedValue,
-                        additionalClasses : 'vs-option',
+                        additionalClasses : vs_class,
                         searchPlaceholderText : 'Search or Add new',
                         search:search,
                     });
