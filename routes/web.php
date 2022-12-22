@@ -110,6 +110,7 @@ Route::get('collect-it-billing-app', 'HomeController@collectit')->name('home.col
 
 Route::get('getintouch/{subject}', 'HomeController@getintouch');
 Route::get('404', 'HomeController@pagenotfound');
+Route::get('briq-register', 'HomeController@merchantnotfound');
 Route::get('lp/{page}/{company}', 'HomeController@landingpage');
 
 

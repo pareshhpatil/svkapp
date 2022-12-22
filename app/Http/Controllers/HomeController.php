@@ -1196,6 +1196,15 @@ class HomeController extends Controller
         return view('errors/404');
     }
 
+    public function merchantnotfound()
+    {
+        // if (config('app.merchant_subdomain')) {
+        //     $controller = new MerchantPagesController();
+        //     return view('mpages/error');
+        // }
+        return view('errors/briq-register');
+    }
+
     public function legacyerror($type = null)
     {
         if ($type == 'oops') {
