@@ -6,6 +6,7 @@ use App\Imports\CustomerImport;
 use App\Imports\CostTypeImport;
 
 use App\Model\User;
+use App\Model\InvoiceFormat;
 
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -57,8 +58,17 @@ class ImportBriqData extends Command
 
         Excel::import(new CustomerImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_CUSTOMER_FILE'));
         Excel::import(new CostTypeImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_COST_TYPE_FILE'));
+        $this->insertInvoiceTemplate($merchant_id, $user_id);
         echo $merchant_id;
         return true;
 
     }
+
+    function insertInvoiceTemplate($merchant_id, $user_id){
+        $formatModel = new InvoiceFormat();
+        $template_id = $formatModel->getSequenceId('Template_id');
+        $template_id = $formatModel->insertDefaultConstructionFormat($template_id, $merchant_id, $user_id);
+        
+    }
+
 }
