@@ -127,7 +127,7 @@ $header='app.patron.invoice.invoice-master';}
     $folder=$folder.'_'.basename($item);
                            @endphp
                                 <div >
-                                  <h2 class="text-sm text-right  font-normal  text-blue-800"> <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank" ><i class="ml-2 popovers fa fa-download support blue" data-placement="left" data-container="body" data-trigger="hover"  data-content="Download file" data-original-title="" title=""></i></a>  <a href="/merchant/invoice/document/download/all/{{$info['Url']}}" target="_blank"><i class="ml-2 popovers fa fa-archive support blue" style="font-size:18px" data-container="body" data-trigger="hover"   data-placement="left" data-content="Download all files" data-original-title="" title=""></i></a>
+                                  <h2 class="text-sm text-right  font-normal  text-blue-800"> <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank"><i class="ml-2 popovers fa fa-download support blue" data-placement="left" data-container="body" data-trigger="hover"  data-content="Download file" data-original-title="" title=""></i></a>  <a href="/merchant/invoice/document/download/all/{{$info['Url']}}" target="_blank"><i class="ml-2 popovers fa fa-archive support blue" style="font-size:18px" data-container="body" data-trigger="hover"   data-placement="left" data-content="Download all files" data-original-title="" title=""></i></a>
                                     </h2>
                                    
                                        </div>
@@ -141,7 +141,7 @@ $header='app.patron.invoice.invoice-master';}
                            strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'xlsx' ||
                            strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'txt' ||
                            strtolower(pathinfo($item, PATHINFO_EXTENSION))=='csv')
-                                    <a href="{{$item}}">Download file</a>
+                                    <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank">Download file</a>
                                 @elseif(strtolower(pathinfo($item, PATHINFO_EXTENSION)) == 'pdf')
                                 <iframe src="{{$item}}" class="w-full" height="800px">
                                 </iframe>
