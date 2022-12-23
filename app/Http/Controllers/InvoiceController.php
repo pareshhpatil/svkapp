@@ -2934,7 +2934,6 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-        dd($request);
         $request_id = Encrypt::decode($request->link);
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $revision = false;
@@ -3011,7 +3010,7 @@ class InvoiceController extends AppController
                     $data['attachments'] = null;
                 }
                 $request->totalcost = str_replace(',', '', $request->totalcost??0);
-                $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids);
+                $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids??[]);
                 if ($data['id'] > 0) {
                     $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                 } else {
