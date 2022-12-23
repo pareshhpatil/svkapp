@@ -879,6 +879,9 @@ class InvoiceController extends AppController
             }
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+
+            //dd($info);
+           
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2454,7 +2457,7 @@ class InvoiceController extends AppController
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
                 $sumOfc += $itesm['current_contract_amount'];
-                $sumOfd += $itesm['previously_billed_amount'];
+                $sumOfd += $itesm['previously_billed_amount'] +  $itesm['current_billed_amount'];  //fixed by darshana & meet
                 $sumOfe += $itesm['current_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
                 $sumOfg += $itesm['previously_billed_amount'] + $itesm['current_billed_amount'] + $itesm['stored_materials'];
@@ -2678,7 +2681,7 @@ class InvoiceController extends AppController
                     $type = 'combine';
                     $desc = $names;
                     $c += $data['current_contract_amount'];
-                    $d += $data['previously_billed_amount'];
+                    $d += $data['previously_billed_amount'] + $data['current_billed_amount'];  //fixed by darshana & meet
                     $e += $data['current_billed_amount'];
                     $f += $data['stored_materials'];
                     $retain += $data['total_outstanding_retainage'];
@@ -2733,7 +2736,7 @@ class InvoiceController extends AppController
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
-                    $single_data['d'] = number_format($data['previously_billed_amount'], 2);
+                    $single_data['d'] = number_format(($data['previously_billed_amount']+$data['current_billed_amount']), 2);  //fixed by darshana && meet
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
 
@@ -2765,7 +2768,7 @@ class InvoiceController extends AppController
 
                     $pos++;
                     $sub_c += $data['current_contract_amount'];
-                    $sub_d += $data['previously_billed_amount'];
+                    $sub_d += $data['previously_billed_amount'] + $data['current_billed_amount']; //fixed by darshana & meet
                     $sub_e += $data['current_billed_amount'];
                     $sub_f += $data['stored_materials'];
                     $sub_g += $data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'];
@@ -2794,7 +2797,7 @@ class InvoiceController extends AppController
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
-                    $single_data['d'] = number_format($data['previously_billed_amount'], 2);
+                    $single_data['d'] = number_format(($data['previously_billed_amount']+$data['current_billed_amount']), 2); //fixed by darshana & meet
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
