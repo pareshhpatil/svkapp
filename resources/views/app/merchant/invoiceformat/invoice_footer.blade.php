@@ -364,6 +364,7 @@ Print<i class="fa fa-print"></i>
                         Amount
                     </th>
                 </tr>
+                {{dd($info['partial_payments'])}}
                 @foreach ($info['partial_payments'] as $key=>$item)
 
 
