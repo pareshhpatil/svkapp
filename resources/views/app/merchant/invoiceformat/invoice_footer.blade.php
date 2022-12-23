@@ -364,21 +364,22 @@ Print<i class="fa fa-print"></i>
                         Amount
                     </th>
                 </tr>
+
                 @foreach ($info['partial_payments'] as $key=>$item)
 
 
                 <tr>
                     <td class="td-c">
-                        {{$item->transaction_id}}
+                        {{$item->transaction_id ?? ''}}
                     </td>
                     <td class="td-c">
-                        {{$item->payment_date}}
+                        {{$item->payment_date ?? ''}}
                     </td>
                     <td class="td-c">
-                        {{$item->payment_mode}}
+                        {{$item->payment_mode ?? ''}}
                     </td>
                     <td class="td-c">
-                        {{$item->amount}}
+                        {{$item->amount ?? ''}}
                     </td>
                 </tr>
                 @endforeach

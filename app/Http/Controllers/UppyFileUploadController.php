@@ -17,7 +17,12 @@ class UppyFileUploadController extends Controller
         $folder = 'products';
         $fileExtensionsAllowed = ['jpeg', 'png', 'jpg', 'gif'];
         if ($type == 'invoice') {
-            $fileExtensionsAllowed = ['jpeg', 'png', 'jpg', 'gif', 'pdf', 'doc', 'docx', 'csv', 'xlsx', 'txt'];
+            if($subfolder=='billcode') {
+                $fileExtensionsAllowed = ['jpeg', 'png', 'jpg', 'gif', 'pdf', 'doc', 'docx', 'csv', 'xlsx', 'txt'];
+            } else {
+                $fileExtensionsAllowed = ['jpeg', 'png', 'jpg', 'gif', 'pdf'];
+            }
+
             $folder = 'invoices';
         }
 
