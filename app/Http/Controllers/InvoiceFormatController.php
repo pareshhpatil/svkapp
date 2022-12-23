@@ -552,6 +552,66 @@ class InvoiceFormatController extends AppController
         return $template_id;
     }
 
+    function saveInvoiceFormatV2($request, $logo, $merchant_id, $user_id)
+    {
+        $pcarray = [];
+        if (isset($request->particular_col)) {
+            foreach ($request->particular_col as $pc) {
+                $pcarray[$pc] = $_POST['pc_' . $pc];
+            }
+        }
+        $travelConfig = null;
+        if ($request->template_type == 'travel') {
+            $travelConfig = $this->travelConfig($request, $pcarray);
+        }
+        $type = 'create';
+        if ($request->template_id != '') {
+            $template_id = $request->template_id;
+
+            $type = 'update';
+        } else {
+            $template_id = $this->formatModel->getSequenceId('Template_id');
+        }
+        $particular_column = json_encode($pcarray);
+
+        if ($request->template_type == 'construction') {
+            $particular_column = '{"bill_code":"Bill Code","description":"Desc","bill_type":"Bill Type","cost_type":"Cost Type","original_contract_amount":"Original Contract Amount","approved_change_order_amount":"Approved Change Order Amount","current_contract_amount":"Current Contract Amount","previously_billed_percent":"Previously Billed Percent","previously_billed_amount":"Previously Billed Amount","current_billed_percent":"Current Billed Percent","current_billed_amount":"Current Billed Amount","previously_stored_materials":"Previously Stored Materials","current_stored_materials":"Current Stored Materials","stored_materials":"Materials Presently Stored","total_billed":"Total Billed (including this draw)","retainage_percent":"Retainage %","retainage_amount_previously_withheld":"Retainage Amount Previously Withheld","retainage_amount_for_this_draw":"Retainage amount for this draw","net_billed_amount":"Net Billed Amount","retainage_release_amount":"Retainage Release Amount","total_outstanding_retainage":"Total outstanding retainage","project":"Project","cost_code":"Cost Code","group":"Group","bill_code_detail":"Bill code detail"}';
+        }
+
+        $data['template_id'] = $template_id;
+        $data['merchant_id'] = $merchant_id;
+        $data['user_id'] = $user_id;
+        $data['template_name'] = $request->template_name;
+        $data['template_type'] = $request->template_type;
+        $data['particular_column'] = $particular_column;
+        $data['default_particular'] = json_encode($request->particularname);
+        $data['default_tax'] = json_encode($request->tax_id);
+        $data['particular_total'] = 'Particular total';
+        $data['tax_total'] = 'Tax total';
+        $data['tnc'] = $request->tnc;
+        $data['properties'] = $travelConfig;
+        $data['design_name'] = $request->design_name;
+        $data['design_color'] = $request->design_color;
+        $data['footer_note'] = $request->template_fooer_msg;
+        $data['plugin'] = $this->getPlugins();
+        $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
+        $data['image_path'] = $logo;
+        $data['invoice_title'] = 'Performa Invoice';
+        $data['created_date'] = date('Y-m-d');
+        $data['created_by'] = $this->user_id;
+        $data['last_update_by'] = $this->user_id;
+
+        if ($type == 'update') {
+            InvoiceFormat::where('template_id',  $template_id)->update($data);
+            InvoiceColumnMetadata::where('template_id',  $template_id)->update(['is_active' => 0]);
+        } else {
+            InvoiceFormat::insert($data);
+        }
+
+        return $template_id;
+    }
+
+
     public function saveMetadata($request, $template_id)
     {
         $metadata = [];
@@ -640,6 +700,123 @@ class InvoiceFormatController extends AppController
                 $function_array[$int - 1]['function_val'] = $config['function_val'];
             }
             $col_id = $_POST['column_id'][$k];
+            if ($col_id > 0) {
+                $updatemetadata[$col_id] = $array;
+            } else {
+                $metadata[] = $array;
+            }
+            $int++;
+        }
+        if (!empty($updatemetadata)) {
+            foreach ($updatemetadata as $col_id => $data) {
+                InvoiceColumnMetadata::where('column_id',  $col_id)->update($data);
+            }
+        }
+        if (!empty($metadata)) {
+            InvoiceColumnMetadata::insert($metadata);
+        }
+        if (!empty($function_array)) {
+            foreach ($function_array as $k => $v) {
+                if ($v['function_id'] > 0) {
+                    $column_ids = InvoiceColumnMetadata::where('template_id', $template_id)->where('is_active', 1)->where('function_id', '=', $v['function_id'])->first('column_id');
+                    if ($column_ids != null) {
+                        $column_ids = $column_ids->toArray();
+                        $column_id = $column_ids['column_id'];
+                        InvoiceColumnMetadata::saveFunctionMapping($column_id, $v['function_id'], $v['function_param'], $v['function_val'], $this->user_id);
+                    }
+                }
+            }
+        }
+    }
+
+    public function saveMetadataV2($request, $template_id, $merchant_id, $user_id)
+    {
+        $metadata = [];
+        $updatemetadata = [];
+        $int = 1;
+        #main header company details
+        if (!empty($request->main_header_id)) {
+            foreach ($request->main_header_id as $k => $mid) {
+                $array['column_datatype'] = $request->main_header_datatype[$k];
+                $array['column_name'] = $request->main_header_name[$k];
+                $array['sort_order'] = $int;
+                $array['position'] = 'R';
+                $array['is_mandatory'] = 0;
+                $array['is_delete_allow'] = 1;
+                $array['function_id'] = 0;
+                $array['is_active'] = 1;
+                $array['default_column_value'] = 'Profile';
+                $array['customer_column_id'] = null;
+                $array['column_type'] = 'M';
+                $array['save_table_name'] = 'metadata';
+                $array['column_position'] = $mid;
+                $array['template_id'] = $template_id;
+                $array['created_date'] = date('Y-m-d');
+                $array['created_by'] = $user_id;
+                $array['last_update_by'] = $user_id;
+                $col_id = $request->main_header_column_id[$k];
+                if ($col_id > 0) {
+                    $updatemetadata[$col_id] = $array;
+                } else {
+                    $metadata[] = $array;
+                }
+                $int++;
+            }
+        }
+        #Customer column details
+        foreach ($request->customer_column_id as $k => $id) {
+            $array['column_datatype'] = $request->customer_datatype[$k];
+            $array['column_name'] = $request->customer_column_name[$k];
+            $array['sort_order'] = $int;
+            $array['position'] = 'L';
+            $array['is_mandatory'] = 0;
+            $array['is_delete_allow'] = 1;
+            $array['function_id'] = 0;
+            $array['is_active'] = 1;
+            $array['default_column_value'] = null;
+            $array['customer_column_id'] = $id;
+            $array['column_type'] = 'C';
+            $array['save_table_name'] = ($request->customer_column_type[$k] == 'customer') ? "customer" : "customer_metadata";
+            $array['column_position'] = $k + 1;
+            $array['template_id'] = $template_id;
+            $array['created_date'] = date('Y-m-d');
+            $array['created_by'] = $user_id;
+            $array['last_update_by'] = $user_id;
+            $col_id = $request->cust_column_id[$k];
+            if ($col_id > 0) {
+                $updatemetadata[$col_id] = $array;
+            } else {
+                $metadata[] = $array;
+            }
+            $int++;
+        }
+        $function_array = [];
+        #Invoice details
+        foreach ($request->headercolumn as $k => $name) {
+            $config = json_decode($request->column_config[$k], 1);
+            $array['column_datatype'] = $config['headerdatatype'];
+            $array['column_name'] = $name;
+            $array['sort_order'] = $int;
+            $array['position'] = $config['position'];
+            $array['is_mandatory'] = $config['headermandatory'];
+            $array['is_delete_allow'] = $config['headerisdelete'];
+            $array['function_id'] = ($config['function_id'] > 0) ? $config['function_id'] : 0;
+            $array['is_active'] = 1;
+            $array['default_column_value'] = null;
+            $array['customer_column_id'] = null;
+            $array['column_type'] = $config['column_type'];
+            $array['save_table_name'] = $config['headertablesave'];
+            $array['column_position'] = $config['headercolumnposition'];
+            $array['template_id'] = $template_id;
+            $array['created_date'] = date('Y-m-d');
+            $array['created_by'] = $this->user_id;
+            $array['last_update_by'] = $this->user_id;
+            if ($config['function_param'] != '') {
+                $function_array[$int - 1]['function_id'] = $config['function_id'];
+                $function_array[$int - 1]['function_param'] = $config['function_param'];
+                $function_array[$int - 1]['function_val'] = $config['function_val'];
+            }
+            $col_id = $request->column_id[$k];
             if ($col_id > 0) {
                 $updatemetadata[$col_id] = $array;
             } else {
