@@ -962,17 +962,37 @@
 
                     calculateCurrentBillPercentage(field, index){
                         $('#cell_current_billed_amount_' + index).removeClass(' error-corner').popover('destroy');
+                        if(field.current_billed_amount !== null && field.current_billed_amount !== undefined && field.current_billed_amount !== '' ){
 
-                        if(field.current_billed_amount !== null || field.current_billed_amount !== 0 || field.current_billed_amount !== undefined){
+                            let valid_current_billed_amount = true;
+                            if((getamt(field.current_billed_amount) < 0 && getamt(field.current_contract_amount) < 0)) {
+                                if(getamt(field.current_billed_amount) < getamt(field.current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }else {
+                                if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount))
+                                    valid_current_billed_amount = false;
+                            }
 
-                            if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
+                            if(!valid_current_billed_amount){
                                 $('#cell_current_billed_amount_' + index).addClass(' error-corner');
                                 addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
                                 this.goAhead = false;
                                 return false;
+                            } else {
+                                $('#cell_current_billed_amount_' + index).removeClass(' error-corner');
                             }
                             field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
                         }
+                        // if(field.current_billed_amount !== null || field.current_billed_amount !== 0 || field.current_billed_amount !== undefined){
+
+                        //     if(getamt(field.current_billed_amount) > getamt(field.current_contract_amount)) {
+                        //         $('#cell_current_billed_amount_' + index).addClass(' error-corner');
+                        //         addPopover('cell_current_billed_amount_' + index, 'Current billed amount should be less than current contract amount');
+                        //         this.goAhead = false;
+                        //         return false;
+                        //     }
+                        //     field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
+                        // }
                     },
                     calculateCurrentBillAmount(field){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)

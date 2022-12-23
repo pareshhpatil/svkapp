@@ -510,7 +510,11 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Bank ref
                                         no</label>
                                     <div class="col-md-5">
-                                        <input class="form-control form-control-inline input-sm" name="bank_transaction_no" type="text" value="" placeholder="Bank ref number" />
+                                        @if($info['payment_request_status'] == '2')
+                                            <input class="form-control form-control-inline input-sm" name="bank_transaction_no" type="text" value="{{$info['offline_success_transaction']->bank_transaction_no}}" placeholder="Bank ref number" />
+                                        @else
+                                            <input class="form-control form-control-inline input-sm" name="bank_transaction_no" type="text" value="" placeholder="Bank ref number" />
+                                        @endif
                                     </div>
                                 </div>
                                 <div id="cheque_no" style="display: none;">
@@ -544,22 +548,35 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Date <span class="required">*
                                         </span></label>
                                     <div class="col-md-5">
-                                        <input class="form-control form-control-inline input-sm date-picker" onkeypress="return false;" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" required name="date" type="text" value="" placeholder="Date" />
+                                        @if($info['payment_request_status'] == '2')
+                                            <input class="form-control form-control-inline input-sm date-picker" onkeypress="return false;" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" required name="date" type="text" value="{{ date('M d Y', strtotime($info['offline_success_transaction']->settlement_date)) }}" placeholder="Date" />
+                                        @else
+                                            <input class="form-control form-control-inline input-sm date-picker" onkeypress="return false;" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" required name="date" type="text" value="" placeholder="Date" />
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group" id="bank_name">
                                     <label for="inputPassword12" class="col-md-4 control-label">Bank
                                         name</label>
                                     <div class="col-md-5">
-                                        <input class="form-control form-control-inline input-sm" name="bank_name" type="text" value="" placeholder="Bank name" />
+                                        @if($info['payment_request_status'] == '2')
+                                            <input class="form-control form-control-inline input-sm" name="bank_name" type="text" value="{{$info['offline_success_transaction']->bank_name}}" placeholder="Bank name" />
+                                        @else
+                                            <input class="form-control form-control-inline input-sm" name="bank_name" type="text" value="" placeholder="Bank name" />
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputPassword12" class="col-md-4 control-label">Amount <span class="required">*
                                         </span></label>
                                     <div class="col-md-5">
-                                        <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$info['absolute_cost']}}" placeholder="Amount" />
-                                        <input type="hidden" id="original_amount" value="{{$info['absolute_cost']}}" />
+                                        @if($info['payment_request_status'] == '2')
+                                            <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$info['offline_success_transaction']->amount}}" placeholder="Amount" />
+                                            <input type="hidden" id="original_amount" value="{{$info['absolute_cost']}}" />
+                                        @else
+                                            <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$info['absolute_cost']}}" placeholder="Amount" />
+                                            <input type="hidden" id="original_amount" value="{{$info['absolute_cost']}}" />
+                                        @endif
                                     </div>
                                 </div>
 
