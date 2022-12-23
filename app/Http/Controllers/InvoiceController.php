@@ -3009,7 +3009,7 @@ class InvoiceController extends AppController
                 } else {
                     $data['attachments'] = null;
                 }
-                $request->totalcost = str_replace(',', '', $request->totalcost);
+                $request->totalcost = str_replace(',', '', $request->totalcost??0);
                 $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids);
                 if ($data['id'] > 0) {
                     $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
