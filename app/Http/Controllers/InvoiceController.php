@@ -2934,7 +2934,7 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-        dd($request);
+//        dd($request);
         $request_id = Encrypt::decode($request->link);
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $revision = false;
