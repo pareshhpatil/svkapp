@@ -2310,6 +2310,7 @@ class InvoiceController extends AppController
             }
         }
 
+        $merchant_page = null;
         if ($info['display_url'] != '') {
             $merchant_page = env('APP_URL') . '/m/' . $info['display_url'];
         }
