@@ -911,10 +911,21 @@ class InvoiceController extends AppController
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
 
-
             $info = (array)$info;
             $info['its_from'] = 'real';
             $info['gtype'] = 'attachment';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if(!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+
+            if($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+
             $plugin_array = json_decode($plugin_value, 1);
             if (!empty($plugin_array['files'])) {
                 $data['files'] = $plugin_array['files'];
