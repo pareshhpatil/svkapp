@@ -193,6 +193,12 @@
                                                     <span title="Initiated"
                                                         class="glyphicon glyphicon glyphicon-question-sign glyphicon-red"
                                                         style="color: #dfba49;"></span>
+                                                {else if {$v.status}=="Processing"}
+                                                    <span title="Processing"
+                                                        class="glyphicon glyphicon-record glyphicon-green"></span>
+                                                    <span title="Processing"
+                                                        class="glyphicon glyphicon glyphicon-question-sign glyphicon-red"
+                                                        style="color: #dfba49;"></span>
                                                 {else if {$v.status}=="Refund"}
                                                     <span title="Refund" class="glyphicon glyphicon-record glyphicon-green"></span>
                                                     <span title="Refund" class="glyphicon glyphicon glyphicon-repeat glyphicon-red"
