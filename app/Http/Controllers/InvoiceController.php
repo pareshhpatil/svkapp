@@ -29,6 +29,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
 use App\Model\CostType;
+use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
@@ -835,6 +836,29 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                // $previousInvoice = PaymentRequest::where('payment_request_id', '!=', $payment_request_id)->
+                // where('contract_id', $paymentRequest->contract_id)->
+                // where('created_date', '<', $paymentRequest->created_date)->
+                // orderBy('created_date','desc')->first();
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+            
             $info = (array)$info;
             $info['gtype'] = '703';
 
@@ -877,11 +901,10 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
-
-            //dd($info);
-           
+            
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2425,7 +2448,8 @@ class InvoiceController extends AppController
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
-            $info['constriuction_details'] = $this->getData703($tt);
+            
+            $info['constriuction_details'] = $this->getData703($tt,$data['isFirstInvoice'],$data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
 
@@ -2457,7 +2481,12 @@ class InvoiceController extends AppController
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
                 $sumOfc += $itesm['current_contract_amount'];
-                $sumOfd += $itesm['previously_billed_amount'];
+                if($data['isFirstInvoice'] == true){
+                    $sumOfd += $itesm['previously_billed_amount'];
+                } else {
+                    $sumOfd += $data['prevDPlusE'][$itesm['pint']]??0;
+                }
+                //$sumOfd += $itesm['previously_billed_amount'];
                 $sumOfe += $itesm['current_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
                 $sumOfg += $itesm['previously_billed_amount'] + $itesm['current_billed_amount'] + $itesm['stored_materials'];
@@ -2632,9 +2661,8 @@ class InvoiceController extends AppController
     }
 
 
-    public function  getData703($tt)
+    public function  getData703($tt,$isFirstInvoice=true,$prevParictular=null)
     {
-
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -2675,13 +2703,19 @@ class InvoiceController extends AppController
             foreach ($result[$names] as $data) {
 
 
-
                 $pos1++;
                 if (!empty($data['group']) && $data['bill_code_detail'] == 'No') {
                     $type = 'combine';
                     $desc = $names;
                     $c += $data['current_contract_amount'];
-                    $d += $data['previously_billed_amount'];
+
+                    if($isFirstInvoice == true) {
+                        $d += $data['previously_billed_amount'];
+                    } else {
+                        $d += $prevParictular[$data['pint']]??0;
+                    }
+
+                    //$d += $data['previously_billed_amount'];
                     $e += $data['current_billed_amount'];
                     $f += $data['stored_materials'];
                     $retain += $data['total_outstanding_retainage'];
@@ -2736,7 +2770,12 @@ class InvoiceController extends AppController
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
-                    $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                    if($isFirstInvoice == true) {
+                        $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                    } else {
+                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                    }
+                    //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
 
@@ -2768,7 +2807,13 @@ class InvoiceController extends AppController
 
                     $pos++;
                     $sub_c += $data['current_contract_amount'];
-                    $sub_d += $data['previously_billed_amount'];
+
+                    if($isFirstInvoice == true) {
+                        $sub_d += $data['previously_billed_amount'];
+                    } else {
+                        $sub_d = $prevParictular[$data['pint']]??0;
+                    }
+                    //$sub_d += $data['previously_billed_amount'];
                     $sub_e += $data['current_billed_amount'];
                     $sub_f += $data['stored_materials'];
                     $sub_g += $data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'];
@@ -2792,12 +2837,18 @@ class InvoiceController extends AppController
                         $grouping_data[] = $single_data;
                     }
                 } else {
+                    
                     $single_data = array();
                     $single_data['a'] = $data['code']; //$data['bill_code'];
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = number_format($data['current_contract_amount'], 2);
-                    $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                    if($isFirstInvoice == true) {
+                        $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                    } else {
+                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                    }
+                    //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
                     $single_data['f'] = number_format($data['stored_materials'], 2);
                     $single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
@@ -2834,6 +2885,13 @@ class InvoiceController extends AppController
                 $single_data1['type'] = $type;
                 $single_data1['b'] = $desc;
                 $single_data1['c'] = number_format($c, 2);
+
+                // if($isFirstInvoice == true) {
+                //     $single_data1['d'] = number_format($d, 2);
+                // } else {
+                //     $single_data1['d'] = $prevParictular[$data['pint']]??0;
+                // }
+                
                 $single_data1['d'] = number_format($d, 2);
                 $single_data1['e'] = number_format($e, 2);
                 $single_data1['group_name'] = $bill_desc;
@@ -3343,6 +3401,8 @@ class InvoiceController extends AppController
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
+
+        //dd($particulars);
         return view('app/merchant/invoice/invoice-particular-new', $data);
     }
 
