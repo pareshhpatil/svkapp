@@ -2886,6 +2886,7 @@ class InvoiceController extends AppController
                 $single_data1['b'] = $desc;
                 $single_data1['c'] = number_format($c, 2);
 
+                //not added here
                 // if($isFirstInvoice == true) {
                 //     $single_data1['d'] = number_format($d, 2);
                 // } else {
