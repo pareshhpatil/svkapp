@@ -136,6 +136,8 @@ class SSP
                             $value = '<span class="badge badge-pill status cancelled">CANCELLED</span>';
                         } else if ($status == '13') {
                             $value = '<span class="badge badge-pill status deleted">DELETED</span>';
+                        } else if ($status == '33') {
+                            $value = '<span class="badge badge-pill status processing">PROCESSING</span>';
                         } else if ($status == '9') {
                             $value = '<span class="badge badge-pill status refunded">REFUNDED</span>';
                         } else {
