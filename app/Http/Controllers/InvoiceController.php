@@ -1920,34 +1920,36 @@ class InvoiceController extends AppController
                     //uat.expense/invoices/download 190637995.jpeg
                     $files = $pluginValue->files;
                     foreach ($files as $file) {
-                        $fileUrlExplode = explode('/', $file);
-                        $fileLastFromURL = end($fileUrlExplode);
-                        $fileExplode = explode('.', $fileLastFromURL);
+                        if(!empty($file)) {
+                            $fileUrlExplode = explode('/', $file);
+                            $fileLastFromURL = end($fileUrlExplode);
+                            $fileExplode = explode('.', $fileLastFromURL);
 
-                        $fileName = Arr::first($fileExplode);
-                        $fileType = Arr::last($fileExplode);
-                        $fileContent = '';
+                            $fileName = Arr::first($fileExplode);
+                            $fileType = Arr::last($fileExplode);
+                            $fileContent = '';
 
-                        if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
-                            $filePath = 'invoices/' . $fileLastFromURL;
-                            $bucketName = 'uat.expense';
+                            if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                $filePath = 'invoices/' . $fileLastFromURL;
+                                $bucketName = 'uat.expense';
 
-                            $result = $s3->getObject(array(
-                                'Bucket' => $bucketName,
-                                'Key'    => $filePath
-                            ));
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $bucketName,
+                                    'Key'    => $filePath
+                                ));
 
-                            $body = $result->get('Body');
-                            $fileContent = base64_encode($body->getContents());
+                                $body = $result->get('Body');
+                                $fileContent = base64_encode($body->getContents());
+                            }
+
+                            $invoiceAttachments[] = [
+                                'fileName' => $fileName,
+                                'fileNameSlug' => Str::slug($fileName, '-'),
+                                'fileType' => $fileType,
+                                'fileContent' => $fileContent,
+                                'url' => $file
+                            ];
                         }
-
-                        $invoiceAttachments[] = [
-                            'fileName' => $fileName,
-                            'fileNameSlug' => Str::slug($fileName, '-'),
-                            'fileType' => $fileType,
-                            'fileContent' => $fileContent,
-                            'url' => $file
-                        ];
                     }
                 }
             }
