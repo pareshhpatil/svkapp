@@ -790,6 +790,25 @@ class InvoiceController extends AppController
             $info = (array)$info;
             $info['gtype'] = '702';
 
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
+
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
             if(!empty($offlineResponse)) {
@@ -830,7 +849,8 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
