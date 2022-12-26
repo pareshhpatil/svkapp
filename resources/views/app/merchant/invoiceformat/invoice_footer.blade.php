@@ -206,11 +206,13 @@ $validate=(array)$validate;
                 Download <i class="fa fa-angle-down"></i>
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                <li>
-                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                        Download {{$info['gtype']}}
-                    </a>
-                </li>
+                @if($info['gtype'] != 'attachment')
+                    <li>
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                            Download {{$info['gtype']}}
+                        </a>
+                    </li>
+                @endif
                 <li>
                     <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
                         Download Full PDF
@@ -234,11 +236,13 @@ $validate=(array)$validate;
                     Download <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                    <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                            Download {{$info['gtype']}}
-                        </a>
-                    </li>
+                    @if($info['gtype'] != 'attachment')
+                        <li>
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                Download {{$info['gtype']}}
+                            </a>
+                        </li>
+                    @endif
                     <li>
                         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
                             Download Full PDF
@@ -302,11 +306,11 @@ $validate=(array)$validate;
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                         @if($info['gtype'] != 'attachment')
-                        <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                                Download {{$info['gtype']}}
-                            </a>
-                        </li>
+                            <li>
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                    Download {{$info['gtype']}}
+                                </a>
+                            </li>
                         @endif
                         <li>
                             <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
