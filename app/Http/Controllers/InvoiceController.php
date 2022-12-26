@@ -2710,9 +2710,9 @@ class InvoiceController extends AppController
                     $c += $data['current_contract_amount'];
 
                     if($isFirstInvoice == true) {
-                        $d += $data['previously_billed_amount'];
+                        $d += number_format($data['previously_billed_amount'], 2);
                     } else {
-                        $d += $prevParictular[$data['pint']]??0;
+                        $d += number_format($prevParictular[$data['pint']]??0, 2);
                     }
 
                     //$d += $data['previously_billed_amount'];
@@ -2773,7 +2773,7 @@ class InvoiceController extends AppController
                     if($isFirstInvoice == true) {
                         $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     } else {
-                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                        $single_data['d'] = number_format($prevParictular[$data['pint']]??0, 2);
                     }
                     //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
@@ -2811,7 +2811,7 @@ class InvoiceController extends AppController
                     if($isFirstInvoice == true) {
                         $sub_d += $data['previously_billed_amount'];
                     } else {
-                        $sub_d = $prevParictular[$data['pint']]??0;
+                        $sub_d += $prevParictular[$data['pint']]??0;
                     }
                     //$sub_d += $data['previously_billed_amount'];
                     $sub_e += $data['current_billed_amount'];
@@ -2846,7 +2846,7 @@ class InvoiceController extends AppController
                     if($isFirstInvoice == true) {
                         $single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     } else {
-                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                        $single_data['d'] = number_format($prevParictular[$data['pint']]??0,2);
                     }
                     //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = number_format($data['current_billed_amount'], 2);
