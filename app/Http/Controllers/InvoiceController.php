@@ -788,6 +788,18 @@ class InvoiceController extends AppController
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
             $info['gtype'] = '702';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if(!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+
+            if($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+
             //end code for new design
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
@@ -879,8 +891,6 @@ class InvoiceController extends AppController
             }
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
-
-            //dd($info);
            
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
