@@ -727,4 +727,34 @@ class Invoice extends ParentModel
 
         return $row;
     }
+
+    public function getPaymentRequest($contract_id)
+    {
+        $retObj = DB::table('payment_request as p')
+            ->select(DB::raw('*'))
+            ->where('p.contract_id', $contract_id)
+            ->orderBy('created_date', 'ASC')
+            ->first();
+        return $retObj;
+    }
+
+    public function getPreviousRequest($payment_request_id,$contract_id,$created_date) {
+        $retObj = DB::table('payment_request as p')
+        ->select(DB::raw('*'))
+        ->where('payment_request_id', '!=', $payment_request_id)
+        ->where('contract_id', $contract_id)
+        ->where('created_date', '<', $created_date)
+        ->orderBy('created_date','desc')->first();
+
+        return $retObj;
+    }
+
+    public function getPreviousInvoiceParticular($payment_request_id) {
+        $retObj = DB::table('invoice_construction_particular as d')
+        ->select(DB::raw('id,pint,payment_request_id,previously_billed_amount,current_billed_amount'))
+        ->where('d.payment_request_id', '=', $payment_request_id)
+        ->get();
+        return $retObj;
+
+    }
 }

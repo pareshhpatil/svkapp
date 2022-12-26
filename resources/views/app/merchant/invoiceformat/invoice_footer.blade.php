@@ -206,11 +206,13 @@ $validate=(array)$validate;
                 Download <i class="fa fa-angle-down"></i>
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                <li>
-                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                        Download {{$info['gtype']}}
-                    </a>
-                </li>
+                @if($info['gtype'] != 'attachment')
+                    <li>
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                            Download {{$info['gtype']}}
+                        </a>
+                    </li>
+                @endif
                 <li>
                     <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
                         Download Full PDF
@@ -234,11 +236,13 @@ $validate=(array)$validate;
                     Download <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                    <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                            Download {{$info['gtype']}}
-                        </a>
-                    </li>
+                    @if($info['gtype'] != 'attachment')
+                        <li>
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                Download {{$info['gtype']}}
+                            </a>
+                        </li>
+                    @endif
                     <li>
                         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
                             Download Full PDF
@@ -302,11 +306,11 @@ $validate=(array)$validate;
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                         @if($info['gtype'] != 'attachment')
-                        <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
-                                Download {{$info['gtype']}}
-                            </a>
-                        </li>
+                            <li>
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                    Download {{$info['gtype']}}
+                                </a>
+                            </li>
                         @endif
                         <li>
                             <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
@@ -511,7 +515,7 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Bank ref
                                         no</label>
                                     <div class="col-md-5">
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2' && isset($info['offline_success_transaction']))
                                             <input class="form-control form-control-inline input-sm" name="bank_transaction_no" type="text" value="{{$info['offline_success_transaction']->bank_transaction_no}}" placeholder="Bank ref number" />
                                         @else
                                             <input class="form-control form-control-inline input-sm" name="bank_transaction_no" type="text" value="" placeholder="Bank ref number" />
@@ -549,7 +553,7 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Date <span class="required">*
                                         </span></label>
                                     <div class="col-md-5">
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2'  && isset($info['offline_success_transaction']))
                                             <input class="form-control form-control-inline input-sm date-picker" onkeypress="return false;" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" required name="date" type="text" value="{{ date('M d Y', strtotime($info['offline_success_transaction']->settlement_date)) }}" placeholder="Date" />
                                         @else
                                             <input class="form-control form-control-inline input-sm date-picker" onkeypress="return false;" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" required name="date" type="text" value="" placeholder="Date" />
@@ -560,7 +564,7 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Bank
                                         name</label>
                                     <div class="col-md-5">
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2' && isset($info['offline_success_transaction']))
                                             <input class="form-control form-control-inline input-sm" name="bank_name" type="text" value="{{$info['offline_success_transaction']->bank_name}}" placeholder="Bank name" />
                                         @else
                                             <input class="form-control form-control-inline input-sm" name="bank_name" type="text" value="" placeholder="Bank name" />
@@ -571,7 +575,7 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-4 control-label">Amount <span class="required">*
                                         </span></label>
                                     <div class="col-md-5">
-                                        @if($info['payment_request_status'] == '2')
+                                        @if($info['payment_request_status'] == '2' && isset($info['offline_success_transaction']))
                                             <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$info['offline_success_transaction']->amount}}" placeholder="Amount" />
                                             <input type="hidden" id="original_amount" value="{{$info['absolute_cost']}}" />
                                         @else
