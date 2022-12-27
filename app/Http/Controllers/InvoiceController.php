@@ -1251,11 +1251,29 @@ class InvoiceController extends AppController
 
     public function documentsPatron($link, $parentnm = '', $sub = '', $docpath = '')
     {
-
+        
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
+
+            //find payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
@@ -1398,7 +1416,8 @@ class InvoiceController extends AppController
             $selectedDoc[1] = $sub;
             $selectedDoc[2] = $docpath;
             $data['selectedDoc'] = $selectedDoc;
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/documents', $data);
@@ -1473,8 +1492,25 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            #get default billing profile
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
 
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+            #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
             //if new design is empty  then send user to old merchnat paymentrequest link here
@@ -1510,7 +1546,8 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             return view('app/merchant/invoice/view/invoice_view', $data);
@@ -1526,6 +1563,24 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -1595,6 +1650,8 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
 
@@ -1604,7 +1661,6 @@ class InvoiceController extends AppController
     }
     public function patronView703($link, $type)
     {
-
 
         $payment_request_id = Encrypt::decode($link);
 
@@ -1619,6 +1675,24 @@ class InvoiceController extends AppController
             //     header('Location: /patron/paymentrequest/view/' . $link);
             //     die();
             // }
+
+            //find payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
             $plugin = json_decode($info['plugin_value'], 1);
@@ -1680,6 +1754,8 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
 
@@ -1713,13 +1789,30 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            #get default billing profile
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
 
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
+            #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
             $banklist = $this->parentModel->getConfigList('Bank_name');
@@ -1760,7 +1853,8 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
@@ -1822,11 +1916,30 @@ class InvoiceController extends AppController
     }
     public function downloadPatron($link, $savepdf = 0, $type = null)
     {
-
+        
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
+
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -1909,6 +2022,8 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             if ($savepdf == 2) {
@@ -1952,8 +2067,25 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            #get default billing profile
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+           
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
 
+            #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
 
@@ -2043,7 +2175,8 @@ class InvoiceController extends AppController
             }
 
             $info['attachments'] = $attachmentArray;
-
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             $data['viewtype'] = 'pdf';
@@ -2077,6 +2210,23 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            //find  payment reuest count 
+            $paymentRequest = PaymentRequest::find($payment_request_id);
+            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+            $isFirstInvoice = false;
+            $prevDPlusE = [];
+            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+                $isFirstInvoice = true;
+            } else {
+                $isFirstInvoice = false;
+                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                $prevDPlusE = [];
+                foreach($previousInvoiceParticulars as $k=>$val) {
+                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                }
+            }
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -2089,6 +2239,8 @@ class InvoiceController extends AppController
             $info['savepdfurl'] = $savepdfurl;
             $info['paylink'] = env('APP_URL') . '/patron/paymentrequest/pay/' . $link;
             $info['viewurl'] = env('APP_URL') . '/patron/invoice/view/' . $link . '/702';
+            $data['isFirstInvoice'] = $isFirstInvoice;
+            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             //attache pdf
 
