@@ -494,7 +494,7 @@
                         </td>
                         </tr>
                     </table>
-                    <div style="margin-top: 16px; margin-bottom: 16px; width: 100%;">
+                    <div style="margin-top: 10px; margin-bottom: 16px; width: 100%;">
                         <table style="margin-left: auto; margin-right: auto; width: 100%; overflow: hidden;border:1px solid #313131" cellpadding="0" cellspacing="0" role="presentation">
                             <thead>
                                 <tr style="text-align: center; color: #000">
@@ -688,14 +688,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <hr>
-                    <div style="margin-top: 8px">
+                    <div style="margin-top: 0; height: 2px; width: 100%; background-color: #111827"></div>
+                    <div style="margin-top: 4px">
                         <div style="line-height: 12px">
-                            <span style="font-size: 12px; font-weight: 700">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
-                                    of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American
+                            <span style="font-size: 10px; font-weight: 700">AIA Document G703® – 1992. Copyright</span><span style="font-size: 10px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
+                                    of Architects. All rights reserved.</span><span style="font-size: 10px; color: #ef4444"> The “American
                                     Institute of Architects,” “AIA,” the AIA Logo, “G703,”
                                     and “AIA Contract Documents” are registered trademarks and may not be used without
-                                    permission.</span><span style="font-size: 12px"> To report copyright violations of AIA Contract
+                                    permission.</span><span style="font-size: 10px"> To report copyright violations of AIA Contract
                                     Documents, e-mail copyright@aia.org.</span>
                         </div>
                     </div>
