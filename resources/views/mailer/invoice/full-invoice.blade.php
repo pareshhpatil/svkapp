@@ -442,8 +442,8 @@
         <div class="page-break"></div>
         {{--  703 Part  --}}
         <div id="link_to_703">
-            <div style="display: flex; background-color: #f3f4f6; padding: 8px">
-                <div id="tab-703" style="width: 100%; background-color: #fff; padding: 16px">
+            <div style="display: flex; background-color: #f3f4f6;">
+                <div id="tab-703" style="width: 100%; background-color: #fff;padding: 0 10px 5px;">
                     <table >
                         <tr>
                             <td>
@@ -494,7 +494,7 @@
                         </td>
                         </tr>
                     </table>
-                    <div style="margin-top: 10px; margin-bottom: 16px; width: 100%;">
+                    <div style="margin-top: 8px; margin-bottom: 8px; width: 100%;">
                         <table style="margin-left: auto; margin-right: auto; width: 100%; overflow: hidden;border:1px solid #313131" cellpadding="0" cellspacing="0" role="presentation">
                             <thead>
                                 <tr style="text-align: center; color: #000">
