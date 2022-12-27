@@ -2694,7 +2694,7 @@ class InvoiceController extends AppController
     {
         $less_previous_certificates_for_payment = 0;
         $pre_req_id =  $this->invoiceModel->getPreviousInvoice($this->merchant_id, $contract_id, $payment_request_id);
-        
+
         if ($pre_req_id != false) {
 
             $prevOrderParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
@@ -2714,10 +2714,9 @@ class InvoiceController extends AppController
             }
 
             if ($prev_total_d + $prev_total_e > 0) {
-                $cper = round((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
+                $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
 
                 $single_per = ($prev_total_d + $prev_total_e) / 100;
-
 
                 $a5 = $single_per * $cper;
 
