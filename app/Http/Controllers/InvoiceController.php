@@ -2694,7 +2694,7 @@ class InvoiceController extends AppController
     {
         $less_previous_certificates_for_payment = 0;
         $pre_req_id =  $this->invoiceModel->getPreviousInvoice($this->merchant_id, $contract_id, $payment_request_id);
-
+        dd($pre_req_id);
         if ($pre_req_id != false) {
 
             $prevOrderParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
