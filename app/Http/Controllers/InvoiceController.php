@@ -2864,7 +2864,7 @@ class InvoiceController extends AppController
                     $prevOrderParticular->stored_materials;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
             }
-            
+
             if ($prev_total_d + $prev_total_e > 0) {
                 $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
 
@@ -2872,7 +2872,13 @@ class InvoiceController extends AppController
 
                 $a5 = $single_per * $cper;
 
-                $less_previous_certificates_for_payment = number_format($prev_total_g - ($a5 + $prev_total_f), 2);
+                $total_retainage = $a5 + $prev_total_f;
+                
+                if($total_retainage == 0) {
+                    $total_retainage = $prev_total_i;
+                }
+
+                $less_previous_certificates_for_payment = number_format($prev_total_g - $total_retainage, 2);
             }
         }
 
