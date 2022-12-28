@@ -2866,7 +2866,7 @@ class InvoiceController extends AppController
             }
 
             if ($prev_total_d + $prev_total_e > 0) {
-                $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
+                $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
 
                 $single_per = ($prev_total_d + $prev_total_e) / 100;
 
