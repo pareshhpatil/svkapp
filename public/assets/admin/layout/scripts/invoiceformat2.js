@@ -3245,6 +3245,7 @@ function showupdatebillcodeattachment(pos) {
     attach_pos = pos;
     try {
         document.getElementById("up-error").innerHTML = '';
+        document.getElementById("attachment_pos_id").value = pos;
 
     } catch (o) { }
     document.getElementById("listtab1").classList.add('active');

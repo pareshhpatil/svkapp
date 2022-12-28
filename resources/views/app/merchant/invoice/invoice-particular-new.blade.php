@@ -418,6 +418,7 @@
     @include('app.merchant.contract.add-group-modal')
     @include('app.merchant.contract.add-calculation-modal2')
     @include('app.merchant.contract.add-cost-modal')
+    @include('app.merchant.invoice.add-attachment-billcode-modal')
     <script>
 
                                 </script>
@@ -1671,6 +1672,12 @@
                             $('#'+dropboxContainer).css('z-index',4)
                         });
 
+                    },
+                    closeAttachmentPanel(){
+                        let attachment_pos = $('#attachment_pos_id').val();
+                        let attach_index = $('#index'+attachment_pos).val()
+                        this.fields[attach_index].attachments = particularray[attach_index].attachments;
+                        return closeSidePanelBillCodeAttachment();
                     }
 
                 }
@@ -1840,8 +1847,6 @@
             document.getElementById("file_upload").value =filesnm;
         }
     </script>
-
-    @include('app.merchant.invoice.add-attachment-billcode-modal')
 
 
     <div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">

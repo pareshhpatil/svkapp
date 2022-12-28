@@ -129,12 +129,13 @@
         <div class='cnt223'>
             <h3 class="modal-title">Bill code attachment
 
-            <a class="close " data-toggle="modal"  onclick="return closeSidePanelBillCodeAttachment();">
+            <a class="close " data-toggle="modal"  @click="closeAttachmentPanel">
                     <button type="button" class="close" aria-hidden="true"></button></a>
             </h3>
           <br/>
             <div class="form-wizard">
                 <div class="form-body">
+                    <input type="hidden" id="attachment_pos_id" value=""/>
                     <ul class="nav nav-pills ">
                         <li id="listtab1" class="active">
                             <a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">
@@ -325,10 +326,11 @@ uppy_attach.on('upload-success', (file, response) => {
     }else{
         document.getElementById("attach-"+attach_pos).value=path;
     }
-    
+
     try{
         if (particularray !== undefined) {
-            particularray[attach_pos].attachments = document.getElementById("attach-"+attach_pos).value;
+            let attach_index = $('#index'+attach_pos).val();
+            particularray[attach_index].attachments = document.getElementById("attach-"+attach_pos).value;
         }
     }catch(o){}
     

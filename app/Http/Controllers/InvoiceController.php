@@ -3624,7 +3624,7 @@ class InvoiceController extends AppController
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
 
-        //dd($particulars);
+//        dd($particulars);
         return view('app/merchant/invoice/invoice-particular-new', $data);
     }
 
