@@ -224,7 +224,7 @@ $header='app.patron.invoice.invoice-master';}
                         </div>
                         <div class="grid grid-cols-3 gap-2 mt-1">
                             <div class="col-span-2">
-                        <p class="font-bold text-xs mt-1" data-i="{{$info['total_i']}}" data-d="{{$info['total_d']}}" data-e="{{$info['total_e']}}">5. RETAINAGE: </p>
+                        <p class="font-bold text-xs mt-1" data-i="{{$info['total_i']}}" data-d="{{$info['total_d']}}" data-e="{{$info['total_e']}}" data-g="{{$info['total_g']}}">5. RETAINAGE: </p>
                         @php
                             $cper=0;
                             if(($info['total_d']+$info['total_e']) <= 0){
