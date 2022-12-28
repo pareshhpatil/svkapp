@@ -202,7 +202,7 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                                                 $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
                                                 $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
                                                @endphp
@@ -418,6 +418,7 @@
     @include('app.merchant.contract.add-group-modal')
     @include('app.merchant.contract.add-calculation-modal2')
     @include('app.merchant.contract.add-cost-modal')
+    @include('app.merchant.invoice.add-attachment-billcode-modal')
     <script>
 
                                 </script>
@@ -1671,6 +1672,12 @@
                             $('#'+dropboxContainer).css('z-index',4)
                         });
 
+                    },
+                    closeAttachmentPanel(){
+                        let attachment_pos = $('#attachment_pos_id').val();
+                        let attach_index = $('#index'+attachment_pos).val()
+                        this.fields[attach_index].attachments = particularray[attach_index].attachments;
+                        return closeSidePanelBillCodeAttachment();
                     }
 
                 }
@@ -1840,8 +1847,6 @@
             document.getElementById("file_upload").value =filesnm;
         }
     </script>
-
-    @include('app.merchant.invoice.add-attachment-billcode-modal')
 
 
     <div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">

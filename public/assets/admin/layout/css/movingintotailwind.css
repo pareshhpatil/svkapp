@@ -1595,6 +1595,13 @@ i.apps {
     border-radius: 8px;
     color: #6F8181;
 }
+.processing {
+    border: 1px solid #18AEBF;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    border-radius: 8px;
+    color: #18AEBF;
+}
 .cancelled {
     border: 1px solid #F5AAAA;
     background: #FFFFFF;
