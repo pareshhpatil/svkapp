@@ -8,9 +8,9 @@
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light dark">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+{{--    <link rel="preconnect" href="https://fonts.googleapis.com">--}}
+{{--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
+{{--    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">--}}
     <!--[if mso]>
     <noscript>
         <xml>
@@ -120,18 +120,29 @@
                         <span>702</span>
                     </a>
                 </li>
-                <li>
+                <li class="toc-list-item">
                     <a href="#link_to_703" class="toc-list-item-link">
                         <span>703</span>
                     </a>
                 </li>
-                @foreach($info['attachments'] as $k => $attachment)
-                    <li>
+                @if(count($info['invoice_attachments']) > 0)
+                @foreach($info['invoice_attachments'] as $k => $attachment)
+                    <li class="toc-list-item">
                         <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                            <span>{{$attachment['fileName']}} | {{$attachment['groupName']}} | {{$attachment['billCode']}}</span>
+                            <span>{{$attachment['fileName']}}</span>
                         </a>
                     </li>
                 @endforeach
+                @endif
+                @if(count($info['bill_code_attachments']) > 0)
+                    @foreach($info['bill_code_attachments'] as $k => $attachment)
+                        <li class="toc-list-item">
+                            <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
+                                <span>{{$attachment['fileName']}} | {{$attachment['groupName']}} | {{$attachment['billCode']}}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                @endif
             </ol>
         </div>
 
@@ -702,10 +713,39 @@
                 </div>
             </div>
         </div>
-        @if(count($info['attachments']) > 0)
+        <!-- Invoice Attachments -->
+        @if(count($info['invoice_attachments']) > 0)
             <div class="page-break"></div>
             {{-- Attachment Pages --}}
-            @foreach($info['attachments'] as $k => $attachment)
+            @foreach($info['invoice_attachments'] as $k => $attachment)
+                <div id="{{ $k .'-'.$attachment['fileNameSlug'] }}">
+                    <div class="attachment-item">
+                        <h3 class="attachment-title">{{$attachment['fileName']}}</h3>
+                        <br />
+                        @if($attachment['fileType'] == 'jpeg' || $attachment['fileType'] == 'jpg' || $attachment['fileType'] == 'png')
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div class="attachment-item-wrapper">
+                                <img class="attachment-item-image" src="data:image/{{$attachment['fileType']}};base64, {{$attachment['fileContent']}}" alt="">
+                            </div>
+
+                            <br />
+                        @endif
+                        <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+                    </div>
+                </div>
+                @if($k != count($info['invoice_attachments']) - 1)
+                    <div class="page-break"></div>
+                @endif
+            @endforeach
+        @endif
+        <!-- Bill Code Attachments -->
+        @if(count($info['bill_code_attachments']) > 0)
+            <div class="page-break"></div>
+            {{-- Attachment Pages --}}
+            @foreach($info['bill_code_attachments'] as $k => $attachment)
                 <div id="{{ $k .'-'.$attachment['fileNameSlug'] }}">
                     <div class="attachment-item">
                         <h3 class="attachment-title">{{$attachment['fileName']}} | {{$attachment['groupName']}} | {{$attachment['billCode']}}</h3>
@@ -724,7 +764,7 @@
                         <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $attachment['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
                     </div>
                 </div>
-                @if($k != count($info['attachments']) - 1)
+                @if($k != count($info['bill_code_attachments']) - 1)
                     <div class="page-break"></div>
                 @endif
             @endforeach

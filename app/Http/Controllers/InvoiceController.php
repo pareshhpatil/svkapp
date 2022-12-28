@@ -172,10 +172,6 @@ class InvoiceController extends AppController
         return view('app/merchant/invoice/create', $data);
     }
 
-
-
-
-
     public function create(Request $request, $link = null, $update = null)
     {
         $cycleName = date('M-Y') . ' Bill';
@@ -1430,11 +1426,11 @@ class InvoiceController extends AppController
         $data = explode("_", $link);
         $folder = $data[0];
         $link = str_replace($data[0] . '_', "", $link);
-        if ($folder != 'invoices')
+        if ($folder != 'invoices') {
             $filePath =  'invoices/' . $folder . '/' . $link;
-        else
+        } else {
             $filePath = 'invoices/' . $link;
-
+        }
 
         return  redirect(Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
@@ -2115,9 +2111,6 @@ class InvoiceController extends AppController
                 }
             }
 
-            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
-
-            $attachmentArray = [];
             $IAM_KEY = config('filesystems.disks.s3_expense.key');
             $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
             $region = config('filesystems.disks.s3_expense.region');
@@ -2133,6 +2126,55 @@ class InvoiceController extends AppController
                 )
             );
 
+            $invoicePaymentRequest = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+            $invoiceAttachments = [];
+            if(!empty($invoicePaymentRequest->plugin_value)) {
+                $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
+
+                if($pluginValue->has_upload) {
+                    //uat.expense/invoices/download 190637995.jpeg
+                    $files = $pluginValue->files;
+                    foreach ($files as $file) {
+                        if(!empty($file)) {
+                            $fileUrlExplode = explode('/', $file);
+                            $fileLastFromURL = end($fileUrlExplode);
+                            $fileExplode = explode('.', $fileLastFromURL);
+
+                            $fileName = Arr::first($fileExplode);
+                            $fileType = Arr::last($fileExplode);
+                            $fileContent = '';
+
+                            if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                $filePath = 'invoices/' . $fileLastFromURL;
+                                $bucketName = 'uat.expense';
+
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $bucketName,
+                                    'Key'    => $filePath
+                                ));
+
+                                $body = $result->get('Body');
+                                $fileContent = base64_encode($body->getContents());
+                            }
+
+                            $invoiceAttachments[] = [
+                                'fileName' => $fileName,
+                                'fileNameSlug' => Str::slug($fileName, '-'),
+                                'fileType' => $fileType,
+                                'fileContent' => $fileContent,
+                                'url' => $file
+                            ];
+                        }
+                    }
+                }
+            }
+
+            $info['invoice_attachments'] = $invoiceAttachments;
+
+            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+
+            $billCodeAttachments = [];
             foreach($constructionParticulars as $constructionParticular) {
                 $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
                 $particularAttachments = json_decode($constructionParticular->attachments);
@@ -2159,7 +2201,7 @@ class InvoiceController extends AppController
                             $fileContent = base64_encode($body->getContents());
                         }
 
-                        $attachmentArray[] = [
+                        $billCodeAttachments[] = [
                             'billCodeId' => $billCode->id,
                             'billCode' => $billCode->title,
                             'groupName' => $constructionParticular->group,
@@ -2174,9 +2216,11 @@ class InvoiceController extends AppController
 
             }
 
-            $info['attachments'] = $attachmentArray;
+            $info['bill_code_attachments'] = $billCodeAttachments;
+
             $data['isFirstInvoice'] = $isFirstInvoice;
             $data['prevDPlusE'] = $prevDPlusE;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             $data['viewtype'] = 'pdf';
@@ -2194,7 +2238,6 @@ class InvoiceController extends AppController
 
             $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
 
-//            return view('mailer.invoice.full-invoice', $data);
             return $pdf->download($name . '.pdf');
         }
 
