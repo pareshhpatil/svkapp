@@ -852,6 +852,9 @@ function editCaculatedRow(row) {
         calc_json = JSON.parse(calc_json)
         for (let element of calc_json) {
             // if(element === 0 || element === null) element = ''
+            let contractElement = document.getElementById("original_contract_amount" + element);
+            if((contractElement === undefined || contractElement === null ) && element === '') element = 0;
+            if((contractElement === undefined || contractElement === null ) && element === 0) element = '';
             amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
             document.getElementById("calc" + element).checked = true
             inputCalcClicked(element, amount_value)
