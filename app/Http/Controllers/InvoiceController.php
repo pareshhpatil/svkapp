@@ -2864,7 +2864,7 @@ class InvoiceController extends AppController
                     $prevOrderParticular->stored_materials;
                 $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
             }
-            dd($prev_total_d, $prev_total_e, $prev_total_g, $prev_total_i, $prev_total_f);
+
             if ($prev_total_d + $prev_total_e > 0) {
                 $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100));
 
