@@ -1538,6 +1538,7 @@
 
                         if(this.addbuttonactive==true)
                         {
+                            document.getElementById('loader').style.display = 'block';
                             this.addbuttonactive=false;
                             document.getElementById('perror').style.display = 'none';
                             project_code = '{{$project_code}}';
@@ -1577,6 +1578,10 @@
                             // this.virtualSelect(id, 'bill_type', bill_types)
                             this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
                             this.addbuttonactive=true;
+
+                            setTimeout(function () {
+                                document.getElementById('loader').style.display = 'none';
+                            }, 1000);
                         }
                     },
                     initializeDropdowns(){
@@ -1619,7 +1624,7 @@
                             search:search,
                             multiple:false,
                             selectedValue : selectedValue,
-                            additionalClasses : vs_class,
+                            additionalClasses : vs_class
                         });
 
                         $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
@@ -1668,14 +1673,19 @@
                         $('#'+type+id).on('beforeOpen',function () {
                             //console.log('#'+type+id)
                             let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
-                            $('#'+dropboxContainer).css('z-index',4)
+                            $('#'+dropboxContainer).css('z-index',4);
+                        });
+
+                        $("#table-scroll").scroll(function(){
+                            document.querySelector('#'+type+id).close();
                         });
 
                     }
-
+                    
                 }
 
             }
+            
         </script>
 
     </div>

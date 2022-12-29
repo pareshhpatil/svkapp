@@ -855,6 +855,7 @@ function editCaculatedRow(row) {
             let contractElement = document.getElementById("original_contract_amount" + element);
             if((contractElement === undefined || contractElement === null ) && element === '') element = 0;
             if((contractElement === undefined || contractElement === null ) && element === 0) element = '';
+            if((contractElement === undefined || contractElement === null ) && element === null) element = '';
             amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
             document.getElementById("calc" + element).checked = true
             inputCalcClicked(element, amount_value)
