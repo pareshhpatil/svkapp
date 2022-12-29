@@ -410,6 +410,9 @@
                         let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
                         $('#'+dropboxContainer).css('z-index',4)
                     });
+                    $('.tableFixHead').scroll(function(){
+                        document.querySelector('#'+type+id).close();
+                    });
                     // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
                     //     elementsOverlap( type+id, type);
                     //     elementsOverlap( type+id, type);
@@ -661,8 +664,10 @@
                             this.saveParticulars(1, 0);
                     }else this.saveParticulars(1, 0);
                 },
+                
                 async addNewRow() {
                     // int = this.fields.length
+                    document.getElementById('loader').style.display = 'block';
                     let lastRow = this.fields[this.fields.length-1]
 
                     let int = lastRow.introw + 1
@@ -714,6 +719,10 @@
                     this.virtualSelect(int, 'group', groups, null)
                     this.virtualSelect(int, 'cost_type', cost_types, null)
                     this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes', null)
+                    
+                    setTimeout(function () {
+                        document.getElementById('loader').style.display = 'none';
+                    }, 1000);
                 },
                 removeRow(field, index){
                     let id = field.introw;
