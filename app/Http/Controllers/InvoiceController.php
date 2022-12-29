@@ -3140,7 +3140,8 @@ class InvoiceController extends AppController
                         $single_data['files'] = $counts . ' file';
 
                     $per = 0;
-                    if ($data['current_contract_amount'] > 0)
+
+                    if (!empty($data['current_contract_amount']))
                         $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
                         $per=str_replace(',', '', $per);
                     $single_data['g_per'] = number_format($per, 2);
