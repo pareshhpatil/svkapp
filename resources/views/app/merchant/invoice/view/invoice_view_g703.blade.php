@@ -415,7 +415,7 @@
                                         <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',number_format($item['g'],2))}}) @else{{ number_format($item['g'],2) }} @endif</p>
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }} @endif%</p>
+                                        <p class="text-sm">@if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }} @endif%</p>
 
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
