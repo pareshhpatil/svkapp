@@ -3587,7 +3587,6 @@ class InvoiceController extends AppController
                 if(!empty($previousInvoiceIDs)) {
                     $sumPreviousCurrentBilledAmount = 0;
                     $sumPreviousCurrentBilledPercent = 0;
-                    $sumPreviousRetainage
                     foreach ($previousInvoiceIDs as $previousInvoiceID) {
                         $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
 
