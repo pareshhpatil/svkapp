@@ -2729,10 +2729,12 @@ class InvoiceController extends AppController
             $sumOfd = 0;
             $sumOfe = 0;
             $sumOff = 0;
+            $sumOfrasm = 0;
             $sumOfg = 0;
             $sumOfh = 0;
             $sumOfi = 0;
             $sumOforg = 0;
+            $total_appro = 0;
             $total_appro = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
@@ -2748,17 +2750,19 @@ class InvoiceController extends AppController
                 //$sumOfd += $itesm['previously_billed_amount'];
                 $sumOfe += $itesm['current_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
+                $sumOfrasm += $itesm['retainage_amount_stored_materials'];
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
                 //$sumOfh += $sumOfc - $sumOfg;
                 $sumOfi += $itesm['total_outstanding_retainage'];
             }
-            
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
             $info['total_e'] = $sumOfe;
             $info['total_f'] = $sumOff;
+            $info['total_rasm'] = $sumOfrasm;
+            $info['percent_rasm'] = $sumOfrasm*100/$sumOff;
             $info['total_g'] = $sumOfg;
             $info['total_h'] = $sumOfc - $sumOfg;   //$sumOfh;
             $info['total_i'] = $sumOfi;
@@ -3313,6 +3317,8 @@ class InvoiceController extends AppController
                     $data['retainage_percent'] = $request->retainage_percent[$k];
                     $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
                     $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
+                    $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
+                    $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
                     $data['net_billed_amount'] = $request->net_billed_amount[$k];
                     $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                     $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];

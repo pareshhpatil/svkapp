@@ -163,13 +163,13 @@ class Invoice extends ParentModel
             ->where('payment_request_status', '<>', 11)
             ->where('payment_request_id', '<>', $payment_request_id);
 
-        if(!empty($currentInvoice)) {
+        if (!empty($currentInvoice)) {
             $retObj = $retObj->where('created_date', '<', $currentInvoice->created_date)
                 ->orderBy('payment_request_id', 'desc')
                 ->first();
         } else {
             $retObj =  $retObj->orderBy('payment_request_id', 'desc')
-                                ->first();
+                ->first();
         }
 
         if (!empty($retObj)) {
@@ -641,6 +641,8 @@ class Invoice extends ParentModel
                 'retainage_percent' => $data['retainage_percent'],
                 'retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'],
                 'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
+                'retainage_percent_stored_materials' => $data['retainage_percent_stored_materials'],
+                'retainage_amount_stored_materials' => $data['retainage_amount_stored_materials'],
                 'net_billed_amount' => $data['net_billed_amount'],
                 'retainage_release_amount' => $data['retainage_release_amount'],
                 'total_outstanding_retainage' => $data['total_outstanding_retainage'],
@@ -688,6 +690,8 @@ class Invoice extends ParentModel
                     'retainage_percent' => $data['retainage_percent'],
                     'retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'],
                     'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
+                    'retainage_percent_stored_materials' => $data['retainage_percent_stored_materials'],
+                    'retainage_amount_stored_materials' => $data['retainage_amount_stored_materials'],
                     'net_billed_amount' => $data['net_billed_amount'],
                     'retainage_release_amount' => $data['retainage_release_amount'],
                     'total_outstanding_retainage' => $data['total_outstanding_retainage'],
@@ -730,10 +734,10 @@ class Invoice extends ParentModel
     public function getPaymentRequestOfflineResponse($payment_request_id, $merchant_id)
     {
         $row = DB::table('offline_response')
-                        ->where('payment_request_id', $payment_request_id)
-                        ->where('merchant_id', $merchant_id)
-                        ->orderBy('last_update_date', 'DESC')
-                        ->first();
+            ->where('payment_request_id', $payment_request_id)
+            ->where('merchant_id', $merchant_id)
+            ->orderBy('last_update_date', 'DESC')
+            ->first();
 
         return $row;
     }
@@ -748,23 +752,24 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
-    public function getPreviousRequest($payment_request_id,$contract_id,$created_date) {
+    public function getPreviousRequest($payment_request_id, $contract_id, $created_date)
+    {
         $retObj = DB::table('payment_request as p')
-        ->select(DB::raw('*'))
-        ->where('payment_request_id', '!=', $payment_request_id)
-        ->where('contract_id', $contract_id)
-        ->where('created_date', '<', $created_date)
-        ->orderBy('created_date','desc')->first();
+            ->select(DB::raw('*'))
+            ->where('payment_request_id', '!=', $payment_request_id)
+            ->where('contract_id', $contract_id)
+            ->where('created_date', '<', $created_date)
+            ->orderBy('created_date', 'desc')->first();
 
         return $retObj;
     }
 
-    public function getPreviousInvoiceParticular($payment_request_id) {
+    public function getPreviousInvoiceParticular($payment_request_id)
+    {
         $retObj = DB::table('invoice_construction_particular as d')
-        ->select(DB::raw('id,pint,payment_request_id,previously_billed_amount,current_billed_amount'))
-        ->where('d.payment_request_id', '=', $payment_request_id)
-        ->get();
+            ->select(DB::raw('id,pint,payment_request_id,previously_billed_amount,current_billed_amount'))
+            ->where('d.payment_request_id', '=', $payment_request_id)
+            ->get();
         return $retObj;
-
     }
 }
