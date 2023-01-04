@@ -855,7 +855,6 @@ class InvoiceController extends AppController
 
     public function view_g703($link)
     {
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -864,14 +863,14 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             
-            //find  payment reuest count 
+            //find payment request count
             $paymentRequest = PaymentRequest::find($payment_request_id);
 
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
+            $firstpaymentRequest = $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
            
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
+            if($firstpaymentRequest->payment_request_id == $payment_request_id) {
                 $isFirstInvoice = true;
             } else {
                 $isFirstInvoice = false;
@@ -3578,7 +3577,7 @@ class InvoiceController extends AppController
                     if (isset($cp[$v->bill_code])) {
 //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
 //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+//                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
                     }
                 }
@@ -3587,17 +3586,20 @@ class InvoiceController extends AppController
                 if(!empty($previousInvoiceIDs)) {
                     $sumPreviousCurrentBilledAmount = 0;
                     $sumPreviousCurrentBilledPercent = 0;
+                    $sumPreviousRetainageAmount = 0;
                     foreach ($previousInvoiceIDs as $previousInvoiceID) {
                         $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
 
                         foreach ($contract_particulars as $row) {
                             $sumPreviousCurrentBilledAmount += $row->current_billed_amount;
                             $sumPreviousCurrentBilledPercent += $row->current_billed_percent;
+                            $sumPreviousRetainageAmount += $row->retainage_amount_for_this_draw;
                         }
                     }
 
                     foreach ($particulars as $k => $v) {
                         if (isset($cp[$v->bill_code])) {
+                            $particulars[$k]->retainage_amount_previously_withheld = $sumPreviousRetainageAmount;
                             $particulars[$k]->previously_billed_percent = $sumPreviousCurrentBilledPercent;
                             $particulars[$k]->previously_billed_amount = $sumPreviousCurrentBilledAmount;
                         }
