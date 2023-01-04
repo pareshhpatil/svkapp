@@ -3498,9 +3498,11 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
+
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
@@ -3534,7 +3536,7 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-
+            $previousInvoiceIDs = $this->invoiceModel->getPreviousInvoiceIDs($this->merchant_id, $invoice->contract_id, $request_id);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
@@ -3566,7 +3568,7 @@ class InvoiceController extends AppController
             }
             if ($pre_req_id != false) {
                 $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
-
+                
                 $cp = array();
                 foreach ($contract_particulars as $row) {
                     $cp[$row->bill_code] = $row;
@@ -3574,10 +3576,32 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
+//                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
+//                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
                         $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
+                    }
+                }
+
+
+                if(!empty($previousInvoiceIDs)) {
+                    $sumPreviousCurrentBilledAmount = 0;
+                    $sumPreviousCurrentBilledPercent = 0;
+                    $sumPreviousRetainage
+                    foreach ($previousInvoiceIDs as $previousInvoiceID) {
+                        $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
+
+                        foreach ($contract_particulars as $row) {
+                            $sumPreviousCurrentBilledAmount += $row->current_billed_amount;
+                            $sumPreviousCurrentBilledPercent += $row->current_billed_percent;
+                        }
+                    }
+
+                    foreach ($particulars as $k => $v) {
+                        if (isset($cp[$v->bill_code])) {
+                            $particulars[$k]->previously_billed_percent = $sumPreviousCurrentBilledPercent;
+                            $particulars[$k]->previously_billed_amount = $sumPreviousCurrentBilledAmount;
+                        }
                     }
                 }
             }

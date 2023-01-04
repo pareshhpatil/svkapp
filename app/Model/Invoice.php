@@ -138,6 +138,18 @@ class Invoice extends ParentModel
         }
     }
 
+    public function getPreviousInvoiceIDs($merchant_id, $contract_id, $payment_request_id)
+    {
+        $IDs = DB::table('payment_request')
+            ->where('merchant_id', $merchant_id)
+            ->where('contract_id', $contract_id)
+            ->where('payment_request_id', '!=', $payment_request_id)
+            ->pluck('payment_request_id')
+            ->toArray();
+
+        return $IDs;
+    }
+
     public function getPreviousInvoice($merchant_id, $contract_id, $payment_request_id)
     {
         $currentInvoice = DB::table('payment_request')
