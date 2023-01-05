@@ -1096,7 +1096,7 @@
                                 if(field.retainage_release_amount === undefined || field.retainage_release_amount === null)
                                     field.retainage_release_amount = 0;
 
-                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_release_amount) );
+                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_release_amount) + getamt(field.retainage_amount_stored_materials) );
                             } catch (o) {}
 
                             try {
