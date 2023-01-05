@@ -3327,7 +3327,8 @@ class InvoiceController extends AppController
                 $billed_transaction_ids = [];
                 foreach ($request->bill_code as $k => $bill_code) {
                     $request = Helpers::setArrayZeroValue(array(
-                        'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc'
+                        'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
+                        'retainage_percent_stored_materials','retainage_amount_stored_materials'
                     ));
                     $data['bill_code'] = $request->bill_code[$k];
                     if ($request->description[$k] == '') {
@@ -3348,8 +3349,8 @@ class InvoiceController extends AppController
                     $data['retainage_percent'] = $request->retainage_percent[$k];
                     $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
                     $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
-                    $data['retainage_percent_stored_materials'] = (isset($request->retainage_percent_stored_materials[$k])) ? $request->retainage_percent_stored_materials[$k] : 0;
-                    $data['retainage_amount_stored_materials'] = (isset($request->retainage_amount_stored_materials[$k])) ? $request->retainage_amount_stored_materials[$k] : 0;
+                    $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
+                    $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
                     $data['net_billed_amount'] = $request->net_billed_amount[$k];
                     $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                     $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
