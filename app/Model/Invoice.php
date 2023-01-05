@@ -748,6 +748,7 @@ class Invoice extends ParentModel
         $retObj = DB::table('payment_request as p')
             ->select(DB::raw('*'))
             ->where('p.contract_id', $contract_id)
+            ->whereNotIn('payment_request_status', [3, 11])
             ->orderBy('created_date', 'ASC')
             ->first();
         return $retObj;
@@ -759,6 +760,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('*'))
             ->where('payment_request_id', '!=', $payment_request_id)
             ->where('contract_id', $contract_id)
+            ->whereNotIn('payment_request_status', [3, 11])
             ->where('created_date', '<', $created_date)
             ->orderBy('created_date', 'desc')->first();
 
