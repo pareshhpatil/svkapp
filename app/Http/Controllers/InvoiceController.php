@@ -2761,7 +2761,11 @@ class InvoiceController extends AppController
             $info['total_e'] = $sumOfe;
             $info['total_f'] = $sumOff;
             $info['total_rasm'] = $sumOfrasm;
-            $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
+            $info['percent_rasm'] = 0;
+            if ($sumOff > 0 && $sumOfrasm > 0) {
+                $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
+            }
+
             $info['total_g'] = $sumOfg;
             $info['total_h'] = $sumOfc - $sumOfg;   //$sumOfh;
             $info['total_i'] = $sumOfi;
