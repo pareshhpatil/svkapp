@@ -3584,33 +3584,40 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        //                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+//                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
+//                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
+//                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
                     }
                 }
 
 
                 if (!empty($previousInvoiceIDs)) {
-                    $sumPreviousCurrentBilledAmount = 0;
-                    $sumPreviousCurrentBilledPercent = 0;
-                    $sumPreviousRetainageAmount = 0;
+//                    $sumPreviousCurrentBilledAmount = 0;
+//                    $sumPreviousCurrentBilledPercent = 0;
+//                    $sumPreviousRetainageAmount = 0;
+                    $previousBilledSumArray = [];
+
                     foreach ($previousInvoiceIDs as $previousInvoiceID) {
                         $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
-
                         foreach ($contract_particulars as $row) {
-                            $sumPreviousCurrentBilledAmount += $row->current_billed_amount;
-                            $sumPreviousCurrentBilledPercent += $row->current_billed_percent;
-                            $sumPreviousRetainageAmount += $row->retainage_amount_for_this_draw;
+//                            $sumPreviousCurrentBilledAmount += $row->current_billed_amount;
+//                            $sumPreviousCurrentBilledPercent += $row->current_billed_percent;
+//                            $sumPreviousRetainageAmount += $row->retainage_amount_for_this_draw;
+                            $previousBilledSumArray[$row->bill_code] = [
+                                    'sumPreviousCurrentBilledAmount' => +$row->current_billed_amount,
+                                    'sumPreviousCurrentBilledPercent' => +$row->current_billed_percent,
+                                    'sumPreviousRetainageAmount' => +$row->retainage_amount_for_this_draw
+
+                            ];
                         }
                     }
 
                     foreach ($particulars as $k => $v) {
                         if (isset($cp[$v->bill_code])) {
-                            $particulars[$k]->retainage_amount_previously_withheld = $sumPreviousRetainageAmount;
-                            $particulars[$k]->previously_billed_percent = $sumPreviousCurrentBilledPercent;
-                            $particulars[$k]->previously_billed_amount = $sumPreviousCurrentBilledAmount;
+                            $particulars[$k]->retainage_amount_previously_withheld = $previousBilledSumArray[$v->bill_code]['sumPreviousRetainageAmount'] ?? 0;
+                            $particulars[$k]->previously_billed_percent = $previousBilledSumArray[$v->bill_code]['sumPreviousCurrentBilledPercent'] ?? 0;
+                            $particulars[$k]->previously_billed_amount = $previousBilledSumArray[$v->bill_code]['sumPreviousCurrentBilledAmount'] ?? 0;
                         }
                     }
                 }
