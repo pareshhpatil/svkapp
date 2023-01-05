@@ -128,7 +128,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->where('payment_request_status', '<>', 11)
+            ->whereNotIn('payment_request_status', [11,3])
             ->orderBy('payment_request_id', 'desc')
             ->first();
         if (!empty($retObj)) {
@@ -143,6 +143,7 @@ class Invoice extends ParentModel
         return DB::table('payment_request')
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
+            ->whereNotIn('payment_request_status', [11,3])
             ->where('payment_request_id', '!=', $payment_request_id)
             ->pluck('payment_request_id')
             ->toArray();
@@ -160,7 +161,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->where('payment_request_status', '<>', 11)
+            ->whereNotIn('payment_request_status', [11,3])
             ->where('payment_request_id', '<>', $payment_request_id);
 
         if (!empty($currentInvoice)) {
