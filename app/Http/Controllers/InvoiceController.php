@@ -2755,7 +2755,8 @@ class InvoiceController extends AppController
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
                 //$sumOfh += $sumOfc - $sumOfg;
-                if($itesm['total_outstanding_retainage'] > 0) {
+
+                if(!empty(floatval($itesm['total_outstanding_retainage']))) {
                     $sumOfi += $itesm['total_outstanding_retainage'];
                 } else {
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
@@ -3087,7 +3088,7 @@ class InvoiceController extends AppController
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
 
-                    if($data['total_outstanding_retainage'] > 0) {
+                    if(!empty(floatval($data['total_outstanding_retainage']))) {
                         $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                     } else {
                         $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
@@ -3111,8 +3112,9 @@ class InvoiceController extends AppController
                     $sub_g += $single_data['g'];
                     $sub_g_per += $per;
                     $sub_h += $data['current_contract_amount'] - ($single_data['d'] + $single_data['e'] + $single_data['f']);
-                    $sub_i += $data['total_outstanding_retainage'];
-                    if($data['total_outstanding_retainage'] > 0) {
+                    //$sub_i += $data['total_outstanding_retainage'];
+
+                    if(!empty(floatval($data['total_outstanding_retainage']))) {
                         $sub_i += $data['total_outstanding_retainage'];
                     } else {
                         $sub_i += $data['retainage_amount_previously_withheld'];
@@ -3175,7 +3177,7 @@ class InvoiceController extends AppController
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
 
-                    if($data['total_outstanding_retainage'] > 0) {
+                    if(!empty(floatval($data['total_outstanding_retainage']))) {
                         $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                     } else {
                         $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
@@ -3184,6 +3186,7 @@ class InvoiceController extends AppController
                     $grouping_data[] = $single_data;
                 }
             }
+            
             if (!empty($type)) {
                 $g = $d + $e + $f;
                 $single_data1['a'] = $bill_code;

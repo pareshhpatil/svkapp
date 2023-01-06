@@ -1699,8 +1699,13 @@
                     },
                     closeAttachmentPanel(){
                         let attachment_pos = $('#attachment_pos_id').val();
-                        let attach_index = $('#index'+attachment_pos).val()
-                        this.fields[attach_index].attachments = particularray[attach_index].attachments;
+                        let attach_index = $('#index'+attachment_pos).val();
+                        let vals = document.getElementById('attach-' + attachment_pos).value;
+                        this.fields[attach_index].attachments = vals;
+                        // this.fields[attach_index].attachments = particularray[attach_index].attachments;
+
+                        //reset attachment pos id in attachment modal
+                        document.getElementById('attachment_pos_id').value = '';
                         return closeSidePanelBillCodeAttachment();
                     }
                     
