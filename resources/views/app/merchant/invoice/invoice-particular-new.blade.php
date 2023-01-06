@@ -986,6 +986,9 @@
                                 $('#cell_current_billed_amount_' + index).removeClass(' error-corner');
                             }
                             field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
+                        }else
+                        {
+                            field.current_billed_percent = '';
                         }
                         // if(field.current_billed_amount !== null || field.current_billed_amount !== 0 || field.current_billed_amount !== undefined){
 
