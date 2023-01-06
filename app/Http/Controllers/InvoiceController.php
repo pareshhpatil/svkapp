@@ -2926,7 +2926,7 @@ class InvoiceController extends AppController
                     $prev_total_i += $prevOrderParticular->retainage_amount_previously_withheld;
                 }
             }
-
+            dd($prev_total_i, $prev_total_d, $prev_total_e, $prev_total_g);
             if ($prev_total_d + $prev_total_e > 0) {
                 $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
 
