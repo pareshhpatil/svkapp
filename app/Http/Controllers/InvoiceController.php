@@ -2920,7 +2920,7 @@ class InvoiceController extends AppController
                 $prev_total_g += $prevOrderParticular->previously_billed_amount +
                     $prevOrderParticular->current_billed_amount +
                     $prevOrderParticular->stored_materials;
-                if ($prevOrderParticular->total_outstanding_retainage > 0) {
+                if(!empty(floatval($prevOrderParticular->total_outstanding_retainage))){
                     $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
                 } else {
                     $prev_total_i += $prevOrderParticular->retainage_amount_previously_withheld;
