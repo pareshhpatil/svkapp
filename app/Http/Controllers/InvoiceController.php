@@ -880,10 +880,12 @@ class InvoiceController extends AppController
                 // where('created_date', '<', $paymentRequest->created_date)->
                 // orderBy('created_date','desc')->first();
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach ($previousInvoiceParticulars as $k => $val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                if (!empty($previousInvoice)) {
+                    $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                    $prevDPlusE = [];
+                    foreach ($previousInvoiceParticulars as $k => $val) {
+                        $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                    }
                 }
             }
 
