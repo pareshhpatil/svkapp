@@ -424,6 +424,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('cost-types/create', 'Merchant\CostTypesController@store');
   Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit')->name('merchant.cost-types.edit');
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
+
+  Route::any('inbox', 'NotificationsController@index')->name('inbox.index');
 });
 
 Route::group(['prefix' => 'patron'], function () {
