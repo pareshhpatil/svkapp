@@ -3000,7 +3000,7 @@ class InvoiceController extends AppController
                         $d += number_format($data['previously_billed_amount'], 2);
                     } else {
                         if (is_numeric($prevParictular[$data['pint']])) {
-                            $d += number_format($prevParictular[$data['pint']] ?? 0, 2);
+                           // $d += number_format($prevParictular[$data['pint']] ?? 0, 2);
                         }
                     }
 
