@@ -202,8 +202,8 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
-                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
                                                 $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
                                                @endphp
 
@@ -397,12 +397,18 @@
                         </th>
                         <th class="td-c"></th>
                         <th>
+                        <span id="total_rapsm"></span>
+                        </th>
+                        <th>
                         <span id="total_rasm"></span>
                         </th>
                         <th class="td-c"><span id="particulartotaldiv"></span>
                             <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly=""></th>
                         <th>
                         <span id="total_rra"></span>
+                        </th>
+                        <th>
+                        <span id="total_rrasm"></span>
                         </th>
                         <th>
                         <span id="total_tor"></span>
@@ -1094,6 +1100,12 @@
                                         } catch (o) {}
 
                                 try {
+                                if(field.retainage_amount_previously_stored_materials === undefined || field.retainage_amount_previously_stored_materials === null)
+                                    field.retainage_amount_previously_stored_materials = 0;
+
+                                if(field.retainage_stored_materials_release_amount === undefined || field.retainage_stored_materials_release_amount === null)
+                                    field.retainage_stored_materials_release_amount = 0;
+
                                 if(field.retainage_percent_stored_materials === undefined || field.retainage_percent_stored_materials === null)
                                     field.retainage_percent_stored_materials = 0;
 
@@ -1112,11 +1124,11 @@
                                 if(field.retainage_release_amount === undefined || field.retainage_release_amount === null)
                                     field.retainage_release_amount = 0;
 
-                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_for_this_draw) + getamt(field.retainage_amount_stored_materials) - getamt(field.retainage_release_amount)  );
+                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_previously_stored_materials) + getamt(field.retainage_amount_for_this_draw) + getamt(field.retainage_amount_stored_materials) - getamt(field.retainage_release_amount)  - getamt(field.retainage_stored_materials_release_amount) );
                             } catch (o) {}
 
                             try {
-                                field.net_billed_amount = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.stored_materials) - getamt(field.retainage_amount_for_this_draw));
+                                field.net_billed_amount = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.stored_materials) - getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_amount_stored_materials));
                             } catch (o) {}
 
 
@@ -1153,6 +1165,8 @@
                         total_rra = 0;
                         total_tor = 0;
                         total_rasm = 0;
+                        total_rapsm = 0;
+                        total_rrasm = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
                             total = Number(total) + getamt(currentValue.net_billed_amount);
                             total_oca = Number(total_oca) + getamt(currentValue.original_contract_amount);
@@ -1170,6 +1184,8 @@
                             total_rra = Number(total_rra) + getamt(currentValue.retainage_release_amount);
                             total_tor = Number(total_tor) + getamt(currentValue.total_outstanding_retainage);
                             total_rasm = Number(total_rasm) + getamt(currentValue.retainage_amount_stored_materials);
+                            total_rapsm = Number(total_rapsm) + getamt(currentValue.retainage_amount_previously_stored_materials);
+                            total_rrasm = Number(total_rrasm) + getamt(currentValue.retainage_stored_materials_release_amount);
 
                         });
                         document.getElementById('particulartotal').value = updateTextView1(total);
@@ -1189,6 +1205,9 @@
                         document.getElementById('total_rra').innerHTML = updateTextView1(total_rra);
                         document.getElementById('total_tor').innerHTML = updateTextView1(total_tor);
                         document.getElementById('total_rasm').innerHTML = updateTextView1(total_rasm);
+
+                        document.getElementById('total_rapsm').innerHTML = updateTextView1(total_rapsm);
+                        document.getElementById('total_rrasm').innerHTML = updateTextView1(total_rrasm);
                     },
 
                     wait(x) {

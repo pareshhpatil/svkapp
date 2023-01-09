@@ -3334,7 +3334,7 @@ class InvoiceController extends AppController
                 foreach ($request->bill_code as $k => $bill_code) {
                     $request = Helpers::setArrayZeroValue(array(
                         'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
-                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials'
+                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials','retainage_amount_previously_stored_materials','retainage_stored_materials_release_amount'
                     ));
                     $data['bill_code'] = $request->bill_code[$k];
                     if ($request->description[$k] == '') {
@@ -3354,6 +3354,8 @@ class InvoiceController extends AppController
                     $data['total_billed'] = $request->total_billed[$k];
                     $data['retainage_percent'] = $request->retainage_percent[$k];
                     $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
+                    $data['retainage_amount_previously_stored_materials'] = $request->retainage_amount_previously_stored_materials[$k];
+                    $data['retainage_stored_materials_release_amount'] = $request->retainage_stored_materials_release_amount[$k];
                     $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
                     $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
                     $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
@@ -3635,6 +3637,7 @@ class InvoiceController extends AppController
                             $previousBilledSumArray[$row->bill_code]['previousBilledAmount'][] = $row->current_billed_amount;
                             $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
                             $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
+                            $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
                         }
                     }
 
@@ -3643,10 +3646,12 @@ class InvoiceController extends AppController
                             $previousBilledAmount = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledAmount']);
                             $previousBilledPercent = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledPercent']);
                             $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
+                            $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
 
                             $particulars[$k]->previously_billed_amount = $previousBilledAmount;
                             $particulars[$k]->previously_billed_percent = $previousBilledPercent;
                             $particulars[$k]->retainage_amount_previously_withheld = $previousRetainageWithHeld;
+                            $particulars[$k]->retainage_amount_previously_stored_materials = $retainageAmountPreviouslyStoredMaterials;
                         }
                     }
                 }
