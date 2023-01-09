@@ -2997,10 +2997,11 @@ class InvoiceController extends AppController
                     $c += $data['current_contract_amount'];
 
                     if ($isFirstInvoice == true) {
-                        $d += number_format($data['previously_billed_amount'], 2);
+                        $d += $data['previously_billed_amount'];
                     } else {
                         if (is_numeric($prevParictular[$data['pint']])) {
-                            // $d += number_format($prevParictular[$data['pint']] ?? 0, 2);
+                            $pp = $prevParictular[$data['pint']] ?? 0;
+                            $d += $pp;
                         }
                     }
 
