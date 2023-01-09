@@ -3000,7 +3000,7 @@ class InvoiceController extends AppController
                         $d += number_format($data['previously_billed_amount'], 2);
                     } else {
                         if (is_numeric($prevParictular[$data['pint']])) {
-                           // $d += number_format($prevParictular[$data['pint']] ?? 0, 2);
+                            // $d += number_format($prevParictular[$data['pint']] ?? 0, 2);
                         }
                     }
 
@@ -3176,8 +3176,11 @@ class InvoiceController extends AppController
 
                     $per = 0;
 
-                    if (!empty($data['current_contract_amount']))
-                        $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
+                    if (!empty($data['current_contract_amount'])) {
+                        if ($data['current_contract_amount'] > 0) {
+                            $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
+                        }
+                    }
                     $per = str_replace(',', '', $per);
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
