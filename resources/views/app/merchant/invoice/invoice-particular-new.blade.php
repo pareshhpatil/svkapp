@@ -434,8 +434,11 @@
                                         <div class="pull-right">
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
                                         <input type="hidden" name="order_ids" value="{{$order_id_array}}">
-                                        
-                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
+                                            @if($mode=='Preview')
+                                            <a href="/merchant/collect-payments" class="btn green">Cancel</a>
+                                            @else
+                                            <a href="/merchant/paymentrequest/list" class="btn green">Cancel</a>
+                                            @endif
                                             <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
