@@ -2782,14 +2782,14 @@ class InvoiceController extends AppController
             $info['percent_rasm'] = 0;
             $info['percent_rcw'] = 0;
             $totalBilledAmount = $total_previously_billed_amount + $sumOfe;
-            if ($retainage_amount_for_this_draw > 0 && $totalBilledAmount > 0) {
-                $info['percent_rcw'] = $retainage_amount_for_this_draw * 100 / $totalBilledAmount;
+            if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
+                $info['percent_rcw'] = $total_retainage_amount * 100 / $totalBilledAmount;
             }
 
             $info['total_retainage'] = $info['total_retainage_amount'] + $sumOfrasm;
 
-            if ($sumOff > 0 && $retainage_amount_stored_materials > 0) {
-                $info['percent_rasm'] = $retainage_amount_stored_materials * 100 / $sumOff;
+            if ($sumOff > 0 && $sumOfrasm > 0) {
+                $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
             }
 
             $info['total_g'] = $sumOfg;
