@@ -483,6 +483,11 @@
                 this.initializeDropdowns();
                 this.calculateTotal();
                 $('.tableFixHead').css('max-height', screen.height/2);
+                for (let p =0; p < particularray.length; p++)
+                {
+                    this.calc(this.fields[p]);
+                }
+                        
             }
 
             function initSelect2(){
