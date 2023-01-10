@@ -247,7 +247,7 @@ $header='app.patron.invoice.invoice-master';}
                     </div>
                             <div>
                                 <p class="font-bold text-xs mt-5"></p>
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_retainage_amount_for_this_draw'] < 0)({{str_replace('-','',number_format($info['total_retainage_amount_for_this_draw'],2))}}) @else{{number_format($info['total_retainage_amount_for_this_draw'],2)}}@endif</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_retainage_amount'] < 0)({{str_replace('-','',number_format($info['total_retainage_amount'],2))}}) @else{{number_format($info['total_retainage_amount'],2)}}@endif</p>
                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}
                                 @if($info['total_rasm'] < 0) ({{str_replace('-','',number_format($info['total_rasm'],2))}})@else{{number_format($info['total_rasm'],2)}}@endif</p>
 

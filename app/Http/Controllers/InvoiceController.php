@@ -2739,7 +2739,8 @@ class InvoiceController extends AppController
             $sumOforg = 0;
             $total_appro = 0;
             $total_appro = 0;
-            $total_retainage_amount_for_this_draw = 0;
+            $total_retainage_amount = 0;
+            $total_previously_billed_amount = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -2753,9 +2754,10 @@ class InvoiceController extends AppController
                 }
                 //$sumOfd += $itesm['previously_billed_amount'];
                 $sumOfe += $itesm['current_billed_amount'];
+                $total_previously_billed_amount += $itesm['previously_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
-                $sumOfrasm += $itesm['retainage_amount_stored_materials'];
-                $total_retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'];
+                $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'];
+                $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'];
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
@@ -2770,17 +2772,17 @@ class InvoiceController extends AppController
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
             $info['total_e'] = $sumOfe;
-            $info['total_retainage_amount_for_this_draw'] = $total_retainage_amount_for_this_draw;
+            $info['total_retainage_amount'] = $total_retainage_amount;
             $info['total_f'] = $sumOff;
             $info['total_rasm'] = $sumOfrasm;
             $info['percent_rasm'] = 0;
             $info['percent_rcw'] = 0;
-            if($info['total_retainage_amount_for_this_draw']>0 && $sumOfe>0)
-            {
-                $info['percent_rcw']=$info['total_retainage_amount_for_this_draw']*100/$sumOfe;
+            $totalBilledAmount = $total_previously_billed_amount + $sumOfe;
+            if ($info['total_retainage_amount'] > 0 && $totalBilledAmount > 0) {
+                $info['percent_rcw'] = $info['total_retainage_amount'] * 100 / $totalBilledAmount;
             }
 
-            $info['total_retainage']=$info['total_retainage_amount_for_this_draw']+$sumOfrasm;
+            $info['total_retainage'] = $info['total_retainage_amount'] + $sumOfrasm;
 
             if ($sumOff > 0 && $sumOfrasm > 0) {
                 $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
@@ -2940,7 +2942,7 @@ class InvoiceController extends AppController
 
             if ($prev_total_d + $prev_total_e > 0) {
                 $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
-                
+
                 $single_per = ($prev_total_d + $prev_total_e) / 100;
                 $a5 = $single_per * $cper;
 
@@ -3350,7 +3352,7 @@ class InvoiceController extends AppController
                 foreach ($request->bill_code as $k => $bill_code) {
                     $request = Helpers::setArrayZeroValue(array(
                         'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
-                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials','retainage_amount_previously_stored_materials','retainage_stored_materials_release_amount'
+                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
                     ));
                     $data['bill_code'] = $request->bill_code[$k];
                     if ($request->description[$k] == '') {
