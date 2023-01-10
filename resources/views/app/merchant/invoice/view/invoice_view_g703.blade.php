@@ -246,7 +246,7 @@
                                 COMPLETED AND
                                 STORED TO DATE<br />
                                 (D+E+F) </td>
-                            <td style="min-width:70px"
+                            <td style="min-width:80px"
                                 class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
                                 %(G ÷ C)
                             </td>
