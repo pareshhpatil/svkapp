@@ -2740,7 +2740,9 @@ class InvoiceController extends AppController
             $total_appro = 0;
             $total_appro = 0;
             $total_retainage_amount = 0;
+            $retainage_amount_for_this_draw = 0;
             $total_previously_billed_amount = 0;
+            $retainage_amount_stored_materials = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -2757,7 +2759,9 @@ class InvoiceController extends AppController
                 $total_previously_billed_amount += $itesm['previously_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
                 $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'];
+                $retainage_amount_stored_materials += $itesm['retainage_amount_stored_materials'];
                 $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'];
+                $retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'] ;
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
@@ -2778,14 +2782,14 @@ class InvoiceController extends AppController
             $info['percent_rasm'] = 0;
             $info['percent_rcw'] = 0;
             $totalBilledAmount = $total_previously_billed_amount + $sumOfe;
-            if ($info['total_retainage_amount'] > 0 && $totalBilledAmount > 0) {
-                $info['percent_rcw'] = $info['total_retainage_amount'] * 100 / $totalBilledAmount;
+            if ($retainage_amount_for_this_draw > 0 && $totalBilledAmount > 0) {
+                $info['percent_rcw'] = $retainage_amount_for_this_draw * 100 / $totalBilledAmount;
             }
 
             $info['total_retainage'] = $info['total_retainage_amount'] + $sumOfrasm;
 
-            if ($sumOff > 0 && $sumOfrasm > 0) {
-                $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
+            if ($sumOff > 0 && $retainage_amount_stored_materials > 0) {
+                $info['percent_rasm'] = $retainage_amount_stored_materials * 100 / $sumOff;
             }
 
             $info['total_g'] = $sumOfg;
