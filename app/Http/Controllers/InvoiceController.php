@@ -2739,6 +2739,7 @@ class InvoiceController extends AppController
             $sumOforg = 0;
             $total_appro = 0;
             $total_appro = 0;
+            $total_retainage_amount_for_this_draw = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -2754,6 +2755,7 @@ class InvoiceController extends AppController
                 $sumOfe += $itesm['current_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
                 $sumOfrasm += $itesm['retainage_amount_stored_materials'];
+                $total_retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'];
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
@@ -2768,9 +2770,18 @@ class InvoiceController extends AppController
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
             $info['total_e'] = $sumOfe;
+            $info['total_retainage_amount_for_this_draw'] = $total_retainage_amount_for_this_draw;
             $info['total_f'] = $sumOff;
             $info['total_rasm'] = $sumOfrasm;
             $info['percent_rasm'] = 0;
+            $info['percent_rcw'] = 0;
+            if($info['total_retainage_amount_for_this_draw']>0 && $sumOfe>0)
+            {
+                $info['percent_rcw']=$info['total_retainage_amount_for_this_draw']*100/$sumOfe;
+            }
+
+            $info['total_retainage']=$info['total_retainage_amount_for_this_draw']+$sumOfrasm;
+
             if ($sumOff > 0 && $sumOfrasm > 0) {
                 $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
             }
@@ -2929,9 +2940,8 @@ class InvoiceController extends AppController
 
             if ($prev_total_d + $prev_total_e > 0) {
                 $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
-
+                
                 $single_per = ($prev_total_d + $prev_total_e) / 100;
-
                 $a5 = $single_per * $cper;
 
                 $total_retainage = $a5 + $prev_total_f;
