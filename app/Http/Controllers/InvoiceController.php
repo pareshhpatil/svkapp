@@ -110,7 +110,7 @@ class InvoiceController extends AppController
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
 
-        if (env('ENV') != 'LOCAL') {
+        if (env('APP_ENV') != 'LOCAL') {
             //menu list
             $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
             $item_list = json_decode($mn1, 1);
@@ -261,7 +261,7 @@ class InvoiceController extends AppController
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
 
-        if (env('ENV') != 'LOCAL') {
+        if (env('APP_ENV') != 'LOCAL') {
             //menu list
             $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
             $item_list = json_decode($mn1, 1);
