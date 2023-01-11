@@ -95,6 +95,7 @@ class Master extends ParentModel
                 'end_date' => $data->end_date,
                 'start_date' => $data->start_date,
                 'sequence_number' => $data->sequence_number,
+                'users' => json_encode($data->users),
                 'created_by' => $user_id,
                 'last_update_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s')
@@ -113,6 +114,7 @@ class Master extends ParentModel
                 'end_date' => $data->end_date,
                 'start_date' => $data->start_date,
                 'sequence_number' => $data->sequence_id,
+                'users' => json_encode($data->users),
                 'last_update_by' => $user_id
             ]);
     }
@@ -165,5 +167,11 @@ class Master extends ParentModel
         return CostType::where('merchant_id', $merchant_id)->where('is_active', 1)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
+    }
+
+    public function getUsersListByMerchant($user_id)
+    {       
+        $retObj = DB::select("call `get_sub_userlist`('$user_id')");
+        return $retObj;
     }
 }

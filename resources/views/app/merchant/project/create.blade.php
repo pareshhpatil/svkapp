@@ -80,6 +80,17 @@
                                             <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Sequence number" />
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Users <span class="required">*
+                                            </span></label>
+                                        <div class="col-md-5">
+                                            <select multiple="multiple" id="users_multiselect" class="form-control" name="users[]">
+                                                @foreach($users_list as $v)
+                                                <option value="{{$v->user_id}}"> {{$v->user_id}} | {{$v->email}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -101,4 +112,13 @@
     </div>
 </div>
 <!-- END CONTENT -->
+@endsection
+
+
+@section('footer')
+<script>
+    $(document).ready(function() {
+        $('#users_multiselect').select2();
+    });
+</script>
 @endsection

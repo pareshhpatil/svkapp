@@ -173,6 +173,7 @@ class MasterController extends AppController
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
         $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+        $data["users_list"] = $this->masterModel->getUsersListByMerchant($this->user_id);
         return view('app/merchant/project/create', $data);
     }
 
@@ -209,6 +210,7 @@ class MasterController extends AppController
         $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
+        $request->users = $request->users != null ? $request->users : [];
         $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
 
         return redirect('merchant/project/list')->with('success', "Project has been created");
@@ -222,10 +224,20 @@ class MasterController extends AppController
         if ($id != '') {
             $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $id);
             $data['project_data']->encrypted_id = Encrypt::encode($data['project_data']->id);
+            $users_data = json_decode($data['project_data']->users, 1);
+            if($users_data ==  null){
+                $users_data = [];
+            }
+            if(count($users_data) > 0){
+                $data['project_data']->users = $users_data;
+            }else{
+                $data['project_data']->users = [];
+            }
             $data['sequence_data'] = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $data['project_data']->sequence_number);
             $data['sequence_data']->val = $data['sequence_data']->val + 1;
             $data['project_data']->project_prefix = $data['project_data']->project_id;
             $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+            $data["users_list"] = $this->masterModel->getUsersListByMerchant($this->user_id);
 
             return view('app/merchant/project/update', $data);
         } else {
@@ -251,6 +263,7 @@ class MasterController extends AppController
             $this->masterModel->updateProjectSequence($this->merchant_id, $request->sequence_id, ($request->sequence_number - 1));
             $request->start_date = Helpers::sqlDate($request->start_date);
             $request->end_date = Helpers::sqlDate($request->end_date);
+            $request->users = $request->users != null ? $request->users : [];
             $this->masterModel->updateProject($request, $this->merchant_id, $this->user_id);
             return redirect('merchant/project/list')->with('success', "Project has been updated");
         }
