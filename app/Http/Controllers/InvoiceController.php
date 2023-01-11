@@ -789,18 +789,23 @@ class InvoiceController extends AppController
             //find  payment reuest count 
             $paymentRequest = PaymentRequest::find($payment_request_id);
             $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-
+            $first_payment_request_id = '';
+            if (!empty($firstpaymentRequest)) {
+                $first_payment_request_id = $firstpaymentRequest->payment_request_id;
+            }
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+            if ($first_payment_request_id == $payment_request_id) {
                 $isFirstInvoice = true;
             } else {
                 $isFirstInvoice = false;
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach ($previousInvoiceParticulars as $k => $val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                if (!empty($previousInvoice)) {
+                    $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+                    $prevDPlusE = [];
+                    foreach ($previousInvoiceParticulars as $k => $val) {
+                        $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+                    }
                 }
             }
 
@@ -2714,14 +2719,14 @@ class InvoiceController extends AppController
             $info['project_details'] = $project_details;
 
             $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-            where MONTH(`order_date`)=MONTH(now()-INTERVAL 1 MONTH) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+            where MONTH(`approved_date`)=MONTH('" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($pre_month_change_order_amount[0]->change_order_amount != null) {
                 $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
             } else {
                 $info['last_month_co_amount'] = 0;
             }
             $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-          where MONTH(`order_date`)=MONTH(now()) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+          where MONTH(`approved_date`)=MONTH('" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($current_month_change_order_amount[0]->change_order_amount != null) {
                 $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
             } else {
@@ -2743,6 +2748,8 @@ class InvoiceController extends AppController
             $retainage_amount_for_this_draw = 0;
             $total_previously_billed_amount = 0;
             $retainage_amount_stored_materials = 0;
+            $retainage_release_amount = 0;
+            $retainage_stored_materials_release_amount = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -2758,10 +2765,14 @@ class InvoiceController extends AppController
                 $sumOfe += $itesm['current_billed_amount'];
                 $total_previously_billed_amount += $itesm['previously_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
-                $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'];
+                $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'] - $itesm['retainage_stored_materials_release_amount'];
                 $retainage_amount_stored_materials += $itesm['retainage_amount_stored_materials'];
-                $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'];
-                $retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'] ;
+                $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'] - $itesm['retainage_release_amount'];
+                $retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'];
+
+                $retainage_release_amount += $itesm['retainage_release_amount'];
+                $retainage_stored_materials_release_amount += $itesm['retainage_stored_materials_release_amount'];
+
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
@@ -2896,8 +2907,8 @@ class InvoiceController extends AppController
         //get less Previous certificates for payment from previous invoice
         $info["less_previous_certificates_for_payment"] = 0;
         if (isset($info['project_details'])) {
-            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
-            $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+            $info["less_previous_certificates_for_payment"] = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
+            $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
         }
 
         $info['user_name'] = Session::get('user_name');
@@ -2923,43 +2934,8 @@ class InvoiceController extends AppController
         $pre_req_id =  $this->invoiceModel->getPreviousInvoice($this->merchant_id, $contract_id, $payment_request_id);
 
         if ($pre_req_id != false) {
-
-            $prevOrderParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
-            $prev_total_d = 0;
-            $prev_total_e = 0;
-            $prev_total_f = 0;
-            $prev_total_g = 0;
-            $prev_total_i = 0;
-            foreach ($prevOrderParticulars as $prevOrderParticular) {
-                $prev_total_d += $prevOrderParticular->previously_billed_amount;
-                $prev_total_e += $prevOrderParticular->current_billed_amount;
-                $prev_total_f += $prevOrderParticular->stored_materials;
-                $prev_total_g += $prevOrderParticular->previously_billed_amount +
-                    $prevOrderParticular->current_billed_amount +
-                    $prevOrderParticular->stored_materials;
-                if (!empty(floatval($prevOrderParticular->total_outstanding_retainage))) {
-                    $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
-                } else {
-                    $prev_total_i += $prevOrderParticular->retainage_amount_previously_withheld;
-                }
-            }
-
-            if ($prev_total_d + $prev_total_e > 0) {
-                $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
-
-                $single_per = ($prev_total_d + $prev_total_e) / 100;
-                $a5 = $single_per * $cper;
-
-                $total_retainage = $a5 + $prev_total_f;
-
-                if ($total_retainage == 0) {
-                    $total_retainage = $prev_total_i;
-                }
-
-                $less_previous_certificates_for_payment = number_format($prev_total_g - $total_retainage, 2);
-            }
+            $less_previous_certificates_for_payment = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $pre_req_id, 'invoice_total');
         }
-
         return $less_previous_certificates_for_payment;
     }
 
@@ -3660,6 +3636,9 @@ class InvoiceController extends AppController
                             $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
                             $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
                             $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
+
+                            $previousBilledSumArray[$row->bill_code]['retainageReleaseAmount'][] = $row->retainage_release_amount;
+                            $previousBilledSumArray[$row->bill_code]['retainageStoredMaterialsReleaseAmount'][] = $row->retainage_stored_materials_release_amount;
                         }
                     }
 
@@ -3670,10 +3649,13 @@ class InvoiceController extends AppController
                             $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
                             $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
 
+                            $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
+                            $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
+
                             $particulars[$k]->previously_billed_amount = $previousBilledAmount;
-                            $particulars[$k]->previously_billed_percent = $previousBilledPercent;
-                            $particulars[$k]->retainage_amount_previously_withheld = $previousRetainageWithHeld;
-                            $particulars[$k]->retainage_amount_previously_stored_materials = $retainageAmountPreviouslyStoredMaterials;
+                            $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
+                            $particulars[$k]->retainage_amount_previously_withheld = $previousRetainageWithHeld -  $retainageReleaseAmount;
+                            $particulars[$k]->retainage_amount_previously_stored_materials = $retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount;
                         }
                     }
                 }

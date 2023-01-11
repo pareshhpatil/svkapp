@@ -1117,7 +1117,7 @@
                                 if(field.retainage_amount_stored_materials === undefined || field.retainage_amount_stored_materials === null)
                                     field.retainage_amount_stored_materials = 0;
 
-                                field.retainage_amount_stored_materials = updateTextView1(getamt(field.stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
+                                field.retainage_amount_stored_materials = updateTextView1(getamt(field.current_stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
                             } catch (o) {}
 
                             try {
@@ -1133,7 +1133,7 @@
                             } catch (o) {}
 
                             try {
-                                field.net_billed_amount = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.stored_materials) - getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_amount_stored_materials));
+                                field.net_billed_amount = updateTextView1(getamt(field.total_billed) - getamt(field.total_outstanding_retainage));
                             } catch (o) {}
 
 
