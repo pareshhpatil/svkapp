@@ -3654,8 +3654,8 @@ class InvoiceController extends AppController
 
                             $particulars[$k]->previously_billed_amount = $previousBilledAmount;
                             $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
-                            $particulars[$k]->retainage_amount_previously_withheld = $previousRetainageWithHeld -  $retainageReleaseAmount;
-                            $particulars[$k]->retainage_amount_previously_stored_materials = $retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount;
+                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount,2);
+                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount,2);
                         }
                     }
                 }
