@@ -2719,14 +2719,14 @@ class InvoiceController extends AppController
             $info['project_details'] = $project_details;
 
             $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-            where MONTH(`approved_date`)=MONTH('" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+            where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($pre_month_change_order_amount[0]->change_order_amount != null) {
                 $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
             } else {
                 $info['last_month_co_amount'] = 0;
             }
             $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-          where MONTH(`approved_date`)=MONTH('" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+          where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($current_month_change_order_amount[0]->change_order_amount != null) {
                 $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
             } else {
