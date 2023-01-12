@@ -279,7 +279,7 @@ $header='app.patron.invoice.invoice-master';}
                             <div>
                               
 {{--                                <p class="font-bold text-xs border-b   border-gray-600 mt-1"> {{$info['currency_icon']}}@if($info['total_d'] < 0)({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{number_format($info['total_d'],2)}}@endif</p>--}}
-                              <p class="font-bold text-xs border-b border-gray-600 mt-1">{{$info['currency_icon']}}{{ $info['less_previous_certificates_for_payment'] }}</p>
+                              <p class="font-bold text-xs border-b border-gray-600 mt-1">{{$info['currency_icon']}}{{ number_format($info['less_previous_certificates_for_payment'],2) }}</p>
                              
                             </div>
                         </div>
