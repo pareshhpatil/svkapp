@@ -80,6 +80,7 @@
                                                 <small class="form-text text-muted">Invoice format</small>
                                                 <div class="help-block"></div>
                                             </div>
+                                            <!--
                                             <div class="col-md-3 pl-1 pr-0" >
                                                     <select data-placeholder="Select billing profile" onchange="setCurrency(this.value);" class="form-control select2me" id="billing_profile_id" data-cy="billing_profile_id" name="billing_profile_id">
                                                     <option value=""></option>
@@ -89,7 +90,7 @@
                                                     </select>
                                                     <small class="form-text text-muted">Billing profile</small>
                                                 <div class="help-block"></div>
-                                            </div>
+                                            </div> -->
                                             <div class="col-md-2 pl-1 pr-0" >
                                                     <select data-cy="currency" required id="currency" name="currency" required class="form-control select2me" data-placeholder="Select...">
                                                         @foreach($currency_list as $v)

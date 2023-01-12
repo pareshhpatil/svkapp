@@ -492,7 +492,7 @@ class InvoiceFormatController extends AppController
         return redirect('/merchant/template/viewlist');
     }
 
-    function saveInvoiceFormat($request, $logo)
+    function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null)
     {
 
         $pcarray = [];
@@ -520,8 +520,16 @@ class InvoiceFormatController extends AppController
         }
 
         $data['template_id'] = $template_id;
-        $data['merchant_id'] = $this->merchant_id;
-        $data['user_id'] = $this->user_id;
+        if ($merchant_id == null) {
+            $data['merchant_id'] = $this->merchant_id;
+        } else {
+            $data['merchant_id'] = $merchant_id;
+        }
+        if ($user_id == null) {
+            $data['user_id'] = $this->user_id;
+        } else {
+            $data['user_id'] = $user_id;
+        }
         $data['template_name'] = $request->template_name;
         $data['template_type'] = $request->template_type;
         $data['particular_column'] = $particular_column;
@@ -552,64 +560,7 @@ class InvoiceFormatController extends AppController
         return $template_id;
     }
 
-    function saveInvoiceFormatV2($request, $logo, $merchant_id, $user_id)
-    {
-        $pcarray = [];
-        if (isset($request->particular_col)) {
-            foreach ($request->particular_col as $pc) {
-                $pcarray[$pc] = $_POST['pc_' . $pc];
-            }
-        }
-        $travelConfig = null;
-        if ($request->template_type == 'travel') {
-            $travelConfig = $this->travelConfig($request, $pcarray);
-        }
-        $type = 'create';
-        if ($request->template_id != '') {
-            $template_id = $request->template_id;
 
-            $type = 'update';
-        } else {
-            $template_id = $this->formatModel->getSequenceId('Template_id');
-        }
-        $particular_column = json_encode($pcarray);
-
-        if ($request->template_type == 'construction') {
-            $particular_column = '{"bill_code":"Bill Code","description":"Desc","bill_type":"Bill Type","cost_type":"Cost Type","original_contract_amount":"Original Contract Amount","approved_change_order_amount":"Approved Change Order Amount","current_contract_amount":"Current Contract Amount","previously_billed_percent":"Previously Billed Percent","previously_billed_amount":"Previously Billed Amount","current_billed_percent":"Current Billed Percent","current_billed_amount":"Current Billed Amount","previously_stored_materials":"Previously Stored Materials","current_stored_materials":"Current Stored Materials","stored_materials":"Materials Presently Stored","total_billed":"Total Billed (including this draw)","retainage_percent":"Retainage %","retainage_amount_previously_withheld":"Retainage Amount Previously Withheld","retainage_amount_for_this_draw":"Retainage amount for this draw","net_billed_amount":"Net Billed Amount","retainage_release_amount":"Retainage Release Amount","total_outstanding_retainage":"Total outstanding retainage","project":"Project","cost_code":"Cost Code","group":"Group","bill_code_detail":"Bill code detail"}';
-        }
-
-        $data['template_id'] = $template_id;
-        $data['merchant_id'] = $merchant_id;
-        $data['user_id'] = $user_id;
-        $data['template_name'] = $request->template_name;
-        $data['template_type'] = $request->template_type;
-        $data['particular_column'] = $particular_column;
-        $data['default_particular'] = json_encode($request->particularname);
-        $data['default_tax'] = json_encode($request->tax_id);
-        $data['particular_total'] = 'Particular total';
-        $data['tax_total'] = 'Tax total';
-        $data['tnc'] = $request->tnc;
-        $data['properties'] = $travelConfig;
-        $data['design_name'] = $request->design_name;
-        $data['design_color'] = $request->design_color;
-        $data['footer_note'] = $request->template_fooer_msg;
-        $data['plugin'] = $this->getPlugins();
-        $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
-        $data['image_path'] = $logo;
-        $data['invoice_title'] = 'Performa Invoice';
-        $data['created_date'] = date('Y-m-d');
-        $data['created_by'] = $this->user_id;
-        $data['last_update_by'] = $this->user_id;
-
-        if ($type == 'update') {
-            InvoiceFormat::where('template_id',  $template_id)->update($data);
-            InvoiceColumnMetadata::where('template_id',  $template_id)->update(['is_active' => 0]);
-        } else {
-            InvoiceFormat::insert($data);
-        }
-
-        return $template_id;
-    }
 
 
     public function saveMetadata($request, $template_id)
