@@ -152,7 +152,9 @@ class MasterController extends AppController
             $list[$ck]->encrypted_id = Encrypt::encode($row->id);
         }
         $data['list'] = $list;
-        $data['datatablejs'] = 'table-no-export';
+        $data['list_name'] = 'project_list';
+        $data['datatablejs'] = 'table-no-export-tablestatesave'; //old value - table-no-export
+
         return view('app/merchant/project/list', $data);
     }
 

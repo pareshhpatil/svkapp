@@ -55,8 +55,9 @@ class Template extends Controller
             }
 
             $this->view->header_file = ['list'];
+            $this->view->list_name = 'invoice_format_list';
             $this->view->render('header/app');
-            $this->view->datatablejs = 'table-small';
+            $this->view->datatablejs = 'table-small-statesave'; //old value - table-small
             $this->smarty->display(VIEW . 'merchant/template/list.tpl');
             $this->view->render('footer/list');
         } catch (Exception $e) {

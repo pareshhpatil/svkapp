@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class OrderController extends Controller
 {
@@ -139,14 +140,30 @@ class OrderController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
+
+        //store last search criteria into Redis
+        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+        $redis_items = json_decode($getRediscache, 1); 
+        if(isset($request->from_date) || isset($request->contract_id)) {
+            $redis_items['change_order_list']['search_param'] = $_POST;
+            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
+        }
+        //find last search criteria into Redis 
+        if(isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param']!=null) {
+            $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['from_date']);
+            $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['to_date']);
+            $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
+        }
+
         $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id']);
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
         }
         $data['list'] = $list;
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
-        $data['datatablejs'] = 'table-no-export';
+        $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
+        $data['list_name'] = 'change_order_list';
         $data['customer_name'] = 'Customer name';
         $data['customer_code'] = 'Customer code';
 

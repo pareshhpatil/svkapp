@@ -72,4 +72,7 @@
         <!-- END PAGE CONTENT-->
     </div>
     <!-- END CONTENT -->
+    <script>
+        list_name = '{{$list_name}}';
+    </script>
 @endsection

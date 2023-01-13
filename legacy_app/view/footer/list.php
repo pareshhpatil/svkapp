@@ -66,7 +66,7 @@ if($_SESSION['session_date_format'] == 'M d yyyy'){
 <script>
     var sum_col = '<?php echo $this->sum_column; ?>';
     var show_all_records = '<?php echo $this->show_all_records?>';
-    
+    var list_name = '<?php echo $this->list_name?>';
     jQuery(document).ready(function () {
 
 
