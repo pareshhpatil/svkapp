@@ -50,6 +50,9 @@
                                                     <li>
                                                         <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}" onclick="setUpdateMaster('{{$role->encrypted_id}}','{{$role->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
+                                                    <li>
+                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/roles/delete/{!! $role->id !!}'" data-toggle="modal"><i class="fa fa-remove"></i> Delete</a>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -65,4 +68,25 @@
         <!-- END PAGE CONTENT-->
     </div>
     <!-- END CONTENT -->
+
+    <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Delete Role</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure want to delete this role ?</p>
+                    <p>Users assign to this role will not able tp perform assigned permission action after delete!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                    <a href="" id="deleteanchor" class="btn delete">Confirm</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 @endsection

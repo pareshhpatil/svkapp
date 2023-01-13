@@ -440,6 +440,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('roles/create', 'Merchant\RolesController@store');
   Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');
   Route::post('roles/{id}/edit', 'Merchant\RolesController@update')->name('merchant.roles.update');
+  Route::get('roles/delete/{id}', 'Merchant\RolesController@delete');
 });
 
 Route::get('/merchant/register/thankyou/new', 'Merchant\SubUserController@verifyMail');

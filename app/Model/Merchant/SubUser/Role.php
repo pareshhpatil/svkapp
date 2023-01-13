@@ -7,6 +7,7 @@ use App\Constants\Models\ITable;
 use App\Model\Merchant\SubUser\Permission;
 use App\Model\Base;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Model\Merchant\SubUser\Role
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Role extends Base
 {
+    use SoftDeletes;
+    
     protected $table = ITable::BRIQ_ROLES;
 
     /**

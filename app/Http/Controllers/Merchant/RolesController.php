@@ -122,7 +122,11 @@ class RolesController extends AppController
         return view('app/merchant/roles/edit', $data);
     }
 
-
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update($id, Request $request)
     {
         try {
@@ -155,6 +159,32 @@ class RolesController extends AppController
             (new RoleHelper())->updateRolePermissions($Role->id, $permissions);
             
             return redirect()->to('merchant/roles')->with('success', "Role has been updated");
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+
+            return redirect()->to('merchant/roles')->with('error', "Something went wrong!");
+        }
+    }
+
+    /**
+     * @param $roleID
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete($roleID)
+    {
+        try {
+            DB::table(ITable::BRIQ_ROLES_PERMISSIONS)
+                ->where(IColumn::ROLE_ID, $roleID)
+                ->delete();
+
+            DB::table(ITable::BRIQ_USER_ROLES)
+                ->where(IColumn::ROLE_ID, $roleID)
+                ->delete();
+
+
+            Role::find($roleID)->delete();
+
+            return redirect()->to('merchant/roles')->with('success', "Role has been deleted");
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
 

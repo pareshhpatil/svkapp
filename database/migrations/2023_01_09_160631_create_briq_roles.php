@@ -34,6 +34,7 @@ class CreateBriqRoles extends Migration
             $table->string('created_by', 10);
             $table->string('last_updated_by', 10);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
