@@ -8,6 +8,7 @@ use App\Model\Invoice;
 use App\Model\Master;
 use App\Model\Order;
 use App\Libraries\Encrypt;
+use Illuminate\Support\Facades\Gate;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -39,6 +40,10 @@ class OrderController extends Controller
 
     public function create($version = '', $errors = null, $link = null, $type = null, Request $request)
     {
+        if (Gate::denies('create', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         Helpers::hasRole(2, 27);
         $title = 'create';
 

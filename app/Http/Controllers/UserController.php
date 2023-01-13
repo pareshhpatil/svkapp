@@ -286,6 +286,10 @@ class UserController extends Controller
      */
     public function setLoginSession($user)
     {
+        $role = $user->role() ? $user->role()->role_name : '';
+        
+        $permissions = $user->permissions() ?? [];
+
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
         Session::put('display_name', $user->first_name);
@@ -296,6 +300,8 @@ class UserController extends Controller
         Session::put('system_user_id', Encrypt::encode($user->user_id));
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
+        Session::put('user_role', $role);
+        Session::put('permissions', $permissions);
 
         $preference = $this->user_model->getPreferences($user->user_id);
 

@@ -458,3 +458,18 @@ Breadcrumbs::for('merchant.cost-types.edit', function ($trail) {
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Cost Types', url('/merchant/cost-types/index'));
 });
+
+Breadcrumbs::for('merchant.subusers.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list');
+});
+
+Breadcrumbs::for('merchant.subusers.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list', url('/merchant/subusers'));
+    $trail->push('Create sub-merchant');
+});

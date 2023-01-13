@@ -426,7 +426,23 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 
   Route::any('inbox', 'NotificationsController@index')->name('inbox.index');
+  
+  //Sub Merchants
+  Route::get('subusers', 'Merchant\SubUserController@index')->name('merchant.subusers.index');
+  Route::get('subusers/create', 'Merchant\SubUserController@create')->name('merchant.subusers.create');
+  Route::post('subusers/create', 'Merchant\SubUserController@store');
+  Route::get('subusers/delete/{id}', 'Merchant\SubUserController@delete');
+  Route::get('register/verifyemail/new', 'Merchant\SubUserController@verifyMail');
+
+  //Sub Merchants Roles
+  Route::get('roles', 'Merchant\RolesController@index')->name('merchant.rolescost-types.index');
+  Route::get('roles/create', 'Merchant\RolesController@create')->name('merchant.roles.create');
+  Route::post('roles/create', 'Merchant\RolesController@store');
+  Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');
+  Route::post('roles/{id}/edit', 'Merchant\RolesController@update')->name('merchant.roles.update');
 });
+
+Route::get('/merchant/register/thankyou/new', 'Merchant\SubUserController@verifyMail');
 
 Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/view/{payment_request_id}', 'PaymentLinkController@view');
