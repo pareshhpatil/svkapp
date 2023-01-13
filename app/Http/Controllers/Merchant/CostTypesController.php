@@ -35,8 +35,7 @@ class CostTypesController extends AppController
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
         $data['costTypes'] = $this->repository->all();
-        $data['list_name'] = 'cost_type_list';
-        $data['datatablejs'] = 'table-no-export-tablestatesave';  //old value - table-no-export
+        $data['datatablejs'] = 'table-no-export';
 
         return view('app/merchant/cost-types/index', $data);
     }

@@ -118,7 +118,4 @@
     <!-- /.modal-dialog -->
 </div>
 
-<script>
-    list_name = '{{$list_name}}';
- </script>
 @endsection

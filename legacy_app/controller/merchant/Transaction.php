@@ -902,7 +902,7 @@ class Transaction extends Controller
             }
             $this->view->hide_first_col = true;
             $this->smarty->assign("bulklist", $list);
-            $this->view->datatablejs = 'table-small-no-export';
+            $this->view->datatablejs = 'table-small-no-export-statesave';  //old value table-small-no-export
             $this->view->selectedMenu = array(5, 30);
             $this->view->title = 'Bulk upload transactions';
             $this->smarty->assign('title', $this->view->title);
@@ -914,7 +914,7 @@ class Transaction extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
+            $this->view->list_name = 'bulk_upload_transaction_list';
             $this->view->header_file = ['bulkupload'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/transaction/settlementupload.tpl');

@@ -941,20 +941,19 @@ class Ajax extends Controller
 
     public function saveDatatableSearchParam() {
         try {
-            if (env('APP_ENV1') == 'LOCAL') {
-                //store last search criteria into Redis
-                $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-                $redis_items = json_decode($getRediscache, 1); 
-                if(isset($_POST['state'])) {
-                    //dd(json_decode($_POST['state'],1));
-                    $redis_items[$_POST['list_name']]['datatable_param'] = json_decode($_POST['state'],1);
-                    Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-                }
-                //find last search criteria into Redis 
-                if($redis_items!=null) {
-                    echo json_encode($redis_items[$_POST['list_name']]['datatable_param']);
-                }
+            //store last search criteria into Redis
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1); 
+            if(isset($_POST['state'])) {
+                $datatable_state = json_decode($_POST['state'],1);
+                unset($datatable_state['columns']);
+                $redis_items[$_POST['list_name']]['datatable_param'] = $datatable_state;
+                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             }
+            //find last search criteria into Redis 
+            // if($redis_items[$_POST['list_name']]['datatable_param']!=null) {
+            //     echo json_encode($redis_items[$_POST['list_name']]['datatable_param']);
+            // }
         } catch (Exception $e) {
             Sentry\captureException($e);
             SwipezLogger::error(__CLASS__, '[EC001-3]Error while saveDatatableSearchParam Error: for user id [' . $this->user_id . '] and list '. $_POST['list_name'] . $e->getMessage());
@@ -963,12 +962,10 @@ class Ajax extends Controller
 
     public function getDatatableSearchParam($list_name) {
         try {
-            if (env('APP_ENV1') == 'LOCAL') {
-                //store last search criteria into Redis
-                $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-                $redis_items = json_decode($getRediscache, 1); 
-                echo json_encode($redis_items[$list_name]['datatable_param']);
-            }
+            //store last search criteria into Redis
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1); 
+            echo json_encode($redis_items[$list_name]['datatable_param']);
         } catch (Exception $e) {
             Sentry\captureException($e);
             SwipezLogger::error(__CLASS__, '[EC001-3]Error while getDatatableSearchParam Error: for user id [' . $this->user_id . '] and list '. $list_name . $e->getMessage());
