@@ -90,6 +90,23 @@
                                             <input type="hidden"  value="{{$project_data->sequence_number}}"  name="sequence_id"/>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Users <span class="required">*
+                                            </span></label>
+                                        <div class="col-md-5">
+                                            <select multiple="multiple" id="users_multiselect" class="form-control" name="users[]">
+                                                @foreach($users_list as $v)
+                                                <option value="{{$v->user_id}}"> {{$v->user_id}} | {{$v->email}}</option>
+                                                    @foreach($project_data->users as $v2)
+                                                    <option 
+                                                    @if($v2 == $v->user_id) selected @endif 
+                                                    value="{{$v->user_id}}"> {{$v->user_id}} | {{$v->email}}</option>
+                                                    @endforeach
+                                               
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -112,4 +129,12 @@
     </div>
 </div>
 <!-- END CONTENT -->
+@endsection
+
+@section('footer')
+<script>
+    $(document).ready(function() {
+        $('#users_multiselect').select2();
+    });
+</script>
 @endsection
