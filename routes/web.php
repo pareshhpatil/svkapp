@@ -435,7 +435,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('register/verifyemail/new', 'Merchant\SubUserController@verifyMail');
 
   //Sub Merchants Roles
-  Route::get('roles', 'Merchant\RolesController@index')->name('merchant.rolescost-types.index');
+  Route::get('roles', 'Merchant\RolesController@index')->name('merchant.roles.index');
   Route::get('roles/create', 'Merchant\RolesController@create')->name('merchant.roles.create');
   Route::post('roles/create', 'Merchant\RolesController@store');
   Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');

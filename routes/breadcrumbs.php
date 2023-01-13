@@ -473,3 +473,26 @@ Breadcrumbs::for('merchant.subusers.create', function ($trail) {
     $trail->push('Submerchant list', url('/merchant/subusers'));
     $trail->push('Create sub-merchant');
 });
+
+Breadcrumbs::for('merchant.roles.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles');
+});
+
+Breadcrumbs::for('merchant.roles.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles list', url('/merchant/roles'));
+    $trail->push('Create Role');
+});
+
+Breadcrumbs::for('merchant.roles.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles list', url('/merchant/roles'));
+    $trail->push('Edit Role');
+});
