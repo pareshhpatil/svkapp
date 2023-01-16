@@ -66,7 +66,8 @@ class Subscription extends Controller
 
             $this->setAjaxDatatableSession();
             $this->view->ajaxpage = 'subscription.php';
-
+            $this->view->showLastRememberSearchCriteria = true;
+            $this->view->list_name = 'subscription_list';
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/subscription/list.tpl');

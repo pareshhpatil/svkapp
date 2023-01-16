@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Report controller class to handle reports for merchant
  */
@@ -107,13 +106,11 @@ class Report extends Controller
         try {
             $user_id = $this->session->get('userid');
 
+            $redis_items = $this->getSearchParamRedis('aging_summary_report');
+            
             $aging_selected = isset($_POST['aging']) ? $_POST['aging'] : 4;
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
             $interval = isset($_POST['interval']) ? $_POST['interval'] : 15;
-
-            $this->smarty->assign("interval", $interval);
-            $this->smarty->assign("aging_by_selected", $aging_by_selected);
-            $this->smarty->assign("aging_selected", $aging_selected);
 
             $customer_selected = isset($_POST['customer_name']) ? $_POST['customer_name'] : '';
             $customer_list = $this->model->getMerchantCustomer($this->merchant_id);
@@ -163,6 +160,16 @@ class Report extends Controller
                 $customer_name = '';
                 $aging_by = 'bill_date';
             }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['aging_summary_report']['search_param']) && $redis_items['aging_summary_report']['search_param']!=null) {
+                $from_date = $redis_items['aging_summary_report']['search_param']['payment_status'];
+                $to_date = $redis_items['aging_summary_report']['search_param']['column_name'];
+                $interval = $redis_items['aging_summary_report']['search_param']['interval'];
+                $aging_by_selected = $redis_items['aging_summary_report']['search_param']['aging_by'];
+                $aging_selected = $redis_items['aging_summary_report']['search_param']['aging'];
+            }
+
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
             $this->smarty->assign("session_date_format", $this->session->get('default_date_format'));
@@ -174,9 +181,12 @@ class Report extends Controller
                 $reportlist = $this->model->get_ReportAgingSummary($user_id, $fromdate->format('Y-m-d'), $todate->format('Y-m-d'), $aging_selected, $interval, $aging_by);
             }
 
+            $this->smarty->assign("interval", $interval);
+            $this->smarty->assign("aging_by_selected", $aging_by_selected);
+            $this->smarty->assign("aging_selected", $aging_selected);
             $this->smarty->assign("reportlist", $reportlist);
             $this->smarty->assign("title", "Aging summary");
-            $this->view->datatablejs = 'table-sum-ellipsis-small';
+            $this->view->datatablejs = 'table-sum-ellipsis-small-statesave';  //old value table-sum-ellipsis-small
             $this->view->title = "Aging summary";
 
             //Breadcumbs array start
@@ -190,6 +200,7 @@ class Report extends Controller
 
             $this->view->sum_column = $aging_selected + 3;
             $this->view->header_file = ['list'];
+            $this->view->list_name = 'aging_summary_report';
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/aging_summary.tpl');
             $this->view->render('footer/list');
@@ -204,13 +215,13 @@ class Report extends Controller
     function agingdetails()
     {
         try {
+           
+            $redis_items = $this->getSearchParamRedis('agingdetails_report');
+
             $user_id = $this->session->get('userid');
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
             $customer_selected = isset($_POST['customer_name']) ? $_POST['customer_name'] : '';
             $customer_list = $this->model->getMerchantCustomer($this->merchant_id);
-            $this->smarty->assign("customer_selected", $customer_selected);
-            $this->smarty->assign("customer_list", $customer_list);
-            $this->smarty->assign("aging_by_selected", $aging_by_selected);
             $current_date = date("d M Y");
 
             $last_date = $this->getLast_date();
@@ -228,9 +239,20 @@ class Report extends Controller
                 $aging_by = 'bill_date';
             }
 
+             //find last search criteria into Redis 
+             if(isset($redis_items['agingdetails_report']['search_param']) && $redis_items['agingdetails_report']['search_param']!=null) {
+                $from_date = $redis_items['agingdetails_report']['search_param']['from_date'];
+                $to_date = $redis_items['agingdetails_report']['search_param']['to_date'];
+                $customer_selected = $redis_items['agingdetails_report']['search_param']['customer_name'];
+                $aging_by_selected = $redis_items['agingdetails_report']['search_param']['aging_by'];
+            }
+
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
             $this->smarty->assign("session_date_format", $this->session->get('default_date_format'));
+            $this->smarty->assign("customer_selected", $customer_selected);
+            $this->smarty->assign("customer_list", $customer_list);
+            $this->smarty->assign("aging_by_selected", $aging_by_selected);
             $_SESSION["session_date_format"] = $this->session->get('default_date_format');
 
             $fromdate = new DateTime($from_date);
@@ -253,11 +275,12 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-ellipsis-small';
+            $this->view->datatablejs = 'table-ellipsis-small-statesave'; //old value table-ellipsis-small
             $this->view->sum_column = $reportlist[0]['display_invoice_no'] + 9;
             $this->view->startDate = $merchant_start_date;
             $this->view->show_all_records = 1;
             $this->view->header_file = ['list'];
+            $this->view->list_name = 'agingdetails_report';
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/aging_detail.tpl');
             $this->view->render('footer/list');
@@ -273,6 +296,10 @@ class Report extends Controller
     {
         try {
             $user_id = $this->session->get('userid');
+
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1);
+
             #SwipezLogger::info(__CLASS__, "Invoice details invoked by $user_id");
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
             $cycle_selected = isset($_POST['billing_cycle_name']) ? $_POST['billing_cycle_name'] : '';
@@ -293,10 +320,7 @@ class Report extends Controller
             $addcolumn[] = array('column_name' => 'Franchise name');
             $addcolumn[] = array('column_name' => 'Vendor name');
             $column_list = array_merge($addcolumn, $column_list);
-            $this->smarty->assign("column_list", $column_list);
-            $this->smarty->assign("customer_list", $customer_list);
-            $this->smarty->assign("customer_selected", $customer_selected);
-            $this->smarty->assign("aging_by_selected", $aging_by_selected);
+            
             $statuslist = $this->model->getStatusList();
             if (empty($statuslist)) {
                 SwipezLogger::warn(__CLASS__, '[E006]Fetching empty payment request status list for merchant [' . $user_id . '] ');
@@ -305,6 +329,8 @@ class Report extends Controller
             }
 
             $current_date = date("d M Y");
+            $franchise_id = 0;
+            $vendor_id = 0;
 
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
@@ -313,9 +339,13 @@ class Report extends Controller
                 $to_date = $_POST['to_date'];
                 $customer_name = $_POST['customer_id'];
                 $aging_by = $_POST['aging_by'];
-                $this->smarty->assign("checkedlist", $_POST['status']);
+                
                 $status = implode(',', $_POST['status']);
                 $column_select = $_POST['column_name'];
+
+                //update or add search criteria into redis
+                $redis_items['invoicedetails_report'.$type]['search_param'] = $_POST;
+                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -324,7 +354,22 @@ class Report extends Controller
                 $status = '';
                 $column_select = array();
             }
-
+            //find last search criteria into Redis 
+            if(isset($redis_items['invoicedetails_report'.$type]['search_param']) && $redis_items['invoicedetails_report'.$type]['search_param']!=null) {
+                $from_date = $redis_items['invoicedetails_report'.$type]['search_param']['from_date'];
+                $to_date = $redis_items['invoicedetails_report'.$type]['search_param']['to_date'];
+                $cycle_selected = $redis_items['invoicedetails_report'.$type]['search_param']['billing_cycle_name'];
+                $customer_selected = $redis_items['invoicedetails_report'.$type]['search_param']['customer_id'];
+                $aging_by_selected =  $redis_items['invoicedetails_report'.$type]['search_param']['aging_by'];
+                $_POST['status'] = $redis_items['invoicedetails_report'.$type]['search_param']['status'];
+                $status = implode(',', $_POST['status']);
+                $group = $_POST['group'] = $redis_items['invoicedetails_report'.$type]['search_param']['group'];
+                $column_select = $redis_items['invoicedetails_report'.$type]['search_param']['column_name'];
+                $franchise_id = $_POST['franchise_id'] = $redis_items['invoicedetails_report'.$type]['search_param']['franchise_id'];
+                $vendor_id = $_POST['vendor_id'] = $redis_items['invoicedetails_report'.$type]['search_param']['vendor_id'];
+            }
+            $this->view->showLastRememberSearchCriteria = true;
+            
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
 
@@ -332,6 +377,11 @@ class Report extends Controller
 
             $this->smarty->assign("cycle_selected", $cycle_selected);
             $this->smarty->assign("cycle_list", $cycle_list);
+            $this->smarty->assign("column_list", $column_list);
+            $this->smarty->assign("customer_list", $customer_list);
+            $this->smarty->assign("customer_selected", $customer_selected);
+            $this->smarty->assign("aging_by_selected", $aging_by_selected);
+            $this->smarty->assign("checkedlist", $_POST['status']);
             if (count($column_select) > 5) {
                 $column_select = array();
                 $this->smarty->assign("haserrors", "Column name selected more than 5 values");
@@ -360,8 +410,9 @@ class Report extends Controller
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
             $group = isset($_POST['group']) ? $_POST['group'] : '';
-            $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : 0;
-            $vendor_id = isset($_POST['vendor_id']) ? $_POST['vendor_id'] : 0;
+            $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : $franchise_id;
+            $vendor_id = isset($_POST['vendor_id']) ? $_POST['vendor_id'] : $vendor_id;
+            
             if ($this->view->franchise == 1) {
                 $sub_franchise_id = $this->session->get('sub_franchise_id');
                 if ($sub_franchise_id > 0) {
@@ -459,6 +510,7 @@ class Report extends Controller
             //Breadcumbs array end
 
             $this->view->header_file = ['list'];
+            $this->view->list_name= 'invoicedetails_report'.$type;
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/invoice_detail.tpl');
             $this->view->render('footer/request_list');
@@ -478,6 +530,9 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            $redis_items = $this->getSearchParamRedis('tax_details_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -494,6 +549,15 @@ class Report extends Controller
                 $aging_by = 'last_update_date';
                 $column_select = array();
                 $template_id = '';
+            }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['tax_details_report']['search_param']) && $redis_items['tax_details_report']['search_param']!=null) {
+                $from_date = $redis_items['tax_details_report']['search_param']['from_date'];
+                $to_date = $redis_items['tax_details_report']['search_param']['to_date'];
+                $template_id = $redis_items['tax_details_report']['search_param']['template_id'];
+                $column_select = $redis_items['tax_details_report']['search_param']['column_name'];
+                $_POST['status'] = $redis_items['tax_details_report']['search_param']['status'];
             }
 
             $status_selected = isset($_POST['status']) ? $_POST['status'] : '';
@@ -704,7 +768,8 @@ class Report extends Controller
                 }
                 $this->common->excelexport('TaxDetails', $exportlist);
             }
-            $this->view->datatablejs = 'table-small';
+            $this->view->list_name = 'tax_details_report';
+            $this->view->datatablejs = 'table-small-statesave';  //table-small old value
             $this->smarty->assign("reportlist", $reportlist);
             $this->view->sum_column = 9;
             $this->setAjaxDatatableSession();
@@ -745,6 +810,10 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            //check last search criteria into Redis is exist or not 
+            $redis_items = $this->getSearchParamRedis('ledger_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -755,6 +824,14 @@ class Report extends Controller
                 $customer_name = '';
                 $status = '';
             }
+            //find last search criteria into Redis  
+            if(isset($redis_items['ledger_report']['search_param']) && $redis_items['ledger_report']['search_param']!=null) {
+                $_POST['customer_name'] = $redis_items['ledger_report']['search_param']['customer_name'];
+                $status = $redis_items['ledger_report']['search_param']['status'];
+                $from_date = $redis_items['ledger_report']['search_param']['from_date'];
+                $to_date = $redis_items['ledger_report']['search_param']['to_date'];
+            }
+
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
             $column_list[] = array('column_name' => 'Customer code');
@@ -852,9 +929,9 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-small-nosort';
+            $this->view->datatablejs = 'table-small-nosort-statesave';  //table-small-nosort old value
             $this->view->hide_first_col = true;
-
+            $this->view->list_name = 'ledger_report';
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/ledger' . $type . '.tpl');
@@ -957,12 +1034,13 @@ class Report extends Controller
     function collections()
     {
         try {
-
-
             $current_date = date("d M Y");
-
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            //check last search criteria into Redis is exist or not 
+            $redis_items = $this->getSearchParamRedis('collection_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -977,9 +1055,18 @@ class Report extends Controller
                 $aging_by = 'last_update_date';
                 $status = '';
             }
+
+            //find last search criteria into Redis  
+            if(isset($redis_items['collection_report']['search_param']) && $redis_items['collection_report']['search_param']!=null) {
+                $mode = $redis_items['collection_report']['search_param']['mode'];
+                $source = $redis_items['collection_report']['search_param']['source'];
+                $from_date = $redis_items['collection_report']['search_param']['from_date'];
+                $to_date = $redis_items['collection_report']['search_param']['to_date'];
+            }
+            $this->view->showLastRememberSearchCriteria = true;
+            
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
-
 
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
@@ -1029,6 +1116,7 @@ class Report extends Controller
             $this->view->sum_column = 6;
             $this->setAjaxDatatableSession();
             $this->view->ajaxpage = 'collections.php';
+            $this->view->list_name= 'collection_report';
             $this->view->title = "Collections";
 
             //Breadcumbs array start
@@ -1059,7 +1147,7 @@ class Report extends Controller
 
             $customer_list = $this->model->getMerchantCustomer($this->merchant_id);
             $column_list = $this->model->getColumnList($user_id);
-            $this->smarty->assign("customer_selected", $customer_selected);
+            
             $this->smarty->assign("customer_list", $customer_list);
 
             $addcolumn[] = array('column_name' => 'Email');
@@ -1074,6 +1162,9 @@ class Report extends Controller
 
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+            
+            $redis_items = $this->getSearchParamRedis('payment_received_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -1087,6 +1178,17 @@ class Report extends Controller
                 $aging_by = 'last_update_date';
                 $status = '';
             }
+
+            //find last search criteria into Redis  
+            if(isset($redis_items['payment_received_report']['search_param']) && $redis_items['payment_received_report']['search_param']!=null) {
+                $column_select = $redis_items['payment_received_report']['search_param']['column_name'];
+                $from_date = $redis_items['payment_received_report']['search_param']['from_date'];
+                $to_date = $redis_items['payment_received_report']['search_param']['to_date'];
+                $customer_selected = $redis_items['payment_received_report']['search_param']['customer_name'];
+                $franchise_id = $redis_items['payment_received_report']['search_param']['franchise_id'];
+                $vendor_id = $redis_items['payment_received_report']['search_param']['vendor_id'];
+            }
+            $this->view->showLastRememberSearchCriteria = true;
 
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
@@ -1133,6 +1235,7 @@ class Report extends Controller
                 }
                 $this->smarty->assign("franchise_list", $franchise_list);
             }
+            
             $vendor_id = isset($_POST['vendor_id']) ? $_POST['vendor_id'] : 0;
             if ($this->view->vendor_enable == 1) {
                 $this->smarty->assign("vendor_id", $vendor_id);
@@ -1196,7 +1299,7 @@ class Report extends Controller
             }
             $customer_group = $this->common->getListValue('customer_group', 'merchant_id', $this->merchant_id, 1, $where);
             $this->smarty->assign("customer_group", $customer_group);
-
+            $this->smarty->assign("customer_selected", $customer_selected);
             $this->smarty->assign("reportlist", $reportlist);
             $this->view->sum_column = 11;
             $this->smarty->assign("title", "Invoice payments");
@@ -1204,7 +1307,7 @@ class Report extends Controller
             $this->setAjaxDatatableSession();
             $this->view->ajaxpage = 'paymentreceived.php';
             $this->view->title = "Payment received";
-
+            $this->view->list_name = 'payment_received_report';
             //Breadcumbs array start
             $breadcumbs_array = array(
                 array('title' => 'Reports', 'url' => '/merchant/report'),
@@ -1233,6 +1336,11 @@ class Report extends Controller
             $this->view->merchantType = $this->session->get('merchant_type');
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
+            
+            //check last search criteria into Redis is exist or not 
+            $redis_items = $this->getSearchParamRedis('web_payment_received_report'.$xwaytype);
+
+            $franchise_id = 0;
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
@@ -1243,6 +1351,18 @@ class Report extends Controller
                 $to_date = $current_date;
                 $cycle_name = "";
             }
+             //find last search criteria into Redis  
+             if(isset($redis_items['web_payment_received_report'.$xwaytype]['search_param']) && $redis_items['web_payment_received_report'.$xwaytype]['search_param']!=null) {
+                $from_date = $redis_items['web_payment_received_report'.$xwaytype]['search_param']['from_date'];
+                $to_date = $redis_items['web_payment_received_report'.$xwaytype]['search_param']['to_date'];
+
+                if($xwaytype==null) {
+                    $franchise_id = $redis_items['web_payment_received_report'.$xwaytype]['search_param']['franchise_id'];
+                } else {
+                    $franchise_id = 0;
+                }
+            }
+            $this->view->showLastRememberSearchCriteria = true;
 
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
@@ -1251,8 +1371,7 @@ class Report extends Controller
 
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
-
-            $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : 0;
+            $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : $franchise_id;   //chnaged by darshana - old value is 0;
 
             if ($this->view->franchise == 1) {
                 $sub_franchise_id = $this->session->get('sub_franchise_id');
@@ -1274,7 +1393,7 @@ class Report extends Controller
             $colspan = 12;
 
             $this->view->title = 'Website payments';
-
+            
             if ($xwaytype == 'form') {
                 $type = 2;
                 $sumcol = 6;
@@ -1323,9 +1442,10 @@ class Report extends Controller
             $this->smarty->assign("has_franchise", $this->session->get('has_franchise'));
             $this->smarty->assign("type", $type);
             $this->smarty->assign("transactionlist", $transactionlist);
+            $this->view->list_name = 'web_payment_received_report'.$xwaytype;
             $this->view->datatablejs = 'table-sum-ellipsis-large';
             $this->smarty->assign("title", $this->view->title);
-
+            
             //Breadcumbs array start
             $breadcumbs_array = array(
                 array('title' => 'Reports', 'url' => '/merchant/report'),
@@ -1354,13 +1474,19 @@ class Report extends Controller
             $this->smarty->assign("column_list", $column_list);
 
             $current_date = date("d M Y");
-
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1);
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $column_select = $_POST['column_name'];
+
+                $redis_items['payment_tdr_report']['search_param'] = $_POST;
+                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1368,6 +1494,13 @@ class Report extends Controller
                 $aging_by = 'last_update_date';
                 $status = '';
             }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['payment_tdr_report']['search_param']) && $redis_items['payment_tdr_report']['search_param']!=null) {
+                $from_date = $redis_items['payment_tdr_report']['search_param']['from_date'];
+                $to_date = $redis_items['payment_tdr_report']['search_param']['to_date'];
+            }
+            $this->view->showLastRememberSearchCriteria = true;
 
             if (count($column_select) > 5) {
                 $column_select = array();
@@ -1406,7 +1539,7 @@ class Report extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
+            $this->view->list_name = 'payment_tdr_report';
             $this->setAjaxDatatableSession();
             $this->view->ajaxpage = 'paymenttdr.php';
             $this->view->header_file = ['list'];
@@ -1425,11 +1558,12 @@ class Report extends Controller
     {
         try {
             $user_id = $this->session->get('userid');
-
             $current_date = date("d M Y");
-
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            $redis_items = $this->getSearchParamRedis('payment_settlement_summary_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -1440,6 +1574,13 @@ class Report extends Controller
                 $column_select = array();
                 $aging_by = 'last_update_date';
                 $status = '';
+            }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['payment_settlement_summary_report']['search_param']) && $redis_items['payment_settlement_summary_report']['search_param']!=null) {
+                $from_date = $redis_items['payment_settlement_summary_report']['search_param']['from_date'];
+                $to_date = $redis_items['payment_settlement_summary_report']['search_param']['to_date'];
+                $_POST['franchise_id'] = $redis_items['payment_settlement_summary_report']['search_param']['franchise_id'];
             }
 
             $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : 0;
@@ -1501,8 +1642,9 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-sum-ellipsis-small';
+            $this->view->datatablejs = 'table-sum-ellipsis-small-statesave';  //table-sum-ellipsis-small
             //$this->view->datatablejs = 'table-small';
+            $this->view->list_name = 'payment_settlement_summary_report';
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/transaction_settlement_summary.tpl');
@@ -1525,9 +1667,11 @@ class Report extends Controller
             } else {
                 $settlement_id = 0;
             }
-
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
+
+            $redis_items = $this->getSearchParamRedis('payment_settlement_details_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -1539,6 +1683,13 @@ class Report extends Controller
                 $aging_by = 'last_update_date';
                 $status = '';
             }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['payment_settlement_details_report']['search_param']) && $redis_items['payment_settlement_details_report']['search_param']!=null) {
+                $from_date = $redis_items['payment_settlement_details_report']['search_param']['from_date'];
+                $to_date = $redis_items['payment_settlement_details_report']['search_param']['to_date'];
+            }
+
             $this->smarty->assign("has_franchise", $this->session->get('has_franchise'));
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
@@ -1566,9 +1717,9 @@ class Report extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
+            $this->view->list_name = 'payment_settlement_details_report';
             $this->view->table_default_length = true;
-            $this->view->datatablejs = 'table-small';
+            $this->view->datatablejs = 'table-small-statesave';  //table-small
             //$this->view->hide_first_col = 1;
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
@@ -1586,21 +1737,28 @@ class Report extends Controller
     function vendorcommission()
     {
         try {
-
             $current_date = date("d M Y");
-
             $last_date = $this->getLast_date();
+
+            $redis_items = $this->getSearchParamRedis('vendorcommission_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $status = $_POST['status'];
+
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
                 $status = '';
             }
 
-
+            //find last search criteria into Redis 
+            if(isset($redis_items['vendorcommission_report']['search_param']) && $redis_items['vendorcommission_report']['search_param']!=null) {
+                $from_date = $redis_items['vendorcommission_report']['search_param']['from_date'];
+                $to_date = $redis_items['vendorcommission_report']['search_param']['to_date'];
+                $status = $redis_items['vendorcommission_report']['search_param']['status'];
+            }
 
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
@@ -1632,7 +1790,8 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-sum-ellipsis-small';
+            $this->view->datatablejs = 'table-sum-ellipsis-small-statesave';  //table-sum-ellipsis-small old value
+            $this->view->list_name = 'vendorcommission_report';
             //$this->view->datatablejs = 'table-small';
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
@@ -1745,8 +1904,10 @@ class Report extends Controller
         try {
 
             $current_date = date("d M Y");
-
             $last_date = $this->getLast_date();
+
+            $redis_items = $this->getSearchParamRedis('taxsummary_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -1754,6 +1915,13 @@ class Report extends Controller
                 $from_date = $last_date;
                 $to_date = $current_date;
             }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['taxsummary_report']['search_param']) && $redis_items['taxsummary_report']['search_param']!=null) {
+                $from_date = $redis_items['taxsummary_report']['search_param']['from_date'];
+                $to_date = $redis_items['taxsummary_report']['search_param']['to_date'];
+            }
+
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
             $this->smarty->assign("session_date_format", $this->session->get('default_date_format'));
@@ -1782,7 +1950,8 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-small';
+            $this->view->datatablejs = 'table-small-statesave';  //old value - table-small
+            $this->view->list_name = 'taxsummary_report';
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/tax_summary.tpl');
@@ -1801,6 +1970,9 @@ class Report extends Controller
 
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
+
+            $redis_items = $this->getSearchParamRedis('refunddetails_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -1808,6 +1980,12 @@ class Report extends Controller
                 $from_date = $last_date;
                 $to_date = $current_date;
             }
+            //find last search criteria into Redis 
+            if(isset($redis_items['refunddetails_report']['search_param']) && $redis_items['refunddetails_report']['search_param']!=null) {
+                $from_date = $redis_items['refunddetails_report']['search_param']['from_date'];
+                $to_date = $redis_items['refunddetails_report']['search_param']['to_date'];
+            }
+
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
             $this->smarty->assign("session_date_format", $this->session->get('default_date_format'));
@@ -1834,7 +2012,8 @@ class Report extends Controller
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
 
-            $this->view->datatablejs = 'table-small';
+            $this->view->list_name = 'refunddetails_report';
+            $this->view->datatablejs = 'table-small-statesave';  //table-small old value
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/refund_details.tpl');
@@ -1853,13 +2032,24 @@ class Report extends Controller
 
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
+
+            $redis_items = $this->getSearchParamRedis('disputedetails_report');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
+
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
             }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['disputedetails_report']['search_param']) && $redis_items['disputedetails_report']['search_param']!=null) {
+                $from_date = $redis_items['disputedetails_report']['search_param']['from_date'];
+                $to_date = $redis_items['disputedetails_report']['search_param']['to_date'];
+            }
+
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
             $this->smarty->assign("session_date_format", $this->session->get('default_date_format'));
@@ -1885,8 +2075,8 @@ class Report extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
-            $this->view->datatablejs = 'table-small';
+            $this->view->list_name = 'disputedetails';
+            $this->view->datatablejs = 'table-small-statesave';  //table-small
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/dispute_details.tpl');
@@ -1905,6 +2095,9 @@ class Report extends Controller
         $where = '';
         $current_date = date("d M Y");
         $last_date = $this->getLast_date();
+
+        $redis_items = $this->getSearchParamRedis('formbuilder_report');
+
         if (isset($_POST['from_date'])) {
             $from_date = $_POST['from_date'];
             $to_date = $_POST['to_date'];
@@ -1914,10 +2107,20 @@ class Report extends Controller
             if ($_POST['status'] != '') {
                 $where .= " and status=" . $_POST['status'];
             }
+           
         } else {
             $from_date = $last_date;
             $to_date = $current_date;
         }
+
+        //find last search criteria into Redis 
+        if(isset($redis_items['formbuilder_report']['search_param']) && $redis_items['formbuilder_report']['search_param']!=null) {
+            $from_date = $redis_items['formbuilder_report']['search_param']['from_date'];
+            $to_date = $redis_items['formbuilder_report']['search_param']['to_date'];
+            $_POST['form_id'] = $redis_items['formbuilder_report']['search_param']['form_id'];
+            $_POST['status'] = $redis_items['formbuilder_report']['search_param']['status'];
+        }
+
         $this->smarty->assign("from_date", $from_date);
         $this->smarty->assign("to_date", $to_date);
 
@@ -1991,7 +2194,8 @@ class Report extends Controller
         $this->smarty->assign("links", $breadcumbs_array);
         //Breadcumbs array end
 
-        $this->view->datatablejs = 'table-small';
+        $this->view->list_name = 'formbuilder_report';
+        $this->view->datatablejs = 'table-small-statesave';  //old value - table-small
         $this->view->header_file = ['list'];
         $this->view->render('header/app');
         $this->smarty->display(VIEW . 'merchant/report/formtransaction.tpl');
@@ -2086,12 +2290,25 @@ class Report extends Controller
         try {
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
+
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1);
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
+
+                $redis_items['productsalesreport']['search_param'] = $_POST;
+                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
+            }
+
+            //find last search criteria into Redis 
+            if(isset($redis_items['productsalesreport']['search_param']) && $redis_items['productsalesreport']['search_param']!=null) {
+                $from_date = $redis_items['productsalesreport']['search_param']['from_date'];
+                $to_date = $redis_items['productsalesreport']['search_param']['to_date'];
             }
 
             $this->smarty->assign("from_date", $this->generic->formatDateString($from_date));
@@ -2123,8 +2340,8 @@ class Report extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
-            $this->view->datatablejs = 'table-small';
+            $this->view->list_name = 'productsalesreport';
+            $this->view->datatablejs = 'table-small-statesave';  //old value - table-small
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/report/product_wise_sales_report.tpl');

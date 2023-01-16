@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PaymentWrapperController;
 use App\Model\BookingCalendar;
+use Illuminate\Support\Facades\Redis;
 
 /**
  * Controls transaction listing for merchant
@@ -36,7 +37,7 @@ class Transaction extends Controller
             if (isset($_POST['export'])) {
                 $export = 1;
             }
-
+           
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -47,13 +48,23 @@ class Transaction extends Controller
                 $cycle_name = "";
             }
 
+            $redis_items = $this->getSearchParamRedis('invoice_transaction_list');
+            
+            //find last search criteria into Redis 
+            if(isset($redis_items['invoice_transaction_list']['search_param']) && $redis_items['invoice_transaction_list']['search_param']!=null) {
+                $from_date = $redis_items['invoice_transaction_list']['search_param']['from_date'];
+                $to_date = $redis_items['invoice_transaction_list']['search_param']['to_date'];
+                $cycle_name = $_POST['cycle_name'] = $redis_items['invoice_transaction_list']['search_param']['cycle_name'];
+                $_POST['status'] = $redis_items['invoice_transaction_list']['search_param']['status'];;
+            }
+            
             $cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             if ($page_type == 'event') {
                 $cycle_list = $this->model->getMerchantEventList($this->session->get('userid'));
                 $this->view->datatablejs = 'table-sum-ellipsis-large';
                 $this->view->sum_column = 4;
             } else {
-                $this->view->datatablejs = 'table-small';
+                $this->view->datatablejs = 'table-small-statesave'; //old value table-small
                 $cycle_list = $this->model->getMerchantSpecificcycleList($this->session->get('userid'));
             }
 
@@ -235,7 +246,7 @@ class Transaction extends Controller
             $this->view->js = array('transaction');
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
-
+            $this->view->list_name='invoice_transaction_list';
             $pg_vendor_id = $this->common->getRowValue('vendor_id', 'merchant_fee_detail', 'merchant_id', $this->merchant_id, 1);
             $this->smarty->assign("pg_vendor_id", $pg_vendor_id);
 
@@ -308,16 +319,29 @@ class Transaction extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
+            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+            $redis_items = json_decode($getRediscache, 1); 
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $cycle_name = $_POST['cycle_name'];
+
+                $redis_items['xway_transaction_list_'.$xwaytype]['search_param'] = $_POST;
+                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
                 $cycle_name = "";
             }
 
+            //find last search criteria into Redis 
+            if(isset($redis_items['xway_transaction_list_'.$xwaytype]['search_param']) && $redis_items['xway_transaction_list_'.$xwaytype]['search_param']!=null) {
+                $from_date = $redis_items['xway_transaction_list_'.$xwaytype]['search_param']['from_date'];
+                $to_date = $redis_items['xway_transaction_list_'.$xwaytype]['search_param']['to_date'];
+                $status_selected = $_POST['status'] = $redis_items['xway_transaction_list_'.$xwaytype]['search_param']['status'];
+            }
+            
             $this->smarty->assign("from_date", $from_date);
             $this->smarty->assign("to_date", $to_date);
             $status_selected = isset($_POST['status']) ? $_POST['status'] : '';
@@ -376,8 +400,8 @@ class Transaction extends Controller
             $this->smarty->assign("pg_vendor_id", $pg_vendor_id);
 
             $this->view->hide_first_col = true;
-            $this->view->datatablejs = 'table-small';
-
+            $this->view->datatablejs = 'table-small-statesave'; //table-small old value
+            $this->view->list_name = 'xway_transaction_list_'.$xwaytype;
 
             //Breadcumbs array start
             $breadcumbs_array = array(
@@ -868,7 +892,7 @@ class Transaction extends Controller
             }
             $this->view->hide_first_col = true;
             $this->smarty->assign("bulklist", $list);
-            $this->view->datatablejs = 'table-small-no-export';
+            $this->view->datatablejs = 'table-small-no-export-statesave';  //old value table-small-no-export
             $this->view->selectedMenu = array(5, 30);
             $this->view->title = 'Bulk upload transactions';
             $this->smarty->assign('title', $this->view->title);
@@ -880,7 +904,7 @@ class Transaction extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
+            $this->view->list_name = 'bulk_upload_transaction_list';
             $this->view->header_file = ['bulkupload'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/transaction/settlementupload.tpl');
