@@ -265,6 +265,9 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+<script>
+    list_name = '{{$list_name}}';
+    //showLastRememberSearchCriteria = '{{isset($showLastRememberSearchCriteria) ? $showLastRememberSearchCriteria : ''}}';
+ </script>
 
 @endsection

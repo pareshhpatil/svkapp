@@ -677,6 +677,8 @@ class Bulkupload extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
+            $redis_items = $this->getSearchParamRedis('bulk_invoice_list');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
@@ -685,6 +687,13 @@ class Bulkupload extends Controller
                 $to_date = $current_date;
             }
 
+            //find last search criteria into Redis 
+            if(isset($redis_items['bulk_invoice_list']['search_param']) && $redis_items['bulk_invoice_list']['search_param']!=null) {
+                $from_date = $redis_items['bulk_invoice_list']['search_param']['from_date'];
+                $to_date = $redis_items['bulk_invoice_list']['search_param']['to_date'];
+            }
+            //$this->view->showLastRememberSearchCriteria = false;
+            
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
             $list = $this->model->getBulkuploadList($merchant_id, $fromdate->format('Y-m-d'), $todate->format('Y-m-d'));
@@ -701,6 +710,7 @@ class Bulkupload extends Controller
             $_SESSION["session_date_format"] = $this->session->get('default_date_format');
             $this->smarty->assign("bulklist", $list);
             $this->view->title = 'Bulk uploaded invoices';
+            $this->view->list_name = 'bulk_invoice_list';
             $this->smarty->assign('title', $this->view->title);
 
             //Breadcumbs array start
@@ -712,7 +722,7 @@ class Bulkupload extends Controller
             //Breadcumbs array end
 
             $this->view->canonical = 'merchant/bulkupload/viewlist';
-            $this->view->datatablejs = 'table-small-no-export';
+            $this->view->datatablejs = 'table-small-no-export-statesave';  //table-small-no-export old value
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/bulkupload/list.tpl');

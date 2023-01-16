@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Redis;
 class Controller
 {
 
@@ -875,5 +875,16 @@ class Controller
                 app('sentry')->captureException($e);
             }
         }
+    }
+
+    function getSearchParamRedis($list_name=null) {
+        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
+        $redis_items = json_decode($getRediscache, 1); 
+
+        if (!empty($_POST)) {
+            $redis_items[$list_name]['search_param'] = $_POST;
+            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
+        }
+        return $redis_items;
     }
 }

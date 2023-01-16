@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Payment request functionality for viewing payment requests, confirming and invoking payment gateway
  * 
@@ -40,19 +39,32 @@ class Paymentrequest extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
+            $redis_items = $this->getSearchParamRedis('invoice_estimate_list');
+
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $invoice_status = $_POST['invoice_status'];
+                $cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
                 $invoice_status = '0';
+                $cycle_selected = '';
             }
 
+            //find last search criteria into Redis 
+            if(isset($redis_items['invoice_estimate_list']['search_param']) && $redis_items['invoice_estimate_list']['search_param']!=null) {
+                $from_date = $redis_items['invoice_estimate_list']['search_param']['from_date'];
+                $to_date = $redis_items['invoice_estimate_list']['search_param']['to_date'];
+                $invoice_status = $redis_items['invoice_estimate_list']['search_param']['invoice_status'];
+                $_POST['invoice_type'] = $redis_items['invoice_estimate_list']['search_param']['invoice_type'];
+            }
+            $this->view->showLastRememberSearchCriteria = true;
+            
             $fromdate = new DateTime($from_date);
             $todate = new DateTime($to_date);
-            $cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
+            //$cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             $cycle_list = array();
             #$cycle_list = $this->model->getCycleList($this->session->get('userid'), $fromdate->format('Y-m-d'), $todate->format('Y-m-d'));
 
@@ -88,6 +100,7 @@ class Paymentrequest extends Controller
             $this->view->selectedMenu = array(5, 28);
             $this->view->hide_first_col = true;
             $this->view->hide_col_index = 4;
+            $this->view->list_name = 'invoice_estimate_list';
             $this->view->title = 'Invoice / Estimate list';
             $this->view->js = array('transaction');
 

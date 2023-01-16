@@ -357,6 +357,9 @@ class SSP
         }
         // Combine the filters into a single string
         $where = "";
+        if (count($globalSearch)) {
+            $where = '(' . implode(' OR ', $globalSearch) . ')';
+        }
         if (self::$franchise_id > 0) {
             if ($where == '') {
                 $where = " franchise_id=" . self::$franchise_id;
@@ -381,9 +384,7 @@ class SSP
                 $where .= " AND is_paid=" . $invoice_status;
             }
         }
-        if (count($globalSearch)) {
-            $where = '(' . implode(' OR ', $globalSearch) . ')';
-        }
+       
 
         if (count($columnSearch)) {
             $where = $where === '' ?
