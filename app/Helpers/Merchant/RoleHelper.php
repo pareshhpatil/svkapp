@@ -54,4 +54,22 @@ class RoleHelper
                     ->pluck(IColumn::PERMISSION_SLUG)
                     ->toArray();
     }
+
+    /**
+     * @param $roleID
+     * @return void
+     */
+    public function deleteRole($roleID)
+    {
+        DB::table(ITable::BRIQ_ROLES_PERMISSIONS)
+            ->where(IColumn::ROLE_ID, $roleID)
+            ->delete();
+
+        DB::table(ITable::BRIQ_USER_ROLES)
+            ->where(IColumn::ROLE_ID, $roleID)
+            ->delete();
+
+
+        Role::find($roleID)->delete();
+    }
 }

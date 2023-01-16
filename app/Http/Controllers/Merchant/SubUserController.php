@@ -3,22 +3,17 @@
 namespace App\Http\Controllers\Merchant;
 
 use App\Constants\Models\IColumn;
-use App\Constants\Models\IModel;
 use App\Constants\Models\ITable;
 use App\Helpers\Merchant\SubUserHelper;
 use App\Http\Controllers\AppController;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
-use App\Mail\SubUserWelcome;
-use App\Model\Merchant\SubUser\Role;
 use App\Model\Merchant\SubUser\SubUser;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Validator;
 
 class SubUserController extends AppController

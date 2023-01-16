@@ -50,9 +50,11 @@
                                                     <li>
                                                         <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}" onclick="setUpdateMaster('{{$role->encrypted_id}}','{{$role->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
-                                                    <li>
-                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/roles/delete/{!! $role->id !!}'" data-toggle="modal"><i class="fa fa-remove"></i> Delete</a>
-                                                    </li>
+                                                    @if($role->name != 'Admin')
+                                                        <li>
+                                                            <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/roles/delete/{!! $role->id !!}'" data-toggle="modal"><i class="fa fa-remove"></i> Delete</a>
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </td>
@@ -78,7 +80,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure want to delete this role ?</p>
-                    <p>Users assign to this role will not able tp perform assigned permission action after delete!</p>
+                    <p>Users assign to this role will not able to perform assigned permission action after delete!</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn default" data-dismiss="modal">Close</button>

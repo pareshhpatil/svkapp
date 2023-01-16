@@ -18,6 +18,11 @@ class OrderPolicy
      */
     public function viewAny(User $user)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+           return true;
+        }
+
         return $user->hasPermission('create-change-order');
     }
 
@@ -28,8 +33,13 @@ class OrderPolicy
      * @param  Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Order $order)
+    public function view(User $user, Order $Order)
     {
+        unset($Order);
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
         return $user->hasPermission('create-change-order');
     }
 
@@ -41,6 +51,10 @@ class OrderPolicy
      */
     public function create(User $user)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
         return $user->hasPermission('create-change-order');
     }
 
@@ -48,11 +62,15 @@ class OrderPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Order $order)
+    public function update(User $user)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
         return $user->hasPermission('approve-change-order');
     }
 
@@ -60,19 +78,23 @@ class OrderPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Order $order)
+    public function delete(User $user)
     {
-        //
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Order $order)
@@ -84,11 +106,15 @@ class OrderPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Order  $order
+     * @param  Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Order $order)
     {
-        //
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+        return false;
     }
 }

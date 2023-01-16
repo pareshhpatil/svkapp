@@ -102,6 +102,10 @@ class OrderController extends Controller
 
     public function save(Request $request)
     {
+        if (Gate::denies('create', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         $validator = Validator::make($request->all(), [
             'order_no' => 'required',
             'order_date' => 'required'
@@ -139,6 +143,10 @@ class OrderController extends Controller
 
     public function list(Request $request)
     {
+        if (Gate::denies('viewAny', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         $dates = Helpers::setListDates();
         $title = 'Change Order list';
         $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
@@ -168,6 +176,10 @@ class OrderController extends Controller
 
     public function delete($link)
     {
+        if (Gate::denies('delete', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         if ($link) {
             $id = Encrypt::decode($link);
             $this->masterModel->deleteTableRow('order', 'order_id', $id, $this->merchant_id, $this->user_id);
@@ -179,6 +191,10 @@ class OrderController extends Controller
 
     public function approve(Request $request)
     {
+        if (Gate::denies('update', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
             $request->approved_date = Helpers::sqlDate($request->approved_date);
@@ -202,6 +218,10 @@ class OrderController extends Controller
 
     public function update($link)
     {
+        if (Gate::denies('update', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -252,6 +272,10 @@ class OrderController extends Controller
 
     public function approved($link)
     {
+        if (Gate::denies('update', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -296,6 +320,10 @@ class OrderController extends Controller
 
     public function updatesave(Request $request)
     {
+        if (Gate::denies('update', Order::class)) {
+            abort('403', 'Unauthorized action.');
+        }
+
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $request->totalcost = str_replace(',', '', $request->totalcost);
@@ -322,7 +350,7 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
-        return redirect('merchant/order/list')->with('success', "Change Order has been updated");
+        return redirect('mercha  nt/order/list')->with('success', "Change Order has been updated");
     }
 
     public function getprojectdetails($project_id)

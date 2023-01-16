@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Merchant;
 
-use App\Constants\Models\IColumn;
-use App\Constants\Models\ITable;
 use App\Helpers\Merchant\RoleHelper;
 use App\Http\Controllers\AppController;
 use App\Libraries\Helpers;
@@ -12,7 +10,6 @@ use App\Model\Merchant\SubUser\Role;
 use App\Repositories\Merchant\RolesRepository;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Validator;
 
@@ -173,16 +170,7 @@ class RolesController extends AppController
     public function delete($roleID)
     {
         try {
-            DB::table(ITable::BRIQ_ROLES_PERMISSIONS)
-                ->where(IColumn::ROLE_ID, $roleID)
-                ->delete();
-
-            DB::table(ITable::BRIQ_USER_ROLES)
-                ->where(IColumn::ROLE_ID, $roleID)
-                ->delete();
-
-
-            Role::find($roleID)->delete();
+            (new RoleHelper())->deleteRole($roleID);
 
             return redirect()->to('merchant/roles')->with('success', "Role has been deleted");
         } catch (Exception $exception) {
