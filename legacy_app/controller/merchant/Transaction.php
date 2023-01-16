@@ -48,26 +48,16 @@ class Transaction extends Controller
                 $cycle_name = "";
             }
 
-            //find last search criteria into Redis
-            if (env('APP_ENV1') == 'LOCAL') {
-                $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-                $redis_items = json_decode($getRediscache, 1); 
-
-                //update or add search criteria
-                if (isset($_POST['from_date'])) {
-                    $redis_items['invoice_transaction_list']['search_param'] = $_POST;
-                    Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-                }
-                //find last search criteria into Redis 
-                if(isset($redis_items['invoice_transaction_list']['search_param']) && $redis_items['invoice_transaction_list']['search_param']!=null) {
-                    $from_date = $redis_items['invoice_transaction_list']['search_param']['from_date'];
-                    $to_date = $redis_items['invoice_transaction_list']['search_param']['to_date'];
-                    $cycle_name = $_POST['cycle_name'] = $redis_items['invoice_transaction_list']['search_param']['cycle_name'];
-                    $_POST['status'] = $redis_items['invoice_transaction_list']['search_param']['status'];;
-                }
+            $redis_items = $this->getSearchParamRedis('invoice_transaction_list');
+            
+            //find last search criteria into Redis 
+            if(isset($redis_items['invoice_transaction_list']['search_param']) && $redis_items['invoice_transaction_list']['search_param']!=null) {
+                $from_date = $redis_items['invoice_transaction_list']['search_param']['from_date'];
+                $to_date = $redis_items['invoice_transaction_list']['search_param']['to_date'];
+                $cycle_name = $_POST['cycle_name'] = $redis_items['invoice_transaction_list']['search_param']['cycle_name'];
+                $_POST['status'] = $redis_items['invoice_transaction_list']['search_param']['status'];;
             }
-
-
+            
             $cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             if ($page_type == 'event') {
                 $cycle_list = $this->model->getMerchantEventList($this->session->get('userid'));

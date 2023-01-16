@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Redis;
 /**
  * Payment request functionality for viewing payment requests, confirming and invoking payment gateway
  * 
@@ -40,17 +39,13 @@ class Paymentrequest extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('invoice_estimate_list');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $invoice_status = $_POST['invoice_status'];
                 $cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
-
-                $redis_items['invoice_estimate_list']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -976,27 +971,5 @@ class Paymentrequest extends Controller
         return $path;
         //imagepng($img);
         //imagedestroy($img);  
-    }
-
-    function savePSearch() {
-        try {
-            if (env('APP_ENV1') == 'LOCAL') {
-                //store last search criteria into Redis
-                $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-                $redis_items = json_decode($getRediscache, 1); 
-                if(isset($_POST['state'])) {
-                    //dd(json_decode($_POST['state'],1));
-                    $redis_items['customer_list']['datatable_param'] = json_decode($_POST['state'],1);
-                    Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-                }
-                //find last search criteria into Redis 
-                if($redis_items!=null) {
-                    echo json_encode($redis_items['customer_list']['datatable_param']);
-                }
-            }
-        } catch (Exception $e) {
-            Sentry\captureException($e);
-            SwipezLogger::error(__CLASS__, '[EC001-3]Error while savecustomerSearch Error: for user id [' . $this->user_id . '] ' . $e->getMessage());
-        }
     }
 }

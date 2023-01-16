@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 
 class OrderController extends Controller
 {
@@ -141,14 +140,9 @@ class OrderController extends Controller
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
 
-        //store last search criteria into Redis
-        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-        $redis_items = json_decode($getRediscache, 1); 
-        if(isset($request->from_date) || isset($request->contract_id)) {
-            $redis_items['change_order_list']['search_param'] = $_POST;
-            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-        }
         //find last search criteria into Redis 
+        $redis_items = $this->getSearchParamRedis('change_order_list',$this->merchant_id);
+        
         if(isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param']!=null) {
             $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['from_date']);
             $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['to_date']);

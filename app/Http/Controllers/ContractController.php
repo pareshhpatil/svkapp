@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 
 class ContractController extends Controller
 {
@@ -429,13 +428,8 @@ class ContractController extends Controller
         $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
         
         //store last search criteria into Redis
-        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-        $redis_items = json_decode($getRediscache, 1); 
-
-        if(isset($request->from_date) || isset($request->project_id)) {
-            $redis_items['contract_list']['search_param'] = $_POST;
-            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-        }
+        $redis_items = $this->getSearchParamRedis('contract_list',$this->merchant_id);
+       
         //find last search criteria into Redis 
         if(isset($redis_items['contract_list']['search_param']) && $redis_items['contract_list']['search_param']!=null) {
             $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['contract_list']['search_param']['from_date']);

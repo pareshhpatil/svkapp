@@ -677,15 +677,11 @@ class Bulkupload extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('bulk_invoice_list');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
-
-                $redis_items['bulk_invoice_list']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;

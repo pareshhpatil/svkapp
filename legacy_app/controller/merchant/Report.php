@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Redis;
 /**
  * Report controller class to handle reports for merchant
  */
@@ -107,10 +106,8 @@ class Report extends Controller
         try {
             $user_id = $this->session->get('userid');
 
-            //store last search criteria into Redis
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
-
+            $redis_items = $this->getSearchParamRedis('aging_summary_report');
+            
             $aging_selected = isset($_POST['aging']) ? $_POST['aging'] : 4;
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
             $interval = isset($_POST['interval']) ? $_POST['interval'] : 15;
@@ -157,9 +154,6 @@ class Report extends Controller
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $aging_by = $_POST['aging_by'];
-
-                $redis_items['aging_summary_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -221,8 +215,8 @@ class Report extends Controller
     function agingdetails()
     {
         try {
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+           
+            $redis_items = $this->getSearchParamRedis('agingdetails_report');
 
             $user_id = $this->session->get('userid');
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
@@ -239,9 +233,6 @@ class Report extends Controller
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $aging_by = $_POST['aging_by'];
-
-                $redis_items['agingdetails_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -540,8 +531,7 @@ class Report extends Controller
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('tax_details_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
@@ -552,8 +542,6 @@ class Report extends Controller
                     //$this->smarty->assign("haserrors", 'Columns selected more than 5 values.');
                     // $column_select = array();
                 }
-                $redis_items['tax_details_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -824,16 +812,12 @@ class Report extends Controller
             $this->view->checkedlist = '';
 
             //check last search criteria into Redis is exist or not 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('ledger_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $customer_name = $_POST['customer_name'];
-                //update or add new search criteria into Redis
-                $redis_items['ledger_report']['search_param']  = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1050,25 +1034,18 @@ class Report extends Controller
     function collections()
     {
         try {
-            
-
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
 
             //check last search criteria into Redis is exist or not 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('collection_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $mode = $_POST['mode'];
                 $source = $_POST['source'];
-
-                //update or add new search criteria into Redis
-                $redis_items['collection_report']['search_param']  = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1186,19 +1163,13 @@ class Report extends Controller
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
             
-            //check last search criteria into Redis is exist or not 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('payment_received_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $customer_name = $_POST['customer_name'];
                 $column_select = $_POST['column_name'];
-
-                //update or add new search criteria into Redis
-                $redis_items['payment_received_report']['search_param']  = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1367,18 +1338,14 @@ class Report extends Controller
             $current_date = date('d M Y');
             
             //check last search criteria into Redis is exist or not 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('web_payment_received_report'.$xwaytype);
+
             $franchise_id = 0;
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $cycle_name = $_POST['cycle_name'];
-
-                //update or add new search criteria into Redis
-                $redis_items['web_payment_received_report'.$xwaytype]['search_param']  = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1595,17 +1562,12 @@ class Report extends Controller
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('payment_settlement_summary_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $column_select = $_POST['column_name'];
-
-                //update or add search criteria
-                $redis_items['payment_settlement_summary_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1708,16 +1670,12 @@ class Report extends Controller
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('payment_settlement_details_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $column_select = $_POST['column_name'];
-
-                $redis_items['payment_settlement_details_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -1782,16 +1740,12 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('vendorcommission_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $status = $_POST['status'];
-                
-                $redis_items['vendorcommission_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
 
             } else {
                 $from_date = $last_date;
@@ -1952,15 +1906,11 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('taxsummary_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
-
-                $redis_items['taxsummary_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -2021,15 +1971,11 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('refunddetails_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
-
-                $redis_items['refunddetails_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -2087,15 +2033,12 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
+            $redis_items = $this->getSearchParamRedis('disputedetails_report');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
 
-                $redis_items['disputedetails_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -2153,8 +2096,7 @@ class Report extends Controller
         $current_date = date("d M Y");
         $last_date = $this->getLast_date();
 
-        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-        $redis_items = json_decode($getRediscache, 1);
+        $redis_items = $this->getSearchParamRedis('formbuilder_report');
 
         if (isset($_POST['from_date'])) {
             $from_date = $_POST['from_date'];
@@ -2165,8 +2107,7 @@ class Report extends Controller
             if ($_POST['status'] != '') {
                 $where .= " and status=" . $_POST['status'];
             }
-            $redis_items['formbuilder_report']['search_param'] = $_POST;
-            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
+           
         } else {
             $from_date = $last_date;
             $to_date = $current_date;

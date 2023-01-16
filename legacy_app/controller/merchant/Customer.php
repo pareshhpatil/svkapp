@@ -649,14 +649,8 @@ class Customer extends Controller
             $group = isset($_POST['group']) ? $_POST['group'] : '';
 
             //store last search criteria into Redis
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1); 
-
-            if(isset($_POST['group']) || isset($_POST['payment_status']) || isset($_POST['column_name'])) {
-                $redis_items['customer_list']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
-            }
-            //find last search criteria into Redis 
+            $redis_items = $this->getSearchParamRedis('customer_list');
+            
             if(isset($redis_items['customer_list']['search_param']) && $redis_items['customer_list']['search_param']!=null) {
                 $payment_status = $redis_items['customer_list']['search_param']['payment_status'];
                 $column_select = $redis_items['customer_list']['search_param']['column_name'];
