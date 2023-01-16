@@ -34,6 +34,7 @@ class RolesController extends AppController
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
         $data['roles'] = $this->repository->all();
+
         $data['datatablejs'] = 'table-no-export';
 
         return view('app/merchant/roles/index', $data);

@@ -18,6 +18,11 @@ class InvoicePolicy
      */
     public function viewAny(User $user)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+
         return true;
     }
 
@@ -30,6 +35,11 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+
         return true;
     }
 
@@ -41,6 +51,11 @@ class InvoicePolicy
      */
     public function create(User $user)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+
         return $user->hasPermission('create-invoice');
     }
 
@@ -53,6 +68,11 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice)
     {
+        // if current user is admin
+        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+            return true;
+        }
+
         return $user->hasPermission('update-invoice');
     }
 

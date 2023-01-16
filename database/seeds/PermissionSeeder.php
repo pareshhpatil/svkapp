@@ -36,6 +36,14 @@ class PermissionSeeder extends Seeder
             [
                 'name'  => 'Approve Change Order',
                 'group' => 'Change Order'
+            ],
+            [
+                'name'  => 'Create Contract',
+                'group' => 'Contract'
+            ],
+            [
+                'name'  => 'Update Contract',
+                'group' => 'Contract'
             ]
         ];
 

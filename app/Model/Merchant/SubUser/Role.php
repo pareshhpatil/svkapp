@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Role extends Base
 {
     use SoftDeletes;
-    
+
     protected $table = ITable::BRIQ_ROLES;
 
     /**
@@ -51,5 +51,13 @@ class Role extends Base
     public function permissions()
     {
         return $this->belongsToMany(Permission::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function usersRoles()
+    {
+        return $this->hasMany(SubUsersRoles::class, 'role_id', 'id');
     }
 }

@@ -23,6 +23,7 @@ interface IColumn
     const  MOBILE_NO = 'mobile_no';
     const  PERMISSION_SLUG = 'permission_slug';
     const  ROLE_ID = 'role_id';
+    const  ROLE_NAME = 'role_name';
     const  SLUG = 'slug';
     const  LAST_UPDATE_BY = 'last_update_by';
     const  LAST_UPDATE_AT = 'last_update_at';

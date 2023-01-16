@@ -20,4 +20,5 @@ interface ITable
     const ORDER = 'order';
     const SEQUENCE = 'sequence';
     const USER = 'user';
+    const INVOICE = 'invoice';
 }
