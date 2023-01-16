@@ -2139,8 +2139,7 @@ class InvoiceController extends AppController
             $invoiceAttachments = [];
             if (!empty($invoicePaymentRequest->plugin_value)) {
                 $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
-
-                if ($pluginValue->has_upload) {
+                if (isset($pluginValue->has_upload)) {
                     //uat.expense/invoices/download 190637995.jpeg
                     $files = $pluginValue->files;
                     foreach ($files as $file) {
@@ -2186,6 +2185,14 @@ class InvoiceController extends AppController
             foreach ($constructionParticulars as $constructionParticular) {
                 $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
                 $particularAttachments = json_decode($constructionParticular->attachments);
+
+                $billCodeAttachments[$billCode->id] = [
+                    'billCodeId' => $billCode->id,
+                    'billCode' => $billCode->code,
+                    'billName' => $billCode->title,
+                    'attachments' => []
+                ];
+
                 if (!empty($particularAttachments)) {
                     foreach ($particularAttachments as $particularAttachment) {
                         $urlExplode = explode('/', $particularAttachment);
@@ -2209,10 +2216,8 @@ class InvoiceController extends AppController
                             $fileContent = base64_encode($body->getContents());
                         }
 
-                        $billCodeAttachments[] = [
-                            'billCodeId' => $billCode->id,
-                            'billCode' => $billCode->title,
-                            'groupName' => $constructionParticular->group,
+
+                        $billCodeAttachments[$billCode->id]['attachments'][] = [
                             'fileName' => $fileName,
                             'fileNameSlug' => Str::slug($fileName, '-'),
                             'fileType' => $fileType,
@@ -3652,10 +3657,10 @@ class InvoiceController extends AppController
                             $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
                             $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
 
-                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount,2);
+                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount, 2);
                             $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
-                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount,2);
-                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount,2);
+                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount, 2);
+                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount, 2);
                         }
                     }
                 }
