@@ -364,4 +364,13 @@ class MasterController extends AppController
         $this->masterModel->saveBilledTransaction($data, $this->user_id);
         return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
     }
+
+    public function noPermission()
+    {
+        $title =  'Permission not granted';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        return view('/errors/no-permission', $data);
+    }
+
+    
 }

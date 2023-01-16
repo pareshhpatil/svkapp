@@ -441,6 +441,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');
   Route::post('roles/{id}/edit', 'Merchant\RolesController@update')->name('merchant.roles.update');
   Route::get('roles/delete/{id}', 'Merchant\RolesController@delete');
+  
+  Route::get('no-permission', 'MasterController@noPermission');
 });
 
 Route::get('/merchant/register/thankyou/new', 'Merchant\SubUserController@verifyMail');
