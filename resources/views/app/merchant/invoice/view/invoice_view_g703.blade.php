@@ -246,7 +246,7 @@
                                 COMPLETED AND
                                 STORED TO DATE<br />
                                 (D+E+F) </td>
-                            <td style="min-width:70px"
+                            <td style="min-width:80px"
                                 class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
                                 %(G ÷ C)
                             </td>
@@ -268,16 +268,36 @@
                     <tbody>
 
                         @foreach ($info['constriuction_details'] as $key => $item)
+
+                        @php 
+                                        if(is_numeric($item['c']))
+                                        {
+                                            $item['c']=number_format($item['c'],2); 
+                                        }
+                                        if(is_numeric($item['e']))
+                                        {
+                                            $item['e']=number_format($item['e'],2); 
+                                        }
+                                        
+                                        if(is_numeric($item['f']))
+                                        {
+                                            $item['f']=number_format($item['f'],2); 
+                                        }
+                                        
+                                        @endphp
                             @if ($item['type'] == 'heading')
                                 <tr>
                                     <td colspan="10" class="border border-gray-500 px-2 py-2 text-left">
 
-                                        <p class="text-sm ">{{ $item['b'] }} </p>
+                                        <p class="text-sm ">{{ $item['b'] }}  </p>
 
 
                                     </td>
                                 </tr>
                             @elseif ($item['type'] == 'footer')
+
+
+                            
                                 <tr>
                                     <td colspan="2" class="border border-gray-500 px-2 py-2   text-center text-black">
 
@@ -308,7 +328,7 @@
                                         $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                         $sub_total_g_by_c = $sub_total_g / $sub_total_c;
                                     @endphp
-                                    <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
                                         <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}}) @else{{ number_format($sub_total_g_by_c * 100,2) }} @endif%</p>
 
                                     </td>

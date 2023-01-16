@@ -197,7 +197,7 @@
 <div class="modal fade" id="basic2" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/merchant/order/approve/">
+            <form action="/merchant/order/approve" method="POST">
                 <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>

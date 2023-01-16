@@ -240,18 +240,18 @@ $header='app.patron.invoice.invoice-master';}
 
 
                         @endphp
-                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600">{{$cper}}</span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
+                        <p class="font-bold text-xs mt-1">a. <span class="font-light border-b border-gray-600">{{number_format($info['percent_rcw'],2)}}</span><span class="font-light"> % of Completed Work <span class="italic ">(Columns D + E on G703)</span></span>  </p>
                         <p class="font-bold text-xs mt-1">b. <span class="font-light border-b border-gray-600"> {{number_format($info['percent_rasm'],2)}} </span><span class="font-light"> % of Stored Material <span class="italic ">(Column F on G703)</span></span>  </p>
                         <p class="font-light text-xs mt-2">Total Retainage <span class="italic ">(Lines 5a + 5b, or Total in Column I of G703)</span> </p>
                     
                     </div>
                             <div>
                                 <p class="font-bold text-xs mt-5"></p>
-                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($a5 < 0)({{str_replace('-','',number_format($a5,2))}}) @else{{number_format($a5,2)}}@endif</p>
+                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($info['total_retainage_amount'] < 0)({{str_replace('-','',number_format($info['total_retainage_amount'],2))}}) @else{{number_format($info['total_retainage_amount'],2)}}@endif</p>
                                <p class="font-bold text-xs border-b   border-gray-600 mt-1">  {{$info['currency_icon']}}
                                 @if($info['total_rasm'] < 0) ({{str_replace('-','',number_format($info['total_rasm'],2))}})@else{{number_format($info['total_rasm'],2)}}@endif</p>
 
-                                @php $total_retainage = $a5+$info['total_f']; if($total_retainage == 0) $total_retainage = $info['total_i']; @endphp
+                                @php $total_retainage = $info['total_retainage']; if($total_retainage == 0) $total_retainage = $info['total_i']; @endphp
                                <p class="font-bold text-xs border-b   border-gray-600 mt-2">  {{$info['currency_icon']}}@if($total_retainage < 0)({{str_replace('-','',number_format($total_retainage,2))}}) @else{{number_format(($total_retainage),2)}}@endif</p>
                               
                              

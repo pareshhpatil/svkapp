@@ -146,7 +146,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                             COMPLETED AND
                                             STORED TO DATE<br/>
                                             (D+E+F) </td>
-                                        <td style="min-width: 70px; border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> %(G ÷ C)
+                                        <td style="width: 60px; border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px; "> %(G ÷ C)
                                         </td>                                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">BALANCE TO
                                             FINISH<br/>
                                             (C – G) </td>
@@ -156,6 +156,31 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                 <tbody>
                                   
                                                         @foreach ($info['constriuction_details'] as $key=>$item)  
+
+                                                        @php 
+                                        if(is_numeric($item['c']))
+                                        {
+                                            $item['c']=number_format($item['c'],2); 
+                                        }
+                                        if(is_numeric($item['e']))
+                                        {
+                                            $item['e']=number_format($item['e'],2); 
+                                        }
+                                        
+                                        if(is_numeric($item['f']))
+                                        {
+                                            $item['f']=number_format($item['f'],2); 
+                                        }
+                                        if(is_numeric($item['d']))
+                                        {
+                                            $item['d']=number_format($item['d'],2); 
+                                        }
+                                        if(is_numeric($item['g']))
+                                        {
+                                            $item['g']=number_format($item['g'],2); 
+                                        }
+                                        
+                                        @endphp
                                  
                                                         @if($item['type']=='heading')
                                     <tr>

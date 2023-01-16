@@ -128,7 +128,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->whereNotIn('payment_request_status', [11,3])
+            ->whereNotIn('payment_request_status', [11, 3])
             ->orderBy('payment_request_id', 'desc')
             ->first();
         if (!empty($retObj)) {
@@ -143,7 +143,7 @@ class Invoice extends ParentModel
         return DB::table('payment_request')
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->whereNotIn('payment_request_status', [11,3])
+            ->whereNotIn('payment_request_status', [11, 3])
             ->where('payment_request_id', '!=', $payment_request_id)
             ->pluck('payment_request_id')
             ->toArray();
@@ -161,7 +161,7 @@ class Invoice extends ParentModel
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->whereNotIn('payment_request_status', [11,3])
+            ->whereNotIn('payment_request_status', [11, 3])
             ->where('payment_request_id', '<>', $payment_request_id);
 
         if (!empty($currentInvoice)) {
@@ -644,6 +644,8 @@ class Invoice extends ParentModel
                 'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
                 'retainage_percent_stored_materials' => $data['retainage_percent_stored_materials'],
                 'retainage_amount_stored_materials' => $data['retainage_amount_stored_materials'],
+                'retainage_amount_previously_stored_materials' => $data['retainage_amount_previously_stored_materials'],
+                'retainage_stored_materials_release_amount' => $data['retainage_stored_materials_release_amount'],
                 'net_billed_amount' => $data['net_billed_amount'],
                 'retainage_release_amount' => $data['retainage_release_amount'],
                 'total_outstanding_retainage' => $data['total_outstanding_retainage'],
@@ -693,6 +695,8 @@ class Invoice extends ParentModel
                     'retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'],
                     'retainage_percent_stored_materials' => $data['retainage_percent_stored_materials'],
                     'retainage_amount_stored_materials' => $data['retainage_amount_stored_materials'],
+                    'retainage_amount_previously_stored_materials' => $data['retainage_amount_previously_stored_materials'],
+                    'retainage_stored_materials_release_amount' => $data['retainage_stored_materials_release_amount'],
                     'net_billed_amount' => $data['net_billed_amount'],
                     'retainage_release_amount' => $data['retainage_release_amount'],
                     'total_outstanding_retainage' => $data['total_outstanding_retainage'],
