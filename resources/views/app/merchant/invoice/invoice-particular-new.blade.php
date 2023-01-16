@@ -1129,7 +1129,12 @@
                                 if(field.retainage_release_amount === undefined || field.retainage_release_amount === null)
                                     field.retainage_release_amount = 0;
 
-                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_previously_stored_materials) + getamt(field.retainage_amount_for_this_draw) + getamt(field.retainage_amount_stored_materials) - getamt(field.retainage_release_amount)  - getamt(field.retainage_stored_materials_release_amount) );
+                                total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_previously_stored_materials) + getamt(field.retainage_amount_for_this_draw) + getamt(field.retainage_amount_stored_materials) - getamt(field.retainage_release_amount)  - getamt(field.retainage_stored_materials_release_amount) );
+                                if(total_outstanding_retainage=='')
+                                {
+                                    total_outstanding_retainage=0;
+                                }
+                                field.total_outstanding_retainage =total_outstanding_retainage;
                             } catch (o) {}
 
                             try {
@@ -1208,7 +1213,12 @@
                         document.getElementById('total_rapw').innerHTML = updateTextView1(total_rapw);
                         document.getElementById('total_rad').innerHTML = updateTextView1(total_rad);
                         document.getElementById('total_rra').innerHTML = updateTextView1(total_rra);
-                        document.getElementById('total_tor').innerHTML = updateTextView1(total_tor);
+                        total_tor=updateTextView1(total_tor);
+                        if(total_tor=='')
+                        {
+                            total_tor=0;
+                        }
+                        document.getElementById('total_tor').innerHTML = total_tor;
                         document.getElementById('total_rasm').innerHTML = updateTextView1(total_rasm);
 
                         document.getElementById('total_rapsm').innerHTML = updateTextView1(total_rapsm);

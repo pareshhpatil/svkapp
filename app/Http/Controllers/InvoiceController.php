@@ -3652,7 +3652,7 @@ class InvoiceController extends AppController
                             $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
                             $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
 
-                            $particulars[$k]->previously_billed_amount = $previousBilledAmount;
+                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount,2);
                             $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
                             $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount,2);
                             $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount,2);
@@ -3680,7 +3680,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
                         $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
-                        $cop[$v["bill_code"]]->bill_type = '';
+                        $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
