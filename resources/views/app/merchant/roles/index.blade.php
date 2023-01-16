@@ -50,7 +50,7 @@
                                                     <li>
                                                         <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}" onclick="setUpdateMaster('{{$role->encrypted_id}}','{{$role->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
-                                                    @if($role->name != 'Admin')
+                                                    @if($role->usersRoles->count() == 0 &&$role->name != 'Admin')
                                                         <li>
                                                             <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/roles/delete/{!! $role->id !!}'" data-toggle="modal"><i class="fa fa-remove"></i> Delete</a>
                                                         </li>
