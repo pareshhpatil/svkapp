@@ -23,7 +23,7 @@ class OrderPolicy
            return true;
         }
 
-        return $user->hasPermission('create-change-order');
+        return true;
     }
 
     /**
@@ -40,7 +40,7 @@ class OrderPolicy
         if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
             return true;
         }
-        return $user->hasPermission('create-change-order');
+        return true;
     }
 
     /**
@@ -71,7 +71,7 @@ class OrderPolicy
         if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
             return true;
         }
-        return $user->hasPermission('approve-change-order');
+        return $user->hasPermission('update-change-order');
     }
 
     /**
@@ -87,6 +87,7 @@ class OrderPolicy
         if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
             return true;
         }
+
         return false;
     }
 
