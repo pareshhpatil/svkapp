@@ -3519,7 +3519,7 @@ class InvoiceController extends AppController
                     }
                 } else {
                     $title =  'removed row';
-                    $revision_array[$table_name][$key] = array('title' => $title, 'type' => 'remove', 'old_value' => $old_particular[$key], 'new_value' => $new_particular[$key]);
+                    $revision_array[$table_name][$key] = array('title' => $title, 'type' => 'remove', 'old_value' => $old_particular[$key], 'new_value' => '');
                 }
             }
 

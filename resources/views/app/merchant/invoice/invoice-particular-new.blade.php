@@ -798,6 +798,15 @@
                     reCalculateOriginalContractAmount(id){
                         let total = 0;
                         for( let f =0; f < this.fields.length; f++){
+
+                            var exist=true;
+                            try{
+                                exist=this.fields[p].pint
+                            }catch(o){
+                                var exist=false;
+                            }
+                            if (exist != false) {
+
                             let currentValue = this.fields[f];
                             let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                             total = Number(total) + Number(getamt(amount));
@@ -820,6 +829,7 @@
                             this.calc(currentValue);
                             // this.fields[index].introw = index;
                         }
+                    }
                     },
                     reCalculateCalculatedRowValue(field){ console.log(field);
                         let rowsIncludedInCalculation = JSON.parse($('#calculated_row'+field.pint).val());
@@ -878,6 +888,13 @@
                     validateParticulars(){
                         this.goAhead = true;
                         for(let p=0; p < particularray.length;p++){
+                            var exist=true;
+                            try{
+                                exist=this.fields[p].pint
+                            }catch(o){
+                                var exist=false;
+                            }
+                            if (exist != false) {
                             let pint = this.fields[p].pint;
                             if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
                                 $('#cell_bill_code_' + pint).addClass(' error-corner');
@@ -914,6 +931,7 @@
                                 }
                             }
                         }
+                    }
                         if( this.goAhead === true)
                         {
                             document.getElementById("frm_invoice").submit();
@@ -1749,10 +1767,15 @@
                             let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
                             $('#'+dropboxContainer).css('z-index',4);
                         });
-
-                        $("#table-scroll").scroll(function(){
+                        try{
+                            $("#table-scroll").scroll(function(){
                             document.querySelector('#'+type+id).close();
                         });
+                        }catch(o)
+                        {
+
+                        }
+                        
 
                     },
                     closeAttachmentPanel(){
