@@ -29,7 +29,7 @@ class SubUserHelper
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
 //            ->where('user_group_type', 2)
-            ->whereIn('user_status', [19, 20])
+            ->whereIn('user_status', [19, 20, 15])
             ->get()
             ->collect();
 
