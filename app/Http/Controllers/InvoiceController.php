@@ -3725,7 +3725,9 @@ class InvoiceController extends AppController
                 }
 
                 foreach ($row as $kr => $kv) {
-                    $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
+                    if ($kr != 'pint') {
+                        $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
+                    }
                 }
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);
