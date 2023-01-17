@@ -17,6 +17,7 @@ use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
 use App\Http\Traits\InvoiceFormatTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Validator;
 use Exception;
@@ -174,6 +175,10 @@ class InvoiceController extends AppController
 
     public function create(Request $request, $link = null, $update = null)
     {
+        if (Gate::denies('create', Invoice::class)) {
+            return redirect('/merchant/no-permission');
+        }
+
         $cycleName = date('M-Y') . ' Bill';
         $invoice_number = '';
         $bill_date = '';
@@ -369,6 +374,10 @@ class InvoiceController extends AppController
      */
     public function update($link, $staging = 0, $revision = 0)
     {
+        if (Gate::denies('update', Invoice::class)) {
+            return redirect('/merchant/no-permission');
+        }
+
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -3202,6 +3211,9 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
+        if (Gate::denies('create', Invoice::class)) {
+            return redirect('/merchant/no-permission');
+        }
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
             if ($function_id == 9) {
@@ -3267,8 +3279,11 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
+        if (Gate::denies('update', Invoice::class)) {
+            return redirect('/merchant/no-permission');
+        }
         ini_set('max_execution_time', 120);
-//        dd($request);
+
         try {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);

@@ -41,7 +41,7 @@ class OrderController extends Controller
     public function create($version = '', $errors = null, $link = null, $type = null, Request $request)
     {
         if (Gate::denies('create', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         Helpers::hasRole(2, 27);
@@ -103,7 +103,7 @@ class OrderController extends Controller
     public function save(Request $request)
     {
         if (Gate::denies('create', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         $validator = Validator::make($request->all(), [
@@ -144,7 +144,7 @@ class OrderController extends Controller
     public function list(Request $request)
     {
         if (Gate::denies('viewAny', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         $dates = Helpers::setListDates();
@@ -177,7 +177,7 @@ class OrderController extends Controller
     public function delete($link)
     {
         if (Gate::denies('delete', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         if ($link) {
@@ -192,7 +192,7 @@ class OrderController extends Controller
     public function approve(Request $request)
     {
         if (Gate::denies('update', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         if (isset($request->link)) {
@@ -219,7 +219,7 @@ class OrderController extends Controller
     public function update($link)
     {
         if (Gate::denies('update', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         $title = 'Update';
@@ -273,7 +273,7 @@ class OrderController extends Controller
     public function approved($link)
     {
         if (Gate::denies('update', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         $title = 'Approved';
@@ -321,7 +321,7 @@ class OrderController extends Controller
     public function updatesave(Request $request)
     {
         if (Gate::denies('update', Order::class)) {
-            abort('403', 'Unauthorized action.');
+            return redirect('/merchant/no-permission');
         }
 
         $id = Encrypt::decode($request->link);
