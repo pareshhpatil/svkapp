@@ -186,7 +186,7 @@
 
 
                                                 <input :id="`introw${field.introw}`" type="hidden" :value="field.introw" x-model="field.introw" name="pint[]">
-                                                <input :id="`index${field.introw}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
+                                                <input :id="`index${field.introw}`" type="hidden" :value="field.introw" x-model="field.introw" name="rowindex[]">
                                             @break
 
                                             @case('retainage_amount')
@@ -209,7 +209,7 @@
                                 @endforeach
 
                                 <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                    <button type="button" class="btn btn-xs red" @click="removeRow(field, index)">&times;</button>
+                                    <button type="button" class="btn btn-xs red" @click="removeRow(field, `${index}`)">&times;</button>
                                     <template x-if="count === index">
                                     <span>
                                         <a href="javascript:;" @click="await addNewRow();" class="btn btn-xs green">+</a>
@@ -591,54 +591,57 @@
                     let valid = true;
                     this.copyBillCodeGroups();
                     for(let p=0; p < this.fields.length; p++){
-                        let introw = this.fields[p].introw;
-                        if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
-                            $('#cell_bill_code_' + introw).addClass(' error-corner');
-                            addPopover('cell_bill_code_' + introw, "Please select Bill code");
-                            valid = false
-                        }else{
-                            $('#cell_bill_code_' + introw).removeClass(' error-corner').popover('destroy')
-                            // this.fields[p].bill_code = this.fields[p].bill_code
-                        }
+                        if(this.fields[p] !== undefined) {                        
+                            let introw = this.fields[p].introw;
+                            if(this.fields[p].bill_code === null || this.fields[p].bill_code === '') {
+                                $('#cell_bill_code_' + introw).addClass(' error-corner');
+                                addPopover('cell_bill_code_' + introw, "Please select Bill code");
+                                valid = false
+                            }else{
+                                $('#cell_bill_code_' + introw).removeClass(' error-corner').popover('destroy')
+                                // this.fields[p].bill_code = this.fields[p].bill_code
+                            }
 
-                        if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
-                            $('#cell_bill_type_' + introw).addClass(' error-corner');
-                            addPopover('cell_bill_type_' + introw, "Please select Bill type");
-                            valid = false
-                        }else{
-                            $('#cell_bill_type_' + introw).removeClass(' error-corner').popover('destroy')
-                        }
+                            if(this.fields[p].bill_type === null || this.fields[p].bill_type === '') {
+                                $('#cell_bill_type_' + introw).addClass(' error-corner');
+                                addPopover('cell_bill_type_' + introw, "Please select Bill type");
+                                valid = false
+                            }else{
+                                $('#cell_bill_type_' + introw).removeClass(' error-corner').popover('destroy')
+                            }
 
-                        if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
-                            $('#cell_cost_type_' + introw).addClass(' error-corner');
-                            addPopover('cell_bill_type_' + introw, "Please select Cost type");
-                            valid = false
-                        }else{
-                            $('#cell_cost_type_' + introw).removeClass(' error-corner').popover('destroy')
-                        }
+                            if(this.fields[p].cost_type === null || this.fields[p].cost_type === '') {
+                                $('#cell_cost_type_' + introw).addClass(' error-corner');
+                                addPopover('cell_bill_type_' + introw, "Please select Cost type");
+                                valid = false
+                            }else{
+                                $('#cell_cost_type_' + introw).removeClass(' error-corner').popover('destroy')
+                            }
 
-                        if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
-                            $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
-                            addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
-                            valid = false
-                        }else
-                            $('#cell_original_contract_amount_' + introw).removeClass(' error-corner').popover('destroy')
-                        // else {
-                        //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
-                        //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
-                        //     else {
-                        //         $('#cell_original_contract_amount_' + p).addClass(' error-corner');
-                        //         addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
-                        //         valid = false
-                        //     }
-                        // }
-                        // this.fields[p].group = particularsArray[p].group
+                            if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
+                                $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
+                                addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
+                                valid = false
+                            }else
+                                $('#cell_original_contract_amount_' + introw).removeClass(' error-corner').popover('destroy')
+                            // else {
+                            //     if( parseInt(this.fields[p].original_contract_amount) > 0 )
+                            //         $('#cell_original_contract_amount_' + p).removeClass(' error-corner').popover('destroy')
+                            //     else {
+                            //         $('#cell_original_contract_amount_' + p).addClass(' error-corner');
+                            //         addPopover('cell_original_contract_amount_' + p, "Original contract amount should be greater than zero");
+                            //         valid = false
+                            //     }
+                            // }
+                            // this.fields[p].group = particularsArray[p].group
+                            }
                     }
                     return valid;
                 },
                 saveParticulars(back=0, next=0){
                     this.copyBillCodeGroups();
-                    let data = JSON.stringify(this.fields);
+                    formfields=this.fields.filter(Boolean);
+                    let data = JSON.stringify(formfields);
                     var actionUrl = '/merchant/contract/updatesaveV6';
                     $.ajax({
                         type: "POST",
@@ -727,37 +730,41 @@
                     }, 1000);
                 },
                 removeRow(field, index){
+                    //alert(index);
                     let id = field.introw;
-                    this.fields.splice(index, 1);
-                    //delete this.fields[index];
-                    //delete particularsArray[index];
-                    particularsArray.splice(index, 1);
+                    //this.fields.splice(index, 1);
+                    delete this.fields[index];
+                    delete particularsArray[index];
+                    //particularsArray.splice(index, 1);
 
                     let total = 0;
                     for( let f =0; f < this.fields.length; f++){
                         let currentValue = this.fields[f];
-                        let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
-                        total = Number(total) + Number(getamt(amount));
-                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
-                        if(calculatedRowValue !== '') {
-                            var rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+                        if(currentValue !== undefined) {
+                            let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                            total = Number(total) + Number(getamt(amount));
+                            let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                            if(calculatedRowValue !== '') {
+                                var rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
 
-                            if(rowsIncludedInCalculation.includes(id)) {
-                                const index = rowsIncludedInCalculation.indexOf(id);
-                                if (index > -1) {
-                                    rowsIncludedInCalculation.splice(index, 1);
-                                    let rowsArray = JSON.stringify(rowsIncludedInCalculation);
+                                if(rowsIncludedInCalculation.includes(id)) {
+                                    const index = rowsIncludedInCalculation.indexOf(id);
+                                    if (index > -1) {
+                                        rowsIncludedInCalculation.splice(index, 1);
+                                        let rowsArray = JSON.stringify(rowsIncludedInCalculation);
 
-                                    $('#calculated_row'+currentValue.introw).val( rowsArray );
+                                        $('#calculated_row'+currentValue.introw).val( rowsArray );
 
-                                    currentValue.calculated_row = rowsArray;
-                                    this.reCalculateCalculatedRowValue(currentValue);
+                                        currentValue.calculated_row = rowsArray;
+                                        this.reCalculateCalculatedRowValue(currentValue);
+                                    }
                                 }
-                            }
 
+                            }
+                            this.calc(currentValue);
+                            // this.fields[index].introw = index;
                         }
-                        this.calc(currentValue);
-                        // this.fields[index].introw = index;
+                        //this.virtualSelect(this.fields[f].introw, 'bill_code', bill_codes, this.fields[f].bill_code, f);
                     }
 
                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -809,24 +816,26 @@
                 },
                 copyBillCodeGroups() {
                     for(let p=0; p < this.fields.length; p++){
-                        this.fields[p].bill_code = particularsArray[p].bill_code;
-                        this.fields[p].description = particularsArray[p].description;
-                        this.fields[p].group = particularsArray[p].group;
-                        this.fields[p].cost_type = particularsArray[p].cost_type;
-                        this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
+                        if(particularsArray[p] !== undefined) {
+                            this.fields[p].bill_code = particularsArray[p].bill_code;
+                            this.fields[p].description = particularsArray[p].description;
+                            this.fields[p].group = particularsArray[p].group;
+                            this.fields[p].cost_type = particularsArray[p].cost_type;
+                            this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
 
-                        let oriContractAmt = this.fields[p].original_contract_amount;
-                        this.fields[p].original_contract_amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
+                            let oriContractAmt = this.fields[p].original_contract_amount;
+                            this.fields[p].original_contract_amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
 
-                        let retainAmt = this.fields[p].retainage_amount;
-                        this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
+                            let retainAmt = this.fields[p].retainage_amount;
+                            this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
 
-                        this.fields[p].showoriginal_contract_amount = false;
-                        this.fields[p].showretainage_percent = false;
-                        this.fields[p].showretainage_amount = false;
-                        this.fields[p].showcost_code = false;
-                        this.fields[p].showcost_type = false;
-                        this.fields[p].showproject = false;
+                            this.fields[p].showoriginal_contract_amount = false;
+                            this.fields[p].showretainage_percent = false;
+                            this.fields[p].showretainage_amount = false;
+                            this.fields[p].showcost_code = false;
+                            this.fields[p].showcost_type = false;
+                            this.fields[p].showproject = false;
+                        }
                     }
                 },
 
