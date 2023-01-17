@@ -22,13 +22,11 @@ class SubUserHelper
     {
         $groupID = DB::table(ITable::USER)
             ->where('user_id', $userID)
-//            ->where('user_group_type', '1')
             ->pluck('group_id')
             ->first();
 
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
-//            ->where('user_group_type', 2)
             ->whereIn('user_status', [19, 20, 15])
             ->get()
             ->collect();
@@ -39,11 +37,20 @@ class SubUserHelper
             ->get()
             ->collect();
 
-        $subUsers->map(function($subUser) use ($userStatusConfigs) {
+        $userRoles = DB::table(ITable::BRIQ_USER_ROLES)
+            ->select(['user_id', 'role_name'])
+            ->get()
+            ->collect();
+
+        $subUsers->map(function($subUser) use ($userStatusConfigs, $userRoles) {
             $userStatus = $userStatusConfigs->where('config_key', $subUser->user_status)
                 ->first();
 
+            $userRole = $userRoles->where('user_id', $subUser->user_id)
+                ->first();
+
             $subUser->user_status_label = $userStatus->config_value;
+            $subUser->user_role_name = $userRole->role_name ?? '';
 
             return $subUser;
         });

@@ -45,7 +45,7 @@
                                         {{$subUser->email_id}}
                                     </td>
                                     <td class="td-c">
-{{--                                        {{$subUser.role}}--}}
+                                        {{$subUser->user_role_name}}
                                     </td>
                                     <td class="td-c">
                                         @if($subUser->user_status == '20')
