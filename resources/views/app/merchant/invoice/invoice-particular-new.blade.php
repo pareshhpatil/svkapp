@@ -296,7 +296,7 @@
 
                                                                         <input :id="`id${field.pint}`" type="hidden"  x-model="field.id" name="id[]">
                                                                         <input :id="`introw${field.pint}`" type="hidden" :value="field.pint" x-model="field.pint" name="pint[]">
-                                                                        <input :id="`index${field.pint}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
+                                                                        <input :id="`index${index}`" type="hidden" x-model="field.pint" name="rowindex[]">
 
 
                                                                     @elseif($k=='current_billed_amount')
@@ -341,7 +341,7 @@
                                                             @endif
                                                         @endforeach
                                                         <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                                            <button type="button" class="btn btn-xs red" @click="removeField(field.pint)">&times;</button>
+                                                            <button type="button" class="btn btn-xs red" @click="removeField(`${index}`)">&times;</button>
                                                             <template x-if="count===index">
                                         <span>
                                             <a href="javascript:;" @click="await addNewField();" class="btn btn-xs green">+</a>
@@ -783,11 +783,13 @@
                                      }
                                      return particularray
                                  },
-                                removeField(id) {
-                                    let index = $('#index'+id).val();
-                                    this.fields.splice(index, 1);
-                                    particularray.splice(index, 1);
-                                    this.reCalculateOriginalContractAmount(id);
+                                removeField(index) {
+                                    delete this.fields[index];
+                                    delete particularray[index];
+                                   // this.fields.splice(index, 1);
+                                  //  console.log(this.fields);
+                                   // particularray.splice(index, 1);
+                                    this.reCalculateOriginalContractAmount(index);
                                     this.calculateTotal();
                                     numrow = this.fields.length - 1;
                                     this.count = numrow;
@@ -1601,8 +1603,22 @@
                             document.getElementById('perror').style.display = 'none';
                             project_code = '{{$project_code}}';
                             this.bill_codes = csi_codes;
-                            int = this.fields.length-1;
+                            int = this.fields.filter(Boolean).length-1;
                             pint=Number(this.fields[int].pint) + 1;
+
+                            exist=true;
+                            while (exist==true) {
+                            exist=false;
+                            this.fields.forEach(function(currentValue, index, arr) {
+                            if(pint==currentValue.pint)
+                            {
+                                exist=true;
+                                pint=pint+1;
+                            }
+                        });
+
+                            }
+
                             this.fields.push({
                                 id: 0,
                                 introw: pint,
