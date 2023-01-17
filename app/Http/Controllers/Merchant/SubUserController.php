@@ -9,6 +9,7 @@ use App\Http\Controllers\AppController;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\SubUser;
+use App\Model\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -123,13 +124,25 @@ class SubUserController extends AppController
     public function delete($userID)
     {
         try {
-            $exists = SubUser::query()
-                            ->where('user_id', $userID)
-                            ->exists();
+            $countAdminUsers = DB::table('user')
+                ->join('briq_user_roles', 'user.user_id', '=', 'briq_user_roles.user_id')
+                ->where('briq_user_roles.role_name', 'Admin')
+                ->select('user.user_id', 'briq_user_roles.role_name')
+                ->count();
 
-            if(!$exists) {
+            /** @var \App\User $User */
+            $User = \App\User::query()
+                            ->where(IColumn::USER_ID, $userID)
+                            ->first();
+
+            if(!$User) {
                 return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
             }
+
+            if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
+                return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
+            }
+
             $this->updateMerchantUserStatus(21, $userID);
 
             return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been deleted");
