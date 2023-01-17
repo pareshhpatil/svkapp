@@ -297,8 +297,7 @@ class Report extends Controller
         try {
             $user_id = $this->session->get('userid');
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1);
+            $redis_items = $this->getSearchParamRedis('invoicedetails_report'.$type);
 
             #SwipezLogger::info(__CLASS__, "Invoice details invoked by $user_id");
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
@@ -331,7 +330,7 @@ class Report extends Controller
             $current_date = date("d M Y");
             $franchise_id = 0;
             $vendor_id = 0;
-
+            
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
             if (isset($_POST['from_date'])) {
@@ -342,10 +341,6 @@ class Report extends Controller
                 
                 $status = implode(',', $_POST['status']);
                 $column_select = $_POST['column_name'];
-
-                //update or add search criteria into redis
-                $redis_items['invoicedetails_report'.$type]['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -365,9 +360,10 @@ class Report extends Controller
                 $status = implode(',', $_POST['status']);
                 $group = $_POST['group'] = $redis_items['invoicedetails_report'.$type]['search_param']['group'];
                 $column_select = $redis_items['invoicedetails_report'.$type]['search_param']['column_name'];
-                $franchise_id = $_POST['franchise_id'] = $redis_items['invoicedetails_report'.$type]['search_param']['franchise_id'];
-                $vendor_id = $_POST['vendor_id'] = $redis_items['invoicedetails_report'.$type]['search_param']['vendor_id'];
+                $franchise_id = $_POST['franchise_id'] = isset($redis_items['invoicedetails_report'.$type]['search_param']['franchise_id']) ? $redis_items['invoicedetails_report'.$type]['search_param']['franchise_id'] : 0;
+                $vendor_id = $_POST['vendor_id'] = isset($redis_items['invoicedetails_report'.$type]['search_param']['vendor_id']) ? $redis_items['invoicedetails_report'.$type]['search_param']['vendor_id'] : 0;
             }
+            
             $this->view->showLastRememberSearchCriteria = true;
             
             $fromdate = new DateTime($from_date);
@@ -412,7 +408,7 @@ class Report extends Controller
             $group = isset($_POST['group']) ? $_POST['group'] : '';
             $franchise_id = isset($_POST['franchise_id']) ? $_POST['franchise_id'] : $franchise_id;
             $vendor_id = isset($_POST['vendor_id']) ? $_POST['vendor_id'] : $vendor_id;
-            
+
             if ($this->view->franchise == 1) {
                 $sub_franchise_id = $this->session->get('sub_franchise_id');
                 if ($sub_franchise_id > 0) {
@@ -1357,7 +1353,7 @@ class Report extends Controller
                 $to_date = $redis_items['web_payment_received_report'.$xwaytype]['search_param']['to_date'];
 
                 if($xwaytype==null) {
-                    $franchise_id = $redis_items['web_payment_received_report'.$xwaytype]['search_param']['franchise_id'];
+                    $franchise_id = isset($redis_items['web_payment_received_report'.$xwaytype]['search_param']['franchise_id']) ? $redis_items['web_payment_received_report'.$xwaytype]['search_param']['franchise_id'] : 0;
                 } else {
                     $franchise_id = 0;
                 }
@@ -1477,16 +1473,12 @@ class Report extends Controller
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1);
-
+            $redis_items = $this->getSearchParamRedis('payment_tdr_report');
+           
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
                 $column_select = $_POST['column_name'];
-
-                $redis_items['payment_tdr_report']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
@@ -2291,15 +2283,11 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
 
-            $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-            $redis_items = json_decode($getRediscache, 1);
+            $redis_items = $this->getSearchParamRedis('productsalesreport');
 
             if (isset($_POST['from_date'])) {
                 $from_date = $_POST['from_date'];
                 $to_date = $_POST['to_date'];
-
-                $redis_items['productsalesreport']['search_param'] = $_POST;
-                Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
             } else {
                 $from_date = $last_date;
                 $to_date = $current_date;
