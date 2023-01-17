@@ -209,7 +209,7 @@
                                 @endforeach
 
                                 <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                    <button type="button" class="btn btn-xs red" @click="removeRow(field, index)">&times;</button>
+                                    <button type="button" class="btn btn-xs red" @click="removeRow(field, `${index}`)">&times;</button>
                                     <template x-if="count === index">
                                     <span>
                                         <a href="javascript:;" @click="await addNewRow();" class="btn btn-xs green">+</a>
@@ -411,7 +411,9 @@
                         $('#'+dropboxContainer).css('z-index',4)
                     });
                     $('.tableFixHead').scroll(function(){
-                        document.querySelector('#'+type+id).close();
+                        try {
+                            document.querySelector('#'+type+id).close();
+                        }catch (o) {}
                     });
                     // $('#'+type+id).on('afterOpen',function () {console.log('afterOpen');
                     //     elementsOverlap( type+id, type);
@@ -726,8 +728,10 @@
                 },
                 removeRow(field, index){
                     let id = field.introw;
-                    this.fields.splice(index, 1);
-                    particularsArray.splice(index, 1);
+                    //this.fields.splice(index, 1);
+                    delete this.fields[index];
+                    delete particularsArray[index];
+                    //particularsArray.splice(index, 1);
 
                     let total = 0;
                     for( let f =0; f < this.fields.length; f++){
