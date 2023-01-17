@@ -22,13 +22,13 @@ class SubUserHelper
     {
         $groupID = DB::table(ITable::USER)
             ->where('user_id', $userID)
-            ->where('user_group_type', '1')
+//            ->where('user_group_type', '1')
             ->pluck('group_id')
             ->first();
 
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
-            ->where('user_group_type', 2)
+//            ->where('user_group_type', 2)
             ->whereIn('user_status', [19, 20])
             ->get()
             ->collect();
