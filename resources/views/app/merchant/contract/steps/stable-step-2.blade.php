@@ -570,10 +570,12 @@
                 },
                 calculateTotalRetainage(){
                     this.totalretainage = 0;
-                   for(let r=0; r < this.fields.length; r++) {
+                    for(let r=0; r < this.fields.length; r++) {
                        // console.log(this.fields[r].retainage_amount);
-                       this.totalretainage = Number(this.totalretainage) + Number(roundAmount(getamt(this.fields[r].retainage_amount)));
-                   }
+                        if(this.fields[r]!==undefined) {
+                            this.totalretainage = Number(this.totalretainage) + Number(roundAmount(getamt(this.fields[r].retainage_amount)));
+                        }
+                    }
                 },
                 removeValidationError(fieldName, id){
                     if($('#'+fieldName+id).val() !== null && $('#'+fieldName+id).val() !== '') {
@@ -779,20 +781,22 @@
                     let total = 0;
                     for( let f =0; f < this.fields.length; f++){
                         let currentValue = this.fields[f];
-                        let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
-                        total = Number(total) + Number(getamt(amount));
-                        let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
-                        if(calculatedRowValue !== '') {
-                            let rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
+                        if(currentValue !== undefined) {
+                            let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
+                            total = Number(total) + Number(getamt(amount));
+                            let calculatedRowValue = $('#calculated_row'+currentValue.introw).val()
+                            if(calculatedRowValue !== '') {
+                                let rowsIncludedInCalculation = JSON.parse(calculatedRowValue);
 
-                            if(rowsIncludedInCalculation.includes(id)) {
-                                const index = rowsIncludedInCalculation.indexOf(id);
-                                if (index > -1) {
-                                    this.reCalculateCalculatedRowValue(currentValue);
+                                if(rowsIncludedInCalculation.includes(id)) {
+                                    const index = rowsIncludedInCalculation.indexOf(id);
+                                    if (index > -1) {
+                                        this.reCalculateCalculatedRowValue(currentValue);
+                                    }
                                 }
                             }
+                            this.calc(currentValue);
                         }
-                        this.calc(currentValue);
                         // this.fields[index].introw = index;
                     }
                     document.getElementById('particulartotal').value = updateTextView1(total);
@@ -959,9 +963,8 @@
                         let newDiv = document.createElement('tr');
                         let row = '';
                         let particular = particularsArray[i];
-                        if (ind !== particular.introw) {
-
-
+                        if(particular !== undefined) {
+                            if (ind !== particular.introw) {
                             let oca = document.getElementById('original_contract_amount' + particular.introw).value;
                             let amt = getamt(oca);
                             let displayValue = document.querySelector('#bill_code' + particular.introw ).getDisplayValue().split('|');
@@ -975,9 +978,11 @@
                                 '<td class="td-c">$' + document.getElementById('original_contract_amount' + particular.introw).value + '</td>'
 
 
+                            }
+                            newDiv.innerHTML = row;
+                            mainDiv.appendChild(newDiv);
                         }
-                        newDiv.innerHTML = row;
-                        mainDiv.appendChild(newDiv);
+                        
                     }
 
                     /*$('input[name="pint[]"]').each(function (indx, arr) {
