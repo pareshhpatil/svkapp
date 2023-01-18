@@ -398,7 +398,9 @@
                         }
 
                         if(type === 'bill_code_detail'){
-                            particularsArray[index].bill_code_detail = this.value
+                            if(particularsArray[index] !== undefined) {
+                                particularsArray[index].bill_code_detail = this.value
+                            }
                         }
 
                         if(type === 'cost_type'){
@@ -675,17 +677,38 @@
                 async addNewRow() {
                     // int = this.fields.length
                     document.getElementById('loader').style.display = 'block';
-                    let lastRow = this.fields[this.fields.length-1]
+                    //let lastRow = this.fields[this.fields.length-1]
+                    
+                    //let int = lastRow.introw + 1
 
-                    let int = lastRow.introw + 1
+
+                    int = this.fields.filter(Boolean).length-1;
+
+                    while(typeof this.fields[int] === 'undefined')
+                    {   
+                        int = int+1;
+                    }
+                    pint=Number(this.fields[int].pint) + 1;
+                    exist=true;
+                    while (exist==true) {
+                    exist=false;
+                    this.fields.forEach(function(currentValue, index, arr) {
+                    if(pint==currentValue.pint)
+                    {
+                        exist=true;
+                        pint=pint+1;
+                    }
+                    });
+
+                    }
 
                     this.fields.push({
                         'bill_code' : null,
                         'calculated_perc' : null,
                         'calculated_row' : null,
                         'description' : null,
-                        'introw' : int,
-                        'pint' : int,
+                        'introw' : pint,
+                        'pint' : pint,
                         'bill_type' : null,
                         'original_contract_amount' : null,
                         'retainage_percent' : null,
@@ -703,8 +726,8 @@
                         'calculated_perc' : null,
                         'calculated_row' : null,
                         'description' : null,
-                        'introw' : int,
-                        'pint' : int,
+                        'introw' : pint,
+                        'pint' : pint,
                         'bill_type' : null,
                         'original_contract_amount' : null,
                         'retainage_percent' : null,
@@ -720,16 +743,17 @@
 
                     let id = particularsArray.length - 1;
                     this.count = id;
-                    console.log(int);
+                    
                     const x = await this.wait(10);
-                    this.virtualSelect(int, 'bill_code', bill_codes,null)
-                    this.virtualSelect(int, 'group', groups, null)
-                    this.virtualSelect(int, 'cost_type', cost_types, null)
-                    this.virtualSelect(int, 'bill_code_detail', bill_code_details,'Yes', null)
+                    this.virtualSelect(pint, 'bill_code', bill_codes,null)
+                    this.virtualSelect(pint, 'group', groups, null)
+                    this.virtualSelect(pint, 'cost_type', cost_types, null)
+                    this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes', null)
                     
                     setTimeout(function () {
                         document.getElementById('loader').style.display = 'none';
                     }, 1000);
+                    
                 },
                 removeRow(field, index){
                     //alert(index);
