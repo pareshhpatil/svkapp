@@ -784,8 +784,7 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
-            if(!isset($info['payment_request_status']))
-            {
+            if (!isset($info['payment_request_status'])) {
                 return redirect('/error/invalidlink');
             }
             $info['gtype'] = '702';
@@ -799,7 +798,7 @@ class InvoiceController extends AppController
             }
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($first_payment_request_id == $payment_request_id) {
+            if ($first_payment_request_id == $payment_request_id || $first_payment_request_id == '') {
                 $isFirstInvoice = true;
             } else {
                 $isFirstInvoice = false;
@@ -881,6 +880,8 @@ class InvoiceController extends AppController
                 if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
                     $isFirstInvoice = true;
                 }
+            } else {
+                $isFirstInvoice = true;
             }
             $prevDPlusE = [];
             if ($isFirstInvoice == false) {
@@ -906,8 +907,7 @@ class InvoiceController extends AppController
             if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
-            if(!isset($info['payment_request_status']))
-            {
+            if (!isset($info['payment_request_status'])) {
                 return redirect('/error/invalidlink');
             }
             if ($info['payment_request_status'] == '2') {
@@ -975,10 +975,16 @@ class InvoiceController extends AppController
             $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+            if ($isFirstInvoice == false) {
                 // $previousInvoice = PaymentRequest::where('payment_request_id', '!=', $payment_request_id)->
                 // where('contract_id', $paymentRequest->contract_id)->
                 // where('created_date', '<', $paymentRequest->created_date)->
@@ -1273,10 +1279,17 @@ class InvoiceController extends AppController
             $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -1510,10 +1523,17 @@ class InvoiceController extends AppController
 
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -1580,10 +1600,16 @@ class InvoiceController extends AppController
 
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -1692,10 +1718,14 @@ class InvoiceController extends AppController
             $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -1811,10 +1841,15 @@ class InvoiceController extends AppController
 
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -1939,10 +1974,16 @@ class InvoiceController extends AppController
 
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -2084,10 +2125,16 @@ class InvoiceController extends AppController
 
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
@@ -2278,10 +2325,15 @@ class InvoiceController extends AppController
             $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
             $isFirstInvoice = false;
             $prevDPlusE = [];
-            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
-                $isFirstInvoice = true;
+            if (!empty($firstpaymentRequest)) {
+                if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                    $isFirstInvoice = true;
+                }
             } else {
-                $isFirstInvoice = false;
+                $isFirstInvoice = true;
+            }
+
+            if ($isFirstInvoice == false) {
                 $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequest->contract_id, $paymentRequest->created_date);
                 $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
                 $prevDPlusE = [];
