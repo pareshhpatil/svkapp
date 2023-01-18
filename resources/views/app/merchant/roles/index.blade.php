@@ -48,7 +48,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}" onclick="setUpdateMaster('{{$role->encrypted_id}}','{{$role->name}}')" data-toggle="modal"><i class="fa fa-edit"></i> Update</a>
+                                                        <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
                                                     @if($role->usersRoles->count() == 0 &&$role->name != 'Admin')
                                                         <li>

@@ -474,6 +474,14 @@ Breadcrumbs::for('merchant.subusers.create', function ($trail) {
     $trail->push('Create sub-merchant');
 });
 
+Breadcrumbs::for('merchant.subusers.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list', url('/merchant/subusers'));
+    $trail->push('Edit sub-merchant');
+});
+
 Breadcrumbs::for('merchant.roles.index', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', url('/merchant/profile/settings'));

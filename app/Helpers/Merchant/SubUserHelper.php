@@ -49,6 +49,7 @@ class SubUserHelper
             $userRole = $userRoles->where('user_id', $subUser->user_id)
                 ->first();
 
+            $subUser->user_id = Encrypt::encode($subUser->user_id);
             $subUser->user_status_label = $userStatus->config_value;
             $subUser->user_role_name = $userRole->role_name ?? '';
 

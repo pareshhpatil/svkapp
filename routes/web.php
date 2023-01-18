@@ -431,6 +431,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('subusers', 'Merchant\SubUserController@index')->name('merchant.subusers.index');
   Route::get('subusers/create', 'Merchant\SubUserController@create')->name('merchant.subusers.create');
   Route::post('subusers/create', 'Merchant\SubUserController@store');
+  Route::get('subusers/{id}/edit ', 'Merchant\SubUserController@edit')->name('merchant.subusers.edit');
+  Route::post('subusers/{id}/edit', 'Merchant\SubUserController@update')->name('merchant.subusers.update');
   Route::get('subusers/delete/{id}', 'Merchant\SubUserController@delete');
   Route::get('register/verifyemail/new', 'Merchant\SubUserController@verifyMail');
 

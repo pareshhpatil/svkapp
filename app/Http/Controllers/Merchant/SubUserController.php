@@ -36,13 +36,13 @@ class SubUserController extends AppController
     }
 
     /**
-     * Show the form for creating a new cost type.
+     * Show the form for creating a new user.
      *
      * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
-        $title = 'Create sub-merchant';
+        $title = 'Create sub-user';
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
         $data['briqRoles'] = (new SubUserHelper())->getRoles();
@@ -110,6 +110,81 @@ class SubUserController extends AppController
             (new SubUserHelper())->sendVerifyMail($SubUser);
 
             return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+
+            return redirect()->to('merchant/subusers')->with('error', "Something went wrong!");
+        }
+    }
+
+    /**
+     * Show the form for edit user.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function edit($userID)
+    {
+        $title = 'Edit sub-user';
+        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+
+        $data['briqRoles'] = (new SubUserHelper())->getRoles();
+
+        /** @var \App\User $User */
+        $User = \App\User::query()
+                    ->where(IColumn::USER_ID, Encrypt::decode($userID))
+                    ->first();
+
+        $data['selected_role_id'] = $User->role()->role_id ?? '';
+
+        $User->user_id = Encrypt::encode($User->user_id);
+
+        $data['user'] = $User;
+
+        return view('app/merchant/subuser/edit', $data);
+    }
+
+    /**
+     * @param $userID
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update($userID, Request $request)
+    {
+        try {
+            $rules = [
+                'first_name' => 'required|max:50',
+                'last_name' => 'required|max:50',
+                'mob_country_code' => 'required|max:6',
+                'mobile' => 'required|max:12',
+                'role' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors($validator->messages());
+            }
+
+            /** @var SubUser $SubUser */
+            $SubUser = SubUser::query()
+                            ->where(IColumn::USER_ID, Encrypt::decode($userID))
+                            ->first();
+
+            $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
+            $SubUser->first_name = $request->get('first_name');
+            $SubUser->last_name = $request->get('last_name');
+            $SubUser->mob_country_code = $request->get('mob_country_code');
+            $SubUser->mobile_no = $request->get('mobile');
+            $SubUser->last_updated_by = $this->user_id;
+            $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
+
+            $SubUser->save();
+
+            (new SubUserHelper())->addUserRole($SubUser, $request->get('role'));
+
+            return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
 

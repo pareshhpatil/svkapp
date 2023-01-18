@@ -31,7 +31,7 @@
                                     Status
                                 </th>
                                 <th class="td-c">
-
+                                    Action
                                 </th>
                             </tr>
                             </thead>
@@ -59,8 +59,21 @@
                                         @endif
                                     </td>
                                     <td class="td-c">
+                                        <div class="btn-group dropup">
+                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red" style="text-align: left"><i class="fa fa-remove"></i> Delete </a>
+                                                </li>
+                                            </ul>
+                                        </div>
 {{--                                        <a href="#basic" class="btn btn-xs red"><i class="fa fa-remove"></i> Delete </a>--}}
-                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red"><i class="fa fa-remove"></i> Delete </a>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -90,8 +103,8 @@
                     <a href="" id="deleteanchor" class="btn delete">Confirm</a>
                 </div>
             </div>
-            <!-- /.modal-content -->
+            <!-- modal-content -->
         </div>
-        <!-- /.modal-dialog -->
+        <!-- modal-dialog -->
     </div>
 @endsection
