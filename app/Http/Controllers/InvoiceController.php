@@ -3091,7 +3091,7 @@ class InvoiceController extends AppController
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
 
-                    if (!empty(floatval($data['total_outstanding_retainage']))) {
+                    if (!empty($data['total_outstanding_retainage'])) {
                         $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                     } else {
                         $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
@@ -3183,7 +3183,7 @@ class InvoiceController extends AppController
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
 
-                    if (!empty(floatval($data['total_outstanding_retainage']))) {
+                    if (!empty($data['total_outstanding_retainage'])) {
                         $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                     } else {
                         $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
