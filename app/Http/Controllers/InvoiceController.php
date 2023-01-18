@@ -2783,7 +2783,7 @@ class InvoiceController extends AppController
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
                 //$sumOfh += $sumOfc - $sumOfg;
 
-                if (!empty(floatval($itesm['total_outstanding_retainage']))) {
+                if (!empty($itesm['total_outstanding_retainage'])) {
                     $sumOfi += $itesm['total_outstanding_retainage'];
                 } else {
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
