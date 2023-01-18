@@ -784,6 +784,10 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
+            if(!isste($info['payment_request_status']))
+            {
+                return redirect('/error/invalidlink');
+            }
             $info['gtype'] = '702';
 
             //find  payment reuest count 
@@ -902,7 +906,10 @@ class InvoiceController extends AppController
             if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
-
+            if(!isste($info['payment_request_status']))
+            {
+                return redirect('/error/invalidlink');
+            }
             if ($info['payment_request_status'] == '2') {
                 $info['offline_success_transaction'] = $offlineResponse;
             }
