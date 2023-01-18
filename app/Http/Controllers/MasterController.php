@@ -182,7 +182,8 @@ class MasterController extends AppController
             'project_name' => 'required|max:100',
             'start_date' => 'required',
             'end_date' => 'required',
-            'sequence_number' => 'required'
+            'sequence_number' => 'required',
+            'seprator' => 'max:5'
         ]);
 
         if ($validator->fails()) {
@@ -206,7 +207,8 @@ class MasterController extends AppController
         if ($request->sequence_number == '') {
             $request->sequence_number = 0;
         }
-        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id);
+        
+        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id,$request->seprator);
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
         $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
@@ -248,7 +250,7 @@ class MasterController extends AppController
             if ($request->sequence_number == '') {
                 $request->sequence_number = 0;
             }
-            $this->masterModel->updateProjectSequence($this->merchant_id, $request->sequence_id, ($request->sequence_number - 1));
+            $this->masterModel->updateProjectSequence($this->merchant_id, $request->sequence_id, ($request->sequence_number - 1), $request->seprator);
             $request->start_date = Helpers::sqlDate($request->start_date);
             $request->end_date = Helpers::sqlDate($request->end_date);
             $this->masterModel->updateProject($request, $this->merchant_id, $this->user_id);

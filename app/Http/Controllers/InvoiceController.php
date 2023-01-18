@@ -289,6 +289,7 @@ class InvoiceController extends AppController
             if (isset($data['contract_detail']->sequence_number)) {
                 $invoice_seq_id = $data['contract_detail']->sequence_number;
             }
+            
             if (isset($metadata['H'])) {
                 $metadata['H'] = $this->setCreateFunction($metadata['H']);
                 foreach ($metadata['H'] as $k => $row) {
@@ -315,8 +316,9 @@ class InvoiceController extends AppController
                             }
                             if ($metadata['H'][$k]->param_value > 0) {
                                 $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
+                                $seprator = $seq_row->seprator;
                                 $seq_no = $seq_row->val + 1;
-                                $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                                $metadata['H'][$k]->display_value =  $seq_row->prefix . $seprator .  $seq_no;
                             }
                         } else {
                             $metadata['H'][$k]->value =  $invoice_number;

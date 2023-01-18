@@ -93,8 +93,9 @@ class InvoiceFormat extends ParentModel
         }
     }
 
-    public function saveSequence($merchant_id, $prefix, $val, $user_id)
+    public function saveSequence($merchant_id, $prefix, $val, $user_id, $separator=null)
     {
+        
         $id = DB::table('merchant_auto_invoice_number')->insertGetId(
             [
                 'merchant_id' => $merchant_id,
@@ -102,6 +103,7 @@ class InvoiceFormat extends ParentModel
                 'val' => $val,
                 'length' => 1,
                 'type' => 1,
+                'seprator' => $separator,
                 'created_by' => $user_id,
                 'last_update_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s')
