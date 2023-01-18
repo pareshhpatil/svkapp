@@ -784,7 +784,7 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
-            if(!isste($info['payment_request_status']))
+            if(!isset($info['payment_request_status']))
             {
                 return redirect('/error/invalidlink');
             }
@@ -906,7 +906,7 @@ class InvoiceController extends AppController
             if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
-            if(!isste($info['payment_request_status']))
+            if(!isset($info['payment_request_status']))
             {
                 return redirect('/error/invalidlink');
             }
