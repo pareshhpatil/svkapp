@@ -1,5 +1,9 @@
 @extends('app.master')
-
+<style>
+    .select2-container--default {
+        width: 515px !important;
+    }
+</style>
 @section('content')
 <div class="page-content">
     <!-- BEGIN PAGE HEADER-->
