@@ -779,4 +779,24 @@ class Invoice extends ParentModel
             ->get();
         return $retObj;
     }
+
+    public function findInvoiceNumberExist($merchant_id, $invoice_prefix) {
+        $retObj = DB::table('payment_request as p')
+        ->select(DB::raw('payment_request_id,merchant_id,customer_id,invoice_number'))
+        ->where('merchant_id', $merchant_id)
+        ->where('invoice_number','LIKE', '%' . $invoice_prefix . '%')
+        ->orderBy('created_date', 'desc')->first();
+        
+        if(empty($retObj)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getAutoInvoiceNo($auto_invoice_id){
+        $seq_row = $this->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $auto_invoice_id);
+        $seprator = $seq_row->seprator;
+        $seq_no = $seq_row->val + 1;
+        return $seq_row->prefix . $seprator .  $seq_no;
+    }
 }

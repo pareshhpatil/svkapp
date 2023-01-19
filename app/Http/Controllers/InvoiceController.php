@@ -289,6 +289,7 @@ class InvoiceController extends AppController
             if (isset($data['contract_detail']->sequence_number)) {
                 $invoice_seq_id = $data['contract_detail']->sequence_number;
             }
+            
             if (isset($metadata['H'])) {
                 $metadata['H'] = $this->setCreateFunction($metadata['H']);
                 foreach ($metadata['H'] as $k => $row) {
@@ -314,9 +315,7 @@ class InvoiceController extends AppController
                                 $metadata['H'][$k]->param_value = $invoice_seq_id;
                             }
                             if ($metadata['H'][$k]->param_value > 0) {
-                                $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
-                                $seq_no = $seq_row->val + 1;
-                                $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                                $metadata['H'][$k]->display_value=$this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
                             }
                         } else {
                             $metadata['H'][$k]->value =  $invoice_number;
@@ -870,7 +869,6 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-
             //find payment request count
             $paymentRequest = PaymentRequest::find($payment_request_id);
 
@@ -945,8 +943,8 @@ class InvoiceController extends AppController
             }
             $data['isFirstInvoice'] = $isFirstInvoice;
             $data['prevDPlusE'] = $prevDPlusE;
+            
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
-
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2777,7 +2775,7 @@ class InvoiceController extends AppController
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
-
+            
             $info['constriuction_details'] = $this->getData703($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
@@ -2964,9 +2962,7 @@ class InvoiceController extends AppController
             }
         }
         if (substr($info['invoice_number'], 0, 16) == 'System generated') {
-            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', substr($info['invoice_number'], 16));
-            $seq_no = $seq_row->val + 1;
-            $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
+            $info['invoice_number'] = $this->invoiceModel->getAutoInvoiceNo(substr($info['invoice_number'], 16));
         }
         //get less Previous certificates for payment from previous invoice
         $info["less_previous_certificates_for_payment"] = 0;
