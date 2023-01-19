@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Master;
 use App\Model\InvoiceFormat;
+use App\Model\Invoice;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -240,13 +241,25 @@ class MasterController extends AppController
         $validator = Validator::make($request->all(), [
             'project_name' => 'required|max:100',
             'start_date' => 'required',
-            'end_date' => 'required'
+            'end_date' => 'required',
+            'seprator' => 'max:5'
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
         } else {
             $model = new InvoiceFormat();
+
+            //check invoice sequnce number is already exist or not in payment request for that merchant & customer 
+            $lastSequenceData = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $request->sequence_id);
+            $invoice_sequence_prefix = $lastSequenceData->prefix.$lastSequenceData->seprator.$request->sequence_number;
+            
+            $invoiceModel = new Invoice();
+            $existInvoiceNo = $invoiceModel->findInvoiceNumberExist($this->merchant_id,$invoice_sequence_prefix);
+
+            if ($existInvoiceNo) {
+                return redirect()->back()->withInput()->withErrors('Sequence number already exist');
+            }
             if ($request->sequence_number == '') {
                 $request->sequence_number = 0;
             }

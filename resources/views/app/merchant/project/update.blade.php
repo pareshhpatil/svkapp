@@ -85,11 +85,11 @@
                                         <div class="col-md-3">
                                             <input class="form-control" type="text" value="{{$project_data->project_prefix}}" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
                                         </div>
-                                        <div class="col-md-1">
+                                        <div class="col-md-1 ml-minus-1">
                                             <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{$sequence_data->seprator}}"/>
                                         </div>
-                                        <div class="col-md-2">
-                                            <input class="form-control" required type="number"  value="{{$sequence_data->val??''}}"  min="0" max="99999999" name="sequence_number" placeholder="Sequence number" />
+                                        <div class="col-md-1">
+                                            <input class="form-control" required type="number"  value="{{$sequence_data->val??''}}"  min="0" max="99999999" name="sequence_number" placeholder="Seq. no" />
                                             <input type="hidden"  value="{{$project_data->sequence_number}}"  name="sequence_id"/>
                                         </div>
                                     </div>
