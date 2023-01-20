@@ -6,6 +6,7 @@ use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use App\Helpers\Merchant\SubUserHelper;
 use App\Http\Controllers\AppController;
+use App\Http\Requests\StoreUserRequest;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\SubUser;
@@ -19,6 +20,14 @@ use Validator;
 
 class SubUserController extends AppController
 {
+    protected $subUserHelper;
+
+    public function __construct()
+    {
+        $this->subUserHelper = new SubUserHelper();
+
+        parent::__construct();
+    }
 
     /***
      * @return \Illuminate\Contracts\View\View
@@ -29,7 +38,7 @@ class SubUserController extends AppController
 
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $data['subUsers'] = (new SubUserHelper())->indexTableData($this->user_id);
+        $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
         $data['datatablejs'] = 'table-no-export';
 
         return view('app/merchant/subuser/index', $data);
@@ -45,76 +54,20 @@ class SubUserController extends AppController
         $title = 'Create sub-user';
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $data['briqRoles'] = (new SubUserHelper())->getRoles();
+        $data['briqRoles'] = $this->subUserHelper->getRoles();
 
         return view('app/merchant/subuser/create', $data);
     }
 
     /**
-     * @param Request $request
+     * @param StoreUserRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        try {
-            $rules = [
-                'email_id' => 'required|max:255',
-                'first_name' => 'required|max:50',
-                'last_name' => 'required|max:50',
-                'mob_country_code' => 'required|max:6',
-                'mobile' => 'required|max:12',
-                'password' => 'required|confirmed|max:40',
-                'role' => 'required',
-            ];
+        $this->subUserHelper->storeUser($this->user_id, $request);
 
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors($validator->messages());
-            }
-
-            $groupID = DB::table(ITable::USER)
-                ->where('user_id', $this->user_id)
-                ->pluck('group_id')
-                ->first();
-
-            $userIDSequence = (new SubUserHelper())->createUserIDSequence();
-
-            /** @var SubUser $SubUser */
-            $SubUser = new SubUser();
-
-            $SubUser->user_id = $userIDSequence;
-            $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
-            $SubUser->first_name = $request->get('first_name');
-            $SubUser->last_name = $request->get('last_name');
-            $SubUser->email_id = $request->get('email_id');
-            $SubUser->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
-            $SubUser->user_status = 19;
-            $SubUser->group_id = $groupID;
-            $SubUser->user_group_type = 2;
-            $SubUser->user_type = 0;
-            $SubUser->franchise_id = 0;
-            $SubUser->mob_country_code = $request->get('mob_country_code');
-            $SubUser->mobile_no = $request->get('mobile');
-            $SubUser->created_by = $this->user_id;
-            $SubUser->created_date = Carbon::now()->toDateTimeString();
-            $SubUser->last_updated_by = $this->user_id;
-            $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
-
-            $SubUser->save();
-
-            (new SubUserHelper())->addUserRole($SubUser, $request->get('role'));
-
-            (new SubUserHelper())->sendVerifyMail($SubUser);
-
-            return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/subusers')->with('error', "Something went wrong!");
-        }
+        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
     }
 
     /**
@@ -127,7 +80,7 @@ class SubUserController extends AppController
         $title = 'Edit sub-user';
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
-        $data['briqRoles'] = (new SubUserHelper())->getRoles();
+        $data['briqRoles'] = $this->subUserHelper->getRoles();
 
         /** @var \App\User $User */
         $User = \App\User::query()
@@ -150,46 +103,25 @@ class SubUserController extends AppController
      */
     public function update($userID, Request $request)
     {
-        try {
-            $rules = [
-                'first_name' => 'required|max:50',
-                'last_name' => 'required|max:50',
-                'mob_country_code' => 'required|max:6',
-                'mobile' => 'required|max:12',
-                'role' => 'required',
-            ];
+        $rules = [
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'mob_country_code' => 'required|max:6',
+            'mobile' => 'required|max:12',
+            'role' => 'required',
+        ];
 
-            $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors($validator->messages());
-            }
-
-            /** @var SubUser $SubUser */
-            $SubUser = SubUser::query()
-                            ->where(IColumn::USER_ID, Encrypt::decode($userID))
-                            ->first();
-
-            $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
-            $SubUser->first_name = $request->get('first_name');
-            $SubUser->last_name = $request->get('last_name');
-            $SubUser->mob_country_code = $request->get('mob_country_code');
-            $SubUser->mobile_no = $request->get('mobile');
-            $SubUser->last_updated_by = $this->user_id;
-            $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
-
-            $SubUser->save();
-
-            (new SubUserHelper())->addUserRole($SubUser, $request->get('role'));
-
-            return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/subusers')->with('error', "Something went wrong!");
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($validator->messages());
         }
+
+        $this->subUserHelper->updateUser($this->user_id, $userID, $request);
+
+        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
     }
 
     /**
@@ -198,34 +130,28 @@ class SubUserController extends AppController
      */
     public function delete($userID)
     {
-        try {
-            $countAdminUsers = DB::table('user')
-                ->join('briq_user_roles', 'user.user_id', '=', 'briq_user_roles.user_id')
-                ->where('briq_user_roles.role_name', 'Admin')
-                ->select('user.user_id', 'briq_user_roles.role_name')
-                ->count();
+        $countAdminUsers = DB::table(ITable::USER)
+            ->join('briq_user_roles', 'user.user_id', '=', 'briq_user_roles.user_id')
+            ->where('briq_user_roles.role_name', 'Admin')
+            ->select('user.user_id', 'briq_user_roles.role_name')
+            ->count();
 
-            /** @var \App\User $User */
-            $User = \App\User::query()
-                            ->where(IColumn::USER_ID, $userID)
-                            ->first();
+        /** @var \App\User $User */
+        $User = \App\User::query()
+                        ->where(IColumn::USER_ID, $userID)
+                        ->first();
 
-            if(!$User) {
-                return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
-            }
-
-            if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
-                return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
-            }
-
-            $this->updateMerchantUserStatus(21, $userID);
-
-            return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been deleted");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/subusers')->with('error', "Something went wrong!");
+        if(!$User) {
+            return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
         }
+
+        if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
+            return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
+        }
+
+        $this->updateMerchantUserStatus(21, $userID);
+
+        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been deleted");
     }
 
     public function verifyMail(Request $request)
@@ -240,7 +166,7 @@ class SubUserController extends AppController
                             ->where('created_date', $createdDate)
                             ->first();
 
-        $title = 'Email Verification Successfull';
+        $title = 'Email Verification Successful';
 
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 

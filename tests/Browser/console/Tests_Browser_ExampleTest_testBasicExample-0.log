@@ -1,0 +1,8 @@
+[
+    {
+        "level": "WARNING",
+        "message": "https:\/\/apis.google.com\/_\/scs\/abc-static\/_\/js\/k=gapi.lb.en.ydLROSGdlBE.O\/m=client\/rt=j\/sv=1\/d=1\/ed=1\/rs=AHpOoo_OUY4V-VcsLuRVnUuYVO758FydkA\/cb=gapi.loaded_0?le=scs 528 An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing.",
+        "source": "security",
+        "timestamp": 1674048350814
+    }
+]

@@ -14,6 +14,68 @@ use Illuminate\Support\Facades\Mail;
 
 class SubUserHelper
 {
+    public function getGroupID($userID)
+    {
+        return DB::table(ITable::USER)
+                ->where(IColumn::USER_ID, $userID)
+                ->pluck('group_id')
+                ->first();
+    }
+
+    public function storeUser($userID, $request)
+    {
+        $groupID = $this->getGroupID($userID);
+
+        $userIDSequence = $this->createUserIDSequence();
+
+        /** @var SubUser $SubUser */
+        $SubUser = new SubUser();
+
+        $SubUser->user_id = $userIDSequence;
+        $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
+        $SubUser->first_name = $request->get('first_name');
+        $SubUser->last_name = $request->get('last_name');
+        $SubUser->email_id = $request->get('email_id');
+        $SubUser->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
+        $SubUser->user_status = 19;
+        $SubUser->group_id = $groupID;
+        $SubUser->user_group_type = 2;
+        $SubUser->user_type = 0;
+        $SubUser->franchise_id = 0;
+        $SubUser->mob_country_code = $request->get('mob_country_code');
+        $SubUser->mobile_no = $request->get('mobile');
+        $SubUser->created_by = $userID;
+        $SubUser->created_date = Carbon::now()->toDateTimeString();
+        $SubUser->last_updated_by = $userID;
+        $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
+
+        $SubUser->save();
+
+        $this->addUserRole($SubUser, $request->get('role'));
+
+        $this->sendVerifyMail($SubUser);
+    }
+
+    public function updateUser($authUserID, $userID, $request)
+    {
+        /** @var SubUser $SubUser */
+        $SubUser = SubUser::query()
+            ->where(IColumn::USER_ID, Encrypt::decode($userID))
+            ->first();
+
+        $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
+        $SubUser->first_name = $request->get('first_name');
+        $SubUser->last_name = $request->get('last_name');
+        $SubUser->mob_country_code = $request->get('mob_country_code');
+        $SubUser->mobile_no = $request->get('mobile');
+        $SubUser->last_updated_by = $authUserID;
+        $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
+
+        $SubUser->save();
+
+        $this->addUserRole($SubUser, $request->get('role'));
+    }
+
     /**
      * @param $userID
      * @return \Illuminate\Support\Collection

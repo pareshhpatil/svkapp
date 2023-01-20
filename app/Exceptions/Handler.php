@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
         }
         $response = parent::render($request, $exception);
         if(env('APP_ENV')=='LOCAL' || env('APP_ENV')=='DEV') {
-            dd($exception);
+            //dd($exception);
             return $response;
         }
 

@@ -6,6 +6,7 @@ use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use App\Model\Base;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\CSM\Permission
@@ -38,4 +39,5 @@ class Permission extends Base
         IColumn::SLUG,
         IColumn::GROUP
     ];
+
 }

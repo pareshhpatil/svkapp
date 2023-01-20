@@ -42,6 +42,7 @@
                                         </td>
 
                                         <td class="td-c">
+                                            @if($role->name != 'Admin' && $role->name != 'admin')
                                             <div class="btn-group dropup">
                                                 <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
                                                     &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
@@ -50,13 +51,14 @@
                                                     <li>
                                                         <a href="{{ url('merchant/roles/'. $role->id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
-                                                    @if($role->usersRoles->count() == 0 &&$role->name != 'Admin')
+                                                    @if($role->usersRoles->count() == 0 && ($role->name != 'Admin' || $role->name != 'admin'))
                                                         <li>
                                                             <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/roles/delete/{!! $role->id !!}'" data-toggle="modal"><i class="fa fa-remove"></i> Delete</a>
                                                         </li>
                                                     @endif
                                                 </ul>
                                             </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

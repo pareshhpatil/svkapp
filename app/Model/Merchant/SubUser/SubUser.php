@@ -51,6 +51,6 @@ class SubUser extends Base
         IColumn::NAME,
         IColumn::EMAIL_ID,
         IColumn::FIRST_NAME,
-        IColumn::LAST_NAME
+        IColumn::LAST_NAME,
     ];
 }

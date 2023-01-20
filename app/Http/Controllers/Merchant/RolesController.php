@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Helpers\Merchant\RoleHelper;
 use App\Http\Controllers\AppController;
+use App\Http\Requests\StoreRoleRequest;
 use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\Permission;
 use App\Model\Merchant\SubUser\Role;
@@ -16,10 +17,12 @@ use Validator;
 class RolesController extends AppController
 {
     protected $repository;
+    protected $roleHelper;
 
     public function __construct(RolesRepository $repository)
     {
         $this->repository = $repository;
+        $this->roleHelper = new RoleHelper();
 
         parent::__construct();
     }
@@ -51,54 +54,32 @@ class RolesController extends AppController
         $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
 
         /** @var Permission $Permissions */
-        $Permissions = Permission::all();
-
-        $data['permissions'] = $Permissions;
+        $data['permissions'] = Permission::all();
 
         return view('app/merchant/roles/create', $data);
     }
 
     /**
-     * @param Request $request
+     * @param StoreRoleRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
-        try {
-            $rules = [
-                'name' => 'required|unique:briq_roles',
-                'permissions' => 'required'
-            ];
-
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors($validator->messages());
-            }
-
             $permissions = $request->get('permissions');
 
             /** @var Role $Role */
-            $Role = new Role();
-
-            $Role->merchant_id = $this->merchant_id;
-            $Role->name = $request->get('name');
-            $Role->description = $request->get('description');
-            $Role->created_by = $this->user_id;
-
-            $Role->save();
+            $Role = $this->repository->create([
+                                    'merchant_id' => $this->merchant_id,
+                                    'name' => $request->get('name'),
+                                    'description' => $request->get('description'),
+                                    'created_by' => $this->user_id,
+                                    'last_updated_by' => $this->user_id
+                                ]);
 
             //Update Role Permissions
-            (new RoleHelper())->updateRolePermissions($Role->id, $permissions);
+            $this->roleHelper->updateRolePermissions($Role->id, $permissions);
 
             return redirect()->to('merchant/roles')->with('success', "Role has been created");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/roles')->with('error', "Something went wrong!");
-        }
     }
 
     /**
@@ -111,9 +92,8 @@ class RolesController extends AppController
 
         $data['role'] = $this->repository->show($roleID);
         /** @var Permission $Permissions */
-        $Permissions = Permission::all();
-        $data['permissions'] = $Permissions;
-        $selectedPermissions = (new RoleHelper())->getRolePermissions($roleID);
+        $data['permissions'] = Permission::all();
+        $selectedPermissions = $this->roleHelper->getRolePermissions($roleID);
 
         $data['selected_permissions'] = $selectedPermissions;
 
@@ -121,47 +101,38 @@ class RolesController extends AppController
     }
 
     /**
-     * @param $id
+     * @param $roleID
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($id, Request $request)
+    public function update($roleID, Request $request)
     {
-        try {
-            $rules = [
-                'name' => 'required|unique:briq_roles,name,'.$id,
-            ];
+        $rules = [
+            'name' => 'required|unique:briq_roles,name,'.$roleID,
+        ];
 
-            $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors($validator->messages());
-            }
-
-            $permissions = $request->get('permissions');
-
-            /** @var Role $Role */
-            $Role = Role::query()
-                        ->find($id);
-
-            $Role->merchant_id = $this->merchant_id;
-            $Role->name = $request->get('name');
-            $Role->description = $request->get('description');
-            $Role->last_updated_by = $this->user_id;
-
-            $Role->save();
-
-            //Update Role Permissions
-            (new RoleHelper())->updateRolePermissions($Role->id, $permissions);
-            
-            return redirect()->to('merchant/roles')->with('success', "Role has been updated");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/roles')->with('error', "Something went wrong!");
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($validator->messages());
         }
+
+        $permissions = $request->get('permissions');
+
+        /** @var Role $Role */
+        $Role = $this->repository->update([
+            'merchant_id' => $this->merchant_id,
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'last_updated_by' => $this->user_id
+        ], $roleID);
+
+        //Update Role Permissions
+        $this->roleHelper->updateRolePermissions($Role->id, $permissions);
+
+        return redirect()->to('merchant/roles')->with('success', "Role has been updated");
     }
 
     /**
@@ -170,15 +141,9 @@ class RolesController extends AppController
      */
     public function delete($roleID)
     {
-        try {
-            (new RoleHelper())->deleteRole($roleID);
+        $this->roleHelper->deleteRole($roleID);
 
-            return redirect()->to('merchant/roles')->with('success', "Role has been deleted");
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-
-            return redirect()->to('merchant/roles')->with('error', "Something went wrong!");
-        }
+        return redirect()->to('merchant/roles')->with('success', "Role has been deleted");
     }
 
 }
