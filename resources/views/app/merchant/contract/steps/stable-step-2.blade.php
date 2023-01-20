@@ -683,12 +683,15 @@
 
 
                     int = this.fields.filter(Boolean).length-1;
-
-                    while(typeof this.fields[int] === 'undefined')
-                    {   
-                        int = int+1;
+                    if(int==-1) {
+                        pint = 1;
+                    } else {
+                        while(typeof this.fields[int] === 'undefined')
+                        {   
+                            int = int+1;
+                        }
+                        pint=Number(this.fields[int].pint) + 1;
                     }
-                    pint=Number(this.fields[int].pint) + 1;
                     exist=true;
                     while (exist==true) {
                     exist=false;
