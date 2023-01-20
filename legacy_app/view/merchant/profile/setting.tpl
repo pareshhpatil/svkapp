@@ -291,6 +291,9 @@
                                                                 Prefix
                                                             </th>
                                                             <th class="td-c" style="width: 40%;">
+                                                                Separator
+                                                            </th>
+                                                            <th class="td-c" style="width: 40%;">
                                                                 Current Number
                                                             </th>
                                                             <th class="td-c" style="width: 10%;">
@@ -305,10 +308,13 @@
                                                                     {$v.prefix}
                                                                 </td>
                                                                 <td class="td-c" style="width: 40%;">
+                                                                    {$v.seprator}
+                                                                </td>
+                                                                <td class="td-c" style="width: 40%;">
                                                                     {$v.val}
                                                                 </td>
                                                                 <th class="td-c" style="width: 10%;">
-                                                                    <a href="#basic" onclick="updateauto_number('{$v.prefix}', '{$v.val}', '{$v.auto_invoice_id}');" data-toggle="modal"  class="btn btn-xs green"><i class="fa fa-edit"></i></a>
+                                                                    <a href="#basic" onclick="updateauto_number('{$v.prefix}', '{$v.val}', '{$v.auto_invoice_id}','{$v.seprator}');" data-toggle="modal"  class="btn btn-xs green"><i class="fa fa-edit"></i></a>
                                                                     <a href="#delete" onclick="document.getElementById('deleteanchor').href = '/merchant/profile/delete/{$v.auto_invoice_id}'" data-toggle="modal" class="btn btn-xs red"><i class="fa fa-remove"></i> </a>
                                                             </tr>
                                                         {/foreach}
@@ -368,6 +374,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="control-label col-md-5">Seprator<span class="required">
+                                    </span></label>
+                                <div class="col-md-4">
+                                    <input type="text" name="seprator" id="seprator" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="control-label col-md-5">Current number<span class="required">
                                     </span></label>
                                 <div class="col-md-4">
@@ -423,10 +437,11 @@
 
     }
 
-    function updateauto_number(subscript, val, id)
+    function updateauto_number(subscript, val, id, seprator)
     {
         document.getElementById('autoinvoice_id').value = id;
         document.getElementById('subscript').value = subscript;
         document.getElementById('autonumber').value = val;
+        document.getElementById('seprator').value = seprator;
     }
 </script>

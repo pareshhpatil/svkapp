@@ -1,5 +1,9 @@
 @extends('app.master')
-
+<style>
+    .select2-container--default {
+        width: 515px !important;
+    }
+</style>
 @section('content')
 <div class="page-content">
     <!-- BEGIN PAGE HEADER-->
@@ -76,8 +80,11 @@
                                         <div class="col-md-3">
                                             <input class="form-control" type="text" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
                                         </div>
-                                        <div class="col-md-2">
-                                            <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Sequence number" />
+                                        <div class="col-md-1 ml-minus-1">
+                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="-"/>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Seq. no" />
                                         </div>
                                     </div>
                                 </div>

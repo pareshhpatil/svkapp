@@ -1,3 +1,39 @@
-ALTER TABLE `swipez`.`invoice_construction_particular` 
-ADD COLUMN `retainage_percent_stored_materials` DOUBLE NOT NULL DEFAULT 0 AFTER `retainage_amount_for_this_draw`,
-ADD COLUMN `retainage_amount_stored_materials` DECIMAL(11,2) NOT NULL DEFAULT 0 AFTER `retainage_percent_stored_materials`;
+ALTER TABLE `swipez_briq`.`merchant_auto_invoice_number` 
+ADD COLUMN `seprator` VARCHAR(5) NULL DEFAULT NULL AFTER `type`;
+
+
+
+
+USE `swipez_briq`;
+DROP function IF EXISTS `generate_invoice_number`;
+
+USE `swipez_briq`;
+DROP function IF EXISTS `swipez_briq`.`generate_invoice_number`;
+;
+
+DELIMITER $$
+USE `swipez_briq`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `generate_invoice_number`(_auto_invoice_id varchar(10)) RETURNS char(45) CHARSET latin1
+begin
+
+
+    UPDATE merchant_auto_invoice_number SET val=last_insert_id(val+1) WHERE auto_invoice_id=_auto_invoice_id;
+
+    SELECT prefix,seprator,val,length into @subscript,@seprator,@seqval,@length  FROM merchant_auto_invoice_number WHERE auto_invoice_id=_auto_invoice_id;
+    
+    SET @len = length(@seqval);
+    
+    IF @len < @length THEN 
+        SET @returnval = CONCAT(@subscript,@seprator, LPAD(@seqval, @length, '0'));
+    ELSE
+        SET @returnval = CONCAT(@subscript,@seprator, @seqval);
+    END IF;
+    
+    RETURN @returnval;
+end$$
+
+DELIMITER ;
+;
+
+
+
