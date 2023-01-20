@@ -451,13 +451,13 @@ VALUES(:merchant_id,'','','',0,'','','','','',1,:merchant_id,CURRENT_TIMESTAMP()
         }
     }
 
-    public function saveInvoiceNumber($user_id, $merchant_id, $subscript, $val, $type = 1)
+    public function saveInvoiceNumber($user_id, $merchant_id, $subscript, $val, $type = 1, $seprator=null)
     {
         try {
             $type = ($type > 1) ? $type : 1;
-            $sql = "INSERT INTO `merchant_auto_invoice_number`(`merchant_id`,`prefix`,`val`,`type`,`created_by`,`created_date`,`last_update_by`)
-                VALUES(:merchant_id,:subscript,:val,:type,:user_id,CURRENT_TIMESTAMP(),:user_id);";
-            $params = array(':merchant_id' => $merchant_id, ':subscript' => $subscript, ':val' => $val, ':type' => $type, ':user_id' => $user_id);
+            $sql = "INSERT INTO `merchant_auto_invoice_number`(`merchant_id`,`prefix`,`val`,`type`,`created_by`,`created_date`,`last_update_by`,`seprator`)
+                VALUES(:merchant_id,:subscript,:val,:type,:user_id,CURRENT_TIMESTAMP(),:user_id,:seprator);";
+            $params = array(':merchant_id' => $merchant_id, ':subscript' => $subscript, ':val' => $val, ':type' => $type, ':user_id' => $user_id,':seprator'=> $seprator);
             $this->db->exec($sql, $params);
             return $this->db->lastInsertId();
         } catch (Exception $e) {
@@ -481,11 +481,11 @@ VALUES(:merchant_id,'','','',0,'','','','','',1,:merchant_id,CURRENT_TIMESTAMP()
         }
     }
 
-    public function updateInvoiceNumber($user_id, $merchant_id, $subscript, $val, $id)
+    public function updateInvoiceNumber($user_id, $merchant_id, $subscript, $val, $id, $seprator=null)
     {
         try {
-            $sql = "update merchant_auto_invoice_number set prefix=:subscript, val=:val , last_update_by=:user_id where auto_invoice_id=:id and merchant_id=:merchant_id;";
-            $params = array(':merchant_id' => $merchant_id, ':subscript' => $subscript, ':val' => $val, ':id' => $id, ':user_id' => $user_id);
+            $sql = "update merchant_auto_invoice_number set prefix=:subscript, val=:val , last_update_by=:user_id, seprator=:seprator where auto_invoice_id=:id and merchant_id=:merchant_id;";
+            $params = array(':merchant_id' => $merchant_id, ':subscript' => $subscript, ':val' => $val, ':id' => $id, ':user_id' => $user_id, ':seprator' => $seprator);
             $this->db->exec($sql, $params);
             return 1;
         } catch (Exception $e) {
