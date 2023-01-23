@@ -8,7 +8,6 @@ use App\Model\Invoice;
 use App\Model\Master;
 use App\Model\Order;
 use App\Libraries\Encrypt;
-use Illuminate\Support\Facades\Gate;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -164,10 +163,6 @@ class OrderController extends Controller
 
     public function delete($link)
     {
-        if (Gate::denies('delete', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         if ($link) {
             $id = Encrypt::decode($link);
             $this->masterModel->deleteTableRow('order', 'order_id', $id, $this->merchant_id, $this->user_id);
@@ -325,7 +320,7 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
-        return redirect('mercha  nt/order/list')->with('success', "Change Order has been updated");
+        return redirect('merchant/order/list')->with('success', "Change Order has been updated");
     }
 
     public function getprojectdetails($project_id)

@@ -30,23 +30,4 @@ class RoleHelper
         return $Permissions;
     }
 
-    /**
-     * @param $roleID
-     * @return void
-     */
-    public function deleteRole($roleID)
-    {
-        //Check User Role Exists
-        $UserRoleExist = SubUsersRoles::query()
-                                ->where(IColumn::ROLE_ID, $roleID)
-                                ->exists();
-        //if exists then soft delete
-        if($UserRoleExist) {
-            SubUser::query()
-                ->where(IColumn::ROLE_ID, $roleID)
-                ->delete();
-        }
-
-        Role::find($roleID)->delete();
-    }
 }

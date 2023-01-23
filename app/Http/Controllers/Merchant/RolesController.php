@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Constants\Models\IColumn;
 use App\Helpers\Merchant\RoleHelper;
 use App\Http\Controllers\AppController;
 use App\Http\Requests\StoreRoleRequest;
 use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\Permission;
 use App\Model\Merchant\SubUser\Role;
+use App\Model\Merchant\SubUser\SubUser;
+use App\Model\Merchant\SubUser\SubUsersRoles;
 use App\Repositories\Merchant\RolesRepository;
 use Illuminate\Http\Request;
 use Validator;
@@ -137,7 +140,17 @@ class RolesController extends AppController
      */
     public function delete($roleID)
     {
-        $this->roleHelper->deleteRole($roleID);
+        //Check User Role Exists
+        $UserRoleExist = SubUsersRoles::query()
+                                    ->where(IColumn::ROLE_ID, $roleID)
+                                    ->exists();
+
+        //if exists then return error
+        if(!empty($UserRoleExist)) {
+            return redirect()->to('merchant/roles')->with('error', "You can't delete this bcz user exists on this role");
+        }
+
+        Role::find($roleID)->delete();
 
         return redirect()->to('merchant/roles')->with('success', "Role has been deleted");
     }

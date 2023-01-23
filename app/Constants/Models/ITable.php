@@ -21,4 +21,5 @@ interface ITable
     const SEQUENCE = 'sequence';
     const USER = 'user';
     const INVOICE = 'invoice';
+    const PREFERENCES = 'preferences';
 }

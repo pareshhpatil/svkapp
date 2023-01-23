@@ -18,7 +18,6 @@ use App\Project;
 use App\Traits\Contract\ContractParticulars;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Validator;
 use Illuminate\Support\Facades\Session;

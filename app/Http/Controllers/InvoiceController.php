@@ -17,7 +17,6 @@ use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
 use App\Http\Traits\InvoiceFormatTrait;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Validator;
 use Exception;
