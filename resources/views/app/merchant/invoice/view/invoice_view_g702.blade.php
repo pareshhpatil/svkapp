@@ -390,7 +390,7 @@ that current payment shown herein is now due.</p>
      </div>
         <div>
           
-            <p class="font-bold text-xs border-b   border-gray-600 mt-1">{{$info['currency_icon']}}@if($info['grand_total'] < 0)({{str_replace('-','',number_format($info['grand_total'],2))}})  @else{{number_format($info['grand_total'],2)}} @endif</p>
+            <p class="font-bold text-xs border-b   border-gray-600 mt-1">{{$info['currency_icon']}}@if($info['grand_total'] < 0)0.00  @else{{number_format($info['grand_total'],2)}} @endif</p>
           
          
         </div>

@@ -353,7 +353,7 @@ that current payment shown herein is now due.</div>
     <div style="margin-top: 0px; font-size: 12px; font-weight: 700">AMOUNT CERTIFIED</div>
         </td>
         <td style="width: 30%"> 
-                       <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['grand_total'] < 0)({{str_replace('-','',number_format($info['grand_total'],2))}})  @else{{number_format($info['grand_total'],2)}} @endif</div>  
+                       <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['grand_total'] < 0)0.00  @else{{number_format($info['grand_total'],2)}} @endif</div>  
         </td>
         </tr>
     </table>  
