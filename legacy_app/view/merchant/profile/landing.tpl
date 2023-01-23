@@ -123,6 +123,7 @@
 
 
                 </div>
+                {if $user_role == 'admin'}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Manage Users</b></h4>
                     <p>
@@ -131,9 +132,8 @@
                     <p>
                         <a href="/merchant/subusers" class="dc-link"> Logins </a>
                     </p>
-
-
                 </div>
+                {/if}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Personal preferences</b></h4>
                     <p>
