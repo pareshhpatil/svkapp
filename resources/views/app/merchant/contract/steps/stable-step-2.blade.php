@@ -327,7 +327,7 @@
 
         function handle_particulars(){
             return {
-                fields : JSON.parse('{!! particularJson !!}'),
+                fields : JSON.parse('{!! $particularJson !!}'),
                 bill_code : null,
                 bill_description : null,
                 group_name : null,
