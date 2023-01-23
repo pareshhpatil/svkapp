@@ -24,7 +24,7 @@ class StoreRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:briq_roles',
+            'name' => 'required|unique:briq_roles,name,NULL,id,deleted_at,NULL',
             'permissions' => 'required'
         ];
     }
