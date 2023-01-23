@@ -254,13 +254,31 @@
                 $('#footerRow').css('z-index',3);
             });*/
         }
+        @php 
+            $billcodeJson=json_encode($bill_codes);
+            $billcodeJson=str_replace("'","\'",$billcodeJson);
+            $billcodeJson=str_replace('"','\\"',$billcodeJson);
 
-        var particularsArray = JSON.parse('{!! json_encode($particulars) !!}');
-        var bill_codes = JSON.parse('{!! json_encode($bill_codes) !!}');
-        var groups = JSON.parse('{!! json_encode($groups) !!}');
+            $particularJson=json_encode($particulars);
+            $particularJson=str_replace("'","\'",$particularJson);
+            $particularJson=str_replace('"','\\"',$particularJson);
+
+            $groupJson=json_encode($groups);
+            $groupJson=str_replace("'","\'",$groupJson);
+            $groupJson=str_replace('"','\\"',$groupJson);
+
+            $onlyBillCodeJson=json_encode(array_column($bill_codes, 'value'));
+            $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
+            $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
+
+
+        @endphp
+        var particularsArray = JSON.parse('{!! $particularJson !!}');
+        var bill_codes = JSON.parse('{!! $billcodeJson !!}');
+        var groups = JSON.parse('{!! $groupJson !!}');
         var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
         var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
-        var only_bill_codes = JSON.parse('{!! json_encode(array_column($bill_codes, 'value')) !!}');
+        var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
 
         var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
         var row = JSON.parse('{!! json_encode($row) !!}')
