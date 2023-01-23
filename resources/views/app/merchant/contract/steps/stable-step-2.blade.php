@@ -256,22 +256,24 @@
         }
         @php 
             $billcodeJson=json_encode($bill_codes);
+            $billcodeJson=str_replace("\\",'\\\\', $billcodeJson); 
             $billcodeJson=str_replace("'","\'",$billcodeJson);
             $billcodeJson=str_replace('"','\\"',$billcodeJson);
 
             $particularJson=json_encode($particulars);
+            $particularJson=str_replace("\\",'\\\\', $particularJson); 
             $particularJson=str_replace("'","\'",$particularJson);
             $particularJson=str_replace('"','\\"',$particularJson);
 
             $groupJson=json_encode($groups);
+            $groupJson=str_replace("\\",'\\\\', $groupJson); 
             $groupJson=str_replace("'","\'",$groupJson);
             $groupJson=str_replace('"','\\"',$groupJson);
 
             $onlyBillCodeJson=json_encode(array_column($bill_codes, 'value'));
+            $onlyBillCodeJson=str_replace("\\",'\\\\', $onlyBillCodeJson); 
             $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
             $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
-
-
         @endphp
         var particularsArray = JSON.parse('{!! $particularJson !!}');
         var bill_codes = JSON.parse('{!! $billcodeJson !!}');
@@ -325,7 +327,7 @@
 
         function handle_particulars(){
             return {
-                fields : JSON.parse('{!! json_encode($particulars) !!}'),
+                fields : JSON.parse('{!! $particularJson !!}'),
                 bill_code : null,
                 bill_description : null,
                 group_name : null,
