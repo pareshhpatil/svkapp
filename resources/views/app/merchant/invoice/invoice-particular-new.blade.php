@@ -466,19 +466,44 @@
                  particularsDropdowns(0, this.fields);
 
              });*/
-            csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-            var particularray = JSON.parse('{!! json_encode($particulars) !!}');
+
+
+
+            @php 
+                $billcodeJson=json_encode($csi_codes);
+                $billcodeJson=str_replace("'","\'",$billcodeJson);
+                $billcodeJson=str_replace('"','\\"',$billcodeJson);
+
+                $particularJson=json_encode($particulars);
+                $particularJson=str_replace("'","\'",$particularJson);
+                $particularJson=str_replace('"','\\"',$particularJson);
+
+                $groupJson=json_encode($groups);
+                $groupJson=str_replace("'","\'",$groupJson);
+                $groupJson=str_replace('"','\\"',$groupJson);
+
+                $onlyBillCodeJson=json_encode(array_column($bill_codes, 'value'));
+                $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
+                $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
+
+                $merchantCostTypeJson=json_encode($merchant_cost_types);
+                $merchantCostTypeJson=str_replace("'","\'",$merchantCostTypeJson);
+                $merchantCostTypeJson=str_replace('"','\\"',$merchantCostTypeJson);
+            @endphp
+
+            csi_codes = JSON.parse('{!! $billcodeJson !!}');
+            var particularray = JSON.parse('{!! $particularJson !!}');
             //console.log(particularray);
             var previewArray = [];
-            var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-            var groups = JSON.parse('{!! json_encode($groups) !!}');
+            var bill_codes = JSON.parse('{!! $billcodeJson !!}');
+            var groups = JSON.parse('{!! $groupJson !!}');
             var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
             var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
             var billed_transactions_filter=[];
-            var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
+            var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
             var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
-            var merchant_cost_types = JSON.parse('{!! json_encode($merchant_cost_types) !!}');
+            var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
             function initializeParticulars(){
                 this.initializeDropdowns();
                 this.calculateTotal();
@@ -559,9 +584,9 @@
                     project_code : '{{$project_code}}',
                     project_id : '{{$project_id}}',
                     goAhead: true,
-                    fields : JSON.parse('{!! json_encode($particulars) !!}'),
-                    bill_codes : JSON.parse('{!! json_encode($csi_codes) !!}'),
-                    groups : JSON.parse('{!! json_encode($groups) !!}'),
+                    fields : JSON.parse('{!! $particularJson !!}'),
+                    bill_codes : JSON.parse('{!! $billcodeJson !!}'),
+                    groups : JSON.parse('{!! $groupJson !!}'),
                     billed_transactions : null,
                     billed_transactions_id_array : [],
                     test : null,
