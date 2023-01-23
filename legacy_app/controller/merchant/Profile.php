@@ -10,6 +10,7 @@ use App\Jobs\MerchantServiceAddToCRM;
 use App\Jobs\MerchantRegistrationCrmPennyDrop;
 use App\Jobs\MerchantRegistrationCrmDocument;
 use Illuminate\Support\Facades\DB;
+use App\Model\Invoice;
 
 class Profile extends Controller
 {
@@ -972,6 +973,24 @@ class Profile extends Controller
         $merchant_id = $this->session->get('merchant_id');
         if (empty($_POST)) {
             header('Location:/merchant/profile/setting');
+        }
+        
+        if(isset($_POST['seprator'])) {
+            $lastSequenceData = $this->common->getSingleValue('merchant_auto_invoice_number', 'auto_invoice_id', $_POST['auto_invoice_id']);
+            $invoice_sequence_prefix = $lastSequenceData['prefix'].$lastSequenceData['seprator'].$_POST['last_number'];
+            
+            $invoiceModel = new Invoice();
+            $existInvoiceNo = $invoiceModel->findInvoiceNumberExist($merchant_id,$invoice_sequence_prefix);
+        
+            if ($existInvoiceNo) {
+                $hasErrors['Prefix'][0] = 'Invoice sequence';
+                $hasErrors['Prefix'][1] = 'Invoice sequence number already exist';
+            }
+            if ($hasErrors == true) {
+                $this->smarty->assign("haserrors", $hasErrors);
+                $this->setting('sequence');
+                die();
+            }
         }
         $this->model->updateInvoiceNumber($this->session->get('userid'), $merchant_id, $_POST['subscript'], $_POST['last_number'], $_POST['auto_invoice_id'], $_POST['seprator']);
         $this->session->set('successMessage', 'Updates made to your setting have been saved.');
