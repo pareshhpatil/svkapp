@@ -3058,9 +3058,11 @@ class InvoiceController extends AppController
                     if ($isFirstInvoice == true) {
                         $d += $data['previously_billed_amount'];
                     } else {
-                        if (is_numeric($prevParictular[$data['pint']])) {
-                            $pp = $prevParictular[$data['pint']] ?? 0;
-                            $d += $pp;
+                        if (isset($prevParictular[$data['pint']])) {
+                            if (is_numeric($prevParictular[$data['pint']])) {
+                                $pp = $prevParictular[$data['pint']] ?? 0;
+                                $d += $pp;
+                            }
                         }
                     }
 
@@ -3377,7 +3379,7 @@ class InvoiceController extends AppController
         try {
             $request_id = Encrypt::decode($request->link);
             if (strlen($request_id) != 10) {
-                throw new Exception('Invalid id '.$request_id);
+                throw new Exception('Invalid id ' . $request_id);
             }
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             $revision = false;
