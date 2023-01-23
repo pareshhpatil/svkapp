@@ -482,7 +482,7 @@
                 $groupJson=str_replace("'","\'",$groupJson);
                 $groupJson=str_replace('"','\\"',$groupJson);
 
-                $onlyBillCodeJson=json_encode(array_column($bill_codes, 'value'));
+                $onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
                 $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
                 $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
 
