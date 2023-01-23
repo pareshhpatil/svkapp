@@ -11,7 +11,7 @@
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.orderlist') }}
 
-        @if(in_array('create-change-order', Session::get('permissions')) || Session::get('user_role') == 'admin')
+        @if(in_array('create-change-order', Session::get('permissions')) || Session::get('user_role') == 'Admin')
             <a href="/merchant/order/create" class="btn blue pull-right"> Create Change Order </a>
         @endif
 

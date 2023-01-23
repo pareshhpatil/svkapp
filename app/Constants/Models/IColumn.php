@@ -22,6 +22,7 @@ interface IColumn
     const  MERCHANT_ID = 'merchant_id';
     const  MOBILE_NO = 'mobile_no';
     const  PERMISSION_SLUG = 'permission_slug';
+    const  PERMISSIONS = 'permissions';
     const  ROLE_ID = 'role_id';
     const  ROLE_NAME = 'role_name';
     const  SLUG = 'slug';

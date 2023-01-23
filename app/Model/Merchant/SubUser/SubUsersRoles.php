@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class SubUsersRoles extends Base
 {
+    use SoftDeletes;
+    
     protected $table = ITable::BRIQ_USER_ROLES;
 
     /**

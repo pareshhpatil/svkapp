@@ -175,9 +175,6 @@ class InvoiceController extends AppController
 
     public function create(Request $request, $link = null, $update = null)
     {
-        if (Gate::denies('create', Invoice::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $cycleName = date('M-Y') . ' Bill';
         $invoice_number = '';
@@ -374,9 +371,6 @@ class InvoiceController extends AppController
      */
     public function update($link, $staging = 0, $revision = 0)
     {
-        if (Gate::denies('update', Invoice::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
@@ -3211,9 +3205,7 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
-        if (Gate::denies('create', Invoice::class)) {
-            return redirect('/merchant/no-permission');
-        }
+
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
             if ($function_id == 9) {
@@ -3279,9 +3271,6 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-        if (Gate::denies('update', Invoice::class)) {
-            return redirect('/merchant/no-permission');
-        }
         ini_set('max_execution_time', 120);
 
         try {

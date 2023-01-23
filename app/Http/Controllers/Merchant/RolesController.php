@@ -9,9 +9,7 @@ use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\Permission;
 use App\Model\Merchant\SubUser\Role;
 use App\Repositories\Merchant\RolesRepository;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Validator;
 
 class RolesController extends AppController
@@ -29,12 +27,13 @@ class RolesController extends AppController
 
     /***
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function index()
     {
         $title = 'Roles list';
 
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
         $data['roles'] = $this->repository->all();
 
@@ -47,11 +46,12 @@ class RolesController extends AppController
      * Show the form for creating a new cost type.
      *
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function create()
     {
         $title = 'Create Role';
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
         /** @var Permission $Permissions */
         $data['permissions'] = Permission::all();
@@ -62,40 +62,39 @@ class RolesController extends AppController
     /**
      * @param StoreRoleRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function store(StoreRoleRequest $request)
     {
-            $permissions = $request->get('permissions');
+        $this->repository->create([
+            'merchant_id' => $this->merchant_id,
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'permissions' => $this->roleHelper->getPermissionIDSlugs($request->get('permissions')),
+            'created_by' => $this->user_id,
+            'last_updated_by' => $this->user_id
+        ]);
 
-            /** @var Role $Role */
-            $Role = $this->repository->create([
-                                    'merchant_id' => $this->merchant_id,
-                                    'name' => $request->get('name'),
-                                    'description' => $request->get('description'),
-                                    'created_by' => $this->user_id,
-                                    'last_updated_by' => $this->user_id
-                                ]);
-
-            //Update Role Permissions
-            $this->roleHelper->updateRolePermissions($Role->id, $permissions);
-
-            return redirect()->to('merchant/roles')->with('success', "Role has been created");
+        return redirect()->to('merchant/roles')->with('success', "Role has been created");
     }
 
     /**
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function edit($roleID)
     {
         $title = 'Update Role';
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
-        $data['role'] = $this->repository->show($roleID);
+        $Role = $this->repository->show($roleID);
+
         /** @var Permission $Permissions */
         $data['permissions'] = Permission::all();
-        $selectedPermissions = $this->roleHelper->getRolePermissions($roleID);
+        $selectedPermissions = collect($Role->permissions)->pluck('slug')->toArray();
 
         $data['selected_permissions'] = $selectedPermissions;
+        $data['role'] = $Role;
 
         return view('app/merchant/roles/edit', $data);
     }
@@ -104,6 +103,7 @@ class RolesController extends AppController
      * @param $roleID
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function update($roleID, Request $request)
     {
@@ -119,18 +119,13 @@ class RolesController extends AppController
                 ->withErrors($validator->messages());
         }
 
-        $permissions = $request->get('permissions');
-
-        /** @var Role $Role */
-        $Role = $this->repository->update([
+        $this->repository->update([
             'merchant_id' => $this->merchant_id,
             'name' => $request->get('name'),
             'description' => $request->get('description'),
+            'permissions' => $this->roleHelper->getPermissionIDSlugs($request->get('permissions')),
             'last_updated_by' => $this->user_id
         ], $roleID);
-
-        //Update Role Permissions
-        $this->roleHelper->updateRolePermissions($Role->id, $permissions);
 
         return redirect()->to('merchant/roles')->with('success', "Role has been updated");
     }
@@ -138,6 +133,7 @@ class RolesController extends AppController
     /**
      * @param $roleID
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function delete($roleID)
     {

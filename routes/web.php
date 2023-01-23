@@ -254,17 +254,17 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoiceformat/save/', 'InvoiceFormatController@save');
   Route::post('invoiceformat/savePluginValue/', 'InvoiceFormatController@savePluginValue');
 
-  Route::any('invoice/create', 'InvoiceController@create')->name('create.invoice');
-  Route::any('invoice/createv2', 'InvoiceController@createv2')->name('createv2.invoice');
+  Route::any('invoice/create', 'InvoiceController@create')->name('create.invoice')->can('create', \App\Model\Invoice::class);
+  Route::any('invoice/createv2', 'InvoiceController@createv2')->name('createv2.invoice')->can('create', \App\Model\Invoice::class);
   Route::any('invoice/createv2/{link}', 'InvoiceController@createv2')->name('createv23.invoice');
-  Route::any('invoice/updatev2/{link}', 'InvoiceController@updatev2')->name('updatev23.invoice');
+  Route::any('invoice/updatev2/{link}', 'InvoiceController@updatev2')->name('updatev23.invoice')->can('update', \App\Model\Invoice::class);
   Route::any('invoice/particular/{link}', 'InvoiceController@particular')->name('particular.invoice');
   Route::get('invoice/preview/{link}', 'InvoiceController@preview')->name('preview.invoice');
-  Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice');
-  Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular');
-  Route::post('invoice/particularsave/ajax', 'InvoiceController@particularsave')->name('save.particularajax');
+  Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice')->can('create', \App\Model\Invoice::class);
+  Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular')->can('update', \App\Model\Invoice::class);
+  Route::post('invoice/particularsave/ajax', 'InvoiceController@particularsave')->name('save.particularajax')->can('update', \App\Model\Invoice::class);
   Route::any('invoice/create/{type}', 'InvoiceController@create')->name('create.invoice.type');
-  Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice');
+  Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice')->can('update', \App\Model\Invoice::class);
   Route::any('invoice/update/{link}/{type}', 'InvoiceController@update')->name('update.invoice.type');
   Route::any('subscription/update/{link}', 'InvoiceController@update')->name('update.invoice.link');
   Route::any('estimate/create/{type}', 'InvoiceController@estimateSubscription');
@@ -373,43 +373,43 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
 //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
-  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
+  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new')->can('create', \App\Model\Contract::class);
 
-  Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new');
+  Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new')->can('update', \App\Model\Contract::class);
 
   Route::any('contract/fetchProject', 'ContractController@fetchProject')->name('contract.fetchProject');
-  Route::post('contract/store', 'ContractController@store')->name('contract.store');
+  Route::post('contract/store', 'ContractController@store')->name('contract.store')->can('create', \App\Model\Contract::class);
 
 //  Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
-  Route::any('contract/save', 'ContractController@save')->name('save.contract');
-  Route::any('contract/saveV4', 'ContractController@saveV4')->name('save.contractV4');
-  Route::any('contract/saveV5', 'ContractController@saveV5')->name('save.contractV4');
+  Route::any('contract/save', 'ContractController@save')->name('save.contract')->can('create', \App\Model\Contract::class);
+  Route::any('contract/saveV4', 'ContractController@saveV4')->name('save.contractV4')->can('create', \App\Model\Contract::class);
+  Route::any('contract/saveV5', 'ContractController@saveV5')->name('save.contractV4')->can('create', \App\Model\Contract::class);
 //  Route::any('contract/list', 'ContractController@list')->name('list.contract');
 
-  Route::any('contract/list', 'ContractController@listContracts')->name('contract.list.new');
+  Route::any('contract/list', 'ContractController@listContracts')->name('contract.list.new')->can('viewAny', \App\Model\Contract::class);
 
   Route::any('contract/delete/{link}', 'ContractController@delete')->name('delete.contract');
   Route::any('contract/getProjectDetails/{project_id}', 'ContractController@getprojectdetails')->name('getprojectdetails.contract');
-  Route::any('contract/updatesave/', 'ContractController@updatesave')->name('updatesave.contract');
-  Route::any('contract/updatesaveV4/', 'ContractController@updatesaveV4')->name('updatesave.contractV4');
-  Route::any('contract/updatesaveV5/', 'ContractController@updatesaveV5')->name('updatesave.contractV5');
-  Route::any('contract/updatesaveV6/', 'ContractController@updatesaveV6')->name('updatesave.contractV6');
+  Route::any('contract/updatesave/', 'ContractController@updatesave')->name('updatesave.contract')->can('update', \App\Model\Contract::class);
+  Route::any('contract/updatesaveV4/', 'ContractController@updatesaveV4')->name('updatesave.contractV4')->can('update', \App\Model\Contract::class);
+  Route::any('contract/updatesaveV5/', 'ContractController@updatesaveV5')->name('updatesave.contractV5')->can('update', \App\Model\Contract::class);
+  Route::any('contract/updatesaveV6/', 'ContractController@updatesaveV6')->name('updatesave.contractV6')->can('update', \App\Model\Contract::class);
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
 
   Route::any('/billcode/new', 'ContractController@newBillCode')->name('newBillCode.contract');
 
   //order
-  Route::any('order/create', 'OrderController@create')->name('create.order');
-  Route::any('order/create', 'OrderController@create')->name('create.orderv2');
-  Route::any('order/update/{link}', 'OrderController@update')->name('update.order');
+  Route::any('order/create', 'OrderController@create')->name('create.order')->can('create', \App\Model\Order::class);
+  Route::any('order/create', 'OrderController@create')->name('create.orderv2')->can('create', \App\Model\Order::class);
+  Route::any('order/update/{link}', 'OrderController@update')->name('update.order')->can('update', \App\Model\Order::class);
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
-  Route::any('order/save', 'OrderController@save')->name('save.order');
-  Route::any('order/list', 'OrderController@list')->name('list.order');
+  Route::any('order/save', 'OrderController@save')->name('save.order')->can('create', \App\Model\Order::class);
+  Route::any('order/list', 'OrderController@list')->name('list.order')->can('viewAny', \App\Model\Order::class);
   Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
-  Route::any('order/approve/', 'OrderController@approve')->name('approve.order');
+  Route::any('order/approve/', 'OrderController@approve')->name('approve.order')->can('update', \App\Model\Order::class);
   Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');
-  Route::any('order/updatesave/', 'OrderController@updatesave')->name('updatesave.order');
+  Route::any('order/updatesave/', 'OrderController@updatesave')->name('updatesave.order')->can('update', \App\Model\Order::class);
   Route::any('/billcode/create/', 'OrderController@billcodesave')->name('billcodesave.order');
    
   //covering note

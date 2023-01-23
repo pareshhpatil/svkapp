@@ -4,10 +4,13 @@ namespace App;
 
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 /**
  * @property mixed $user_id
@@ -53,36 +56,67 @@ class User extends Authenticatable {
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
-    public function hasPermission($permission): bool
+
+    /**
+     * @param $merchantID
+     * @param $permission
+     * @return bool
+     * @author Nitish
+     */
+    public function hasPermission($merchantID, $permission): bool
     {
-        if (empty($this->role())) {
+        if (empty($this->role($merchantID))) {
             return false;
         }
-        
-        return DB::table(ITable::BRIQ_ROLES_PERMISSIONS)
-            ->where('role_id', $this->role()->role_id)
-            ->where('permission_slug', $permission)
-            ->exists();
+        $permissions = json_decode($this->role($merchantID)->permissions);
+
+        $collectPermissions = collect($permissions);
+
+        $permission = $collectPermissions->where('slug', $permission)
+                                        ->first();
+
+        return (bool)$permission;
     }
 
-    public function permissions(): array
+    /**
+     * @param $merchantID
+     * @return array
+     * @author Nitish
+     */
+    public function permissions($merchantID): array
     {
-        if (empty($this->role())) {
+        if (empty($this->role($merchantID))) {
             return [];
         }
 
-        return DB::table(ITable::BRIQ_ROLES_PERMISSIONS)
-            ->where(IColumn::ROLE_ID, $this->role()->role_id)
-            ->pluck(IColumn::PERMISSION_SLUG)
-            ->toArray();
+        $permissions = json_decode($this->role($merchantID)->permissions);
+
+        return collect($permissions)->pluck('slug')->toArray();
     }
 
-    public function role()
+    /**
+     * @param $merchantID
+     * @return Model|Builder|object|null
+     * @author Nitish
+     */
+    public function role($merchantID)
+    {
+        return DB::table(ITable::BRIQ_ROLES)
+                   ->where(IColumn::ID, $this->roleID())
+                   ->where(IColumn::MERCHANT_ID, $merchantID)
+                   ->first();
+    }
+
+    /**
+     * @return mixed
+     * @author Nitish
+     */
+    public function roleID()
     {
         return DB::table(ITable::BRIQ_USER_ROLES)
-                   ->where(IColumn::USER_ID, $this->user_id)
-                   ->first();
+                ->where(IColumn::USER_ID, $this->user_id)
+                ->pluck(IColumn::ROLE_ID)
+                ->first();
     }
 
 }

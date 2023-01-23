@@ -7,7 +7,9 @@ use App\Constants\Models\ITable;
 use App\Model\Merchant\SubUser\Permission;
 use App\Model\Base;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Session;
 
 /**
  * App\Model\Merchant\SubUser\Role
@@ -40,17 +42,32 @@ class Role extends Base
     protected $fillable = [
         IColumn::NAME,
         IColumn::DESCRIPTION,
+        IColumn::PERMISSIONS,
         IColumn::MERCHANT_ID,
         IColumn::CREATED_BY,
         IColumn::LAST_UPDATE_BY
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Get the Role Permissions.
+     *
+     * @param  string  $permissions
+     * @return string
      */
-    public function permissions()
+    public function getPermissionsAttribute($permissions)
     {
-        return $this->belongsToMany(Permission::class);
+        return json_decode($permissions);
+    }
+
+    /**
+     * Set the Role Permissions.
+     *
+     * @param  string  $permissions
+     * @return string
+     */
+    public function setPermissionsAttribute($permissions)
+    {
+        $this->attributes['permissions'] = json_encode($permissions);
     }
 
     /**

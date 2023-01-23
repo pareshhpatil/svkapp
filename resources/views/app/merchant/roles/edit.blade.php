@@ -45,9 +45,9 @@
                                                             <option value="">Select Permissions</option>
                                                             @foreach ($permissions as $permission)
                                                                 @if(in_array($permission->slug, $selected_permissions))
-                                                                    <option value="{{$permission->slug}}" selected> {{$permission->name}}</option>
+                                                                    <option value="{{$permission->id}}" selected> {{$permission->name}}</option>
                                                                 @else
-                                                                    <option value="{{$permission->slug}}"> {{$permission->name}}</option>
+                                                                    <option value="{{$permission->id}}"> {{$permission->name}}</option>
                                                                 @endif
                                                             @endforeach
                                                         </select>

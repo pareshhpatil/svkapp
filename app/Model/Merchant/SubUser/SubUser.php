@@ -6,6 +6,7 @@ use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use App\Model\Base;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Model\Merchant\SubUser\SubUser

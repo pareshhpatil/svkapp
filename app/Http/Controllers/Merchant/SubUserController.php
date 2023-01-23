@@ -10,12 +10,9 @@ use App\Http\Requests\StoreUserRequest;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
 use App\Model\Merchant\SubUser\SubUser;
-use App\Model\User;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Validator;
 
 class SubUserController extends AppController
@@ -31,12 +28,13 @@ class SubUserController extends AppController
 
     /***
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function index()
     {
         $title = 'Sub merchant list';
 
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
         $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
         $data['datatablejs'] = 'table-no-export';
@@ -48,11 +46,12 @@ class SubUserController extends AppController
      * Show the form for creating a new user.
      *
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function create()
     {
         $title = 'Create sub-user';
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
         $data['briqRoles'] = $this->subUserHelper->getRoles();
 
@@ -62,6 +61,7 @@ class SubUserController extends AppController
     /**
      * @param StoreUserRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function store(StoreUserRequest $request)
     {
@@ -74,11 +74,12 @@ class SubUserController extends AppController
      * Show the form for edit user.
      *
      * @return \Illuminate\Contracts\View\View
+     * @author Nitish
      */
     public function edit($userID)
     {
         $title = 'Edit sub-user';
-        $data = Helpers::setBladeProperties($title, ['units', 'template'], []);
+        $data = Helpers::setBladeProperties($title);
 
         $data['briqRoles'] = $this->subUserHelper->getRoles();
 
@@ -87,7 +88,7 @@ class SubUserController extends AppController
                     ->where(IColumn::USER_ID, Encrypt::decode($userID))
                     ->first();
 
-        $data['selected_role_id'] = $User->role()->role_id ?? '';
+        $data['selected_role_id'] = $User->role($this->merchant_id)->id ?? '';
 
         $User->user_id = Encrypt::encode($User->user_id);
 
@@ -100,6 +101,7 @@ class SubUserController extends AppController
      * @param $userID
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function update($userID, Request $request)
     {
@@ -127,6 +129,7 @@ class SubUserController extends AppController
     /**
      * @param $userID
      * @return \Illuminate\Http\RedirectResponse
+     * @author Nitish
      */
     public function delete($userID)
     {
@@ -145,7 +148,7 @@ class SubUserController extends AppController
             return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
         }
 
-        if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
+        if($User->role($this->merchant_id)->role_name == 'Admin' && $countAdminUsers == 1) {
             return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
         }
 
@@ -154,6 +157,11 @@ class SubUserController extends AppController
         return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been deleted");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @author Nitish
+     */
     public function verifyMail(Request $request)
     {
         $token = $request->get('token');
@@ -189,6 +197,7 @@ class SubUserController extends AppController
      * @param $status
      * @param $userID
      * @return void
+     * @author Nitish
      */
     private function updateMerchantUserStatus($status, $userID)
     {

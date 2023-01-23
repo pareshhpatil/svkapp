@@ -40,10 +40,6 @@ class OrderController extends Controller
 
     public function create($version = '', $errors = null, $link = null, $type = null, Request $request)
     {
-        if (Gate::denies('create', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         Helpers::hasRole(2, 27);
         $title = 'create';
 
@@ -102,10 +98,6 @@ class OrderController extends Controller
 
     public function save(Request $request)
     {
-        if (Gate::denies('create', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         $validator = Validator::make($request->all(), [
             'order_no' => 'required',
             'order_date' => 'required'
@@ -143,10 +135,6 @@ class OrderController extends Controller
 
     public function list(Request $request)
     {
-        if (Gate::denies('viewAny', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         $dates = Helpers::setListDates();
         $title = 'Change Order list';
         $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
@@ -191,9 +179,6 @@ class OrderController extends Controller
 
     public function approve(Request $request)
     {
-        if (Gate::denies('update', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
@@ -218,10 +203,6 @@ class OrderController extends Controller
 
     public function update($link)
     {
-        if (Gate::denies('update', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -272,9 +253,6 @@ class OrderController extends Controller
 
     public function approved($link)
     {
-        if (Gate::denies('update', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
@@ -320,9 +298,6 @@ class OrderController extends Controller
 
     public function updatesave(Request $request)
     {
-        if (Gate::denies('update', Order::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $id = Encrypt::decode($request->link);
         $main_array = [];

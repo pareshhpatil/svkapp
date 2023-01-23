@@ -49,9 +49,6 @@ class ContractController extends Controller
 
     public function create($version = null)
     {
-        if (Gate::denies('create', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -108,7 +105,8 @@ class ContractController extends Controller
     }
 
 
-    public function loadContract($step=1, $contract_id=null){
+    public function loadContract($step=1, $contract_id=null)
+    {
 
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
@@ -159,10 +157,6 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
-        if (Gate::denies('create', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
-
         $step = $request->step;
         $contract = null;
         if ($request->contract_id)
@@ -194,9 +188,6 @@ class ContractController extends Controller
 
     public function step1Store(Request $request, $contract)
     {
-        if (Gate::denies('create', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $validator = Validator::make($request->all(), $this->informationRules());
 
@@ -337,9 +328,6 @@ class ContractController extends Controller
 
     public function save(Request $request)
     {
-        if (Gate::denies('create', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $validator = Validator::make($request->all(), [
             'bill_date' => 'required',
@@ -477,9 +465,6 @@ class ContractController extends Controller
 
     public function update($link)
     {
-        if (Gate::denies('update', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $title = 'Update';
         $id = Encrypt::decode($link);
@@ -541,9 +526,6 @@ class ContractController extends Controller
 
     public function updatesave(Request $request)
     {
-        if (Gate::denies('update', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $id = Encrypt::decode($request->link);
         $main_array = [];
@@ -582,9 +564,6 @@ class ContractController extends Controller
 
     public function updatesaveV4(Request $request)
     {
-        if (Gate::denies('update', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $id = $request->link;
         $main_array = [];
@@ -604,9 +583,6 @@ class ContractController extends Controller
 
     public function updatesaveV5(Request $request)
     {
-        if (Gate::denies('update', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $id = Encrypt::decode($request->link);
         $main_array = [];
@@ -626,9 +602,6 @@ class ContractController extends Controller
 
     public function updatesavev6(Request $request)
     {
-        if (Gate::denies('update', Contract::class)) {
-            return redirect('/merchant/no-permission');
-        }
 
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;

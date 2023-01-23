@@ -12,8 +12,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * @author Nitish
+ */
 class SubUserHelper
 {
+    /**
+     * @param $userID
+     * @return mixed
+     */
     public function getGroupID($userID)
     {
         return DB::table(ITable::USER)
@@ -22,6 +29,11 @@ class SubUserHelper
                 ->first();
     }
 
+    /**
+     * @param $userID
+     * @param $request
+     * @return void
+     */
     public function storeUser($userID, $request)
     {
         $groupID = $this->getGroupID($userID);
@@ -56,6 +68,12 @@ class SubUserHelper
         $this->sendVerifyMail($SubUser);
     }
 
+    /**
+     * @param $authUserID
+     * @param $userID
+     * @param $request
+     * @return void
+     */
     public function updateUser($authUserID, $userID, $request)
     {
         /** @var SubUser $SubUser */
@@ -151,14 +169,15 @@ class SubUserHelper
             ->first();
 
         DB::table(ITable::BRIQ_USER_ROLES)
-            ->insert([
-                'user_id' => $SubUser->user_id,
-                'role_id' => $Role->id,
-                'role_name' => $Role->name,
-                'created_by' => $SubUser->created_by,
-                'updated_by' => $SubUser->created_by,
-                IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+            ->updateOrInsert(
+                ['user_id' => $SubUser->user_id],
+                [
+                    'role_id' => $Role->id,
+                    'role_name' => $Role->name,
+                    'created_by' => $SubUser->created_by,
+                    'updated_by' => $SubUser->created_by,
+                    IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                    IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
             ]);
     }
 

@@ -2,13 +2,22 @@
 
 namespace App\Policies;
 
+use App\Libraries\Encrypt;
 use App\Model\Invoice;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Session;
 
 class InvoicePolicy
 {
     use HandlesAuthorization;
+
+    private $merchantID;
+
+    public function __construct()
+    {
+        $this->merchantID = Encrypt::decode(Session::get('merchant_id'));
+    }
 
     /**
      * Determine whether the user can view any models.
@@ -19,7 +28,7 @@ class InvoicePolicy
     public function viewAny(User $user)
     {
         // if current user is admin
-        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
             return true;
         }
 
@@ -36,7 +45,7 @@ class InvoicePolicy
     public function view(User $user, Invoice $invoice)
     {
         // if current user is admin
-        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
             return true;
         }
 
@@ -52,11 +61,11 @@ class InvoicePolicy
     public function create(User $user)
     {
         // if current user is admin
-        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
             return true;
         }
 
-        return $user->hasPermission('create-invoice');
+        return $user->hasPermission($this->merchantID,'create-invoice');
     }
 
     /**
@@ -69,11 +78,11 @@ class InvoicePolicy
     public function update(User $user, Invoice $invoice)
     {
         // if current user is admin
-        if(!empty($user->role()) && $user->role()->role_name == 'Admin') {
+        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
             return true;
         }
 
-        return $user->hasPermission('update-invoice');
+        return $user->hasPermission($this->merchantID,'update-invoice');
     }
 
     /**

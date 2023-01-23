@@ -5,7 +5,10 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.contractlist') }}
-        <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
+        @if(in_array('create-contract', Session::get('permissions')) || Session::get('user_role') == 'Admin')
+            <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
+        @endif
+
     </div>
     <!-- BEGIN SEARCH CONTENT-->
     <div class="row">
@@ -108,7 +111,10 @@
                                                 &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                             </button>
                                             <ul class="dropdown-menu" role="menu">
-                                                <li><a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
+                                                <li>
+                                                    @if(in_array('update-contract', Session::get('permissions')) || Session::get('user_role') == 'Admin')
+                                                        <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
+                                                    @endif
                                                 </li>
                                                 <li>
                                                     <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>

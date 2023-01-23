@@ -36,6 +36,7 @@ class CreateBriqUserRolesTable extends Migration
             $table->index(['role_id'], 'role_id_index');
             $table->index(['user_id'], 'user_id_index');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
