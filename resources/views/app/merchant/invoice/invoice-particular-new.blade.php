@@ -471,22 +471,27 @@
 
             @php 
                 $billcodeJson=json_encode($csi_codes);
+                $billcodeJson=str_replace("\\",'\\\\', $billcodeJson); 
                 $billcodeJson=str_replace("'","\'",$billcodeJson);
                 $billcodeJson=str_replace('"','\\"',$billcodeJson);
 
                 $particularJson=json_encode($particulars);
+                $particularJson=str_replace("\\",'\\\\', $particularJson); 
                 $particularJson=str_replace("'","\'",$particularJson);
                 $particularJson=str_replace('"','\\"',$particularJson);
 
                 $groupJson=json_encode($groups);
+                $groupJson=str_replace("\\",'\\\\', $groupJson); 
                 $groupJson=str_replace("'","\'",$groupJson);
                 $groupJson=str_replace('"','\\"',$groupJson);
 
-                $onlyBillCodeJson=json_encode(array_column($bill_codes, 'value'));
+                $onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $onlyBillCodeJson=str_replace("\\",'\\\\', $onlyBillCodeJson); 
                 $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
                 $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
 
                 $merchantCostTypeJson=json_encode($merchant_cost_types);
+                $merchantCostTypeJson=str_replace("\\",'\\\\', $merchantCostTypeJson); 
                 $merchantCostTypeJson=str_replace("'","\'",$merchantCostTypeJson);
                 $merchantCostTypeJson=str_replace('"','\\"',$merchantCostTypeJson);
             @endphp
