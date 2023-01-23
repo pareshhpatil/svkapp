@@ -123,7 +123,7 @@
 
 
                 </div>
-                {if $user_role == 'admin'}
+                {if $user_role == 'Admin'}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Manage Users</b></h4>
                     <p>
