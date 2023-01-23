@@ -182,6 +182,9 @@ class InvoiceController extends AppController
         $plugin = [];
         if ($link != null) {
             $request_id = Encrypt::decode($link);
+            if (strlen($request_id) != 10) {
+                return redirect('/error/invalidlink');
+            }
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             if ($update == 1 && $invoice->payment_request_status != 11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
@@ -3373,6 +3376,9 @@ class InvoiceController extends AppController
         //        dd($request);
         try {
             $request_id = Encrypt::decode($request->link);
+            if (strlen($request_id) != 10) {
+                throw new Exception('Invalid id '.$request_id);
+            }
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             $revision = false;
             if ($invoice->payment_request_status != 11) {
@@ -3468,7 +3474,7 @@ class InvoiceController extends AppController
                 }
             }
         } catch (Exception $e) {
-            dd($e);
+            redirect('/error');
         }
         return redirect('/merchant/invoice/viewg703/' . Encrypt::encode($request_id));
     }
