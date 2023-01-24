@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Models\IColumn;
-use App\Constants\Models\ITable;
 use App\Model\User;
 use App\Libraries\Encrypt;
 use App\Libraries\DataValidation as Valid;
 use App\Libraries\Helpers;
-use Carbon\Carbon;
 use Google_Client;
-use Illuminate\Support\Facades\DB;
 use Log;
 use Illuminate\Support\Facades\Auth as SwipezAuth;
 use Illuminate\Support\Facades\Session;
@@ -290,9 +286,6 @@ class UserController extends Controller
      */
     public function setLoginSession($user)
     {
-        //Check First Time User Role Exists
-        $this->checkUserRole($user);
-        
         $role = $user->role() ? $user->role()->name : '';
         $permissions = $user->permissions() ?? [];
 
@@ -464,63 +457,6 @@ class UserController extends Controller
                 header('Location: /error');
                 exit();
             }
-        }
-    }
-
-
-    public function checkUserRole($user)
-    {
-        if ($user->user_status == 20) {
-            $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
-        } else {
-            $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
-        }
-
-        $hasUserRoleExists = DB::table(ITable::BRIQ_USER_ROLES)
-                            ->where(IColumn::USER_ID, $user->user_id)
-                            ->exists();
-
-        if(empty($hasUserRoleExists))
-        {
-            //check if role exists
-            $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
-                                    ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                                    ->where(IColumn::NAME, "Admin")
-                                    ->exists();
-
-            if(empty($hasAdminRoleExists)) {
-                DB::table(ITable::BRIQ_ROLES)
-                    ->insert([
-                        'merchant_id' => $merchant->merchant_id,
-                        'name' => 'Admin',
-                        'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
-                        'permissions' => '',
-                        'created_by' => $user->created_by,
-                        'last_updated_by' => $user->created_by,
-                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                    ]);
-            }
-
-            $AdminRole = DB::table(ITable::BRIQ_ROLES)
-                            ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                            ->where(IColumn::NAME, 'Admin')
-                            ->first();
-
-            if(!empty($AdminRole)) {
-                DB::table(ITable::BRIQ_USER_ROLES)
-                    ->updateOrInsert(
-                        ['user_id' => $user->user_id],
-                        [
-                            'role_id' => $AdminRole->id,
-                            'role_name' => $AdminRole->name,
-                            'created_by' => $user->created_by,
-                            'updated_by' => $user->created_by,
-                            IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                            IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                        ]);
-            }
-
         }
     }
 

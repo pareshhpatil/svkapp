@@ -37,11 +37,15 @@ class DBRepository implements DBRepositoryInterface
 
     /**
      * @param array $data
-     * @return bool
+     * @return Model
      */
     public function create(array $data)
     {
-        return $this->model->fill($data)->save();
+        $item = $this->model;
+        $item->fill($data);
+        $item->save();
+
+        return $item;
     }
 
     /**
@@ -53,9 +57,10 @@ class DBRepository implements DBRepositoryInterface
     public function update(array $data, $id)
     {
         try {
-            return $this->model
-                        ->where(IColumn::ID, $id)
-                        ->update($data);
+            $item = $this->model->findOrFail($id);
+            $item->fill($data);
+            $item->save();
+            return $item;
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
         }
