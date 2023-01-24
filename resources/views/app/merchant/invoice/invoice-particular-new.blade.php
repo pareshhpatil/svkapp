@@ -1770,8 +1770,8 @@
                                     particularray[index].description = displayValue[1].trim();
                                 }
                                 if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
-                                    //console.log(this.value);
-                                    only_bill_codes.push(this.value)
+                                    console.log(particularray[index].pint);
+                                  //  only_bill_codes.push(this.value)
                                     $('#new_bill_code').val(this.value)
                                     $('#selectedBillCodeId').val(type + id)
                                     billIndex(0, 0, 0)
