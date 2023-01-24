@@ -18,7 +18,6 @@ use App\Project;
 use App\Traits\Contract\ContractParticulars;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Validator;
 use Illuminate\Support\Facades\Session;
@@ -432,14 +431,27 @@ class ContractController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
+        
+        //store last search criteria into Redis
+        $redis_items = $this->getSearchParamRedis('contract_list',$this->merchant_id);
+       
+        //find last search criteria into Redis 
+        if(isset($redis_items['contract_list']['search_param']) && $redis_items['contract_list']['search_param']!=null) {
+            $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['contract_list']['search_param']['from_date']);
+            $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['contract_list']['search_param']['to_date']);
+            $data['project_id'] = $redis_items['contract_list']['search_param']['project_id'];
+        }
+        //$data['showLastRememberSearchCriteria'] = true;
+        
         $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['project_id']);
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
         $data['list'] = $list;
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
-        $data['datatablejs'] = 'table-no-export';
+        $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
+        $data['list_name'] = 'contract_list';
         $data['customer_name'] = 'Customer name';
         $data['customer_code'] = 'Customer code';
 

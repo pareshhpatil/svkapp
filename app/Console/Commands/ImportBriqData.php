@@ -32,6 +32,7 @@ class ImportBriqData extends Command
      * @var string
      */
     protected $description = 'Import briq sample data';
+    private $user_model=null;
 
     /**
      * Create a new command instance.
@@ -85,7 +86,7 @@ class ImportBriqData extends Command
 
         unset($request_data["particular_col"]);
         $request_data = (object)$request_data;
-        $template_id = $InvoiceFormat->saveInvoiceFormatV2($request_data, null, $merchant_id, $user_id);
+        $template_id = $InvoiceFormat->saveInvoiceFormat($request_data, null, $merchant_id, $user_id);
         $InvoiceFormat->saveMetadataV2($request_data, $template_id, $merchant_id, $user_id);
         $this->user_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', '{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"roundoff":"1","has_acknowledgement":"1","is_prepaid":"1","has_autocollect":"1","has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"has_custom_notification":"1","custom_email_subject":"Payment request from %COMPANY_NAME%","custom_sms":" You have received a payment request from %COMPANY_NAME% for amount %TOTAL_AMOUNT%. To make an online payment, access your bill via %SHORT_URL% ","has_online_payments":"1","enable_payments":"1","save_revision_history":"1"}');
         echo  $template_id;

@@ -405,7 +405,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
   Route::any('order/save', 'OrderController@save')->name('save.order')->can('create', \App\Model\Order::class);
   Route::any('order/list', 'OrderController@list')->name('list.order')->can('viewAny', \App\Model\Order::class);
-  Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
+  Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order')->can('delete', \App\Model\Order::class);
   Route::any('order/approve/', 'OrderController@approve')->name('approve.order')->can('update', \App\Model\Order::class);
   Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');

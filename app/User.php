@@ -58,17 +58,16 @@ class User extends Authenticatable {
     ];
 
     /**
-     * @param $merchantID
      * @param $permission
      * @return bool
      * @author Nitish
      */
-    public function hasPermission($merchantID, $permission): bool
+    public function hasPermission($permission): bool
     {
-        if (empty($this->role($merchantID))) {
+        if (empty($this->role())) {
             return false;
         }
-        $permissions = json_decode($this->role($merchantID)->permissions);
+        $permissions = json_decode($this->role()->permissions);
 
         $collectPermissions = collect($permissions);
 
@@ -79,31 +78,28 @@ class User extends Authenticatable {
     }
 
     /**
-     * @param $merchantID
      * @return array
      * @author Nitish
      */
-    public function permissions($merchantID): array
+    public function permissions(): array
     {
-        if (empty($this->role($merchantID))) {
+        if (empty($this->role())) {
             return [];
         }
 
-        $permissions = json_decode($this->role($merchantID)->permissions);
+        $permissions = json_decode($this->role()->permissions);
 
         return collect($permissions)->pluck('slug')->toArray();
     }
 
     /**
-     * @param $merchantID
      * @return Model|Builder|object|null
      * @author Nitish
      */
-    public function role($merchantID)
+    public function role()
     {
         return DB::table(ITable::BRIQ_ROLES)
                    ->where(IColumn::ID, $this->roleID())
-                   ->where(IColumn::MERCHANT_ID, $merchantID)
                    ->first();
     }
 

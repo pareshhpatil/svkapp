@@ -88,7 +88,7 @@ class SubUserController extends AppController
                     ->where(IColumn::USER_ID, Encrypt::decode($userID))
                     ->first();
 
-        $data['selected_role_id'] = $User->role($this->merchant_id)->id ?? '';
+        $data['selected_role_id'] = $User->role()->id ?? '';
 
         $User->user_id = Encrypt::encode($User->user_id);
 
@@ -148,7 +148,7 @@ class SubUserController extends AppController
             return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
         }
 
-        if($User->role($this->merchant_id)->role_name == 'Admin' && $countAdminUsers == 1) {
+        if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
             return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
         }
 

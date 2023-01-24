@@ -66,6 +66,7 @@ class SubUserHelper
         $this->addUserRole($SubUser, $request->get('role'));
 
         $this->sendVerifyMail($SubUser);
+        $this->addUserPrefrences($SubUser);
     }
 
     /**
@@ -179,6 +180,28 @@ class SubUserHelper
                     IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
                     IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
             ]);
+    }
+
+    /**
+     * @param SubUser $SubUser
+     * @return void
+     */
+    public function addUserPrefrences(SubUser $SubUser)
+    {
+        DB::table(ITable::PREFERENCES)
+            ->insert(
+                [
+                    'user_id' => $SubUser->user_id,
+                    'send_sms' => 1,
+                    'send_email' => 1,
+                    'send_app' => 1,
+                    'timezone' => '',
+                    'currency' => '',
+                    'date_format' => '',
+                    'time_format' => '',
+                    'created_date'  => Carbon::now()->toDateTimeString(),
+                    'last_update_date'  => Carbon::now()->toDateTimeString()
+                ]);
     }
 
     /**

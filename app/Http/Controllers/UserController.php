@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
 use App\Model\User;
 use App\Libraries\Encrypt;
 use App\Libraries\DataValidation as Valid;
 use App\Libraries\Helpers;
+use Carbon\Carbon;
 use Google_Client;
+use Illuminate\Support\Facades\DB;
 use Log;
 use Illuminate\Support\Facades\Auth as SwipezAuth;
 use Illuminate\Support\Facades\Session;
@@ -286,6 +290,11 @@ class UserController extends Controller
      */
     public function setLoginSession($user)
     {
+        //Check First Time User Role Exists
+        $this->checkUserRole($user);
+        
+        $role = $user->role() ? $user->role()->name : '';
+        $permissions = $user->permissions() ?? [];
 
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
@@ -297,6 +306,8 @@ class UserController extends Controller
         Session::put('system_user_id', Encrypt::encode($user->user_id));
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
+        Session::put('user_role', $role);
+        Session::put('permissions', $permissions);
 
         $preference = $this->user_model->getPreferences($user->user_id);
 
@@ -306,7 +317,7 @@ class UserController extends Controller
         Session::put('default_time_format', $preference->time_format ?? '24');
 
         Session::forget('menus');
-        //Checking whether user is a cable customer 
+        //Checking whether user is a cable customer
         if ($user->login_type == 2) {
             Session::put('userid', Encrypt::encode($user->user_id));
             Session::forget('merchant_id');
@@ -328,6 +339,7 @@ class UserController extends Controller
                 Session::put('group_type', 1);
                 $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
             }
+
             if (!empty($merchant)) {
                 if ($user->master_login_group_id > 0) {
                     $this->setMasterLogin($user);
@@ -374,10 +386,6 @@ class UserController extends Controller
                     Session::put('vendor_enable', 1);
                 }
 
-                $role = $user->role($merchant->merchant_id) ? $user->role($merchant->merchant_id)->name : '';
-
-                $permissions = $user->permissions($merchant->merchant_id) ?? [];
-
                 Session::put('account_type', $merchant->type);
                 Session::put('merchant_type', $merchant->merchant_type);
                 Session::put('merchant_id', Encrypt::encode($merchant->merchant_id));
@@ -387,10 +395,8 @@ class UserController extends Controller
                 Session::put('partner_id', $merchant->partner_id);
                 Session::put('service_id', $merchant->service_id);
                 Session::put('is_legal', $merchant->is_legal_complete);
-                Session::put('userid', Encrypt::encode($merchant->user_id));
+                Session::put('userid', $user->user_id);
                 Session::put('created_date', $merchant->created_date);
-                Session::put('user_role', $role);
-                Session::put('permissions', $permissions);
 
                 // storing variables to check getting started steps are completed or not
                 if ($merchant->entity_type == null) {    // using it to check if the merchant has completed the GST details step
@@ -458,6 +464,63 @@ class UserController extends Controller
                 header('Location: /error');
                 exit();
             }
+        }
+    }
+
+
+    public function checkUserRole($user)
+    {
+        if ($user->user_status == 20) {
+            $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
+        } else {
+            $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
+        }
+
+        $hasUserRoleExists = DB::table(ITable::BRIQ_USER_ROLES)
+                            ->where(IColumn::USER_ID, $user->user_id)
+                            ->exists();
+
+        if(empty($hasUserRoleExists))
+        {
+            //check if role exists
+            $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
+                                    ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                                    ->where(IColumn::NAME, "Admin")
+                                    ->exists();
+
+            if(empty($hasAdminRoleExists)) {
+                DB::table(ITable::BRIQ_ROLES)
+                    ->insert([
+                        'merchant_id' => $merchant->merchant_id,
+                        'name' => 'Admin',
+                        'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
+                        'permissions' => '',
+                        'created_by' => $user->created_by,
+                        'last_updated_by' => $user->created_by,
+                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+
+            $AdminRole = DB::table(ITable::BRIQ_ROLES)
+                            ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                            ->where(IColumn::NAME, 'Admin')
+                            ->first();
+
+            if(!empty($AdminRole)) {
+                DB::table(ITable::BRIQ_USER_ROLES)
+                    ->updateOrInsert(
+                        ['user_id' => $user->user_id],
+                        [
+                            'role_id' => $AdminRole->id,
+                            'role_name' => $AdminRole->name,
+                            'created_by' => $user->created_by,
+                            'updated_by' => $user->created_by,
+                            IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                            IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                        ]);
+            }
+
         }
     }
 

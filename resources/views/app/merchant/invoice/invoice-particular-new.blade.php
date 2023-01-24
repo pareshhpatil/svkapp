@@ -202,8 +202,8 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
-                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage');
+                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
                                                 $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
                                                @endphp
 
@@ -296,7 +296,7 @@
 
                                                                         <input :id="`id${field.pint}`" type="hidden"  x-model="field.id" name="id[]">
                                                                         <input :id="`introw${field.pint}`" type="hidden" :value="field.pint" x-model="field.pint" name="pint[]">
-                                                                        <input :id="`index${field.pint}`" type="hidden" :value="index" x-model="index" name="rowindex[]">
+                                                                        <input :id="`index${index}`" type="hidden" x-model="field.pint" name="rowindex[]">
 
 
                                                                     @elseif($k=='current_billed_amount')
@@ -341,7 +341,7 @@
                                                             @endif
                                                         @endforeach
                                                         <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                                            <button type="button" class="btn btn-xs red" @click="removeField(field.pint)">&times;</button>
+                                                            <button type="button" class="btn btn-xs red" @click="removeField(`${index}`)">&times;</button>
                                                             <template x-if="count===index">
                                         <span>
                                             <a href="javascript:;" @click="await addNewField();" class="btn btn-xs green">+</a>
@@ -395,11 +395,20 @@
                         <th>
                         <span id="total_rad"></span>
                         </th>
-                        
+                        <th class="td-c"></th>
+                        <th>
+                        <span id="total_rapsm"></span>
+                        </th>
+                        <th>
+                        <span id="total_rasm"></span>
+                        </th>
                         <th class="td-c"><span id="particulartotaldiv"></span>
                             <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly=""></th>
                         <th>
                         <span id="total_rra"></span>
+                        </th>
+                        <th>
+                        <span id="total_rrasm"></span>
                         </th>
                         <th>
                         <span id="total_tor"></span>
@@ -431,8 +440,11 @@
                                         <div class="pull-right">
                                         <input type="hidden" id="request_id" name="link" value="{{$link}}" ></th>
                                         <input type="hidden" name="order_ids" value="{{$order_id_array}}">
-                                        
-                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
+                                            @if($mode=='Preview')
+                                            <a href="/merchant/collect-payments" class="btn green">Cancel</a>
+                                            @else
+                                            <a href="/merchant/paymentrequest/list" class="btn green">Cancel</a>
+                                            @endif
                                             <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
                                         </div>
@@ -454,23 +466,58 @@
                  particularsDropdowns(0, this.fields);
 
              });*/
-            csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-            var particularray = JSON.parse('{!! json_encode($particulars) !!}');
+
+
+
+            @php 
+                $billcodeJson=json_encode($csi_codes);
+                $billcodeJson=str_replace("\\",'\\\\', $billcodeJson); 
+                $billcodeJson=str_replace("'","\'",$billcodeJson);
+                $billcodeJson=str_replace('"','\\"',$billcodeJson);
+
+                $particularJson=json_encode($particulars);
+                $particularJson=str_replace("\\",'\\\\', $particularJson); 
+                $particularJson=str_replace("'","\'",$particularJson);
+                $particularJson=str_replace('"','\\"',$particularJson);
+
+                $groupJson=json_encode($groups);
+                $groupJson=str_replace("\\",'\\\\', $groupJson); 
+                $groupJson=str_replace("'","\'",$groupJson);
+                $groupJson=str_replace('"','\\"',$groupJson);
+
+                $onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $onlyBillCodeJson=str_replace("\\",'\\\\', $onlyBillCodeJson); 
+                $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
+                $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
+
+                $merchantCostTypeJson=json_encode($merchant_cost_types);
+                $merchantCostTypeJson=str_replace("\\",'\\\\', $merchantCostTypeJson); 
+                $merchantCostTypeJson=str_replace("'","\'",$merchantCostTypeJson);
+                $merchantCostTypeJson=str_replace('"','\\"',$merchantCostTypeJson);
+            @endphp
+
+            csi_codes = JSON.parse('{!! $billcodeJson !!}');
+            var particularray = JSON.parse('{!! $particularJson !!}');
             //console.log(particularray);
             var previewArray = [];
-            var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-            var groups = JSON.parse('{!! json_encode($groups) !!}');
+            var bill_codes = JSON.parse('{!! $billcodeJson !!}');
+            var groups = JSON.parse('{!! $groupJson !!}');
             var bill_code_details = [{'label' : 'Yes', 'value' : 'Yes'}, { 'label' : 'No', 'value' : 'No'}];
             var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
             var billed_transactions_filter=[];
-            var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, 'value')) !!}');
+            var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
             var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
-            var merchant_cost_types = JSON.parse('{!! json_encode($merchant_cost_types) !!}');
+            var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
             function initializeParticulars(){
                 this.initializeDropdowns();
                 this.calculateTotal();
                 $('.tableFixHead').css('max-height', screen.height/2);
+                for (let p =0; p < particularray.length; p++)
+                {
+                    this.calc(this.fields[p]);
+                }
+                        
             }
 
             function initSelect2(){
@@ -542,9 +589,9 @@
                     project_code : '{{$project_code}}',
                     project_id : '{{$project_id}}',
                     goAhead: true,
-                    fields : JSON.parse('{!! json_encode($particulars) !!}'),
-                    bill_codes : JSON.parse('{!! json_encode($csi_codes) !!}'),
-                    groups : JSON.parse('{!! json_encode($groups) !!}'),
+                    fields : JSON.parse('{!! $particularJson !!}'),
+                    bill_codes : JSON.parse('{!! $billcodeJson !!}'),
+                    groups : JSON.parse('{!! $groupJson !!}'),
                     billed_transactions : null,
                     billed_transactions_id_array : [],
                     test : null,
@@ -766,11 +813,13 @@
                                      }
                                      return particularray
                                  },
-                                removeField(id) {
-                                    let index = $('#index'+id).val();
-                                    this.fields.splice(index, 1);
-                                    particularray.splice(index, 1);
-                                    this.reCalculateOriginalContractAmount(id);
+                                removeField(index) {
+                                    delete this.fields[index];
+                                    delete particularray[index];
+                                   // this.fields.splice(index, 1);
+                                  //  console.log(this.fields);
+                                   // particularray.splice(index, 1);
+                                    this.reCalculateOriginalContractAmount(index);
                                     this.calculateTotal();
                                     numrow = this.fields.length - 1;
                                     this.count = numrow;
@@ -779,6 +828,15 @@
                     reCalculateOriginalContractAmount(id){
                         let total = 0;
                         for( let f =0; f < this.fields.length; f++){
+
+                            var exist=true;
+                            try{
+                                exist=this.fields[p].pint
+                            }catch(o){
+                                var exist=false;
+                            }
+                            if (exist != false) {
+
                             let currentValue = this.fields[f];
                             let amount = (currentValue.original_contract_amount) ? currentValue.original_contract_amount : 0
                             total = Number(total) + Number(getamt(amount));
@@ -801,6 +859,7 @@
                             this.calc(currentValue);
                             // this.fields[index].introw = index;
                         }
+                    }
                     },
                     reCalculateCalculatedRowValue(field){ console.log(field);
                         let rowsIncludedInCalculation = JSON.parse($('#calculated_row'+field.pint).val());
@@ -859,6 +918,13 @@
                     validateParticulars(){
                         this.goAhead = true;
                         for(let p=0; p < particularray.length;p++){
+                            var exist=true;
+                            try{
+                                exist=this.fields[p].pint
+                            }catch(o){
+                                var exist=false;
+                            }
+                            if (exist != false) {
                             let pint = this.fields[p].pint;
                             if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
                                 $('#cell_bill_code_' + pint).addClass(' error-corner');
@@ -895,6 +961,7 @@
                                 }
                             }
                         }
+                    }
                         if( this.goAhead === true)
                         {
                             document.getElementById("frm_invoice").submit();
@@ -983,6 +1050,9 @@
                                 $('#cell_current_billed_amount_' + index).removeClass(' error-corner');
                             }
                             field.current_billed_percent = updateTextView1( (getamt(field.current_billed_amount) / getamt(field.current_contract_amount)) * 100 )
+                        }else
+                        {
+                            field.current_billed_percent = '';
                         }
                         // if(field.current_billed_amount !== null || field.current_billed_amount !== 0 || field.current_billed_amount !== undefined){
 
@@ -1067,7 +1137,7 @@
                                             field.stored_materials = updateTextView1(getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
                                             field.total_billed = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.previously_billed_amount) + getamt(field.previously_stored_materials) + getamt(field.current_stored_materials));
 
-                                        } catch (o) {alert(4);}
+                                        } catch (o) {}
 
                                         try {
                                             field.previously_stored_materials = updateTextView1(getamt(field.previously_stored_materials));
@@ -1082,7 +1152,23 @@
                                                 field.retainage_percent='';
                                             }
                                             field.retainage_amount_for_this_draw = updateTextView1(getamt(field.current_billed_amount)  * getamt(field.retainage_percent) / 100);
-                                        } catch (o) {alert(5);}
+                                        } catch (o) {}
+
+                                try {
+                                if(field.retainage_amount_previously_stored_materials === undefined || field.retainage_amount_previously_stored_materials === null)
+                                    field.retainage_amount_previously_stored_materials = 0;
+
+                                if(field.retainage_stored_materials_release_amount === undefined || field.retainage_stored_materials_release_amount === null)
+                                    field.retainage_stored_materials_release_amount = 0;
+
+                                if(field.retainage_percent_stored_materials === undefined || field.retainage_percent_stored_materials === null)
+                                    field.retainage_percent_stored_materials = 0;
+
+                                if(field.retainage_amount_stored_materials === undefined || field.retainage_amount_stored_materials === null)
+                                    field.retainage_amount_stored_materials = 0;
+
+                                field.retainage_amount_stored_materials = updateTextView1(getamt(field.current_stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
+                            } catch (o) {}
 
                             try {
                                 // "Total Outstanding Retainage" = "Retainage Amount Previously Withheld" + "Retainage Amount for this draw" - "Retainage Release Amount"
@@ -1093,14 +1179,20 @@
                                 if(field.retainage_release_amount === undefined || field.retainage_release_amount === null)
                                     field.retainage_release_amount = 0;
 
-                                field.total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_for_this_draw) - getamt(field.retainage_release_amount) );
-                            } catch (o) {alert(6);}
+                                total_outstanding_retainage = updateTextView1( getamt(field.retainage_amount_previously_withheld) + getamt(field.retainage_amount_previously_stored_materials) + getamt(field.retainage_amount_for_this_draw) + getamt(field.retainage_amount_stored_materials) - getamt(field.retainage_release_amount)  - getamt(field.retainage_stored_materials_release_amount) );
+                                if(total_outstanding_retainage=='')
+                                {
+                                    total_outstanding_retainage=0;
+                                }
+                                field.total_outstanding_retainage =total_outstanding_retainage;
+                            } catch (o) {}
 
                             try {
-                                field.net_billed_amount = updateTextView1(getamt(field.current_billed_amount)  + getamt(field.stored_materials) - getamt(field.retainage_amount_for_this_draw));
-                            } catch (o) {alert(7);}
+                                field.net_billed_amount = updateTextView1(getamt(field.total_billed) - getamt(field.total_outstanding_retainage));
+                            } catch (o) {}
 
 
+                            
 
                             try {
                                 field.original_contract_amount = updateTextView1(getamt(field.original_contract_amount));
@@ -1132,6 +1224,9 @@
                         total_rad = 0;
                         total_rra = 0;
                         total_tor = 0;
+                        total_rasm = 0;
+                        total_rapsm = 0;
+                        total_rrasm = 0;
                         this.fields.forEach(function(currentValue, index, arr) {
                             total = Number(total) + getamt(currentValue.net_billed_amount);
                             total_oca = Number(total_oca) + getamt(currentValue.original_contract_amount);
@@ -1148,6 +1243,9 @@
                             total_rad = Number(total_rad) + getamt(currentValue.retainage_amount_for_this_draw);
                             total_rra = Number(total_rra) + getamt(currentValue.retainage_release_amount);
                             total_tor = Number(total_tor) + getamt(currentValue.total_outstanding_retainage);
+                            total_rasm = Number(total_rasm) + getamt(currentValue.retainage_amount_stored_materials);
+                            total_rapsm = Number(total_rapsm) + getamt(currentValue.retainage_amount_previously_stored_materials);
+                            total_rrasm = Number(total_rrasm) + getamt(currentValue.retainage_stored_materials_release_amount);
 
                         });
                         document.getElementById('particulartotal').value = updateTextView1(total);
@@ -1165,7 +1263,16 @@
                         document.getElementById('total_rapw').innerHTML = updateTextView1(total_rapw);
                         document.getElementById('total_rad').innerHTML = updateTextView1(total_rad);
                         document.getElementById('total_rra').innerHTML = updateTextView1(total_rra);
-                        document.getElementById('total_tor').innerHTML = updateTextView1(total_tor);
+                        total_tor=updateTextView1(total_tor);
+                        if(total_tor=='')
+                        {
+                            total_tor=0;
+                        }
+                        document.getElementById('total_tor').innerHTML = total_tor;
+                        document.getElementById('total_rasm').innerHTML = updateTextView1(total_rasm);
+
+                        document.getElementById('total_rapsm').innerHTML = updateTextView1(total_rapsm);
+                        document.getElementById('total_rrasm').innerHTML = updateTextView1(total_rrasm);
                     },
 
                     wait(x) {
@@ -1544,8 +1651,30 @@
                             document.getElementById('perror').style.display = 'none';
                             project_code = '{{$project_code}}';
                             this.bill_codes = csi_codes;
-                            int = this.fields.length-1;
-                            pint=Number(this.fields[int].pint) + 1;
+                            
+                            int = this.fields.filter(Boolean).length-1;
+                            if(int==-1) {
+                                pint = 1;
+                            } else {
+                                while(typeof this.fields[int] === 'undefined')
+                                {   
+                                    int = int+1;
+                                }
+                                pint=Number(this.fields[int].pint) + 1;
+                            }
+                            exist=true;
+                            while (exist==true) {
+                            exist=false;
+                            this.fields.forEach(function(currentValue, index, arr) {
+                            if(pint==currentValue.pint)
+                            {
+                                exist=true;
+                                pint=pint+1;
+                            }
+                            });
+
+                            }
+
                             this.fields.push({
                                 id: 0,
                                 introw: pint,
@@ -1676,16 +1805,26 @@
                             let dropboxContainer = $('#'+type+id).find('.vscomp-ele-wrapper').attr('aria-controls');
                             $('#'+dropboxContainer).css('z-index',4);
                         });
-
-                        $("#table-scroll").scroll(function(){
+                        try{
+                            $("#table-scroll").scroll(function(){
                             document.querySelector('#'+type+id).close();
                         });
+                        }catch(o)
+                        {
+
+                        }
+                        
 
                     },
                     closeAttachmentPanel(){
                         let attachment_pos = $('#attachment_pos_id').val();
-                        let attach_index = $('#index'+attachment_pos).val()
-                        this.fields[attach_index].attachments = particularray[attach_index].attachments;
+                        let attach_index = $('#index'+attachment_pos).val();
+                        let vals = document.getElementById('attach-' + attachment_pos).value;
+                        this.fields[attach_index].attachments = vals;
+                        // this.fields[attach_index].attachments = particularray[attach_index].attachments;
+
+                        //reset attachment pos id in attachment modal
+                        document.getElementById('attachment_pos_id').value = '';
                         return closeSidePanelBillCodeAttachment();
                     }
                     

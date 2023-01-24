@@ -33,34 +33,34 @@ class AssignAdminRoleToExistingUsersCommand extends Command
 
     public function handle()
     {
-        $UserIDs = DB::table(ITable::USER)
-            ->pluck(IColumn::USER_ID)
-            ->toArray();
-
-        foreach ($UserIDs as $userID) {
-            $checkRole = DB::table(ITable::BRIQ_USER_ROLES)
-                            ->where(IColumn::USER_ID, $userID)
-                            ->exists();
-
-            if (!$checkRole) {
-                /** @var Role $Role */
-                $Role = Role::query()
-                            ->where(IColumn::NAME, 'Admin')
-                            ->first();
-
-                DB::table(ITable::BRIQ_USER_ROLES)
-                    ->insert([
-                        'user_id' => $userID,
-                        'role_id' => $Role->id,
-                        'role_name' => $Role->name,
-                        'created_by' => '',
-                        'updated_by' => '',
-                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                    ]);
-            }
-
-        }
+//        $UserIDs = DB::table(ITable::USER)
+//            ->pluck(IColumn::USER_ID)
+//            ->toArray();
+//
+//        foreach ($UserIDs as $userID) {
+//            $checkRole = DB::table(ITable::BRIQ_USER_ROLES)
+//                            ->where(IColumn::USER_ID, $userID)
+//                            ->exists();
+//
+//            if (!$checkRole) {
+//                /** @var Role $Role */
+//                $Role = Role::query()
+//                            ->where(IColumn::NAME, 'Admin')
+//                            ->first();
+//
+//                DB::table(ITable::BRIQ_USER_ROLES)
+//                    ->insert([
+//                        'user_id' => $userID,
+//                        'role_id' => $Role->id,
+//                        'role_name' => $Role->name,
+//                        'created_by' => '',
+//                        'updated_by' => '',
+//                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+//                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+//                    ]);
+//            }
+//
+//        }
 
     }
 }

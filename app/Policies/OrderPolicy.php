@@ -12,13 +12,6 @@ class OrderPolicy
 {
     use HandlesAuthorization;
 
-    private $merchantID;
-
-    public function __construct()
-    {
-        $this->merchantID = Encrypt::decode(Session::get('merchant_id'));
-    }
-
     /**
      * Determine whether the user can view any models.
      *
@@ -28,7 +21,7 @@ class OrderPolicy
     public function viewAny(User $user)
     {
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
            return true;
         }
 
@@ -46,7 +39,7 @@ class OrderPolicy
     {
         unset($Order);
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
             return true;
         }
         return true;
@@ -61,10 +54,10 @@ class OrderPolicy
     public function create(User $user)
     {
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
             return true;
         }
-        return $user->hasPermission($this->merchantID, 'create-change-order');
+        return $user->hasPermission('create-change-order');
     }
 
     /**
@@ -77,10 +70,10 @@ class OrderPolicy
     public function update(User $user)
     {
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
             return true;
         }
-        return $user->hasPermission($this->merchantID,'update-change-order');
+        return $user->hasPermission('update-change-order');
     }
 
     /**
@@ -93,7 +86,7 @@ class OrderPolicy
     public function delete(User $user)
     {
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
             return true;
         }
 
@@ -122,7 +115,7 @@ class OrderPolicy
     public function forceDelete(User $user, Order $order)
     {
         // if current user is admin
-        if(!empty($user->role($this->merchantID)) && $user->role($this->merchantID)->name == 'Admin') {
+        if(!empty($user->role()) && $user->role()->name == 'Admin') {
             return true;
         }
         return false;

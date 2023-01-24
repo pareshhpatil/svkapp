@@ -10,6 +10,7 @@ use App\Jobs\MerchantServiceAddToCRM;
 use App\Jobs\MerchantRegistrationCrmPennyDrop;
 use App\Jobs\MerchantRegistrationCrmDocument;
 use Illuminate\Support\Facades\DB;
+use App\Model\Invoice;
 
 class Profile extends Controller
 {
@@ -936,11 +937,12 @@ class Profile extends Controller
                 if (isset($_POST['subscript'])) {
                     $subscript = $_POST['subscript'];
                     $lastNumber = $_POST['lastnumber'];
+                    $seprator = $_POST['seprator'];
                     $int = 0;
                     foreach ($subscript as $script) {
                         $res = $this->model->existPrefix($merchant_id, $subscript[$int]);
                         if ($res == FALSE) {
-                            $this->model->saveInvoiceNumber($this->session->get('userid'), $merchant_id, $subscript[$int], $lastNumber[$int]);
+                            $this->model->saveInvoiceNumber($this->session->get('userid'), $merchant_id, $subscript[$int], $lastNumber[$int],1,$seprator[$int]);
                         } else {
                             $hasErrors['Prefix'][0] = 'Invoice prefix';
                             $hasErrors['Prefix'][1] = 'Invoice prefix already exist';
@@ -973,7 +975,25 @@ class Profile extends Controller
         if (empty($_POST)) {
             header('Location:/merchant/profile/setting');
         }
-        $this->model->updateInvoiceNumber($this->session->get('userid'), $merchant_id, $_POST['subscript'], $_POST['last_number'], $_POST['auto_invoice_id']);
+        
+        if(isset($_POST['seprator'])) {
+            $lastSequenceData = $this->common->getSingleValue('merchant_auto_invoice_number', 'auto_invoice_id', $_POST['auto_invoice_id']);
+            $invoice_sequence_prefix = $lastSequenceData['prefix'].$lastSequenceData['seprator'].$_POST['last_number'];
+            
+            $invoiceModel = new Invoice();
+            $existInvoiceNo = $invoiceModel->findInvoiceNumberExist($merchant_id,$invoice_sequence_prefix);
+        
+            if ($existInvoiceNo) {
+                $hasErrors['Prefix'][0] = 'Invoice sequence';
+                $hasErrors['Prefix'][1] = 'Invoice sequence number already exist';
+            }
+            if ($hasErrors == true) {
+                $this->smarty->assign("haserrors", $hasErrors);
+                $this->setting('sequence');
+                die();
+            }
+        }
+        $this->model->updateInvoiceNumber($this->session->get('userid'), $merchant_id, $_POST['subscript'], $_POST['last_number'], $_POST['auto_invoice_id'], $_POST['seprator']);
         $this->session->set('successMessage', 'Updates made to your setting have been saved.');
         header('Location:/merchant/profile/setting/sequence');
     }
