@@ -71,7 +71,8 @@ class Vendor extends Controller
             $this->smarty->assign("title", "Vendor list");
             $this->view->title = "Vendor list";
             $this->view->canonical = 'merchant/vendor/viewlist';
-            $this->view->datatablejs = 'table-no-export';
+            $this->view->list_name = 'vendor_list';
+            $this->view->datatablejs = 'table-no-export-tablestatesave';  //table-no-export
             $this->view->header_file = ['list'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/vendor/list.tpl');
@@ -847,8 +848,8 @@ class Vendor extends Controller
             $this->smarty->assign('breadcumb_title', $this->view->title);
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
-
-            $this->view->datatablejs = 'table-small-no-export';
+            $this->view->list_name = 'bulk_upload_list_'.$type;
+            $this->view->datatablejs = 'table-small-no-export-statesave'; //table-small-no-export
             $this->view->header_file = ['bulkupload'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/vendor/vendorupload.tpl');

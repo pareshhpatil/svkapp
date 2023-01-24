@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Redis;
 /**
  * @author Paresh
  * @version 2.0
@@ -616,7 +617,9 @@ class Customer extends Controller
             $addcolumn[] = array('column_name' => 'Zipcode');
             $column_list = array_merge($addcolumn, $column_list);
             $this->smarty->assign("column_list", $column_list);
+
             if (isset($_POST['column_name'])) {
+                $rcol = $_POST['column_name'];
                 $column_select = $_POST['column_name'];
             } else {
 
@@ -626,9 +629,6 @@ class Customer extends Controller
                 $column_select = array();
                 $this->smarty->assign("haserrors", "Column name selected more than 5 values");
             }
-
-            $this->smarty->assign("column_select", $column_select);
-            $_SESSION['display_column'] = $column_select;
 
             foreach ($column_select as $key => $value) {
                 if ($value == 'City' || $value == 'State' || $value == 'Country' || $value == 'Address' || $value == 'Zipcode') {
@@ -647,12 +647,24 @@ class Customer extends Controller
                 $is_bulk = 1;
             }
             $group = isset($_POST['group']) ? $_POST['group'] : '';
+
+            //store last search criteria into Redis
+            $redis_items = $this->getSearchParamRedis('customer_list');
+            
+            if(isset($redis_items['customer_list']['search_param']) && $redis_items['customer_list']['search_param']!=null) {
+                $payment_status = $redis_items['customer_list']['search_param']['payment_status'];
+                $column_select = $redis_items['customer_list']['search_param']['column_name'];
+                $group = $redis_items['customer_list']['search_param']['group'];
+            }
+            //$this->view->showLastRememberSearchCriteria = true;
+            
             $_SESSION['db_column'] = $column_select;
             $_SESSION['customer_status'] = $status;
             $_SESSION['payment_status'] = $payment_status;
             $_SESSION['customer_bulk_id'] = $bulk_id;
             $_SESSION['group'] = $group;
             $_SESSION['language'] = 'english';
+            $_SESSION['display_column'] = $column_select;
             if (isset($_POST['export'])) {
 
                 if ($group != '') {
@@ -671,9 +683,9 @@ class Customer extends Controller
             } else {
                 $title = 'Customer list';
             }
-            $group = isset($_POST['group']) ? $_POST['group'] : '';
+            //$group = isset($_POST['group']) ? $_POST['group'] : '';
             $this->smarty->assign("group", $group);
-            $_SESSION['group'] = $group;
+            //$_SESSION['group'] = $group;
             $where = '';
             $login_cust_group = $this->session->get('login_customer_group');
             if (isset($login_cust_group)) {
@@ -694,11 +706,13 @@ class Customer extends Controller
             $this->smarty->assign("title", $title);
             $this->smarty->assign("status", $status);
             $this->smarty->assign("payment_status", $payment_status);
+            $this->smarty->assign("column_select", $column_select);
             $this->view->title = 'Customer list';
             $this->setAjaxDatatableSession();
             $this->view->datatablejs = 'table-small';
             $this->view->canonical = 'merchant/customer/viewlist';
             $this->view->header_file = ['list'];
+            $this->view->list_name = 'customer_list';
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/customer/customer_list.tpl');
             $this->view->render('footer/customer_list');
@@ -924,7 +938,8 @@ class Customer extends Controller
 
             $this->smarty->assign("bulklist", $list);
             $this->view->hide_first_col = true;
-            $this->view->datatablejs = 'table-small-no-export';
+            $this->view->datatablejs = 'table-small-no-export-statesave'; //table-small-no-export
+            $this->view->list_name = 'customer_bulk_upload_list';
             $this->view->selectedMenu = array(2, 15, 70);
             $this->view->title = 'Bulk upload customers';
             $this->view->canonical = 'merchant/customer/bulkupload';

@@ -837,7 +837,9 @@ i.apps {
 .ml-1{
     margin-left: 10px;
 }
-
+.ml-minus-1{
+    margin-left: -10px;
+}
 .mt-2{
     margin-top: 20px !important;
 }

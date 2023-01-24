@@ -62,7 +62,16 @@
                                             &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a onclick="showupdatebillcode('{{$v->id}}','{{$project_id}}','{{$v->code}}',' {{$v->description}}')"><i class="fa fa-edit"></i> Update</a>
+                                            @php   
+                                                $code=str_replace("\\",'\\\\', $v->code);                       
+                                                $code=str_replace("'","\'",$code);
+                                                $code=str_replace('"','\\"',$code); 
+                                                
+                                                $description=str_replace("\\",'\\\\', $v->description);
+                                                $description=str_replace("'","\'",$description);
+                                                $description=str_replace('"','\\"',$description); 
+                                            @endphp
+                                            <li><a onclick="showupdatebillcode('{{$v->id}}','{{$project_id}}','{{$code}}',' {{$description}}')"><i class="fa fa-edit"></i> Update</a>
                                             </li>
                                             <li>
                                                 <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/code/delete/{{$project_id}}/{{$v->id}}'"  data-toggle="modal" ><i class="fa fa-times"></i> Delete</a>  

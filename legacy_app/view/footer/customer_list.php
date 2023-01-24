@@ -69,6 +69,7 @@ include_once '../legacy_app/view/footer/footer_common.php';
         $('[data-toggle="popover"]').popover();
 
         var table = $('#example').DataTable({
+            
             "processing": true,
             "language": {
                 "processing": '<div class="loading" id="loader">Loading&#8230;</div>' //add a loading image,simply putting <img src="loader.gif" /> tag.
@@ -85,6 +86,40 @@ include_once '../legacy_app/view/footer/footer_common.php';
                         $('meta[name=csrf_token]').attr("content", json.csrf_token);
                     return json.data;
                 },
+            },
+            "stateSave": true,
+            //"stateDuration":-1,
+            "stateSaveCallback": function (settings, oData) {
+                    $.ajax( {
+                    url: "/ajax/saveDatatableSearchParam",
+                    data : {state: JSON.stringify(oData), 'list_name' : '<?php echo $this->list_name?>'},
+                    dataType: "json",
+                    type: "POST",
+                    success: function () {
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                            //console.log(thrownError);
+                    },
+                    } );
+            },
+            "stateLoadCallback": function (settings) {
+                    var o;
+                    $.ajax( {
+                    url: '/ajax/getDatatableSearchParam/<?php echo $this->list_name?>',
+                    dataType: 'json',
+                    success: function (json) {
+                            o = json;
+                            if(json!=null) {
+                                table.page.len(json.length);
+                                table.order(json.order).draw();
+                                table.search(json.search['search']).draw();
+                            }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                            //console.log(thrownError);
+                    },
+                    } );
+                    return o;
             }
         });
 

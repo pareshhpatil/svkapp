@@ -92,7 +92,7 @@ function autoGenerateInvoiceNumber()
 {
     var mainDiv = document.getElementById('new_invoice');
     var newDiv = document.createElement('tr');
-    newDiv.innerHTML = '<td><div class="input-icon right"><input type="text" name="subscript[]"  maxlength="20" class="form-control input-sm" placeholder="Add prefix"></div></td><td><div class="input-icon right"><input type="number" step="1" maxlength="6" required value="0" name="lastnumber[]" class="form-control input-sm" placeholder="Last Number"></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();" class="btn btn-sm red"> <i class="fa fa-remove"> </i> </a></td>';
+    newDiv.innerHTML = '<td><div class="input-icon right"><input type="text" name="subscript[]"  maxlength="20" class="form-control input-sm" placeholder="Add prefix"></div></td><td><div class="input-icon right"><input type="text" name="seprator[]"  maxlength="5" class="form-control input-sm" placeholder="Separator"></div></td><td><div class="input-icon right"><input type="number" step="1" maxlength="6" required value="0" name="lastnumber[]" class="form-control input-sm" placeholder="Last Number"></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();" class="btn btn-sm red"> <i class="fa fa-remove"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
 
 }
