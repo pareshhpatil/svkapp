@@ -2,7 +2,6 @@
 
 namespace App\Model\Merchant;
 
-use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use App\Model\Base;
 use App\Model\ParentModel;
@@ -26,10 +25,10 @@ class CostType extends Base
     protected $table = ITable::COST_TYPES;
 
     protected $fillable = [
-        IColumn::NAME,
-        IColumn::ABBREVATION,
-        IColumn::MERCHANT_ID,
-        IColumn::CREATED_BY,
-        IColumn::LAST_UPDATE_BY
+        'name',
+        'abbrevation',
+        'merchant_id',
+        'created_by',
+        'last_update_by'
     ];
 }

@@ -286,9 +286,6 @@ class UserController extends Controller
      */
     public function setLoginSession($user)
     {
-        $role = $user->role() ? $user->role()->name : '';
-        $permissions = $user->permissions() ?? [];
-
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
         Session::put('display_name', $user->first_name);
@@ -299,8 +296,6 @@ class UserController extends Controller
         Session::put('system_user_id', Encrypt::encode($user->user_id));
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
-        Session::put('user_role', $role);
-        Session::put('permissions', $permissions);
 
         $preference = $this->user_model->getPreferences($user->user_id);
 
@@ -310,7 +305,7 @@ class UserController extends Controller
         Session::put('default_time_format', $preference->time_format ?? '24');
 
         Session::forget('menus');
-        //Checking whether user is a cable customer
+        //Checking whether user is a cable customer 
         if ($user->login_type == 2) {
             Session::put('userid', Encrypt::encode($user->user_id));
             Session::forget('merchant_id');
@@ -332,7 +327,6 @@ class UserController extends Controller
                 Session::put('group_type', 1);
                 $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
             }
-
             if (!empty($merchant)) {
                 if ($user->master_login_group_id > 0) {
                     $this->setMasterLogin($user);
@@ -378,7 +372,6 @@ class UserController extends Controller
                 if (!empty($vendor)) {
                     Session::put('vendor_enable', 1);
                 }
-
                 Session::put('account_type', $merchant->type);
                 Session::put('merchant_type', $merchant->merchant_type);
                 Session::put('merchant_id', Encrypt::encode($merchant->merchant_id));
@@ -388,7 +381,7 @@ class UserController extends Controller
                 Session::put('partner_id', $merchant->partner_id);
                 Session::put('service_id', $merchant->service_id);
                 Session::put('is_legal', $merchant->is_legal_complete);
-                Session::put('userid', $user->user_id);
+                Session::put('userid', Encrypt::encode($merchant->user_id));
                 Session::put('created_date', $merchant->created_date);
 
                 // storing variables to check getting started steps are completed or not
