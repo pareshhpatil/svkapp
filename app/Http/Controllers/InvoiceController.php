@@ -3382,12 +3382,15 @@ class InvoiceController extends AppController
                 throw new Exception('Invalid id ' . $request_id);
             }
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+            if ($invoice == false) {
+                throw new Exception('Invalid id ' . $request_id);
+            }
             $revision = false;
             if ($invoice->payment_request_status != 11) {
                 $plugin = json_decode($invoice->plugin_value, 1);
                 if ($plugin['save_revision_history'] == 1) {
                     $revision = true;
-                    $revision_data['payment_request'] = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+                    $revision_data['payment_request'] = $invoice;
                     $revision_data['payment_request'] = json_decode(json_encode($revision_data['payment_request']), 1);
                     $revision_data['invoice_column_values'] = $this->invoiceModel->getTableList('invoice_column_values', 'payment_request_id', $request_id);
                     $revision_data['invoice_column_values'] = json_decode(json_encode($revision_data['invoice_column_values']), 1);
@@ -3401,71 +3404,73 @@ class InvoiceController extends AppController
             $this->invoiceModel->updateBilledTransactionStatus($request_id, $project_id);
             if ($type == null) {
                 $billed_transaction_ids = [];
-                foreach ($request->bill_code as $k => $bill_code) {
-                    $request = Helpers::setArrayZeroValue(array(
-                        'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
-                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
-                    ));
-                    $data['bill_code'] = $request->bill_code[$k];
-                    if ($request->description[$k] == '') {
-                        $request->description[$k] = $this->invoiceModel->getColumnValue('csi_code', 'code', $data['bill_code'], 'description', ['merchant_id' => $this->merchant_id]);
-                    }
-                    $data['id'] = $request->id[$k];
-                    $data['description'] = $request->description[$k];
-                    $data['bill_type'] = $request->bill_type[$k];
-                    $data['original_contract_amount'] = $request->original_contract_amount[$k];
-                    $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
-                    $data['pint'] = $request->pint[$k];
-                    $data['current_contract_amount'] = $request->current_contract_amount[$k];
-                    $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
-                    $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
-                    $data['current_billed_percent'] = $request->current_billed_percent[$k];
-                    $data['current_billed_amount'] = $request->current_billed_amount[$k];
-                    $data['total_billed'] = $request->total_billed[$k];
-                    $data['retainage_percent'] = $request->retainage_percent[$k];
-                    $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
-                    $data['retainage_amount_previously_stored_materials'] = $request->retainage_amount_previously_stored_materials[$k];
-                    $data['retainage_stored_materials_release_amount'] = $request->retainage_stored_materials_release_amount[$k];
-                    $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
-                    $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
-                    $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
-                    $data['net_billed_amount'] = $request->net_billed_amount[$k];
-                    $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
-                    $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
-                    $data['previously_stored_materials'] = $request->previously_stored_materials[$k];
-                    $data['current_stored_materials'] = $request->current_stored_materials[$k];
-                    $data['stored_materials'] = $request->stored_materials[$k];
-                    $data['project'] = $request->project[$k];
-                    $data['cost_code'] = $request->cost_code[$k];
-                    $data['cost_type'] = $request->cost_type[$k];
-                    $data['group'] = $request->group[$k];
-                    $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
-                    $data['calculated_perc'] = $request->calculated_perc[$k];
-                    $data['calculated_row'] = $request->calculated_row[$k];
-                    $data['billed_transaction_ids'] = $request->billed_transaction_ids[$k];
-                    $ids = json_decode($data['billed_transaction_ids'], 1);
-                    if (!empty($ids)) {
-                        if (empty($billed_transaction_ids)) {
-                            $billed_transaction_ids = $ids;
-                        } else {
-                            $billed_transaction_ids = array_merge($billed_transaction_ids, $ids);
+                if (!empty($request->bill_code)) {
+                    foreach ($request->bill_code as $k => $bill_code) {
+                        $request = Helpers::setArrayZeroValue(array(
+                            'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
+                            'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
+                        ));
+                        $data['bill_code'] = $request->bill_code[$k];
+                        if ($request->description[$k] == '') {
+                            $request->description[$k] = $this->invoiceModel->getColumnValue('csi_code', 'id', $data['bill_code'], 'title');
                         }
-                    }
-                    if ($request->attachments[$k] != '') {
-                        $data['attachments'] = json_encode(explode(',', $request->attachments[$k]));
-                        $data['attachments'] = str_replace('\\', '',  $data['attachments']);
-                        $data['attachments'] = str_replace('"undefined",', '', $data['attachments']);
-                        $data['attachments'] = str_replace('"undefined"', '', $data['attachments']);
-                        $data['attachments'] = str_replace('[]', '', $data['attachments']);
-                    } else {
-                        $data['attachments'] = null;
-                    }
-                    $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
-                    $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? []);
-                    if ($data['id'] > 0) {
-                        $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
-                    } else {
-                        $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
+                        $data['id'] = $request->id[$k];
+                        $data['description'] = $request->description[$k];
+                        $data['bill_type'] = $request->bill_type[$k];
+                        $data['original_contract_amount'] = $request->original_contract_amount[$k];
+                        $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
+                        $data['pint'] = $request->pint[$k];
+                        $data['current_contract_amount'] = $request->current_contract_amount[$k];
+                        $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
+                        $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
+                        $data['current_billed_percent'] = $request->current_billed_percent[$k];
+                        $data['current_billed_amount'] = $request->current_billed_amount[$k];
+                        $data['total_billed'] = $request->total_billed[$k];
+                        $data['retainage_percent'] = $request->retainage_percent[$k];
+                        $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
+                        $data['retainage_amount_previously_stored_materials'] = $request->retainage_amount_previously_stored_materials[$k];
+                        $data['retainage_stored_materials_release_amount'] = $request->retainage_stored_materials_release_amount[$k];
+                        $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
+                        $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
+                        $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
+                        $data['net_billed_amount'] = $request->net_billed_amount[$k];
+                        $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
+                        $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
+                        $data['previously_stored_materials'] = $request->previously_stored_materials[$k];
+                        $data['current_stored_materials'] = $request->current_stored_materials[$k];
+                        $data['stored_materials'] = $request->stored_materials[$k];
+                        $data['project'] = $request->project[$k];
+                        $data['cost_code'] = $request->cost_code[$k];
+                        $data['cost_type'] = $request->cost_type[$k];
+                        $data['group'] = $request->group[$k];
+                        $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
+                        $data['calculated_perc'] = $request->calculated_perc[$k];
+                        $data['calculated_row'] = $request->calculated_row[$k];
+                        $data['billed_transaction_ids'] = $request->billed_transaction_ids[$k];
+                        $ids = json_decode($data['billed_transaction_ids'], 1);
+                        if (!empty($ids)) {
+                            if (empty($billed_transaction_ids)) {
+                                $billed_transaction_ids = $ids;
+                            } else {
+                                $billed_transaction_ids = array_merge($billed_transaction_ids, $ids);
+                            }
+                        }
+                        if ($request->attachments[$k] != '') {
+                            $data['attachments'] = json_encode(explode(',', $request->attachments[$k]));
+                            $data['attachments'] = str_replace('\\', '',  $data['attachments']);
+                            $data['attachments'] = str_replace('"undefined",', '', $data['attachments']);
+                            $data['attachments'] = str_replace('"undefined"', '', $data['attachments']);
+                            $data['attachments'] = str_replace('[]', '', $data['attachments']);
+                        } else {
+                            $data['attachments'] = null;
+                        }
+                        $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
+                        $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? []);
+                        if ($data['id'] > 0) {
+                            $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
+                        } else {
+                            $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
+                        }
                     }
                 }
                 if (!empty($billed_transaction_ids)) {

@@ -113,7 +113,7 @@
                     $costTypeArr = array_combine(array_column($cost_types,'value'), array_column($cost_types,'label'));
                     $billTypeArr = array_combine(array_column($bill_codes,'value'), array_column($bill_codes,'label'))
                     @endphp
-
+                    @if(!empty($particulars))
                     @foreach($particulars as $particular)
                         @php $totalRetainageAmount += $particular['retainage_amount'];
                         $billCodeArr = explode('|', $billTypeArr[$particular['bill_code']]);
@@ -131,6 +131,7 @@
                             <td class="td-c"> {{ $particular['bill_code_detail'] }}</td>
                         </tr>
                     @endforeach
+                    @endif
                     </tbody>
                     <tfoot>
                         <tr class="warning">

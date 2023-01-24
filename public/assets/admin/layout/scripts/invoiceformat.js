@@ -2624,7 +2624,6 @@ function setAdvanceDropdownContract(numrow) {
 function setAdvanceDropdownOrder(numrow) {
     try {
         $('.productselect').select2({
-            tags: true,
 
             insertTag: function (data, tag) {
                 var $found = false;
