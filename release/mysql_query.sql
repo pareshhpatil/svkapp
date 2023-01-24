@@ -1,18 +1,18 @@
-ALTER TABLE `swipez_briq`.`merchant_auto_invoice_number` 
+ALTER TABLE `swipez`.`merchant_auto_invoice_number` 
 ADD COLUMN `seprator` VARCHAR(5) NULL DEFAULT NULL AFTER `type`;
 
 
+-----------------------------------------------------------------------------------
 
-
-USE `swipez_briq`;
+USE `swipez`;
 DROP function IF EXISTS `generate_invoice_number`;
 
-USE `swipez_briq`;
-DROP function IF EXISTS `swipez_briq`.`generate_invoice_number`;
+USE `swipez`;
+DROP function IF EXISTS `swipez`.`generate_invoice_number`;
 ;
 
 DELIMITER $$
-USE `swipez_briq`$$
+USE `swipez`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `generate_invoice_number`(_auto_invoice_id varchar(10)) RETURNS char(45) CHARSET latin1
 begin
 
