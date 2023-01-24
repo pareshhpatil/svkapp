@@ -167,15 +167,56 @@ if($_SESSION['session_date_format'] == 'M d yyyy'){
                                         $(api.column(1).footer()).html(
                                                 total_sum + '<span style="float: right;">Current page amount: ' + pagetotal + '</span>'
                                         );
+                                        //api.page(2).draw(false);
                                 } catch (o) {
 
                                 }
+                        },
+                        <?php if (isset($this->showLastRememberSearchCriteria) && ($this->showLastRememberSearchCriteria==true)) { ?>
+                        "stateSave": true,
+                        //"stateDuration":-1,
+                        "stateSaveCallback": function (settings, oData) {
+                                $.ajax( {
+                                url: "/ajax/saveDatatableSearchParam",
+                                data : {state: JSON.stringify(oData), 'list_name' : '<?php echo $this->list_name?>'},
+                                dataType: "json",
+                                type: "POST",
+                                success: function () {
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                        //console.log(thrownError);
+                                },
+                                } );
+                        },
+                        "stateLoadCallback": function (settings) {
+                                var o;
+                                $.ajax( {
+                                url: '/ajax/getDatatableSearchParam/<?php echo $this->list_name?>',
+                                dataType: 'json',
+                                success: function (json) {
+                                        o = json;
+                                        if(json!=null) {
+                                                table.page.len(json.length);
+                                                table.order(json.order).draw();
+                                                table.search(json.search['search']).draw();
+                                                //console.log(table.page.info(json.start));
+                                                //table.page(2).draw(false);
+                                                //console.log('load callback');
+                                                //table.row(index).data(data).draw(false);
+                                                //table.ajax.reload(null, false);
+                                                //table.page(3).draw(false);
+                                                //table.ajax.reload(null, false);
+                                        }
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                        //console.log(thrownError);
+                                },
+                                } );
+                                return o;
                         }
-
-
+                        <?php } ?>
+                        
                 });
-
-
 
                 var search_thread = null;
                 $(".dataTables_filter input")
@@ -193,11 +234,12 @@ if($_SESSION['session_date_format'] == 'M d yyyy'){
                                         if (len == 0) {
                                                 dtable.search("").draw();
                                         }
+                                        console.log('input call');
                                         return;
                                 }, 2000);
                         });
 
-
+                
 
         });
         $('#daterange').daterangepicker({

@@ -66,7 +66,8 @@ class ProductController extends Controller
         }
         $data['products'] = $getProducts;
         $data['enable_inventory'] = $this->checkInventoryServiceEnable();
-        $data['datatablejs'] = 'table-no-export';
+        $data['datatablejs'] = 'table-no-export-tablestatesave'; //table-no-export
+        $data['list_name'] = 'product_list';
         return view('app/merchant/product/index', $data);
     }
 

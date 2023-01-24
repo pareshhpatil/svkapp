@@ -196,6 +196,9 @@ class SSP
         }
         // Combine the filters into a single string
         $where = "";
+        if (count($globalSearch)) {
+            $where = '(' . implode(' OR ', $globalSearch) . ')';
+        }
         if (self::$group != '') {
             if ($where == '') {
                 $where = " customer_group like ~%" . '{' . self::$group . '}' . '%~';
@@ -236,10 +239,6 @@ class SSP
             } else {
                 $where .= " AND billing_profile_id =" . self::$billing_profile_id;
             }
-        }
-
-        if (count($globalSearch)) {
-            $where = '(' . implode(' OR ', $globalSearch) . ')';
         }
 
         if (count($columnSearch)) {
@@ -284,6 +283,7 @@ class SSP
             "call report_invoice_details('" . self::$merchant_id . "','" . self::$from_date . "',"
                 . "'" . self::$to_date . "'," . self::$invoice_type . ",'" . self::$cycle_id . "','" . self::$customer_id . "','" . self::$status . "','" . self::$aging_by . "','" . $column_name . "','" . self::$is_setteled . "','" . self::$franchise_id . "','" . self::$vendor_id . "','" . $where . "','" . $order . "','" . $limit . "');"
         );
+
         $recordsFiltered = $data[0]['@fcount'];
         // Total data set length
 

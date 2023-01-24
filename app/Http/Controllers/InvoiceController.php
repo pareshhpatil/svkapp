@@ -110,7 +110,7 @@ class InvoiceController extends AppController
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
 
-        if (env('ENV') != 'LOCAL') {
+        if (env('APP_ENV') != 'LOCAL') {
             //menu list
             $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
             $item_list = json_decode($mn1, 1);
@@ -262,7 +262,7 @@ class InvoiceController extends AppController
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
 
-        if (env('ENV') != 'LOCAL') {
+        if (env('APP_ENV') != 'LOCAL') {
             //menu list
             $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
             $item_list = json_decode($mn1, 1);
@@ -290,6 +290,7 @@ class InvoiceController extends AppController
             if (isset($data['contract_detail']->sequence_number)) {
                 $invoice_seq_id = $data['contract_detail']->sequence_number;
             }
+            
             if (isset($metadata['H'])) {
                 $metadata['H'] = $this->setCreateFunction($metadata['H']);
                 foreach ($metadata['H'] as $k => $row) {
@@ -315,9 +316,7 @@ class InvoiceController extends AppController
                                 $metadata['H'][$k]->param_value = $invoice_seq_id;
                             }
                             if ($metadata['H'][$k]->param_value > 0) {
-                                $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $metadata['H'][$k]->param_value);
-                                $seq_no = $seq_row->val + 1;
-                                $metadata['H'][$k]->display_value =  $seq_row->prefix .  $seq_no;
+                                $metadata['H'][$k]->display_value=$this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
                             }
                         } else {
                             $metadata['H'][$k]->value =  $invoice_number;
@@ -786,34 +785,18 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
-            $info['gtype'] = '702';
-
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
             }
-
+            $info['gtype'] = '702';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
-            if(!empty($offlineResponse)) {
+            if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
 
-            if($info['payment_request_status'] == '2') {
+            if ($info['payment_request_status'] == '2') {
                 $info['offline_success_transaction'] = $offlineResponse;
             }
 
@@ -821,8 +804,8 @@ class InvoiceController extends AppController
             //end code for new design
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
-            
-            $imgpath='';
+
+            $imgpath = '';
             if (isset($info['image_path'])) {
                 $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
@@ -847,8 +830,6 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
@@ -857,7 +838,6 @@ class InvoiceController extends AppController
 
     public function view_g703($link)
     {
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -865,40 +845,18 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-            
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                // $previousInvoice = PaymentRequest::where('payment_request_id', '!=', $payment_request_id)->
-                // where('contract_id', $paymentRequest->contract_id)->
-                // where('created_date', '<', $paymentRequest->created_date)->
-                // orderBy('created_date','desc')->first();
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-            
             $info = (array)$info;
             $info['gtype'] = '703';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
-            if(!empty($offlineResponse)) {
+            if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
-
-            if($info['payment_request_status'] == '2') {
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
+            }
+            if ($info['payment_request_status'] == '2') {
                 $info['offline_success_transaction'] = $offlineResponse;
             }
 
@@ -931,8 +889,6 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
@@ -957,34 +913,13 @@ class InvoiceController extends AppController
             $info['its_from'] = 'real';
             $info['gtype'] = 'attachment';
 
-            //find payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                // $previousInvoice = PaymentRequest::where('payment_request_id', '!=', $payment_request_id)->
-                // where('contract_id', $paymentRequest->contract_id)->
-                // where('created_date', '<', $paymentRequest->created_date)->
-                // orderBy('created_date','desc')->first();
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
-            if(!empty($offlineResponse)) {
+            if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
 
-            if($info['payment_request_status'] == '2') {
+            if ($info['payment_request_status'] == '2') {
                 $info['offline_success_transaction'] = $offlineResponse;
             }
 
@@ -1070,8 +1005,6 @@ class InvoiceController extends AppController
             $selectedDoc[1] = $sub;
             $selectedDoc[2] = $docpath;
             $data['selectedDoc'] = $selectedDoc;
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             return view('app/merchant/invoice/documents', $data);
@@ -1249,37 +1182,18 @@ class InvoiceController extends AppController
 
     public function documentsPatron($link, $parentnm = '', $sub = '', $docpath = '')
     {
-        
+
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
 
-            //find payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-
             #get default billing profile
-
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
 
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
-
 
             $info = (array)$info;
             $info['its_from'] = 'real';
@@ -1414,8 +1328,6 @@ class InvoiceController extends AppController
             $selectedDoc[1] = $sub;
             $selectedDoc[2] = $docpath;
             $data['selectedDoc'] = $selectedDoc;
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/documents', $data);
@@ -1490,24 +1402,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
 
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -1544,8 +1439,6 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             return view('app/merchant/invoice/view/invoice_view', $data);
@@ -1561,24 +1454,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-
+            
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -1648,8 +1524,6 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
 
@@ -1673,23 +1547,6 @@ class InvoiceController extends AppController
             //     header('Location: /patron/paymentrequest/view/' . $link);
             //     die();
             // }
-
-            //find payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
 
             $banklist = $this->parentModel->getConfigList('Bank_name');
             $banklist = json_decode($banklist, 1);
@@ -1752,10 +1609,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
-
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
         } else {
@@ -1791,25 +1645,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-
+            
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -1851,8 +1687,7 @@ class InvoiceController extends AppController
                     $info['signimg'] = base64_encode(file_get_contents($imgpath));
                 }
             }
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             if ($savepdf == 2) {
                 $data['viewtype'] = 'print';
@@ -1914,29 +1749,11 @@ class InvoiceController extends AppController
     }
     public function downloadPatron($link, $savepdf = 0, $type = null)
     {
-        
+
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
 
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
@@ -2020,8 +1837,6 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             if ($savepdf == 2) {
@@ -2065,24 +1880,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-           
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
-
+            
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -2131,14 +1929,13 @@ class InvoiceController extends AppController
             $invoicePaymentRequest = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
 
             $invoiceAttachments = [];
-            if(!empty($invoicePaymentRequest->plugin_value)) {
+            if (!empty($invoicePaymentRequest->plugin_value)) {
                 $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
-
-                if($pluginValue->has_upload) {
+                if (isset($pluginValue->has_upload)) {
                     //uat.expense/invoices/download 190637995.jpeg
                     $files = $pluginValue->files;
                     foreach ($files as $file) {
-                        if(!empty($file)) {
+                        if (!empty($file)) {
                             $fileUrlExplode = explode('/', $file);
                             $fileLastFromURL = end($fileUrlExplode);
                             $fileExplode = explode('.', $fileLastFromURL);
@@ -2147,7 +1944,7 @@ class InvoiceController extends AppController
                             $fileType = Arr::last($fileExplode);
                             $fileContent = '';
 
-                            if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                            if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
                                 $filePath = 'invoices/' . $fileLastFromURL;
                                 $bucketName = 'uat.expense';
 
@@ -2177,11 +1974,19 @@ class InvoiceController extends AppController
             $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
 
             $billCodeAttachments = [];
-            foreach($constructionParticulars as $constructionParticular) {
+            foreach ($constructionParticulars as $constructionParticular) {
                 $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
                 $particularAttachments = json_decode($constructionParticular->attachments);
-                if(!empty($particularAttachments)) {
-                    foreach($particularAttachments as $particularAttachment) {
+
+                $billCodeAttachments[$billCode->id] = [
+                    'billCodeId' => $billCode->id,
+                    'billCode' => $billCode->code,
+                    'billName' => $billCode->title,
+                    'attachments' => []
+                ];
+
+                if (!empty($particularAttachments)) {
+                    foreach ($particularAttachments as $particularAttachment) {
                         $urlExplode = explode('/', $particularAttachment);
                         $file = end($urlExplode);
                         $fileExplode = explode('.', $file);
@@ -2190,7 +1995,7 @@ class InvoiceController extends AppController
                         $fileType = Arr::last($fileExplode);
                         $fileContent = '';
 
-                        if($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                        if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
                             $filePath = 'invoices/' . $billCode->id . '/' . $file;
                             $bucketName = 'uat.expense';
 
@@ -2203,10 +2008,8 @@ class InvoiceController extends AppController
                             $fileContent = base64_encode($body->getContents());
                         }
 
-                        $billCodeAttachments[] = [
-                            'billCodeId' => $billCode->id,
-                            'billCode' => $billCode->title,
-                            'groupName' => $constructionParticular->group,
+
+                        $billCodeAttachments[$billCode->id]['attachments'][] = [
                             'fileName' => $fileName,
                             'fileNameSlug' => Str::slug($fileName, '-'),
                             'fileType' => $fileType,
@@ -2215,14 +2018,9 @@ class InvoiceController extends AppController
                         ];
                     }
                 }
-
             }
 
             $info['bill_code_attachments'] = $billCodeAttachments;
-
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
-
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
             $data['viewtype'] = 'pdf';
@@ -2256,22 +2054,6 @@ class InvoiceController extends AppController
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
 
-            //find  payment reuest count 
-            $paymentRequest = PaymentRequest::find($payment_request_id);
-            $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequest->contract_id);
-            $isFirstInvoice = false;
-            $prevDPlusE = [];
-            if($firstpaymentRequest->payment_request_id==$payment_request_id) {
-                $isFirstInvoice = true;
-            } else {
-                $isFirstInvoice = false;
-                $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id,$paymentRequest->contract_id,$paymentRequest->created_date);
-                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
-                $prevDPlusE = [];
-                foreach($previousInvoiceParticulars as $k=>$val) {
-                    $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
-                }
-            }
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -2284,8 +2066,6 @@ class InvoiceController extends AppController
             $info['savepdfurl'] = $savepdfurl;
             $info['paylink'] = env('APP_URL') . '/patron/paymentrequest/pay/' . $link;
             $info['viewurl'] = env('APP_URL') . '/patron/invoice/view/' . $link . '/702';
-            $data['isFirstInvoice'] = $isFirstInvoice;
-            $data['prevDPlusE'] = $prevDPlusE;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             //attache pdf
 
@@ -2349,13 +2129,35 @@ class InvoiceController extends AppController
         $responce_meta =  $this->invoiceModel->getInvoiceMetadata($info['template_id'], $payment_request_id);
         $cust_values = $this->invoiceModel->getCustomerbreckup($info['customer_id']);
 
+        //find  payment reuest count 
+        $paymentRequestData = PaymentRequest::find($payment_request_id);
+        $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequestData->contract_id);
+        $isFirstInvoice = false;
+        $prevDPlusE = [];
+        if (!empty($firstpaymentRequest)) {
+            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                $isFirstInvoice = true;
+            }
+        } else {
+            $isFirstInvoice = true;
+        }
+
+        if ($isFirstInvoice == false) {
+            $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequestData->contract_id, $paymentRequestData->created_date);
+            $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+            $prevDPlusE = [];
+            foreach ($previousInvoiceParticulars as $k => $val) {
+                $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+            }
+        }
+
         $info['user_type'] = $user_type;
         $info['staging'] = $staging;
         $data['links'] = $payment_request_id;
         $data['formatename'] = $info['design_name'];
         $data['colors'] = $info['design_color'];
-
-
+        $data['isFirstInvoice'] = $isFirstInvoice;
+        $data['prevDPlusE'] = $prevDPlusE;
 
         $merchant_header[] = array('column_name' => 'Company name', 'value' => $info['company_name']);
         $merchant_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
@@ -2709,19 +2511,19 @@ class InvoiceController extends AppController
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             
-            $info['constriuction_details'] = $this->getData703($tt,$data['isFirstInvoice'],$data['prevDPlusE']);
+            $info['constriuction_details'] = $this->getData703($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
 
             $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-            where MONTH(`order_date`)=MONTH(now()-INTERVAL 1 MONTH) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+            where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($pre_month_change_order_amount[0]->change_order_amount != null) {
                 $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
             } else {
                 $info['last_month_co_amount'] = 0;
             }
             $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-          where MONTH(`order_date`)=MONTH(now()) AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+          where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
             if ($current_month_change_order_amount[0]->change_order_amount != null) {
                 $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
             } else {
@@ -2732,36 +2534,72 @@ class InvoiceController extends AppController
             $sumOfd = 0;
             $sumOfe = 0;
             $sumOff = 0;
+            $sumOfrasm = 0;
             $sumOfg = 0;
             $sumOfh = 0;
             $sumOfi = 0;
             $sumOforg = 0;
             $total_appro = 0;
+            $total_appro = 0;
+            $total_retainage_amount = 0;
+            $retainage_amount_for_this_draw = 0;
+            $total_previously_billed_amount = 0;
+            $retainage_amount_stored_materials = 0;
+            $retainage_release_amount = 0;
+            $retainage_stored_materials_release_amount = 0;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
                 $sumOfc += $itesm['current_contract_amount'];
-                if($data['isFirstInvoice'] == true){
+                if ($data['isFirstInvoice'] == true) {
                     $sumOfd += $itesm['previously_billed_amount'];
                     $prevBillAmt = $itesm['previously_billed_amount'];
                 } else {
-                    $sumOfd += $data['prevDPlusE'][$itesm['pint']]??0;
-                    $prevBillAmt = $data['prevDPlusE'][$itesm['pint']]??0;
+                    $sumOfd += $data['prevDPlusE'][$itesm['pint']] ?? 0;
+                    $prevBillAmt = $data['prevDPlusE'][$itesm['pint']] ?? 0;
                 }
                 //$sumOfd += $itesm['previously_billed_amount'];
                 $sumOfe += $itesm['current_billed_amount'];
+                $total_previously_billed_amount += $itesm['previously_billed_amount'];
                 $sumOff += $itesm['stored_materials'];
+                $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'] - $itesm['retainage_stored_materials_release_amount'];
+                $retainage_amount_stored_materials += $itesm['retainage_amount_stored_materials'];
+                $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'] - $itesm['retainage_release_amount'];
+                $retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'];
+
+                $retainage_release_amount += $itesm['retainage_release_amount'];
+                $retainage_stored_materials_release_amount += $itesm['retainage_stored_materials_release_amount'];
+
                 //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
                 $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
                 $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
                 //$sumOfh += $sumOfc - $sumOfg;
-                $sumOfi += $itesm['total_outstanding_retainage'];
+
+                if (!empty($itesm['total_outstanding_retainage'])) {
+                    $sumOfi += $itesm['total_outstanding_retainage'];
+                } else {
+                    $sumOfi += $itesm['retainage_amount_previously_withheld'];
+                }
             }
-            
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
             $info['total_e'] = $sumOfe;
+            $info['total_retainage_amount'] = $total_retainage_amount;
             $info['total_f'] = $sumOff;
+            $info['total_rasm'] = $sumOfrasm;
+            $info['percent_rasm'] = 0;
+            $info['percent_rcw'] = 0;
+            $totalBilledAmount = $total_previously_billed_amount + $sumOfe;
+            if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
+                $info['percent_rcw'] = $total_retainage_amount * 100 / $totalBilledAmount;
+            }
+
+            $info['total_retainage'] = $info['total_retainage_amount'] + $sumOfrasm;
+
+            if ($sumOff > 0 && $sumOfrasm > 0) {
+                $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
+            }
+
             $info['total_g'] = $sumOfg;
             $info['total_h'] = $sumOfc - $sumOfg;   //$sumOfh;
             $info['total_i'] = $sumOfi;
@@ -2829,9 +2667,9 @@ class InvoiceController extends AppController
             case 1:
                 $info["error"] = 'This invoice has already been paid online.';
                 break;
-//            case 2:
-//                $info["error"] =  'This invoice has already been settled.';
-//                break;
+                //            case 2:
+                //                $info["error"] =  'This invoice has already been settled.';
+                //                break;
             case 3:
                 $info["error"] =  'This invoice has already been deleted.';
                 break;
@@ -2859,15 +2697,13 @@ class InvoiceController extends AppController
             }
         }
         if (substr($info['invoice_number'], 0, 16) == 'System generated') {
-            $seq_row = $this->invoiceModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', substr($info['invoice_number'], 16));
-            $seq_no = $seq_row->val + 1;
-            $info['invoice_number'] =  $seq_row->prefix .  $seq_no;
+            $info['invoice_number'] = $this->invoiceModel->getAutoInvoiceNo(substr($info['invoice_number'], 16));
         }
         //get less Previous certificates for payment from previous invoice
         $info["less_previous_certificates_for_payment"] = 0;
         if (isset($info['project_details'])) {
-            $less_previous_certificates_for_payment = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
-            $info["less_previous_certificates_for_payment"] = $less_previous_certificates_for_payment;
+            $info["less_previous_certificates_for_payment"] = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
+            $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
         }
 
         $info['user_name'] = Session::get('user_name');
@@ -2893,45 +2729,13 @@ class InvoiceController extends AppController
         $pre_req_id =  $this->invoiceModel->getPreviousInvoice($this->merchant_id, $contract_id, $payment_request_id);
 
         if ($pre_req_id != false) {
-
-            $prevOrderParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
-            $prev_total_d = 0;
-            $prev_total_e = 0;
-            $prev_total_f = 0;
-            $prev_total_g = 0;
-            $prev_total_i = 0;
-            foreach ($prevOrderParticulars as $prevOrderParticular) {
-                $prev_total_d += $prevOrderParticular->previously_billed_amount;
-                $prev_total_e += $prevOrderParticular->current_billed_amount;
-                $prev_total_f += $prevOrderParticular->stored_materials;
-                $prev_total_g += $prevOrderParticular->previously_billed_amount +
-                    $prevOrderParticular->current_billed_amount +
-                    $prevOrderParticular->stored_materials;
-                $prev_total_i += $prevOrderParticular->total_outstanding_retainage;
-            }
-
-            if ($prev_total_d + $prev_total_e > 0) {
-                $cper = number_format((($prev_total_i / ($prev_total_d + $prev_total_e)) * 100), 2);
-
-                $single_per = ($prev_total_d + $prev_total_e) / 100;
-
-                $a5 = $single_per * $cper;
-
-                $total_retainage = $a5 + $prev_total_f;
-                
-                if($total_retainage == 0) {
-                    $total_retainage = $prev_total_i;
-                }
-
-                $less_previous_certificates_for_payment = number_format($prev_total_g - $total_retainage, 2);
-            }
+            $less_previous_certificates_for_payment = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $pre_req_id, 'invoice_total');
         }
-
         return $less_previous_certificates_for_payment;
     }
 
 
-    public function getData703($tt,$isFirstInvoice=true,$prevParictular=null)
+    public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
         $group_names = array();
         $grouping_data = array();
@@ -2979,10 +2783,13 @@ class InvoiceController extends AppController
                     $desc = $names;
                     $c += $data['current_contract_amount'];
 
-                    if($isFirstInvoice == true) {
-                        $d += number_format($data['previously_billed_amount'], 2);
+                    if ($isFirstInvoice == true) {
+                        $d += $data['previously_billed_amount'];
                     } else {
-                        $d += number_format($prevParictular[$data['pint']]??0, 2);
+                        if (is_numeric($prevParictular[$data['pint']])) {
+                            $pp = $prevParictular[$data['pint']] ?? 0;
+                            $d += $pp;
+                        }
                     }
 
                     //$d += $data['previously_billed_amount'];
@@ -3040,10 +2847,10 @@ class InvoiceController extends AppController
                     $single_data['b'] = $data['description'];
                     $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
                     $single_data['c'] = $data['current_contract_amount'];
-                    if($isFirstInvoice == true) {
+                    if ($isFirstInvoice == true) {
                         $single_data['d'] = ($data['previously_billed_amount']);
                     } else {
-                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                        $single_data['d'] = $prevParictular[$data['pint']] ?? 0;
                     }
                     //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = $data['current_billed_amount'];
@@ -3073,16 +2880,23 @@ class InvoiceController extends AppController
 
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
-                    $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+
+                    if (!empty($data['total_outstanding_retainage'])) {
+                        $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+                    } else {
+                        $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
+                    }
+
+
                     $grouping_data[] = $single_data;
 
                     $pos++;
                     $sub_c += $data['current_contract_amount'];
 
-                    if($isFirstInvoice == true) {
+                    if ($isFirstInvoice == true) {
                         $sub_d += $data['previously_billed_amount'];
                     } else {
-                        $sub_d += $prevParictular[$data['pint']]??0;
+                        $sub_d += $prevParictular[$data['pint']] ?? 0;
                     }
                     //$sub_d += $data['previously_billed_amount'];
                     $sub_e += $data['current_billed_amount'];
@@ -3091,7 +2905,14 @@ class InvoiceController extends AppController
                     $sub_g += $single_data['g'];
                     $sub_g_per += $per;
                     $sub_h += $data['current_contract_amount'] - ($single_data['d'] + $single_data['e'] + $single_data['f']);
-                    $sub_i += $data['total_outstanding_retainage'];
+                    //$sub_i += $data['total_outstanding_retainage'];
+
+                    if (!empty(floatval($data['total_outstanding_retainage']))) {
+                        $sub_i += $data['total_outstanding_retainage'];
+                    } else {
+                        $sub_i += $data['retainage_amount_previously_withheld'];
+                    }
+
                     if ($pos1 == count($result[$names]) ||  $pos == count($result[$names])) {
                         $single_data = array();
                         $single_data['a'] = '';
@@ -3109,16 +2930,16 @@ class InvoiceController extends AppController
                         $grouping_data[] = $single_data;
                     }
                 } else {
-                    
+
                     $single_data = array();
                     $single_data['a'] = $data['code']; //$data['bill_code'];
                     $single_data['b'] = $data['description'];
                     $single_data['type'] = '';
                     $single_data['c'] = $data['current_contract_amount'];
-                    if($isFirstInvoice == true) {
+                    if ($isFirstInvoice == true) {
                         $single_data['d'] = $data['previously_billed_amount'];
                     } else {
-                        $single_data['d'] = $prevParictular[$data['pint']]??0;
+                        $single_data['d'] = $prevParictular[$data['pint']] ?? 0;
                     }
                     //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                     $single_data['e'] = $data['current_billed_amount'];
@@ -3143,15 +2964,25 @@ class InvoiceController extends AppController
 
                     $per = 0;
 
-                    if (!empty($data['current_contract_amount']))
-                        $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
-                        $per=str_replace(',', '', $per);
+                    if (!empty($data['current_contract_amount'])) {
+                        if ($data['current_contract_amount'] > 0) {
+                            $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
+                        }
+                    }
+                    $per = str_replace(',', '', $per);
                     $single_data['g_per'] = number_format($per, 2);
                     $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
-                    $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+
+                    if (!empty($data['total_outstanding_retainage'])) {
+                        $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+                    } else {
+                        $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
+                    }
+
                     $grouping_data[] = $single_data;
                 }
             }
+
             if (!empty($type)) {
                 $g = $d + $e + $f;
                 $single_data1['a'] = $bill_code;
@@ -3165,7 +2996,7 @@ class InvoiceController extends AppController
                 // } else {
                 //     $single_data1['d'] = $prevParictular[$data['pint']]??0;
                 // }
-                
+
                 $single_data1['d'] = number_format($d, 2);
                 $single_data1['e'] = number_format($e, 2);
                 $single_data1['group_name'] = $bill_desc;
@@ -3271,7 +3102,6 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-
         try {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
@@ -3296,7 +3126,8 @@ class InvoiceController extends AppController
                 $billed_transaction_ids = [];
                 foreach ($request->bill_code as $k => $bill_code) {
                     $request = Helpers::setArrayZeroValue(array(
-                        'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc'
+                        'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
+                        'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
                     ));
                     $data['bill_code'] = $request->bill_code[$k];
                     if ($request->description[$k] == '') {
@@ -3316,7 +3147,11 @@ class InvoiceController extends AppController
                     $data['total_billed'] = $request->total_billed[$k];
                     $data['retainage_percent'] = $request->retainage_percent[$k];
                     $data['retainage_amount_previously_withheld'] = $request->retainage_amount_previously_withheld[$k];
+                    $data['retainage_amount_previously_stored_materials'] = $request->retainage_amount_previously_stored_materials[$k];
+                    $data['retainage_stored_materials_release_amount'] = $request->retainage_stored_materials_release_amount[$k];
                     $data['retainage_amount_for_this_draw'] = $request->retainage_amount_for_this_draw[$k];
+                    $data['retainage_percent_stored_materials'] = $request->retainage_percent_stored_materials[$k];
+                    $data['retainage_amount_stored_materials'] = $request->retainage_amount_stored_materials[$k];
                     $data['net_billed_amount'] = $request->net_billed_amount[$k];
                     $data['retainage_release_amount'] = $request->retainage_release_amount[$k];
                     $data['total_outstanding_retainage'] = $request->total_outstanding_retainage[$k];
@@ -3348,8 +3183,8 @@ class InvoiceController extends AppController
                     } else {
                         $data['attachments'] = null;
                     }
-                    $request->totalcost = str_replace(',', '', $request->totalcost??0);
-                    $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids??[]);
+                    $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
+                    $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? []);
                     if ($data['id'] > 0) {
                         $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                     } else {
@@ -3363,7 +3198,7 @@ class InvoiceController extends AppController
                     $this->storeRevision($request_id, $revision_data);
                 }
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             dd($e);
         }
         return redirect('/merchant/invoice/viewg703/' . Encrypt::encode($request_id));
@@ -3474,7 +3309,7 @@ class InvoiceController extends AppController
                     }
                 } else {
                     $title =  'removed row';
-                    $revision_array[$table_name][$key] = array('title' => $title, 'type' => 'remove', 'old_value' => $old_particular[$key], 'new_value' => $new_particular[$key]);
+                    $revision_array[$table_name][$key] = array('title' => $title, 'type' => 'remove', 'old_value' => $old_particular[$key], 'new_value' => '');
                 }
             }
 
@@ -3501,9 +3336,11 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
+
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $invoice->template_id);
         $contract = $this->invoiceModel->getTableRow('contract', 'contract_id', $invoice->contract_id);
@@ -3537,7 +3374,7 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-
+            $previousInvoiceIDs = $this->invoiceModel->getPreviousInvoiceIDs($this->merchant_id, $invoice->contract_id, $request_id);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
@@ -3577,10 +3414,44 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
+                        //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
+                        //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
+                        //                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
+                    }
+                }
+
+
+                if (!empty($previousInvoiceIDs)) {
+                    $previousBilledSumArray = [];
+                    foreach ($previousInvoiceIDs as $previousInvoiceID) {
+                        $contractParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
+                        foreach ($contractParticulars as $row) {
+                            $previousBilledSumArray[$row->bill_code]['previousBilledAmount'][] = $row->current_billed_amount;
+                            $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
+                            $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
+                            $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
+
+                            $previousBilledSumArray[$row->bill_code]['retainageReleaseAmount'][] = $row->retainage_release_amount;
+                            $previousBilledSumArray[$row->bill_code]['retainageStoredMaterialsReleaseAmount'][] = $row->retainage_stored_materials_release_amount;
+                        }
+                    }
+
+                    foreach ($particulars as $k => $v) {
+                        if (isset($cp[$v->bill_code])) {
+                            $previousBilledAmount = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledAmount']);
+                            $previousBilledPercent = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledPercent']);
+                            $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
+                            $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
+
+                            $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
+                            $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
+
+                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount, 2);
+                            $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
+                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount, 2);
+                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount, 2);
+                        }
                     }
                 }
             }
@@ -3604,7 +3475,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
                         $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
-                        $cop[$v["bill_code"]]->bill_type = '';
+                        $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
@@ -3644,7 +3515,9 @@ class InvoiceController extends AppController
                 }
 
                 foreach ($row as $kr => $kv) {
-                    $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
+                    if ($kr != 'pint') {
+                        $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
+                    }
                 }
             }
             $order_id_array = json_decode($invoice->change_order_id, 1);

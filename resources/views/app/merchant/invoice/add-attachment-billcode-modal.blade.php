@@ -174,24 +174,24 @@
                                         <h3 style="margin-left: 29px !important;" class="form-section mt-2">No attachments uploaded</h3>
                                         </div>
                                     </div>
-                                    <div id="yesview"  style="display:none;">
-                                    <div class="row w-full   bg-white  shadow-2xl font-rubik m-2 py-10" style="max-width: 1400px;">
-                                        <div class="tabbable-line col-md-2 col-sm-3 col-xs-3 mt-1">
+                                    <div id="yesview" style="display:none;">
+                                    <div class="row w-full bg-white shadow-2xl font-rubik m-2 py-10" style="max-width: 1400px;">
+                                        <div class="tabbable-line col-md-4 col-sm-6 col-xs-6 mt-1">
            
-                                            <div class="container_2 page-sidebar1 navbar-collapse collapse" >
+                                            <div class="container_2 page-sidebar1">
 
-                                            <ul class="tree" id="ulmenu">
-                                             
-                                               
-                                              
-                                                
-                                             
-                                              </ul>
-                                        </div>  
+                                                <ul class="tree" id="ulmenu">
+
+
+
+
+
+                                                </ul>
+                                            </div>
                                         </div>
                                   
-                                        <div class="col-md-10 col-sm-9 col-xs-9" >
-                                            <div class="tab-content container_1"  id="frame_view" >
+                                        <div class="col-md-8 col-sm-6 col-xs-6">
+                                            <div class="tab-content container_1" id="frame_view">
                                               
                                             </div>
                                         </div>

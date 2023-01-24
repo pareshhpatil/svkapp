@@ -209,6 +209,9 @@ class SSP
         }
         // Combine the filters into a single string
         $where = "";
+        if (count($globalSearch)) {
+            $where = '(' . implode(' OR ', $globalSearch) . ')';
+        }
         if ($_SESSION['customer_status'] != '') {
             $where = " customer_status=" . $_SESSION['customer_status'];
         }
@@ -245,10 +248,6 @@ class SSP
                     $where .= " AND " . $grptext;
                 }
             }
-        }
-
-        if (count($globalSearch)) {
-            $where = '(' . implode(' OR ', $globalSearch) . ')';
         }
 
         if (count($columnSearch)) {
