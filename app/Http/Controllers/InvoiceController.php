@@ -174,7 +174,6 @@ class InvoiceController extends AppController
 
     public function create(Request $request, $link = null, $update = null)
     {
-
         $cycleName = date('M-Y') . ' Bill';
         $invoice_number = '';
         $bill_date = '';
@@ -369,7 +368,6 @@ class InvoiceController extends AppController
      */
     public function update($link, $staging = 0, $revision = 0)
     {
-
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
@@ -3035,7 +3033,6 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
-
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
             if ($function_id == 9) {
@@ -3102,6 +3099,7 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
+        //        dd($request);
         try {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);

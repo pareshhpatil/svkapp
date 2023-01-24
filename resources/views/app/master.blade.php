@@ -6,7 +6,7 @@
         {{Session::get('company_name')}}
         |
         @endif
-        {{$title ?? ''}}
+        {{$title}}
     </title>
     <meta name="author" content="Swipez">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,15 +21,13 @@
     <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" />
     <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 
-    @if(!empty($jsfile))
-        @foreach ($jsfile as $js)
-            <script src="/assets/admin/layout/scripts/{{$js}}.js{{ Helpers::fileTime('js',$js) }}" type="text/javascript"></script>
-        @endforeach
-    @endif
+    @foreach ($jsfile as $js)
+    <script src="/assets/admin/layout/scripts/{{$js}}.js{{ Helpers::fileTime('js',$js) }}" type="text/javascript"></script>
+    @endforeach
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link href='/assets/admin/layout/css/plugin/select2.min.css' rel='stylesheet' type='text/css'>
     <link href='/assets/admin/layout/css/plugin/virtual-select.min.css' rel='stylesheet' type='text/css'>
-    @if(!empty($datatablejs))
+    @if($datatablejs!='')
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     @endif
     <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
@@ -137,7 +135,7 @@
                     <a href="javascript:;" style="margin-top: 20px;" class="menu-toggler responsive-toggler pull-left" data-toggle="collapse" data-target=".navbar-collapse">
                     </a>
                     <ul class="nav navbar-nav pull-left">
-                        <!-- <a itemprop="url" title="Swipez">
+                        <!-- <a itemprop="url" title="Swipez" href="{{$server_name}}">
                             <img style="max-height: 50px;" class="logo-default hidden-xs" src="/assets/admin/layout/img/logo.png?v=5" alt="Swipez Online Payment" title="Swipez Online Payment Solutions">
                         </a> -->
                         <li class="dropdown dropdown-user pull-left hidden-lg hidden-md hidden-sm">

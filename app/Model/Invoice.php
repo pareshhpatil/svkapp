@@ -14,13 +14,11 @@ namespace App\Model;
  * @author Paresh
  */
 
-use App\Constants\Models\ITable;
 use Illuminate\Support\Facades\DB;
 use App\Model\ParentModel;
 
 class Invoice extends ParentModel
 {
-    protected $table = ITable::INVOICE;
 
     public function getActiveCoupon($merchant_id)
     {
