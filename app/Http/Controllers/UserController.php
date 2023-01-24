@@ -733,17 +733,17 @@ class UserController extends Controller
                                 $domain = array_pop($parts);
                                 if (in_array($domain, $briq_user_emails)) {
                                     //register with data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 1);
+                                    return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
                                 } else {
                                     //register without data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 0);
+                                    return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
                                 }
                             } else if ($data_setup_type == 'ALL') {
                                 //register with data 
-                                return $this->registerNewBriqUser($email, $user_uid, 1);
+                                return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
                             } else {
                                 // register without data  
-                                return $this->registerNewBriqUser($email, $user_uid, 0);
+                                return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
                             }
                         } else {
                             $this->user_model->updateTable('user', 'briq_user_id', $user_uid, 'email_id', $email);
@@ -775,12 +775,12 @@ class UserController extends Controller
         }
     }
 
-    function registerNewBriqUser($email, $uid, $is_data)
+    function registerNewBriqUser($email, $uid, $is_data, $decrypted_token)
     {
-        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("AUTH: " . env('BRIQ_USER_API_AUTH')));
+        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("Authorization: Bearer " . $decrypted_token));
         $response = json_decode($response, 1);
 
-        $company_id = $response["user_data"]["company_id"];
+        $company_id = isset($response["company_id"]) ? $response["company_id"] : 'TBT';
 
         $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
         if ($result->Message == 'success') {
@@ -789,10 +789,10 @@ class UserController extends Controller
             $this->user_model->updateUserDetails($result->user_id, $result->user_id, 12);
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'profile_step', '7');
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'currency', ["USD"]);
-            if($is_data){
+            if ($is_data) {
                 // insert test data 
                 $imprt_data  = new ImportBriqData();
-                $imprt_data->insertData($result->merchant_id,$result->user_id );
+                $imprt_data->insertData($result->merchant_id, $result->user_id);
             }
             $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);
 
