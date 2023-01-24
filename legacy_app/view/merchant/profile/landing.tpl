@@ -123,17 +123,17 @@
 
 
                 </div>
+                {if $user_role == 'Admin'}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Manage Users</b></h4>
                     <p>
-                        <a href="/merchant/subuser/roles" class="dc-link"> Roles</a>
+                        <a href="/merchant/roles" class="dc-link"> Roles</a>
                     </p>
                     <p>
-                        <a href="/merchant/subuser/viewlist" class="dc-link"> Logins </a>
+                        <a href="/merchant/subusers" class="dc-link"> Logins </a>
                     </p>
-
-
                 </div>
+                {/if}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Personal preferences</b></h4>
                     <p>

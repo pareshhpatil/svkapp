@@ -185,6 +185,7 @@ class OrderController extends Controller
 
     public function approve(Request $request)
     {
+
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
             $request->approved_date = Helpers::sqlDate($request->approved_date);
@@ -258,6 +259,7 @@ class OrderController extends Controller
 
     public function approved($link)
     {
+
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -302,6 +304,7 @@ class OrderController extends Controller
 
     public function updatesave(Request $request)
     {
+
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $request->totalcost = str_replace(',', '', $request->totalcost);

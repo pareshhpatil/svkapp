@@ -458,3 +458,49 @@ Breadcrumbs::for('merchant.cost-types.edit', function ($trail) {
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Cost Types', url('/merchant/cost-types/index'));
 });
+
+Breadcrumbs::for('merchant.subusers.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list');
+});
+
+Breadcrumbs::for('merchant.subusers.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list', url('/merchant/subusers'));
+    $trail->push('Create sub-merchant');
+});
+
+Breadcrumbs::for('merchant.subusers.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Submerchant list', url('/merchant/subusers'));
+    $trail->push('Edit sub-merchant');
+});
+
+Breadcrumbs::for('merchant.roles.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles');
+});
+
+Breadcrumbs::for('merchant.roles.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles list', url('/merchant/roles'));
+    $trail->push('Create Role');
+});
+
+Breadcrumbs::for('merchant.roles.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Roles list', url('/merchant/roles'));
+    $trail->push('Edit Role');
+});

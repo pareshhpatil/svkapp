@@ -48,6 +48,7 @@ class ContractController extends Controller
 
     public function create($version = null)
     {
+
         Helpers::hasRole(2, 27);
         $title = 'create';
 
@@ -103,7 +104,8 @@ class ContractController extends Controller
     }
 
 
-    public function loadContract($step=1, $contract_id=null){
+    public function loadContract($step=1, $contract_id=null)
+    {
 
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
@@ -152,8 +154,8 @@ class ContractController extends Controller
                 ->get()->toArray();
     }
 
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         $step = $request->step;
         $contract = null;
         if ($request->contract_id)
@@ -183,7 +185,9 @@ class ContractController extends Controller
 
     }
 
-    public function step1Store(Request $request, $contract) {
+    public function step1Store(Request $request, $contract)
+    {
+
         $validator = Validator::make($request->all(), $this->informationRules());
 
         if ($validator->fails()) {
@@ -323,6 +327,7 @@ class ContractController extends Controller
 
     public function save(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'bill_date' => 'required',
             'contract_date' => 'required'
@@ -472,6 +477,7 @@ class ContractController extends Controller
 
     public function update($link)
     {
+
         $title = 'Update';
         $id = Encrypt::decode($link);
         if ($id != '') {
@@ -532,6 +538,7 @@ class ContractController extends Controller
 
     public function updatesave(Request $request)
     {
+
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $retain_amount = 0;
@@ -569,6 +576,7 @@ class ContractController extends Controller
 
     public function updatesaveV4(Request $request)
     {
+
         $id = $request->link;
         $main_array = [];
         $retain_amount = 0;
@@ -587,6 +595,7 @@ class ContractController extends Controller
 
     public function updatesaveV5(Request $request)
     {
+
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $retain_amount = 0;
@@ -603,7 +612,9 @@ class ContractController extends Controller
         return redirect('merchant/contract/list')->with('success', "Contract has been updated");
     }
 
-    public function updatesavev6(Request $request){
+    public function updatesavev6(Request $request)
+    {
+
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
 

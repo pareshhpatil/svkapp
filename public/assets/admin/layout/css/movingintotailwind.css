@@ -92,7 +92,7 @@ body {
 
 .feeds li {
     background-color: #ffffff;
-    border: 1px solid #F7F8F8;
+    /* border: 1px solid #F7F8F8; */
     margin-bottom: 7px;
 }
 
