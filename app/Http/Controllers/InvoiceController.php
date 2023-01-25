@@ -292,7 +292,7 @@ class InvoiceController extends AppController
             if (isset($data['contract_detail']->sequence_number)) {
                 $invoice_seq_id = $data['contract_detail']->sequence_number;
             }
-            
+
             if (isset($metadata['H'])) {
                 $metadata['H'] = $this->setCreateFunction($metadata['H']);
                 foreach ($metadata['H'] as $k => $row) {
@@ -318,7 +318,7 @@ class InvoiceController extends AppController
                                 $metadata['H'][$k]->param_value = $invoice_seq_id;
                             }
                             if ($metadata['H'][$k]->param_value > 0) {
-                                $metadata['H'][$k]->display_value=$this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
+                                $metadata['H'][$k]->display_value = $this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
                             }
                         } else {
                             $metadata['H'][$k]->value =  $invoice_number;
@@ -1455,7 +1455,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            
+
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
@@ -1646,7 +1646,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            
+
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -1881,7 +1881,7 @@ class InvoiceController extends AppController
 
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
-            
+
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -2511,7 +2511,7 @@ class InvoiceController extends AppController
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
-            
+
             $info['constriuction_details'] = $this->getData703($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
@@ -3485,10 +3485,10 @@ class InvoiceController extends AppController
                         if (!empty($cp[$v["bill_code"]])) {
                             if (isset($cp[$v["bill_code"]])) {
 
-                                $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount, 2);
-                                $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent, 2);
-                                $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
-                                $cop[$v["bill_code"]]->retainage_amount_previously_stored_materials = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
+                                $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
+                                $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->current_billed_percent, 2);
+                                $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
+                                $cop[$v["bill_code"]]->retainage_amount_previously_stored_materials = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials + $cp[$v["bill_code"]]->retainage_amount_previously_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
                             }
                         }
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
