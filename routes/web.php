@@ -445,6 +445,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('roles/delete/{id}', 'Merchant\RolesController@delete');
   
   Route::get('no-permission', 'MasterController@noPermission');
+
+  Route::any('invoice/list',  'InvoiceController@list')->name("invoicelist");
+  Route::any('invoice/list/data',  'InvoiceController@list')->name("invoicelist");
 });
 
 Route::get('/merchant/register/thankyou/new', 'Merchant\SubUserController@verifyMail');

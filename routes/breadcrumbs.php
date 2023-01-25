@@ -504,3 +504,9 @@ Breadcrumbs::for('merchant.roles.edit', function ($trail) {
     $trail->push('Roles list', url('/merchant/roles'));
     $trail->push('Edit Role');
 });
+
+Breadcrumbs::for('invoicelist', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sales');
+    $trail->push('Invoice / Estimate list', '/merchant/invoice/list');
+});
