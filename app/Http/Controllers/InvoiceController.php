@@ -3415,10 +3415,10 @@ class InvoiceController extends AppController
                     }
                 }
             }
+            $cp = array();
             if ($pre_req_id != false) {
                 $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
 
-                $cp = array();
                 foreach ($contract_particulars as $row) {
                     $cp[$row->bill_code] = $row;
                 }
@@ -3482,6 +3482,15 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
+                        if (!empty($cp[$v["bill_code"]])) {
+                            if (isset($cp[$v["bill_code"]])) {
+
+                                $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount, 2);
+                                $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent, 2);
+                                $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
+                                $cop[$v["bill_code"]]->retainage_amount_previously_stored_materials = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
+                            }
+                        }
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                         $cop[$v["bill_code"]]->original_contract_amount = 0;
                         $cop[$v["bill_code"]]->bill_code = $v["bill_code"];

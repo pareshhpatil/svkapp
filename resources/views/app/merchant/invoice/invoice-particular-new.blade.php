@@ -443,7 +443,7 @@
                                             @if($mode=='Preview')
                                             <a href="/merchant/collect-payments" class="btn green">Cancel</a>
                                             @else
-                                            <a href="/merchant/paymentrequest/list" class="btn green">Cancel</a>
+                                            <a href="/merchant/paymentrequest/viewlist" class="btn green">Cancel</a>
                                             @endif
                                             <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
