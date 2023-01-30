@@ -31,8 +31,6 @@ class CreateBriqRoles extends Migration
             $table->string('name');
             $table->text('description')
                 ->nullable();
-            $table->text('permissions')
-                ->nullable();
             $table->string('created_by', 10);
             $table->string('last_updated_by', 10);
             $table->timestamps();

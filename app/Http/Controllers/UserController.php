@@ -294,7 +294,6 @@ class UserController extends Controller
         $this->checkUserRole($user);
         
         $role = $user->role() ? $user->role()->name : '';
-        $permissions = $user->permissions() ?? [];
 
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
@@ -307,7 +306,6 @@ class UserController extends Controller
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
         Session::put('user_role', $role);
-        Session::put('permissions', $permissions);
 
         $preference = $this->user_model->getPreferences($user->user_id);
 
@@ -395,7 +393,7 @@ class UserController extends Controller
                 Session::put('partner_id', $merchant->partner_id);
                 Session::put('service_id', $merchant->service_id);
                 Session::put('is_legal', $merchant->is_legal_complete);
-                Session::put('userid', $user->user_id);
+                Session::put('userid', Encrypt::encode($user->user_id));
                 Session::put('created_date', $merchant->created_date);
 
                 // storing variables to check getting started steps are completed or not

@@ -37,6 +37,7 @@ class SubUserController extends AppController
         $data = Helpers::setBladeProperties($title);
 
         $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
+
         $data['datatablejs'] = 'table-no-export';
 
         return view('app/merchant/subuser/index', $data);

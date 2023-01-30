@@ -58,41 +58,6 @@ class User extends Authenticatable {
     ];
 
     /**
-     * @param $permission
-     * @return bool
-     * @author Nitish
-     */
-    public function hasPermission($permission): bool
-    {
-        if (empty($this->role())) {
-            return false;
-        }
-        $permissions = json_decode($this->role()->permissions);
-
-        $collectPermissions = collect($permissions);
-
-        $permission = $collectPermissions->where('slug', $permission)
-                                        ->first();
-
-        return (bool)$permission;
-    }
-
-    /**
-     * @return array
-     * @author Nitish
-     */
-    public function permissions(): array
-    {
-        if (empty($this->role())) {
-            return [];
-        }
-
-        $permissions = json_decode($this->role()->permissions);
-
-        return collect($permissions)->pluck('slug')->toArray();
-    }
-
-    /**
      * @return Model|Builder|object|null
      * @author Nitish
      */

@@ -38,23 +38,6 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="control-label col-md-4">Permissions <span class="required">*</span></label>
-                                                    <div class="col-md-8">
-
-                                                        <select required="" class="form-control select2me" name="permissions[]" multiple>
-                                                            <option value="">Select Permissions</option>
-                                                            @foreach ($permissions as $permission)
-                                                                @if(in_array($permission->slug, $selected_permissions))
-                                                                    <option value="{{$permission->id}}" selected> {{$permission->name}}</option>
-                                                                @else
-                                                                    <option value="{{$permission->id}}"> {{$permission->name}}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
                                                     <label class="control-label col-md-4">Description </label>
                                                     <div class="col-md-8">
                                                         <input type="text" minlength="1" name="description" class="form-control" value="{{ $role->description }}" placeholder="Description">

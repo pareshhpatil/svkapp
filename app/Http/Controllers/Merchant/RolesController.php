@@ -18,12 +18,10 @@ use Validator;
 class RolesController extends AppController
 {
     protected $repository;
-    protected $roleHelper;
 
     public function __construct(RolesRepository $repository)
     {
         $this->repository = $repository;
-        $this->roleHelper = new RoleHelper();
 
         parent::__construct();
     }
@@ -56,9 +54,6 @@ class RolesController extends AppController
         $title = 'Create Role';
         $data = Helpers::setBladeProperties($title);
 
-        /** @var Permission $Permissions */
-        $data['permissions'] = Permission::all();
-
         return view('app/merchant/roles/create', $data);
     }
 
@@ -73,7 +68,6 @@ class RolesController extends AppController
             'merchant_id' => $this->merchant_id,
             'name' => $request->get('name'),
             'description' => $request->get('description'),
-            'permissions' => $this->roleHelper->getPermissionIDSlugs($request->get('permissions')),
             'created_by' => $this->user_id,
             'last_updated_by' => $this->user_id
         ]);
@@ -92,11 +86,6 @@ class RolesController extends AppController
 
         $Role = $this->repository->show($roleID);
 
-        /** @var Permission $Permissions */
-        $data['permissions'] = Permission::all();
-        $selectedPermissions = collect($Role->permissions)->pluck('slug')->toArray();
-
-        $data['selected_permissions'] = $selectedPermissions;
         $data['role'] = $Role;
 
         return view('app/merchant/roles/edit', $data);
@@ -126,7 +115,6 @@ class RolesController extends AppController
             'merchant_id' => $this->merchant_id,
             'name' => $request->get('name'),
             'description' => $request->get('description'),
-            'permissions' => $this->roleHelper->getPermissionIDSlugs($request->get('permissions')),
             'last_updated_by' => $this->user_id
         ], $roleID);
 

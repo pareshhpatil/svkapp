@@ -25,7 +25,6 @@ class StoreRoleRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:briq_roles,name,NULL,id,deleted_at,NULL',
-            'permissions' => 'required'
         ];
     }
 
