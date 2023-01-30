@@ -329,7 +329,7 @@
                                         $sub_total_g_by_c = $sub_total_g / $sub_total_c;
                                     @endphp
                                     <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
-                                        <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}}) @else{{ number_format($sub_total_g_by_c * 100,2) }} @endif%</p>
+                                        <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
@@ -374,7 +374,7 @@
                                         <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['g'] }} @endif </p>
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per'] * 100,2))}}) @else{{ number_format($item['g_per'] * 100, 2) }} @endif%</p>
+                                        <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per'] * 100,2))}}) @else{{ number_format($item['g_per'] * 100, 2) }}@endif%</p>
 
                                     </td>
                                     <td class="border border-gray-500 px-2 py-2 text-right">
@@ -435,7 +435,7 @@
                                         <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',number_format($item['g'],2))}}) @else{{ number_format($item['g'],2) }} @endif</p>
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">@if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }} @endif%</p>
+                                        <p class="text-sm">@if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2)}}@endif%</p>
 
                                     </td>
                                     <td class="border-r border-l border-gray-500 px-2 py-2 text-right">

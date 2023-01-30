@@ -619,34 +619,34 @@
                                         </tr>
                                     @else
                                         <tr>
-                                            <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: center">
+                                            <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: left">
                                                 <div style="font-size: 14px">@if($item['a'] < 0)({{str_replace('-','',$item['a'])}}) @else{{ $item['a'] }} @endif </div>                                        </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: left">
                                                 <div style="font-size: 14px">@if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>                                        </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
-                                                <div style="font-size: 14px">  @if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</div>                                        </td>
+                                                <div style="font-size: 14px">  @if($item['c'] < 0)({{str_replace('-','',number_format($item['c'],2))}}) @else{{ number_format($item['c'],2) }} @endif</div>                                        </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                                 <div style="font-size: 14px">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
                                             </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: center">
-                                                <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</div>
+                                                <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',number_format($item['e'],2))}}) @else{{ number_format($item['e'],2) }} @endif</div>
                                             </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
-                                                <div style="font-size: 14px">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</div>
+                                                <div style="font-size: 14px">@if($item['f'] < 0)({{str_replace('-','',number_format($item['f'],2))}}) @else{{ number_format($item['f'],2) }} @endif</div>
                                             </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
-                                                <div style="font-size: 14px">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</div>
+                                                <div style="font-size: 14px">@if($item['g'] < 0)({{str_replace('-','',number_format($item['g'],2))}}) @else{{number_format($item['g'],2) }} @endif</div>
                                             </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                                 <div style="font-size: 14px">
-                                                @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }} @endif%
+                                                @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }}@endif%
                                                 </div>
                                             </td>
                                             <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                                 <div style="font-size: 14px">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</div>
                                             </td>
                                             <td style="padding: 8px 2px; text-align: right">
-                                                <div style="font-size: 14px">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</div>
+                                                <div style="font-size: 14px">@if($item['i'] < 0)({{str_replace('-','',number_format($item['i'],2))}}) @else{{ number_format($item['i'],2)}} @endif</div>
                                             </td>
                                         </tr>
                                     @endif
