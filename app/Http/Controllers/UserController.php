@@ -853,16 +853,23 @@ class UserController extends Controller
 
         $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
         if ($result->Message == 'success') {
-            //remove these 4 qurrioes and put in procedure 
+            
+            $import_data  = new ImportBriqData();
+
+            //remove these 4 queries and put in procedure 
             $this->user_model->updateTable('user', 'email_id', $email, 'briq_user_id', $uid);
-            $this->user_model->updateUserDetails($result->user_id, $result->user_id, 12);
+            $this->user_model->updateUserDetails($result->user_id, $result->user_id, 20);
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'profile_step', '7');
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'currency', ["USD"]);
+
+            //import roles, permission and invoice format data 
+            $import_data->insertMandatoryData($result->merchant_id,$result->user_id );
+
+            // insert test data 
             if($is_data){
-                // insert test data 
-                $imprt_data  = new ImportBriqData();
-                $imprt_data->insertData($result->merchant_id,$result->user_id );
+                $import_data->insertData($result->merchant_id,$result->user_id );
             }
+
             $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);
 
             Session::put('default_timezone', 'America/Cancun');

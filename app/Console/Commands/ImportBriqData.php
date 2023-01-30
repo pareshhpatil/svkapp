@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use App\Imports\CustomerImport;
 use App\Imports\CostTypeImport;
 
+use App\Imports\BriqPermissionsImport;
+use App\Imports\BriqRolesImport;
+use App\Imports\BriqUserRolesImport;
+
 use App\Model\User;
 
 use App\Http\Controllers\InvoiceFormatController;
@@ -53,6 +57,7 @@ class ImportBriqData extends Command
         $user_id = $merchant_data->user_id;
 
         $this->insertData($merchant_id,  $user_id);
+        $this->insertMandatoryData($merchant_id,  $user_id);
     }
 
     function insertData($merchant_id,  $user_id)
@@ -60,7 +65,7 @@ class ImportBriqData extends Command
 
         Excel::import(new CustomerImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_CUSTOMER_FILE'));
         Excel::import(new CostTypeImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_COST_TYPE_FILE'));
-        $this->insertInvoiceTemplate($merchant_id, $user_id);
+
         echo $merchant_id;
         return true;
     }
@@ -85,5 +90,15 @@ class ImportBriqData extends Command
         $InvoiceFormat->saveMetadataV2($request_data, $template_id, $merchant_id, $user_id);
         $this->user_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', '{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"roundoff":"1","has_acknowledgement":"1","is_prepaid":"1","has_autocollect":"1","has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"has_custom_notification":"1","custom_email_subject":"Payment request from %COMPANY_NAME%","custom_sms":" You have received a payment request from %COMPANY_NAME% for amount %TOTAL_AMOUNT%. To make an online payment, access your bill via %SHORT_URL% ","has_online_payments":"1","enable_payments":"1","save_revision_history":"1"}');
         echo  $template_id;
+    }
+
+
+    function insertMandatoryData($merchant_id,  $user_id)
+    {
+        Excel::import(new BriqPermissionsImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_PERMISSIONS_FILE'));
+        Excel::import(new BriqRolesImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_ROLES_FILE'));
+        $this->insertInvoiceTemplate($merchant_id, $user_id);
+        echo $merchant_id;
+        return true;
     }
 }
