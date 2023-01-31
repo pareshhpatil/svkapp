@@ -586,15 +586,16 @@ class Invoice extends ParentModel
     //         ]);
     // }
 
-    public function updateInvoiceDetail($request_id, $amount, $ids)
+    public function updateInvoiceDetail($request_id, $amount, $ids,$previous_amount=0)
     {
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
-                'absolute_cost' => $amount,
+                'absolute_cost' => $amount-$previous_amount,
                 'basic_amount' => $amount,
                 'invoice_total' => $amount,
                 'swipez_total' => $amount,
                 'grand_total' => $amount,
+                'paid_amount' => $previous_amount,
                 'change_order_id' => $ids
             ]);
     }

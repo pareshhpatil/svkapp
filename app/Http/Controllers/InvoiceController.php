@@ -3194,7 +3194,8 @@ class InvoiceController extends AppController
                             $data['attachments'] = null;
                         }
                         $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
-                        $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? []);
+                        $previous_invoice_amount = $this->invoiceModel->getLessPreviousCertificatesForPayment($invoice->contract_id, $request_id);
+                        $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? [], $previous_invoice_amount);
                         if ($data['id'] > 0) {
                             $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                         } else {
