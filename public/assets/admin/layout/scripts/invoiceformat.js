@@ -1555,6 +1555,7 @@ function calculateChangeOrder(type=null) {
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);
         document.getElementById('original_contract_amount_total').innerHTML = updateTextView1(original_contract_amount_total);
+        document.getElementById('total_original_contract_amount').value = updateTextView1(original_contract_amount_total);
         document.getElementById('unit_total').innerHTML = updateTextView1(unit_total);
         document.getElementById('rate_total').innerHTML = updateTextView1(rate_total);
     }
