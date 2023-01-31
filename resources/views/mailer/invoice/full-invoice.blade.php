@@ -646,7 +646,7 @@
                                                 <div style="font-size: 14px">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</div>
                                             </td>
                                             <td style="padding: 8px 2px; text-align: right">
-                                                <div style="font-size: 14px">@if($item['i'] < 0)({{str_replace('-','',number_format($item['i'],2))}}) @else{{ number_format($item['i'],2)}} @endif</div>
+                                                <div style="font-size: 14px">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i']}} @endif</div>
                                             </td>
                                         </tr>
                                     @endif
