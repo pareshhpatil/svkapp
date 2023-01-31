@@ -702,7 +702,7 @@
             </div>
         </div>
         <!-- Invoice Attachments -->
-        
+        @if(count($info['invoice_attachments']) > 0)
         <div class="page-break"></div>
         <div class="toc-wrapper">
             <h2 class="title">{{ $info['project_details']->project_name }} | {{ $info['invoice_number'] }} | {{ $info['cycle_name'] }}</h2>
@@ -803,5 +803,6 @@
 
         @endif
         </div>
+        @endif
 </body>
 </html>
