@@ -188,7 +188,7 @@ class Invoice extends ParentModel
             ->where('status', 1)
             ->where('is_active', 1)
             ->whereDate('approved_date', '<=', $date)
-            ->orderBy('order_id', 'desc')
+            //->orderBy('order_id', 'desc')
             ->get();
         if (!empty($retObj)) {
             return $retObj;
