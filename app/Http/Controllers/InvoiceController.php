@@ -2704,7 +2704,7 @@ class InvoiceController extends AppController
         $info["less_previous_certificates_for_payment"] = 0;
         if (isset($info['project_details'])) {
             $info["less_previous_certificates_for_payment"] = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
-            $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
+            // $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
         }
 
         $info['user_name'] = Session::get('user_name');
