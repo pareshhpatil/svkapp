@@ -2516,20 +2516,33 @@ class InvoiceController extends AppController
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
 
-            $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-            where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
-            if ($pre_month_change_order_amount[0]->change_order_amount != null) {
-                $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
+            $change_order_ids = json_decode($info['change_order_id'], 1);
+            if (!empty($change_order_ids)) {
+                $info['last_month_co_amount']=0;
+                $info['this_month_co_amount']=0;
+                $start_date=date("Y-m-d", strtotime("first day of previous month"));
+                $end_date=date("Y-m-01");
+                $info['last_month_co_amount']=$this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $start_date=date("Y-m-01");
+                $end_date=date("Y-m-d", strtotime("first day of next month"));
+                $info['this_month_co_amount']=$this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
             } else {
-                $info['last_month_co_amount'] = 0;
+                $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+                where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+                if ($pre_month_change_order_amount[0]->change_order_amount != null) {
+                    $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
+                } else {
+                    $info['last_month_co_amount'] = 0;
+                }
+                $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+              where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+                if ($current_month_change_order_amount[0]->change_order_amount != null) {
+                    $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
+                } else {
+                    $info['this_month_co_amount'] = 0;
+                }
             }
-            $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
-          where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
-            if ($current_month_change_order_amount[0]->change_order_amount != null) {
-                $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
-            } else {
-                $info['this_month_co_amount'] = 0;
-            }
+
 
             $sumOfc = 0;
             $sumOfd = 0;
@@ -3395,7 +3408,7 @@ class InvoiceController extends AppController
             foreach ($change_order_data as $co_data) {
                 array_push($order_id_array, (int)$co_data["order_id"]);
                 foreach (json_decode($co_data["particulars"], true) as $co_par) {
-                    $co_par["change_order_amount"] = (int)$co_par["change_order_amount"];
+                    $co_par["change_order_amount"] = $co_par["change_order_amount"];
                     array_push($cop_particulars, $co_par);
                 }
             }
