@@ -2717,7 +2717,7 @@ class InvoiceController extends AppController
         $info["less_previous_certificates_for_payment"] = 0;
         if (isset($info['project_details'])) {
             $info["less_previous_certificates_for_payment"] = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
-            $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
+            // $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
         }
 
         $info['user_name'] = Session::get('user_name');
@@ -3207,7 +3207,8 @@ class InvoiceController extends AppController
                             $data['attachments'] = null;
                         }
                         $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
-                        $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? []);
+                        $previous_invoice_amount = $this->getLessPreviousCertificatesForPayment($invoice->contract_id, $request_id);
+                        $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? [], $previous_invoice_amount);
                         if ($data['id'] > 0) {
                             $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
                         } else {

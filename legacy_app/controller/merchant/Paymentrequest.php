@@ -428,9 +428,21 @@ class Paymentrequest extends Controller
             if (strlen($payment_request_id) != 10 || $_SERVER["HTTP_REFERER"] == '') {
                 throw new Exception('Invalid link');
             } else {
+
                 $this->model->updatePaymentRequestStatus($payment_request_id, 3);
                 $this->common->queryexecute("select delete_ledger('" . $payment_request_id . "',1)");
                 $this->common->queryexecute("call `stock_management`('" . $this->merchant_id . "','" . $payment_request_id . "',3,2);");
+                             
+                $paymentRequestData = $this->model->getPaymentRequestRow($payment_request_id); 
+                foreach($paymentRequestData as $data){
+					$co_id_array = json_decode($data["change_order_id"], 1);
+					if(count($co_id_array) > 0){
+						foreach($co_id_array as $co_id){
+							$this->model->updateCOStatus($co_id); 
+						}
+					}
+                }
+                
                 $this->session->set('successMessage', 'Invoice have been deleted.');
                 header("Location:" . $_SERVER["HTTP_REFERER"]);
             }
