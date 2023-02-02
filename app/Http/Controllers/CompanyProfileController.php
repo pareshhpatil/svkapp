@@ -333,6 +333,42 @@ class CompanyProfileController extends AppController
         return view('app/merchant/collect-payment/index', $data);
     }
 
+    public function imports()
+    {
+
+        $data = $this->setBladeProperties('Imports', [], [14]);
+
+        $user = '[
+                {
+                    "name": "Imports",
+                    "item_list": [
+                        {
+                            "title": "Customers",
+                            "desc": "Upload customers.",
+                            "link": "/merchant/customer/bulkupload"
+                        },
+                        {
+                            "title": "Bill codes",
+                            "desc": "Upload bill codes",
+                            "link": "/merchant/code/import"
+                        },
+                        {
+                            "title": "Bulk upload invoices / estimates",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/bulkupload/newupload"
+                        }
+                    ]
+                }
+            ]';
+
+
+        $page_data = json_decode($user, 1);
+
+
+        $data['page_data'] = $page_data;
+        return view('app/merchant/collect-payment/import', $data);
+    }
+
 
 
     public function  pay_your_bills()

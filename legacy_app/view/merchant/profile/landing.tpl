@@ -80,6 +80,9 @@
                     <p>
                         <a href="/merchant/cost-types/index" class="dc-link"> Cost Type</a>
                     </p>
+                    <p>
+                        <a href="/merchant/imports" class="dc-link"> Imports</a>
+                    </p>
                     {* <p>
                         <a href="/merchant/hsn-sac-code/index" class="dc-link" > HSN/SAC codes</a>
                     </p> *}

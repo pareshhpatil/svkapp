@@ -73,7 +73,9 @@
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
                                             </li>
-                                            <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
+                                            <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill codes</a>
+                                            </li>
+                                            <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
                                             </li>
                                             <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
                                             </li>

@@ -424,6 +424,12 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('cost-types/create', 'Merchant\CostTypesController@store');
   Route::get('cost-types/{id}/edit ', 'Merchant\CostTypesController@edit')->name('merchant.cost-types.edit');
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
+
+  Route::get('imports',  'CompanyProfileController@imports')->name("merchant.imports");
+  Route::get('import/format/billCode',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
+  Route::post('import/billCode/upload',  'ImportController@uploadBillCode')->name("merchant.imports.billCode.upload");
+  Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
+  Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
 });
 
 Route::group(['prefix' => 'patron'], function () {
