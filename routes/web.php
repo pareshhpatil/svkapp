@@ -427,6 +427,12 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('imports',  'CompanyProfileController@imports')->name("merchant.imports");
   Route::get('import/format/billCode',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
+  Route::get('import/billcodes/approve/{bulk_id}',  'ImportController@approveBillCodes')->name("merchant.imports.billCode.approve");
+  Route::get('import/billcodes/error/{bulk_id}',  'ImportController@errorBillCodes')->name("merchant.imports.billCode.approve");
+  Route::get('import/download/{bulk_id}',  'ImportController@downloadImportFile')->name("merchant.imports.billCode.download");
+  Route::get('import/billCode/view/{bulk_id}',  'ImportController@viewBillCodes')->name("merchant.imports.billCode.view");
+  Route::get('import/billCodes/delete/{type}/{id}',  'ImportController@deleteBillCode')->name("merchant.imports.billCode.delete");
+  Route::get('import/delete/{id}',  'ImportController@deleteSheet')->name("merchant.imports.delete");
   Route::post('import/billCode/upload',  'ImportController@uploadBillCode')->name("merchant.imports.billCode.upload");
   Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');

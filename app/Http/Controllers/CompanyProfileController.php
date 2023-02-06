@@ -344,12 +344,12 @@ class CompanyProfileController extends AppController
                     "item_list": [
                         {
                             "title": "Customers",
-                            "desc": "Upload customers.",
+                            "desc": "Import customer data with a simple excel upload. Add all necessary attributes to your customer data structure and import customer with an excel.",
                             "link": "/merchant/customer/bulkupload"
                         },
                         {
                             "title": "Bill codes",
-                            "desc": "Upload bill codes",
+                            "desc": "Bulk upload bill codes for a project with an excel upload. Prepare bill code information in excel and associate with a project with a simple upload.",
                             "link": "/merchant/code/import"
                         },
                         {

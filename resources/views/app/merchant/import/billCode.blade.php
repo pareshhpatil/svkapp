@@ -45,12 +45,17 @@
                                 </div>
                                 <div id="collapse_2" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <p>Upload filled excel sheet</p>
-                                        <p>
+                                        <!--<p>Upload filled excel sheet</p>
+                                        <p>-->
                                         <div class="form-body">
                                             <div class="form-group mb-0">
                                                 <div class="row">
                                                     <div class="col-md-12">
+                                                    <div class="col-md-3 pl-1" style="width: auto;">
+                                                    <label class="control-label">Upload filled excel sheet</label>
+                                                    
+                                                    </div>
+                                                    
                                                         @if($project_id==0)
                                                         <div class="col-md-3 pl-0">
                                                             <select name="project_id" style="width: 100%;" required class="form-control select2me" data-placeholder="Select project...">
@@ -96,7 +101,8 @@
             </form>
             <!-- END UPLOAD EXCEL BOX -->
             <!-- BEGIN CREATED TEMPLATES LISTING BOX -->
-
+            
+            <h3 class="form-section">Uploaded sheets</h3>
             <div class="portlet ">
                 <div class="portlet-body">
                     <table class="table  table-striped table-hover" id="table-no-export">
@@ -143,10 +149,10 @@
                                     @php
                                     if(in_array($v->status,[3,4,5]))
                                     {
-                                    $link='/merchant/import/billcode/list/';
+                                    $link='/merchant/import/billCode/view/';
                                     }elseif($v->status==1)
                                     {
-                                    $link='/merchant/import/billcode/error/';
+                                    $link='/merchant/import/billcodes/error/';
                                     }
                                     else{
                                     $link='';
@@ -154,7 +160,7 @@
                                     @endphp
 
                                     @if($link!='')
-                                    <a @if($v->status=='1') class="iframe" @endif href="{{$link}}{{$v->bulk_id}}">{{$v->merchant_filename}}</a>
+                                    <a @if($v->status=='1') target="_blank" @endif href="{{$link}}{{$v->bulk_id}}">{{$v->merchant_filename}}</a>
                                     @else
                                     {{$v->merchant_filename}}
                                     @endif
@@ -201,36 +207,36 @@
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="/merchant/bulkupload/download/{$v->bulk_id}"><i class="fa fa-download"></i> Download sheet</a></span>
+                                                <a href="/merchant/import/download/{{$v->bulk_id}}"><i class="fa fa-download"></i> Download sheet</a></span>
                                             </li>
                                             @if($v->status==3)
                                             <li>
-                                                <a href="/merchant/customer/bulklist/{$v->bulk_id}"><i class="fa fa-table"></i> View codes</a>
+                                                <a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View codes</a>
                                             </li>
                                             <li>
-                                                <a href="#sendinvoice" onclick="document.getElementById('sendanchor').href = '/merchant/bulkupload/send/{{$v->bulk_id}}/2'" data-toggle="modal"><i class="fa fa-check"></i> Approve
+                                                <a href="#sendinvoice" onclick="document.getElementById('sendanchor').href = '/merchant/import/billcodes/approve/{{$v->bulk_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve
                                                     codes</a>
                                             </li>
                                             @endif
                                             @if($v->status==5)
-                                            <li><a href="/merchant/customer/bulklist/{$v->bulk_id}"><i class="fa fa-table"></i> View codes</a>
+                                            <li><a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View codes</a>
                                             </li>
                                             @endif
                                             @if(in_array($v->status, [1,2,3]))
-                                            <li>
+                                           <!-- <li>
                                                 <a href="/merchant/customer/reupload/{$v->bulk_id}"><i class="fa fa-undo"></i> Re-upload sheet</a>
-                                            </li>
+                                            </li>-->
                                             @endif
 
                                             @if(in_array($v->status, [1,2,3,5]))
                                             <li>
-                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/bulkupload/delete/{$v->bulk_id}/2';" data-toggle="modal"><i class="fa fa-times"></i> Delete sheet</a>
+                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/import/delete/{{$v->bulk_id}}';" data-toggle="modal"><i class="fa fa-times"></i> Delete sheet</a>
                                             </li>
                                             @endif
 
                                             @if($v->status=='1')
                                             <li>
-                                                <a href="/merchant/customer/bulkerror/{{$v->bulk_id}}" class="iframe"><i class="fa fa-exclamation-triangle"></i> View errors</a>
+                                                <a href="/merchant/import/billcodes/error/{{$v->bulk_id}}" target="_blank" ><i class="fa fa-exclamation-triangle"></i> View errors</a>
                                             </li>
                                             @endif
 
@@ -268,10 +274,10 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                    <h4 class="modal-title">Save Excel Customers</h4>
+                                    <h4 class="modal-title">Save Excel Bill codes</h4>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to save these customers?
+                                    Are you sure you want to save these bill codes?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn default" data-dismiss="modal">Close</button>

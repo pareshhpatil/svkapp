@@ -45,13 +45,18 @@ class Import extends ParentModel
             ]);
     }
 
+    public function approveBillCodes($bulk_id)
+    {
+        DB::statement("INSERT INTO `csi_code`(`project_id`,`merchant_id`,`code`,`title`,`description`,`bulk_id`,`is_active`,`created_by`,`created_date`,`last_update_by`)select `project_id`,`merchant_id`,`code`,`title`,`description`,`bulk_id`,`is_active`,`created_by`,`created_date`,`last_update_by` from staging_csi_code where bulk_id=" . $bulk_id);
+    }
+
     public function getBillCodesUploadList($merchant_id)
     {
         $retObj = DB::table('bulk_upload as b')
             ->select(DB::raw('b.*,p.project_name,c.config_value'))
             ->join('project as p', 'b.parent_id', '=', 'p.id')
             ->join('config as c', 'b.status', '=', 'c.config_key')
-            ->where('b.status','<>', 6)
+            ->where('b.status', '<>', 6)
             ->where('b.type', 11)
             ->where('c.config_type', 'bulk_upload_status')
             ->where('b.merchant_id', $merchant_id)
