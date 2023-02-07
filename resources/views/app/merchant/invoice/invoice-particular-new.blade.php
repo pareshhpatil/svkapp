@@ -443,7 +443,7 @@
                                             @if($mode=='Preview')
                                             <a href="/merchant/collect-payments" class="btn green">Cancel</a>
                                             @else
-                                            <a href="/merchant/paymentrequest/list" class="btn green">Cancel</a>
+                                            <a href="/merchant/paymentrequest/viewlist" class="btn green">Cancel</a>
                                             @endif
                                             <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
                                             <a  @click="return setParticulars();" class="btn blue" >{{$mode}} invoice</a>
@@ -1770,8 +1770,8 @@
                                     particularray[index].description = displayValue[1].trim();
                                 }
                                 if (this.value !== null && this.value !== '' && !only_bill_codes.includes( parseInt(this.value) )) {
-                                    //console.log(this.value);
-                                    only_bill_codes.push(this.value)
+                                    console.log(particularray[index].pint);
+                                  //  only_bill_codes.push(this.value)
                                     $('#new_bill_code').val(this.value)
                                     $('#selectedBillCodeId').val(type + id)
                                     billIndex(0, 0, 0)

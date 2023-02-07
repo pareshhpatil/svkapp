@@ -300,6 +300,21 @@ class PaymentRequestModel extends Model
         }
     }
 
+    public function updateCOStatus($co_id)
+    {
+        try {
+            $sql = "update `order` set invoice_status=0 where order_id=:co_id";
+            $params = array(':co_id' => $co_id);
+            $this->db->exec($sql, $params);
+            $this->db->closeStmt();
+        } catch (Exception $e) {
+            Sentry\captureException($e);
+
+            SwipezLogger::error(__CLASS__, '[E114]Error while updating payment request status payment request id: ' . $payment_request_id . ' status: ' . $status . ' Error: ' . $e->getMessage());
+            $this->setGenericError();
+        }
+    }
+
     public function getPaymentRequestRow($payment_request_id)
     {
         try {

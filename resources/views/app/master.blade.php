@@ -27,7 +27,7 @@
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link href='/assets/admin/layout/css/plugin/select2.min.css' rel='stylesheet' type='text/css'>
     <link href='/assets/admin/layout/css/plugin/virtual-select.min.css' rel='stylesheet' type='text/css'>
-    @if(!empty($datatablejs))
+    @if($datatablejs!='')
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     @endif
     <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />

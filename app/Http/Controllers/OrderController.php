@@ -53,7 +53,7 @@ class OrderController extends Controller
         $data['particulars'] = $particulars;
         $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
         foreach ($cust_list as $cust_data) {
-            $cust_data->customer_code =  $cust_data->company_name??null . ' | ' . $cust_data->customer_code??null;
+            $cust_data->customer_code =  $cust_data->company_name ?? null . ' | ' . $cust_data->customer_code ?? null;
         }
         $data["cust_list"] = $cust_list;
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
@@ -110,21 +110,23 @@ class OrderController extends Controller
             $request->contract_amount = str_replace(',', '', $request->contract_amount);
             $request->total_original_contract_amount = str_replace(',', '', $request->total_original_contract_amount);
             $request->total_change_order_amount = str_replace(',', '', $request->total_change_order_amount);
-            foreach ($request->bill_code as $skey => $bill_code) {
-                if ($request->original_contract_amount[$skey] == '') {
-                    $request->original_contract_amount[$skey] = 0;
+            if (!empty($request->bill_code)) {
+                foreach ($request->bill_code as $skey => $bill_code) {
+                    if ($request->original_contract_amount[$skey] == '') {
+                        $request->original_contract_amount[$skey] = 0;
+                    }
+                    $row_array = [];
+                    $row_array["bill_code"] = $bill_code;
+                    $row_array["description"] = $request->description[$skey];
+                    $row_array["original_contract_amount"] = str_replace(',', '', $request->original_contract_amount[$skey]);
+                    $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
+                    $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
+                    $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
+                    $row_array["order_description"] = $request->order_description[$skey];
+                    $row_array["cost_type"] = $request->cost_type[$skey];
+                    $row_array["pint"] = $request->pint[$skey];
+                    array_push($main_array, $row_array);
                 }
-                $row_array = [];
-                $row_array["bill_code"] = $bill_code;
-                $row_array["description"] = $request->description[$skey];
-                $row_array["original_contract_amount"] = str_replace(',', '', $request->original_contract_amount[$skey]);
-                $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
-                $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
-                $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
-                $row_array["order_description"] = $request->order_description[$skey];
-                $row_array["cost_type"] = $request->cost_type[$skey];
-                $row_array["pint"] = $request->pint[$skey];
-                array_push($main_array, $row_array);
             }
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
@@ -142,9 +144,9 @@ class OrderController extends Controller
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
 
         //find last search criteria into Redis 
-        $redis_items = $this->getSearchParamRedis('change_order_list',$this->merchant_id);
-        
-        if(isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param']!=null) {
+        $redis_items = $this->getSearchParamRedis('change_order_list', $this->merchant_id);
+
+        if (isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param'] != null) {
             $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['from_date']);
             $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['to_date']);
             $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
@@ -189,7 +191,6 @@ class OrderController extends Controller
 
     public function approve(Request $request)
     {
-
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
             $request->approved_date = Helpers::sqlDate($request->approved_date);
@@ -220,8 +221,8 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('order', 'order_id', $id);
             $row->json_particulars = json_decode($row->particulars, true);
-            foreach($row->json_particulars as &$row_data){
-                if(!isset($row_data["cost_type"])){
+            foreach ($row->json_particulars as &$row_data) {
+                if (!isset($row_data["cost_type"])) {
                     $row_data["cost_type"] = null;
                 }
             }
@@ -263,7 +264,6 @@ class OrderController extends Controller
 
     public function approved($link)
     {
-
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -308,7 +308,6 @@ class OrderController extends Controller
 
     public function updatesave(Request $request)
     {
-
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $request->totalcost = str_replace(',', '', $request->totalcost);

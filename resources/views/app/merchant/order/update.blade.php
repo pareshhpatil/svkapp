@@ -242,7 +242,7 @@
                                         <input type="hidden" id="description-hidden{{$key+1}}" name="description[]" value="{{$row['description']}}">
                                         <input type="hidden" id="pint{{$key+1}}" name="pint[]" value="{{$key+1}}">
                                         <td class="td-c">
-                                            <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();" type="button" class="btn btn-xs red">×</button>
+                                            <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();calculateChangeOrder();" type="button" class="btn btn-xs red">×</button>
                                             <span id="addRowButton{{$key+1}}">
                                                 @if($key == count($detail->json_particulars)-1)
                                                 <a href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn btn-xs green">+</a>
@@ -287,7 +287,7 @@
                                     <label class="control-label col-md-4">Original contract value <span class="required">
                                         </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" readonly maxlength="45" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="{{$detail->total_original_contract_amount}}">
+                                        <input type="text" readonly maxlength="45" id="total_original_contract_amount" name="total_original_contract_amount" class="form-control" data-cy="total_original_contract_amount" value="{{$detail->total_original_contract_amount}}">
                                     </div>
                                 </div>
                                 <div class="form-group">

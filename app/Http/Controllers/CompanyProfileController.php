@@ -232,7 +232,6 @@ class CompanyProfileController extends AppController
     {
         $data = $this->setBladeProperties('Collect payments', [], [3]);
 
-        $return_arr = array();
         $user = null;
 
         $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
@@ -303,6 +302,10 @@ class CompanyProfileController extends AppController
             ];
         }
 
+        $return_arr = array();
+        $row_array['name'] = 'Create invoice';
+        $row_array['link'] = '/merchant/invoice/create';
+        $return_arr[] = $row_array;
         $row_array['name'] = 'Create estimate';
         $row_array['link'] = '/merchant/invoice/create/estimate';
         $return_arr[] = $row_array;
@@ -315,7 +318,7 @@ class CompanyProfileController extends AppController
 
         $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
 
-        $page_data = $user;
+        $page_data = json_decode($user, 1);
 
         $menu_list = '';
         if ($mn1 == null)
@@ -330,7 +333,7 @@ class CompanyProfileController extends AppController
             $d = count($item_list);
             $item_list = array_slice($item_list,  $d - 6);
         }
-
+        //dd(count($item_list));
         $item_list = array_values(array_unique(array_reverse($item_list), SORT_REGULAR));
 
         $data['page_data'] = $page_data;
@@ -342,6 +345,42 @@ class CompanyProfileController extends AppController
         $data['mobile'] = Session::get('mobile');
 
         return view('app/merchant/collect-payment/index', $data);
+    }
+
+    public function imports()
+    {
+
+        $data = $this->setBladeProperties('Imports', [], [14]);
+
+        $user = '[
+                {
+                    "name": "Imports",
+                    "item_list": [
+                        {
+                            "title": "Customers",
+                            "desc": "Import customer data with a simple excel upload. Add all necessary attributes to your customer data structure and import customer with an excel.",
+                            "link": "/merchant/customer/bulkupload"
+                        },
+                        {
+                            "title": "Bill codes",
+                            "desc": "Bulk upload bill codes for a project with an excel upload. Prepare bill code information in excel and associate with a project with a simple upload.",
+                            "link": "/merchant/code/import"
+                        },
+                        {
+                            "title": "Bulk upload invoices / estimates",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/bulkupload/newupload"
+                        }
+                    ]
+                }
+            ]';
+
+
+        $page_data = json_decode($user, 1);
+
+
+        $data['page_data'] = $page_data;
+        return view('app/merchant/collect-payment/import', $data);
     }
 
 

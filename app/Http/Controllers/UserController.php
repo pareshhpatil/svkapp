@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Models\IColumn;
-use App\Constants\Models\ITable;
 use App\Model\User;
 use App\Libraries\Encrypt;
 use App\Libraries\DataValidation as Valid;
 use App\Libraries\Helpers;
-use Carbon\Carbon;
 use Google_Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -346,7 +343,6 @@ class UserController extends Controller
                 Session::put('group_type', 1);
                 $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
             }
-
             if (!empty($merchant)) {
                 if ($user->master_login_group_id > 0) {
                     $this->setMasterLogin($user);
@@ -392,7 +388,6 @@ class UserController extends Controller
                 if (!empty($vendor)) {
                     Session::put('vendor_enable', 1);
                 }
-
                 Session::put('account_type', $merchant->type);
                 Session::put('merchant_type', $merchant->merchant_type);
                 Session::put('merchant_id', Encrypt::encode($merchant->merchant_id));
@@ -475,7 +470,6 @@ class UserController extends Controller
             }
         }
     }
-
 
     public function checkUserRole($user)
     {
@@ -811,17 +805,17 @@ class UserController extends Controller
                                 $domain = array_pop($parts);
                                 if (in_array($domain, $briq_user_emails)) {
                                     //register with data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 1);
+                                    return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
                                 } else {
                                     //register without data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 0);
+                                    return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
                                 }
                             } else if ($data_setup_type == 'ALL') {
                                 //register with data 
-                                return $this->registerNewBriqUser($email, $user_uid, 1);
+                                return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
                             } else {
                                 // register without data  
-                                return $this->registerNewBriqUser($email, $user_uid, 0);
+                                return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
                             }
                         } else {
                             $this->user_model->updateTable('user', 'briq_user_id', $user_uid, 'email_id', $email);
@@ -853,12 +847,12 @@ class UserController extends Controller
         }
     }
 
-    function registerNewBriqUser($email, $uid, $is_data)
+    function registerNewBriqUser($email, $uid, $is_data, $decrypted_token)
     {
-        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("AUTH: " . env('BRIQ_USER_API_AUTH')));
+        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("Authorization: Bearer " . $decrypted_token));
         $response = json_decode($response, 1);
 
-        $company_id = $response["user_data"]["company_id"];
+        $company_id = isset($response["company_id"]) ? $response["company_id"] : 'TBT';
 
         $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
         if ($result->Message == 'success') {

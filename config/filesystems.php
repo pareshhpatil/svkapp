@@ -78,6 +78,15 @@ return [
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
+        's3_bulkupload' => [
+            'driver' => 's3',
+            'key' => env('S3KEY_BULKUPLOAD'),
+            'secret' => env('S3SECRET_BULKUPLOAD'),
+            'region' => env('S3REGION_BULKUPLOAD'),
+            'bucket' => env('S3BUCKET_BULKUPLOAD'),
+            'url' => env('APP_URL'),
+            //'visibility' => 'public',
+        ],
 
         's3_private' => [
             'driver' => 's3',

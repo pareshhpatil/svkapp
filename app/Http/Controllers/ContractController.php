@@ -35,7 +35,7 @@ class ContractController extends Controller
     private $merchant_id = null;
     private $user_id = null;
 
-//    use ContractParticulars;
+    //    use ContractParticulars;
 
     public function __construct()
     {
@@ -49,7 +49,6 @@ class ContractController extends Controller
 
     public function create($version = null)
     {
-
         Helpers::hasRole(2, 27);
         $title = 'create';
 
@@ -105,23 +104,23 @@ class ContractController extends Controller
     }
 
 
-    public function loadContract($step=1, $contract_id=null)
+    public function loadContract($step = 1, $contract_id = null)
     {
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
-        if (Route::getCurrentRoute()->getName() == 'contract.create.new' ) {
+        if (Route::getCurrentRoute()->getName() == 'contract.create.new') {
             $title = "Create";
             $needValidationOnStep2 = false;
-        }else {
+        } else {
             $title = "Update";
             $needValidationOnStep2 = true;
         }
 
         $contract = null;
         $project = null;
-        
+
         $contract_id = Encrypt::decode($contract_id);
-        if ($contract_id != '' ) {
+        if ($contract_id != '') {
             $contract = ContractParticular::find($contract_id);
             $project = $this->getProject($contract->project_id);
         }
@@ -129,7 +128,7 @@ class ContractController extends Controller
         if (old('project_id'))
             $project = $this->getProject(old('project_id'));
 
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template','invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
 
         $data['project_list'] = $project_list;
         $data['title'] = $title;
@@ -140,54 +139,52 @@ class ContractController extends Controller
         $data['merchant_id'] = $this->merchant_id;
         $data['needValidationOnStep2'] = $needValidationOnStep2;
 
-        if ($step == 2 || $step == 3){
-            $data = $this->step2Data($data, $contract, $project->project_id??'');
+        if ($step == 2 || $step == 3) {
+            $data = $this->step2Data($data, $contract, $project->project_id ?? '', $step);
         }
 
-        return view('app/merchant/contract/createv6' , $data);
+        return view('app/merchant/contract/createv6', $data);
     }
 
     public function getCostTypes(): array
     {
         return CostType::where(IColumn::MERCHANT_ID, $this->merchant_id)
-                ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
-                ->get()->toArray();
+            ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label')])
+            ->get()->toArray();
     }
 
     public function store(Request $request)
     {
+
         $step = $request->step;
         $contract = null;
         if ($request->contract_id)
-            $contract = ContractParticular::find( Encrypt::decode($request->contract_id) );
+            $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
 
-        switch ($step){
+        switch ($step) {
             case 1:
-                $response = $this->step1Store($request,$contract);
-                if($response instanceof ContractParticular)
+                $response = $this->step1Store($request, $contract);
+                if ($response instanceof ContractParticular)
                     $contract = $response;
                 else return $response;
 
                 $step++;
                 break;
             case 2:
-                $contract = $this->step2Store($request,$contract);
+                $contract = $this->step2Store($request, $contract);
                 $step++;
                 break;
             case 3:
-                $contract->update(['status' =>1]);
+                $contract->update(['status' => 1]);
                 return redirect()->route('contract.list.new');
                 break;
-
         }
 
-        return redirect()->route('contract.'.strtolower($request->title).'.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
-
+        return redirect()->route('contract.' . strtolower($request->title) . '.new', ['step' => $step, 'contract_id' => Encrypt::encode($contract->contract_id)]);
     }
 
     public function step1Store(Request $request, $contract)
     {
-
         $validator = Validator::make($request->all(), $this->informationRules());
 
         if ($validator->fails()) {
@@ -199,8 +196,8 @@ class ContractController extends Controller
         $data['bill_date'] = Helpers::sqlDate($data['bill_date']);
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
-        $data['created_date'] = date('Y-m-d H:i:s'); 
-        
+        $data['created_date'] = date('Y-m-d H:i:s');
+
         if (is_null($contract))
             $contract = ContractParticular::create($data);
         else {
@@ -211,12 +208,13 @@ class ContractController extends Controller
         return $contract;
     }
 
-    private function checkIfProjectIsChanged($data, $contract){
-        if ($data['project_id'] != $contract->project_id){
-            $particulars = json_decode($contract->particulars,true);
-            $bill_codes = CsiCode::where('project_id',$data['project_id'])->get()->pluck('code')->toArray();
+    private function checkIfProjectIsChanged($data, $contract)
+    {
+        if ($data['project_id'] != $contract->project_id) {
+            $particulars = json_decode($contract->particulars, true);
+            $bill_codes = CsiCode::where('project_id', $data['project_id'])->get()->pluck('code')->toArray();
             $newParticulars = [];
-            foreach ($particulars as $particular){
+            foreach ($particulars as $particular) {
                 if (!in_array($particular['bill_code'], $bill_codes))
                     $particular['bill_code'] = '';
                 $newParticulars[] = $particular;
@@ -226,14 +224,20 @@ class ContractController extends Controller
         return $data;
     }
 
-    public function step2Store(Request $request, $contract){
+    public function step2Store(Request $request, $contract)
+    {
         return $contract;
     }
 
-    public function step2Data($data, $contract, $project_id){
+    public function step2Data($data, $contract, $project_id, $step)
+    {
         [$total, $groups, $particulars] = $contract->calculateTotal();
 
-        $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);
+        if ($step == 3) {
+            $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : [];
+        } else {
+            $data['particulars'] = ($contract != null && !empty($particulars)) ? $particulars : ContractParticular::initializeParticulars($project_id);
+        }
         $data['bill_codes'] = $this->getBillCodes($contract->project_id);
         $data['cost_types'] = $this->getCostTypes();
         $data['project_id'] = $contract->project_id;
@@ -247,13 +251,14 @@ class ContractController extends Controller
     public function getBillCodes($project_id)
     {
         return CsiCode::where('project_id', $project_id)
-            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description' ])
+            ->select(['id as value', DB::raw('CONCAT(code, " | ", title) as label'), 'description'])
             ->where('merchant_id', $this->merchant_id)
             ->where('is_active', 1)
             ->get()->toArray();
     }
 
-    public function getProject($id){
+    public function getProject($id)
+    {
         return Project::where('id', $id)->where('project.is_active', 1)
             ->join('customer', 'customer.customer_id', 'project.customer_id')
             ->select([
@@ -297,14 +302,14 @@ class ContractController extends Controller
         if (!is_null($request->contract_id))
             $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
 
-        if(is_null($request->contract_id) || $contract->project_id != $request->project_id)
+        if (is_null($request->contract_id) || $contract->project_id != $request->project_id)
             $contract = $this->getLastContractWithSameProject($request->project_id);
 
-        if (is_null($contract) && $request->route_name == 'contract.create.new'){
+        if (is_null($contract) && $request->route_name == 'contract.create.new') {
             $customer = Customer::find($project->customer_id);
             $owner_address = $customer->address;
-            $contractor = MerchantBillingProfile::where('merchant_id',$project->merchant_id)->first();
-            $contractor_address = $contractor->address??null;
+            $contractor = MerchantBillingProfile::where('merchant_id', $project->merchant_id)->first();
+            $contractor_address = $contractor->address ?? null;
         }
         if (!is_null($contract)) {
             $owner_address = $contract->owner_address;
@@ -313,21 +318,22 @@ class ContractController extends Controller
             $architect_address = $contract->architect_address;
         }
 
-        return response()->json(array('project'=> $project, 'owner_address' => $owner_address,
+        return response()->json(array(
+            'project' => $project, 'owner_address' => $owner_address,
             'project_address' => $project_address, 'contractor_address' => $contractor_address,
-            'architect_address' => $architect_address), 200);
-
+            'architect_address' => $architect_address
+        ), 200);
     }
 
-    public function getLastContractWithSameProject($project_id){
-        return ContractParticular::where('project_id',$project_id)
-            ->where('is_active',1)
-            ->where('status',1)->orderBy('created_date','desc')->first();
+    public function getLastContractWithSameProject($project_id)
+    {
+        return ContractParticular::where('project_id', $project_id)
+            ->where('is_active', 1)
+            ->where('status', 1)->orderBy('created_date', 'desc')->first();
     }
 
     public function save(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'bill_date' => 'required',
             'contract_date' => 'required'
@@ -431,12 +437,12 @@ class ContractController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
-        
+
         //store last search criteria into Redis
-        $redis_items = $this->getSearchParamRedis('contract_list',$this->merchant_id);
-       
+        $redis_items = $this->getSearchParamRedis('contract_list', $this->merchant_id);
+
         //find last search criteria into Redis 
-        if(isset($redis_items['contract_list']['search_param']) && $redis_items['contract_list']['search_param']!=null) {
+        if (isset($redis_items['contract_list']['search_param']) && $redis_items['contract_list']['search_param'] != null) {
             $data['from_date'] = $dates['from_date'] = Helpers::sqlDate($redis_items['contract_list']['search_param']['from_date']);
             $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['contract_list']['search_param']['to_date']);
             $data['project_id'] = $redis_items['contract_list']['search_param']['project_id'];
@@ -480,7 +486,6 @@ class ContractController extends Controller
 
     public function update($link)
     {
-
         $title = 'Update';
         $id = Encrypt::decode($link);
         if ($id != '') {
@@ -541,7 +546,6 @@ class ContractController extends Controller
 
     public function updatesave(Request $request)
     {
-
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $retain_amount = 0;
@@ -579,7 +583,6 @@ class ContractController extends Controller
 
     public function updatesaveV4(Request $request)
     {
-
         $id = $request->link;
         $main_array = [];
         $retain_amount = 0;
@@ -598,7 +601,6 @@ class ContractController extends Controller
 
     public function updatesaveV5(Request $request)
     {
-
         $id = Encrypt::decode($request->link);
         $main_array = [];
         $retain_amount = 0;
@@ -617,14 +619,13 @@ class ContractController extends Controller
 
     public function updatesavev6(Request $request)
     {
-
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
 
         $contract = ContractParticular::find($id);
         $contract->update(['particulars' => json_decode($formData), 'contract_amount' => $request->contract_amount]);
 
-        return response()->json(array('message'=> 'Particulars saved properly'), 200);
+        return response()->json(array('message' => 'Particulars saved properly'), 200);
     }
 
     public function getprojectdetails($project_id)
@@ -653,9 +654,9 @@ class ContractController extends Controller
     public function newBillCode(Request $request)
     {
         $billCode = CsiCode::create([
-           'code' => $request->bill_code,
-           'title' => $request->bill_description,
-           'description' => $request->bill_description,
+            'code' => $request->bill_code,
+            'title' => $request->bill_description,
+            'description' => $request->bill_description,
             'project_id' => $request->project_id,
             'merchant_id' => $this->merchant_id
         ]);

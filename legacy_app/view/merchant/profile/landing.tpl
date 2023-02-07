@@ -42,6 +42,9 @@
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Data Configuration</b></h4>
                     <p>
+                        <a href="/merchant/imports" class="dc-link"> Imports</a>
+                    </p>
+                    <p>
                         <a href="/merchant/product/dashboard" class="dc-link"> Inventory</a>
                     </p>
                     <p>
@@ -80,6 +83,7 @@
                     <p>
                         <a href="/merchant/cost-types/index" class="dc-link"> Cost Type</a>
                     </p>
+                    
                     {* <p>
                         <a href="/merchant/hsn-sac-code/index" class="dc-link" > HSN/SAC codes</a>
                     </p> *}
@@ -123,17 +127,17 @@
 
 
                 </div>
-                {if $user_role == 'Admin'}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Manage Users</b></h4>
                     <p>
-                        <a href="/merchant/roles" class="dc-link"> Roles</a>
+                        <a href="/merchant/subuser/roles" class="dc-link"> Roles</a>
                     </p>
                     <p>
                         <a href="/merchant/subusers" class="dc-link"> Team Members </a>
                     </p>
+
+
                 </div>
-                {/if}
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Personal preferences</b></h4>
                     <p>

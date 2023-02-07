@@ -328,7 +328,6 @@ class Profile extends Controller
                 array('title' => $this->view->title, 'url' => '/merchant/profile/settings')
             );
             $this->smarty->assign("links", $breadcumbs_array);
-            $this->smarty->assign("user_role",$this->session->get('user_role') );
             //Breadcumbs array end
 
             $food_franchise_mids = explode(',', env('FOOD_FRANCHISE_NON_BRAND'));

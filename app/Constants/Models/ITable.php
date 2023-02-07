@@ -14,12 +14,5 @@ interface ITable
     const BRIQ_USER_ROLES = 'briq_user_roles';
     const COST_TYPES = 'cost_types';
     const CSI_CODE = 'csi_code';
-    const CONFIG = 'config';
-    const CONTRACT = 'contract';
     const INVOICE_TEMPLATE = 'invoice_template';
-    const ORDER = 'order';
-    const SEQUENCE = 'sequence';
-    const USER = 'user';
-    const INVOICE = 'invoice';
-    const PREFERENCES = 'preferences';
 }
