@@ -130,7 +130,7 @@
                         <a href="/merchant/roles" class="dc-link"> Roles</a>
                     </p>
                     <p>
-                        <a href="/merchant/subusers" class="dc-link"> Logins </a>
+                        <a href="/merchant/subusers" class="dc-link"> Team Members </a>
                     </p>
                 </div>
                 {/if}

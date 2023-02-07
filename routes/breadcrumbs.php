@@ -463,7 +463,7 @@ Breadcrumbs::for('merchant.subusers.index', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Manage Users');
-    $trail->push('Submerchant list');
+    $trail->push('Team Members');
 });
 
 Breadcrumbs::for('merchant.subusers.create', function ($trail) {

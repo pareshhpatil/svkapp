@@ -264,7 +264,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular');
   Route::post('invoice/particularsave/ajax', 'InvoiceController@particularsave')->name('save.particularajax');
   Route::any('invoice/create/{type}', 'InvoiceController@create')->name('create.invoice.type');
-  Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice');
+  Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice')->middleware('PrivilegesAccess');
   Route::any('invoice/update/{link}/{type}', 'InvoiceController@update')->name('update.invoice.type');
   Route::any('subscription/update/{link}', 'InvoiceController@update')->name('update.invoice.link');
   Route::any('estimate/create/{type}', 'InvoiceController@estimateSubscription');
@@ -356,9 +356,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('project/list', 'MasterController@projectlist'); 
   Route::get('project/delete/{link}', 'MasterController@projectdelete');
   Route::get('project/create', 'MasterController@projectcreate');
-  Route::post('project/store', 'MasterController@projectsave');
-  Route::get('project/edit/{link}', 'MasterController@projectupdate');
-  Route::post('project/updatestore', 'MasterController@projectupdatestore');
+  Route::post('project/store', 'MasterController@projectsave')->middleware('PrivilegesAccess');
+  Route::get('project/edit/{link}', 'MasterController@projectupdate')->middleware('PrivilegesAccess');
+  Route::post('project/updatestore', 'MasterController@projectupdatestore')->middleware('PrivilegesAccess');
   //code
   Route::get('code/list/{id}', 'MasterController@codeList'); 
   Route::get('code/getlist/{id}', 'MasterController@getbillcode'); 
@@ -375,7 +375,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
 
-  Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new');
+  Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')
+        ->name('contract.update.new')->middleware('PrivilegesAccess');
 
   Route::any('contract/fetchProject', 'ContractController@fetchProject')->name('contract.fetchProject');
   Route::post('contract/store', 'ContractController@store')->name('contract.store');
@@ -401,15 +402,19 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2');
-  Route::any('order/update/{link}', 'OrderController@update')->name('update.order');
+  Route::any('order/update/{link}', 'OrderController@update')
+      ->name('update.order')
+      ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
-  Route::any('order/save', 'OrderController@save')->name('save.order');
+  Route::any('order/save', 'OrderController@save')->name('save.order')->middleware('PrivilegesAccess');
   Route::any('order/list', 'OrderController@list')->name('list.order');
   Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
-  Route::any('order/approve/', 'OrderController@approve')->name('approve.order');
-  Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order');
+  Route::any('order/approve/', 'OrderController@approve')->name('approve.order')->middleware('PrivilegesAccess');
+  Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order')->middleware('PrivilegesAccess');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');
-  Route::any('order/updatesave/', 'OrderController@updatesave')->name('updatesave.order');
+  Route::any('order/updatesave/', 'OrderController@updatesave')
+      ->name('updatesave.order')
+      ->middleware('PrivilegesAccess');
   Route::any('/billcode/create/', 'OrderController@billcodesave')->name('billcodesave.order');
    
   //covering note
@@ -435,6 +440,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('subusers/{id}/edit', 'Merchant\SubUserController@update')->name('merchant.subusers.update');
   Route::get('subusers/delete/{id}', 'Merchant\SubUserController@delete');
   Route::get('register/verifyemail/new', 'Merchant\SubUserController@verifyMail');
+  Route::get('subusers/privileges/{userID}', 'Merchant\SubUserController@getPrivileges');
+  Route::post('subusers/privileges', 'Merchant\SubUserController@updatePrivileges');
 
   //Sub Merchants Roles
   Route::get('roles', 'Merchant\RolesController@index')->name('merchant.roles.index');
@@ -475,6 +482,8 @@ Route::group(['prefix' => 'patron'], function () {
 
 
 });
+
+Route::get('select/{type}', 'SelectController@searchModule');
 
 Route::get('invoice/sendmail/{link}/{subject}', 'InvoiceController@sendEmail');
 Route::post('merchant/register/validate', 'UserController@sendOTP')->middleware('throttle:5,1');

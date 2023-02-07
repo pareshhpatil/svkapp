@@ -11,6 +11,7 @@ use App\Libraries\Helpers;
 use Carbon\Carbon;
 use Google_Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Log;
 use Illuminate\Support\Facades\Auth as SwipezAuth;
 use Illuminate\Support\Facades\Session;
@@ -308,13 +309,21 @@ class UserController extends Controller
         Session::put('user_role', $role);
 
         $preference = $this->user_model->getPreferences($user->user_id);
-
         Session::put('default_timezone', $preference->timezone ??  'America/Cancun');
         Session::put('default_currency', $preference->currency ?? 'USD');
         Session::put('default_date_format', $preference->date_format ?? 'M d yyyy');
         Session::put('default_time_format', $preference->time_format ?? '24');
 
         Session::forget('menus');
+
+        $privileges = $this->user_model->getUserPrivileges($user->user_id);
+
+        Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));
+        Redis::set('project_privileges_' . $user->user_id, json_encode($privileges['project_privileges']));
+        Redis::set('contract_privileges_' . $user->user_id, json_encode($privileges['contract_privileges']));
+        Redis::set('invoice_privileges_' . $user->user_id, json_encode($privileges['invoice_privileges']));
+        Redis::set('change_order_privileges_' . $user->user_id, json_encode($privileges['change_order_privileges']));
+
         //Checking whether user is a cable customer
         if ($user->login_type == 2) {
             Session::put('userid', Encrypt::encode($user->user_id));
@@ -451,6 +460,8 @@ class UserController extends Controller
                 }
 
 
+
+
                 if (Session::has('redirect_package_id')) {
                     $link = Session::get('redirect_package_id');
                     Session::forget('redirect_package_id');
@@ -478,8 +489,7 @@ class UserController extends Controller
                             ->where(IColumn::USER_ID, $user->user_id)
                             ->exists();
 
-        if(empty($hasUserRoleExists))
-        {
+        if(empty($hasUserRoleExists)) {
             //check if role exists
             $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
                                     ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
@@ -492,7 +502,6 @@ class UserController extends Controller
                         'merchant_id' => $merchant->merchant_id,
                         'name' => 'Admin',
                         'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
-                        'permissions' => '',
                         'created_by' => $user->created_by,
                         'last_updated_by' => $user->created_by,
                         IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),

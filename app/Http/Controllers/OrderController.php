@@ -8,6 +8,7 @@ use App\Model\Invoice;
 use App\Model\Master;
 use App\Model\Order;
 use App\Libraries\Encrypt;
+use Illuminate\Support\Facades\Redis;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -148,8 +149,10 @@ class OrderController extends Controller
             $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['to_date']);
             $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
         }
+        //get privileges from redis
+        $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
 
-        $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id']);
+        $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
         }
@@ -160,6 +163,7 @@ class OrderController extends Controller
         $data['list_name'] = 'change_order_list';
         $data['customer_name'] = 'Customer name';
         $data['customer_code'] = 'Customer code';
+        $data['privileges'] = $privilegesIDs;
 
         $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
 

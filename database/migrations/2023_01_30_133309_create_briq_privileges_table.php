@@ -28,14 +28,18 @@ class CreateBriqPrivilegesTable extends Migration
         Schema::create($this->setSchemaTable, function (Blueprint $table) {
             $table->id();
             $table->string('type');
+            $table->string('type_label');
             $table->string('type_id');
             $table->char('user_id', 10);
             $table->char('merchant_id', 10)->nullable();
-            $table->string('privileges')->nullable();
+            $table->string('access')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
 
+            $table->index(['type'], 'type_index');
             $table->index(['type_id'], 'type_id_index');
             $table->index(['user_id'], 'user_id_index');
+            $table->index(['merchant_id'], 'merchant_id_index');
         });
     }
 

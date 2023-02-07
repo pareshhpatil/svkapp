@@ -314,4 +314,15 @@ class PaymentRequestModel extends Model
             $this->setGenericError();
         }
     }
+
+    public function getUserPrivilegesPaymentRequestIDs($merchant_id, $user_id)
+    {
+        $sql = "select type_id from briq_privileges where type = 'invoice' and is_active = 1  and merchant_id='" . $merchant_id . "' and user_id='" . $user_id . "'";
+        $params = array();
+        $this->db->exec($sql, $params);
+        $list = $this->db->resultset();
+
+        return $list;
+    }
+
 }

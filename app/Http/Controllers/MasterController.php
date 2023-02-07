@@ -8,6 +8,7 @@ use App\Model\Invoice;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -148,12 +149,20 @@ class MasterController extends AppController
     {
         $title = 'Project list';
         $data = Helpers::setBladeProperties($title,  [],  []);
-        $list = $this->masterModel->getProjectList($this->merchant_id);
-        foreach ($list as $ck => $row) {
-            $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+
+
+        $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+
+        if(!empty($privilegesIDs)) {
+            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs));
+            foreach ($list as $ck => $row) {
+                $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+            }
         }
-        $data['list'] = $list;
+
+        $data['list'] = $list ?? [];
         $data['datatablejs'] = 'table-no-export';
+        $data['privileges'] = $privilegesIDs;
         return view('app/merchant/project/list', $data);
     }
 

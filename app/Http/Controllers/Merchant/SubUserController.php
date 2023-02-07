@@ -32,7 +32,7 @@ class SubUserController extends AppController
      */
     public function index()
     {
-        $title = 'Sub merchant list';
+        $title = 'Team Members';
 
         $data = Helpers::setBladeProperties($title);
 
@@ -192,6 +192,294 @@ class SubUserController extends AppController
         $data['status'] = $status;
 
         return view('app/merchant/subuser/thankyou', $data);
+    }
+
+    public function updatePrivileges(Request $request)
+    {
+        $userID = Encrypt::decode($request->get('user_id'));
+        $customerPrivileges = $request->get('customers_privileges');
+        $projectsPrivileges = $request->get('projects_privileges');
+        $contractsPrivileges = $request->get('contracts_privileges');
+        $invoicesPrivileges = $request->get('invoices_privileges');
+        $changeOrdersPrivileges = $request->get('change_orders_privileges');
+
+        $customerPrivilegesDecode = json_decode($customerPrivileges);
+        $projectsPrivilegesDecode = json_decode($projectsPrivileges);
+        $contractsPrivilegesDecode = json_decode($contractsPrivileges);
+        $invoicesPrivilegesDecode = json_decode($invoicesPrivileges);
+        $changeOrdersPrivilegesDecode = json_decode($changeOrdersPrivileges);
+
+        if(!empty($customerPrivilegesDecode)) {
+
+            $existCustomers = DB::table(ITable::BRIQ_PRIVILEGES)
+                                ->where('type', 'customer')
+                                ->where('user_id', $userID)
+                                ->pluck('type_id');
+
+            $existCustomerTypeIDs = $existCustomers->toArray();
+
+            $requestCustomerIDs = [];
+            foreach ($customerPrivilegesDecode as $customer) {
+                $requestCustomerIDs[] = $customer->value;
+
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->updateOrInsert([
+                        'type' => 'customer',
+                        'type_id' => $customer->value,
+                        'user_id' => $userID
+                    ],
+                        [
+                            'type_label' => $customer->label,
+                            'merchant_id' => $this->merchant_id,
+                            'access' => $customer->access,
+                            'is_active' => 1,
+                            'created_at' => Carbon::now()->toDateTimeString(),
+                            'updated_at' => Carbon::now()->toDateTimeString(),
+                        ]);
+            }
+
+            $customerIDsToBeDisabled = array_diff($existCustomerTypeIDs, $requestCustomerIDs);
+            
+            foreach ($customerIDsToBeDisabled as $customerIDToBeDisabled) {
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'customer')
+                        ->where('user_id', $userID)
+                        ->where('type_id', $customerIDToBeDisabled)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+            }
+
+        } else {
+            DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'customer')
+                        ->where('user_id', $userID)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+        }
+
+        if(!empty($projectsPrivilegesDecode)) {
+            $existProjects = DB::table(ITable::BRIQ_PRIVILEGES)
+                ->where('type', 'project')
+                ->where('user_id', $userID)
+                ->pluck('type_id');
+
+            $existProjectTypeIDs = $existProjects->toArray();
+
+            $requestProjectIDs = [];
+            foreach ($projectsPrivilegesDecode as $project) {
+                $requestProjectIDs[] = $project->value;
+
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->updateOrInsert([
+                        'type_id' => $project->value,
+                        'user_id' => $userID,
+                        'type' => 'project',
+                    ],[
+                        'type_label' => $project->label,
+                        'merchant_id' => $this->merchant_id,
+                        'access' => $project->access,
+                        'is_active' => 1,
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ]);
+            }
+
+            $projectIDsToBeDisabled = array_diff($existProjectTypeIDs, $requestProjectIDs);
+
+            foreach ($projectIDsToBeDisabled as $projectIDToBeDisabled) {
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->where('type', 'project')
+                    ->where('user_id', $userID)
+                    ->where('type_id', $projectIDToBeDisabled)
+                    ->update([
+                        'is_active' => 0,
+                        'updated_at' => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+        } else {
+            DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'project')
+                        ->where('user_id', $userID)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+        }
+
+        if(!empty($contractsPrivilegesDecode)) {
+            $existContracts = DB::table(ITable::BRIQ_PRIVILEGES)
+                                ->where('type', 'contract')
+                                ->where('user_id', $userID)
+                                ->pluck('type_id');
+
+            $existContractTypeIDs = $existContracts->toArray();
+
+            $requestContractIDs = [];
+
+            foreach ($contractsPrivilegesDecode as $contract) {
+                $requestContractIDs[] = $contract->value;
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->updateOrInsert([
+                        'type_id' => $contract->value,
+                        'user_id' => $userID,
+                        'type' => 'contract',
+                    ],[
+                        'type_label' => $contract->label,
+                        'merchant_id' => $this->merchant_id,
+                        'access' => $contract->access,
+                        'is_active' => 1,
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ]);
+            }
+
+            $contractIDsToBeDisabled = array_diff($existContractTypeIDs, $requestContractIDs);
+
+            foreach ($contractIDsToBeDisabled as $contractIDToBeDisabled) {
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->where('type', 'contract')
+                    ->where('user_id', $userID)
+                    ->where('type_id', $contractIDToBeDisabled)
+                    ->update([
+                        'is_active' => 0,
+                        'updated_at' => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+        } else {
+            DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'contract')
+                        ->where('user_id', $userID)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+        }
+
+        if(!empty($invoicesPrivilegesDecode)) {
+            $existInvoices = DB::table(ITable::BRIQ_PRIVILEGES)
+                ->where('type', 'invoice')
+                ->where('user_id', $userID)
+                ->pluck('type_id');
+
+            $existInvoiceTypeIDs = $existInvoices->toArray();
+
+            $requestInvoiceIDs = [];
+            foreach ($invoicesPrivilegesDecode as $invoice) {
+                $requestInvoiceIDs[] = $invoice->value;
+
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->updateOrInsert([
+                        'type_id' => $invoice->value,
+                        'user_id' => $userID,
+                        'type' => 'invoice',
+                    ],[
+                        'type_label' => $invoice->label,
+                        'merchant_id' => $this->merchant_id,
+                        'access' => $invoice->access,
+                        'is_active' => 1,
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ]);
+            }
+            $invoiceIDsToBeDisabled = array_diff($existInvoiceTypeIDs, $requestInvoiceIDs);
+
+            foreach ($invoiceIDsToBeDisabled as $invoiceIDToBeDisabled) {
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->where('type', 'invoice')
+                    ->where('user_id', $userID)
+                    ->where('type_id', $invoiceIDToBeDisabled)
+                    ->update([
+                        'is_active' => 0,
+                        'updated_at' => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+        } else {
+            DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'invoice')
+                        ->where('user_id', $userID)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+        }
+
+        if (!empty($changeOrdersPrivilegesDecode)) {
+            $existChangeOrder = DB::table(ITable::BRIQ_PRIVILEGES)
+                                    ->where('type', 'change-order')
+                                    ->where('user_id', $userID)
+                                    ->pluck('type_id');
+
+            $existChangeOrderTypeIDs = $existChangeOrder->toArray();
+
+            $requestChangeOrderIDs = [];
+            foreach ($changeOrdersPrivilegesDecode as $changeOrder) {
+                $requestChangeOrderIDs[] = $changeOrder->value;
+                
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->updateOrInsert([
+                        'type_id' => $changeOrder->value,
+                        'user_id' => $userID,
+                        'type' => 'change-order',
+                    ],[
+                        'type_label' => $changeOrder->label,
+                        'merchant_id' => $this->merchant_id,
+                        'access' => $changeOrder->access,
+                        'is_active' => 1,
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ]);
+            }
+            $changeOrderIDsToBeDisabled = array_diff($existChangeOrderTypeIDs, $requestChangeOrderIDs);
+
+            foreach ($changeOrderIDsToBeDisabled as $changeOrderIDToBeDisabled) {
+                DB::table(ITable::BRIQ_PRIVILEGES)
+                    ->where('type', 'change-order')
+                    ->where('user_id', $userID)
+                    ->where('type_id', $changeOrderIDToBeDisabled)
+                    ->update([
+                        'is_active' => 0,
+                        'updated_at' => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+        } else {
+            DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('type', 'change-order')
+                        ->where('user_id', $userID)
+                        ->update([
+                            'is_active' => 0,
+                            'updated_at' => Carbon::now()->toDateTimeString()
+                        ]);
+        }
+
+        return redirect()->back()->with('success', 'Privileges Set for User Successfully!');
+    }
+
+    public function getPrivileges($userID)
+    {
+        $Privileges = DB::table(ITable::BRIQ_PRIVILEGES)
+                        ->where('is_active', 1)
+                        ->where('user_id', Encrypt::decode($userID))
+                        ->get()
+                        ->collect();
+
+        $customerPrivileges = clone $Privileges->where('type', 'customer')->values();
+
+        $projectPrivileges = clone $Privileges->where('type', 'project')->values();
+        $contractPrivileges = clone $Privileges->where('type', 'contract')->values();
+        $invoicePrivileges = clone $Privileges->where('type', 'invoice')->values();
+        $changeOrderPrivileges = clone $Privileges->where('type', 'change-order')->values();
+
+        return response()->json([
+            'customers_privileges' => $customerPrivileges ?? [],
+            'projects_privileges' => $projectPrivileges ?? [],
+            'contracts_privileges' => $contractPrivileges ?? [],
+            'invoices_privileges' => $invoicePrivileges ?? [],
+            'change_orders_privileges' => $changeOrderPrivileges ?? [],
+        ]);
     }
 
     /**

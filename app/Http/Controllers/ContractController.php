@@ -18,6 +18,7 @@ use App\Project;
 use App\Traits\Contract\ContractParticulars;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Validator;
 use Illuminate\Support\Facades\Session;
@@ -106,7 +107,6 @@ class ContractController extends Controller
 
     public function loadContract($step=1, $contract_id=null)
     {
-
         Helpers::hasRole(2, 27);
         $project_list = $this->masterModel->getProjectList($this->merchant_id);
         if (Route::getCurrentRoute()->getName() == 'contract.create.new' ) {
@@ -442,8 +442,10 @@ class ContractController extends Controller
             $data['project_id'] = $redis_items['contract_list']['search_param']['project_id'];
         }
         //$data['showLastRememberSearchCriteria'] = true;
-        
-        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['project_id']);
+        //get contract privileges from redis
+        $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+
+        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'], $data['project_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
@@ -454,6 +456,7 @@ class ContractController extends Controller
         $data['list_name'] = 'contract_list';
         $data['customer_name'] = 'Customer name';
         $data['customer_code'] = 'Customer code';
+        $data['privileges'] = $privilegesIDs;
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');

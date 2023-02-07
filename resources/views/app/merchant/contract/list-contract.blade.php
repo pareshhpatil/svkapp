@@ -5,7 +5,9 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.contractlist') }}
-        <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
+        @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
+            <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
+        @endif
 
     </div>
     <!-- BEGIN SEARCH CONTENT-->
@@ -108,14 +110,44 @@
                                             <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
                                                 &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                             </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li>
-                                                    <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
-                                                </li>
-                                            </ul>
+                                            @if(!empty($privileges))
+                                                @if(in_array('all', array_keys($privileges)) && !in_array($v->contract_id, array_keys($privileges)))
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
+                                                            <li>
+                                                                <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
+                                                            </li>
+                                                        @endif
+                                                        @if($privileges['all'] == 'full')
+                                                            <li>
+                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                @else
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        @if($privileges[$v->contract_id] == 'full' || $privileges[$v->contract_id] == 'edit')
+                                                            <li>
+                                                                <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
+                                                            </li>
+                                                        @endif
+                                                        @if($privileges[$v->contract_id] == 'full')
+                                                            <li>
+                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                @endif
+{{--                                            @else--}}
+{{--                                                <ul class="dropdown-menu" role="menu">--}}
+{{--                                                    <li>--}}
+{{--                                                        <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>--}}
+{{--                                                    </li>--}}
+{{--                                                    <li>--}}
+{{--                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/contract/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>--}}
+{{--                                                    </li>--}}
+{{--                                                </ul>--}}
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

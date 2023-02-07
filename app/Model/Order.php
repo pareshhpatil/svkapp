@@ -60,15 +60,29 @@ class Order extends ParentModel
             ]);
     }
 
-    public function getOrderList($merchant_id, $from_date, $to_data, $contract)
+    public function getOrderList($merchant_id, $from_date, $to_data, $contract, $privilegesIDs = [])
     {
         $project_cond = "";
 
         if ($contract != '') {
             $project_cond = "AND a.contract_id = '$contract'";
         }
-        
-        $retObj =  DB::select("SELECT a.*,c.company_name, a.invoice_status, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id, c.customer_code
+
+        $ids = implode(",", $privilegesIDs);
+        if (!empty($ids) && !in_array('all', $privilegesIDs)) {
+            $retObj =  DB::select("SELECT a.*,c.company_name, a.invoice_status, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id, c.customer_code
+        FROM `order` a
+        join contract b on a.contract_id  = b.contract_id
+        join project p on b.project_id  = p.id
+        join customer c on b.customer_id  = c.customer_id
+        WHERE a.order_id in($ids)
+        AND a.merchant_id = '$merchant_id' 
+        $project_cond
+        AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
+        AND a.is_active ='1'
+        ORDER BY a.created_date desc");
+        } else {
+            $retObj =  DB::select("SELECT a.*,c.company_name, a.invoice_status, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id, c.customer_code
         FROM `order` a
         join contract b on a.contract_id  = b.contract_id
         join project p on b.project_id  = p.id
@@ -78,6 +92,7 @@ class Order extends ParentModel
         AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
         AND a.is_active ='1'
         ORDER BY a.created_date desc");
+        }
 
         return $retObj;
     }

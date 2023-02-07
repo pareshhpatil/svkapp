@@ -1,11 +1,17 @@
 @extends('app.master')
-
+<style>
+    .open-privileges-drawer-btn {
+        background: transparent;
+        border: 0;
+        padding: 8px 14px;
+    }
+</style>
 @section('content')
     <div class="page-content">
         <div class="page-bar">
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render() }}
-            <a href="{{ url('/merchant/subusers/create') }}" class="btn blue pull-right"> Create Sub Merchant</a>
+            <a href="{{ url('/merchant/subusers/create') }}" class="btn blue pull-right"> Add Team Member</a>
         </div>
         <!-- BEGIN SEARCH CONTENT-->
         <div class="row">
@@ -19,7 +25,7 @@
                             <thead>
                             <tr>
                                 <th class="td-c">
-                                    Merchant name
+                                    Name
                                 </th>
                                 <th class="td-c">
                                     Email
@@ -68,6 +74,9 @@
                                                     <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                 </li>
                                                 <li>
+                                                    <button type="button" data-user-id="{{$subUser->user_id}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
+                                                </li>
+                                                <li>
                                                     <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red" style="text-align: left"><i class="fa fa-remove"></i> Delete </a>
                                                 </li>
                                             </ul>
@@ -107,4 +116,5 @@
         </div>
         <!-- modal-dialog -->
     </div>
+    @include('app.merchant.subuser.privileges-modal')
 @endsection

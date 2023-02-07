@@ -230,11 +230,14 @@ class CompanyProfileController extends AppController
 
     public function collect_payment_landingpage()
     {
-
         $data = $this->setBladeProperties('Collect payments', [], [3]);
 
         $return_arr = array();
         $user = null;
+
+        $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoicePrivilegesIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        $changeOrderPrivilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
 
         if ($user == null) {
             $user = [
@@ -247,7 +250,7 @@ class CompanyProfileController extends AppController
                 ]
             ];
 
-            if (in_array('create-contract', Session::get('permissions')) || Session::get('user_role') == 'Admin') {
+            if(in_array('all', array_keys($contractPrivilegesIDs)) && $contractPrivilegesIDs['all'] == 'full') {
                 $user[0]['item_list'][] = [
                     "title" => "Create contract",
                     "desc" => "Create your construction contracts. Contracts will be used to create invoices (G702/G703) as your project develops",
@@ -255,7 +258,7 @@ class CompanyProfileController extends AppController
                 ];
             }
 
-            if (in_array('create-invoice', Session::get('permissions')) || Session::get('user_role') == 'Admin') {
+            if(in_array('all', array_keys($invoicePrivilegesIDs)) && $invoicePrivilegesIDs['all'] == 'full') {
                 $user[0]['item_list'][] = [
                     "title" => "Create invoice",
                     "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
@@ -267,7 +270,7 @@ class CompanyProfileController extends AppController
                 $return_arr[] = $row_array;
             }
 
-            if (in_array('create-change-order', Session::get('permissions')) || Session::get('user_role') == 'Admin') {
+            if(in_array('all', array_keys($changeOrderPrivilegesIDs)) && $changeOrderPrivilegesIDs['all'] == 'full') {
                 $user[0]['item_list'][] = [
                     "title" => "Change orders (CO)",
                     "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",

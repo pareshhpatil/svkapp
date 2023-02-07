@@ -392,12 +392,14 @@ class InvoiceController extends AppController
     {
 
         $payment_request_id = Encrypt::decode($link);
+        
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
                 $info = $this->invoiceModel->getStagingInvoiceInfo($payment_request_id, $this->merchant_id);
             } else {
                 $info = $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             }
+
             if ($info->message != 'success') {
                 return redirect('/error')->with('errorTitle', 'Invalid URL');
             }

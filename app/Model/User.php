@@ -488,4 +488,148 @@ class User extends ParentModel
     {
         $payment_gateway = DB::table('merchant_fee_detail')->where('merchant_id', $merchant_id)->get();
     }
+
+    public function getUserPrivileges($user_id) {
+        $privilegesCollect = DB::table('briq_privileges')
+            ->where('user_id', $user_id)
+            ->where('is_active', 1)
+            ->select(['type', 'type_id', 'access'])
+            ->get()
+            ->collect();
+
+        $customerPrivilegesCollect = clone $privilegesCollect->where('type', 'customer')
+            ->pluck('access', 'type_id');
+
+        $customerPrivilegesArray = $customerPrivilegesCollect->toArray();
+
+        $projectPrivilegesCollect = clone $privilegesCollect->where('type', 'project')
+            ->pluck('access', 'type_id');
+
+        $projectPrivilegesArray = $projectPrivilegesCollect->toArray();
+
+
+        $contractPrivilegesCollect = clone $privilegesCollect->where('type', 'contract')
+            ->pluck('access', 'type_id');
+
+        $contractPrivilegesArray = $contractPrivilegesCollect->toArray();
+
+        $invoicePrivilegesCollect = clone $privilegesCollect->where('type', 'invoice')
+            ->pluck('access', 'type_id');
+
+        $invoicePrivilegesArray = $invoicePrivilegesCollect->toArray();
+
+        $orderPrivilegesCollect = clone $privilegesCollect->where('type', 'change-order')
+            ->pluck('access', 'type_id');
+
+        $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
+
+        if(empty($contractPrivilegesArray)) {
+            if (!empty($projectPrivilegesArray)) {
+                $contractPrivilegesArray = $this->emptyContractIDs($projectPrivilegesArray, 'project');
+            } else {
+                $contractPrivilegesArray = $this->emptyContractIDs($customerPrivilegesArray, 'customer');
+            }
+
+        }
+
+        if(empty($orderPrivilegesArray)) {
+            $orderPrivilegesArray = $this->emptyOrderIDs($contractPrivilegesArray);
+        }
+
+
+        if(empty($invoicePrivilegesArray)) {
+            $invoicePrivilegesArray = $this->emptyInvoiceIDs($contractPrivilegesArray);
+        }
+
+        if(empty($projectPrivilegesArray)) {
+            $projectPrivilegesArray = $this->emptyProjectIDs($customerPrivilegesArray);
+        }
+
+        return [
+            'customer_privileges' => $customerPrivilegesArray,
+            'project_privileges' => $projectPrivilegesArray,
+            'contract_privileges' => $contractPrivilegesArray,
+            'invoice_privileges' => $invoicePrivilegesArray,
+            'change_order_privileges' => $orderPrivilegesArray
+        ];
+    }
+
+    public function emptyProjectIDs($customerPrivilegesArray) {
+        $projectIDs = DB::table('project')
+            ->where('is_active', 1)
+            ->whereIn('customer_id', array_keys($customerPrivilegesArray))
+            ->select(['id', 'customer_id'])
+            ->get()
+            ->toArray();
+
+        $tempArr= [];
+        foreach ($projectIDs as $projectID) {
+            $tempArr[$projectID->id] = $customerPrivilegesArray[$projectID->customer_id];
+        }
+        
+        return $tempArr;
+    }
+
+    public function emptyContractIDs($privilegesArray, $type) {
+        $tempArr= [];
+        if ($type == 'project') {
+            $contractIDs = DB::table('contract')
+                ->where('is_active', 1)
+                ->whereIn('project_id', array_keys($privilegesArray))
+                ->select(['contract_id', 'project_id'])
+                ->get()
+                ->toArray();
+
+            foreach ($contractIDs as $contractID) {
+                $tempArr[$contractID->contract_id] = $privilegesArray[$contractID->project_id];
+            }
+        }
+
+        if($type == 'customer') {
+            $contractIDs = DB::table('contract')
+                ->where('is_active', 1)
+                ->whereIn('customer_id', array_keys($privilegesArray))
+                ->select(['contract_id', 'customer_id'])
+                ->get()
+                ->toArray();
+
+            foreach ($contractIDs as $contractID) {
+                $tempArr[$contractID->contract_id] = $privilegesArray[$contractID->customer_id];
+            }
+        }
+
+        return $tempArr;
+    }
+
+    public function emptyOrderIDs($contractPrivilegesArray) {
+        $orderIDs = DB::table('order')
+            ->where('is_active', 1)
+            ->whereIn('contract_id', array_keys($contractPrivilegesArray))
+            ->select(['order_id', 'contract_id'])
+            ->get()
+            ->toArray();
+
+        $tempArr= [];
+        foreach ($orderIDs as $orderID) {
+            $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+        }
+
+        return $tempArr;
+    }
+
+    public function emptyInvoiceIDs($contractPrivilegesArray) {
+        $invoiceIDs = DB::table('payment_request')
+            ->where('is_active', 1)
+            ->whereIn('contract_id', array_keys($contractPrivilegesArray))
+            ->select(['payment_request_id', 'contract_id'])
+            ->get()
+            ->toArray();
+
+        $tempArr= [];
+        foreach ($invoiceIDs as $invoiceID) {
+            $tempArr[$invoiceID->payment_request_id] = $contractPrivilegesArray[$invoiceID->contract_id];
+        }
+
+        return $tempArr;
+    }
 }

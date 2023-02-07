@@ -8,13 +8,13 @@ class SSP
      *
      *  @param  array $columns Column information array
      *  @param  array $data    Data from the SQL get
+     *  @param  array $privilegesArray    Privileges from the SQL get
      *  @return array          Formatted data in a row based format
      */
     static $action_coll = 1;
 
-    static function data_output($columns, $data)
+    static function data_output($columns, $data, $privilegesArray)
     {
-
         $lang['english']['registered'] = 'Registered';
         $lang['english']['not_registered'] = 'Not Registered';
         $lang['english']['paid'] = 'Paid';
@@ -33,6 +33,12 @@ class SSP
 
         $encrypt = new Encryption();
         $customer_code_text = (isset($_SESSION['_customer_code_text'])) ? $_SESSION['_customer_code_text'] : 'CUSTOMER CODE';
+
+        $hasAllPrivileges = false;
+        if(in_array('all', array_keys($privilegesArray))) {
+            $hasAllPrivileges = true;
+        }
+
         $out = array();
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
@@ -70,7 +76,40 @@ class SSP
                         }
                     }
                     if ($column['dt'] == self::$action_coll) {
-                        $row[$column['dt']] = '<div class="btn-group dropdown" style="margin-top: -10px;"><button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">&nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;</button><ul class="dropdown-menu" role="menu"><li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li><li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li><li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li></ul></div>';
+                        $row[$column['dt']] = '<div class="btn-group dropdown" style="margin-top: -10px;">';
+                        $row[$column['dt']] .= '<button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">&nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;</button>';
+                        $row[$column['dt']] .= '<ul class="dropdown-menu" role="menu">';
+
+                        if ($hasAllPrivileges && !in_array($data[$i]['customer_id'], array_keys($privilegesArray))) {
+                            if($privilegesArray['all'] == 'view-only') {
+                                $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
+                            }
+
+                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit') {
+                                $row[$column['dt']] .= '<li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li>';
+                            }
+
+                            if($privilegesArray['all'] == 'full') {
+                                $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
+                            }
+                        } else {
+                            if($privilegesArray[$data[$i]['customer_id']] == 'view-only') {
+                                $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
+                            }
+
+                            if($privilegesArray[$data[$i]['customer_id']] == 'edit' || $privilegesArray[$data[$i]['customer_id']] == 'full') {
+                                $row[$column['dt']] .= '<li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li>';
+                            }
+
+                            if($privilegesArray[$data[$i]['customer_id']] == 'full') {
+                                $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
+                            }
+                        }
+
+                        $row[$column['dt']] .= '</ul>';
+                        $row[$column['dt']] .= '</div>';
+
+                        //$row[$column['dt']] = '<div class="btn-group dropdown" style="margin-top: -10px;"><button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">&nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;</button><ul class="dropdown-menu" role="menu"><li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li><li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li><li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li></ul></div>';
                     } else {
                         $row[$column['dt']] = $value;
                     }
@@ -224,6 +263,14 @@ class SSP
             }
         }
 
+        if (!empty($_SESSION['customer_ids'])) {
+            if ($where == '') {
+                $where = " customer_id in(" . implode(",", $_SESSION['customer_ids']) .")";
+            } else {
+                $where .= " AND customer_id in(" . implode(",", $_SESSION['customer_ids']) .")";
+            }
+        }
+
         if ($_SESSION['group'] != '') {
             if ($where == '') {
                 $where = " customer_group like ~%" . '{' . $_SESSION['group'] . '}' . '%~';
@@ -286,14 +333,25 @@ class SSP
         $order = self::order($request, $columns);
         $where = self::filter($request, $columns, $bindings);
         $bulk_id = $_SESSION['customer_bulk_id'];
+        $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
+
+        $customerPrivilieges = self::sql_exec(
+            $db,
+            "SELECT type_id, access
+			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
+        );
+
+        $privilegesArray = [];
+        foreach ($customerPrivilieges as $customerPriviliege) {
+            $privilegesArray[$customerPriviliege['type_id']] = $customerPriviliege['access'];
+        }
+
         // Main query to actually get the data
         $data = self::sql_exec(
             $db,
             $bindings,
             "call get_customer_list('" . $merchant_id . "','" . $column_name . "','" . $where . "','" . $order . "','" . $limit . "'," . $bulk_id . ");"
         );
-
-
 
         $recordsFiltered = $data[0]['@count'];
         // Total data set length
@@ -302,6 +360,9 @@ class SSP
             "SELECT COUNT(`{$primaryKey}`)
 			 FROM   `$table` WHERE merchant_id='$merchant_id' AND is_active=1"
         );
+
+
+
         $recordsTotal = $resTotalLength[0][0];
         /*
          * Output
@@ -312,7 +373,7 @@ class SSP
                 0,
             "recordsTotal" => intval($recordsTotal),
             "recordsFiltered" => intval($recordsFiltered),
-            "data" => self::data_output($columns, $data)
+            "data" => self::data_output($columns, $data, $privilegesArray)
         );
         return array(
             "draw" => isset($request['draw']) ?
@@ -320,7 +381,7 @@ class SSP
                 0,
             "recordsTotal" => intval($recordsTotal),
             "recordsFiltered" => intval($recordsFiltered),
-            "data" => self::data_output($columns, $data)
+            "data" => self::data_output($columns, $data, $privilegesArray)
         );
     }
 
