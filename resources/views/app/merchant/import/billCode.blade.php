@@ -147,7 +147,7 @@
                                 </td>
                                 <td class="td-c">
                                     @php
-                                    if(in_array($v->status,[3,4,5]))
+                                    if(in_array($v->status,[3,4,5,9]))
                                     {
                                     $link='/merchant/import/billCode/view/';
                                     }elseif($v->status==1)
