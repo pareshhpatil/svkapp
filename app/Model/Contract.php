@@ -11,9 +11,11 @@ use Log;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Model\ParentModel;
+use App\Constants\Models\ITable;
 
 class Contract extends ParentModel
 {
+    protected $table = ITable::CONTRACT;
 
     public function saveNewContract($data, $merchant_id, $user_id)
     {

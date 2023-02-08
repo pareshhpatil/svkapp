@@ -2,10 +2,19 @@
 
 namespace App;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
+/**
+ * @property mixed $user_id
+ */
 class User extends Authenticatable {
 
     use Notifiable;

@@ -11,9 +11,11 @@ use Log;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Model\ParentModel;
+use App\Constants\Models\ITable;
 
 class Order extends ParentModel
 {
+    protected $table = ITable::ORDER;
 
     public function saveNewOrder($data, $merchant_id, $user_id)
     {
