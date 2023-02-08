@@ -27,7 +27,7 @@ class InvoiceFormat extends ParentModel
         $retObj = DB::table('system_template_design')
             ->select(DB::raw('*'))
             ->where('is_active', 1)
-            ->orderBy('sequence','ASC')
+            ->orderBy('sequence', 'ASC')
             ->get();
         return $retObj;
     }
@@ -35,7 +35,7 @@ class InvoiceFormat extends ParentModel
     {
         $retObj = DB::table('invoice_template_mandatory_fields')
             ->select(DB::raw('*'))
-            ->orderBy('seq','ASC')
+            ->orderBy('seq', 'ASC')
             ->get();
         return $retObj;
     }
@@ -93,9 +93,9 @@ class InvoiceFormat extends ParentModel
         }
     }
 
-    public function saveSequence($merchant_id, $prefix, $val, $user_id, $separator='')
+    public function saveSequence($merchant_id, $prefix, $val, $user_id, $separator = '')
     {
-        
+        $separator = ($separator == null) ? '' : $separator;
         $id = DB::table('merchant_auto_invoice_number')->insertGetId(
             [
                 'merchant_id' => $merchant_id,
@@ -112,7 +112,8 @@ class InvoiceFormat extends ParentModel
         return $id;
     }
 
-    public function getInvoiceMetaDataColumnsDetails($template_id,$column_label) {
+    public function getInvoiceMetaDataColumnsDetails($template_id, $column_label)
+    {
         $retObj = DB::table('invoice_column_metadata')
             ->select(DB::raw('column_id'))
             ->where('template_id', $template_id)
@@ -128,14 +129,14 @@ class InvoiceFormat extends ParentModel
     public function insertDefaultConstructionFormat($template_id, $merchant_id, $user_id)
     {
 
-         $id = DB::table('invoice_template')->insertGetId(
+        $id = DB::table('invoice_template')->insertGetId(
             [
                 'template_id' => $template_id,
                 'merchant_id' => $merchant_id,
                 'user_id' => $user_id,
                 'template_name' => 'G702/703',
                 'template_type' => 'construction',
-                'particular_column' => '{"bill_code":"Bill Code","description":"Desc","bill_type":"Bill Type","cost_type":"Cost Type","original_contract_amount":"Original Contract Amount","approved_change_order_amount":"Approved Change Order Amount","current_contract_amount":"Current Contract Amount","previously_billed_percent":"Previously Billed Percent","previously_billed_amount":"Previously Billed Amount","current_billed_percent":"Current Billed Percent","current_billed_amount":"Current Billed Amount","previously_stored_materials":"Previously Stored Materials","current_stored_materials":"Current Stored Materials","stored_materials":"Materials Presently Stored","total_billed":"Total Billed (including this draw)","retainage_percent":"Retainage %","retainage_amount_previously_withheld":"Retainage Amount Previously Withheld","retainage_amount_for_this_draw":"Retainage amount for this draw","net_billed_amount":"Net Billed Amount","retainage_release_amount":"Retainage Release Amount","total_outstanding_retainage":"Total outstanding retainage","project":"Project","cost_code":"Cost Code","group":"Group","bill_code_detail":"Bill code detail"}', 
+                'particular_column' => '{"bill_code":"Bill Code","description":"Desc","bill_type":"Bill Type","cost_type":"Cost Type","original_contract_amount":"Original Contract Amount","approved_change_order_amount":"Approved Change Order Amount","current_contract_amount":"Current Contract Amount","previously_billed_percent":"Previously Billed Percent","previously_billed_amount":"Previously Billed Amount","current_billed_percent":"Current Billed Percent","current_billed_amount":"Current Billed Amount","previously_stored_materials":"Previously Stored Materials","current_stored_materials":"Current Stored Materials","stored_materials":"Materials Presently Stored","total_billed":"Total Billed (including this draw)","retainage_percent":"Retainage %","retainage_amount_previously_withheld":"Retainage Amount Previously Withheld","retainage_amount_for_this_draw":"Retainage amount for this draw","net_billed_amount":"Net Billed Amount","retainage_release_amount":"Retainage Release Amount","total_outstanding_retainage":"Total outstanding retainage","project":"Project","cost_code":"Cost Code","group":"Group","bill_code_detail":"Bill code detail"}',
                 'default_particular' => 'null',
                 'default_tax' => 'null',
                 'particular_total' => 'Particular total',
@@ -144,7 +145,7 @@ class InvoiceFormat extends ParentModel
                 'profile_id' => '0',
                 'hide_invoice_summary' => '0',
                 'is_active' => '1',
-                'invoice_title' =>  'Performa Invoice', 
+                'invoice_title' =>  'Performa Invoice',
                 'footer_note' => $user_id,
                 'created_by' => $user_id,
                 'created_date' => date("Y-m-d h:i:s")
@@ -152,6 +153,4 @@ class InvoiceFormat extends ParentModel
         );
         return $id;
     }
-
-    
 }
