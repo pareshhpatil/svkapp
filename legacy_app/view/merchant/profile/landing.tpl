@@ -42,6 +42,9 @@
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Data Configuration</b></h4>
                     <p>
+                        <a href="/merchant/imports" class="dc-link"> Imports</a>
+                    </p>
+                    <p>
                         <a href="/merchant/product/dashboard" class="dc-link"> Inventory</a>
                     </p>
                     <p>
@@ -80,6 +83,7 @@
                     <p>
                         <a href="/merchant/cost-types/index" class="dc-link"> Cost Type</a>
                     </p>
+                    
                     {* <p>
                         <a href="/merchant/hsn-sac-code/index" class="dc-link" > HSN/SAC codes</a>
                     </p> *}

@@ -298,10 +298,10 @@ table thead,
                                             @elseif($k=='current_billed_amount')
                                             <template x-if="field.bill_type=='Cost'">
                                                 <div>
-                                                    <a :id="`add-cost${field.pint}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
-                                                    <a :id="`remove-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
+                                                    <a :id="`add-cost${field.pint}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(index)">Add</a>
+                                                    <a :id="`remove-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(index)">Remove</a>
                                                     <span :id="`pipe-cost${field.pint}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                    <a :id="`edit-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
+                                                    <a :id="`edit-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(index,'edit')">Edit</a>
                                                 </div>
                                             <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                             </template>
@@ -1109,18 +1109,18 @@ table thead,
                                 async OpenAddCost(field,type='new') {
                                     this.billed_transactions=[];
                                     billed_transactions_filter=[];
-                                    if(field.pint>0)
+                                    if(field>0)
                                     {
                                        // var int=field.pint;
                                     }else
                                     {
-                                         field.pint=0;
+                                         field=0;
                                     }
-                                    this.selected_field_int = field.pint;
-                                    document.getElementById('cost_selected_id').value = field.pint;
+                                    this.selected_field_int = field;
+                                    document.getElementById('cost_selected_id').value = field;
                                     
-                                    cost_code_selected=particularray[field.pint].bill_code;
-                                    cost_type_selected=field.cost_type;
+                                    cost_code_selected=particularray[field].bill_code;
+                                    cost_type_selected=this.fields[field].cost_type;
                                     this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
                                     this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
 
@@ -1136,9 +1136,9 @@ table thead,
                                     if(type=='edit')
                                     {
                                     var exist_array=[];
-                                    if(this.fields[field.pint].billed_transaction_ids!='' && this.fields[field.pint].billed_transaction_ids !=null)
+                                    if(this.fields[field].billed_transaction_ids!='' && this.fields[field].billed_transaction_ids !=null)
                                     {
-                                        var exist_array=JSON.parse(this.fields[field.pint].billed_transaction_ids);
+                                        var exist_array=JSON.parse(this.fields[field].billed_transaction_ids);
                                     }
                                     ids=[];
                                     total=0;
@@ -1279,10 +1279,10 @@ table thead,
                                     this.allcostCheck();
                                 },
                                 RemoveCost(field) {
-                                    if(field.pint>0)
-                                    {}else{field.pint=0}
-                                    this.fields[field.pint].current_billed_amount = '';
-                                    this.fields[field.pint].billed_transaction_ids = '';
+                                    if(field>0)
+                                    {}else{field=0}
+                                    this.fields[field].current_billed_amount = '';
+                                    this.fields[field].billed_transaction_ids = '';
                                     this.calc(field);
                                 },
                                 EditCost(field) {

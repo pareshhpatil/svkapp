@@ -305,10 +305,10 @@
                                         </span>
                                                                         <template x-if="field.bill_type=='Cost'">
                                                                             <div>
-                                                                                <a :id="`add-cost${field.pint}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(field)">Add</a>
-                                                                                <a :id="`remove-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(field)">Remove</a>
+                                                                                <a :id="`add-cost${field.pint}`" style=" padding-top: 5px;" x-show="!field.current_billed_amount" href="javascript:;" @click="OpenAddCost(index)">Add</a>
+                                                                                <a :id="`remove-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;" href="javascript:;" @click="RemoveCost(index)">Remove</a>
                                                                                 <span :id="`pipe-cost${field.pint}`" x-show="field.current_billed_amount" style="margin-left: 4px; color:#859494;"> | </span>
-                                                                                <a :id="`edit-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(field,'edit')">Edit</a>
+                                                                                <a :id="`edit-cost${field.pint}`" x-show="field.current_billed_amount" style="padding-top:5px;padding-left:5px;" href="javascript:;" @click="OpenAddCost(index,'edit')">Edit</a>
                                                                             </div>
 {{--                                                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">--}}
                                                                         </template>
@@ -1325,7 +1325,7 @@
                             $('#cost_checkbox_error').html('');
                             let cost_selected_id = document.getElementById('cost_selected_id').value;
                             let calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
-                            let fieldIndex = $('#index'+cost_selected_id).val()
+                            let fieldIndex = cost_selected_id;
                             this.fields[fieldIndex].current_billed_amount = calc_amount;
                             //  document.getElementById("current_billed_amount" + cost_selected_id).value = calc_amount;
                             //  _("lbl_current_billed_amount" + cost_selected_id).innerHTML = calc_amount;
@@ -1360,18 +1360,19 @@
                     async OpenAddCost(field,type='new') {
                         this.billed_transactions=[];
                         billed_transactions_filter=[];
-                        if(field.pint>0)
+                        if(field>0)
                         {
                             // var int=field.pint;
                         }else
                         {
-                            field.pint=0;
+                            field=0;
                         }
-                        this.selected_field_int = field.pint;
-                        document.getElementById('cost_selected_id').value = field.pint;
+                        pint=this.fields[field].pint;
+                        this.selected_field_int = pint;
+                        document.getElementById('cost_selected_id').value = field;
 
-                        cost_code_selected=particularray[field.pint].bill_code;
-                        cost_type_selected=field.cost_type;
+                        cost_code_selected=particularray[field].bill_code;
+                        cost_type_selected=this.fields[field].cost_type;
                         this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
                         this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
 
@@ -1387,7 +1388,7 @@
                         if(type=='edit')
                         {
                             var exist_array=[];
-                            let fieldIndex = field.pint;
+                            let fieldIndex = field;
                             if(this.fields[fieldIndex].billed_transaction_ids!='' && this.fields[fieldIndex].billed_transaction_ids !=null)
                             {
                                 var exist_array=JSON.parse(this.fields[fieldIndex].billed_transaction_ids);
@@ -1545,11 +1546,11 @@
                         return false;
                     },
                     RemoveCost(field) {
-                        if(field.pint>0)
-                        {}else{field.pint=0}
-                        let fieldIndex = $('#index'+field.pint).val();
-                        this.fields[fieldIndex].current_billed_amount = '';
-                        this.fields[fieldIndex].billed_transaction_ids = '';
+                        if(field>0)
+                        {}else{field=0}
+                        ///let fieldIndex = $('#index'+field).val();
+                        this.fields[field].current_billed_amount = '';
+                        this.fields[field].billed_transaction_ids = '';
                         this.calc(field);
                     },
                     changeBillType(field,index) {

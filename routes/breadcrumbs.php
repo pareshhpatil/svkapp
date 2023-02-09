@@ -333,6 +333,10 @@ Breadcrumbs::for('collectlandingpage', function ($trail) {
     $trail->parent('home');
     $trail->push('Collect payments');
 });
+Breadcrumbs::for('merchant.imports', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Imports');
+});
 Breadcrumbs::for('create.view', function ($trail) {
     $trail->parent('home');
     $trail->push('invoices');
@@ -457,4 +461,10 @@ Breadcrumbs::for('merchant.cost-types.edit', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Cost Types', url('/merchant/cost-types/index'));
+});
+
+Breadcrumbs::for('merchant.import.billCode', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Imports', url('/merchant/imports'));
+    $trail->push('Bill codes');
 });
