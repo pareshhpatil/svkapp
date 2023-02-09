@@ -377,7 +377,7 @@
                             @endif
                             @if(isset($plugin['has_upload']))
                             <div class="form-group">
-                                <label class="control-label col-md-4"></label>
+                                <label class="control-label col-md-4">Invoice level attachments</label>
                                 <div class="col-md-8">
                                     @if(isset($plugin['files']) && !empty($plugin['files'][0]))
                                     <span class="help-block">
@@ -406,9 +406,7 @@
                                         <a class="UppyModalOpenerBtn btn  default">Add attachments</a>
                                         <div id="docviewbox" class="mt-1">
                                         </div>
-
                                         <div id="drag-drop-area2"></div>
-
                                     </div>
                                     @endif
                                 </div>
@@ -417,17 +415,36 @@
                             @endif
                         </div>
                     </div>
-
-
-
-
-
-
                     @endif
 
-                </div>
+            </div>
         </div>
     </div>
+    @if(isset($plugin['has_mandatory_upload']))
+    <div class="portlet light bordered">
+        <div class="portlet-body form">
+            <h3 class="form-section">Required documents</h3>
+            <div class="row">
+                @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
+                    <div class="form-group">
+                        <label class="control-label col-md-2">{{$mandatory_data['name']}}
+                        </label>
+                        <div class="col-md-10">
+                            <div class="input-icon">
+                                <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="">
+                                <a class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
+                                <div id="docviewbox{{$key}}" class="mt-1">
+                                </div>
+                                <div id="drag-drop-area2"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <div class="row">
@@ -594,111 +611,109 @@
     }
     </script>
 
-    
-
 
 <script src="https://releases.transloadit.com/uppy/v3.3.0/uppy.min.js"></script>
-    <script>
-       var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
-      
-        var newdocfileslist = [];
-        const { Compressor } = Uppy;
-        @if(isset($plugin['files']) && !empty($plugin['files'][0]))
-        @foreach ($plugin['files'] as $key=>$item)
-        newdocfileslist.push('{{$item}}');
-        @endforeach
-        @endif
-        //uppy file upload code
-        var uppy = new Uppy.Uppy({
-            autoProceed: true,
-            restrictions: {
-                maxFileSize: 3000000,
-                maxNumberOfFiles: envlimit,
-                minNumberOfFiles: 1,
-                allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
-            },
-            onBeforeFileAdded: (currentFile, files) => {
-                var remainleng=0;
-        if(document.getElementById("file_upload").value!='')
-            remainleng=document.getElementById("file_upload").value.split(",").length;
-     
-        var counts=envlimit-remainleng;
-        if(remainleng==envlimit)
-        {
-           // uppy.info('you can upload only '+envlimit+ ' files', 'error', 10000)
-           // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
-            return Promise.reject('too few files')
-        }else if (Object.keys(files).length > counts-1) 
-         {
-            
-          //  uppy.info('you can upload only '+envlimit+ ' files', 'error', 10000)
-       return Promise.reject('too few files')
-     }else{
+<script>
+    var envlimit='{{env('INVOICE_ATTACHMENT_LIMIT')}}';
+    
+    var newdocfileslist = [];
+    const { Compressor } = Uppy;
+    @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+    @foreach ($plugin['files'] as $key=>$item)
+    newdocfileslist.push('{{$item}}');
+    @endforeach
+    @endif
+    //uppy file upload code
+    var uppy = new Uppy.Uppy({
+        autoProceed: true,
+        restrictions: {
+            maxFileSize: 3000000,
+            maxNumberOfFiles: envlimit,
+            minNumberOfFiles: 1,
+            allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
+        },
+        onBeforeFileAdded: (currentFile, files) => {
+            var remainleng=0;
+            if(document.getElementById("file_upload").value!='')
+                remainleng=document.getElementById("file_upload").value.split(",").length;
+        
+            var counts=envlimit-remainleng;
+            if(remainleng==envlimit)
+            {
+            // uppy.info('you can upload only '+envlimit+ ' files', 'error', 10000)
+            // document.getElementById("up-error").innerHTML = "*Maximum "+envlimit+" files allowed";
+                return Promise.reject('too few files')
+            }else if (Object.keys(files).length > counts-1) {
+                return Promise.reject('too few files')
+            }else{
+                return true; 
         return true; 
-     }
-    }
-        });
-        uppy.use( Compressor, {
-  quality: 0.6,
-  limit: envlimit,
-});
-        uppy.use(Uppy.Dashboard, {
-            target: 'body',
-            trigger: '.UppyModalOpenerBtn',
-            inline: false,
-            
-            
-            hideAfterFinish: true,
-            showProgressDetails: false,
-            hideUploadButton: false,
-            hideRetryButton: false,
-            hidePauseResumeButton: false,
-            hideCancelButton: false,
-        });
-        window.uppy.getPlugin('Dashboard').setOptions({
-    note: 'Max upload limit '+envlimit+' files(image & pdf) only',
-  
-  });
-        uppy.use(Uppy.XHRUpload, {
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-            },
-            endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
-            method: 'post',
-            formData: true,
-            fieldName: 'image'
-        });
-
-        uppy.on('file-added', (file) => {
-            document.getElementById("error").innerHTML = '';
-            console.log('file-added');
-        });
-
-        uppy.on('upload', (data) => {
-            console.log('Starting upload');
-        });
-        uppy.on('upload-success', (file, response) => {
-            if (response.body.fileUploadPath != undefined) {
-                path = response.body.fileUploadPath;
-                extvalue = document.getElementById("file_upload").value;
-                newdocfileslist.push(path);
-                deletedocfile('');
-                if (extvalue != '') {
-                    document.getElementById("file_upload").value = extvalue + ',' + path;
-                } else {
-                    document.getElementById("file_upload").value = path;
-                }
+                return true; 
             }
-            if (response.body.status == 300) {
-                try {
-                    document.getElementById("error").innerHTML = response.body.errors;
-                } catch (o) {}
-                uppy.removeFile(file.id);
+        }
+    });
+
+    uppy.use( Compressor, {
+        quality: 0.6,
+        limit: envlimit,
+    });
+
+    uppy.use(Uppy.Dashboard, {
+        target: 'body',
+        trigger: '.UppyModalOpenerBtn',
+        inline: false,
+        
+        
+        hideAfterFinish: true,
+        showProgressDetails: false,
+        hideUploadButton: false,
+        hideRetryButton: false,
+        hidePauseResumeButton: false,
+        hideCancelButton: false,
+    });
+    window.uppy.getPlugin('Dashboard').setOptions({
+        note: 'Max upload limit '+envlimit+' files(image & pdf) only',
+    });
+    uppy.use(Uppy.XHRUpload, {
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        },
+        endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
+        method: 'post',
+        formData: true,
+        fieldName: 'image'
+    });
+
+    uppy.on('file-added', (file) => {
+        document.getElementById("error").innerHTML = '';
+        console.log('file-added');
+    });
+
+    uppy.on('upload', (data) => {
+        console.log('Starting upload');
+    });
+    uppy.on('upload-success', (file, response) => {
+        if (response.body.fileUploadPath != undefined) {
+            path = response.body.fileUploadPath;
+            extvalue = document.getElementById("file_upload").value;
+            newdocfileslist.push(path);
+            deletedocfile('');
+            if (extvalue != '') {
+                document.getElementById("file_upload").value = extvalue + ',' + path;
             } else {
-                try {
-                    document.getElementById("error").innerHTML = '';
-                } catch (o) {}
+                document.getElementById("file_upload").value = path;
             }
+        }
+        if (response.body.status == 300) {
+            try {
+                document.getElementById("error").innerHTML = response.body.errors;
+            } catch (o) {}
+            uppy.removeFile(file.id);
+        } else {
+            try {
+                document.getElementById("error").innerHTML = '';
+            } catch (o) {}
+        }
         });
         uppy.on('complete', (result) => {
             //console.log('successful files:', result.successful)
@@ -707,7 +722,119 @@
         uppy.on('error', (error) => {
             //console.error(error.stack);
         });
-    </script>
+</script>
+@if(isset($plugin['has_mandatory_upload']))
+@foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
+@php
+$keyname = 'uppy'.$key;
+$array_name = 'newdocfileslist'.$key;
+@endphp
+<script>
+    var envlimit = '{{env('INVOICE_ATTACHMENT_LIMIT')}}';
+    var arrayKey = '{{$key}}';
+    //understand this code 
+    var {{$array_name}} = [];
+    // @if(isset($plugin['files']) && !empty($plugin['files'][0]))
+    //     @foreach($plugin['files'] as $key => $item)
+    //         newdocfileslist.push('{{$item}}');
+    //     @endforeach
+    // @endif
+    //uppy file upload code
+    var {{$keyname}} = new Uppy.Uppy({
+        id : arrayKey,
+        autoProceed: true,
+        restrictions: {
+            maxFileSize: 3000000,
+            maxNumberOfFiles: envlimit,
+            minNumberOfFiles: 1,
+            allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
+        },
+        onBeforeFileAdded: (currentFile, files) => {
+            var remainleng = 0;
+            if (document.getElementById("file_upload_mandatory"+arrayKey).value != '')
+                remainleng = document.getElementById("file_upload_mandatory"+arrayKey).value.split(",").length;
+
+            var counts = envlimit - remainleng;
+            if (remainleng == envlimit) {
+                return Promise.reject('too few files')
+            } else if (Object.keys(files).length > counts - 1) {
+                return Promise.reject('too few files')
+            } else {
+                return true;
+            }
+        }
+    });
+    {{$keyname}}.use(Compressor, {
+        quality: 0.6,
+        limit: envlimit,
+    });
+    {{$keyname}}.use(Uppy.Dashboard, {
+        target: 'body',
+        trigger: '.UppyModalOpenerBtn'+arrayKey,
+        inline: false,
+        hideAfterFinish: true,
+        showProgressDetails: false,
+        hideUploadButton: false,
+        hideRetryButton: false,
+        hidePauseResumeButton: false,
+        hideCancelButton: false,
+    });
+    window.{{$keyname}}.getPlugin('Dashboard').setOptions({
+        note: 'Max upload limit ' + envlimit + ' files(image & pdf) only',
+
+    });
+    {{$keyname}}.use(Uppy.XHRUpload, {
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        },
+        endpoint: '/merchant/uppyfileupload/uploadImage/invoice',
+        method: 'post',
+        formData: true,
+        fieldName: 'image'
+    });
+    {{$keyname}}.on('file-added', (file) => {
+        document.getElementById("error").innerHTML = '';
+        console.log('file-added');
+    });
+
+    {{$keyname}}.on('upload', (data) => {
+        console.log('Starting upload');
+        console.log({{$keyname}}.getID())
+    });
+    {{$keyname}}.on('upload-success', (file, response) => {
+        if (response.body.fileUploadPath != undefined) {
+            path = response.body.fileUploadPath;
+            extvalue = document.getElementById("file_upload_mandatory"+{{$keyname}}.getID()).value;
+            {{$array_name}}.push(path);
+            deletedocfileMandatory('',{{$keyname}}.getID(), {{$array_name}});
+            if (extvalue != '') {
+                document.getElementById("file_upload_mandatory"+{{$keyname}}.getID()).value = extvalue + ',' + path;
+            } else {
+                document.getElementById("file_upload_mandatory"+{{$keyname}}.getID()).value = path;
+            }
+        }
+        if (response.body.status == 300) {
+            try {
+                document.getElementById("error").innerHTML = response.body.errors;
+            } catch (o) {}
+            {{$keyname}}.removeFile(file.id);
+        } else {
+            try {
+                document.getElementById("error").innerHTML = '';
+            } catch (o) {}
+        }
+    });
+    {{$keyname}}.on('complete', (result) => {
+        //console.log('successful files:', result.successful)
+        //console.log('failed files:', result.failed)
+    });
+    {{$keyname}}.on('error', (error) => {
+        //console.error(error.stack);
+    });
+</script>
+@endforeach
+@endif
+
     <div class="modal fade" id="delete_doc" tabindex="-1" role="basic" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -728,6 +855,7 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+
     <script>
         function setdata(name, fullurl) {
 
@@ -759,6 +887,53 @@
             document.getElementById('closeconformdoc').click();
         }
 
+        function deletedocfile(x) {
+            var html = '';
+            if (x == 'delete') {
+                var fullurl = document.getElementById('docfullurl').value;
+                var index = newdocfileslist.indexOf(fullurl);
+                if (index !== -1) {
+                    newdocfileslist.splice(index, 1);
+                }
+            }
+
+            for (var i = 0; i < newdocfileslist.length; i++) {
+                var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
+                filenm = filenm.split('.').slice(0, -1).join('.')
+                filenm = filenm.substring(0, filenm.length - 4);
+                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
+                    '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
+                    '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
+                    ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
+            }
+            clearnewuploads('no');
+            document.getElementById('docviewbox').innerHTML = html;
+            document.getElementById('closeconformdoc').click();
+        }
+
+        function deletedocfileMandatory(x, ArrayKey, arrayName) {
+            var html = '';
+            if (x == 'delete') {
+                var fullurl = document.getElementById('docfullurl').value;
+                var index = newdocfileslist.indexOf(fullurl);
+                if (index !== -1) {
+                    newdocfileslist.splice(index, 1);
+                }
+            }
+            for (var i = 0; i < arrayName.length; i++) {
+                var filenm = arrayName[i].substring(arrayName[i].lastIndexOf('/') + 1);
+                filenm = filenm.split('.').slice(0, -1).join('.')
+                filenm = filenm.substring(0, filenm.length - 4);
+                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
+                    '<a class=" btn btn-xs " target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
+                    '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + arrayName[i] + '\');"   data-toggle="modal"> ' +
+                    ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
+            }
+            clearnewuploads_mandatory('no',ArrayKey,  arrayName);
+            document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
+            document.getElementById('closeconformdoc').click();
+        }
+
         function clearnewuploads(x) {
             document.getElementById("file_upload").value = '';
 
@@ -772,6 +947,21 @@
             }
             document.getElementById("file_upload").value = filesnm;
         }
+
+        function clearnewuploads_mandatory(x,ArrayKey,  arrayName) {
+            document.getElementById("file_upload_mandatory"+ArrayKey).value = '';
+
+            var filesnm = '';
+
+            for (var i = 0; i < arrayName.length; i++) {
+                if (filesnm != '')
+                    filesnm = filesnm + ',' + arrayName[i];
+                else
+                    filesnm = filesnm + arrayName[i];
+            }
+            document.getElementById("file_upload_mandatory"+ArrayKey).value = filesnm;
+        }
+
     </script>
     @endsection
 

@@ -315,11 +315,28 @@
             <div id="pgisupload" @isset($plugins['has_upload']) @else style="display: none;" @endif>
                 <hr>
                 <div class="mb-2">
-                    <span class="form-section base-font">File upload&nbsp;</span>
-                    <div class="pull-right">
-                        <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    <span class="form-section base-font">Invoice level attachments</span>
+                </div>
+                <div class="mb-2">
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Invoice attachments 
+                        <button
+                            class="popovers btn btn-link dropdown-toggle button-on-hover"
+                            data-container="body" data-placement="top"
+                            data-trigger="hover"
+                            data-content="Support non mandatory document attachments at an invoice level"
+                            type="button">
+                                <i class="fa fa-info-circle"></i>
+                        </button>
+
+                        </label>
+                        <div class="col-md-8">
+                            <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                        </div>
                     </div>
                 </div>
+                <br>
+                <br>
                 <div class="input-group">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">File label</label>
@@ -327,6 +344,28 @@
                             <input value="View document" required="" type="text" maxlength="20" class="form-control" name="upload_file_label">
                         </div>
                     </div>
+                </div>
+                <div class="mb-2">
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Setup required documents
+                        <button
+                            class="popovers btn btn-link dropdown-toggle button-on-hover"
+                            data-container="body" data-placement="top"
+                            data-trigger="hover"
+                            data-content="Use this facility if you require specific documents during submission or approval"
+                            type="button">
+                                <i class="fa fa-info-circle"></i>
+                        </button>
+                        </label>
+                        <div class="col-md-8">
+                            <input type="checkbox" unchecked id="isMandatoryUpload" onchange="disablePlugin(this.checked, 'plg33');" name="has_mandatory_upload" value="0" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="input-group" style="display:none;">
+                    <a href="/merchant/profile/digitalsignature/iframe" class="iframe btn btn-sm green pull-right"> Digital signature </a>
                 </div>
             </div>
 

@@ -971,6 +971,55 @@ class InvoiceController extends AppController
                 $menus['menu'] = $menus2;
                 $doclist[] = $menus;
             }
+
+
+            if (isset($plugin_array['has_mandatory_upload'])) {
+                if ($plugin_array['has_mandatory_upload'] == 1) {
+                    foreach($plugin_array['mandatory_data'] as $key=>$mandatory_data){
+                        $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
+                        $menus['id'] = "required_document".$key;
+                        $menus['full'] = $mandatory_data['name'];
+                        $menus['link'] = "";
+
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
+                  
+                        $menus1 = array();
+                        $menus2 = array();
+                        $pos = 1;
+
+                        foreach ($mandatory_files as $files) {
+                            $data['files'][] = $files->file_url;
+                            $nm = '';
+                            if (!empty($files->file_url)) {
+                                $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
+                            }
+        
+                            $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                            $menus1['full'] = basename($files->file_url);
+        
+                            $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
+        
+        
+                            $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
+                            $menus1['menu'] = "";
+                            $menus1['type'] = "required";
+                            $menus2[$pos] = $menus1;
+                            if ($pos == 1) {
+                                if (empty($docpath)) {
+                                    $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                }
+                            }
+                            $pos++;
+                        }
+
+                        
+                        $menus['menu'] = $menus2;
+                        $doclist[] = $menus;
+
+                    }
+                }
+            }
+
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data = $this->getDataBillCodeAttachment($tt, $doclist, $data);
@@ -3092,7 +3141,19 @@ class InvoiceController extends AppController
         } else {
             $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
             $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
-
+            
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    foreach($plugin['mandatory_data'] as $key=>$mandatory_data){
+                        $mandatory_files = $_POST['file_upload_mandatory'.$key];
+                        $mandatory_files_insert_array = explode(',', $mandatory_files);
+                        foreach($mandatory_files_insert_array as $file_url){
+                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['Description'], $mandatory_data['Required']);
+                        }
+                    }
+                }
+            }
+            
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
         }
