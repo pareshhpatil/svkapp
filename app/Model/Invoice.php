@@ -573,6 +573,15 @@ class Invoice extends ParentModel
         return $retObj[0];
     }
 
+    public function deleteMandatoryFiles($payment_request_id)
+    { 
+        DB::table('invoice_attatchments')->where('payment_request_id', $payment_request_id)
+        ->update([
+            'is_active' => '0',
+        ]);
+
+    }
+
     public function saveMandatoryFiles($payment_request_id, $file_url, $name, $desc, $required)
     {
         $id = DB::table('invoice_attatchments')->insertGetId(

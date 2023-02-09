@@ -44,10 +44,11 @@
         "spatie/array-to-xml": "^2.15",
         "spatie/laravel-sitemap": "^5.8",
         "stripe/stripe-php": "^7.100",
+        "swipezdev/short-url-package-creator": "dev-master",
         "symfony/security-csrf": "^5.0",
         "web-token/jwt-encryption": "^2.0",
-        "yajra/laravel-datatables-oracle": "^9.19",
-        "swipezdev/short-url-package-creator": "dev-master"
+        "webklex/laravel-pdfmerger": "*",
+        "yajra/laravel-datatables-oracle": "^9.19"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

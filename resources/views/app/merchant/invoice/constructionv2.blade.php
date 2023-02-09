@@ -430,6 +430,28 @@
                         <label class="control-label col-md-2">{{$mandatory_data['name']}}
                         </label>
                         <div class="col-md-10">
+                            
+                        @if(isset($mandatory_files) && !empty($mandatory_files[0]))
+                            <span class="help-block">
+                            @foreach ($mandatory_files as $key2=>$item)
+                                @if($key2 == $key)
+                                    @foreach ($item as $key3=>$links)
+                                    <div id="docviewbox{{$key}}">
+                                        <span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important">
+                                            <a class=" btn-xs " target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,10)}}..</a>
+                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,10)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                        </span>
+                                    </div>
+                                    @endforeach
+                                    <span id="newImageDiv" style="display: none;">
+                                        <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="{{implode(',',$item)}}">
+                                        <div id="drag-drop-area2"></div>
+                                    </span>
+                                @endif
+                            @endforeach
+                            <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn{{$key}} btn btn-xs btn-link">Upload doc</a>
+                            </span>
+                        @else
                             <div class="input-icon">
                                 <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="">
                                 <a class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
@@ -437,6 +459,7 @@
                                 </div>
                                 <div id="drag-drop-area2"></div>
                             </div>
+                        @endif
                         </div>
                     </div>
                 @endforeach
@@ -504,12 +527,8 @@
     </div>
     </form>
 
-
-
     @include('app.merchant.cover-note.add-covernote-modal')
     @include('app.merchant.cover-note.edit-covernote-modal')
-
-
 
     <div class="modal  fade" id="confirm_box" tabindex="-1" role="basic" aria-hidden="true">
         <div class="modal-dialog modal-md">
@@ -734,11 +753,16 @@ $array_name = 'newdocfileslist'.$key;
     var arrayKey = '{{$key}}';
     //understand this code 
     var {{$array_name}} = [];
-    // @if(isset($plugin['files']) && !empty($plugin['files'][0]))
-    //     @foreach($plugin['files'] as $key => $item)
-    //         newdocfileslist.push('{{$item}}');
-    //     @endforeach
-    // @endif
+    @if(isset($mandatory_files) && !empty($mandatory_files))
+        @foreach ($mandatory_files as $key2=>$item)
+        @if($key2 == $key)
+            @foreach($item as $key3 => $links)
+                {{$array_name}}.push('{{$links}}');
+            @endforeach
+        @endif
+        @endforeach
+    @endif
+    console.log({{$array_name}})
     //uppy file upload code
     var {{$keyname}} = new Uppy.Uppy({
         id : arrayKey,
@@ -799,7 +823,6 @@ $array_name = 'newdocfileslist'.$key;
 
     {{$keyname}}.on('upload', (data) => {
         console.log('Starting upload');
-        console.log({{$keyname}}.getID())
     });
     {{$keyname}}.on('upload-success', (file, response) => {
         if (response.body.fileUploadPath != undefined) {
@@ -856,6 +879,29 @@ $array_name = 'newdocfileslist'.$key;
         <!-- /.modal-dialog -->
     </div>
 
+    <div class="modal fade" id="delete_doc2" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 id="poptitle" class="modal-title">Delete attachment</h4>
+                    <input type="hidden" id="file_url">
+                    <input type="hidden" id="array_name">
+                    <input type="hidden" id="array_key">
+                </div>
+                <div class="modal-body">
+                    Do you want to permanently delete this attachment from this invoice?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+                    <button type="button" onclick="deletedocfileMandatory('delete', document.getElementById('array_key').value, document.getElementById('array_name').value)" id="deleteanchor" class="btn delete">Delete</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <script>
         function setdata(name, fullurl) {
 
@@ -863,28 +909,11 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docfullurl').value = fullurl;
         }
 
-        function deletedocfile(x) {
-            var html = '';
-            if (x == 'delete') {
-                var fullurl = document.getElementById('docfullurl').value;
-                var index = newdocfileslist.indexOf(fullurl);
-                if (index !== -1) {
-                    newdocfileslist.splice(index, 1);
-                }
-            }
-
-            for (var i = 0; i < newdocfileslist.length; i++) {
-                var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
-                filenm = filenm.split('.').slice(0, -1).join('.')
-                filenm = filenm.substring(0, filenm.length - 4);
-                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
-                    '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
-                    '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
-                    ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
-            }
-            clearnewuploads('no');
-            document.getElementById('docviewbox').innerHTML = html;
-            document.getElementById('closeconformdoc').click();
+        function setdataMandatory(name, fullurl, array_name, ArrayKey) {
+            document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
+            document.getElementById('file_url').value = fullurl;
+            document.getElementById('array_name').value = array_name;
+            document.getElementById('array_key').value = ArrayKey;
         }
 
         function deletedocfile(x) {
@@ -914,10 +943,11 @@ $array_name = 'newdocfileslist'.$key;
         function deletedocfileMandatory(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
-                var fullurl = document.getElementById('docfullurl').value;
-                var index = newdocfileslist.indexOf(fullurl);
+                var file_url = document.getElementById('file_url').value;
+                var arrayName = document.getElementById('array_name').value;
+                var index = arrayName.indexOf(file_url);
                 if (index !== -1) {
-                    newdocfileslist.splice(index, 1);
+                    arrayName.splice(index, 1);
                 }
             }
             for (var i = 0; i < arrayName.length; i++) {
@@ -926,7 +956,7 @@ $array_name = 'newdocfileslist'.$key;
                 filenm = filenm.substring(0, filenm.length - 4);
                 html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
                     '<a class=" btn btn-xs " target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
-                    '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + arrayName[i] + '\');"   data-toggle="modal"> ' +
+                    '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 10) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
             }
             clearnewuploads_mandatory('no',ArrayKey,  arrayName);

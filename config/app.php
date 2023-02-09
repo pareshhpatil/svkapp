@@ -161,6 +161,7 @@ return [
         App\Providers\SwipezLegacyFrameworkServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Webklex\PDFMerger\Providers\PDFMergerServiceProvider::class
 
     ],
     /*
@@ -218,7 +219,8 @@ return [
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
-        'DOMPDF' => Barryvdh\DomPDF\Facade::class
+        'DOMPDF' => Barryvdh\DomPDF\Facade::class,
+        'PDFMerger' => Webklex\PDFMerger\Facades\PDFMergerFacade::class
 
     ],
     /*

@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Redis;
 use Numbers_Words;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
@@ -32,6 +32,8 @@ use App\Model\CostType;
 use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
+
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
 class InvoiceController extends AppController
 {
@@ -185,6 +187,7 @@ class InvoiceController extends AppController
             if (strlen($request_id) != 10) {
                 return redirect('/error/invalidlink');
             }
+            
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             if ($update == 1 && $invoice->payment_request_status != 11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
@@ -198,6 +201,7 @@ class InvoiceController extends AppController
                     }
                 }
             }
+            
             $request->template_id = $invoice->template_id;
             $request->contract_id = $invoice->contract_id;
             $request->currency = $invoice->currency;
@@ -352,6 +356,28 @@ class InvoiceController extends AppController
             }
             $data['logo'] = $logo;
         }
+
+        if ($link != null) {
+            $request_id = Encrypt::decode($link);
+            if (strlen($request_id) != 10) {
+                return redirect('/error/invalidlink');
+            }
+            $data['mandatory_files'] = [];
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    foreach($plugin['mandatory_data'] as $key=>$mandatory_data){
+                        $data['mandatory_files'.$key] = [];
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
+                        foreach ($mandatory_files as $files) {
+                           $file_url =  $files->file_url;
+                           array_push($data['mandatory_files'.$key], $file_url);
+                        }
+                        array_push($data['mandatory_files'], $data['mandatory_files'.$key]);
+                    }
+                }
+            }
+        }
+       
 
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
@@ -2017,6 +2043,62 @@ class InvoiceController extends AppController
                         }
                     }
                 }
+
+                if (isset($pluginValue->has_mandatory_upload)) {
+                    $oMerger = PDFMerger::init();
+
+                    if ($pluginValue->has_mandatory_upload == 1) {
+                        foreach($pluginValue->mandatory_data as $key=>$mandatory_data){
+                            
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+                            
+                            foreach ($mandatory_files as $file) {
+                                if (!empty($file->file_url)) {
+                                    $fileUrlExplode = explode('/', $file->file_url);
+                                    $fileLastFromURL = end($fileUrlExplode);
+                                    $fileExplode = explode('.', $fileLastFromURL);
+
+                                    $fileName = Arr::first($fileExplode);
+                                    $fileType = Arr::last($fileExplode);
+                                    $fileContent = '';
+
+                                    if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 'uat.expense';
+
+                                        $result = $s3->getObject(array(
+                                            'Bucket' => $bucketName,
+                                            'Key'    => $filePath
+                                        ));
+
+                                        $body = $result->get('Body');
+                                        $fileContent = base64_encode($body->getContents());
+                                    }
+
+                                    if($fileType == 'pdf'){
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 's3_expense';
+
+                                        $source_path = 'invoices/' . basename($file->file_url);
+                                        $file_content = Storage::disk($bucketName)->get($source_path);
+                                        Storage::disk('local')->put($fileName.'.'.$fileType, $file_content);
+                                        
+                                        $path = Storage::disk('local')->path($fileName.'.'.$fileType);
+                                        $oMerger->addPDF($path, 'all');
+                                    }
+
+                                    $invoiceAttachments[] = [
+                                        'fileName' => $fileName,
+                                        'fileNameSlug' => Str::slug($fileName, '-'),
+                                        'fileType' => $fileType,
+                                        'fileContent' => $fileContent,
+                                        'url' => $file->file_url
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             $info['invoice_attachments'] = $invoiceAttachments;
@@ -2085,10 +2167,17 @@ class InvoiceController extends AppController
                 $pdf->setPaper("a4", "landscape");
             }
 
+            $name = time().'.pdf';
+            
+            Storage::disk('local')->put( $name, $pdf->output());
+            $DOMpath = Storage::disk('local')->path($name);
+            $oMerger->addPDF($DOMpath, 'all', 'L');
+            $oMerger->merge();
+            $oMerger->save($name.'.pdf');
+            return  $oMerger->stream();
+            
 
-            $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
-
-            return $pdf->download($name . '.pdf');
+            //return $pdf->download($name . '.pdf');
         }
 
         return response()->json([
@@ -3135,6 +3224,18 @@ class InvoiceController extends AppController
             }
 
             $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, $invoice->grand_total, 0, 0, json_encode($plugin), $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    $this->invoiceModel->deleteMandatoryFiles($request_id);
+                    foreach($plugin['mandatory_data'] as $key=>$mandatory_data){
+                        $mandatory_files = $_POST['file_upload_mandatory'.$key];
+                        $mandatory_files_insert_array = explode(',', $mandatory_files);
+                        foreach($mandatory_files_insert_array as $file_url){
+                            $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                        }
+                    }
+                }
+            }
             if ($revision == true) {
                 $this->storeRevision($request_id, $revision_data);
             }
@@ -3148,7 +3249,7 @@ class InvoiceController extends AppController
                         $mandatory_files = $_POST['file_upload_mandatory'.$key];
                         $mandatory_files_insert_array = explode(',', $mandatory_files);
                         foreach($mandatory_files_insert_array as $file_url){
-                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['Description'], $mandatory_data['Required']);
+                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
                         }
                     }
                 }
