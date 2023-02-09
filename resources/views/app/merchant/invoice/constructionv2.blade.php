@@ -893,7 +893,7 @@ $array_name = 'newdocfileslist'.$key;
                     Do you want to permanently delete this attachment from this invoice?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+                    <button type="button" id="closeconformdoc2" class="btn default" data-dismiss="modal">Cancel </button>
                     <button type="button" onclick="deletedocfileMandatory('delete', document.getElementById('array_key').value, document.getElementById('array_name').value)" id="deleteanchor" class="btn delete">Delete</button>
                 </div>
             </div>
@@ -943,13 +943,24 @@ $array_name = 'newdocfileslist'.$key;
         function deletedocfileMandatory(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
+                var array_key = document.getElementById('array_key').value;
                 var file_url = document.getElementById('file_url').value;
-                var arrayName = document.getElementById('array_name').value;
+                var full_url = document.getElementById('array_name').value;
+                // arrayName = document.getElementById('array_name').value;
+               // document.getElementById('file_upload_mandatory'+array_key).value=full_url;
+                var arrayName = full_url.split(",");
+                
                 var index = arrayName.indexOf(file_url);
                 if (index !== -1) {
-                    arrayName.splice(index, 1);
+                    delete arrayName[index];
                 }
+
+                document.getElementById('file_upload_mandatory'+array_key).value = arrayName.join(',');
+               // const element = document.getElementById("docviewbox"+array_key);
+                //element.remove();
             }
+            arrayName= arrayName.filter(Boolean);
+            console.log(arrayName);
             for (var i = 0; i < arrayName.length; i++) {
                 var filenm = arrayName[i].substring(arrayName[i].lastIndexOf('/') + 1);
                 filenm = filenm.split('.').slice(0, -1).join('.')
@@ -958,6 +969,25 @@ $array_name = 'newdocfileslist'.$key;
                     '<a class=" btn btn-xs " target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
                     '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 10) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
+            }
+            clearnewuploads_mandatory('no',ArrayKey,  arrayName);
+            document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
+            document.getElementById('closeconformdoc2').click();
+        }
+
+        function deletedocfileMandatoryold(x, ArrayKey, arrayName) {
+            var html = '';
+            if (x == 'delete') {
+                var array_key = document.getElementById('array_key').value;
+                var file_url = document.getElementById('file_upload_mandatory'+array_key).value;
+                var arrayName = file_url.split(",");
+                var index = arrayName.indexOf(file_url);
+                if (index !== -1) {
+                    delete arrayName[index];
+                }
+                document.getElementById('file_upload_mandatory'+array_key).value = arrayName.join();
+                const element = document.getElementById("docviewbox"+array_key);
+                element.remove();
             }
             clearnewuploads_mandatory('no',ArrayKey,  arrayName);
             document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
