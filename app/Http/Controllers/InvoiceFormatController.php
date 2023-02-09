@@ -847,7 +847,7 @@ class InvoiceFormatController extends AppController
 
     function getPlugins()
     {
-        $this->setZeroValue(array('is_debit', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision'));
+        $this->setZeroValue(array('is_debit','has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision'));
         $this->setEmptyArray(array('debit', 'debitdefaultValue', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
@@ -860,6 +860,14 @@ class InvoiceFormatController extends AppController
         if ($_POST['has_upload'] == 1) {
             $plugin['has_upload'] = 1;
             $plugin['upload_file_label'] = $_POST['upload_file_label'];
+        }
+        if ($_POST['has_mandatory_upload'] == 1) {
+            $plugin['has_mandatory_upload'] = 1;
+            foreach ($_POST['mandatory_document_name'] as $k => $v) {
+                $plugin['mandatory_data'][$k]['name'] = $_POST['mandatory_document_name'][$k];
+                $plugin['mandatory_data'][$k]['description'] = $_POST['mandatory_document_description'][$k];
+                $plugin['mandatory_data'][$k]['required'] = $_POST['mandatory_document_action'][$k];
+            }
         }
         if ($_POST['has_signature'] == 1) {
             $plugin['has_signature'] = 1;
