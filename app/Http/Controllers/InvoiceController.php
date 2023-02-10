@@ -2045,66 +2045,73 @@ class InvoiceController extends AppController
                             ];
                         }
                     }
-                }
+                }                
+            }
 
-                if (isset($pluginValue->has_mandatory_upload)) {
-                    $oMerger = PDFMerger::init();
-                    $pdf_link_array = [];
-                    if ($pluginValue->has_mandatory_upload == 1) {
-                        foreach($pluginValue->mandatory_data as $key=>$mandatory_data){
-                            
-                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
-                            
-                            foreach ($mandatory_files as $file) {
-                                if (!empty($file->file_url)) {
-                                    $fileUrlExplode = explode('/', $file->file_url);
-                                    $fileLastFromURL = end($fileUrlExplode);
-                                    $fileExplode = explode('.', $fileLastFromURL);
+            
+            $info['invoice_attachments'] = $invoiceAttachments;
 
-                                    $fileName = Arr::first($fileExplode);
-                                    $fileType = Arr::last($fileExplode);
-                                    $fileContent = '';
 
-                                    if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
-                                        $filePath = 'invoices/' . $fileLastFromURL;
-                                        $bucketName = 'uat.expense';
+            $mandatoryDocumentAttachments = [];
 
-                                        $result = $s3->getObject(array(
-                                            'Bucket' => $bucketName,
-                                            'Key'    => $filePath
-                                        ));
+            if (isset($pluginValue->has_mandatory_upload)) {
+                $oMerger = PDFMerger::init();
+                $pdf_link_array = [];
+                if ($pluginValue->has_mandatory_upload == 1) {
+                    foreach($pluginValue->mandatory_data as $key=>$mandatory_data){
+                        
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+                        
+                        foreach ($mandatory_files as $file) {
+                            if (!empty($file->file_url)) {
+                                $fileUrlExplode = explode('/', $file->file_url);
+                                $fileLastFromURL = end($fileUrlExplode);
+                                $fileExplode = explode('.', $fileLastFromURL);
 
-                                        $body = $result->get('Body');
-                                        $fileContent = base64_encode($body->getContents());
-                                    }
+                                $fileName = Arr::first($fileExplode);
+                                $fileType = Arr::last($fileExplode);
+                                $fileContent = '';
 
-                                    if($fileType == 'pdf'){
-                                        $filePath = 'invoices/' . $fileLastFromURL;
-                                        $bucketName = 's3_expense';
+                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 'uat.expense';
 
-                                        $source_path = 'invoices/' . basename($file->file_url);
-                                        $file_content = Storage::disk($bucketName)->get($source_path);
-                                        Storage::disk('local')->put($fileName.'.'.$fileType, $file_content);
-                                        
-                                        $path = Storage::disk('local')->path($fileName.'.'.$fileType);
-                                        array_push($pdf_link_array, $path);
-                                    }
+                                    $result = $s3->getObject(array(
+                                        'Bucket' => $bucketName,
+                                        'Key'    => $filePath
+                                    ));
 
-                                    $invoiceAttachments[] = [
-                                        'fileName' => $fileName,
-                                        'fileNameSlug' => Str::slug($fileName, '-'),
-                                        'fileType' => $fileType,
-                                        'fileContent' => $fileContent,
-                                        'url' => $file->file_url
-                                    ];
+                                    $body = $result->get('Body');
+                                    $fileContent = base64_encode($body->getContents());
                                 }
+
+                                if($fileType == 'pdf'){
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 's3_expense';
+
+                                    $source_path = 'invoices/' . basename($file->file_url);
+                                    $file_content = Storage::disk($bucketName)->get($source_path);
+                                    Storage::disk('local')->put($fileName.'.'.$fileType, $file_content);
+                                    
+                                    $path = Storage::disk('local')->path($fileName.'.'.$fileType);
+                                    array_push($pdf_link_array, $path);
+                                }
+
+                                $mandatoryDocumentAttachments[] = [
+                                    'fileName' => $fileName,
+                                    'fileNameSlug' => Str::slug($fileName, '-'),
+                                    'fileType' => $fileType,
+                                    'fileContent' => $fileContent,
+                                    'url' => $file->file_url
+                                ];
                             }
                         }
                     }
                 }
             }
 
-            $info['invoice_attachments'] = $invoiceAttachments;
+            
+            $info['mandatory_document_attachments'] = $mandatoryDocumentAttachments;
 
             $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
 
