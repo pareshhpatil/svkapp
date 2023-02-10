@@ -1001,12 +1001,14 @@ class InvoiceController extends AppController
 
             if (isset($plugin_array['has_mandatory_upload'])) {
                 if ($plugin_array['has_mandatory_upload'] == 1) {
-                    foreach($plugin_array['mandatory_data'] as $key=>$mandatory_data){
-                        $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
-                        $menus['id'] = "required_document".$key;
-                        $menus['full'] = $mandatory_data['name'];
-                        $menus['link'] = "";
 
+                    $menus0['title'] = "Required documents";
+                    $menus0['id'] = "hellow_required_document";
+                    $menus0['full'] = "Required documents";
+                    $menus0['link'] = "";
+                    $menus0['type'] = "required";
+
+                    foreach($plugin_array['mandatory_data'] as $key=>$mandatory_data){
                         $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
                   
                         $menus1 = array();
@@ -1040,12 +1042,21 @@ class InvoiceController extends AppController
                             }
                            
                         }
+                        if($mandatory_files[0]->file_url !=''){
 
-                        
-                        $menus['menu'] = $menus2;
-                        $doclist[] = $menus;
+                            $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
+                            $menus['id'] = "required_document".$key;
+                            $menus['full'] = $mandatory_data['name'];
+                            $menus['link'] = "";
+
+                            $menus['menu'] = $menus2;
+                            $menus0['menu'][] = $menus;
+
+                        }
 
                     }
+                    
+                    $doclist[] = $menus0;
                 }
             }
 
@@ -1053,6 +1064,7 @@ class InvoiceController extends AppController
             $tt = json_decode($constriuction_details, 1);
             $data = $this->getDataBillCodeAttachment($tt, $doclist, $data);
 
+            //dd( $data);
             //dd($data['docs'][0]['menu'][0]['title']);
 
             $selectedDoc = array();

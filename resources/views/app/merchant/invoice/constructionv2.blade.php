@@ -381,10 +381,11 @@
                                 <div class="col-md-8">
                                     @if(isset($plugin['files']) && !empty($plugin['files'][0]))
                                     <span class="help-block">
-                                        <div id="docviewbox">
+                                        <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn btn default">Add attachments</a>
+                                        <div id="docviewbox" class="mt-1">
                                             @foreach ($plugin['files'] as $key=>$item)
-                                            <span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important">
-                                                <a class=" btn-xs " target="_BLANK" href="{{$item}}" title="Click to view full size">{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}..</a>
+                                            <span class=" btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important">
+                                                <a class="btn-sm " target="_BLANK" href="{{$item}}" title="Click to view full size">{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}..</a>
                                                 <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                             </span>
                                             @php
@@ -392,8 +393,6 @@
                                             @endphp
                                             @endforeach
                                         </div>
-                                        <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn btn btn-xs btn-link">Upload doc
-                                        </a>
                                     </span>
                                     <span id="newImageDiv" style="display: none;">
                                         <input type="hidden" name="file_upload" id="file_upload" value="{{implode(',',$plugin['files'])}}">
@@ -403,7 +402,7 @@
                                     <div class="input-icon right">
 
                                         <input type="hidden" name="file_upload" id="file_upload" value="">
-                                        <a class="UppyModalOpenerBtn btn  default">Add attachments</a>
+                                        <a class="UppyModalOpenerBtn btn default">Add attachments</a>
                                         <div id="docviewbox" class="mt-1">
                                         </div>
                                         <div id="drag-drop-area2"></div>
@@ -932,8 +931,8 @@ $array_name = 'newdocfileslist'.$key;
                 var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
                 filenm = filenm.split('.').slice(0, -1).join('.')
                 filenm = filenm.substring(0, filenm.length - 4);
-                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
-                    '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
+                html = html + '<span class=" btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
+                    '<a class="btn btn-sm " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
                     '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
             }

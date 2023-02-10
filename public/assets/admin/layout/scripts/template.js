@@ -2315,6 +2315,12 @@ function showStateDiv(country_name) {
 function saveDocument() {
     document_name = document.getElementById('document_name').value;
     document_description = document.getElementById('document_description').value;
+    if(document_name == '' || document_description == ''){
+        var div = document.getElementById('mandatory_docs');
+        div.innerHTML += 'Document name and description cannot be blank!';
+        div.style.display = 'block';
+        return false;
+    }
     document_action = document.getElementById('document_action').value;
     var mainDiv = document.getElementById('new_documents');
     var newDiv = document.createElement('tr');
@@ -2324,6 +2330,9 @@ function saveDocument() {
     mainDiv.appendChild(newDiv);
     document.getElementById('document_name').value = '';
     document.getElementById('document_description').value = '';
+    var div = document.getElementById('mandatory_docs');
+    div.innerHTML += '';
+    div.style.display = 'none';
     document.getElementById('documentclose').click();
 
 }

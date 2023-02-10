@@ -1230,7 +1230,9 @@
                             <div class="col-md-12">
                                 <br>
                                 <div id="covering_error" class="alert alert-danger" style="display: none;">
-
+                                </div>
+                                
+                                <div id="mandatory_docs" class="alert alert-danger" style="display: none;">
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">Document name <span class="required">*
