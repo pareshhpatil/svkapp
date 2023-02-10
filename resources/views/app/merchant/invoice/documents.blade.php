@@ -122,9 +122,9 @@ $header='app.patron.invoice.invoice-master';}
                              <h2 class="text-lg text-left  font-normal  text-black">{{substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4)}} </h2>
                                 </div>
                            @php
-                               $lastWord = explode("/", $item);
-	$folder= $lastWord[count($lastWord)-2];
-    $folder=$folder.'_'.basename($item);
+                                $lastWord = explode("/", $item);
+                                $folder= $lastWord[count($lastWord)-2];
+                                $folder=$folder.'_'.basename($item);
                            @endphp
                                 <div >
                                   <h2 class="text-sm text-right  font-normal  text-blue-800"> <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank"><i class="ml-2 popovers fa fa-download support blue" data-placement="left" data-container="body" data-trigger="hover"  data-content="Download file" data-original-title="" title=""></i></a>  <a href="/merchant/invoice/document/download/all/{{$info['Url']}}" target="_blank"><i class="ml-2 popovers fa fa-archive support blue" style="font-size:18px" data-container="body" data-trigger="hover"   data-placement="left" data-content="Download all files" data-original-title="" title=""></i></a>

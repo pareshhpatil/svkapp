@@ -1014,28 +1014,31 @@ class InvoiceController extends AppController
                         $pos = 1;
 
                         foreach ($mandatory_files as $files) {
-                            $data['files'][] = $files->file_url;
-                            $nm = '';
-                            if (!empty($files->file_url)) {
-                                $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
-                            }
-        
-                            $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
-                            $menus1['full'] = basename($files->file_url);
-        
-                            $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
-        
-        
-                            $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
-                            $menus1['menu'] = "";
-                            $menus1['type'] = "required";
-                            $menus2[$pos] = $menus1;
-                            if ($pos == 1) {
-                                if (empty($docpath)) {
-                                    $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                            if($files->file_url !=''){
+                                $data['files'][] = $files->file_url;
+                                $nm = '';
+                                if (!empty($files->file_url)) {
+                                    $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
                                 }
+            
+                                $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                $menus1['full'] = basename($files->file_url);
+            
+                                $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
+            
+            
+                                $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
+                                $menus1['menu'] = "";
+                                $menus1['type'] = "required";
+                                $menus2[$pos] = $menus1;
+                                if ($pos == 1) {
+                                    if (empty($docpath)) {
+                                        $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                    }
+                                }
+                                $pos++;
                             }
-                            $pos++;
+                           
                         }
 
                         
@@ -2046,7 +2049,7 @@ class InvoiceController extends AppController
 
                 if (isset($pluginValue->has_mandatory_upload)) {
                     $oMerger = PDFMerger::init();
-
+                    $pdf_link_array = [];
                     if ($pluginValue->has_mandatory_upload == 1) {
                         foreach($pluginValue->mandatory_data as $key=>$mandatory_data){
                             
@@ -2084,7 +2087,7 @@ class InvoiceController extends AppController
                                         Storage::disk('local')->put($fileName.'.'.$fileType, $file_content);
                                         
                                         $path = Storage::disk('local')->path($fileName.'.'.$fileType);
-                                        $oMerger->addPDF($path, 'all');
+                                        array_push($pdf_link_array, $path);
                                     }
 
                                     $invoiceAttachments[] = [
@@ -2166,18 +2169,25 @@ class InvoiceController extends AppController
                 $pdf = DOMPDF::loadView('mailer.invoice.full-invoice', $data);
                 $pdf->setPaper("a4", "landscape");
             }
-
+            
             $name = time().'.pdf';
-            
-            Storage::disk('local')->put( $name, $pdf->output());
-            $DOMpath = Storage::disk('local')->path($name);
-            $oMerger->addPDF($DOMpath, 'all', 'L');
-            $oMerger->merge();
-            $oMerger->save($name.'.pdf');
-            return  $oMerger->stream();
-            
 
-            //return $pdf->download($name . '.pdf');
+            if(count($pdf_link_array) > 0){
+                Storage::disk('local')->put( $name, $pdf->output());
+                $DOMpath = Storage::disk('local')->path($name);
+                $oMerger->addPDF($DOMpath, 'all', 'L');
+
+                foreach($pdf_link_array as $path){
+                    $oMerger->addPDF($path, 'all');
+                }
+            
+                $oMerger->merge();
+                $oMerger->save($name);
+                return  $oMerger->download();
+            }else{
+                return $pdf->download($name);
+            }           
+
         }
 
         return response()->json([

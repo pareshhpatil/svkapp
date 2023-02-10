@@ -424,22 +424,22 @@
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <h3 class="form-section">Required documents</h3>
-            <div class="row">
                 @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
+                <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2">{{$mandatory_data['name']}}
                         </label>
                         <div class="col-md-10">
-                            
                         @if(isset($mandatory_files) && !empty($mandatory_files[0]))
                             <span class="help-block">
+                            <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
                             @foreach ($mandatory_files as $key2=>$item)
                                 @if($key2 == $key)
                                     @foreach ($item as $key3=>$links)
-                                    <div id="docviewbox{{$key}}">
-                                        <span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important">
-                                            <a class=" btn-xs " target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,10)}}..</a>
-                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,10)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                    <div id="docviewbox{{$key}}" class="mt-1">
+                                        <span class=" btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important">
+                                            <a class="btn-sm" target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,20)}}..</a>
+                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,20)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                         </span>
                                     </div>
                                     @endforeach
@@ -449,7 +449,6 @@
                                     </span>
                                 @endif
                             @endforeach
-                            <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn{{$key}} btn btn-xs btn-link">Upload doc</a>
                             </span>
                         @else
                             <div class="input-icon">
@@ -462,8 +461,9 @@
                         @endif
                         </div>
                     </div>
-                @endforeach
             </div>
+            <hr>
+                @endforeach
         </div>
     </div>
     @endif
@@ -965,9 +965,9 @@ $array_name = 'newdocfileslist'.$key;
                 var filenm = arrayName[i].substring(arrayName[i].lastIndexOf('/') + 1);
                 filenm = filenm.split('.').slice(0, -1).join('.')
                 filenm = filenm.substring(0, filenm.length - 4);
-                html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
-                    '<a class=" btn btn-xs " target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
-                    '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 10) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
+                html = html + '<br><span class="btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
+                    '<a class=" btn btn-sm" target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 20) + '..</a>' +
+                    '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 20) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
             }
             clearnewuploads_mandatory('no',ArrayKey,  arrayName);
