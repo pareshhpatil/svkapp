@@ -523,26 +523,20 @@ class User extends ParentModel
 
         $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
 
-        if(empty($contractPrivilegesArray)) {
-            if (!empty($projectPrivilegesArray)) {
-                $contractPrivilegesArray = $this->emptyContractIDs($projectPrivilegesArray, 'project');
-            } else {
-                $contractPrivilegesArray = $this->emptyContractIDs($customerPrivilegesArray, 'customer');
-            }
-
+        if(!empty($customerPrivilegesArray)) {
+            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray);
         }
 
-        if(empty($orderPrivilegesArray)) {
-            $orderPrivilegesArray = $this->emptyOrderIDs($contractPrivilegesArray);
+        if (!empty($projectPrivilegesArray)) {
+            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray);
         }
 
-
-        if(empty($invoicePrivilegesArray)) {
-            $invoicePrivilegesArray = $this->emptyInvoiceIDs($contractPrivilegesArray);
+        if(!empty($contractPrivilegesArray)) {
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray);
         }
 
-        if(empty($projectPrivilegesArray)) {
-            $projectPrivilegesArray = $this->emptyProjectIDs($customerPrivilegesArray);
+        if(!empty($contractPrivilegesArray)) {
+            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);
         }
 
         return [
@@ -554,10 +548,12 @@ class User extends ParentModel
         ];
     }
 
-    public function emptyProjectIDs($customerPrivilegesArray) {
+    public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray) {
+
         $projectIDs = DB::table('project')
             ->where('is_active', 1)
             ->whereIn('customer_id', array_keys($customerPrivilegesArray))
+            ->whereNotIn('id', array_keys($projectPrivilegesArray))
             ->select(['id', 'customer_id'])
             ->get()
             ->toArray();
@@ -566,45 +562,33 @@ class User extends ParentModel
         foreach ($projectIDs as $projectID) {
             $tempArr[$projectID->id] = $customerPrivilegesArray[$projectID->customer_id];
         }
-        
-        return $tempArr;
+
+        return $projectPrivilegesArray + $tempArr;
     }
 
-    public function emptyContractIDs($privilegesArray, $type) {
+    public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray) {
         $tempArr= [];
-        if ($type == 'project') {
-            $contractIDs = DB::table('contract')
-                ->where('is_active', 1)
-                ->whereIn('project_id', array_keys($privilegesArray))
-                ->select(['contract_id', 'project_id'])
-                ->get()
-                ->toArray();
 
-            foreach ($contractIDs as $contractID) {
-                $tempArr[$contractID->contract_id] = $privilegesArray[$contractID->project_id];
-            }
+        $contractIDs = DB::table('contract')
+            ->where('is_active', 1)
+            ->whereIn('project_id', array_keys($projectPrivilegesArray))
+            ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
+            ->select(['contract_id', 'project_id'])
+            ->get()
+            ->toArray();
+
+        foreach ($contractIDs as $contractID) {
+            $tempArr[$contractID->contract_id] = $projectPrivilegesArray[$contractID->project_id];
         }
 
-        if($type == 'customer') {
-            $contractIDs = DB::table('contract')
-                ->where('is_active', 1)
-                ->whereIn('customer_id', array_keys($privilegesArray))
-                ->select(['contract_id', 'customer_id'])
-                ->get()
-                ->toArray();
-
-            foreach ($contractIDs as $contractID) {
-                $tempArr[$contractID->contract_id] = $privilegesArray[$contractID->customer_id];
-            }
-        }
-
-        return $tempArr;
+        return $contractPrivilegesArray + $tempArr;
     }
 
-    public function emptyOrderIDs($contractPrivilegesArray) {
+    public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray) {
         $orderIDs = DB::table('order')
             ->where('is_active', 1)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
+            ->whereNotIn('order_id', array_keys($orderPrivilegesArray))
             ->select(['order_id', 'contract_id'])
             ->get()
             ->toArray();
@@ -614,13 +598,14 @@ class User extends ParentModel
             $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
         }
 
-        return $tempArr;
+        return $orderPrivilegesArray + $tempArr;
     }
 
-    public function emptyInvoiceIDs($contractPrivilegesArray) {
+    public function createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray) {
         $invoiceIDs = DB::table('payment_request')
             ->where('is_active', 1)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
+            ->whereNotIn('payment_request_id', array_keys($invoicePrivilegesArray))
             ->select(['payment_request_id', 'contract_id'])
             ->get()
             ->toArray();
@@ -630,6 +615,6 @@ class User extends ParentModel
             $tempArr[$invoiceID->payment_request_id] = $contractPrivilegesArray[$invoiceID->contract_id];
         }
 
-        return $tempArr;
+        return $invoicePrivilegesArray + $tempArr;
     }
 }

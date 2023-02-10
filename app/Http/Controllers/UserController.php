@@ -316,7 +316,17 @@ class UserController extends Controller
 
         Session::forget('menus');
 
-        $privileges = $this->user_model->getUserPrivileges($user->user_id);
+        if($role == 'Admin') {
+            $privileges = [
+                "customer_privileges" => ['all' => 'full'],
+                "project_privileges" => ['all' => 'full'],
+                "contract_privileges" => ['all' => 'full'],
+                "invoice_privileges" => ['all' => 'full'],
+                "change_order_privileges" => ['all' => 'full']
+            ];
+        } else {
+            $privileges = $this->user_model->getUserPrivileges($user->user_id);
+        }
 
         Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));
         Redis::set('project_privileges_' . $user->user_id, json_encode($privileges['project_privileges']));

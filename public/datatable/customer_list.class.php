@@ -335,15 +335,19 @@ class SSP
         $bulk_id = $_SESSION['customer_bulk_id'];
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
 
-        $customerPrivilieges = self::sql_exec(
-            $db,
-            "SELECT type_id, access
-			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
-        );
 
-        $privilegesArray = [];
-        foreach ($customerPrivilieges as $customerPriviliege) {
-            $privilegesArray[$customerPriviliege['type_id']] = $customerPriviliege['access'];
+        if($_SESSION['user_role'] == 'Admin') {
+            $privilegesArray = ['all' => 'full'];
+        } else {
+            $customerPrivileges = self::sql_exec(
+                $db,
+                "SELECT type_id, access
+			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
+            );
+            $privilegesArray = [];
+            foreach ($customerPrivileges as $customerPrivilege) {
+                $privilegesArray[$customerPrivilege['type_id']] = $customerPrivilege['access'];
+            }
         }
 
         // Main query to actually get the data
@@ -360,8 +364,6 @@ class SSP
             "SELECT COUNT(`{$primaryKey}`)
 			 FROM   `$table` WHERE merchant_id='$merchant_id' AND is_active=1"
         );
-
-
 
         $recordsTotal = $resTotalLength[0][0];
         /*

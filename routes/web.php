@@ -254,7 +254,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoiceformat/save/', 'InvoiceFormatController@save');
   Route::post('invoiceformat/savePluginValue/', 'InvoiceFormatController@savePluginValue');
 
-  Route::any('invoice/create', 'InvoiceController@create')->name('create.invoice');
+  Route::any('invoice/create', 'InvoiceController@create')
+      ->name('create.invoice')
+      ->middleware('PrivilegesAccess');
   Route::any('invoice/createv2', 'InvoiceController@createv2')->name('createv2.invoice');
   Route::any('invoice/createv2/{link}', 'InvoiceController@createv2')->name('createv23.invoice');
   Route::any('invoice/updatev2/{link}', 'InvoiceController@updatev2')->name('updatev23.invoice');
@@ -373,7 +375,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
 //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
-  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
+  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')
+        ->name('contract.create.new')
+        ->middleware('PrivilegesAccess');
 
   Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')
         ->name('contract.update.new')->middleware('PrivilegesAccess');
@@ -401,7 +405,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
-  Route::any('order/create', 'OrderController@create')->name('create.orderv2');
+  Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');
   Route::any('order/update/{link}', 'OrderController@update')
       ->name('update.order')
       ->middleware('PrivilegesAccess');

@@ -913,7 +913,15 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            $hasCreateAccess = false;
+            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+                $hasCreateAccess = true;
+            }
+            $info['has_create_access'] = $hasCreateAccess;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2539,7 +2547,11 @@ class InvoiceController extends AppController
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
 
-            $change_order_ids = json_decode($info['change_order_id'], 1);
+            $change_order_ids = [];
+            if(isset($info['change_order_id'])) {
+                $change_order_ids = json_decode($info['change_order_id'], 1);
+            }
+
             if (!empty($change_order_ids)) {
                 $info['last_month_co_amount']=0;
                 $info['this_month_co_amount']=0;

@@ -149,9 +149,13 @@ class MasterController extends AppController
     {
         $title = 'Project list';
         $data = Helpers::setBladeProperties($title,  [],  []);
+        $userRole = Session::get('user_role');
 
-
-        $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
 
         if(!empty($privilegesIDs)) {
             $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs));
@@ -374,5 +378,12 @@ class MasterController extends AppController
         $data['merchant_id'] = $this->merchant_id;
         $this->masterModel->saveBilledTransaction($data, $this->user_id);
         return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
+    }
+
+    public function noPermission()
+    {
+        $title =  'Permission not granted';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        return view('/errors/no-permission', $data);
     }
 }

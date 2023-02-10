@@ -437,6 +437,7 @@ class ContractController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
+        $userRole = Session::get('user_role');
 
         //store last search criteria into Redis
         $redis_items = $this->getSearchParamRedis('contract_list', $this->merchant_id);
@@ -449,7 +450,11 @@ class ContractController extends Controller
         }
         //$data['showLastRememberSearchCriteria'] = true;
         //get contract privileges from redis
-        $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
 
         $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'], $data['project_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {

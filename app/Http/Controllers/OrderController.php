@@ -142,6 +142,7 @@ class OrderController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
+        $userRole = Session::get('user_role');
 
         //find last search criteria into Redis 
         $redis_items = $this->getSearchParamRedis('change_order_list', $this->merchant_id);
@@ -151,8 +152,13 @@ class OrderController extends Controller
             $data['to_date'] = $dates['to_date'] = Helpers::sqlDate($redis_items['change_order_list']['search_param']['to_date']);
             $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
         }
-        //get privileges from redis
-        $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
+        }
 
         $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {

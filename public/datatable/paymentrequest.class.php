@@ -163,7 +163,7 @@ class SSP
                                                 <ul class="dropdown-menu" role="menu">';
                         if ($data[$i]['template_type'] == 'construction') {
                             if($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only') {
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
@@ -181,7 +181,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit') {
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
                                         if ($request_type == 1 && $status != 11) {
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
@@ -221,7 +221,7 @@ class SSP
                                 }
 
                             } else {
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only') {
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
@@ -239,7 +239,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
                                         if ($request_type == 1 && $status != 11) {
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
@@ -565,15 +565,20 @@ class SSP
         $merchant_id = \App\Libraries\Encrypt::decode($_SESSION['merchant_id']);
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
 
-        $paymentRequestPrivilieges = self::sql_exec(
-            $db,
-            "SELECT type_id, access
-			 FROM   `briq_privileges` WHERE type = 'invoice' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
-        );
-        
-        $privilegesArray = [];
-        foreach ($paymentRequestPrivilieges as $paymentRequestPriviliege) {
-            $privilegesArray[$paymentRequestPriviliege['type_id']] = $paymentRequestPriviliege['access'];
+        if($_SESSION['user_role'] == 'Admin') {
+            $privilegesArray = ['all' => 'full'];
+        } else {
+            $privilegesArray = json_decode($_SESSION['invoice_privileges_ids'], true);
+//            $paymentRequestPrivilieges = self::sql_exec(
+//                $db,
+//                "SELECT type_id, access
+//			 FROM   `briq_privileges` WHERE type = 'invoice' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
+//            );
+//
+//            $privilegesArray = [];
+//            foreach ($paymentRequestPrivilieges as $paymentRequestPriviliege) {
+//                $privilegesArray[$paymentRequestPriviliege['type_id']] = $paymentRequestPriviliege['access'];
+//            }
         }
 
         $data = self::sql_exec(

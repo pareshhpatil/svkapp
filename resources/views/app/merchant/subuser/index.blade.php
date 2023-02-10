@@ -73,9 +73,11 @@
                                                 <li>
                                                     <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                 </li>
-                                                <li>
-                                                    <button type="button" data-user-id="{{$subUser->user_id}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
-                                                </li>
+                                                @if($subUser->user_role_name !== 'Admin')
+                                                    <li>
+                                                        <button type="button" data-user-id="{{$subUser->user_id}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
+                                                    </li>
+                                                @endif
                                                 <li>
                                                     <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red" style="text-align: left"><i class="fa fa-remove"></i> Delete </a>
                                                 </li>

@@ -68,11 +68,11 @@ class Paymentrequest extends Controller
             //$cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             $cycle_list = array();
             #$cycle_list = $this->model->getCycleList($this->session->get('userid'), $fromdate->format('Y-m-d'), $todate->format('Y-m-d'));
-            $userPrivilegesPaymentRequests = $this->model->getUserPrivilegesPaymentRequestIDs($merchant_id, $user_id);
+            $userPrivilegesPaymentRequests = json_decode($_SESSION['invoice_privileges_ids'], true);
 
             $paymentRequestIDs = [];
-            foreach ($userPrivilegesPaymentRequests as $userPrivilegesPaymentRequest) {
-                $paymentRequestIDs[] = $userPrivilegesPaymentRequest['type_id'];
+            foreach ($userPrivilegesPaymentRequests as $key => $userPrivilegesPaymentRequest) {
+                $paymentRequestIDs[] = $key;
             }
 
             $_SESSION['display_column'] = array();

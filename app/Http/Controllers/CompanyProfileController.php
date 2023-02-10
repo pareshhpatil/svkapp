@@ -234,72 +234,55 @@ class CompanyProfileController extends AppController
 
         $user = null;
 
-        $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-        $invoicePrivilegesIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-        $changeOrderPrivilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
-
         if ($user == null) {
-            $user = [
-                [
-                    "name" => "INVOICE",
-                    "item_list" => []
-                ],
-                [
-                    "name" => "PAYMENT PAGES",
-                ]
-            ];
-
-            if(in_array('all', array_keys($contractPrivilegesIDs)) && $contractPrivilegesIDs['all'] == 'full') {
-                $user[0]['item_list'][] = [
-                    "title" => "Create contract",
-                    "desc" => "Create your construction contracts. Contracts will be used to create invoices (G702/G703) as your project develops",
-                    "link" => "/merchant/contract/create"
-                ];
-            }
-
-            if(in_array('all', array_keys($invoicePrivilegesIDs)) && $invoicePrivilegesIDs['all'] == 'full') {
-                $user[0]['item_list'][] = [
-                    "title" => "Create invoice",
-                    "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                    "link" => "/merchant/invoice/create"
-                ];
-
-                $row_array['name'] = 'Create invoice';
-                $row_array['link'] = '/merchant/invoice/create';
-                $return_arr[] = $row_array;
-            }
-
-            if(in_array('all', array_keys($changeOrderPrivilegesIDs)) && $changeOrderPrivilegesIDs['all'] == 'full') {
-                $user[0]['item_list'][] = [
-                    "title" => "Change orders (CO)",
-                    "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                    "link" => "/merchant/order/create"
-                ];
-            }
-
-            $user[0]['item_list'][] = [
-                "title" => "Create estimate",
-                "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                "link" => "/merchant/invoice/create/estimate"
-            ];
-
-            $user[0]['item_list'][] = [
-                "title" => "Bulk upload invoices / estimates",
-                "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                "link" => "/merchant/bulkupload/newupload"
-            ];
-
-            $user[0]['item_list'][] = [
-                "title" => "Create subscription",
-                "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                "link" => "/merchant/invoice/create/subscription"
-            ];
-
-            $user[1]["item_list"][] = [
-                "title" => "Quick link",
-                "desc" => "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                "link" => "/merchant/directpaylink"
-            ];
+            $user = '[
+                {
+                    "name": "INVOICE",
+                    "item_list": [
+                        {
+                            "title": "Create contract",
+                            "desc": "Create your construction contracts. Contracts will be used to create invoices (G702/G703) as your project develops",
+                            "link": "/merchant/contract/create"
+                        },
+                        {
+                            "title": "Create invoice",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/invoice/create"
+                        },
+                        {
+                            "title": "Change orders (CO)",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/order/create"
+                        },
+                        {
+                            "title": "Create estimate",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/invoice/create/estimate"
+                        },
+                        {
+                            "title": "Bulk upload invoices / estimates",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/bulkupload/newupload"
+                        },
+                        {
+                            "title": "Create subscription",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/invoice/create/subscription"
+                        }
+                    ]
+                },
+                {
+                    "name": "PAYMENT PAGES",
+                    "item_list": [
+                        {
+                            "title": "Quick link",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/directpaylink"
+                        }
+                        
+                    ]
+                }
+            ]';
         }
 
         $return_arr = array();

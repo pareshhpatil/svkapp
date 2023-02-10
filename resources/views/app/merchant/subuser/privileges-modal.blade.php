@@ -7,7 +7,7 @@
         border-radius: 4px;
         background: #FFFFFF;
         border: 1px solid #FFFFFF;
-        box-shadow: 0px 3px 3px rgb(0 0 0 / 12%);
+        box-shadow: 0 3px 3px rgb(0 0 0 / 12%);
     }
 
     .privileges-access-item-title, .privileges-form label {
@@ -25,7 +25,6 @@
         bottom: 0;
         right: 0;
         left: 50% !important;
-        /* width: 80em; */
         transform: translateX(100%);
         transition: .3s ease-out;
         z-index: 100;
@@ -86,28 +85,26 @@
         z-index: 999;
     }
 
-    .panel-footer {
-        position: absolute;
-        bottom: 0;
-        background-color: transparent !important;
-        width: 100%;
-        border: 0 !important;
+    .form .form-actions {
+        background: transparent;
+        padding: 20px 0;
+        margin-top: 30px;
     }
 
-    .panel-footer .btn {
-        font-size: 16px;
-        padding: 10px;
-        width: 100%;
-    }
+    /*.panel-footer .btn {*/
+    /*    font-size: 16px;*/
+    /*    padding: 10px;*/
+    /*    width: 100%;*/
+    /*}*/
 
-    .panel-footer .save-btn {
-        background-color: #3E4AA3;
-        color: #fff;
-    }
+    /*.panel-footer .save-btn {*/
+    /*    background-color: #3E4AA3;*/
+    /*    color: #fff;*/
+    /*}*/
 
-    .panel-footer .save-btn:hover {
-        color: #fff;
-    }
+    /*.panel-footer .save-btn:hover {*/
+    /*    color: #fff;*/
+    /*}*/
 
     .select2-selection__rendered {
         min-height: 32px;
@@ -181,8 +178,9 @@
                     </li>
                 </ul>
 
-                <form method="post" action="/merchant/subusers/privileges" class="privileges-form" onsubmit="loader();" enctype="multipart/form-data">
+                <form method="post" action="/merchant/subusers/privileges" class="privileges-form form" onsubmit="loader();" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="user_id" class="panel-user-id">
                     <div class="tab-content" style="margin-top: 30px">
                         <div class="tab-pane active" id="tab1">
                             <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
@@ -193,6 +191,16 @@
                                     <input type="hidden" name="customers_privileges">
                                 </div>
                                 <div class="customer-array"></div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
+                                                <button type="button" class="btn blue save-btn">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab2">
@@ -204,6 +212,16 @@
                                     <input type="hidden" name="projects_privileges">
                                 </div>
                                 <div class="project-array"></div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
+                                                <button type="button" class="btn blue save-btn">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab3">
@@ -215,6 +233,16 @@
                                     <input type="hidden" name="contracts_privileges">
                                 </div>
                                 <div class="contract-array"></div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
+                                                <button type="button" class="btn blue save-btn">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab4">
@@ -226,6 +254,16 @@
                                     <input type="hidden" name="invoices_privileges">
                                 </div>
                                 <div class="invoice-array"></div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
+                                                <button type="button" class="btn blue save-btn">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab5">
@@ -237,17 +275,16 @@
                                     <input type="hidden" name="change_orders_privileges">
                                 </div>
                                 <div class="change-order-array"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <input type="hidden" name="user_id" class="panel-user-id">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <button type="button" class="btn save-btn">Save</button>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
+                                                <button type="button" class="btn blue save-btn">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -256,20 +293,6 @@
         </div>
     </div>
     <script>
-        // function openPrivilegesDrawer(d) {
-        //
-        //     let panelWrap =  document.getElementById("panelWrapPrivileges");
-        //     panelWrap.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
-        //     panelWrap.style.transform = "translateX(0%)";
-        //     panelWrap.getElementsByClassName('panel-user-id')[0].value = d.getAttribute("data-user-id");
-        //
-        //     fetch(`/merchant/subusers/privileges/${d.getAttribute("data-user-id")}`)
-        //         .then((response) => response.json())
-        //         .then((data) => {
-        //             console.log(data)
-        //         });
-        // }
-
         function closePrivilegesDrawer() {
             document.getElementById("panelWrapPrivileges").style.boxShadow = "none";
             document.getElementById("panelWrapPrivileges").style.transform = "translateX(100%)";
@@ -295,7 +318,6 @@
             let userID;
 
             $(document).on("click",".open-privileges-drawer-btn",function() {
-
                 let panelWrap =  document.getElementById("panelWrapPrivileges");
                 userID = $(this).attr("data-user-id");
                 panelWrap.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
@@ -698,7 +720,7 @@
     <option value="full" ${privileges === 'full' ? 'selected' : ''}>Full</option>
     <option value="edit" ${privileges === 'edit' ? 'selected' : ''}>Edit</option>
     <option value="comment" ${privileges === 'comment' ? 'selected' : ''}>Comment</option>
-    ${type === 'change-order' ? approveHTML(privileges) : ''}
+    ${type === 'change-order' || type === 'invoice' ? approveHTML(privileges) : ''}
     <option value="view-only" ${privileges === 'view-only' ? 'selected' : ''}>View Only</option>
 </select>
 <a class="close" style="margin-left: 10px">

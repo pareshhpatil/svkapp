@@ -120,16 +120,17 @@ class Customer extends Controller
             }
             $merchant_id = $this->session->get('merchant_id');
             $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
 
             $userPrivilegesAllCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
-            
-            if(!empty($userPrivilegesAllCustomers)) {
+
+            if($user_role != 'Admin' && !empty($userPrivilegesAllCustomers)) {
                 $privilegesArray = [];
                 foreach ($userPrivilegesAllCustomers as $userPrivilegesAllCustomer) {
                     $privilegesArray[$userPrivilegesAllCustomer['type_id']] = $userPrivilegesAllCustomer['access'];
                 }
 
-                if (!in_array('all', $privilegesArray) && $privilegesArray['all'] !== 'full') {
+                if (!in_array('edit', array_values($privilegesArray)) && (!in_array('all', $privilegesArray) && $privilegesArray['all'] !== 'full')) {
                     header('Location:/merchant/no-permission');
                     die();
                 }
