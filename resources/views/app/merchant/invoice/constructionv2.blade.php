@@ -435,14 +435,16 @@
                             <a onclick="document.getElementById('newImageDiv').style.display = 'block';" class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
                             @foreach ($mandatory_files as $key2=>$item)
                                 @if($key2 == $key)
+                                
+                                <div id="docviewbox{{$key}}" class="mt-1">
                                     @foreach ($item as $key3=>$links)
-                                    <div id="docviewbox{{$key}}" class="mt-1">
+                                        <br>
                                         <span class=" btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important">
-                                            <a class="btn-sm" target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,20)}}..</a>
-                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,20)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                            <a class="btn btn-sm" target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,40)}}..</a>
+                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,40)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                         </span>
-                                    </div>
                                     @endforeach
+                                    </div>
                                     <span id="newImageDiv" style="display: none;">
                                         <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="{{implode(',',$item)}}">
                                         <div id="drag-drop-area2"></div>
@@ -966,8 +968,8 @@ $array_name = 'newdocfileslist'.$key;
                 filenm = filenm.split('.').slice(0, -1).join('.')
                 filenm = filenm.substring(0, filenm.length - 4);
                 html = html + '<br><span class="btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
-                    '<a class=" btn btn-sm" target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 20) + '..</a>' +
-                    '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 20) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
+                    '<a class=" btn btn-sm" target="_BLANK" href="' + arrayName[i] + '" title="Click to view full size">' + filenm.substring(0, 40) + '..</a>' +
+                    '<a href="#delete_doc2" onclick="setdataMandatory(\'' + filenm.substring(0, 40) + '\',\'' + arrayName[i] + '\',\'' + arrayName + '\',\'' + ArrayKey + '\');"   data-toggle="modal"> ' +
                     ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
             }
             clearnewuploads_mandatory('no',ArrayKey,  arrayName);
