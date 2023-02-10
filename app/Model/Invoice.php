@@ -541,7 +541,7 @@ class Invoice extends ParentModel
         $retObj = DB::table('billed_transaction as d')
             ->select(DB::raw('d.*,CONCAT(i.abbrevation, " - ", i.name) as cost_type_label'))
             ->join('cost_types as i', 'd.cost_type', '=', 'i.id')
-            ->whereRaw("d.payment_request_id='" . $payment_request_id . "' or (d.project_id='" . $project_id . "' and d.date='" . $date . "' and d.status=0 and d.is_active=1)")
+            ->whereRaw("d.payment_request_id='" . $payment_request_id . "' or (d.project_id='" . $project_id . "' and d.date<='" . $date . "' and d.status=0 and d.is_active=1)")
             ->get();
         return $retObj;
     }
@@ -573,6 +573,44 @@ class Invoice extends ParentModel
         return $retObj[0];
     }
 
+    public function deleteMandatoryFiles($payment_request_id)
+    { 
+        DB::table('invoice_attatchments')->where('payment_request_id', $payment_request_id)
+        ->update([
+            'is_active' => '0',
+        ]);
+
+    }
+
+    public function saveMandatoryFiles($payment_request_id, $file_url, $name, $desc, $required)
+    {
+        $id = DB::table('invoice_attatchments')->insertGetId(
+            [
+                'payment_request_id' => $payment_request_id,
+                'type' => $required,
+                'attatchment_name' => $name,
+                'attatchment_description' => $desc,
+                'file_url' => $file_url,
+                'file_type' => 'N/A',
+                'file_size' => 'N/A',
+                'file_name' => 'N/A',
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
+    public function getMandatoryDocumentByPaymentRequestID($payment_request_id, $name)
+    {
+        $retObj = DB::table('invoice_attatchments')
+            ->select(DB::raw('file_url'))
+            ->where('payment_request_id', $payment_request_id)
+            ->where('is_active', 1)
+            ->where('attatchment_name', $name)
+            ->orderby("id", 'desc')
+            ->get();
+        return $retObj;
+    }
 
     // public function updateInvoiceAmount($request_id, $amount)
     // {

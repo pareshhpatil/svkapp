@@ -198,8 +198,13 @@ class ImportController extends Controller
         if (is_numeric($bulk_id)) {
             $system_filename = $this->importModel->getColumnValue('bulk_upload', 'bulk_upload_id', $bulk_id, 'system_filename', ['type' => '11', 'merchant_id' => $this->merchant_id]);
             if ($system_filename != false) {
+                if (Storage::disk('s3_bulkupload')->exists($system_filename)) {
+                    $file_name = $system_filename;
+                } else {
+                    $file_name = 'processed/' . $system_filename;
+                }
                 return redirect(Storage::disk('s3_bulkupload')->temporaryUrl(
-                    $system_filename,
+                    $file_name,
                     now()->addHour(),
                     ['ResponseContentDisposition' => 'attachment']
                 ));
