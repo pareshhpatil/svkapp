@@ -393,7 +393,7 @@ class InvoiceController extends AppController
     public function update($link, $staging = 0, $revision = 0)
     {
         $payment_request_id = Encrypt::decode($link);
-        
+
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
                 $info = $this->invoiceModel->getStagingInvoiceInfo($payment_request_id, $this->merchant_id);
@@ -440,7 +440,7 @@ class InvoiceController extends AppController
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         if ($revision != 1) {
                             Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
-                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                    The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
 
                             return redirect('/merchant/paymentrequest/viewlist');
                         }
@@ -690,6 +690,7 @@ class InvoiceController extends AppController
             // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
 
             $contract = $this->invoiceModel->getContractDetail($data['contract_id']);
+
             $model = new Master();
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $contract->id);
 
