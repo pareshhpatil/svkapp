@@ -701,61 +701,7 @@
     </div>
     <!-- Invoice Attachments -->
     <div class="page-break"></div>
-    <div class="toc-wrapper">
-        <h2 class="title">{{ $info['project_details']->project_name }} | {{ $info['invoice_number'] }} | {{ $info['cycle_name'] }}</h2>
-        <h4 class="title-toc">Attachments : Table of contents</h4>
-        @php $pos=1; @endphp
-        @if(count($info['invoice_attachments']) > 0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. Invoice</span>
-            @foreach($info['invoice_attachments'] as $k => $attachment)
-
-            <ul class="toc-item">
-                    <span>{{$attachment['fileName']}}</span>
-            </ul>
-
-
-            @endforeach
-        </li>
-        @php $pos++; @endphp
-        @endif
-
-        @if(count($info['mandatory_document_attachments']) > 0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. Required document</span>
-            @foreach($info['mandatory_document_attachments'] as $k => $attachment)
-
-            <ul class="toc-item">
-                    <span>{{$attachment['name']}} - {{$attachment['fileName']}}</span>
-            </ul>
-
-
-            @endforeach
-        </li>
-        @php $pos++; @endphp
-        @endif
-
-        @if(count($info['bill_code_attachments']) > 0)
-
-        @foreach($info['bill_code_attachments'] as $k => $bill_codes)
-        @if(count($bill_codes['attachments'])>0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. {{$bill_codes["billCode"]}} - {{$bill_codes["billName"]}}</span>
-            @foreach($bill_codes['attachments'] as $j => $attachment)
-            <ul class="toc-item">
-                <a href="#{{ $j .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                    <span>{{$attachment['fileName']}}</span>
-                </a>
-            </ul>
-            @php $pos++; @endphp
-            @endforeach
-        </li>
-        @endif
-        @endforeach
-
-        @endif
-
-    </div>
+    
 
 
     @if(count($info['invoice_attachments']) > 0)
