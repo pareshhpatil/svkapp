@@ -699,10 +699,7 @@
             </div>
         </div>
     </div>
-    <!-- Invoice Attachments -->
-    <div class="page-break"></div>
     
-
 
     @if(count($info['invoice_attachments']) > 0)
     {{-- Attachment Pages --}}
