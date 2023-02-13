@@ -77,7 +77,7 @@ class PrivilegesAccess
                         if($pathArray[2] == 'create' && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
-                            if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' && $orderPrivilegesAccessIDs[$modelID] == 'edit')) {
+                            if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit')) {
                                 $result = true;
                             }
                         }
@@ -89,7 +89,7 @@ class PrivilegesAccess
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($invoicePrivilegesAccessIDs)) && !in_array($modelID, array_keys($invoicePrivilegesAccessIDs))) {
-                    if ($invoicePrivilegesAccessIDs['all'] == 'full' && $invoicePrivilegesAccessIDs['all'] == 'edit') {
+                    if ($invoicePrivilegesAccessIDs['all'] == 'full' || $invoicePrivilegesAccessIDs['all'] == 'edit') {
                         $result = true;
                     }
                 } else {
@@ -115,7 +115,7 @@ class PrivilegesAccess
                 $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($projectPrivilegesAccessIDs)) && !in_array($modelID, array_keys($projectPrivilegesAccessIDs))) {
-                    if ($projectPrivilegesAccessIDs['all'] == 'full' && $projectPrivilegesAccessIDs['all'] == 'edit') {
+                    if ($projectPrivilegesAccessIDs['all'] == 'full' || $projectPrivilegesAccessIDs['all'] == 'edit') {
                         $result = true;
                     }
                 } else {
