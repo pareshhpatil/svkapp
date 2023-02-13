@@ -440,7 +440,7 @@
                                         <br>
                                         <span class=" btn btn-sm green" style="margin-bottom: 5px;margin-left: 0px !important">
                                             <a class="btn btn-sm" target="_BLANK" href="{{$links}}" title="Click to view full size">{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,40)}}..</a>
-                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,40)}}','{{$links}}', 'newdocfileslist{{$key}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
+                                            <a href="#delete_doc2" onclick="setdataMandatory('{{substr(substr(substr(basename($links), 0, strrpos(basename($links), '.')),0,-4),0,40)}}','{{$links}}', '{{implode(',',$item)}}', '{{$key}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                         </span>
                                     @endforeach
                                     </div>
@@ -950,6 +950,7 @@ $array_name = 'newdocfileslist'.$key;
                 // arrayName = document.getElementById('array_name').value;
                // document.getElementById('file_upload_mandatory'+array_key).value=full_url;
                 var arrayName = full_url.split(",");
+                console.log('hi'+arrayName);
                 
                 var index = arrayName.indexOf(file_url);
                 if (index !== -1) {
