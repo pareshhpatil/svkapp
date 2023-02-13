@@ -563,43 +563,44 @@ class Invoice extends ParentModel
 
     public function saveInvoice($merchant_id, $user_id, $customer_id, $invoice_number, $template_id, $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
     {
-        $plugin=str_replace("'", "\'", $plugin);
+        $plugin = str_replace("'", "\'", $plugin);
         $retObj = DB::select("call `insert_invoicevalues`('$merchant_id','$user_id','$customer_id','$invoice_number','$template_id','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,1,0,0,'$plugin',0,1,0,'$currency',null,1);");
         return $retObj[0];
     }
 
     public function updateInvoice($payment_request_id, $user_id, $customer_id, $invoice_number,  $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $billing_profile_id = 0, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
     {
-        $plugin=str_replace("'", "\'", $plugin);
+        $plugin = str_replace("'", "\'", $plugin);
         $retObj = DB::select("call `update_invoicevalues`('$payment_request_id','$user_id','$customer_id','$invoice_number','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,0,'$plugin',0,$billing_profile_id,0,'$currency',null,1);");
         return $retObj[0];
     }
 
     public function deleteMandatoryFiles($payment_request_id)
-    { 
+    {
         DB::table('invoice_attatchments')->where('payment_request_id', $payment_request_id)
-        ->update([
-            'is_active' => '0',
-        ]);
-
+            ->update([
+                'is_active' => '0',
+            ]);
     }
 
     public function saveMandatoryFiles($payment_request_id, $file_url, $name, $desc, $required)
     {
-        $id = DB::table('invoice_attatchments')->insertGetId(
-            [
-                'payment_request_id' => $payment_request_id,
-                'type' => $required,
-                'attatchment_name' => $name,
-                'attatchment_description' => $desc,
-                'file_url' => $file_url,
-                'file_type' => 'N/A',
-                'file_size' => 'N/A',
-                'file_name' => 'N/A',
-                'created_date' => date('Y-m-d H:i:s')
-            ]
-        );
-        return $id;
+        if ($file_url != '') {
+            $id = DB::table('invoice_attatchments')->insertGetId(
+                [
+                    'payment_request_id' => $payment_request_id,
+                    'type' => $required,
+                    'attatchment_name' => $name,
+                    'attatchment_description' => $desc,
+                    'file_url' => $file_url,
+                    'file_type' => 'N/A',
+                    'file_size' => 'N/A',
+                    'file_name' => 'N/A',
+                    'created_date' => date('Y-m-d H:i:s')
+                ]
+            );
+            return $id;
+        }
     }
 
     public function getMandatoryDocumentByPaymentRequestID($payment_request_id, $name)
@@ -626,11 +627,11 @@ class Invoice extends ParentModel
     //         ]);
     // }
 
-    public function updateInvoiceDetail($request_id, $amount, $ids,$previous_amount=0)
+    public function updateInvoiceDetail($request_id, $amount, $ids, $previous_amount = 0)
     {
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
-                'absolute_cost' => $amount-$previous_amount,
+                'absolute_cost' => $amount - $previous_amount,
                 'basic_amount' => $amount,
                 'invoice_total' => $amount,
                 'swipez_total' => $amount,
@@ -830,7 +831,7 @@ class Invoice extends ParentModel
             //->where('invoice_number', 'LIKE', '%' . $invoice_prefix . '%')
             ->orderBy('created_date', 'desc')->first();
 
-        
+
         if (empty($retObj)) {
             return false;
         }
