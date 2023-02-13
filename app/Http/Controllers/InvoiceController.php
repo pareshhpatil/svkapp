@@ -2200,8 +2200,9 @@ class InvoiceController extends AppController
                 }
 
                 $oMerger->merge();
-                $oMerger->save($name);
-                return  $oMerger->download($name);
+                $oMerger->setFileName($name);
+                $oMerger->save();
+                return $oMerger->download();
             } else {
                 return $pdf->download($name);
             }
