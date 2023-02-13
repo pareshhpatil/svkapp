@@ -213,7 +213,7 @@ class MasterController extends AppController
             $request->sequence_number = 0;
         }
         
-        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->project_id, ($request->sequence_number - 1), $this->user_id,$request->seprator);
+        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->prefix, ($request->sequence_number - 1), $this->user_id,$request->seprator);
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
         $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
