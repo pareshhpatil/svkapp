@@ -1243,7 +1243,7 @@
                                         </span></label>
                                     <div class="col-md-4">
                                         <input type="text" required id="document_description" maxlength="250" class="form-control" value="">
-                                        <input type="text" id="document_action"  value="Non-mandatory">
+                                        <input type="hidden" id="document_action"  value="Non-mandatory">
                                     </div>
                                 </div>
                                 <!--<div class="form-group">
