@@ -720,7 +720,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{$attachment['url']}}" target="_blank"> {{$attachment['url']}}</a></p> 
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
@@ -745,7 +745,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{$attachment['url']}}" target="_blank"> {{$attachment['url']}}</a></p> 
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endif
@@ -771,7 +771,7 @@
             </div>
             <br />
             @endif
-            <p>Download File: <a href="{{$attachment['url']}}" target="_blank"> {{$attachment['url']}}</a></p> 
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
