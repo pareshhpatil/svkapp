@@ -117,13 +117,14 @@ class Master extends ParentModel
             ]);
     }
 
-    public function updateProjectSequence($merchant_id, $id, $val, $separator=null)
+    public function updateProjectSequence($merchant_id, $id, $val, $separator='', $prefix='')
     {
         DB::table('merchant_auto_invoice_number')
             ->where('auto_invoice_id', $id)
             ->update([
                 'val' => $val,
-                'seprator' => $separator
+                'seprator' => $separator,
+                'prefix' => $prefix
             ]);
     }
 
