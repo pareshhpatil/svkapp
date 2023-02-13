@@ -711,9 +711,7 @@
             @foreach($info['invoice_attachments'] as $k => $attachment)
 
             <ul class="toc-item">
-                <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
                     <span>{{$attachment['fileName']}}</span>
-                </a>
             </ul>
 
 
@@ -728,9 +726,7 @@
             @foreach($info['mandatory_document_attachments'] as $k => $attachment)
 
             <ul class="toc-item">
-                <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                    <span>{{$attachment['fileName']}}</span>
-                </a>
+                    <span>{{$attachment['name']}} - {{$attachment['fileName']}}</span>
             </ul>
 
 
@@ -781,7 +777,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <!-- <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p> -->
         </div>
     </div>
     @endforeach
@@ -806,7 +802,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <!-- <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p> -->
         </div>
     </div>
     @endif
@@ -832,7 +828,7 @@
             </div>
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $bill_code['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <!--<p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $bill_code['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>-->
         </div>
     </div>
     @endforeach

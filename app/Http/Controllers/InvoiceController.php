@@ -2110,6 +2110,7 @@ class InvoiceController extends AppController
 
                                 $mandatoryDocumentAttachments[] = [
                                     'fileName' => $fileName,
+                                    'name' => $mandatory_data->name,
                                     'fileNameSlug' => Str::slug($fileName, '-'),
                                     'fileType' => $fileType,
                                     'fileContent' => $fileContent,
