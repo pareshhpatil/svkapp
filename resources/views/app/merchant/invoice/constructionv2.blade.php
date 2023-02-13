@@ -772,7 +772,7 @@ $array_name = 'newdocfileslist'.$key;
             maxFileSize: 3000000,
             maxNumberOfFiles: envlimit,
             minNumberOfFiles: 1,
-            allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf']
+            allowedFileTypes: ['.jpg', '.png', '.jpeg', '.pdf','.docx','.xlsx','.txt']
         },
         onBeforeFileAdded: (currentFile, files) => {
             var remainleng = 0;
@@ -805,7 +805,7 @@ $array_name = 'newdocfileslist'.$key;
         hideCancelButton: false,
     });
     window.{{$keyname}}.getPlugin('Dashboard').setOptions({
-        note: 'Max upload limit ' + envlimit + ' files(image & pdf) only',
+        note: 'Max upload limit ' + envlimit + ' files  only',
 
     });
     {{$keyname}}.use(Uppy.XHRUpload, {
