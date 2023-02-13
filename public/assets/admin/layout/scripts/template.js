@@ -2326,7 +2326,7 @@ function saveDocument() {
     var newDiv = document.createElement('tr');
     hidden = '<input type="hidden" name="mandatory_document_name[]" value="' + document_name + '"></input><input type="hidden" name="mandatory_document_description[]" value="' + document_description + '"></input><input type="hidden" name="mandatory_document_action[]" value="' + document_action + '"></input>';
 
-    newDiv.innerHTML = '<td class="td-c  default-font">' + document_name + ' ' + hidden + '</td><td class="td-c  default-font">' + document_description + '</td><td class="td-c  default-font">' + document_action + '</td><td class="td-c"><a href="javascript:;" onclick="$(this).closest(' + "'tr'" + ').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>';
+    newDiv.innerHTML = '<td class="td-c  default-font">' + document_name + ' ' + hidden + '</td><td class="td-c  default-font">' + document_description + '</td><td class="td-c"><a href="javascript:;" onclick="$(this).closest(' + "'tr'" + ').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
     document.getElementById('document_name').value = '';
     document.getElementById('document_description').value = '';
