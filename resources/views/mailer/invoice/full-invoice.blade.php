@@ -777,7 +777,7 @@
 
             <br />
             @endif
-            <!-- <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p> -->
+             <p>Download File: {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
@@ -802,7 +802,7 @@
 
             <br />
             @endif
-            <!-- <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p> -->
+           <p>Download File: {{$attachment['url']}}</p> 
         </div>
     </div>
     @endif
@@ -828,7 +828,7 @@
             </div>
             <br />
             @endif
-            <!--<p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $bill_code['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>-->
+            <p>Download File: {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
