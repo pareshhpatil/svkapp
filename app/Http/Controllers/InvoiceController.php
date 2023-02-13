@@ -2188,7 +2188,7 @@ class InvoiceController extends AppController
                 $pdf->setPaper("a4", "landscape");
             }
 
-            $name = time() . '.pdf';
+            $name = str_replace(" ", "_", $info['customer_name']) . '_' . time() . '.pdf';
 
             if (count($pdf_link_array) > 0) {
                 Storage::disk('local')->put($name, $pdf->output());
