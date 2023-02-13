@@ -81,7 +81,7 @@
                                             <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}"/>
                                         </div>
                                         <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator_txt"/>
+                                            <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator_txt"/>
                                         </div>
                                         <div class="col-md-1">
                                             <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Seq. no" value="{{ old('sequence_number') }}"/>

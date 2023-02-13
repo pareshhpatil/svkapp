@@ -90,7 +90,7 @@
                                             <input class="form-control" type="text" maxlength="20" value="{{$project_data->project_prefix}}" id="project_prefix" name="prefix" placeholder="Prefix" onkeyup="changeSeparatorVal(this.value)"/>
                                         </div>
                                         <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{$sequence_data->seprator}}" id="separator_txt"/>
+                                            <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{$sequence_data->seprator}}" id="separator_txt"/>
                                         </div>
                                         <div class="col-md-1">
                                             <input class="form-control" required type="number"  value="{{$sequence_data->val??''}}"  min="0" max="99999999" name="sequence_number" placeholder="Seq. no" />
