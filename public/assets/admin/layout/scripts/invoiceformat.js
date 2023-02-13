@@ -3248,6 +3248,12 @@ function imposeMinMax(el) {
     }
 }
 
+function changeSeparatorVal(prefix) {
+    if (prefix == "") { 
+        document.getElementById("separator_txt").value='';
+    }
+}
+
 function validateDate() {
 
     var end_date = Date.parse(document.getElementById('end_date').value);

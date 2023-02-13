@@ -37,14 +37,14 @@
                                         <label class="control-label col-md-3">Project ID <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" onchange="assignProjectID()" required="true" id="project_id" maxlength="45" name="project_id" class="form-control" placeholder="Enter project id">
+                                            <input type="text" onchange="assignProjectID()" required="true" id="project_id" maxlength="45" name="project_id" class="form-control" placeholder="Enter project id" value="{{ old('project_id') }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Project Name <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="45" name="project_name" class="form-control" placeholder="Enter project name">
+                                            <input type="text" required="true" maxlength="45" name="project_name" class="form-control" placeholder="Enter project name" value="{{ old('project_name') }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -63,14 +63,14 @@
                                         <label class="control-label col-md-3">Start Date <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input class="form-control date-picker" id="start_date" type="text" name="start_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Start Date" />
+                                            <input class="form-control date-picker" id="start_date" type="text" name="start_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="Start Date" value="{{ old('start_date') }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">End Date <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input class="form-control date-picker" id="end_date" type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date" />
+                                            <input class="form-control date-picker" id="end_date" type="text" name="end_date" autocomplete="off" data-date-format="{{ Session::get('default_date_format')}}" placeholder="End Date"  value="{{ old('end_date') }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -78,13 +78,13 @@
                                             <i class="popovers fa fa-info-circle support blue" data-container="body" data-trigger="hover" data-content="Enter the start of your sequence i.e. If you want to start your sequence at 100 enter 100." data-original-title="" title=""></i>
                                         </label>
                                         <div class="col-md-3">
-                                            <input class="form-control" type="text" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
+                                            <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}"/>
                                         </div>
                                         <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="-"/>
+                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator_txt"/>
                                         </div>
                                         <div class="col-md-1">
-                                            <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Seq. no" />
+                                            <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Seq. no" value="{{ old('sequence_number') }}"/>
                                         </div>
                                     </div>
                                 </div>

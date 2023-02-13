@@ -932,21 +932,26 @@ class Profile extends Controller
                 $result = $this->model->settingUpdate($this->session->get('userid'), $merchant_id, $show_add, $auto_approve, $is_reminder, $password_validation);
             } else {
                 $this->common->genericupdate('merchant_auto_invoice_number', 'prefix', $_POST['estimate_prefix'], 'merchant_id', $this->merchant_id, null, " and type=2");
-
+                
                 if (isset($_POST['subscript'])) {
                     $subscript = $_POST['subscript'];
                     $lastNumber = $_POST['lastnumber'];
                     $seprator = $_POST['seprator'];
                     $int = 0;
                     foreach ($subscript as $script) {
-                        $res = $this->model->existPrefix($merchant_id, $subscript[$int]);
-                        if ($res == FALSE) {
-                            $this->model->saveInvoiceNumber($this->session->get('userid'), $merchant_id, $subscript[$int], $lastNumber[$int],1,$seprator[$int]);
+                        if($subscript[$int]=='' && $seprator[$int]!='') {
+                            $hasErrors['Prefix'][0] = 'Separator';
+                            $hasErrors['Prefix'][1] = 'You can not add separator without prefix';
                         } else {
-                            $hasErrors['Prefix'][0] = 'Invoice prefix';
-                            $hasErrors['Prefix'][1] = 'Invoice prefix already exist';
+                            $res = $this->model->existPrefix($merchant_id, $subscript[$int]);
+                            if ($res == FALSE) {
+                                $this->model->saveInvoiceNumber($this->session->get('userid'), $merchant_id, $subscript[$int], $lastNumber[$int],1,$seprator[$int]);
+                            } else {
+                                $hasErrors['Prefix'][0] = 'Invoice prefix';
+                                $hasErrors['Prefix'][1] = 'Invoice prefix already exist';
+                            }
+                            $int++;
                         }
-                        $int++;
                     }
                 }
                 $type = '/sequence';
@@ -975,7 +980,11 @@ class Profile extends Controller
             header('Location:/merchant/profile/setting');
         }
         
-        if(isset($_POST['seprator'])) {
+        if($_POST['subscript']=='' && $_POST['seprator']!='') {
+            $hasErrors['Prefix'][0] = 'Separator';
+            $hasErrors['Prefix'][1] = 'You can not add separator without prefix';
+        }
+        if(isset($_POST['seprator']) && $_POST['subscript']!='') {
             $lastSequenceData = $this->common->getSingleValue('merchant_auto_invoice_number', 'auto_invoice_id', $_POST['auto_invoice_id']);
             $invoice_sequence_prefix = $lastSequenceData['prefix'].$lastSequenceData['seprator'].$_POST['last_number'];
             
@@ -986,11 +995,11 @@ class Profile extends Controller
                 $hasErrors['Prefix'][0] = 'Invoice sequence';
                 $hasErrors['Prefix'][1] = 'Invoice sequence number already exist';
             }
-            if ($hasErrors == true) {
-                $this->smarty->assign("haserrors", $hasErrors);
-                $this->setting('sequence');
-                die();
-            }
+        }
+        if ($hasErrors == true) {
+            $this->smarty->assign("haserrors", $hasErrors);
+            $this->setting('sequence');
+            die();
         }
         $this->model->updateInvoiceNumber($this->session->get('userid'), $merchant_id, $_POST['subscript'], $_POST['last_number'], $_POST['auto_invoice_id'], $_POST['seprator']);
         $this->session->set('successMessage', 'Updates made to your setting have been saved.');

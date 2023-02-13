@@ -786,9 +786,11 @@ class Invoice extends ParentModel
         $retObj = DB::table('payment_request as p')
             ->select(DB::raw('payment_request_id,merchant_id,customer_id,invoice_number'))
             ->where('merchant_id', $merchant_id)
-            ->where('invoice_number', 'LIKE', '%' . $invoice_prefix . '%')
+            ->where('invoice_number', $invoice_prefix)
+            //->where('invoice_number', 'LIKE', '%' . $invoice_prefix . '%')
             ->orderBy('created_date', 'desc')->first();
 
+        
         if (empty($retObj)) {
             return false;
         }

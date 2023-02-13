@@ -87,10 +87,10 @@
                                         <i class="popovers fa fa-info-circle support blue" data-container="body" data-trigger="hover" data-content="Enter the start of your sequence i.e. If you want to start your sequence at 100 enter 100." data-original-title="" title=""></i>
                                     </label>
                                         <div class="col-md-3">
-                                            <input class="form-control" type="text" value="{{$project_data->project_prefix}}" disabled id="project_prefix" name="prefix" placeholder="Project ID" />
+                                            <input class="form-control" type="text" maxlength="20" value="{{$project_data->project_prefix}}" id="project_prefix" name="prefix" placeholder="Prefix" onkeyup="changeSeparatorVal(this.value)"/>
                                         </div>
                                         <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{$sequence_data->seprator}}"/>
+                                            <input class="form-control" type="text" name="seprator" placeholder="Separtor" maxlength="5" value="{{$sequence_data->seprator}}" id="separator_txt"/>
                                         </div>
                                         <div class="col-md-1">
                                             <input class="form-control" required type="number"  value="{{$sequence_data->val??''}}"  min="0" max="99999999" name="sequence_number" placeholder="Seq. no" />
