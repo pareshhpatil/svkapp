@@ -355,65 +355,7 @@
             </div>
         </section>
 
-        <?php if ($this->circular_percentage < 100 && !$this->request_demo) { ?>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="portlet light bordered">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="icon-share font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase" id="DemoTitle">Book an expert</span>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="row" id="requestDemobody">
-                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <label>Our onboarding experts are ready to setup <?php echo $this->company_name; ?>'s
-                                        account in Swipez. Schedule a <span style="color: #707ee0;">FREE</span>
-                                        online session with our expert and setup your companies Swipez account.
-                                        It takes less than 15 minutes 🙌</label>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <form class="form pull-right" id="requestDemoForm">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 portlet-title">
-                                                <div class="form-group caption">
-                                                    <label class="caption-subject font-dark bold uppercase">Pick a date</label>
-                                                    <input class="form-control rpt-date" id="daterange" autocomplete="off" name="date_range" type="text" placeholder="From date" />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 portlet-title">
-                                                <div id="time-container" class="form-group caption">
-                                                    <label class="caption-subject font-dark bold uppercase">Pick a time</label>
-                                                    <select id="time" class="form-control" name="time" required>
-                                                        <option>Pick one time slot</option>
-                                                        <option>Morning (10 am - 12pm)</option>
-                                                        <option>Afternoon (12pm - 4pm)</option>
-                                                        <option>Evening (5pm - 8pm)</option>
-                                                    </select>
-                                                    <span id="timeSlotError" style="color: rgb(220 38 38);" class="font-sm text-sm"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input id="merchantid" name="merchantid" type="hidden" value="<?php echo $this->merchant_id; ?>" />
-                                        <button type="button" onclick="requestdemo()" class="btn btn-default blue pull-right">Schedule Demo</button>
-                                    </form>
-
-                                </div>
-                            </div>
-                            <div class="row" id="requestDemobody">
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <img class="center-block hidden img-thumbnail hidden-xs" width="300" id="requestDemoFormimage" src="/assets/admin/layout/img/request_a_demo.png" alt="request demo image"></a>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label class="hidden" id="requestDemoFormSuccessMessageSupport">Your request for an online session with a Swipez expert has been received for <span style="font-weight: bold;" id="requestDemoFormSuccessMessage"></span>. Our expert will be in touch with you. In case of any queries or changes please drop us an line on <a href='mailto:support@swipez.in'>support@swipez.in</a></label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
+        
 
         <?php if (!empty($this->merchant_notification)) { ?>
             <div class="row">
