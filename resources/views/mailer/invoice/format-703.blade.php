@@ -46,28 +46,55 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
 
 </head>
 <body style="word-break: break-word; -webkit-font-smoothing: antialiased; margin: 0; width: 100%; padding: 0">
+@php
+    $plugins = json_decode($info['plugin_value'], 1);
+
+    $hasAIALicense = false;
+    if(isset($plugins['invoice_output'])) {
+        if(isset($plugins['has_aia_license'])) {
+            $hasAIALicense = true;
+        }
+    }
+@endphp
   <div role="article" aria-roledescription="email" aria-label="" lang="en"> <!doctype html>
                          <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px">
                     <div id="tab" style="width: 100%; background-color: #fff; padding: 16px">
                         <table >
+                            @if($hasAIALicense)
                             <tr>
-                            <td>
-                                <img style="height: 40px" src="data:image/png;base64,{{$info['logo']}}" alt="">
-                            </td>
-                            <td>
-                                <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
-                            </td> 
+                                <td>
+                                    <img style="height: 40px" src="data:image/png;base64,{{$info['logo']}}" alt="">
+                                </td>
+                                <td>
+                                    <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
+                                </td>
                             </tr>
+                            @else
+                                <tr>
+                                    <td>
+                                        <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703 – 1992</div>
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
                             <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Continuation Sheet</div>
                         <div style="margin-top: 5px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
                           <table style="width:100%">
                             <td>
-                                <div style="font-size: 12px">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                                    Application and Certificate for
-                                    Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                                    is attached.
-                                    Use Column I on Contracts where variable retainage for line items may apply. </div>
+                                @if($hasAIALicense)
+                                    <div style="font-size: 12px">AIA Document G702®, Application and Certificate for Payment, or G732™,
+                                        Application and Certificate for
+                                        Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
+                                        is attached.
+                                        Use Column I on Contracts where variable retainage for line items may apply. </div>
+                                @else
+                                    <div style="font-size: 12px">Document G702, Application and Certificate for Payment, or G732™,
+                                        Application and Certificate for
+                                        Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
+                                        is attached.
+                                        Use Column I on Contracts where variable retainage for line items may apply. </div>
+                                @endif
+
                                 </td>
                             <td style="width:30%">
                                 <table cellpadding="0" cellspacing="0" role="presentation">
@@ -323,12 +350,19 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                                     </tr>                                </tbody>
                             </table>                        </div>
                         <hr>
-                        <div style="margin-top: 8px">                            <div style="line-height: 12px"><span style="font-size: 12px; font-weight: 600">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
+                        <div style="margin-top: 8px">
+                            <div style="line-height: 12px">
+                                @if($hasAIALicense)
+                                    <span style="font-size: 12px; font-weight: 600">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
                                     of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American
                                     Institute of Architects,” “AIA,” the AIA Logo, “G703,”
                                     and “AIA Contract Documents” are registered trademarks and may not be used without
                                     permission.</span><span style="font-size: 12px"> To report copyright violations of AIA Contract
-                                    Documents, e-mail copyright@aia.org.</span></div>                        </div>                    </div>
+                                    Documents, e-mail copyright@aia.org.</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>             </div>
 </body>
 @if ($viewtype=='print')
