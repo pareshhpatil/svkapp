@@ -1,23 +1,26 @@
 <style>
-
     @media screen and (min-width: 0px) and (max-width: 700px) {
         .mobile {
-            display: block!important;
+            display: block !important;
         }
+
         .desk {
-            display: none!important;
+            display: none !important;
 
         }
     }
 
     @media screen and (min-width: 701px) {
         .mobile {
-            display: none!important;
+            display: none !important;
         }
-        .desk {
-            display: block!important;
 
-        }  /* hide it elsewhere */
+        .desk {
+            display: block !important;
+
+        }
+
+        /* hide it elsewhere */
     }
 </style>
 
@@ -43,41 +46,41 @@
 
                 <table id="t_new_debit" class="table table-bordered table-hover">
                     <thead id="h_new_debit" @isset($plugins['has_deductible']) @else style="display: none;" @endif>
-                    <tr>
-                        <th class="td-c  default-font">
-                            Deduct label
-                        </th>
-                        <th class="td-c  default-font">
-                            Deduct in %
-                        </th>
-                        <th class="td-c  default-font">
-                            Applicable on
-                        </th>
-                        <th class="td-c  default-font">
-                            Absolute cost
-                        </th>
-                        <th class="td-c">
-                        </th>
-                    </tr>
+                        <tr>
+                            <th class="td-c  default-font">
+                                Deduct label
+                            </th>
+                            <th class="td-c  default-font">
+                                Deduct in %
+                            </th>
+                            <th class="td-c  default-font">
+                                Applicable on
+                            </th>
+                            <th class="td-c  default-font">
+                                Absolute cost
+                            </th>
+                            <th class="td-c">
+                            </th>
+                        </tr>
                     </thead>
                     <tbody id="new_debit">
-                    @if(!empty($plugins['deductible']))
+                        @if(!empty($plugins['deductible']))
                         @foreach($plugins['deductible'] as $v)
-                            <tr>
-                                <td>
-                                    <div class="input-icon right">
-                                        <input type="text" name="debit[]" class="form-control input-sm" value="{{$v['tax_name']}}" placeholder="Add label">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="input-icon right"><input type="number" step="0.01" value="{{$v['percent']}}" max="100" name="debitdefaultValue[]" class="form-control input-sm" placeholder="Add %"></div>
-                                </td>
-                                <td><input type="text" readonly="" class="form-control input-sm"></td>
-                                <td><input type="text" class="form-control input-sm" readonly=""></td>
-                                <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_debit');" class="btn btn-sm red"> <i class="fa fa-times"> </i></a></td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <div class="input-icon right">
+                                    <input type="text" name="debit[]" class="form-control input-sm" value="{{$v['tax_name']}}" placeholder="Add label">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-icon right"><input type="number" step="0.01" value="{{$v['percent']}}" max="100" name="debitdefaultValue[]" class="form-control input-sm" placeholder="Add %"></div>
+                            </td>
+                            <td><input type="text" readonly="" class="form-control input-sm"></td>
+                            <td><input type="text" class="form-control input-sm" readonly=""></td>
+                            <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_debit');" class="btn btn-sm red"> <i class="fa fa-times"> </i></a></td>
+                        </tr>
                         @endforeach
-                    @endif
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -95,45 +98,45 @@
                 </div>
                 <table id="t_new_supplier" class="table table-bordered table-hover">
                     <thead id="h_new_supplier">
-                    <tr>
-                        <th class="td-c  default-font">
-                            Supplier company name
-                        </th>
-                        <th class="td-c  default-font">
-                            Contact person name
-                        </th>
-                        <th class="td-c  default-font">
-                            Mobile
-                        </th>
-                        <th class="td-c  default-font">
-                            Industry type
-                        </th>
+                        <tr>
+                            <th class="td-c  default-font">
+                                Supplier company name
+                            </th>
+                            <th class="td-c  default-font">
+                                Contact person name
+                            </th>
+                            <th class="td-c  default-font">
+                                Mobile
+                            </th>
+                            <th class="td-c  default-font">
+                                Industry type
+                            </th>
 
-                        <th class="td-c">
-                        </th>
-                    </tr>
+                            <th class="td-c">
+                            </th>
+                        </tr>
                     </thead>
                     <tbody id="new_supplier">
-                    @if(!empty($supplier))
+                        @if(!empty($supplier))
 
                         @foreach($supplier as $v)
-                            @if(!empty($plugins['supplier']))
-                                @if(in_array($v['supplier_id'],$plugins['supplier']))
-                                    <tr id="row{{$v['supplier_id']}}">
-                                        <td class="td-c"><input type="hidden" name="supplier[]" value="{{$v['supplier_id']}}">
-                                            {{$v['supplier_company_name']}}
-                                        </td>
-                                        <td class="td-c">{{$v['contact_person_name']}}</td>
-                                        <td class="td-c">{{$v['mobile1']}}</td>
-                                        <td class="td-c">{{$v['email_id1']}}</td>
-                                        <td class="td-c">
-                                            <a href="javascript:;" id="{{$v['supplier_id']}}" onclick="removesupplier(this.id);$(this).closest('tr').remove();tableHead('new_supplier');" class="btn btn-sm red"> <i class="fa fa-times"> </i></a>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endif
+                        @if(!empty($plugins['supplier']))
+                        @if(in_array($v['supplier_id'],$plugins['supplier']))
+                        <tr id="row{{$v['supplier_id']}}">
+                            <td class="td-c"><input type="hidden" name="supplier[]" value="{{$v['supplier_id']}}">
+                                {{$v['supplier_company_name']}}
+                            </td>
+                            <td class="td-c">{{$v['contact_person_name']}}</td>
+                            <td class="td-c">{{$v['mobile1']}}</td>
+                            <td class="td-c">{{$v['email_id1']}}</td>
+                            <td class="td-c">
+                                <a href="javascript:;" id="{{$v['supplier_id']}}" onclick="removesupplier(this.id);$(this).closest('tr').remove();tableHead('new_supplier');" class="btn btn-sm red"> <i class="fa fa-times"> </i></a>
+                            </td>
+                        </tr>
+                        @endif
+                        @endif
                         @endforeach
-                    @endif
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -204,27 +207,27 @@
                 <div style="max-width: 500px;">
                     <table id="t_new_cc" class="table table-bordered table-hover">
                         <thead id="h_new_cc" style="display: none;">
-                        <tr>
-                            <th class="td-c  default-font">
-                                Email
-                            </th>
+                            <tr>
+                                <th class="td-c  default-font">
+                                    Email
+                                </th>
 
-                            <th class="td-c">
-                            </th>
-                        </tr>
+                                <th class="td-c">
+                                </th>
+                            </tr>
                         </thead>
                         <tbody id="new_cc">
 
-                        @if(!empty($plugins['cc_email']))
+                            @if(!empty($plugins['cc_email']))
                             @foreach($plugins['cc_email'] as $v)
-                                <tr>
-                                    <td>
-                                        <div class="input-icon right"><input type="email" value="{{$v}}" name="cc[]" class="form-control input-sm" placeholder="Add email"></div>
-                                    </td>
-                                    <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_cc');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <div class="input-icon right"><input type="email" value="{{$v}}" name="cc[]" class="form-control input-sm" placeholder="Add email"></div>
+                                </td>
+                                <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_cc');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>
+                            </tr>
                             @endforeach
-                        @endif
+                            @endif
 
                         </tbody>
                     </table>
@@ -315,18 +318,85 @@
             <div id="pgisupload" @isset($plugins['has_upload']) @else style="display: none;" @endif>
                 <hr>
                 <div class="mb-2">
-                    <span class="form-section base-font">File upload&nbsp;</span>
-                    <div class="pull-right">
-                        <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    <span class="form-section base-font">Invoice level attachments</span>
+                </div>
+                <div class="mb-2">
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Invoice attachments
+                            <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Support non mandatory document attachments at an invoice level" type="button">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+
+                        </label>
+                        <div class="pull-right">
+                            <input value="View document" required="" type="hidden" maxlength="20" class="form-control" name="upload_file_label">
+                            <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch pull-right" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
+                <br>
+                <br>
+                <!--<div class="input-group">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">File label</label>
                         <div class="col-md-8">
                             <input value="View document" required="" type="text" maxlength="20" class="form-control" name="upload_file_label">
                         </div>
                     </div>
+                </div>-->
+                <div class="mb-2">
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Setup required documents
+                            <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Use this facility if you require specific documents during submission or approval" type="button">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+                        </label>
+                        <div class="pull-right">
+                            <input type="checkbox" @isset($plugins['has_mandatory_upload']) checked @endif id="isMandatoryUpload" onchange="setCheckbox(this.checked, 'isMandatoryUpload');" name="has_mandatory_upload" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                        </div>
+                        <a id="document_attachment_button" @if(!isset($plugins['has_mandatory_upload'])) style="display: none;" @endif data-toggle="modal" href="#new_document" class="btn btn-sm mb-1 green pull-right mr-1"><i class="fa fa-plus"> </i> Add document </a>
+
+                    </div>
+
+                    <div id="document_attachment_div" @if(!isset($plugins['has_mandatory_upload'])) style="display: none;" @endif>
+                        <br>
+                        <br>
+                        <table id="t_new_cc" class="table table-bordered table-hover">
+                            <thead id="h_new_cc" style="display: contents;">
+                                <tr>
+                                    <th class="td-c  default-font">
+                                        Document name
+                                    </th>
+                                    <th class="td-c  default-font">
+                                        Document description
+                                    </th>
+                                    
+                                    <th class="td-c" style="width: 80px;">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="new_documents">
+                                @if(!empty($plugins['mandatory_data']))
+                                @foreach($plugins['mandatory_data'] as $v)
+                                <tr>
+                                    <td class="td-c  default-font">{{$v['name']}}
+                                        <input type="hidden" name="mandatory_document_name[]" value="{{$v['name']}}">
+                                        <input type="hidden" name="mandatory_document_description[]" value="{{$v['description']}}">
+                                        <input type="hidden" name="mandatory_document_action[]" value="{{$v['required']}}">
+                                    </td>
+                                    <td class="td-c  default-font">{{$v['description']}}</td>
+                                    <td class="td-c"><a href="javascript:;" onclick="$(this).closest('tr').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="input-group" style="display:none;">
+                    <a href="/merchant/profile/digitalsignature/iframe" class="iframe btn btn-sm green pull-right"> Digital signature </a>
                 </div>
             </div>
 
@@ -395,9 +465,9 @@
                             <select class="form-control" id="covering_select" name="default_covering">
                                 <option value="0">Select Template</option>
                                 @if(!empty($coveringNotes))
-                                    @foreach($coveringNotes as $v)
-                                        <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v['covering_id']) selected @endif @endif value="{{$v['covering_id']}}">{{$v['template_name']}}</option>
-                                    @endforeach
+                                @foreach($coveringNotes as $v)
+                                <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v['covering_id']) selected @endif @endif value="{{$v['covering_id']}}">{{$v['template_name']}}</option>
+                                @endforeach
                                 @endif
                             </select>
                         </div>
@@ -453,23 +523,23 @@
                 </div>
                 <table id="t_new_supplier" class="table table-bordered table-hover">
                     <thead id="h_new_supplier" style="display: none;">
-                    <tr>
-                        <th class="td-c  default-font">
-                            Supplier company name
-                        </th>
-                        <th class="td-c  default-font">
-                            Contact person name
-                        </th>
-                        <th class="td-c  default-font">
-                            Mobile
-                        </th>
-                        <th class="td-c  default-font">
-                            Industry type
-                        </th>
+                        <tr>
+                            <th class="td-c  default-font">
+                                Supplier company name
+                            </th>
+                            <th class="td-c  default-font">
+                                Contact person name
+                            </th>
+                            <th class="td-c  default-font">
+                                Mobile
+                            </th>
+                            <th class="td-c  default-font">
+                                Industry type
+                            </th>
 
-                        <th class="td-c">
-                        </th>
-                    </tr>
+                            <th class="td-c">
+                            </th>
+                        </tr>
                     </thead>
                     <tbody id="new_supplier">
 
@@ -495,47 +565,47 @@
                     <div class="" style="">
                         <table id="t_new_reminder" class="table table-bordered table-hover">
                             <thead id="h_new_reminder">
-                            <tr>
-                                <th class="td-c  default-font" style="width: 200px;">
-                                    Days before due date
-                                </th>
-                                <th class="td-c  default-font">
-                                    Reminder email subject
-                                </th>
-                                <th class="td-c  default-font">
-                                    Reminder SMS
-                                </th>
+                                <tr>
+                                    <th class="td-c  default-font" style="width: 200px;">
+                                        Days before due date
+                                    </th>
+                                    <th class="td-c  default-font">
+                                        Reminder email subject
+                                    </th>
+                                    <th class="td-c  default-font">
+                                        Reminder SMS
+                                    </th>
 
-                                <th class="td-c" style="width: 50px;">
-                                </th>
-                            </tr>
+                                    <th class="td-c" style="width: 50px;">
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody id="new_reminder">
-                            @if(!empty($plugins['reminders']))
+                                @if(!empty($plugins['reminders']))
                                 @foreach($plugins['reminders'] as $day=>$r)
-                                    <tr>
-                                        <td>
-                                            <div class="input-icon right">
-                                                <input type="number" name="reminder[]" value="{{$day}}" step="1" max="100" class="form-control input-sm" placeholder="Add day">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-icon right">
-                                                <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-icon right">
-                                                <input type="text" name="reminder_sms[]" value="{{$r['sms']}}" maxlength="200" class="form-control input-sm" placeholder="Reminder SMS">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                <tr>
+                                    <td>
+                                        <div class="input-icon right">
+                                            <input type="number" name="reminder[]" value="{{$day}}" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-icon right">
+                                            <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-icon right">
+                                            <input type="text" name="reminder_sms[]" value="{{$r['sms']}}" maxlength="200" class="form-control input-sm" placeholder="Reminder SMS">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
                                             tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 @endforeach
-                            @else
+                                @else
                                 <tr>
                                     <td>
                                         <div class="input-icon right">
@@ -599,7 +669,7 @@
                                             tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                     </td>
                                 </tr>
-                            @endif
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -663,8 +733,8 @@
                 <div class="modal-body">
 
                     @if(!empty($supplier))
-                        <table class="table table-bordered table-hover">
-                            <thead>
+                    <table class="table table-bordered table-hover">
+                        <thead>
                             <tr>
                                 <th class="td-c">
                                     Supplier company name
@@ -680,37 +750,37 @@
                                     Select
                                 </th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             @foreach($supplier as $v)
-                                <tr>
-                                    <td class="td-c">
-                                        <div id="spname{{$v['supplier_id']}}">{{$v['supplier_company_name']}}</div>
-                                    </td>
-                                    <td class="td-c">
-                                        <div id="spcontact{{$v['supplier_id']}}">{{$v['contact_person_name']}}</div>
-                                    </td>
-                                    <td class="td-c">
-                                        <div id="spmobile{{$v['supplier_id']}}">{{$v['mobile1']}}</div>
-                                    </td>
+                            <tr>
+                                <td class="td-c">
+                                    <div id="spname{{$v['supplier_id']}}">{{$v['supplier_company_name']}}</div>
+                                </td>
+                                <td class="td-c">
+                                    <div id="spcontact{{$v['supplier_id']}}">{{$v['contact_person_name']}}</div>
+                                </td>
+                                <td class="td-c">
+                                    <div id="spmobile{{$v['supplier_id']}}">{{$v['mobile1']}}</div>
+                                </td>
 
-                                    <td class="td-c">
-                                        <div id="spemail{{$v['supplier_id']}}" style="display: none;">{{$v['email_id1']}}</div>
-                                        <input type="checkbox" @if(!empty($plugins['supplier'])) @if(in_array($v['supplier_id'],$plugins['supplier'])) checked="" @endif @endif class="icheck" value="{{$v['supplier_id']}}" id="spid{{$v['supplier_id']}}" onchange="AddsupplierRow(this.value);" />
-                                    </td>
-                                </tr>
+                                <td class="td-c">
+                                    <div id="spemail{{$v['supplier_id']}}" style="display: none;">{{$v['email_id1']}}</div>
+                                    <input type="checkbox" @if(!empty($plugins['supplier'])) @if(in_array($v['supplier_id'],$plugins['supplier'])) checked="" @endif @endif class="icheck" value="{{$v['supplier_id']}}" id="spid{{$v['supplier_id']}}" onchange="AddsupplierRow(this.value);" />
+                                </td>
+                            </tr>
                             @endforeach
-                            </tbody>
-                        </table>
-                        <div class="row no-margin">
-                            <button type="button" class="btn blue pull-right" data-dismiss="modal" aria-hidden="true">Done</button>
-                        </div>
+                        </tbody>
+                    </table>
+                    <div class="row no-margin">
+                        <button type="button" class="btn blue pull-right" data-dismiss="modal" aria-hidden="true">Done</button>
+                    </div>
 
                     @else
-                        <br>
-                        <div align="center">
-                            <h5>No records found</h5>
-                        </div>
+                    <br>
+                    <div align="center">
+                        <h5>No records found</h5>
+                    </div>
                     @endif
                 </div>
 
@@ -909,43 +979,43 @@
                                     </div>
                                 </div>
                                 @if($selectedTemplateType != 'construction')
-                                    <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0">Deductibles</p>
-                                                <p class="mb-4 default-font">Let your customers subtract tax deductions at source (TDS deductions) from their invoice/estimate amounts before payments. The TDS amount will be automatically deducted before your customers make a payment.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg1" @isset($plugins['has_deductible']) checked @endif onchange="pluginChange(this.checked, 'isdebit');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0">Deductibles</p>
+                                            <p class="mb-4 default-font">Let your customers subtract tax deductions at source (TDS deductions) from their invoice/estimate amounts before payments. The TDS amount will be automatically deducted before your customers make a payment.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg1" @isset($plugins['has_deductible']) checked @endif onchange="pluginChange(this.checked, 'isdebit');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0"> Supplier</p>
-                                                <p class="mb-4 default-font">Notify your suppliers via email & SMS once an invoice/estimate is paid by the customer. Automate payment notifications for your suppliers and vendors.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg2" @isset($plugins['has_custom_reminder']) checked @endif onchange="pluginChange(this.checked, 'issupplier');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                                </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> Supplier</p>
+                                            <p class="mb-4 default-font">Notify your suppliers via email & SMS once an invoice/estimate is paid by the customer. Automate payment notifications for your suppliers and vendors.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg2" @isset($plugins['has_custom_reminder']) checked @endif onchange="pluginChange(this.checked, 'issupplier');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4 flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0"> Coupon</p>
-                                                <p class="mb-4 default-font"> Attach discount coupons to your invoices/estimates. Your customers can apply discounts on their invoice amounts via coupon codes before making a payment.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg3" @isset($plugins['has_coupon']) checked @endif onchange="pluginChange(this.checked, 'iscoupon');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4 flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> Coupon</p>
+                                            <p class="mb-4 default-font"> Attach discount coupons to your invoices/estimates. Your customers can apply discounts on their invoice amounts via coupon codes before making a payment.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg3" @isset($plugins['has_coupon']) checked @endif onchange="pluginChange(this.checked, 'iscoupon');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 @endif
 
                                 <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
@@ -962,32 +1032,32 @@
                                     </div>
                                 </div>
                                 @if($selectedTemplateType != 'construction')
-                                    <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0"> Franchise</p>
-                                                <p class="mb-4 default-font"> Attach a franchise to your invoice, so that the invoice may be raised in the name of the franchise and the customer's payment split with the same. Enable automated SMS & email notifications for your franchise.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg7" @isset($plugins['has_franchise']) checked @endif onchange="pluginChange(this.checked, 'isfranchise');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> Franchise</p>
+                                            <p class="mb-4 default-font"> Attach a franchise to your invoice, so that the invoice may be raised in the name of the franchise and the customer's payment split with the same. Enable automated SMS & email notifications for your franchise.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg7" @isset($plugins['has_franchise']) checked @endif onchange="pluginChange(this.checked, 'isfranchise');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0"> Vendor</p>
-                                                <p class="mb-4 default-font"> Attach vendor(s) to your invoice to split invoice payments. Automate payments directly into your vendor’s account.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg71" @isset($plugins['has_vendor']) checked @endif onchange="pluginChange(this.checked, 'isvendor');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> Vendor</p>
+                                            <p class="mb-4 default-font"> Attach vendor(s) to your invoice to split invoice payments. Automate payments directly into your vendor’s account.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg71" @isset($plugins['has_vendor']) checked @endif onchange="pluginChange(this.checked, 'isvendor');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 @endif
 
 
@@ -1038,19 +1108,19 @@
 
 
                                 @if($selectedTemplateType != 'construction')
-                                    <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                        <div class="panel  box-plugin">
-                                            <div class="panel-body">
-                                                <p class="form-section mt-0"> E Invoice</p>
-                                                <p class="mb-4 default-font"> Create GST-compliant e-invoices and upload them to the Invoice Registration Portal (IRP). The invoices will be validated with a unique Invoice Reference Number (IRN), digital signature, and QR code.
-                                                </p>
-                                                <div class="plugin-button">
-                                                    <input type="checkbox" id="plg21" @isset($plugins['has_e_invoice']) checked @endif onchange="pluginChange(this.checked, 'iseinvoice');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> E Invoice</p>
+                                            <p class="mb-4 default-font"> Create GST-compliant e-invoices and upload them to the Invoice Registration Portal (IRP). The invoices will be validated with a unique Invoice Reference Number (IRN), digital signature, and QR code.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg21" @isset($plugins['has_e_invoice']) checked @endif onchange="pluginChange(this.checked, 'iseinvoice');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 @endif
 
 
@@ -1136,6 +1206,70 @@
                 <div class="modal-footer">
                     <button type="button" id="cclosebutton" class="btn default" data-dismiss="modal">Close</button>
                     <input type="button" onclick="return saveCovering('');" value="Save" class="btn blue">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal  fade" id="new_document" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Add new document</h4>
+                </div>
+                <form action="/merchant/coveringnote/save" method="post" id="covering_frm" class="form-horizontal form-row-sepe">
+                    <div class="form-body">
+                        <!-- Start profile details -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <br>
+                                <div id="covering_error" class="alert alert-danger" style="display: none;">
+                                </div>
+                                
+                                <div id="mandatory_docs" class="alert alert-danger" style="display: none;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Document name <span class="required">*
+                                        </span></label>
+                                    <div class="col-md-4">
+                                        <input type="text" required id="document_name" maxlength="100" class="form-control" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Document description <span class="required">*
+                                        </span></label>
+                                    <div class="col-md-4">
+                                        <input type="text" required id="document_description" maxlength="250" class="form-control" value="">
+                                        <input type="hidden" id="document_action"  value="Non-mandatory">
+                                    </div>
+                                </div>
+                                <!--<div class="form-group">
+                                    <label class="control-label col-md-4">Required for action <span class="required">*
+                                        </span></label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="document_action">
+                                            <option value="Non-mandatory">Non-mandatory</option>
+                                            <option value="Mandatory on creation">Mandatory on creation</option>
+                                            <option value="Mandatory on submission">Mandatory on submission</option>
+                                        </select>
+                                    </div>
+                                </div>-->
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- End profile details -->
+
+
+
+                </form>
+                <div class="modal-footer">
+                    <button type="button" id="documentclose" class="btn default" data-dismiss="modal">Close</button>
+                    <input type="button" onclick="return saveDocument('');" value="Save" class="btn blue">
                 </div>
             </div>
             <!-- /.modal-content -->

@@ -147,7 +147,7 @@
                                 </td>
                                 <td class="td-c">
                                     @php
-                                    if(in_array($v->status,[3,4,5]))
+                                    if(in_array($v->status,[3,4,5,9]))
                                     {
                                     $link='/merchant/import/billCode/view/';
                                     }elseif($v->status==1)
@@ -181,7 +181,7 @@
                                     <span class="label label-sm label-default">
                                         {{$v->config_value}}
                                     </span>
-                                    @elseif($v->status=='3')
+                                    @elseif($v->status=='3' || $v->status=='9')
                                     <span class="label label-sm label-warning">
                                         {{$v->config_value}}
                                     </span>
@@ -209,7 +209,7 @@
                                             <li>
                                                 <a href="/merchant/import/download/{{$v->bulk_id}}"><i class="fa fa-download"></i> Download sheet</a></span>
                                             </li>
-                                            @if($v->status==3)
+                                            @if($v->status==3 || $v->status=='9')
                                             <li>
                                                 <a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View codes</a>
                                             </li>
@@ -234,7 +234,7 @@
                                             </li>
                                             @endif
 
-                                            @if($v->status=='1')
+                                            @if($v->status=='1' || $v->status=='9')
                                             <li>
                                                 <a href="/merchant/import/billcodes/error/{{$v->bulk_id}}" target="_blank" ><i class="fa fa-exclamation-triangle"></i> View errors</a>
                                             </li>

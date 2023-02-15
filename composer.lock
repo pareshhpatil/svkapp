@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "898f2ea5c5a8b94a9c02f65f6ca6110b",
+    "content-hash": "ff916bf74b9bd8aa8a5188df6c93343c",
     "packages": [
         {
             "name": "apache/log4php",
@@ -2307,6 +2307,88 @@
                 }
             ],
             "time": "2022-05-21T17:30:32+00:00"
+        },
+        {
+            "name": "itbz/fpdf",
+            "version": "1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mreg-archive/fpdf.git",
+                "reference": "63340096907ef7525a9002d1ae3d0fd1ff376a6d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mreg-archive/fpdf/zipball/63340096907ef7525a9002d1ae3d0fd1ff376a6d",
+                "reference": "63340096907ef7525a9002d1ae3d0fd1ff376a6d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fpdf": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "no usage restriction"
+            ],
+            "description": "Unofficial PSR-0 compliant version of the FPDF library",
+            "homepage": "http://www.fpdf.org/",
+            "support": {
+                "issues": "https://github.com/mreg-archive/fpdf/issues",
+                "source": "https://github.com/mreg-archive/fpdf/tree/1.7.3"
+            },
+            "abandoned": "setasign/fpdf",
+            "time": "2016-05-27T09:02:54+00:00"
+        },
+        {
+            "name": "itbz/fpdi",
+            "version": "1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mreg-archive/fpdi.git",
+                "reference": "3189f4662a5bbd3838309368d9fc7f5a31c08a6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mreg-archive/fpdi/zipball/3189f4662a5bbd3838309368d9fc7f5a31c08a6f",
+                "reference": "3189f4662a5bbd3838309368d9fc7f5a31c08a6f",
+                "shasum": ""
+            },
+            "require": {
+                "itbz/fpdf": "~1.7",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "hanneskod/classtools": "~1.0",
+                "nikic/php-parser": "~1.0",
+                "phpunit/phpunit": "4.*",
+                "symfony/finder": "~2.3",
+                "tecnickcom/tcpdf": "^6.2.12"
+            },
+            "suggest": {
+                "tecnickcom/tcpdf": "FPDI supports TCPDF as a replacement for FPDF"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "fpdi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Unofficial PSR-4 compliant version of the FPDI library",
+            "support": {
+                "issues": "https://github.com/mreg-archive/fpdi/issues",
+                "source": "https://github.com/mreg-archive/fpdi/tree/1.6.1"
+            },
+            "abandoned": "setasign/fpdi",
+            "time": "2016-03-02T19:45:05+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -8009,6 +8091,53 @@
             "time": "2021-10-18T15:26:12+00:00"
         },
         {
+            "name": "swipezdev/short-url-package-creator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:swipezdev/short-url-package-creator.git",
+                "reference": "699cec7507c8491a4e4ee97edac72ca7e35de652"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swipezdev/short-url-package-creator/zipball/699cec7507c8491a4e4ee97edac72ca7e35de652",
+                "reference": "699cec7507c8491a4e4ee97edac72ca7e35de652",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3"
+            },
+            "default-branch": true,
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Swipez\\ShortUrl\\ShortUrlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Swipez\\ShortUrl\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "nitishswipezbriq",
+                    "email": "nitish.harchand@briq.com"
+                }
+            ],
+            "description": "swipez url short util package",
+            "support": {
+                "source": "https://github.com/swipezdev/short-url-package-creator/tree/develop",
+                "issues": "https://github.com/swipezdev/short-url-package-creator/issues"
+            },
+            "time": "2022-11-29T07:55:19+00:00"
+        },
+        {
             "name": "symfony/console",
             "version": "v5.4.15",
             "source": {
@@ -11340,6 +11469,67 @@
             "time": "2021-03-17T14:55:52+00:00"
         },
         {
+            "name": "webklex/laravel-pdfmerger",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Webklex/laravel-pdfmerger.git",
+                "reference": "55ad0174ee93438e9790490fddc4b94021c98d8f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Webklex/laravel-pdfmerger/zipball/55ad0174ee93438e9790490fddc4b94021c98d8f",
+                "reference": "55ad0174ee93438e9790490fddc4b94021c98d8f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.0",
+                "itbz/fpdi": "^1.6",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webklex\\PDFMerger\\": "src/PDFMerger"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Malte Goldenbaum",
+                    "email": "github@webklex.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generic PDF merger for Laravel",
+            "homepage": "https://github.com/webklex/pdfmerger",
+            "keywords": [
+                "laravel",
+                "merger",
+                "pdf",
+                "pdfmerger",
+                "webklex"
+            ],
+            "support": {
+                "issues": "https://github.com/Webklex/laravel-pdfmerger/issues",
+                "source": "https://github.com/Webklex/laravel-pdfmerger/tree/1.1.1"
+            },
+            "time": "2020-07-23T13:24:41+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.11.0",
             "source": {
@@ -13940,7 +14130,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "swipezdev/short-url-package-creator": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

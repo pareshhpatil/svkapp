@@ -386,6 +386,7 @@ function AddReminder() {
     newDiv.innerHTML = '<td><div class="input-icon right"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject"></div></td><td><div class="input-icon right"><input type="text" name="reminder_sms[]"  maxlength="200" class="form-control input-sm" placeholder="Reminder SMS"></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
 }
+
 function showDebit(id) {
     if ($('#is' + id).is(':checked')) {
         $("#" + id + "div").slideDown(500).fadeIn();
@@ -2307,5 +2308,43 @@ function showStateDiv(country_name) {
                 }
             });
         }
+    }
+}
+
+
+function saveDocument() {
+    document_name = document.getElementById('document_name').value;
+    document_description = document.getElementById('document_description').value;
+    if(document_name == '' || document_description == ''){
+        var div = document.getElementById('mandatory_docs');
+        div.innerHTML += 'Document name and description cannot be blank!';
+        div.style.display = 'block';
+        return false;
+    }
+    document_action = document.getElementById('document_action').value;
+    var mainDiv = document.getElementById('new_documents');
+    var newDiv = document.createElement('tr');
+    hidden = '<input type="hidden" name="mandatory_document_name[]" value="' + document_name + '"></input><input type="hidden" name="mandatory_document_description[]" value="' + document_description + '"></input><input type="hidden" name="mandatory_document_action[]" value="' + document_action + '"></input>';
+
+    newDiv.innerHTML = '<td class="td-c  default-font">' + document_name + ' ' + hidden + '</td><td class="td-c  default-font">' + document_description + '</td><td class="td-c"><a href="javascript:;" onclick="$(this).closest(' + "'tr'" + ').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>';
+    mainDiv.appendChild(newDiv);
+    document.getElementById('document_name').value = '';
+    document.getElementById('document_description').value = '';
+    var div = document.getElementById('mandatory_docs');
+    div.innerHTML += '';
+    div.style.display = 'none';
+    document.getElementById('documentclose').click();
+
+}
+
+
+function setCheckbox(val, id) {
+    _(id).checked = val;
+    if (val == false) {
+        _('document_attachment_div').style.display = 'none';
+        _('document_attachment_button').style.display = 'none';
+    } else {
+        _('document_attachment_div').style.display = 'block';
+        _('document_attachment_button').style.display = 'block';
     }
 }

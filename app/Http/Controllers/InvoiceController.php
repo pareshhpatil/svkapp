@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Redis;
 use Numbers_Words;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use File;
@@ -32,6 +32,8 @@ use App\Model\CostType;
 use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
+
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
 class InvoiceController extends AppController
 {
@@ -206,6 +208,7 @@ class InvoiceController extends AppController
             if (strlen($request_id) != 10) {
                 return redirect('/error/invalidlink');
             }
+
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
             if ($update == 1 && $invoice->payment_request_status != 11) {
                 $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
@@ -219,6 +222,7 @@ class InvoiceController extends AppController
                     }
                 }
             }
+
             $request->template_id = $invoice->template_id;
             $request->contract_id = $invoice->contract_id;
             $request->currency = $invoice->currency;
@@ -373,6 +377,28 @@ class InvoiceController extends AppController
             }
             $data['logo'] = $logo;
         }
+
+        if ($link != null) {
+            $request_id = Encrypt::decode($link);
+            if (strlen($request_id) != 10) {
+                return redirect('/error/invalidlink');
+            }
+            $data['mandatory_files'] = [];
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                        $data['mandatory_files' . $key] = [];
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
+                        foreach ($mandatory_files as $files) {
+                            $file_url =  $files->file_url;
+                            array_push($data['mandatory_files' . $key], $file_url);
+                        }
+                        array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
+                    }
+                }
+            }
+        }
+
 
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
@@ -1003,10 +1029,73 @@ class InvoiceController extends AppController
                 $menus['menu'] = $menus2;
                 $doclist[] = $menus;
             }
+
+
+            if (isset($plugin_array['has_mandatory_upload'])) {
+                if ($plugin_array['has_mandatory_upload'] == 1) {
+
+                    $menus0['title'] = "Required documents";
+                    $menus0['id'] = "hellow_required_document";
+                    $menus0['full'] = "Required documents";
+                    $menus0['link'] = "";
+                    $menus0['type'] = "required";
+
+                    foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
+
+                        $menus1 = array();
+                        $menus2 = array();
+                        $pos = 1;
+
+                        foreach ($mandatory_files as $files) {
+                            if ($files->file_url != '') {
+                                $data['files'][] = $files->file_url;
+                                $nm = '';
+                                if (!empty($files->file_url)) {
+                                    $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
+                                }
+
+                                $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                $menus1['full'] = basename($files->file_url);
+
+                                $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
+
+
+                                $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
+                                $menus1['menu'] = "";
+                                $menus1['type'] = "required";
+                                $menus2[$pos] = $menus1;
+                                if ($pos == 1) {
+                                    if (empty($docpath)) {
+                                        $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                    }
+                                }
+                                $pos++;
+                            }
+                        }
+                        if (isset($mandatory_files[0]->file_url)) {
+                            if ($mandatory_files[0]->file_url != '') {
+
+                                $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
+                                $menus['id'] = "required_document" . $key;
+                                $menus['full'] = $mandatory_data['name'];
+                                $menus['link'] = "";
+
+                                $menus['menu'] = $menus2;
+                                $menus0['menu'][] = $menus;
+                            }
+                        }
+                    }
+
+                    $doclist[] = $menus0;
+                }
+            }
+
             $constriuction_details = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data = $this->getDataBillCodeAttachment($tt, $doclist, $data);
 
+            //dd( $data);
             //dd($data['docs'][0]['menu'][0]['title']);
 
             $selectedDoc = array();
@@ -2002,7 +2091,71 @@ class InvoiceController extends AppController
                 }
             }
 
+
             $info['invoice_attachments'] = $invoiceAttachments;
+
+
+            $mandatoryDocumentAttachments = [];
+
+            if (isset($pluginValue->has_mandatory_upload)) {
+                $oMerger = PDFMerger::init();
+                $pdf_link_array = [];
+                if ($pluginValue->has_mandatory_upload == 1) {
+                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+
+                        foreach ($mandatory_files as $file) {
+                            if (!empty($file->file_url)) {
+                                $fileUrlExplode = explode('/', $file->file_url);
+                                $fileLastFromURL = end($fileUrlExplode);
+                                $fileExplode = explode('.', $fileLastFromURL);
+
+                                $fileName = Arr::first($fileExplode);
+                                $fileType = Arr::last($fileExplode);
+                                $fileContent = '';
+
+                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 'uat.expense';
+
+                                    $result = $s3->getObject(array(
+                                        'Bucket' => $bucketName,
+                                        'Key'    => $filePath
+                                    ));
+
+                                    $body = $result->get('Body');
+                                    $fileContent = base64_encode($body->getContents());
+                                }
+
+                                if ($fileType == 'pdf') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 's3_expense';
+
+                                    $source_path = 'invoices/' . basename($file->file_url);
+                                    $file_content = Storage::disk($bucketName)->get($source_path);
+                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                    array_push($pdf_link_array, $path);
+                                }
+
+                                $mandatoryDocumentAttachments[] = [
+                                    'fileName' => $fileName,
+                                    'name' => $mandatory_data->name,
+                                    'fileNameSlug' => Str::slug($fileName, '-'),
+                                    'fileType' => $fileType,
+                                    'fileContent' => $fileContent,
+                                    'url' => $file->file_url
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            $info['mandatory_document_attachments'] = $mandatoryDocumentAttachments;
 
             $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
 
@@ -2068,10 +2221,24 @@ class InvoiceController extends AppController
                 $pdf->setPaper("a4", "landscape");
             }
 
+            $name = str_replace(" ", "_", $info['customer_name']) . '_' . time() . '.pdf';
 
-            $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+            if (count($pdf_link_array) > 0) {
+                Storage::disk('local')->put($name, $pdf->output());
+                $DOMpath = Storage::disk('local')->path($name);
+                $oMerger->addPDF($DOMpath, 'all', 'L');
 
-            return $pdf->download($name . '.pdf');
+                foreach ($pdf_link_array as $path) {
+                    $oMerger->addPDF($path, 'all');
+                }
+
+                $oMerger->merge();
+                $oMerger->setFileName($name);
+                $oMerger->save();
+                return $oMerger->download();
+            } else {
+                return $pdf->download($name);
+            }
         }
 
         return response()->json([
@@ -2554,14 +2721,14 @@ class InvoiceController extends AppController
             }
 
             if (!empty($change_order_ids)) {
-                $info['last_month_co_amount']=0;
-                $info['this_month_co_amount']=0;
-                $start_date=date("Y-m-d", strtotime("first day of previous month"));
-                $end_date=date("Y-m-01");
-                $info['last_month_co_amount']=$this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
-                $start_date=date("Y-m-01");
-                $end_date=date("Y-m-d", strtotime("first day of next month"));
-                $info['this_month_co_amount']=$this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $info['last_month_co_amount'] = 0;
+                $info['this_month_co_amount'] = 0;
+                $start_date = date("Y-m-d", strtotime("first day of previous month"));
+                $end_date = date("Y-m-01");
+                $info['last_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $start_date = date("Y-m-01");
+                $end_date = date("Y-m-d", strtotime("first day of next month"));
+                $info['this_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
             } else {
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
@@ -3122,12 +3289,36 @@ class InvoiceController extends AppController
             }
 
             $response = $this->invoiceModel->updateInvoice($request_id, $this->user_id, $request->customer_id, $invoice_number, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, $invoice->grand_total, 0, 0, json_encode($plugin), $invoice->billing_profile_id, $invoice->currency,  1, $invoice->notify_patron, $invoice->payment_request_status);
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    $this->invoiceModel->deleteMandatoryFiles($request_id);
+                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                        $mandatory_files_insert_array = explode(',', $mandatory_files);
+                        foreach ($mandatory_files_insert_array as $file_url) {
+                            $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                        }
+                    }
+                }
+            }
             if ($revision == true) {
                 $this->storeRevision($request_id, $revision_data);
             }
         } else {
             $plugin = $this->setPlugins(json_decode($template->plugin, 1), $request);
             $response = $this->invoiceModel->saveInvoice($this->merchant_id, $this->user_id, $request->customer_id, $invoice_number, $request->template_id, implode('~', $request->newvalues), implode('~', $request->ids), $billdate, $duedate, $cyclename, $request->narrative, 0, 0, 0, json_encode($plugin), $request->currency,  1, 0, 11);
+
+            if (isset($plugin['has_mandatory_upload'])) {
+                if ($plugin['has_mandatory_upload'] == 1) {
+                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                        $mandatory_files_insert_array = explode(',', $mandatory_files);
+                        foreach ($mandatory_files_insert_array as $file_url) {
+                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                        }
+                    }
+                }
+            }
 
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
