@@ -3830,4 +3830,77 @@ class InvoiceController extends AppController
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
     }
+
+    public function saveProjectInvoiceSequence()
+    {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='' ? $_POST['last_no']: 0);
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+       
+        $formatModel = new InvoiceFormat();
+        if($prefix=='' && $separator!='') {
+            $response['error'] = 'You can not add separator without prefix';
+            $response['status'] = 0;
+        } else if ($number=='') {
+            $response['error'] = 'Sequence number is required.';
+            $response['status'] = 0;
+        } else {
+           
+            $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+            
+            if ($res == FALSE) {
+                $seq_number= $number-1;
+                $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+                $response['name'] = $prefix .$separator. $number;
+                $response['id'] = $id;
+                $response['prefix'] = $prefix;
+                $response['number'] = $number;
+                $response['seprator'] = $separator;
+                $response['merchant_id'] = $this->merchant_id;
+                $response['status'] = 1;
+            } else {
+                if($prefix=='' && $separator=='') {
+                    $response['status'] = 2;
+                } else {
+                    $response['error'] = 'Invoice prefix alredy exist';
+                    $response['status'] = 0;
+                }
+            }
+        }
+        echo json_encode($response);
+    }
+
+    function saveExistingSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+        
+        if($res!='') {
+            $response['name'] = $res->prefix .$res->seprator. $res->val;
+            $response['id'] = $res->auto_invoice_id;
+            $response['prefix'] = $res->prefix;
+            $response['number'] = $res->val;
+            $response['merchant_id'] = $this->merchant_id;
+            $response['status'] = 1;
+        } else {
+            $response['status'] = 0;
+        }
+        echo json_encode($response);
+    }
+
+    function createNewSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='') ? $_POST['last_no']: 0;
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $seq_number= $number-1;
+        $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+        $response['name'] = $prefix .$separator. $number;
+        $response['id'] = $id;
+        $response['status'] = 1;
+        echo json_encode($response);
+    }
 }
