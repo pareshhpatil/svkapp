@@ -185,6 +185,9 @@
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
+                                            Retainage percentage
+                                        </th>
+                                        <th class="td-c">
                                             Unit
                                         </th>
                                         <th class="td-c">
@@ -239,6 +242,10 @@
                                         <td class="col-id-no">
                                             <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
+                                        @elseif ($v == 'retainage_percent')
+                                        <td class="col-id-no">
+                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
+                                        </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
@@ -291,6 +298,7 @@
                                         <th class="td-c">
                                             <span id="original_contract_amount_total"></span>
                                         </th>
+                                        <th></th>
                                         <th class="td-c">
                                             <span id="unit_total"></span>
                                         </th>
