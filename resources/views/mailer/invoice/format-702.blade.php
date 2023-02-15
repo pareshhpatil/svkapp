@@ -58,16 +58,6 @@ body{
 
 
 <body style="word-break: break-word; -webkit-font-smoothing: antialiased; margin: 0; width: 100%; ">
-    @php
-        $plugins = json_decode($info['plugin_value'], 1);
-
-        $hasAIALicense = false;
-        if(isset($plugins['invoice_output'])) {
-            if(isset($plugins['has_aia_license'])) {
-                $hasAIALicense = true;
-            }
-        }
-    @endphp
   <div role="article" aria-roledescription="email" aria-label="" lang="en" > 
     <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 0px">
                 
@@ -75,7 +65,7 @@ body{
         <div id="tab" style="width: 100%; background-color: #fff; padding: @if($viewtype=='print')20px @else 10px        
         @endif;">
             <table >
-                @if($hasAIALicense)
+                @if($has_aia_license)
                     <tr>
                         <td>
                             <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
@@ -197,7 +187,7 @@ body{
                <tr>
                         <td style="width:50%; padding-right: 10px;">
                     <div style="font-size: 16px;font-weight: 600;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</div>
-                            @if($hasAIALicense)
+                            @if($has_aia_license)
                                 <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
                                     AIA Document G703®, Continuation Sheet, is attached.</div>
                             @else
@@ -405,7 +395,7 @@ that current payment shown herein is now due.</div>
             
             <div style="margin-top: 0px; height: 2px; width: 100%; background-color: #111827"></div>
             <div style="margin-top: 4px">
-                @if($hasAIALicense)
+                @if($has_aia_license)
                 <div style="line-height: 12px">
                     <span style="font-size: 12px"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
                     “AIA Contract Documents” are registered trademarks and may not be used without permission.</span><span style="font-size: 12px"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span>

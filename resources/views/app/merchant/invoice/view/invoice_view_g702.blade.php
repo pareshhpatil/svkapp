@@ -100,19 +100,9 @@ $header='app.patron.invoice.invoice-master';}
     </div>
     <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10"
        style="max-width: 1400px;">
-            @php
-                $plugins = json_decode($info['plugin_value'], 1);
-
-                $hasAIALicense = false;
-                if(isset($plugins['invoice_output'])) {
-                    if(isset($plugins['has_aia_license'])) {
-                        $hasAIALicense = true;
-                    }
-                }
-            @endphp
 
             <div class="flex flex-row  gap-4">
-                @if($hasAIALicense)
+                @if($has_aia_license)
                     <div>
                         <img src="{{ asset('images/logo-703.PNG') }}" />
                     </div>
@@ -220,7 +210,7 @@ $header='app.patron.invoice.invoice-master';}
             <div class="grid grid-cols-2 gap-2 mt-1">
                 <div>
                     <h4 class="font-bold">CONTRACTOR’S APPLICATION FOR PAYMENT</h4>
-                    @if($hasAIALicense)
+                    @if($has_aia_license)
                         <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
                             AIA Document G703®, Continuation Sheet, is attached.</p>
                     @else
@@ -445,7 +435,7 @@ that current payment shown herein is now due.</p>
 
             <div class="w-full h-0.5 bg-gray-900 mt-2 "></div>
             <div class="mt-2">
-                @if($hasAIALicense)
+                @if($has_aia_license)
                     <p class="leading-3"><span class="text-xs"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
                     “AIA Contract Documents” are registered trademarks and may not be used without permission.</span><span class="text-xs"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span></p>
                 @endif

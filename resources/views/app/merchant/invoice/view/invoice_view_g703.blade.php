@@ -108,19 +108,8 @@
             </div>
         </div>
         <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;">
-            @php
-                $plugins = json_decode($info['plugin_value'], 1);
-
-                $hasAIALicense = false;
-                if(isset($plugins['invoice_output'])) {
-                    if(isset($plugins['has_aia_license'])) {
-                        $hasAIALicense = true;
-                    }
-                }
-            @endphp
-
             <div class="flex flex-row  gap-4">
-                @if($hasAIALicense)
+                @if($has_aia_license)
                     <div>
                         <img src="{{ asset('images/logo-703.PNG') }}" />
                         {{-- @if (isset($info['image_path']) && !empty($info['image_path']))
@@ -144,7 +133,7 @@
 
             <div class="grid grid-cols-3  gap-4">
                 <div class="col-span-2">
-                    @if($hasAIALicense)
+                    @if($has_aia_license)
                         <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
                             Application and Certificate for
                             Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
@@ -534,7 +523,7 @@
             </div>
             <hr>
             <div class="mt-2">
-                @if($hasAIALicense)
+                @if($has_aia_license)
                     <p class="leading-3"><span class="text-xs font-bold">AIA Document G703® – 1992. Copyright</span><span
                             class="text-xs"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
                             of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American

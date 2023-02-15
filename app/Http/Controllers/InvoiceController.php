@@ -2896,8 +2896,16 @@ class InvoiceController extends AppController
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
 
+        $plugins = json_decode($info['plugin_value'], 1);
+        $hasAIALicense = false;
+        if(isset($plugins['invoice_output'])) {
+            if(isset($plugins['has_aia_license'])) {
+                $hasAIALicense = true;
+            }
+        }
 
-
+        $data['has_aia_license'] = $hasAIALicense;
+            
         return $data;
     }
 

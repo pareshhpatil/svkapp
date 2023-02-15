@@ -46,21 +46,11 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
 
 </head>
 <body style="word-break: break-word; -webkit-font-smoothing: antialiased; margin: 0; width: 100%; padding: 0">
-@php
-    $plugins = json_decode($info['plugin_value'], 1);
-
-    $hasAIALicense = false;
-    if(isset($plugins['invoice_output'])) {
-        if(isset($plugins['has_aia_license'])) {
-            $hasAIALicense = true;
-        }
-    }
-@endphp
   <div role="article" aria-roledescription="email" aria-label="" lang="en"> <!doctype html>
                          <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px">
                     <div id="tab" style="width: 100%; background-color: #fff; padding: 16px">
                         <table >
-                            @if($hasAIALicense)
+                            @if($has_aia_license)
                             <tr>
                                 <td>
                                     <img style="height: 40px" src="data:image/png;base64,{{$info['logo']}}" alt="">
@@ -81,7 +71,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                         <div style="margin-top: 5px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
                           <table style="width:100%">
                             <td>
-                                @if($hasAIALicense)
+                                @if($has_aia_license)
                                     <div style="font-size: 12px">AIA Document G702®, Application and Certificate for Payment, or G732™,
                                         Application and Certificate for
                                         Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
@@ -352,7 +342,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
                         <hr>
                         <div style="margin-top: 8px">
                             <div style="line-height: 12px">
-                                @if($hasAIALicense)
+                                @if($has_aia_license)
                                     <span style="font-size: 12px; font-weight: 600">AIA Document G703® – 1992. Copyright</span><span style="font-size: 12px"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
                                     of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American
                                     Institute of Architects,” “AIA,” the AIA Logo, “G703,”

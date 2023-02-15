@@ -1593,7 +1593,6 @@ function customReminder(rmjson) {
 }
 
 function pluginChange(val, id, function_id = null) {
-    console.log(id);
     if (val == true) {
         document.getElementById("pg" + id).style.display = 'block';
         $('#' + id).bootstrapSwitch('state', true);

@@ -159,7 +159,7 @@
                                                         Remove </a>
                                                 </div>
                                             </div>
-{{--                                            @livewire('format.header-detail', ['columns' => $formatColumns['M'], 'profileId' => $defaultProfileId, 'metaColumns' => $metadata['M']])--}}
+                                            @livewire('format.header-detail', ['columns' => $formatColumns['M'], 'profileId' => $defaultProfileId, 'metaColumns' => $metadata['M']])
                                         </div>
                                     </div>
                                 </div>
