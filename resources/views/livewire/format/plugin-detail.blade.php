@@ -1,4 +1,30 @@
 <style>
+    .customize-output-panel-wrap {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 50% !important;
+        transform: translateX(100%);
+        transition: .3s ease-out;
+        z-index: 100;
+    }
+
+    .customize-output-panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        color: #394242;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding: 1em;
+        box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+        margin-bottom: 0;
+    }
+
     @media screen and (min-width: 0px) and (max-width: 700px) {
         .mobile {
             display: block !important;
@@ -20,7 +46,30 @@
 
         }
 
-        /* hide it elsewhere */
+    }
+
+    @media (max-width: 767px) {
+        .customize-output-panel-wrap {
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            position: fixed;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        .customize-output-panel-wrap {
+            position: fixed;
+            right: 0;
+        }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .customize-output-panel-wrap {
+            position: fixed;
+            right: 0;
+        }
     }
 </style>
 
@@ -716,6 +765,17 @@
                 </div>
             </div>
 
+            <div id="pginvoiceoutput" @isset($plugins['invoice_output']) @else style="display: none;" @endif>
+                <hr>
+                <div class="mb-2">
+                    <span class="form-section base-font"> Invoice Output&nbsp; </span>
+                    <div class="pull-right ml-1">
+                        <input type="checkbox" @isset($plugins['invoice_output']) checked @endif  onchange="disablePlugin(this.checked, 'plg23');" id="invoiceoutput" name="invoice_output" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    </div>
+                    <a href="#" class="btn btn-sm green pull-right ml-1 customize-output-btn">Customize output </a>
+                </div>
+            </div>
+
 
 
         </div>
@@ -1074,6 +1134,20 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0"> Invoice Output</p>
+                                            <p class="mb-4 default-font"> Customize the appearance of your invoice i.e. configure how your G702 / G703 formats appear to your customers and the generated PDF.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg23" @isset($plugins['invoice_output']) checked @endif onchange="pluginChange(this.checked, 'invoiceoutput');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!--
                                 <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                     <div class="panel  box-plugin">
@@ -1122,6 +1196,7 @@
                                     </div>
                                 </div>
                                 @endif
+
 
 
                             </div>
@@ -1213,7 +1288,7 @@
         <!-- /.modal-dialog -->
     </div>
 
-    <div class="modal  fade" id="new_document" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal fade" id="new_document" tabindex="-1" role="basic" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1277,6 +1352,36 @@
         <!-- /.modal-dialog -->
     </div>
 
+    <!-- Customize invoice output drawer -->
+    <div class="customize-output-panel-wrap" id="panelWrapInvoiceOutput">
+        <div class="customize-output-panel">
+            <div>
+                <h3 class="modal-title">
+                    Customize invoice views
+                    <a class="close " data-toggle="modal" onclick="closeCustomizeInvoiceOutputDrawer()">
+                        <button type="button" class="close" aria-hidden="true"></button>
+                    </a>
+                </h3>
+
+            </div>
+
+            <div style="position: relative;margin-top: 30px;">
+                <h4>AIA format </h4>
+                <hr/>
+                <div class="mb-2" style="display: flex;justify-content: space-between;">
+                    <span class="form-section base-font">License available&nbsp;</span>
+                    <div>
+                        <div class="plugin-button">
+                            <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.Customize invoice output drawer -->
+
     <script>
         function showsupplier() {
             if ($('#issupplier').is(':checked')) {
@@ -1285,5 +1390,19 @@
                 $("#supplierdiv").slideUp(500).fadeOut();
             }
         }
+
+        function closeCustomizeInvoiceOutputDrawer() {
+            document.getElementById("panelWrapInvoiceOutput").style.boxShadow = "none";
+            document.getElementById("panelWrapInvoiceOutput").style.transform = "translateX(100%)";
+        }
+
+        $(document).ready(function() {
+            $(document).on("click", ".customize-output-btn",function() {
+                let panelWrap =  document.getElementById("panelWrapInvoiceOutput");
+                panelWrap.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
+                panelWrap.style.transform = "translateX(0%)";
+            })
+
+        })
     </script>
 </div>

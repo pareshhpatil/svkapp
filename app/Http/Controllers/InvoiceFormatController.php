@@ -55,6 +55,7 @@ class InvoiceFormatController extends AppController
         #get pre define system column metadata
         $metarows = $this->formatModel->getSystemMetadata($template_id);
         $data['metadata'] = $this->setMetadata($metarows);
+
         foreach ($data['metadata']['H'] as $key => $row) {
             if ($row->function_id == 9) {
                 $data['metadata']['H'][$key]->param = 'system_generated';
@@ -847,7 +848,7 @@ class InvoiceFormatController extends AppController
 
     function getPlugins()
     {
-        $this->setZeroValue(array('is_debit','has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision'));
+        $this->setZeroValue(array('is_debit','has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license'));
         $this->setEmptyArray(array('debit', 'debitdefaultValue', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
@@ -946,6 +947,14 @@ class InvoiceFormatController extends AppController
             if ($_POST['is_revision'] == 1) {
                 $plugin['save_revision_history'] = $_POST['is_revision'];
             }
+        }
+
+        if ($_POST['invoice_output'] == 1) {
+            $plugin['invoice_output'] = $_POST['invoice_output'];
+        }
+
+        if ($_POST['has_aia_license'] == 1) {
+            $plugin['has_aia_license'] = $_POST['has_aia_license'];
         }
 
         if (empty($plugin)) {

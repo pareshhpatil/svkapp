@@ -872,6 +872,7 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
             $info = (array)$info;
             $info['gtype'] = '703';
 
@@ -916,6 +917,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
@@ -2894,8 +2896,16 @@ class InvoiceController extends AppController
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
 
+        $plugins = json_decode($info['plugin_value'], 1);
+        $hasAIALicense = false;
+        if(isset($plugins['invoice_output'])) {
+            if(isset($plugins['has_aia_license'])) {
+                $hasAIALicense = true;
+            }
+        }
 
-
+        $data['has_aia_license'] = $hasAIALicense;
+            
         return $data;
     }
 

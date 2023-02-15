@@ -108,20 +108,24 @@
             </div>
         </div>
         <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;">
-
-
             <div class="flex flex-row  gap-4">
-                <div>
-                    <img src="{{ asset('images/logo-703.PNG') }}" />
-                    {{-- @if (isset($info['image_path']) && !empty($info['image_path']))
-                    <img style="max-width: 120px" src="data:image/png;base64,{{$info['logo']}}" />
-                    @else
-                    <img style="max-width: 120px" src="{{ asset('images/logo-703.PNG') }}" />
-                    @endif --}}
-                </div>
-                <div>
-                    <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G703® – 1992</h1>
-                </div>
+                @if($has_aia_license)
+                    <div>
+                        <img src="{{ asset('images/logo-703.PNG') }}" />
+                        {{-- @if (isset($info['image_path']) && !empty($info['image_path']))
+                        <img style="max-width: 120px" src="data:image/png;base64,{{$info['logo']}}" />
+                        @else
+                        <img style="max-width: 120px" src="{{ asset('images/logo-703.PNG') }}" />
+                        @endif --}}
+                    </div>
+                    <div>
+                        <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G703® – 1992</h1>
+                    </div>
+                @else
+                    <div>
+                        <h1 class="text-3xl text-left font-bold  text-black">Document G703 – 1992</h1>
+                    </div>
+                @endif
 
             </div>
             <h1 class="text-2xl text-left mt-4 font-bold  text-black">Continuation Sheet</h1>
@@ -129,11 +133,19 @@
 
             <div class="grid grid-cols-3  gap-4">
                 <div class="col-span-2">
-                    <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                        Application and Certificate for
-                        Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                        is attached.
-                        Use Column I on Contracts where variable retainage for line items may apply. </p>
+                    @if($has_aia_license)
+                        <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
+                            Application and Certificate for
+                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
+                            is attached.
+                            Use Column I on Contracts where variable retainage for line items may apply. </p>
+                    @else
+                        <p class="text-xs">Document G702, Application and Certificate for Payment, or G732™,
+                            Application and Certificate for
+                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
+                            is attached.
+                            Use Column I on Contracts where variable retainage for line items may apply. </p>
+                    @endif
                 </div>
                 <div>
                     <table>
@@ -511,14 +523,15 @@
             </div>
             <hr>
             <div class="mt-2">
-
-                <p class="leading-3"><span class="text-xs font-bold">AIA Document G703® – 1992. Copyright</span><span
-                        class="text-xs"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
-                        of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American
-                        Institute of Architects,” “AIA,” the AIA Logo, “G703,”
-                        and “AIA Contract Documents” are registered trademarks and may not be used without
-                        permission.</span><span class="text-xs"> To report copyright violations of AIA Contract
-                        Documents, e-mail copyright@aia.org.</span></p>
+                @if($has_aia_license)
+                    <p class="leading-3"><span class="text-xs font-bold">AIA Document G703® – 1992. Copyright</span><span
+                            class="text-xs"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
+                            of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American
+                            Institute of Architects,” “AIA,” the AIA Logo, “G703,”
+                            and “AIA Contract Documents” are registered trademarks and may not be used without
+                            permission.</span><span class="text-xs"> To report copyright violations of AIA Contract
+                            Documents, e-mail copyright@aia.org.</span></p>
+                @endif
 
 
             </div>
