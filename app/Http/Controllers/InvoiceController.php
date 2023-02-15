@@ -881,6 +881,14 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            $hasCreateAccess = false;
+            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+                $hasCreateAccess = true;
+            }
+            $info['has_create_access'] = $hasCreateAccess;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
