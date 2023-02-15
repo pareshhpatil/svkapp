@@ -84,6 +84,7 @@ class OrderController extends Controller
         $data["default_particulars"]["bill_code"] = 'Bill Code';
         $data["default_particulars"]["cost_type"] = 'Cost Type';
         $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
+        $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
         $data["default_particulars"]["unit"] = 'Unit';
         $data["default_particulars"]["rate"] = 'Rate';
         $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
@@ -123,6 +124,7 @@ class OrderController extends Controller
                     $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
                     $row_array["order_description"] = $request->order_description[$skey];
                     $row_array["cost_type"] = $request->cost_type[$skey];
+                    $row_array["retainage_percent"] = $request->retainage_percent[$skey];
                     $row_array["pint"] = $request->pint[$skey];
                     array_push($main_array, $row_array);
                 }
@@ -233,6 +235,7 @@ class OrderController extends Controller
             $data["default_particulars"]["bill_code"] = 'Bill Code';
             $data["default_particulars"]["cost_type"] = 'Cost Type';
             $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
+            $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
             $data["default_particulars"]["unit"] = 'Unit';
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
@@ -278,6 +281,7 @@ class OrderController extends Controller
             $data["default_particulars"]["bill_code"] = 'Bill Code';
             $data["default_particulars"]["cost_type"] = 'Cost Type';
             $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
+            $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
             $data["default_particulars"]["unit"] = 'Unit';
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
@@ -324,6 +328,7 @@ class OrderController extends Controller
             $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
             $row_array["order_description"] = $request->order_description[$skey];
             $row_array["cost_type"] = $request->cost_type[$skey];
+            $row_array["retainage_percent"] = $request->retainage_percent[$skey];
             $row_array["pint"] = $request->pint[$skey];
             array_push($main_array, $row_array);
         }

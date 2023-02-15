@@ -473,6 +473,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
         "bill_code": "Bill Code",
         "cost_type": "Cost Type",
         "original_contract_amount": "Original Contract Amount",
+        "retainage_percent": "Retainage Percentage",
         "unit": "Unit",
         "rate": "Rate",
         "change_order_amount": "Chnage Order Amount",
@@ -495,7 +496,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
             else if (index == 'original_contract_amount') {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
-            else if (index == 'unit' || index == 'rate') {
+            else if (index == 'unit' || index == 'rate' || index == 'retainage_percent') {
                 row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {

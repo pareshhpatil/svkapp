@@ -3626,7 +3626,13 @@ class InvoiceController extends AppController
                     if ($kdata["bill_code"] == $key) {
                         $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
-                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
+                        $co_particulars[] = array(
+                            'bill_code' => $key, 
+                            'change_order_amount' => array_sum($value), 
+                            'description' =>  $kdata["description"], 
+                            'retainage_percent' =>  $kdata["retainage_percent"], 
+                            'cost_type' =>  $kdata["cost_type"]
+                        );
                     }
                 }
             }
@@ -3712,6 +3718,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
                         $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }
