@@ -112,7 +112,7 @@ class Master extends ParentModel
                 'customer_id' => $data->customer_id,
                 'end_date' => $data->end_date,
                 'start_date' => $data->start_date,
-                'sequence_number' => $data->sequence_id,
+                'sequence_number' => $data->sequence_number,
                 'last_update_by' => $user_id
             ]);
     }

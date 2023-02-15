@@ -71,7 +71,7 @@ class InvoiceFormat extends ParentModel
     public function getInvoiceSequence($merchant_id, $type = 1)
     {
         $retObj = DB::table('merchant_auto_invoice_number')
-            ->select(DB::raw('auto_invoice_id,prefix,val'))
+            ->select(DB::raw('auto_invoice_id,prefix,val,seprator'))
             ->where('merchant_id', $merchant_id)
             ->where('type', $type)
             ->where('is_active', 1)
@@ -111,6 +111,22 @@ class InvoiceFormat extends ParentModel
             ]
         );
         return $id;
+    }
+
+    public function existInvoicePrefix($merchant_id, $prefix='', $separator='')
+    {
+        $retObj = DB::table('merchant_auto_invoice_number')
+            ->select(DB::raw('*'))
+            ->where('merchant_id', $merchant_id)
+            ->where('prefix',$prefix)
+            ->where('seprator',$separator)
+            ->where('is_active', 1)
+            ->first();
+        if (!empty($retObj)) {
+            return $retObj;
+        } else {
+            return false;
+        }  
     }
 
     public function getInvoiceMetaDataColumnsDetails($template_id, $column_label)

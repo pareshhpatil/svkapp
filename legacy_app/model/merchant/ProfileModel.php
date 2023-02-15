@@ -451,7 +451,7 @@ VALUES(:merchant_id,'','','',0,'','','','','',1,:merchant_id,CURRENT_TIMESTAMP()
         }
     }
 
-    public function saveInvoiceNumber($user_id, $merchant_id, $subscript, $val, $type = 1, $seprator=null)
+    public function saveInvoiceNumber($user_id, $merchant_id, $subscript, $val, $type = 1, $seprator='')
     {
         try {
             $type = ($type > 1) ? $type : 1;

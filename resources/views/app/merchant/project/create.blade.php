@@ -1,7 +1,7 @@
 @extends('app.master')
 <style>
     .select2-container--default {
-        width: 515px !important;
+        /* width: 515px !important; */
     }
 </style>
 @section('content')
@@ -78,13 +78,40 @@
                                             <i class="popovers fa fa-info-circle support blue" data-container="body" data-trigger="hover" data-content="Enter the start of your sequence i.e. If you want to start your sequence at 100 enter 100." data-original-title="" title=""></i>
                                         </label>
                                         <div class="col-md-3">
-                                            <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}"/>
+                                            <select required class="form-control select2me" data-placeholder="Select" name="sequence_number" id="seq_no_drpdwn">
+                                                <option value="">Select sequence</option>
+                                                @if(!empty($invoiceSeq))
+                                                    @foreach($invoiceSeq as $f)
+                                                        <option value="{{$f['auto_invoice_id']}}">{{$f['prefix']}}{{$f['seprator']}}{{$f['val']+1}}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
                                         </div>
                                         <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator_txt"/>
+                                            <a title="New invoice number" onclick="showNewSequencePanel()" class="btn btn-sm green"><i class="fa fa-plus"></i> New sequence</a>
                                         </div>
-                                        <div class="col-md-1">
-                                            <input class="form-control" required onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence_number" placeholder="Seq. no" value="{{ old('sequence_number') }}"/>
+                                    </div>
+                                    <div id="newSequencePanel" hidden>
+                                        <div class="form-group" >
+                                            <label class="control-label col-md-3">
+                                            </label>
+                                            <div class="col-md-3">
+                                                <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}"/>
+                                            </div> 
+                                            <div class="col-md-1 ml-minus-1">
+                                                <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator"/>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <input class="form-control" onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence" placeholder="Seq. no" value="{{ old('sequence') }}" id="seq_no"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3"></label>
+                                            <div class="col-md-6">
+                                                <button type="button" onclick="saveSequence()" class="btn btn-sm blue">Save sequence</button>
+                                                <button type="button" onclick="showNewSequencePanel()" class="btn default btn-sm">Cancel</button>
+                                                <p id="seq_error" style="color: red;"></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -108,4 +135,6 @@
     </div>
 </div>
 <!-- END CONTENT -->
+<!--add sequence modal-->
+@include('app.merchant.project.add-sequence-modal')
 @endsection
