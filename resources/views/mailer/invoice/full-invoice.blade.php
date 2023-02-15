@@ -254,7 +254,7 @@
 
                                         <td style="width: 30%">
                                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</div>
-                                                    <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif< /div>
+                                                    <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif </div>
                                                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if( $contract_sum_to_date < 0)({{str_replace('-','',number_format($contract_sum_to_date,2))}}) @else{{number_format(($contract_sum_to_date),2)}}@endif</div>
                                                                     <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</div>
                                         </td>
@@ -734,68 +734,7 @@
             </div>
         </div>
     </div>
-    <!-- Invoice Attachments -->
-    <div class="page-break"></div>
-    <div class="toc-wrapper">
-        <h2 class="title">{{ $info['project_details']->project_name }} | {{ $info['invoice_number'] }} | {{ $info['cycle_name'] }}</h2>
-        <h4 class="title-toc">Attachments : Table of contents</h4>
-        @php $pos=1; @endphp
-        @if(count($info['invoice_attachments']) > 0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. Invoice</span>
-            @foreach($info['invoice_attachments'] as $k => $attachment)
-
-            <ul class="toc-item">
-                <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                    <span>{{$attachment['fileName']}}</span>
-                </a>
-            </ul>
-
-
-            @endforeach
-        </li>
-        @php $pos++; @endphp
-        @endif
-
-        @if(count($info['mandatory_document_attachments']) > 0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. Required document</span>
-            @foreach($info['mandatory_document_attachments'] as $k => $attachment)
-
-            <ul class="toc-item">
-                <a href="#{{ $k .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                    <span>{{$attachment['fileName']}}</span>
-                </a>
-            </ul>
-
-
-            @endforeach
-        </li>
-        @php $pos++; @endphp
-        @endif
-
-        @if(count($info['bill_code_attachments']) > 0)
-
-        @foreach($info['bill_code_attachments'] as $k => $bill_codes)
-        @if(count($bill_codes['attachments'])>0)
-        <li class="toc-lists">
-            <span class="title-toc">{{$pos}}. {{$bill_codes["billCode"]}} - {{$bill_codes["billName"]}}</span>
-            @foreach($bill_codes['attachments'] as $j => $attachment)
-            <ul class="toc-item">
-                <a href="#{{ $j .'-'.$attachment['fileNameSlug'] }}" class="toc-list-item-link">
-                    <span>{{$attachment['fileName']}}</span>
-                </a>
-            </ul>
-            @php $pos++; @endphp
-            @endforeach
-        </li>
-        @endif
-        @endforeach
-
-        @endif
-
-    </div>
-
+    
 
     @if(count($info['invoice_attachments']) > 0)
     {{-- Attachment Pages --}}
@@ -816,7 +755,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
@@ -841,7 +780,7 @@
 
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/invoices_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endif
@@ -867,7 +806,7 @@
             </div>
             <br />
             @endif
-            <p>Download File: <a href="{{ url('/merchant/invoice/document/download/'. $bill_code['billCodeId'] . '_' . $attachment['fileName'] . '.' . $attachment['fileType']) }}" target="_blank">Download {{$attachment['fileName']}}</a></p>
+            <p>Download File:  {{$attachment['url']}}</p> 
         </div>
     </div>
     @endforeach
