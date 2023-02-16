@@ -2064,10 +2064,9 @@ class InvoiceController extends AppController
 
 
             $mandatoryDocumentAttachments = [];
-
+            $pdf_link_array = [];
             if (isset($pluginValue->has_mandatory_upload)) {
                 $oMerger = PDFMerger::init();
-                $pdf_link_array = [];
                 if ($pluginValue->has_mandatory_upload == 1) {
                     foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
 
