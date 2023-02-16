@@ -121,7 +121,7 @@ $validate=(array)$validate;
 <div class="row no-margin">
     <div class="col-md-12 mt-1">
         @if($info['payment_request_status']==11)
-        <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
+        <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             <div class="col-md-4 pull-left btn-pl-0">
                 <div class="input-icon">
                     <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
@@ -133,11 +133,12 @@ $validate=(array)$validate;
             <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
 
             <div class="view-footer-btn-rht-align">
-                @if($info['has_create_access'])
-                    @if($info['notify_patron']==1)
+                @if(!empty($invoiceAccess))
+                    @if($info['notify_patron']==1 && $invoiceAccess == 'all-full')
                         <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
                     @else
                         <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
+                        
                     @endif
                 @endif
             </div>
@@ -964,6 +965,14 @@ function savePartialPayment() {
     $("#is_partial_field").val('1');
     $("#respond-form").submit();
 }
+
+// $(function(){
+//     let invoicePreviewForm = $('.invoice-preview-form');
+//     $("#subbtn").on("click", function () {
+//         console.log("bnm");
+//         invoicePreviewForm.submit();
+//     })
+// })
 </script>
     <style>
         .swipez-draft-btn {

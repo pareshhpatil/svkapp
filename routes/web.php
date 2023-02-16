@@ -262,8 +262,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('invoice/updatev2/{link}', 'InvoiceController@updatev2')->name('updatev23.invoice');
   Route::any('invoice/particular/{link}', 'InvoiceController@particular')->name('particular.invoice');
   Route::get('invoice/preview/{link}', 'InvoiceController@preview')->name('preview.invoice');
-  Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice')->middleware('PrivilegesAccess');
-  Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular')->middleware('PrivilegesAccess');
+  Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice');
+  Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular');
   Route::post('invoice/particularsave/ajax', 'InvoiceController@particularsave')->name('save.particularajax');
   Route::any('invoice/create/{type}', 'InvoiceController@create')->name('create.invoice.type');
   Route::any('invoice/update/{link}', 'InvoiceController@update')->name('update.invoice')->middleware('PrivilegesAccess');

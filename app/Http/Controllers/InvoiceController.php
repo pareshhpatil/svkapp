@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use Aws\S3\S3Client;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
 use App\Model\InvoiceFormat;
@@ -949,11 +950,23 @@ class InvoiceController extends AppController
                 }
             }
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-            $hasCreateAccess = false;
-            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-                $hasCreateAccess = true;
+            $invoiceAccess = '';
+
+            if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+                if($invoicePrivilegesAccessIDs['all'] = 'full') {
+                    $invoiceAccess = 'all-full';
+                }
+
+                if($invoicePrivilegesAccessIDs['all'] = 'edit') {
+                    $invoiceAccess = 'all-edit';
+                }
+            } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+                $invoiceAccess = 'edit';
             }
-            $info['has_create_access'] = $hasCreateAccess;
+//            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+//                $hasCreateAccess = true;
+//            }
+            $info['invoice_access'] = $invoiceAccess;
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
 
@@ -3262,6 +3275,8 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
+        $this->checkHasEditAccess($this->user_id);
+
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
             if ($function_id == 9) {
@@ -3352,9 +3367,12 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-        //        dd($request);
+
         try {
             $request_id = Encrypt::decode($request->link);
+            
+            $this->checkHasEditAccess($this->user_id);
+            
             if (strlen($request_id) != 10) {
                 throw new Exception('Invalid id ' . $request_id);
             }
@@ -3873,5 +3891,21 @@ class InvoiceController extends AppController
 
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
+    }
+
+    private function checkHasEditAccess($user_id) {
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $user_id), true);
+        $hasAccess = false;
+        if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] = 'full' || $invoicePrivilegesAccessIDs['all'] = 'edit') {
+                $hasAccess = true;
+            }
+        } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+            $hasAccess = true;
+        }
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
     }
 }

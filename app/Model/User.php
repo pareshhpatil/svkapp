@@ -531,9 +531,9 @@ class User extends ParentModel
             $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray);
         }
 
-        if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray);
-        }
+//        if(!empty($contractPrivilegesArray)) {
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray);
+//        }
 
         if(!empty($contractPrivilegesArray)) {
             $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);
@@ -601,18 +601,30 @@ class User extends ParentModel
         return $orderPrivilegesArray + $tempArr;
     }
 
-    public function createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray) {
+    /**
+     * @param $user_id
+     * @param $contractPrivilegesArray
+     * @param $invoicePrivilegesArray
+     * @return array
+     */
+    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray): array
+    {
         $invoiceIDs = DB::table('payment_request')
             ->where('is_active', 1)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
             ->whereNotIn('payment_request_id', array_keys($invoicePrivilegesArray))
+            ->orWhere('created_by', $user_id)
             ->select(['payment_request_id', 'contract_id'])
             ->get()
             ->toArray();
 
         $tempArr= [];
         foreach ($invoiceIDs as $invoiceID) {
-            $tempArr[$invoiceID->payment_request_id] = $contractPrivilegesArray[$invoiceID->contract_id];
+            if(!isset($contractPrivilegesArray[$invoiceID->contract_id])) {
+                $tempArr[$invoiceID->payment_request_id] = 'full';
+            } else {
+                $tempArr[$invoiceID->payment_request_id] = $contractPrivilegesArray[$invoiceID->contract_id];
+            }
         }
 
         return $invoicePrivilegesArray + $tempArr;
