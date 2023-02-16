@@ -38,6 +38,7 @@ class UppyFileUploadController extends Controller
                 $data = explode("_", $name);
                 $folder = $folder . '/' . $data[0];
                 $name = str_replace($data[0] . '_', "", $name);
+                $name = str_replace(" ", "", $name);
                 $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';
             }
             //$encryptedFileName = Encrypt::encode($name);
