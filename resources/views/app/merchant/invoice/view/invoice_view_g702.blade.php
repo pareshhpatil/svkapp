@@ -138,7 +138,7 @@ $header='app.patron.invoice.invoice-master';}
                         </td>
                       
                         <td width="25%" class="text-left">
-                            <p class="text-xs font-bold">PERIOD TO: <x-localize :date="$info['bill_date']" type="date" /></p>
+                            <p class="text-xs font-bold">PERIOD TO: {{ $info['cycle_name'] }}</p>
                         </td>
                         <td width="25%" class="text-right">
                         <label class="text-xs mr-2 mt-1">OWNER</label> <input class=""   type="checkbox" value="" id="flexCheckDefault3">
