@@ -3908,4 +3908,48 @@ class InvoiceController extends AppController
             return redirect('/merchant/no-permission');
         }
     }
+
+    public function saveInvoicePreview(Request $request, $link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+        if (strlen($payment_request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
+
+        $paymentRequestType = $request->get('payment_request_type');
+        $notifyPatron = $request->get('notify_patron');
+        //first update payment request status & notify patron into table
+        $this->invoiceModel->updatePaymentRequestStatusAndNotifyPatron($payment_request_id, 0, $notifyPatron);
+
+        $paymentRequestDetails = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+        $getInvoiceValues = $this->invoiceModel->getInvoiceColumnValues($payment_request_id);
+
+        $result = $this->invoiceModel->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $paymentRequestDetails->invoice_type, $getInvoiceValues, $paymentRequestDetails->invoice_number, $paymentRequestDetails->payment_request_status, $paymentRequestType);
+        dd($result);
+
+        if ($result['message'] == 'success') {
+            if (isset($notify_patron) && $notify_patron == 1) {
+
+            }
+        }
+    }
+
+    function saveExistingSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+        
+        if($res!='') {
+            $response['name'] = $res->prefix .$res->seprator. $res->val;
+            $response['id'] = $res->auto_invoice_id;
+            $response['prefix'] = $res->prefix;
+            $response['number'] = $res->val;
+            $response['merchant_id'] = $this->merchant_id;
+            $response['status'] = 1;
+        } else {
+            $response['status'] = 0;
+        }
+    }
 }

@@ -121,7 +121,10 @@ $validate=(array)$validate;
 <div class="row no-margin">
     <div class="col-md-12 mt-1">
         @if($info['payment_request_status']==11)
-        <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
+
+        <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
+{{--        <form class="form-horizontal" action="/merchant/invoice/save/preview/{{$info['Url']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">--}}
+            @csrf
             <div class="col-md-4 pull-left btn-pl-0">
                 <div class="input-icon">
                     <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
