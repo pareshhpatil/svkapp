@@ -3700,11 +3700,11 @@ class InvoiceController extends AppController
                 foreach ($co_particulars as $k => $v) {
                     if (isset($cop[$v["bill_code"]])) {
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         if (!empty($cp[$v["bill_code"]])) {
                             if (isset($cp[$v["bill_code"]])) {
-
                                 $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
                                 $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
                                 $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
