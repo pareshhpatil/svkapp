@@ -427,6 +427,10 @@
                 <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2">{{$mandatory_data['name']}}
+                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="{{$mandatory_data['description']}}" type="button">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+
                         </label>
                         <div class="col-md-10">
                         @if(isset($mandatory_files) && !empty($mandatory_files[0]))
