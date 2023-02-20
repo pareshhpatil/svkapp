@@ -424,9 +424,17 @@
         <div class="portlet-body form">
             <h3 class="form-section">Required documents</h3>
                 @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
+                @php
+                $required = 0;
+                if($mandatory_data['required'] == 'Mandatory on creation'){
+                    $required = 1;
+                }
+                @endphp
                 <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2">{{$mandatory_data['name']}}
+                            @if($required)<span class="required">*</span> @endif
+                            <div class="text-danger" id="required_error{{$key}}"></div>
                         </label>
                         <div class="col-md-10">
                         @if(isset($mandatory_files) && !empty($mandatory_files[0]))
@@ -454,6 +462,9 @@
                         @else
                             <div class="input-icon">
                                 <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="">
+                                <input type="hidden" name="file_upload_required{{$key}}" id="file_upload_required{{$key}}" 
+                                    value="{{$required}}">
+                                
                                 <a class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
                                 <div id="docviewbox{{$key}}" class="mt-1">
                                 </div>
@@ -623,12 +634,33 @@
 
 
         function validateDates(){
-        if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
-            $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
-            return false
-        }else $('#billing_date_error').html('');
-        return true;
-    }
+            if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
+                $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
+                return false
+            }else {
+                is_error= false
+                var file_upload_mandatory = document.querySelectorAll('[id^=file_upload_mandatory]');
+                var file_upload_mandatory_required = document.querySelectorAll('[id^=file_upload_required]');
+                for(var i in file_upload_mandatory){
+                    var file_upload_mandatory_value = file_upload_mandatory[i].value; // links commas seperated
+                    var file_upload_mandatory_required_value = file_upload_mandatory_required[i].value; // 1 or 0 
+                        if(file_upload_mandatory_required_value){
+                            if(file_upload_mandatory_value ==''){
+                                $('#required_error'+i).html('Please upload the mandatory file')
+                                is_error = true
+                            }else{
+                                $('#required_error'+i).html('');   
+                            }
+                        }
+                }    
+                $('#billing_date_error').html(''); 
+                if(is_error){
+                    return false
+                }else{
+                    return true;
+                }
+            }
+        }
     </script>
 
 
@@ -763,7 +795,6 @@ $array_name = 'newdocfileslist'.$key;
         @endif
         @endforeach
     @endif
-    console.log({{$array_name}})
     //uppy file upload code
     var {{$keyname}} = new Uppy.Uppy({
         id : arrayKey,
@@ -849,7 +880,8 @@ $array_name = 'newdocfileslist'.$key;
         }
     });
     {{$keyname}}.on('complete', (result) => {
-        //console.log('successful files:', result.successful)
+        $('#required_error'+{{$key}}).html('');   
+        console.log('successful files:', result.successful)
         //console.log('failed files:', result.failed)
     });
     {{$keyname}}.on('error', (error) => {
