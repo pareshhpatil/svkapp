@@ -684,7 +684,7 @@ class Controller
         $_SESSION['login_customer_group'] = $this->session->get('login_customer_group');
         $_SESSION['sub_franchise_id'] = $this->session->get('sub_franchise_id');
         $_SESSION['user_role'] = $this->session->get('user_role', true);
-        $_SESSION['invoice_privileges_ids'] = Redis::get('invoice_privileges_' . \App\Libraries\Encrypt::decode($this->session->get('userid', true)));
+        $_SESSION['invoice_privileges_ids'] = $this->session->get('invoice_privileges', true);
     }
 
     public function apisrequest($api_url, $post_string, $header = array())

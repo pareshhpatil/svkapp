@@ -669,6 +669,7 @@ class Customer extends Controller
             $this->hasRole(1, 15);
             $merchant_id = $this->session->get('merchant_id');
             $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
             $column_list = $this->model->getCustomerBreakup($merchant_id);
             $addcolumn[] = array('column_name' => 'City');
             $addcolumn[] = array('column_name' => 'State');
@@ -717,12 +718,17 @@ class Customer extends Controller
                 $group = $redis_items['customer_list']['search_param']['group'];
             }
             //$this->view->showLastRememberSearchCriteria = true;
-
-            $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
-
             $customerIDs = [];
-            foreach ($userPrivilegesCustomers as $userPrivilegesCustomer) {
-                $customerIDs[] = $userPrivilegesCustomer['type_id'];
+            $_SESSION['has_customer_list_access'] = false;
+
+            if($user_role == 'Admin') {
+                $_SESSION['has_customer_list_access'] = true;
+            } else {
+                $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
+
+                foreach ($userPrivilegesCustomers as $userPrivilegesCustomer) {
+                    $customerIDs[] = $userPrivilegesCustomer['type_id'];
+                }
             }
 
             $_SESSION['db_column'] = $column_select;
@@ -733,10 +739,11 @@ class Customer extends Controller
             $_SESSION['language'] = 'english';
             $_SESSION['display_column'] = $column_select;
             $_SESSION['customer_ids'] = [];
-            if (!empty($customerIDs)) {
-                if(!in_array('all', $customerIDs)) {
-                    $_SESSION['customer_ids'] = $customerIDs;
-                }
+
+            if(in_array('all', $customerIDs)) {
+                $_SESSION['has_customer_list_access'] = true;
+            } else {
+                $_SESSION['customer_ids'] = $customerIDs;
             }
 
             if (isset($_POST['export'])) {

@@ -690,7 +690,7 @@ class Invoice extends Controller
             }
             $notify_patron = $_POST['notify_patron'];
             //first update payment request status & notify patron into table
-            $this->common->genericupdate('payment_request', 'payment_request_status', 0, 'payment_request_id', $payment_request_id);
+            $this->common->genericupdate('payment_request', 'payment_request_status', $_POST['payment_request_status'], 'payment_request_id', $payment_request_id);
             $this->common->genericupdate('payment_request', 'notify_patron', $notify_patron, 'payment_request_id', $payment_request_id);
 
             $link = $this->encrypt->encode($payment_request_id);
@@ -705,7 +705,7 @@ class Invoice extends Controller
             $result = $this->model->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $get_payment_request_details['invoice_type'], $invoice_values, $get_payment_request_details['invoice_number'], $get_payment_request_details['payment_request_status'], $_POST['payment_request_type']);
 
             if ($result['message'] == 'success') {
-                if (isset($notify_patron) && $notify_patron == 1) {
+                if ($get_payment_request_details['payment_request_status'] == 0 && (isset($notify_patron) && $notify_patron == 1)) {
                     $notification = $this->getNotificationObj();
                     $revised = 0;
                     $notification->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);

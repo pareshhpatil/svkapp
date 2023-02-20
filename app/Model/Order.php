@@ -7,6 +7,7 @@ namespace App\Model;
  * @author Paresh
  */
 
+use Illuminate\Support\Facades\Session;
 use Log;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -62,20 +63,29 @@ class Order extends ParentModel
 
     public function getOrderList($merchant_id, $from_date, $to_data, $contract, $privilegesIDs = [])
     {
+        $userRole = Session::get('user_role');
         $project_cond = "";
+        $order_cond = "WHERE a.order_id in('')";
 
         if ($contract != '') {
             $project_cond = "AND a.contract_id = '$contract'";
         }
 
         $ids = implode(",", $privilegesIDs);
-        if (!empty($ids) && !in_array('all', $privilegesIDs)) {
+
+        if($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            if(!empty($ids)) {
+                $order_cond = "WHERE a.order_id in($ids)";
+            }
+        }
+
+        if($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
             $retObj =  DB::select("SELECT a.*,c.company_name, a.invoice_status, p.project_name, p.project_id  project_code,b.contract_code, a.order_no, concat(first_name,' ', last_name) name , c.customer_id, c.customer_code
         FROM `order` a
         join contract b on a.contract_id  = b.contract_id
         join project p on b.project_id  = p.id
         join customer c on b.customer_id  = c.customer_id
-        WHERE a.order_id in($ids)
+        $order_cond
         AND a.merchant_id = '$merchant_id' 
         $project_cond
         AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')

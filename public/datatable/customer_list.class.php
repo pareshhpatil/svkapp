@@ -81,7 +81,7 @@ class SSP
                         $row[$column['dt']] .= '<ul class="dropdown-menu" role="menu">';
 
                         if ($hasAllPrivileges && !in_array($data[$i]['customer_id'], array_keys($privilegesArray))) {
-                            if($privilegesArray['all'] == 'view-only') {
+                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
                             }
 
@@ -93,7 +93,7 @@ class SSP
                                 $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
                             }
                         } else {
-                            if($privilegesArray[$data[$i]['customer_id']] == 'view-only') {
+                            if($privilegesArray[$data[$i]['customer_id']] == 'full' || $privilegesArray[$data[$i]['customer_id']] == 'view-only') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
                             }
 
@@ -263,7 +263,15 @@ class SSP
             }
         }
 
-        if (!empty($_SESSION['customer_ids'])) {
+//        if (!empty($_SESSION['customer_ids'])) {
+//            if ($where == '') {
+//                $where = " customer_id in(" . implode(",", $_SESSION['customer_ids']) .")";
+//            } else {
+//                $where .= " AND customer_id in(" . implode(",", $_SESSION['customer_ids']) .")";
+//            }
+//        }
+
+        if(!$_SESSION['has_customer_list_access']) {
             if ($where == '') {
                 $where = " customer_id in(" . implode(",", $_SESSION['customer_ids']) .")";
             } else {
@@ -334,7 +342,6 @@ class SSP
         $where = self::filter($request, $columns, $bindings);
         $bulk_id = $_SESSION['customer_bulk_id'];
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
-
 
         if($_SESSION['user_role'] == 'Admin') {
             $privilegesArray = ['all' => 'full'];

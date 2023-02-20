@@ -242,7 +242,7 @@
                     </div> -->
                 <?php } ?>
                 <!--  -->
-                <div class="col col-12 col-md-6 mt-1">
+                <div class="col col-12 col-md-4 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">
@@ -296,7 +296,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col col-12 col-md-6 mt-1">
+                <div class="col col-12 col-md-4 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">
@@ -348,6 +348,105 @@
                                         <div class="progress-bar" style="width: <?php echo 100 - $this->settlement_per; ?>%;"></div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-12 col-md-4 mt-1">
+                    <div class="portlet light-bordered">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-share font-dark hide"></i>
+                                <span class="caption-subject font-dark bold uppercase"><?php echo $menu['notification']; ?></span>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="scroller" data-always-visible="1" data-rail-visible="0">
+                                <ul class="feeds">
+                                    <li>
+                                        <div class="col1">
+                                            <div class="cont">
+                                                <div class="cont-col2">
+                                                    <div class="desc"> You have <strong>3 Invoices</strong> to Approve from Paresh
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col2">
+                                            <div class="date">
+                                                <a href="#" target="_BLANK">
+                                                            <span class="label label-sm label-warning ">Invoices
+                                                                <i class="fa fa-share"></i>
+                                                            </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="col1">
+                                            <div class="cont">
+                                                <div class="cont-col2">
+                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col2">
+                                            <div class="date">
+                                                <a href="#" target="_BLANK">
+                                                            <span class="label label-sm label-warning ">COs
+                                                                <i class="fa fa-share"></i>
+                                                            </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="col1">
+                                            <div class="cont">
+                                                <div class="cont-col2">
+                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col2">
+                                            <div class="date">
+                                                <a href="#" target="_BLANK">
+                                                            <span class="label label-sm label-warning ">COs
+                                                                <i class="fa fa-share"></i>
+                                                            </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="col1">
+                                            <div class="cont">
+                                                <div class="cont-col2">
+                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col2">
+                                            <div class="date">
+                                                <a href="#" target="_BLANK">
+                                                            <span class="label label-sm label-warning ">COs
+                                                                <i class="fa fa-share"></i>
+                                                            </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
                             </div>
                         </div>
                     </div>

@@ -505,7 +505,15 @@ class SSP
                 $where . ' AND ' . implode(' AND ', $columnSearch);
         }
 
-        if (!empty($_SESSION['payment_request_ids'])) {
+//        if (!empty($_SESSION['payment_request_ids'])) {
+//            if ($where == '') {
+//                $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+//            } else {
+//                $where .= ' AND payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+//            }
+//        }
+
+        if(!$_SESSION['has_invoice_list_access']) {
             if ($where == '') {
                 $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
             } else {

@@ -407,6 +407,7 @@ class InvoiceController extends AppController
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }
+
         return view('app/merchant/invoice/create', $data);
     }
 
@@ -953,11 +954,11 @@ class InvoiceController extends AppController
             $invoiceAccess = '';
 
             if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
-                if($invoicePrivilegesAccessIDs['all'] = 'full') {
+                if($invoicePrivilegesAccessIDs['all'] == 'full') {
                     $invoiceAccess = 'all-full';
                 }
 
-                if($invoicePrivilegesAccessIDs['all'] = 'edit') {
+                if($invoicePrivilegesAccessIDs['all'] == 'edit') {
                     $invoiceAccess = 'all-edit';
                 }
             } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
@@ -2293,7 +2294,6 @@ class InvoiceController extends AppController
             if ($info['template_type'] == 'construction') {
 
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
-
                 $subject = $this->getDynamicString($info, $covernote['subject']);
                 $msg = $this->getDynamicString($info, $covernote['body']);
                 $data['body'] = $msg;
@@ -3275,7 +3275,11 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
-        $this->checkHasEditAccess($this->user_id);
+        $hasAccess = $this->checkHasEditAccess($this->user_id);
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
 
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
@@ -3371,8 +3375,12 @@ class InvoiceController extends AppController
         try {
             $request_id = Encrypt::decode($request->link);
             
-            $this->checkHasEditAccess($this->user_id);
-            
+            $hasAccess = $this->checkHasEditAccess($this->user_id);
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
             if (strlen($request_id) != 10) {
                 throw new Exception('Invalid id ' . $request_id);
             }
@@ -3903,10 +3911,8 @@ class InvoiceController extends AppController
         } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
             $hasAccess = true;
         }
-
-        if (!$hasAccess) {
-            return redirect('/merchant/no-permission');
-        }
+        
+        return $hasAccess;
     }
 
     public function saveInvoicePreview(Request $request, $link)
@@ -3926,11 +3932,51 @@ class InvoiceController extends AppController
         $getInvoiceValues = $this->invoiceModel->getInvoiceColumnValues($payment_request_id);
 
         $result = $this->invoiceModel->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $paymentRequestDetails->invoice_type, $getInvoiceValues, $paymentRequestDetails->invoice_number, $paymentRequestDetails->payment_request_status, $paymentRequestType);
-        dd($result);
 
         if ($result['message'] == 'success') {
             if (isset($notify_patron) && $notify_patron == 1) {
+                $revised = 0;
+                $this->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
+            }
 
+            $get_payment_request_details['change_order_id'] = json_decode($paymentRequestDetails->change_order_id, 1);
+            foreach ($get_payment_request_details['change_order_id'] as $order_id) {
+//                $this->common->genericupdate('`order`', 'invoice_status', 1, 'order_id', $order_id);
+            }
+        }
+    }
+
+    public function sendInvoiceNotification($payment_request_id, $revised = 0, $sms = 0, $custom_covering = '')
+    {
+        $info = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+        if (empty($info)) {
+            return redirect('/error/invalidlink');
+        }
+        if ($info['payment_request_type'] == 4) {
+            return false;
+        }
+
+        $this->parentModel->updateTable('payment_request', 'payment_request_id', $payment_request_id, 'notification_sent', 1);
+
+        if ($info['customer_mobile'] != '' || $info['customer_email'] != '') {
+            if ($info['customer_email'] != '') {
+                $plugin = json_decode($info['plugin_value'], 1);
+
+                $subject = "Payment request from __COMPANY_NAME__";
+                $subject = str_replace('__COMPANY_NAME__', $info['company_name'], $subject);
+                if ($plugin['has_custom_notification'] == 1) {
+                    $subject = $this->getDynamicString($info, $plugin['custom_email_subject']);
+                }
+                if ($revised == 1) {
+                    $subject = 'Revised ' . lcfirst($subject);
+                }
+
+                $this->sendEmail(Encrypt::encode($payment_request_id), $subject);
+
+//                if ($this->reminder_subject != '') {
+//                    $subject = $this->reminder_subject;
+//                    $subject = $this->getDynamicString($info, $subject);
+//                }
             }
         }
     }

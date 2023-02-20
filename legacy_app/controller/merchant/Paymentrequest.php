@@ -37,6 +37,7 @@ class Paymentrequest extends Controller
             $this->hasRole(1, 6);
             $merchant_id = $this->session->get('merchant_id');
             $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
@@ -68,11 +69,19 @@ class Paymentrequest extends Controller
             //$cycle_selected = isset($_POST['cycle_name']) ? $_POST['cycle_name'] : '';
             $cycle_list = array();
             #$cycle_list = $this->model->getCycleList($this->session->get('userid'), $fromdate->format('Y-m-d'), $todate->format('Y-m-d'));
-            $userPrivilegesPaymentRequests = json_decode($_SESSION['invoice_privileges_ids'], true);
+
 
             $paymentRequestIDs = [];
-            foreach ($userPrivilegesPaymentRequests as $key => $userPrivilegesPaymentRequest) {
-                $paymentRequestIDs[] = $key;
+            $_SESSION['has_invoice_list_access'] = false;
+
+            if($user_role == 'Admin') {
+                $_SESSION['has_invoice_list_access'] = true;
+            } else {
+                $userPrivilegesPaymentRequests = json_decode($this->session->get('invoice_privileges', true));
+
+                foreach ($userPrivilegesPaymentRequests as $key => $userPrivilegesPaymentRequest) {
+                    $paymentRequestIDs[] = $key;
+                }
             }
 
             $_SESSION['display_column'] = array();
@@ -93,11 +102,18 @@ class Paymentrequest extends Controller
                 $_SESSION['_customer_code_text'] = $columns['customer_code'];
             }
             $_SESSION['payment_request_ids'] = [];
-            if (!empty($paymentRequestIDs)) {
-                if(!in_array('all', $paymentRequestIDs)) {
-                    $_SESSION['payment_request_ids'] = $paymentRequestIDs;
-                }
+
+            if(in_array('all', $paymentRequestIDs)) {
+                $_SESSION['has_invoice_list_access'] = true;
+            } else {
+                $_SESSION['payment_request_ids'] = $paymentRequestIDs;
             }
+
+//            if (!empty($paymentRequestIDs)) {
+//                if(!in_array('all', $paymentRequestIDs)) {
+//                    $_SESSION['payment_request_ids'] = $paymentRequestIDs;
+//                }
+//            }
 
             $this->session->set('valid_ajax', 'payment_request_list');
             $this->smarty->assign("from_date",  $this->generic->formatDateString($from_date) );

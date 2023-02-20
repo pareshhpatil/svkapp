@@ -1209,13 +1209,13 @@ function notifyPatron(id) {
     if ($('#' + id).is(':checked')) {
         document.getElementById('is_' + id).value = '1';
         try {
-            document.getElementById('subbtn').value = 'Save & Send';
+            document.getElementById('saveandsendbtn').value = 'Save & Send';
         } catch (o) {
         }
     } else {
         document.getElementById('is_' + id).value = '0';
         try {
-            document.getElementById('subbtn').value = 'Save';
+            document.getElementById('saveandsendbtn').value = 'Save';
         } catch (o) {
         }
     }
