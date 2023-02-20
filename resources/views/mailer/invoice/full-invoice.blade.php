@@ -175,7 +175,7 @@
                                     {{$info['project_details']->project_address}}
                                 </td>
                                 <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700;">
-                                    PERIOD TO: <x-localize :date="$info['bill_date']" type="date" />
+                                    PERIOD TO: {{ $info['cycle_name'] }}
                                 </td>
                                 <td width="25%" style="text-align: right;">
                                     <span style="margin-right: 8px; font-size: 12px">OWNER </span> <span style="border:1px solid gray;font-size: 10px;color:white">bb </span>
