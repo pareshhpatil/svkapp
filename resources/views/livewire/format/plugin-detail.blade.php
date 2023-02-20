@@ -918,6 +918,19 @@
                                 <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                     <div class="panel  box-plugin">
                                         <div class="panel-body">
+                                            <p class="form-section mt-0"> Invoice Output</p>
+                                            <p class="mb-4 default-font"> Customize the appearance of your invoice i.e. configure how your G702 / G703 formats appear to your customers and the generated PDF.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg23" @isset($plugins['invoice_output']) checked @endif onchange="pluginChange(this.checked, 'invoiceoutput');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
                                             <p class="form-section mt-0"> Customize reminder schedule</p>
                                             <p class="mb-4 default-font"> Customize the schedule of the payment reminders sent to your customers via SMS & email. Personalize the frequency of the reminders sent before the invoice due date.
                                             </p>
@@ -1135,19 +1148,6 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
-                                    <div class="panel  box-plugin">
-                                        <div class="panel-body">
-                                            <p class="form-section mt-0"> Invoice Output</p>
-                                            <p class="mb-4 default-font"> Customize the appearance of your invoice i.e. configure how your G702 / G703 formats appear to your customers and the generated PDF.
-                                            </p>
-                                            <div class="plugin-button">
-                                                <input type="checkbox" id="plg23" @isset($plugins['invoice_output']) checked @endif onchange="pluginChange(this.checked, 'invoiceoutput');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <!--
                                 <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
                                     <div class="panel  box-plugin">
