@@ -3629,7 +3629,7 @@ class InvoiceController extends AppController
                             'bill_code' => $key, 
                             'change_order_amount' => array_sum($value), 
                             'description' =>  $kdata["description"], 
-                            'retainage_percent' =>  $kdata["retainage_percent"], 
+                            'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '', 
                             'cost_type' =>  $kdata["cost_type"]
                         );
                     }
