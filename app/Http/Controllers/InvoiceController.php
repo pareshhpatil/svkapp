@@ -404,6 +404,22 @@ class InvoiceController extends AppController
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
 
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        $invoiceAccess = '';
+
+        if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] == 'full') {
+                $invoiceAccess = 'all-full';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                $invoiceAccess = 'all-edit';
+            }
+        } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+            $invoiceAccess = 'edit';
+        }
+        $data['invoice_access'] = $invoiceAccess;
+
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }

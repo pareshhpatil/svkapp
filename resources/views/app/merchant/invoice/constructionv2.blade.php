@@ -429,6 +429,9 @@
                 if($mandatory_data['required'] == 'Mandatory on creation'){
                     $required = 1;
                 }
+                if($mandatory_data['required'] == 'Mandatory on submission' && $invoice_access !=''){
+                    $required = 1;
+                }
                 @endphp
                 <div class="row">
                     <div class="form-group">
@@ -644,7 +647,7 @@
                 for(var i in file_upload_mandatory){
                     var file_upload_mandatory_value = file_upload_mandatory[i].value; // links commas seperated
                     var file_upload_mandatory_required_value = file_upload_mandatory_required[i].value; // 1 or 0 
-                        if(file_upload_mandatory_required_value){
+                        if(file_upload_mandatory_required_value == '1'){
                             if(file_upload_mandatory_value ==''){
                                 $('#required_error'+i).html('Please upload the mandatory file')
                                 is_error = true
