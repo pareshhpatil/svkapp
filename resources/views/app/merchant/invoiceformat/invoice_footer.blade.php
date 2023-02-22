@@ -985,6 +985,7 @@ $(function(){
         // let notifyPatronStatus = invoicePreviewForm.find('input[name=notify_patron]');
         paymentRequestStatus.val(0);
         // notifyPatronStatus.val(1);
+        //test
         invoicePreviewForm.submit();
     })
 })
