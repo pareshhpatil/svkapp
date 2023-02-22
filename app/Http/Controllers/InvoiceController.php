@@ -3589,8 +3589,22 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-            $previousInvoiceIDs = $this->invoiceModel->getPreviousInvoiceIDs($this->merchant_id, $invoice->contract_id, $request_id);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
+            if ($pre_req_id != false) {
+                $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
+                //  dd($particulars);
+                foreach ($particulars as $key => $row) {
+                    $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                    $particulars[$key]->current_billed_amount = '';
+                    $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
+                    $particulars[$key]->current_billed_percent = '';
+                    $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
+                    $particulars[$key]->retainage_amount_for_this_draw = '';
+                    $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
+                    $particulars[$key]->retainage_amount_stored_materials = '';
+                    $particulars[$key]->current_stored_materials = '';
+                }
+            }
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -3629,44 +3643,7 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        //                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
-                    }
-                }
-
-
-                if (!empty($previousInvoiceIDs)) {
-                    $previousBilledSumArray = [];
-                    foreach ($previousInvoiceIDs as $previousInvoiceID) {
-                        $contractParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
-                        foreach ($contractParticulars as $row) {
-                            $previousBilledSumArray[$row->bill_code]['previousBilledAmount'][] = $row->current_billed_amount;
-                            $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
-                            $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
-                            $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
-
-                            $previousBilledSumArray[$row->bill_code]['retainageReleaseAmount'][] = $row->retainage_release_amount;
-                            $previousBilledSumArray[$row->bill_code]['retainageStoredMaterialsReleaseAmount'][] = $row->retainage_stored_materials_release_amount;
-                        }
-                    }
-
-                    foreach ($particulars as $k => $v) {
-                        if (isset($cp[$v->bill_code])) {
-                            $previousBilledAmount = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledAmount']);
-                            $previousBilledPercent = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledPercent']);
-                            $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
-                            $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
-
-                            $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
-                            $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
-
-                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount, 2);
-                            $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
-                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount, 2);
-                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount, 2);
-                        }
                     }
                 }
             }
