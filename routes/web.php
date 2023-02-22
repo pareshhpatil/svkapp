@@ -472,6 +472,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('import/billCode/upload',  'ImportController@uploadBillCode')->name("merchant.imports.billCode.upload");
   Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
+
+  //Notifications Route
+  Route::get('user/notifications', 'MasterController@getNotifications');
 });
 
 Route::group(['prefix' => 'patron'], function () {
@@ -605,6 +608,13 @@ Route::any('/merchant/transaction/booking/cancellations', 'BookingCalendarContro
 Route::any('/merchant/transaction/booking/cancellations/list/{from}/{to}/{status}', 'BookingCalendarController@cancellationlistData')->middleware("auth");
 Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'BookingCalendarController@cancellationRefund')->middleware("auth");
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
+
+//Route::patch('/fcm-token', 'FirebaseCloudMessagingController@updateToken')->name('fcmToken');
+Route::post('/fcm-token', 'FirebaseCloudMessagingController@updateToken')->name('fcmToken');
+Route::get('/test-event', 'FirebaseCloudMessagingController@testEvent');
+Route::get('/get-notifications', 'FirebaseCloudMessagingController@getNotifications');
+//Route::post('/send-notification', [\App\Http\Controllers\PdfController::class, 'notification'])->name('notification');
+
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
 

@@ -402,4 +402,19 @@ class MasterController extends AppController
         $data = Helpers::setBladeProperties($title,  [],  []);
         return view('/errors/no-permission', $data);
     }
+
+    public function getNotifications()
+    {
+        $authUser = auth()->user();
+
+        // Get Notifications
+        $Notifications = $authUser->unreadNotifications()
+            ->limit(9)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $Notifications
+        ]);
+    }
 }

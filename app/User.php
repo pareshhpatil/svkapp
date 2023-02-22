@@ -36,7 +36,10 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'first_name', 'email_id', 'password',
+        'first_name',
+        'email_id',
+        'password',
+        'fcm_token'
     ];
 
     /**
