@@ -156,6 +156,9 @@
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
+                                            Retainage percentage
+                                        </th>
+                                        <th class="td-c">
                                             Unit
                                         </th>
                                         <th class="td-c">
@@ -213,6 +216,10 @@
                                         <td class="col-id-no">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
+                                        @elseif ($v == 'retainage_percent')
+                                        <td class="col-id-no">
+                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
+                                        </td>
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
@@ -261,6 +268,7 @@
                                         <th class="td-c">
                                             <span id="original_contract_amount_total"></span>
                                         </th>
+                                        <th></th>
                                         <th class="td-c">
                                             <span id="unit_total"></span>
                                         </th>

@@ -872,6 +872,7 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
             $info = (array)$info;
             $info['gtype'] = '703';
 
@@ -916,6 +917,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
@@ -2893,8 +2895,16 @@ class InvoiceController extends AppController
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
 
+        $plugins = json_decode($info['plugin_value'], 1);
+        $hasAIALicense = false;
+        if(isset($plugins['invoice_output'])) {
+            if(isset($plugins['has_aia_license'])) {
+                $hasAIALicense = true;
+            }
+        }
 
-
+        $data['has_aia_license'] = $hasAIALicense;
+            
         return $data;
     }
 
@@ -3629,7 +3639,13 @@ class InvoiceController extends AppController
                     if ($kdata["bill_code"] == $key) {
                         $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
-                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
+                        $co_particulars[] = array(
+                            'bill_code' => $key, 
+                            'change_order_amount' => array_sum($value), 
+                            'description' =>  $kdata["description"], 
+                            'retainage_percent' =>  $kdata["retainage_percent"], 
+                            'cost_type' =>  $kdata["cost_type"]
+                        );
                     }
                 }
             }
@@ -3661,11 +3677,11 @@ class InvoiceController extends AppController
                 foreach ($co_particulars as $k => $v) {
                     if (isset($cop[$v["bill_code"]])) {
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         if (!empty($cp[$v["bill_code"]])) {
                             if (isset($cp[$v["bill_code"]])) {
-
                                 $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
                                 $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
                                 $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
@@ -3678,6 +3694,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
                         $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }
@@ -3805,5 +3822,78 @@ class InvoiceController extends AppController
 
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
+    }
+
+    public function saveProjectInvoiceSequence()
+    {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='' ? $_POST['last_no']: 0);
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+       
+        $formatModel = new InvoiceFormat();
+        if($prefix=='' && $separator!='') {
+            $response['error'] = 'You can not add separator without prefix';
+            $response['status'] = 0;
+        } else if ($number=='') {
+            $response['error'] = 'Sequence number is required.';
+            $response['status'] = 0;
+        } else {
+           
+            $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+            
+            if ($res == FALSE) {
+                $seq_number= $number-1;
+                $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+                $response['name'] = $prefix .$separator. $number;
+                $response['id'] = $id;
+                $response['prefix'] = $prefix;
+                $response['number'] = $number;
+                $response['seprator'] = $separator;
+                $response['merchant_id'] = $this->merchant_id;
+                $response['status'] = 1;
+            } else {
+                if($prefix=='' && $separator=='') {
+                    $response['status'] = 2;
+                } else {
+                    $response['error'] = 'Invoice prefix alredy exist';
+                    $response['status'] = 0;
+                }
+            }
+        }
+        echo json_encode($response);
+    }
+
+    function saveExistingSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+        
+        if($res!='') {
+            $response['name'] = $res->prefix .$res->seprator. $res->val;
+            $response['id'] = $res->auto_invoice_id;
+            $response['prefix'] = $res->prefix;
+            $response['number'] = $res->val;
+            $response['merchant_id'] = $this->merchant_id;
+            $response['status'] = 1;
+        } else {
+            $response['status'] = 0;
+        }
+        echo json_encode($response);
+    }
+
+    function createNewSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='') ? $_POST['last_no']: 0;
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $seq_number= $number-1;
+        $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+        $response['name'] = $prefix .$separator. $number;
+        $response['id'] = $id;
+        $response['status'] = 1;
+        echo json_encode($response);
     }
 }
