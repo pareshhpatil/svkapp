@@ -1380,7 +1380,6 @@ if ($this->document_upload == true) {
 <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js"></script>
 <script>
-    console.log("bnm");
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
@@ -1434,13 +1433,14 @@ if ($this->document_upload == true) {
             .then((data) => {
 
                 let notifications = data.data;
+                console.log(notifications);
                 let notificationDropdown = $("#notification-dropdown");
-                console.log(notificationDropdown, 'dropdown');
+
                 notificationDropdown.empty();
                 notifications.forEach((notification, i) =>{
                     let html = `<li style="border-bottom: 1px solid #eee;padding: 10px 15px">
                                     <div style="width: 300px">
-                                        <p>${notification.data.message}</p>
+                                        <a href="" target="_blank>${notification.data.message}</a>
                                     </div>
                                 </li>`;
 
