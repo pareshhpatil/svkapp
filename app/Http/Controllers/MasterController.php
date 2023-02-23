@@ -8,6 +8,7 @@ use App\Model\Invoice;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -148,12 +149,24 @@ class MasterController extends AppController
     {
         $title = 'Project list';
         $data = Helpers::setBladeProperties($title,  [],  []);
-        $list = $this->masterModel->getProjectList($this->merchant_id);
-        foreach ($list as $ck => $row) {
-            $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         }
-        $data['list'] = $list;
+
+        if(!empty($privilegesIDs)) {
+            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs));
+            foreach ($list as $ck => $row) {
+                $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+            }
+        }
+
+        $data['list'] = $list ?? [];
         $data['datatablejs'] = 'table-no-export';
+        $data['privileges'] = $privilegesIDs;
         return view('app/merchant/project/list', $data);
     }
 
@@ -348,5 +361,44 @@ class MasterController extends AppController
         $data['merchant_id'] = $this->merchant_id;
         $this->masterModel->saveBilledTransaction($data, $this->user_id);
         return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
+    }
+
+    public function noPermission()
+    {
+        $title =  'Permission not granted';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        return view('/errors/no-permission', $data);
+    }
+
+    public function getNotifications()
+    {
+        $authUser = auth()->user();
+
+        // Get Notifications
+        $Notifications = $authUser->unreadNotifications()
+            ->limit(9)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $Notifications
+        ]);
+    }
+
+    public function getAllNotifications()
+    {
+        $authUser = auth()->user();
+
+        $title =  'Notifications';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+
+        // Get Notifications
+        $Notifications = $authUser->unreadNotifications()
+            ->limit(99)
+            ->get();
+
+        $data['notifications'] = $Notifications;
+
+        return view('app/merchant/notifications/index', $data);
     }
 }

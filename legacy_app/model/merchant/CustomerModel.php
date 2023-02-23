@@ -673,4 +673,24 @@ class CustomerModel extends Model
             $this->setGenericError();
         }
     }
+
+    public function getUserPrivilegesCustomerIDs($merchant_id, $user_id)
+    {
+        $sql = "select type_id, access from briq_privileges where type = 'customer' and is_active = 1 and merchant_id='" . $merchant_id . "' and user_id='" . $user_id . "'";
+        $params = array();
+        $this->db->exec($sql, $params);
+        $list = $this->db->resultset();
+
+        return $list;
+    }
+
+    public function getUserPrivilegesCustomerID($merchant_id, $user_id, $type_id)
+    {
+        $sql = "select type_id, type, access from briq_privileges where type = 'customer' and is_active = 1 and type_id='" . $type_id . "' and user_id='" . $user_id . "' and merchant_id='" . $merchant_id . "'";
+        $params = array();
+        $this->db->exec($sql, $params);
+        $list = $this->db->resultset();
+
+        return $list;
+    }
 }

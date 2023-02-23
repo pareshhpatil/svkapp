@@ -30,7 +30,7 @@ class Helpers
         }
     }
 
-    public static function setBladeProperties($title, $jsFiles, $selectedMenu)
+    public static function setBladeProperties($title, $jsFiles = [], $selectedMenu = [])
     {
         $data['title'] = $title;
         $data['jsfile'] = $jsFiles;

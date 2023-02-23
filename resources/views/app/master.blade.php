@@ -22,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 
     @foreach ($jsfile as $js)
-    <script src="/assets/admin/layout/scripts/{{$js}}.js{{ Helpers::fileTime('js',$js) }}" type="text/javascript"></script>
+        <script src="/assets/admin/layout/scripts/{{$js}}.js{{ Helpers::fileTime('js',$js) }}" type="text/javascript"></script>
     @endforeach
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link href='/assets/admin/layout/css/plugin/select2.min.css' rel='stylesheet' type='text/css'>

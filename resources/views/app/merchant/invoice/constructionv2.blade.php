@@ -7,13 +7,10 @@
         font-size: 15px !important;
         font-weight: 400 !important;
     }
-
     .uppy-Dashboard-inner {
-
         border: 0px solid #eaeaea !important;
         border-radius: 5px !important;
     }
-
     [data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
         margin: 0px !important;
         padding-bottom: 9px;
@@ -21,7 +18,6 @@
         border-radius: 3px;
         border: 1px dashed #dfdfdf;
     }
-
     .steps {
         background-color: transparent !important;
         border: 2px #18AEBF solid !important;
@@ -389,7 +385,6 @@
                                                 <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                             </span>
                                             @php
-
                                             @endphp
                                             @endforeach
                                         </div>
@@ -578,7 +573,6 @@
     @endif
     <script>
         $('#billing_profile_id').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('profilelist' + pind)) {} else {
@@ -586,16 +580,13 @@
             }
         });
         $('#currency').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('currencylist' + pind)) {} else {
                 $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/currency" id="currencylist' + pind + '"  target="_BLANK" class="clicker" >Add new currency</a> </div>');
             }
         });
-
         $('#template_id').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('templatelists' + pind)) {} else {
@@ -603,8 +594,6 @@
             }
         });
         invoice_construction = true;
-
-
         $('.productselect').select2({
             tags: true,
             insertTag: function(data, tag) {
@@ -624,8 +613,6 @@
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Addf new bill code</a> </div>');
             }
         });
-
-
         function validateDates(){
         if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
             $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
@@ -676,12 +663,10 @@
             }
         }
     });
-
     uppy.use( Compressor, {
         quality: 0.6,
         limit: envlimit,
     });
-
     uppy.use(Uppy.Dashboard, {
         target: 'body',
         trigger: '.UppyModalOpenerBtn',
@@ -707,12 +692,10 @@
         formData: true,
         fieldName: 'image'
     });
-
     uppy.on('file-added', (file) => {
         document.getElementById("error").innerHTML = '';
         console.log('file-added');
     });
-
     uppy.on('upload', (data) => {
         console.log('Starting upload');
     });
@@ -782,7 +765,6 @@ $array_name = 'newdocfileslist'.$key;
             var remainleng = 0;
             if (document.getElementById("file_upload_mandatory"+arrayKey).value != '')
                 remainleng = document.getElementById("file_upload_mandatory"+arrayKey).value.split(",").length;
-
             var counts = envlimit - remainleng;
             if (remainleng == envlimit) {
                 return Promise.reject('too few files')
@@ -810,7 +792,6 @@ $array_name = 'newdocfileslist'.$key;
     });
     window.{{$keyname}}.getPlugin('Dashboard').setOptions({
         note: 'Max upload limit ' + envlimit + ' files  only',
-
     });
     {{$keyname}}.use(Uppy.XHRUpload, {
         headers: {
@@ -825,7 +806,6 @@ $array_name = 'newdocfileslist'.$key;
         document.getElementById("error").innerHTML = '';
         console.log('file-added');
     });
-
     {{$keyname}}.on('upload', (data) => {
         console.log('Starting upload');
     });
@@ -909,18 +889,15 @@ $array_name = 'newdocfileslist'.$key;
 
     <script>
         function setdata(name, fullurl) {
-
             document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
             document.getElementById('docfullurl').value = fullurl;
         }
-
         function setdataMandatory(name, fullurl, array_name, ArrayKey) {
             document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
             document.getElementById('file_url').value = fullurl;
             document.getElementById('array_name').value = array_name;
             document.getElementById('array_key').value = ArrayKey;
         }
-
         function deletedocfile(x) {
             var html = '';
             if (x == 'delete') {
@@ -930,7 +907,6 @@ $array_name = 'newdocfileslist'.$key;
                     newdocfileslist.splice(index, 1);
                 }
             }
-
             for (var i = 0; i < newdocfileslist.length; i++) {
                 var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
                 filenm = filenm.split('.').slice(0, -1).join('.')
@@ -944,7 +920,6 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox').innerHTML = html;
             document.getElementById('closeconformdoc').click();
         }
-
         function deletedocfileMandatory(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
@@ -960,7 +935,6 @@ $array_name = 'newdocfileslist'.$key;
                 if (index !== -1) {
                     delete arrayName[index];
                 }
-
                 document.getElementById('file_upload_mandatory'+array_key).value = arrayName.join(',');
                // const element = document.getElementById("docviewbox"+array_key);
                 //element.remove();
@@ -980,7 +954,6 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
             document.getElementById('closeconformdoc2').click();
         }
-
         function deletedocfileMandatoryold(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
@@ -999,12 +972,9 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
             document.getElementById('closeconformdoc').click();
         }
-
         function clearnewuploads(x) {
             document.getElementById("file_upload").value = '';
-
             var filesnm = '';
-
             for (var i = 0; i < newdocfileslist.length; i++) {
                 if (filesnm != '')
                     filesnm = filesnm + ',' + newdocfileslist[i];
@@ -1013,12 +983,9 @@ $array_name = 'newdocfileslist'.$key;
             }
             document.getElementById("file_upload").value = filesnm;
         }
-
         function clearnewuploads_mandatory(x,ArrayKey,  arrayName) {
             document.getElementById("file_upload_mandatory"+ArrayKey).value = '';
-
             var filesnm = '';
-
             for (var i = 0; i < arrayName.length; i++) {
                 if (filesnm != '')
                     filesnm = filesnm + ',' + arrayName[i];
@@ -1027,7 +994,6 @@ $array_name = 'newdocfileslist'.$key;
             }
             document.getElementById("file_upload_mandatory"+ArrayKey).value = filesnm;
         }
-
     </script>
     @endsection
 

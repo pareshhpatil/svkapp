@@ -230,10 +230,7 @@ class CompanyProfileController extends AppController
 
     public function collect_payment_landingpage()
     {
-
         $data = $this->setBladeProperties('Collect payments', [], [3]);
-
-
 
         $user = null;
 

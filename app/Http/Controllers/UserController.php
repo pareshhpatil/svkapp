@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
 use App\Model\User;
 use App\Libraries\Encrypt;
 use App\Libraries\DataValidation as Valid;
 use App\Libraries\Helpers;
+use Carbon\Carbon;
 use Google_Client;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Log;
 use Illuminate\Support\Facades\Auth as SwipezAuth;
 use Illuminate\Support\Facades\Session;
@@ -286,6 +291,11 @@ class UserController extends Controller
      */
     public function setLoginSession($user)
     {
+        //Check First Time User Role Exists
+        $this->checkUserRole($user);
+        
+        $role = $user->role() ? $user->role()->name : '';
+
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
         Session::put('display_name', $user->first_name);
@@ -296,16 +306,37 @@ class UserController extends Controller
         Session::put('system_user_id', Encrypt::encode($user->user_id));
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
+        Session::put('user_role', $role);
 
         $preference = $this->user_model->getPreferences($user->user_id);
-
         Session::put('default_timezone', $preference->timezone ??  'America/Cancun');
         Session::put('default_currency', $preference->currency ?? 'USD');
         Session::put('default_date_format', $preference->date_format ?? 'M d yyyy');
         Session::put('default_time_format', $preference->time_format ?? '24');
 
         Session::forget('menus');
-        //Checking whether user is a cable customer 
+
+        if($role == 'Admin') {
+            $privileges = [
+                "customer_privileges" => ['all' => 'full'],
+                "project_privileges" => ['all' => 'full'],
+                "contract_privileges" => ['all' => 'full'],
+                "invoice_privileges" => ['all' => 'full'],
+                "change_order_privileges" => ['all' => 'full']
+            ];
+        } else {
+            $privileges = $this->user_model->getUserPrivileges($user->user_id);
+        }
+
+        Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));
+        Redis::set('project_privileges_' . $user->user_id, json_encode($privileges['project_privileges']));
+        Redis::set('contract_privileges_' . $user->user_id, json_encode($privileges['contract_privileges']));
+        Redis::set('invoice_privileges_' . $user->user_id, json_encode($privileges['invoice_privileges']));
+        Redis::set('change_order_privileges_' . $user->user_id, json_encode($privileges['change_order_privileges']));
+        // Store in Session bcz of legacy_app
+        Session::put('invoice_privileges', json_encode($privileges['invoice_privileges']));
+
+        //Checking whether user is a cable customer
         if ($user->login_type == 2) {
             Session::put('userid', Encrypt::encode($user->user_id));
             Session::forget('merchant_id');
@@ -381,7 +412,7 @@ class UserController extends Controller
                 Session::put('partner_id', $merchant->partner_id);
                 Session::put('service_id', $merchant->service_id);
                 Session::put('is_legal', $merchant->is_legal_complete);
-                Session::put('userid', Encrypt::encode($merchant->user_id));
+                Session::put('userid', Encrypt::encode($user->user_id));
                 Session::put('created_date', $merchant->created_date);
 
                 // storing variables to check getting started steps are completed or not
@@ -439,6 +470,8 @@ class UserController extends Controller
                 }
 
 
+
+
                 if (Session::has('redirect_package_id')) {
                     $link = Session::get('redirect_package_id');
                     Session::forget('redirect_package_id');
@@ -450,6 +483,60 @@ class UserController extends Controller
                 header('Location: /error');
                 exit();
             }
+        }
+    }
+
+    public function checkUserRole($user)
+    {
+        if ($user->user_status == 20) {
+            $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
+        } else {
+            $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
+        }
+
+        $hasUserRoleExists = DB::table(ITable::BRIQ_USER_ROLES)
+                            ->where(IColumn::USER_ID, $user->user_id)
+                            ->exists();
+
+        if(empty($hasUserRoleExists)) {
+            //check if role exists
+            $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
+                                    ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                                    ->where(IColumn::NAME, "Admin")
+                                    ->exists();
+
+            if(empty($hasAdminRoleExists)) {
+                DB::table(ITable::BRIQ_ROLES)
+                    ->insert([
+                        'merchant_id' => $merchant->merchant_id,
+                        'name' => 'Admin',
+                        'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
+                        'created_by' => $user->created_by,
+                        'last_updated_by' => $user->created_by,
+                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                    ]);
+            }
+
+            $AdminRole = DB::table(ITable::BRIQ_ROLES)
+                            ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                            ->where(IColumn::NAME, 'Admin')
+                            ->first();
+
+            if(!empty($AdminRole)) {
+                DB::table(ITable::BRIQ_USER_ROLES)
+                    ->updateOrInsert(
+                        ['user_id' => $user->user_id],
+                        [
+                            'role_id' => $AdminRole->id,
+                            'role_name' => $AdminRole->name,
+                            'created_by' => $user->created_by,
+                            'updated_by' => $user->created_by,
+                            IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                            IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                        ]);
+            }
+
         }
     }
 
@@ -784,16 +871,23 @@ class UserController extends Controller
 
         $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
         if ($result->Message == 'success') {
-            //remove these 4 qurrioes and put in procedure 
+            
+            $import_data  = new ImportBriqData();
+
+            //remove these 4 queries and put in procedure 
             $this->user_model->updateTable('user', 'email_id', $email, 'briq_user_id', $uid);
-            $this->user_model->updateUserDetails($result->user_id, $result->user_id, 12);
+            $this->user_model->updateUserDetails($result->user_id, $result->user_id, 20);
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'profile_step', '7');
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'currency', ["USD"]);
-            if ($is_data) {
-                // insert test data 
-                $imprt_data  = new ImportBriqData();
-                $imprt_data->insertData($result->merchant_id, $result->user_id);
+
+            //import roles, permission and invoice format data 
+            $import_data->insertMandatoryData($result->merchant_id,$result->user_id );
+
+            // insert test data 
+            if($is_data){
+                $import_data->insertData($result->merchant_id,$result->user_id );
             }
+
             $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);
 
             Session::put('default_timezone', 'America/Cancun');

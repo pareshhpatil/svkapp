@@ -2,10 +2,20 @@
 
 namespace App;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Notifications\Notification;
 
+/**
+ * @property mixed $user_id
+ */
 class User extends Authenticatable {
 
     use Notifiable;
@@ -27,7 +37,10 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'first_name', 'email_id', 'password',
+        'first_name',
+        'email_id',
+        'password',
+        'fcm_token'
     ];
 
     /**
@@ -47,5 +60,39 @@ class User extends Authenticatable {
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @return Model|Builder|object|null
+     * @author Nitish
+     */
+    public function role()
+    {
+        return DB::table(ITable::BRIQ_ROLES)
+                   ->where(IColumn::ID, $this->roleID())
+                   ->first();
+    }
+
+    /**
+     * @return mixed
+     * @author Nitish
+     */
+    public function roleID()
+    {
+        return DB::table(ITable::BRIQ_USER_ROLES)
+                ->where(IColumn::USER_ID, $this->user_id)
+                ->pluck(IColumn::ROLE_ID)
+                ->first();
+    }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @return  array<string, string>|string
+     */
+    public function routeNotificationForMail(Notification $notification)
+    {
+        // Return email address only...
+        return $this->email_id;
+    }
 
 }

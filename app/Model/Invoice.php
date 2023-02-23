@@ -16,9 +16,11 @@ namespace App\Model;
 
 use Illuminate\Support\Facades\DB;
 use App\Model\ParentModel;
+use App\Constants\Models\ITable;
 
 class Invoice extends ParentModel
 {
+    protected $table = ITable::INVOICE;
 
     public function getActiveCoupon($merchant_id)
     {
@@ -854,5 +856,31 @@ class Invoice extends ParentModel
             ->wherein('order_id', $ids)
             ->sum('total_change_order_amount');
         return $sum;
+    }
+
+    public function updatePaymentRequestStatusAndNotifyPatron($payment_request_id, $status, $notifyPatron)
+    {
+        DB::table('payment_request')->where('payment_request_id', $payment_request_id)
+            ->update([
+                'payment_request_status' => $status,
+                'notify_patron' => $notifyPatron
+            ]);
+    }
+
+    public function getInvoiceColumnValues($payment_request_id) {
+        $values = DB::table('invoice_column_values')
+                    ->where('payment_request_id', $payment_request_id)
+                    ->pluck('value')->toArray();
+
+        return $values;
+    }
+
+    public function saveInvoicePreview($merchant_id, $user_id, $payment_request_id, $invoice_type, $invoice_values, $invoice_number, $payment_request_status, $payment_request_type)
+    {
+        $values = implode('~', $invoice_values);
+
+        $retObj = DB::select("call `convert_draft_invoice`('$merchant_id','$user_id','$payment_request_id','$invoice_type','$values','$invoice_number','$payment_request_status','$payment_request_status');");
+
+        return $retObj[0];
     }
 }

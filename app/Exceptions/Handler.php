@@ -7,6 +7,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\App as App;
 use Throwable;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -59,6 +61,12 @@ class Handler extends ExceptionHandler
             App::make("SwipezLegacyFramework");
             die();
         }
+
+        if ($exception instanceof AuthorizationException) {
+            // redirect to no-permission page
+            return redirect('/merchant/no-permission');
+        }
+
         $response = parent::render($request, $exception);
         if(env('APP_ENV')=='LOCAL' || env('APP_ENV')=='DEV') {
             dd($exception);

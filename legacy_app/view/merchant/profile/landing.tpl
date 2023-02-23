@@ -130,10 +130,10 @@
                 <div class="col-md-4">
                     <h4 class="dc-h"><b>Manage Users</b></h4>
                     <p>
-                        <a href="/merchant/subuser/roles" class="dc-link"> Roles</a>
+                        <a href="/merchant/roles" class="dc-link"> Roles</a>
                     </p>
-                    <p>
-                        <a href="/merchant/subuser/viewlist" class="dc-link"> Logins </a>
+                    <p> 
+                        <a href="/merchant/subusers" class="dc-link"> Team Members </a>
                     </p>
 
 

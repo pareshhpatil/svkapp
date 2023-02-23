@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
+use App\Model\Notification;
 use Aws\S3\S3Client;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
 use App\Model\InvoiceFormat;
@@ -53,6 +55,27 @@ class InvoiceController extends AppController
         $this->inventory_service_id = Encrypt::encode('15'); //15 service_id
 
     }
+
+     //invoice list new laravel
+     public function list(){
+        $dates = Helpers::setListDates();
+
+        $data = Helpers::setBladeProperties('Invoice / Estimate list',  ['invoice'], []);
+        
+        $data['hide_first_col'] = 1;
+        $data['datatablejs'] = 'table-no-export';
+        $data['customer_name'] = 'Customer name';
+        $data['customer_code'] = 'Customer code';
+
+        if (Session::has('customer_default_column')) {
+            $default_column = Session::get('customer_default_column');
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
+        }
+
+        return view('app/merchant/invoice/list', $data);
+    }
+
     /**
      * Renders form to create invoice
      *
@@ -382,9 +405,26 @@ class InvoiceController extends AppController
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
 
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        $invoiceAccess = '';
+
+        if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] == 'full') {
+                $invoiceAccess = 'all-full';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                $invoiceAccess = 'all-edit';
+            }
+        } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+            $invoiceAccess = 'edit';
+        }
+        $data['invoice_access'] = $invoiceAccess;
+
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }
+
         return view('app/merchant/invoice/create', $data);
     }
 
@@ -398,12 +438,14 @@ class InvoiceController extends AppController
     public function update($link, $staging = 0, $revision = 0)
     {
         $payment_request_id = Encrypt::decode($link);
+
         if (strlen($payment_request_id) == 10) {
             if ($staging == 1) {
                 $info = $this->invoiceModel->getStagingInvoiceInfo($payment_request_id, $this->merchant_id);
             } else {
                 $info = $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             }
+
             if ($info->message != 'success') {
                 return redirect('/error')->with('errorTitle', 'Invalid URL');
             }
@@ -443,7 +485,7 @@ class InvoiceController extends AppController
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         if ($revision != 1) {
                             Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
-                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                    The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
 
                             return redirect('/merchant/paymentrequest/viewlist');
                         }
@@ -693,6 +735,7 @@ class InvoiceController extends AppController
             // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
 
             $contract = $this->invoiceModel->getContractDetail($data['contract_id']);
+
             $model = new Master();
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $contract->id);
 
@@ -857,16 +900,32 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            $hasCreateAccess = false;
+            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+                $hasCreateAccess = true;
+            }
+            $info['has_create_access'] = $hasCreateAccess;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
         }
     }
 
-    public function view_g703($link)
+    public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
+        if(!empty($notificationID)) {
+            /** @var Notification $Notification */
+            $Notification = Notification::findOrFail($notificationID);
+
+            $Notification->markAsRead();
+        }
+        
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
             #get default billing profile
@@ -918,7 +977,27 @@ class InvoiceController extends AppController
                 }
             }
 
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            $invoiceAccess = '';
+
+            if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+                if($invoicePrivilegesAccessIDs['all'] == 'full') {
+                    $invoiceAccess = 'all-full';
+                }
+
+                if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                    $invoiceAccess = 'all-edit';
+                }
+            } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+                $invoiceAccess = 'edit';
+            }
+//            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+//                $hasCreateAccess = true;
+//            }
+            $info['invoice_access'] = $invoiceAccess;
+
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2241,7 +2320,6 @@ class InvoiceController extends AppController
             if ($info['template_type'] == 'construction') {
 
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
-
                 $subject = $this->getDynamicString($info, $covernote['subject']);
                 $msg = $this->getDynamicString($info, $covernote['body']);
                 $data['body'] = $msg;
@@ -2684,7 +2762,11 @@ class InvoiceController extends AppController
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
 
-            $change_order_ids = json_decode($info['change_order_id'], 1);
+            $change_order_ids = [];
+            if(isset($info['change_order_id'])) {
+                $change_order_ids = json_decode($info['change_order_id'], 1);
+            }
+
             if (!empty($change_order_ids)) {
                 $info['last_month_co_amount'] = 0;
                 $info['this_month_co_amount'] = 0;
@@ -3227,6 +3309,12 @@ class InvoiceController extends AppController
 
     public function save(Request $request)
     {
+        $hasAccess = $this->checkHasEditAccess($this->user_id);
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
+
         $invoice_number = '';
         foreach ($request->function_id as $k => $function_id) {
             if ($function_id == 9) {
@@ -3317,9 +3405,16 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-        //        dd($request);
+
         try {
             $request_id = Encrypt::decode($request->link);
+            
+            $hasAccess = $this->checkHasEditAccess($this->user_id);
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
             if (strlen($request_id) != 10) {
                 throw new Exception('Invalid id ' . $request_id);
             }
@@ -3599,8 +3694,22 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-            $previousInvoiceIDs = $this->invoiceModel->getPreviousInvoiceIDs($this->merchant_id, $invoice->contract_id, $request_id);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
+            if ($pre_req_id != false) {
+                $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
+                //  dd($particulars);
+                foreach ($particulars as $key => $row) {
+                    $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                    $particulars[$key]->current_billed_amount = '';
+                    $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
+                    $particulars[$key]->current_billed_percent = '';
+                    $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
+                    $particulars[$key]->retainage_amount_for_this_draw = '';
+                    $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
+                    $particulars[$key]->retainage_amount_stored_materials = '';
+                    $particulars[$key]->current_stored_materials = '';
+                }
+            }
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -3645,44 +3754,7 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        //                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
-                    }
-                }
-
-
-                if (!empty($previousInvoiceIDs)) {
-                    $previousBilledSumArray = [];
-                    foreach ($previousInvoiceIDs as $previousInvoiceID) {
-                        $contractParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
-                        foreach ($contractParticulars as $row) {
-                            $previousBilledSumArray[$row->bill_code]['previousBilledAmount'][] = $row->current_billed_amount;
-                            $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
-                            $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
-                            $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
-
-                            $previousBilledSumArray[$row->bill_code]['retainageReleaseAmount'][] = $row->retainage_release_amount;
-                            $previousBilledSumArray[$row->bill_code]['retainageStoredMaterialsReleaseAmount'][] = $row->retainage_stored_materials_release_amount;
-                        }
-                    }
-
-                    foreach ($particulars as $k => $v) {
-                        if (isset($cp[$v->bill_code])) {
-                            $previousBilledAmount = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledAmount']);
-                            $previousBilledPercent = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledPercent']);
-                            $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
-                            $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
-
-                            $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
-                            $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
-
-                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount, 2);
-                            $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
-                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount, 2);
-                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount, 2);
-                        }
                     }
                 }
             }
@@ -3841,10 +3913,89 @@ class InvoiceController extends AppController
         $data['notify_patron'] = 1;
         $data['payment_request_id'] = $request_id;
 
-
-
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
+    }
+
+
+    private function checkHasEditAccess($user_id) {
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $user_id), true);
+        $hasAccess = false;
+        if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] = 'full' || $invoicePrivilegesAccessIDs['all'] = 'edit') {
+                $hasAccess = true;
+            }
+        } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+            $hasAccess = true;
+        }
+        
+        return $hasAccess;
+    }
+
+    public function saveInvoicePreview(Request $request, $link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+        if (strlen($payment_request_id) != 10) {
+            return redirect('/error/invalidlink');
+        }
+
+        $paymentRequestType = $request->get('payment_request_type');
+        $notifyPatron = $request->get('notify_patron');
+        //first update payment request status & notify patron into table
+        $this->invoiceModel->updatePaymentRequestStatusAndNotifyPatron($payment_request_id, 0, $notifyPatron);
+
+        $paymentRequestDetails = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+        $getInvoiceValues = $this->invoiceModel->getInvoiceColumnValues($payment_request_id);
+
+        $result = $this->invoiceModel->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $paymentRequestDetails->invoice_type, $getInvoiceValues, $paymentRequestDetails->invoice_number, $paymentRequestDetails->payment_request_status, $paymentRequestType);
+
+        if ($result['message'] == 'success') {
+            if (isset($notify_patron) && $notify_patron == 1) {
+                $revised = 0;
+                $this->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
+            }
+
+            $get_payment_request_details['change_order_id'] = json_decode($paymentRequestDetails->change_order_id, 1);
+            foreach ($get_payment_request_details['change_order_id'] as $order_id) {
+//                $this->common->genericupdate('`order`', 'invoice_status', 1, 'order_id', $order_id);
+            }
+        }
+    }
+
+    public function sendInvoiceNotification($payment_request_id, $revised = 0, $sms = 0, $custom_covering = '')
+    {
+        $info = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+        if (empty($info)) {
+            return redirect('/error/invalidlink');
+        }
+        if ($info['payment_request_type'] == 4) {
+            return false;
+        }
+
+        $this->parentModel->updateTable('payment_request', 'payment_request_id', $payment_request_id, 'notification_sent', 1);
+
+        if ($info['customer_mobile'] != '' || $info['customer_email'] != '') {
+            if ($info['customer_email'] != '') {
+                $plugin = json_decode($info['plugin_value'], 1);
+
+                $subject = "Payment request from __COMPANY_NAME__";
+                $subject = str_replace('__COMPANY_NAME__', $info['company_name'], $subject);
+                if ($plugin['has_custom_notification'] == 1) {
+                    $subject = $this->getDynamicString($info, $plugin['custom_email_subject']);
+                }
+                if ($revised == 1) {
+                    $subject = 'Revised ' . lcfirst($subject);
+                }
+
+                $this->sendEmail(Encrypt::encode($payment_request_id), $subject);
+
+//                if ($this->reminder_subject != '') {
+//                    $subject = $this->reminder_subject;
+//                    $subject = $this->getDynamicString($info, $subject);
+//                }
+            }
+        }
     }
 
     public function saveProjectInvoiceSequence()
@@ -3903,6 +4054,7 @@ class InvoiceController extends AppController
         } else {
             $response['status'] = 0;
         }
+
         echo json_encode($response);
     }
 
