@@ -4,6 +4,7 @@ namespace App\Helpers\Merchant;
 
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
+use App\Notifications\ChangeOrderNotification;
 use App\Notifications\InvoiceApprovalNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -13,26 +14,20 @@ use Illuminate\Support\Facades\Session;
 /**
  * @author Nitish
  */
-class InvoiceHelper
+class ChangeOrderHelper
 {
-    public function sendInvoiceForApprovalNotification($paymentRequestID)
+    public function sendChangeOrderForApprovalNotification($orderId)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
 
-        $paymentRequestDetail = DB::table('payment_request')
-            ->where('payment_request_id', $paymentRequestID)
+        $orderDetail = DB::table('order')
+            ->where('order_id', $orderId)
             ->first();
 
-        if (!empty($paymentRequestDetail)) {
-            $invoiceNumber = $paymentRequestDetail->invoice_number;
-            if (substr($paymentRequestDetail->invoice_number, 0, 16) == 'System generated') {
-                $invoiceNumber = (new Invoice())->getAutoInvoiceNo((substr($paymentRequestDetail->invoice_number, 16)));
-            }
-
+        if (!empty($orderDetail)) {
             $Contract = DB::table('contract')
-                ->where('is_active', 0)
-                ->where('contract_id', $paymentRequestDetail->contract_id)
-                ->first();
+                        ->where('contract_id', $orderDetail->contract_id)
+                        ->first();
 
             $contractID = $Contract->contract_id;
             $customerID = $Contract->customer_id;
@@ -62,10 +57,10 @@ class InvoiceHelper
                 ->pluck('user_id')
                 ->toArray();
 
-            $invoiceUserWithApprovalAccessIDs = DB::table('briq_privileges')
+            $changeOrderUserWithApprovalAccessIDs = DB::table('briq_privileges')
                 ->where('is_active', 1)
                 ->where('merchant_id', $merchantID)
-                ->where('type', 'invoice')
+                ->where('type', 'change-order')
                 ->where('type_id', 'all')
                 ->where('access', 'full')
                 ->pluck('user_id')
@@ -82,7 +77,7 @@ class InvoiceHelper
                 ->pluck('user_id')
                 ->toArray();
 
-            $uniqueUserIDs = array_unique(array_merge($invoiceUserWithApprovalAccessIDs, $adminRoleUserIDs, $contractUserWithFullAccess, $customerUserWithFullAccess, $projectUserWithFullAccess));
+            $uniqueUserIDs = array_unique(array_merge($changeOrderUserWithApprovalAccessIDs, $adminRoleUserIDs, $contractUserWithFullAccess, $customerUserWithFullAccess, $projectUserWithFullAccess));
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
@@ -98,7 +93,8 @@ class InvoiceHelper
 
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
-                    $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                    $User->notify(new ChangeOrderNotification());
+                    //$User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
                 }
             }
         }

@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{!! $invoice_number !!} Invoice Approve</title>
+    <title>{!! $order_number !!} Change Order Approve</title>
 
     <style type="text/css">
         p{
@@ -545,7 +545,7 @@
 <body>
 <!--*|IF:MC_PREVIEW_TEXT|*-->
 <!--[if !gte mso 9]>
-<span class="mcnPreviewText" style="display:none; font-size:0; line-height:0; max-height:0; max-width:0; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">{!! $invoice_number !!} Pending for Approval</span>
+<span class="mcnPreviewText" style="display:none; font-size:0; line-height:0; max-height:0; max-width:0; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">{!! $order_number !!} Change Order Pending for Approval</span>
 <![endif]-->
 <!--*|END:IF|*-->
 <center>
@@ -601,10 +601,10 @@
 
                                                 <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                                                    <h1 style="text-align: left;"><span style="font-size:20px"><span style="color:#696969"><span style="font-family:roboto,helvetica neue,helvetica,arial,sans-serif">{!! $invoice_number !!} Invoice has been generated</span></span></span></h1>
+                                                    <h1 style="text-align: left;"><span style="font-size:20px"><span style="color:#696969"><span style="font-family:roboto,helvetica neue,helvetica,arial,sans-serif">{!! $order_number !!} Change Order has been generated</span></span></span></h1>
 
                                                     <p><br>
-                                                        <span style="color:#696969"><span style="font-family:roboto,helvetica neue,helvetica,arial,sans-serif">Click below link to approve invoice</span></span></p>
+                                                        <span style="color:#696969"><span style="font-family:roboto,helvetica neue,helvetica,arial,sans-serif">Click below link to approve change order</span></span></p>
 
                                                 </td>
                                             </tr>
@@ -628,7 +628,7 @@
                                             <tbody>
                                             <tr>
                                                 <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Roboto, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; padding: 16px;">
-                                                    <a class="mcnButton " title="View upload status" href="{!! url('/merchant/invoice/viewg703/' . $payment_request_id) !!}" target="_blank" style="font-weight: bold;letter-spacing: 1px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Approve</a>
+                                                    <a class="mcnButton " title="View upload status" href="{!! url('/merchant/order/approve/' . $order_id) !!}" target="_blank" style="font-weight: bold;letter-spacing: 1px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Approve</a>
                                                 </td>
                                             </tr>
                                             </tbody>

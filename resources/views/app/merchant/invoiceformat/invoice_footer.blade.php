@@ -141,8 +141,12 @@ $validate=(array)$validate;
                 @if(!empty($info['invoice_access']))
                     @if($info['payment_request_status'] == 14 && $info['invoice_access'] == 'all-full')
                         <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                    @elseif($info['notify_patron']==1 && $info['invoice_access'] == 'all-full')
-                        <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                    @elseif($info['invoice_access'] == 'all-full')
+                        @if($info['notify_patron'] == 1)
+                            <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                        @else
+                            <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                        @endif
                         {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
                     @elseif($info['payment_request_status'] != 14)
                         <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />

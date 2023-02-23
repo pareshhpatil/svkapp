@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Notifications;
+
+use App\Libraries\Encrypt;
+use App\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
+use Kutia\Larafirebase\Messages\FirebaseMessage;
+
+class ChangeOrderNotification extends Notification
+{
+    use Queueable;
+
+    protected $orderID;
+    protected $orderNumber;
+    protected $User;
+
+    /**
+     * Create a new notification instance.
+     *
+     * @return void
+     */
+    public function __construct($orderID, $orderNumber, $User)
+    {
+        $this->orderID = $orderID;
+        $this->orderNumber = $orderNumber;
+        $this->User = $User;
+    }
+
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function via($notifiable)
+    {
+        $channels = [];
+
+        $preferences = DB::table('preferences')
+            ->where('user_id', $notifiable->user_id)
+            ->first();
+
+        if (empty($preferences)) {
+            return ['database'];
+        }
+
+        if($preferences->send_email == 1) {
+            $channels[] = 'mail';
+        }
+
+        if($preferences->send_push == 1) {
+            $channels[] = 'firebase';
+        }
+
+        $channels[] = 'database';
+
+        return $channels;
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     *
+     * @param  User  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject($this->orderNumber . 'Requested for approval')
+            ->markdown('emails.order.approve', [
+                'user_id' => $notifiable->user_id,
+                'order_id' => Encrypt::encode($this->orderID),
+                'order_number' => $this->orderNumber
+            ]);
+
+    }
+
+    /**
+     * Get the firebase representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
+    public function toFirebase($notifiable)
+    {
+        return (new FirebaseMessage())
+            ->withTitle($this->orderNumber)
+            ->withBody($this->orderNumber . ' Invoice Pending for approval')
+            ->withPriority('low')->asMessage($this->User->fcm_token);
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toArray($notifiable)
+    {
+        return [
+            'user_id' => $this->User->user_id,
+            'order_id' => $this->orderID,
+            'order_number' => $this->orderNumber
+        ];
+    }
+}

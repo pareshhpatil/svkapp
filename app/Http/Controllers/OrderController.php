@@ -133,6 +133,7 @@ class OrderController extends Controller
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+
             return redirect('merchant/order/list')->with('success', "Change Order has been created");
         }
     }
