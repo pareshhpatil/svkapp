@@ -195,6 +195,7 @@ class SubUserHelper
                     'user_id' => $SubUser->user_id,
                     'send_sms' => 1,
                     'send_email' => 1,
+                    'send_push' => 1,
                     'send_app' => 1,
                     'timezone' => '',
                     'currency' => '',

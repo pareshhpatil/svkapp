@@ -572,11 +572,11 @@ select :merchant_id,package_id,'',0,`individual_invoice`,`bulk_invoice`,`free_sm
         }
     }
 
-    public function updatepreferences($user_id, $sms, $email)
+    public function updatepreferences($user_id, $sms, $email, $push)
     {
         try {
-            $sql = "update preferences set send_sms=:sms,send_email=:email where user_id=:user_id";
-            $params = array(':user_id' => $user_id, ':sms' => $sms, ':email' => $email);
+            $sql = "update preferences set send_sms=:sms,send_email=:email,send_push=:send_push where user_id=:user_id";
+            $params = array(':user_id' => $user_id, ':sms' => $sms, ':email' => $email, ':send_push' => $push);
             $this->db->exec($sql, $params);
         } catch (Exception $e) {
             Sentry\captureException($e);

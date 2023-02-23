@@ -22,4 +22,5 @@ interface ITable
     const INVOICE = 'invoice';
     const INVOICE_TEMPLATE = 'invoice_template';
     const PREFERENCES = 'preferences';
+    const NOTIFICATIONS = 'notifications';
 }

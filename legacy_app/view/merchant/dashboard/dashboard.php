@@ -3,49 +3,59 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="//cdn.headwayapp.co/widget.js"></script>
-
+<style>
+    #notification-dropdown {
+        list-style: none;
+        padding-left: 0;
+    }
+    .notification-icon {
+        margin-right: 10px;
+        padding-top: 9px !important;
+        padding-bottom: 9px !important;
+    }
+</style>
 <script>
     // @see https://docs.headwayapp.co/widget for more configuration options.
-    var HW_UnseenCount = 0;
-    var config = {
-        selector: ".badgeCont",
-        trigger: ".toggleWidget",
-        account: "JrXKbx",
-        translations: {
-            title: "New Features",
-            readMore: "Read more",
-            labels: {
-                "new": "Feature",
-                "improvement": "Improvement",
-                "fix": "Fixes"
-            },
-            footer: "Read more 👉"
-        },
-        callbacks: {
-            onWidgetReady: function(widget) {
-                console.log("Widget is here!");
-                console.log("unseen entries count: " + widget.getUnseenCount());
-                HW_UnseenCount = widget.getUnseenCount();
-            },
-            onShowWidget: function() {
-                console.log("Someone opened the widget!");
-            },
-            onShowDetails: function(changelog) {
-                console.log(changelog.position); // position in the widget
-                console.log(changelog.id); // unique id
-                console.log(changelog.title); // title
-                console.log(changelog.category); // category, lowercased
-            },
-            onReadMore: function(changelog) {
-                console.log(changelog); // same changelog object as in onShowDetails callback
-            },
-            onHideWidget: function() {
-                console.log("Who turned off the light?");
-            }
-        }
-    };
-    Headway.init(config);
-    console.log("unseen entries count: " + HW_UnseenCount);
+    // var HW_UnseenCount = 0;
+    // var config = {
+    //     selector: ".badgeCont",
+    //     trigger: ".toggleWidget",
+    //     account: "JrXKbx",
+    //     translations: {
+    //         title: "New Features",
+    //         readMore: "Read more",
+    //         labels: {
+    //             "new": "Feature",
+    //             "improvement": "Improvement",
+    //             "fix": "Fixes"
+    //         },
+    //         footer: "Read more 👉"
+    //     },
+    //     callbacks: {
+    //         onWidgetReady: function(widget) {
+    //             console.log("Widget is here!");
+    //             console.log("unseen entries count: " + widget.getUnseenCount());
+    //             HW_UnseenCount = widget.getUnseenCount();
+    //         },
+    //         onShowWidget: function() {
+    //             console.log("Someone opened the widget!");
+    //         },
+    //         onShowDetails: function(changelog) {
+    //             console.log(changelog.position); // position in the widget
+    //             console.log(changelog.id); // unique id
+    //             console.log(changelog.title); // title
+    //             console.log(changelog.category); // category, lowercased
+    //         },
+    //         onReadMore: function(changelog) {
+    //             console.log(changelog); // same changelog object as in onShowDetails callback
+    //         },
+    //         onHideWidget: function() {
+    //             console.log("Who turned off the light?");
+    //         }
+    //     }
+    // };
+    // Headway.init(config);
+    // console.log("unseen entries count: " + HW_UnseenCount);
 </script>
 <link href="/assets/admin/layout/css/timeline.css" rel="stylesheet" type="text/css" />
 <?php $menu = $this->lang['title']; ?>
@@ -60,7 +70,7 @@
             <div class="page-bar">
                 <span class="page-title" style="float: left;">Dashboard</span>
                 <?php if(count($this->currency)>1){?>
-                    <div class="dropdown hidden-xs pull-right" style="margin-top:6px; margin-left:10px;">
+                    <div class="dropdown hidden-xs pull-right" style="margin-top:9px; margin-left:10px;">
                         <a href="javascript:;" class="dropdown-toggle blank white default-font" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                             <?php
                             echo $this->report_currency;
@@ -79,7 +89,7 @@
                         </ul>
                     </div>
                 <?php } ?>
-                <div class="dropdown hidden-xs pull-right" style="margin-top:6px;">
+                <div class="dropdown hidden-xs pull-right" style="margin-top:9px;">
                     <a href="javascript:;" class="dropdown-toggle blank white default-font" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <?php if ($this->report_days != 1 && $this->report_days != 'today') { ?>
                             Last <?php echo $this->report_days; ?> days
@@ -141,66 +151,22 @@
                 <?php if ($this->has_partner == 0) { ?>
                     <ul class="nav navbar-nav pull-right">
                         <li class="dropdown hidden-xs">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="" data-close-others="true" aria-expanded="false">
+                            <a href="javascript:;" class="dropdown-toggle notification-icon" data-toggle="dropdown" data-hover="" data-close-others="true" aria-expanded="false">
                                 <i class="fa fa-bell-o"></i>
-                                <span>Notification </span>
+                                <span>Notifications </span>
                             </a>
-                            <ul class="dropdown-menu" id="notification-dropdown">
-                                <!--                                <li style="border-bottom: 1px solid #eee;padding: 10px 15px">-->
-                                <!--                                    <div style="width: 300px">-->
-                                <!--                                        <p><strong>Invoice Number</strong> invoice pending for approval</p>-->
-                                <!--                                        <a href="#" style="border: 1px solid #3e4aa3;background: #fff;padding: 5px 15px;border-radius: 15px !important;font-size: 12px;">Approve</a>-->
-                                <!--                                    </div>-->
-                                <!--                                </li>-->
-                                <!--                                <li style="border-bottom: 1px solid #eee;padding: 10px 15px">-->
-                                <!--                                    <div style="width: 300px">-->
-                                <!--                                        <p><strong>Invoice Number</strong> invoice pending for approval</p>-->
-                                <!--                                        <a href="#" style="border: 1px solid #3e4aa3;background: #fff;padding: 5px 15px;border-radius: 15px !important;font-size: 12px;">Approve</a>-->
-                                <!--                                    </div>-->
-                                <!--                                </li>-->
-                                <!--                                <li style="border-bottom: 1px solid #eee;padding: 10px 15px">-->
-                                <!--                                    <div style="width: 300px">-->
-                                <!--                                        <p><strong>Invoice Number</strong> invoice pending for approval</p>-->
-                                <!--                                        <a href="#" style="border: 1px solid #3e4aa3;background: #fff;padding: 5px 15px;border-radius: 15px !important;font-size: 12px;">Approve</a>-->
-                                <!--                                    </div>-->
-                                <!--                                </li>-->
-                                <!--                                <li style="border-bottom: 1px solid #eee;padding: 10px 15px">-->
-                                <!--                                    <div style="width: 300px">-->
-                                <!--                                        <p><strong>Invoice Number</strong> invoice pending for approval</p>-->
-                                <!--                                        <a href="#" style="border: 1px solid #3e4aa3;background: #fff;padding: 5px 15px;border-radius: 15px !important;font-size: 12px;">Approve</a>-->
-                                <!--                                    </div>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                                <!--                                <li>-->
-                                <!--                                    <p>Notification three</p>-->
-                                <!--                                </li>-->
-                            </ul>
+                            <div class="dropdown-menu">
+                                <ul id="notification-dropdown">
+
+                                </ul>
+                                <div style="text-align: center;padding: 10px 0;">
+                                    <a href="/merchant/notifications/all" target="_blank">View More</a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
-                    <!--                    <a style="margin-right:23px; font-weight: 400;font-size: 14px;" href="javascript:;" class="btn btn-link btn-sm toggleWidget pull-right">-->
+                    <!--                    <a style="margin-r
+                    ight:23px; font-weight: 400;font-size: 14px;" href="javascript:;" class="btn btn-link btn-sm toggleWidget pull-right">-->
                     <!--                        <i class="fa fa-bullhorn"></i>-->
                     <!--                        New features <span class="badgeCont pull-right"></span>-->
                     <!--                    </a>-->
@@ -303,7 +269,7 @@
         </div> -->
                 <?php } ?>
                 <!--  -->
-                <div class="col col-12 col-md-4 mt-1">
+                <div class="col col-12 col-md-6 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">
@@ -357,7 +323,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col col-12 col-md-4 mt-1">
+                <div class="col col-12 col-md-6 mt-1">
                     <div class="card stats" data-exclude="xs">
                         <div class="card-block">
                             <div class="row row-sm stats-container">
@@ -409,105 +375,6 @@
                                         <div class="progress-bar" style="width: <?php echo 100 - $this->settlement_per; ?>%;"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col col-12 col-md-4 mt-1">
-                    <div class="portlet light-bordered">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="icon-share font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?php echo $menu['notification']; ?></span>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="scroller" data-always-visible="1" data-rail-visible="0">
-                                <ul class="feeds">
-                                    <li>
-                                        <div class="col1">
-                                            <div class="cont">
-                                                <div class="cont-col2">
-                                                    <div class="desc"> You have <strong>3 Invoices</strong> to Approve from Paresh
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col2">
-                                            <div class="date">
-                                                <a href="#" target="_BLANK">
-                                                            <span class="label label-sm label-warning ">Invoices
-                                                                <i class="fa fa-share"></i>
-                                                            </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="col1">
-                                            <div class="cont">
-                                                <div class="cont-col2">
-                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col2">
-                                            <div class="date">
-                                                <a href="#" target="_BLANK">
-                                                            <span class="label label-sm label-warning ">COs
-                                                                <i class="fa fa-share"></i>
-                                                            </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="col1">
-                                            <div class="cont">
-                                                <div class="cont-col2">
-                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col2">
-                                            <div class="date">
-                                                <a href="#" target="_BLANK">
-                                                            <span class="label label-sm label-warning ">COs
-                                                                <i class="fa fa-share"></i>
-                                                            </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="col1">
-                                            <div class="cont">
-                                                <div class="cont-col2">
-                                                    <div class="desc"> You have <strong>5 COs</strong> to Approve
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col2">
-                                            <div class="date">
-                                                <a href="#" target="_BLANK">
-                                                            <span class="label label-sm label-warning ">COs
-                                                                <i class="fa fa-share"></i>
-                                                            </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                </ul>
                             </div>
                         </div>
                     </div>
@@ -1420,8 +1287,8 @@ if ($this->document_upload == true) {
     messaging.onMessage(function({data:{body,title}}) {
         //alert(title);
         console.log(title, {body});
-        fetchNewNotifications();
         //if receive notification fetch from db latest notifications for login user
+        fetchNewNotifications();
 
         //new Notification(title, {body});
     });
@@ -1433,14 +1300,14 @@ if ($this->document_upload == true) {
             .then((data) => {
 
                 let notifications = data.data;
-                console.log(notifications);
+
                 let notificationDropdown = $("#notification-dropdown");
 
                 notificationDropdown.empty();
-                notifications.forEach((notification, i) =>{
+                notifications.forEach((notification, i) => {
                     let html = `<li style="border-bottom: 1px solid #eee;padding: 10px 15px">
                                     <div style="width: 300px">
-                                        <a href="" target="_blank>${notification.data.message}</a>
+                                        <a href="/merchant/invoice/viewg703/${notification.data.payment_request_id}?notification_id=${notification.id}" target="_blank" style="color: #495555;">${notification.data.invoice_number} invoice pending for approval</a>
                                     </div>
                                 </li>`;
 

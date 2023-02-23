@@ -27,7 +27,7 @@ class Model {
 
     function getpreferences($user_id = null) {
         try {
-            $sql = "SELECT send_sms,send_email FROM preferences where user_id=:user_id";
+            $sql = "SELECT send_sms,send_email,send_push FROM preferences where user_id=:user_id";
             $params = array(':user_id' => $user_id);
             $this->db->exec($sql, $params);
             $row = $this->db->single();

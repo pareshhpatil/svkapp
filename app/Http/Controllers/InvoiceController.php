@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
+use App\Model\Notification;
 use Aws\S3\S3Client;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -913,10 +914,18 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view_g703($link)
+    public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
+        if(!empty($notificationID)) {
+            /** @var Notification $Notification */
+            $Notification = Notification::findOrFail($notificationID);
+
+            $Notification->markAsRead();
+        }
+        
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
             #get default billing profile

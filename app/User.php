@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Notifications\Notification;
 
 /**
  * @property mixed $user_id
@@ -81,6 +82,17 @@ class User extends Authenticatable {
                 ->where(IColumn::USER_ID, $this->user_id)
                 ->pluck(IColumn::ROLE_ID)
                 ->first();
+    }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @return  array<string, string>|string
+     */
+    public function routeNotificationForMail(Notification $notification)
+    {
+        // Return email address only...
+        return $this->email_id;
     }
 
 }

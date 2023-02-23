@@ -514,3 +514,8 @@ Breadcrumbs::for('invoicelist', function ($trail) {
     $trail->push('Sales');
     $trail->push('Invoice / Estimate list', '/merchant/invoice/list');
 });
+
+Breadcrumbs::for('notifications', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Notifications');
+});

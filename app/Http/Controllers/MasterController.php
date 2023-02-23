@@ -417,4 +417,21 @@ class MasterController extends AppController
             'data' => $Notifications
         ]);
     }
+
+    public function getAllNotifications()
+    {
+        $authUser = auth()->user();
+
+        $title =  'Notifications';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+
+        // Get Notifications
+        $Notifications = $authUser->unreadNotifications()
+            ->limit(99)
+            ->get();
+
+        $data['notifications'] = $Notifications;
+
+        return view('app/merchant/notifications/index', $data);
+    }
 }

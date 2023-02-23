@@ -139,18 +139,26 @@ $validate=(array)$validate;
 
             <div class="view-footer-btn-rht-align">
                 @if(!empty($info['invoice_access']))
-                    @if($info['notify_patron']==1 && $info['invoice_access'] == 'all-full')
+                    @if($info['payment_request_status'] == 14 && $info['invoice_access'] == 'all-full')
+                        <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
+                    @elseif($info['notify_patron']==1 && $info['invoice_access'] == 'all-full')
                         <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-{{--                        <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                    @else
+                        {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+                    @elseif($info['payment_request_status'] != 14)
                         <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                        
                     @endif
+
+{{--                    @if($info['notify_patron']==1 && $info['invoice_access'] == 'all-full')--}}
+{{--                        <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+{{--                        <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+{{--                    @else--}}
+{{--                        <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+{{--                    @endif--}}
                 @endif
             </div>
         </form>
         @endif
-        @if($info['payment_request_status']!=11)
+        @if($info['payment_request_status']!=11 && $info['payment_request_status']!=14)
         @if($info['grand_total']>1)
         @if($info['invoice_type']==2)
         @if($info['payment_request_status']!=6)
@@ -985,6 +993,12 @@ $(function(){
         // let notifyPatronStatus = invoicePreviewForm.find('input[name=notify_patron]');
         paymentRequestStatus.val(0);
         // notifyPatronStatus.val(1);
+        invoicePreviewForm.submit();
+    })
+
+    $("#approvebtn").on("click", function () {
+        let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
+        paymentRequestStatus.val(0);
         invoicePreviewForm.submit();
     })
 })

@@ -1,5 +1,8 @@
 <?php
 
+use App\Notifications\InvoiceApprovalNotification;
+use App\User;
+
 header('Cache-Control: max-age=604800');
 
 /*
@@ -475,6 +478,20 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //Notifications Route
   Route::get('user/notifications', 'MasterController@getNotifications');
+  Route::get('notifications/all', 'MasterController@getAllNotifications')->name('notifications');
+
+    Route::get('/email-notification', function () {
+        $testUser = User::query()
+            ->where('email_id', 'nitish.harchand@briq.com')
+            ->first();
+
+        //new InvoiceApprovalNotification('edit_check273', 'R000030204', $testUser);
+
+        return (new InvoiceApprovalNotification('edit_check273', 'R000030204', $testUser))
+            ->toMail($testUser);
+    });
+
+
 });
 
 Route::group(['prefix' => 'patron'], function () {
