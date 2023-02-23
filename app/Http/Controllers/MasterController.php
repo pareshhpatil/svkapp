@@ -187,6 +187,10 @@ class MasterController extends AppController
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
         $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+        $model = new InvoiceFormat();
+        $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
+        $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
+        $data['invoiceSeq'] = $invoiceSeq;
         return view('app/merchant/project/create', $data);
     }
 
@@ -195,9 +199,7 @@ class MasterController extends AppController
         $validator = Validator::make($request->all(), [
             'project_name' => 'required|max:100',
             'start_date' => 'required',
-            'end_date' => 'required',
-            'sequence_number' => 'required',
-            'seprator' => 'max:5'
+            'end_date' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -216,24 +218,7 @@ class MasterController extends AppController
                 'project_id' => 'Project ID already exists'
             ]);
         }
-        if($request->seprator!='' && $request->prefix=='') {
-            return redirect()->back()->withInput()->withErrors('You can not add separator without prefix.');
-        }
-        
-        $model = new InvoiceFormat();
-        //check invoice sequnce number is already exist or not in payment request for that merchant & customer 
-        $invoice_sequence_prefix = $request->prefix.$request->seprator.$request->sequence_number;
-        
-        $invoiceModel = new Invoice();
-        $existInvoiceNo = $invoiceModel->findInvoiceNumberExist($this->merchant_id,$invoice_sequence_prefix);
-        
-        if ($existInvoiceNo) {
-            return redirect()->back()->withInput()->withErrors('Sequence number already exist');
-        }
-        if ($request->sequence_number == '') {
-            $request->sequence_number = 0;
-        }
-        $request->sequence_number = $model->saveSequence($this->merchant_id, $request->prefix, ($request->sequence_number - 1), $this->user_id,$request->seprator);
+    
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
         $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
@@ -250,10 +235,13 @@ class MasterController extends AppController
             $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $id);
             $data['project_data']->encrypted_id = Encrypt::encode($data['project_data']->id);
             $data['sequence_data'] = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $data['project_data']->sequence_number);
-            $data['sequence_data']->val = $data['sequence_data']->val + 1;
+            //$data['sequence_data']->val = $data['sequence_data']->val + 1;
             $data['project_data']->project_prefix = $data['sequence_data']->prefix;   //$data['project_data']->project_id;
             $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
-
+            $model = new InvoiceFormat();
+            $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
+            $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
+            $data['invoiceSeq'] = $invoiceSeq;
             return view('app/merchant/project/update', $data);
         } else {
             return redirect('/404');
@@ -265,34 +253,13 @@ class MasterController extends AppController
         $validator = Validator::make($request->all(), [
             'project_name' => 'required|max:100',
             'start_date' => 'required',
-            'end_date' => 'required',
-            'seprator' => 'max:5'
+            'end_date' => 'required'
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
         } else {
-            $model = new InvoiceFormat();
-
-            if($request->seprator!='' && $request->prefix=='') {
-                return redirect()->back()->withInput()->withErrors('You can not add separator without prefix.');
-            }
-
-            //check invoice sequnce number is already exist or not in payment request for that merchant & customer 
-            //$lastSequenceData = $this->masterModel->getTableRow('merchant_auto_invoice_number', 'auto_invoice_id', $request->sequence_id);
-            $invoice_sequence_prefix = $request->prefix.$request->seprator.$request->sequence_number;
-            
-            $invoiceModel = new Invoice();
-            $existInvoiceNo = $invoiceModel->findInvoiceNumberExist($this->merchant_id,$invoice_sequence_prefix);
-            
-            if ($existInvoiceNo) {
-                return redirect()->back()->withInput()->withErrors('Sequence number already exist');
-            }
-            if ($request->sequence_number == '') {
-                $request->sequence_number = 0;
-            }
-
-            $this->masterModel->updateProjectSequence($this->merchant_id, $request->sequence_id, ($request->sequence_number - 1), $request->seprator, $request->prefix);
+            //$this->masterModel->updateProjectSequence($this->merchant_id, $request->sequence_id, ($request->sequence_number - 1), $request->seprator, $request->prefix);
             $request->start_date = Helpers::sqlDate($request->start_date);
             $request->end_date = Helpers::sqlDate($request->end_date);
             $this->masterModel->updateProject($request, $this->merchant_id, $this->user_id);

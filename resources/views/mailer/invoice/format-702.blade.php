@@ -61,18 +61,27 @@ body{
   <div role="article" aria-roledescription="email" aria-label="" lang="en" > 
     <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 0px">
                 
-      <div style="display: flex; align-items: center; justify-content: center; background-color: #f3f4f6; padding: px">
+      <div style="display: flex; align-items: center; justify-content: center; background-color: #f3f4f6; padding: 0">
         <div id="tab" style="width: 100%; background-color: #fff; padding: @if($viewtype=='print')20px @else 10px        
         @endif;">
             <table >
-                <tr>
-                <td>
-                    <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
-                </td>
-                <td>
-                    <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;font-size:24px;">Document G702® – 1992</div>
-                </td> 
-                </tr>
+                @if($has_aia_license)
+                    <tr>
+                        <td>
+                            <img style="height: 40px" src="data:image/png;base64, {{$info['logo']}}" alt="">
+                        </td>
+                        <td>
+                            <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;font-size:24px;">Document G702® – 1992</div>
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>
+                            <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;font-size:24px;">Document G702 – 1992</div>
+                        </td>
+                    </tr>
+                @endif
+
             </table>
             <div style="font-size:20px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Application and Certificate for Payment </div>
             <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827"></div>     
@@ -101,7 +110,7 @@ body{
                             {{$info['project_details']->project_address}}
                         </td>
                         <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
-                         PERIOD TO: <x-localize :date="$info['bill_date']" type="date" />
+                         PERIOD TO: {{ $info['cycle_name'] }}
                         </td>
                         <td width="25%" style="text-align: right;">
                            
@@ -178,8 +187,14 @@ body{
                <tr>
                         <td style="width:50%; padding-right: 10px;">
                     <div style="font-size: 16px;font-weight: 600;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</div>
-                    <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
-                        AIA Document G703®, Continuation Sheet, is attached.</div>
+                            @if($has_aia_license)
+                                <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
+                                    AIA Document G703®, Continuation Sheet, is attached.</div>
+                            @else
+                                <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
+                                    Document G703, Continuation Sheet, is attached.</div>
+                            @endif
+
                         @php $contract_sum_to_date = $info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] @endphp
                         <table style="width:100%">
                             <tr>
@@ -379,8 +394,15 @@ that current payment shown herein is now due.</div>
     </table>    
             
             <div style="margin-top: 0px; height: 2px; width: 100%; background-color: #111827"></div>
-            <div style="margin-top: 4px">                <div style="line-height: 12px"><span style="font-size: 12px"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
-                    “AIA Contract Documents” are registered trademarks and may not be used without permission.</span><span style="font-size: 12px"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span></div>            </div>        </div>
+            <div style="margin-top: 4px">
+                @if($has_aia_license)
+                <div style="line-height: 12px">
+                    <span style="font-size: 12px"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span style="font-size: 12px; color: #ef4444"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
+                    “AIA Contract Documents” are registered trademarks and may not be used without permission.</span><span style="font-size: 12px"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span>
+                </div>
+                @endif
+            </div>
+        </div>
     </div>  </div></div>
 </body>
 @if ($viewtype=='print')

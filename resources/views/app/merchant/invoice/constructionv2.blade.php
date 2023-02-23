@@ -7,13 +7,10 @@
         font-size: 15px !important;
         font-weight: 400 !important;
     }
-
     .uppy-Dashboard-inner {
-
         border: 0px solid #eaeaea !important;
         border-radius: 5px !important;
     }
-
     [data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
         margin: 0px !important;
         padding-bottom: 9px;
@@ -21,7 +18,6 @@
         border-radius: 3px;
         border: 1px dashed #dfdfdf;
     }
-
     .steps {
         background-color: transparent !important;
         border: 2px #18AEBF solid !important;
@@ -389,7 +385,6 @@
                                                 <a href="#delete_doc" onclick="setdata('{{substr(substr(substr(basename($item), 0, strrpos(basename($item), '.')),0,-4),0,10)}}','{{$item}}');" data-toggle="modal"> <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover" data-content="Remove doc"></i> </a>
                                             </span>
                                             @php
-
                                             @endphp
                                             @endforeach
                                         </div>
@@ -424,20 +419,13 @@
         <div class="portlet-body form">
             <h3 class="form-section">Required documents</h3>
                 @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
-                @php
-                $required = 0;
-                if($mandatory_data['required'] == 'Mandatory on creation'){
-                    $required = 1;
-                }
-                if($mandatory_data['required'] == 'Mandatory on submission' && $invoice_access !=''){
-                    $required = 1;
-                }
-                @endphp
                 <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2">{{$mandatory_data['name']}}
-                            @if($required)<span class="required">*</span> @endif
-                            <div class="text-danger" id="required_error{{$key}}"></div>
+                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="{{$mandatory_data['description']}}" type="button">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+
                         </label>
                         <div class="col-md-10">
                         @if(isset($mandatory_files) && !empty($mandatory_files[0]))
@@ -465,9 +453,6 @@
                         @else
                             <div class="input-icon">
                                 <input type="hidden" name="file_upload_mandatory{{$key}}" id="file_upload_mandatory{{$key}}" value="">
-                                <input type="hidden" name="file_upload_required{{$key}}" id="file_upload_required{{$key}}" 
-                                    value="{{$required}}">
-                                
                                 <a class="UppyModalOpenerBtn{{$key}} btn default">Add attachments</a>
                                 <div id="docviewbox{{$key}}" class="mt-1">
                                 </div>
@@ -588,7 +573,6 @@
     @endif
     <script>
         $('#billing_profile_id').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('profilelist' + pind)) {} else {
@@ -596,16 +580,13 @@
             }
         });
         $('#currency').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('currencylist' + pind)) {} else {
                 $('.select2-results').append('<div class="wrapper" > <a href="/merchant/profile/currency" id="currencylist' + pind + '"  target="_BLANK" class="clicker" >Add new currency</a> </div>');
             }
         });
-
         $('#template_id').select2({
-
         }).on('select2:open', function(e) {
             pind = $(this).index();
             if (document.getElementById('templatelists' + pind)) {} else {
@@ -613,8 +594,6 @@
             }
         });
         invoice_construction = true;
-
-
         $('.productselect').select2({
             tags: true,
             insertTag: function(data, tag) {
@@ -634,36 +613,13 @@
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + index + ',' + index + ',0);">Addf new bill code</a> </div>');
             }
         });
-
-
         function validateDates(){
-            if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
-                $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
-                return false
-            }else {
-                is_error= false
-                var file_upload_mandatory = document.querySelectorAll('[id^=file_upload_mandatory]');
-                var file_upload_mandatory_required = document.querySelectorAll('[id^=file_upload_required]');
-                for(var i in file_upload_mandatory){
-                    var file_upload_mandatory_value = file_upload_mandatory[i].value; // links commas seperated
-                    var file_upload_mandatory_required_value = file_upload_mandatory_required[i].value; // 1 or 0 
-                        if(file_upload_mandatory_required_value == '1'){
-                            if(file_upload_mandatory_value ==''){
-                                $('#required_error'+i).html('Please upload the mandatory file')
-                                is_error = true
-                            }else{
-                                $('#required_error'+i).html('');   
-                            }
-                        }
-                }    
-                $('#billing_date_error').html(''); 
-                if(is_error){
-                    return false
-                }else{
-                    return true;
-                }
-            }
-        }
+        if(Date.parse($('#bill_date').val()) > Date.parse($('#due_date').val())) {
+            $('#billing_date_error').html('Due date should be greater than or equal to Bill date')
+            return false
+        }else $('#billing_date_error').html('');
+        return true;
+    }
     </script>
 
 
@@ -707,12 +663,10 @@
             }
         }
     });
-
     uppy.use( Compressor, {
         quality: 0.6,
         limit: envlimit,
     });
-
     uppy.use(Uppy.Dashboard, {
         target: 'body',
         trigger: '.UppyModalOpenerBtn',
@@ -738,12 +692,10 @@
         formData: true,
         fieldName: 'image'
     });
-
     uppy.on('file-added', (file) => {
         document.getElementById("error").innerHTML = '';
         console.log('file-added');
     });
-
     uppy.on('upload', (data) => {
         console.log('Starting upload');
     });
@@ -798,6 +750,7 @@ $array_name = 'newdocfileslist'.$key;
         @endif
         @endforeach
     @endif
+    console.log({{$array_name}})
     //uppy file upload code
     var {{$keyname}} = new Uppy.Uppy({
         id : arrayKey,
@@ -812,7 +765,6 @@ $array_name = 'newdocfileslist'.$key;
             var remainleng = 0;
             if (document.getElementById("file_upload_mandatory"+arrayKey).value != '')
                 remainleng = document.getElementById("file_upload_mandatory"+arrayKey).value.split(",").length;
-
             var counts = envlimit - remainleng;
             if (remainleng == envlimit) {
                 return Promise.reject('too few files')
@@ -840,7 +792,6 @@ $array_name = 'newdocfileslist'.$key;
     });
     window.{{$keyname}}.getPlugin('Dashboard').setOptions({
         note: 'Max upload limit ' + envlimit + ' files  only',
-
     });
     {{$keyname}}.use(Uppy.XHRUpload, {
         headers: {
@@ -855,7 +806,6 @@ $array_name = 'newdocfileslist'.$key;
         document.getElementById("error").innerHTML = '';
         console.log('file-added');
     });
-
     {{$keyname}}.on('upload', (data) => {
         console.log('Starting upload');
     });
@@ -883,8 +833,7 @@ $array_name = 'newdocfileslist'.$key;
         }
     });
     {{$keyname}}.on('complete', (result) => {
-        $('#required_error'+{{$key}}).html('');   
-        console.log('successful files:', result.successful)
+        //console.log('successful files:', result.successful)
         //console.log('failed files:', result.failed)
     });
     {{$keyname}}.on('error', (error) => {
@@ -940,18 +889,15 @@ $array_name = 'newdocfileslist'.$key;
 
     <script>
         function setdata(name, fullurl) {
-
             document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
             document.getElementById('docfullurl').value = fullurl;
         }
-
         function setdataMandatory(name, fullurl, array_name, ArrayKey) {
             document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
             document.getElementById('file_url').value = fullurl;
             document.getElementById('array_name').value = array_name;
             document.getElementById('array_key').value = ArrayKey;
         }
-
         function deletedocfile(x) {
             var html = '';
             if (x == 'delete') {
@@ -961,7 +907,6 @@ $array_name = 'newdocfileslist'.$key;
                     newdocfileslist.splice(index, 1);
                 }
             }
-
             for (var i = 0; i < newdocfileslist.length; i++) {
                 var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
                 filenm = filenm.split('.').slice(0, -1).join('.')
@@ -975,7 +920,6 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox').innerHTML = html;
             document.getElementById('closeconformdoc').click();
         }
-
         function deletedocfileMandatory(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
@@ -991,7 +935,6 @@ $array_name = 'newdocfileslist'.$key;
                 if (index !== -1) {
                     delete arrayName[index];
                 }
-
                 document.getElementById('file_upload_mandatory'+array_key).value = arrayName.join(',');
                // const element = document.getElementById("docviewbox"+array_key);
                 //element.remove();
@@ -1011,7 +954,6 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
             document.getElementById('closeconformdoc2').click();
         }
-
         function deletedocfileMandatoryold(x, ArrayKey, arrayName) {
             var html = '';
             if (x == 'delete') {
@@ -1030,12 +972,9 @@ $array_name = 'newdocfileslist'.$key;
             document.getElementById('docviewbox'+ArrayKey).innerHTML = html;
             document.getElementById('closeconformdoc').click();
         }
-
         function clearnewuploads(x) {
             document.getElementById("file_upload").value = '';
-
             var filesnm = '';
-
             for (var i = 0; i < newdocfileslist.length; i++) {
                 if (filesnm != '')
                     filesnm = filesnm + ',' + newdocfileslist[i];
@@ -1044,12 +983,9 @@ $array_name = 'newdocfileslist'.$key;
             }
             document.getElementById("file_upload").value = filesnm;
         }
-
         function clearnewuploads_mandatory(x,ArrayKey,  arrayName) {
             document.getElementById("file_upload_mandatory"+ArrayKey).value = '';
-
             var filesnm = '';
-
             for (var i = 0; i < arrayName.length; i++) {
                 if (filesnm != '')
                     filesnm = filesnm + ',' + arrayName[i];
@@ -1058,7 +994,6 @@ $array_name = 'newdocfileslist'.$key;
             }
             document.getElementById("file_upload_mandatory"+ArrayKey).value = filesnm;
         }
-
     </script>
     @endsection
 

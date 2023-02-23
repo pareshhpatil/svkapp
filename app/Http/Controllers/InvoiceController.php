@@ -931,6 +931,7 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
             $info = (array)$info;
             $info['gtype'] = '703';
 
@@ -975,6 +976,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
+
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
             $invoiceAccess = '';
 
@@ -2143,10 +2145,9 @@ class InvoiceController extends AppController
 
 
             $mandatoryDocumentAttachments = [];
-
+            $pdf_link_array = [];
             if (isset($pluginValue->has_mandatory_upload)) {
                 $oMerger = PDFMerger::init();
-                $pdf_link_array = [];
                 if ($pluginValue->has_mandatory_upload == 1) {
                     foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
 
@@ -2976,8 +2977,16 @@ class InvoiceController extends AppController
         $data['metadata']['customer'] = $customer_breckup;
         $data['metadata']['invoice'] = $header;
 
+        $plugins = json_decode($info['plugin_value'], 1);
+        $hasAIALicense = false;
+        if(isset($plugins['invoice_output'])) {
+            if(isset($plugins['has_aia_license'])) {
+                $hasAIALicense = true;
+            }
+        }
 
-
+        $data['has_aia_license'] = $hasAIALicense;
+            
         return $data;
     }
 
@@ -3685,8 +3694,22 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-            $previousInvoiceIDs = $this->invoiceModel->getPreviousInvoiceIDs($this->merchant_id, $invoice->contract_id, $request_id);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
+            if ($pre_req_id != false) {
+                $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
+                //  dd($particulars);
+                foreach ($particulars as $key => $row) {
+                    $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                    $particulars[$key]->current_billed_amount = '';
+                    $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
+                    $particulars[$key]->current_billed_percent = '';
+                    $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
+                    $particulars[$key]->retainage_amount_for_this_draw = '';
+                    $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
+                    $particulars[$key]->retainage_amount_stored_materials = '';
+                    $particulars[$key]->current_stored_materials = '';
+                }
+            }
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -3711,7 +3734,13 @@ class InvoiceController extends AppController
                     if ($kdata["bill_code"] == $key) {
                         $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
-                        $co_particulars[] = array('bill_code' => $key, 'change_order_amount' => array_sum($value), 'description' =>  $kdata["description"], 'cost_type' =>  $kdata["cost_type"]);
+                        $co_particulars[] = array(
+                            'bill_code' => $key, 
+                            'change_order_amount' => array_sum($value), 
+                            'description' =>  $kdata["description"], 
+                            'retainage_percent' =>  $kdata["retainage_percent"], 
+                            'cost_type' =>  $kdata["cost_type"]
+                        );
                     }
                 }
             }
@@ -3725,44 +3754,7 @@ class InvoiceController extends AppController
 
                 foreach ($particulars as $k => $v) {
                     if (isset($cp[$v->bill_code])) {
-                        //                        $particulars[$k]->previously_billed_percent = $cp[$v->bill_code]->current_billed_percent;
-                        //                        $particulars[$k]->previously_billed_amount = $cp[$v->bill_code]->current_billed_amount;
-                        //                        $particulars[$k]->retainage_amount_previously_withheld = $cp[$v->bill_code]->retainage_amount_for_this_draw;
                         $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
-                    }
-                }
-
-
-                if (!empty($previousInvoiceIDs)) {
-                    $previousBilledSumArray = [];
-                    foreach ($previousInvoiceIDs as $previousInvoiceID) {
-                        $contractParticulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $previousInvoiceID);
-                        foreach ($contractParticulars as $row) {
-                            $previousBilledSumArray[$row->bill_code]['previousBilledAmount'][] = $row->current_billed_amount;
-                            $previousBilledSumArray[$row->bill_code]['previousBilledPercent'][] = $row->current_billed_percent;
-                            $previousBilledSumArray[$row->bill_code]['previousRetainageWithHeld'][] = $row->retainage_amount_for_this_draw;
-                            $previousBilledSumArray[$row->bill_code]['retainageAmountPreviouslyStoredMaterials'][] = $row->retainage_amount_stored_materials;
-
-                            $previousBilledSumArray[$row->bill_code]['retainageReleaseAmount'][] = $row->retainage_release_amount;
-                            $previousBilledSumArray[$row->bill_code]['retainageStoredMaterialsReleaseAmount'][] = $row->retainage_stored_materials_release_amount;
-                        }
-                    }
-
-                    foreach ($particulars as $k => $v) {
-                        if (isset($cp[$v->bill_code])) {
-                            $previousBilledAmount = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledAmount']);
-                            $previousBilledPercent = array_sum($previousBilledSumArray[$v->bill_code]['previousBilledPercent']);
-                            $previousRetainageWithHeld = array_sum($previousBilledSumArray[$v->bill_code]['previousRetainageWithHeld']);
-                            $retainageAmountPreviouslyStoredMaterials = array_sum($previousBilledSumArray[$v->bill_code]['retainageAmountPreviouslyStoredMaterials']);
-
-                            $retainageReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageReleaseAmount']);
-                            $retainageStoredMaterialsReleaseAmount = array_sum($previousBilledSumArray[$v->bill_code]['retainageStoredMaterialsReleaseAmount']);
-
-                            $particulars[$k]->previously_billed_amount = number_format($previousBilledAmount, 2);
-                            $particulars[$k]->previously_billed_percent = number_format($previousBilledPercent, 2);
-                            $particulars[$k]->retainage_amount_previously_withheld = number_format($previousRetainageWithHeld -  $retainageReleaseAmount, 2);
-                            $particulars[$k]->retainage_amount_previously_stored_materials = number_format($retainageAmountPreviouslyStoredMaterials - $retainageStoredMaterialsReleaseAmount, 2);
-                        }
                     }
                 }
             }
@@ -3780,11 +3772,11 @@ class InvoiceController extends AppController
                 foreach ($co_particulars as $k => $v) {
                     if (isset($cop[$v["bill_code"]])) {
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         if (!empty($cp[$v["bill_code"]])) {
                             if (isset($cp[$v["bill_code"]])) {
-
                                 $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
                                 $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
                                 $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
@@ -3797,6 +3789,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
                         $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
+                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }
@@ -3920,11 +3913,10 @@ class InvoiceController extends AppController
         $data['notify_patron'] = 1;
         $data['payment_request_id'] = $request_id;
 
-
-
         $data["particular_column"] = json_decode($template->particular_column, 1);
         return view('app/merchant/invoice/invoice-preview', $data);
     }
+
 
     private function checkHasEditAccess($user_id) {
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $user_id), true);
@@ -4006,6 +3998,46 @@ class InvoiceController extends AppController
         }
     }
 
+    public function saveProjectInvoiceSequence()
+    {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='' ? $_POST['last_no']: 0);
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+       
+        $formatModel = new InvoiceFormat();
+        if($prefix=='' && $separator!='') {
+            $response['error'] = 'You can not add separator without prefix';
+            $response['status'] = 0;
+        } else if ($number=='') {
+            $response['error'] = 'Sequence number is required.';
+            $response['status'] = 0;
+        } else {
+           
+            $res = $formatModel->existInvoicePrefix($this->merchant_id, $prefix, $separator);
+            
+            if ($res == FALSE) {
+                $seq_number= $number-1;
+                $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+                $response['name'] = $prefix .$separator. $number;
+                $response['id'] = $id;
+                $response['prefix'] = $prefix;
+                $response['number'] = $number;
+                $response['seprator'] = $separator;
+                $response['merchant_id'] = $this->merchant_id;
+                $response['status'] = 1;
+            } else {
+                if($prefix=='' && $separator=='') {
+                    $response['status'] = 2;
+                } else {
+                    $response['error'] = 'Invoice prefix alredy exist';
+                    $response['status'] = 0;
+                }
+            }
+        }
+        echo json_encode($response);
+    }
+
     function saveExistingSequence() {
         $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
         $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
@@ -4022,5 +4054,21 @@ class InvoiceController extends AppController
         } else {
             $response['status'] = 0;
         }
+
+        echo json_encode($response);
+    }
+
+    function createNewSequence() {
+        $prefix = ($_POST['prefix']!='') ? $_POST['prefix'] : '';
+        $number = ($_POST['last_no']!='') ? $_POST['last_no']: 0;
+        $prefix = str_replace('~', '/', $prefix);
+        $separator = isset($_POST['seprator']) ? $_POST['seprator'] : '';
+        $formatModel = new InvoiceFormat();
+        $seq_number= $number-1;
+        $id = $formatModel->saveSequence($this->merchant_id, $prefix, $seq_number,$this->user_id,$separator);
+        $response['name'] = $prefix .$separator. $number;
+        $response['id'] = $id;
+        $response['status'] = 1;
+        echo json_encode($response);
     }
 }

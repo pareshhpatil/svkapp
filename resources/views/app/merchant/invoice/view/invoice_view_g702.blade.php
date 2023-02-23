@@ -100,13 +100,20 @@ $header='app.patron.invoice.invoice-master';}
     </div>
     <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10"
        style="max-width: 1400px;">
+
             <div class="flex flex-row  gap-4">
-                <div>
-                    <img src="{{ asset('images/logo-703.PNG') }}" />
-                </div>
-                <div>
-                    <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G702® – 1992</h1>
-                </div>
+                @if($has_aia_license)
+                    <div>
+                        <img src="{{ asset('images/logo-703.PNG') }}" />
+                    </div>
+                    <div>
+                        <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G702® – 1992</h1>
+                    </div>
+                @else
+                    <div>
+                        <h1 class="text-3xl text-left font-bold  text-black">Document G702 – 1992</h1>
+                    </div>
+                @endif
 
             </div>
             <h1 class="text-2xl text-left mt-4  font-bold  text-black">Application and Certificate for Payment </h1>
@@ -138,7 +145,7 @@ $header='app.patron.invoice.invoice-master';}
                         </td>
                       
                         <td width="25%" class="text-left">
-                            <p class="text-xs font-bold">PERIOD TO: <x-localize :date="$info['bill_date']" type="date" /></p>
+                            <p class="text-xs font-bold">PERIOD TO: {{ $info['cycle_name'] }}</p>
                         </td>
                         <td width="25%" class="text-right">
                         <label class="text-xs mr-2 mt-1">OWNER</label> <input class=""   type="checkbox" value="" id="flexCheckDefault3">
@@ -202,9 +209,15 @@ $header='app.patron.invoice.invoice-master';}
 
             <div class="grid grid-cols-2 gap-2 mt-1">
                 <div>
-                    <h4 class="font-bold">CONTRACTOR’S APPLICATION FOR PAYMENT</h4> 
-                    <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
-                        AIA Document G703®, Continuation Sheet, is attached.</p>
+                    <h4 class="font-bold">CONTRACTOR’S APPLICATION FOR PAYMENT</h4>
+                    @if($has_aia_license)
+                        <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
+                            AIA Document G703®, Continuation Sheet, is attached.</p>
+                    @else
+                        <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
+                            Document G703, Continuation Sheet, is attached.</p>
+                    @endif
+
                         <div class="grid grid-cols-3 gap-2 mt-1">
                             <div class="col-span-2">
                         <p class="font-bold text-xs mt-1">1. ORIGINAL CONTRACT SUM  </p>
@@ -422,9 +435,10 @@ that current payment shown herein is now due.</p>
 
             <div class="w-full h-0.5 bg-gray-900 mt-2 "></div>
             <div class="mt-2">
-
-                <p class="leading-3"><span class="text-xs"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
+                @if($has_aia_license)
+                    <p class="leading-3"><span class="text-xs"><b>AIA Document G702® – 1992. Copyright</b> © 1953, 1963, 1965, 1971, 1978, 1983 and 1992 by The American Institute of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American Institute of Architects,” “AIA,” the AIA Logo, “G702,” and
                     “AIA Contract Documents” are registered trademarks and may not be used without permission.</span><span class="text-xs"> To report copyright violations of AIA Contract Documents, e-mail copyright@aia.org.</span></p>
+                @endif
                        
 
 
