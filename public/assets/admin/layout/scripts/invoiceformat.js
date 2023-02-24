@@ -178,7 +178,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
     var produ_text = '<td class="col-id-no" scope="row">' +
         '<select style="width:100%;" required id="cost_type' + numrow + '" ' +
         'name="' + type + 'cost_type[]" data-cy="particular_product' + numrow + '" ' +
-        'data-placeholder="Type or Select" class="form-control input-sm productselect2" >';
+        'data-placeholder="Type or Select" class="form-control input-sm productselect2" ><option selected value="">Type or Select</option>';
     if (cost_type_list != null) {
         $.each(cost_type_list, function (value, arr) {
             var selected = '';
@@ -194,7 +194,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
             }
         });
     }
-    if (exist == 0) {
+    if (exist == 0 && defaultval != '') {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
     produ_text = produ_text + '</select></td>';
@@ -497,7 +497,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
                 row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
             }
             else if (index == 'unit' || index == 'rate' || index == 'retainage_percent') {
-                row = row + '<td><input id="'+ index + numrow + '" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
+                row = row + '<td><input id="' + index + numrow + '" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
             }
             else if (index == 'change_order_amount') {
                 row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
@@ -526,7 +526,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
 
     removePreviousRowAddButton(numrow);
 
-    setAdvanceDropdownOrder(numrow);
+    setAdvanceDropdownOrder2(numrow);
 }
 
 function removePreviousRowAddButton(numrow) {
@@ -622,8 +622,8 @@ function showupdatebillcode(ind, project_id, code, desc) {
 
 function showupdatebillcodeattachment(pos) {
 
-    attach_pos=pos;
-    billcode=document.getElementById("bill_code"+attach_pos).value;
+    attach_pos = pos;
+    billcode = document.getElementById("bill_code" + attach_pos).value;
     document.getElementById("up-error").innerHTML = "";
     attach_pos = pos;
     billcode = document.getElementById("bill_code" + attach_pos).value;
@@ -731,33 +731,30 @@ function closeSidePanelcalc() {
     clearCalcTable();
     return false;
 }
-function addbillcode(){
+function addbillcode() {
 
     var comefrom = document.getElementById("comefrom").value;
     var pid = document.getElementById("project_id").value;
     var data = $("#billcodeform").serialize();
-  try{
-        if(jQuery('input[name="bill_code"]').val()=='')
-        {
-            document.getElementById("bill_code_error").innerHTML="*Bill code required";
-            
-          return false;
-        }else if(jQuery('input[name="bill_description"]').val()=='')
-        {
-            document.getElementById("bill_code_error").innerHTML="*Bill description required";
+    try {
+        if (jQuery('input[name="bill_code"]').val() == '') {
+            document.getElementById("bill_code_error").innerHTML = "*Bill code required";
+
             return false;
-        }else
-        {
-            document.getElementById("bill_code_error").innerHTML="";
+        } else if (jQuery('input[name="bill_description"]').val() == '') {
+            document.getElementById("bill_code_error").innerHTML = "*Bill description required";
+            return false;
+        } else {
+            document.getElementById("bill_code_error").innerHTML = "";
         }
-  }catch(o){}
+    } catch (o) { }
     var actionUrl = '/merchant/billcode/create';
     $.ajax({
         type: "POST",
         url: actionUrl,
         data: data,
         success: function (data) {
-           
+
 
             try {
                 if (document.getElementsByClassName('dataTables_empty')) {
@@ -819,46 +816,43 @@ function addbillcode(){
 function updatebillcode() {
 
     var pid = document.getElementById("project_id").value;
-   var bill_code= document.querySelector('#bill_code').value;
-   var cost_type= document.querySelector('#cost_type').value;
-   if(bill_code!='' && cost_type!='')
-   {
-   
-    $("#billcodeform").submit(function (e) {
-        e.preventDefault();
-        var form = $(this);
-        var actionUrl = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: actionUrl,
-            data: form.serialize(),
-            success: function (data) {
-                alert(data);
+    var bill_code = document.querySelector('#bill_code').value;
+    var cost_type = document.querySelector('#cost_type').value;
+    if (bill_code != '' && cost_type != '') {
 
-                if (data[2] > 0) {
+        $("#billcodeform").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function (data) {
+                    alert(data);
 
+                    if (data[2] > 0) {
+
+                    }
+                    closeSideUpdatePanelBillCode()
                 }
-                closeSideUpdatePanelBillCode()
-            }
-        });
+            });
 
-    });
-}else{
-    if(bill_code=='')
-   {
-    $('#cost_code_error').html('Please select cost code');
-   }else{
-    $('#cost_code_error').html('');
-   }
-   if(cost_type=='')
-   {
-    $('#cost_type_error').html('Please select cost type');
-   }
-   else{
-        $('#cost_type_error').html('');
-   }
-   return false;
-}
+        });
+    } else {
+        if (bill_code == '') {
+            $('#cost_code_error').html('Please select cost code');
+        } else {
+            $('#cost_code_error').html('');
+        }
+        if (cost_type == '') {
+            $('#cost_type_error').html('Please select cost type');
+        }
+        else {
+            $('#cost_type_error').html('');
+        }
+        return false;
+    }
 }
 
 
@@ -1404,7 +1398,7 @@ function calculatedRowSummary() {
                     netamount = netamount + getamt(_('net_billed_amount' + rv).value);
                 } catch (o) {
 
-                   calculated_row = _('calculated_row' + int).value;
+                    calculated_row = _('calculated_row' + int).value;
                     _('calculated_row' + int).value = calculated_row.replace(',"' + rv + '"', '');
                     calculated_row = _('calculated_row' + int).value;
                     _('calculated_row' + int).value = calculated_row.replace('"' + rv + '"', '');
@@ -1531,7 +1525,7 @@ function calculateRetainageV2() {
     document.getElementById('contract_amount').value = updateTextView1(total);
 }
 
-function calculateChangeOrder(type=null) {
+function calculateChangeOrder(type = null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
@@ -1565,7 +1559,7 @@ function calculateChangeOrder(type=null) {
     }
     document.getElementById('total_change_order_amount').value = updateTextView1(total);
 
-    if(type == 'approved'){
+    if (type == 'approved') {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
             document.getElementById('change_order_amount' + int).value = formatDisplayNegativeNumber(document.getElementById('change_order_amount' + int).value)
@@ -1574,8 +1568,8 @@ function calculateChangeOrder(type=null) {
             document.getElementById('rate' + int).value = formatDisplayNegativeNumber(document.getElementById('rate' + int).value)
 
         });
-        
-        document.getElementById('total_change_order_amount').value =  formatDisplayNegativeNumber(document.getElementById('total_change_order_amount').value);
+
+        document.getElementById('total_change_order_amount').value = formatDisplayNegativeNumber(document.getElementById('total_change_order_amount').value);
 
         document.getElementById('particulartotal1').value = formatDisplayNegativeNumber(document.getElementById('particulartotal1').value)
         document.getElementById('original_contract_amount_total').innerHTML = formatDisplayNegativeNumber(document.getElementById('original_contract_amount_total').value)
@@ -1584,11 +1578,11 @@ function calculateChangeOrder(type=null) {
     }
 }
 
-function formatDisplayNegativeNumber(val){
-    val  = getamt(val)
-    if(val < 0){
+function formatDisplayNegativeNumber(val) {
+    val = getamt(val)
+    if (val < 0) {
         newVal = "(" + val.toString().replace("-", "") + ")";
-    }else{
+    } else {
         newVal = val
     }
 
@@ -2662,6 +2656,47 @@ function setAdvanceDropdownOrder(numrow) {
     }
 }
 
+function setAdvanceDropdownOrder2(numrow) {
+    try {
+        $('#bill_code' + numrow).select2({
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
+            }
+        }).on('select2:open', function (e) {
+            pind = $(this).index();
+            if (document.getElementById('prolist' + pind)) {
+            } else {
+                $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',' + project_id + ');">Add new bill code</a> </div>');
+            }
+        });
+
+
+        $('#cost_type' + numrow).select2({
+            tags: true,
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
+            }
+        });
+
+
+    } catch (o) {
+    }
+}
+
 function setTaxDropdown() {
     try {
         $('.taxselect').select2({
@@ -3038,30 +3073,30 @@ function updateTextView1(val) {
         val = val.toFixed(2);
     } catch (o) { }
     //if (val > 0) {
-        str = val.toString();
-        var num = getNumber(str);
-        dotpo = num.indexOf(".");
-        decimal_text = '';
-        if (dotpo > 0) {
-            number = Number(num.substring(0, dotpo));
-            decimal_text = num.substring(dotpo);
+    str = val.toString();
+    var num = getNumber(str);
+    dotpo = num.indexOf(".");
+    decimal_text = '';
+    if (dotpo > 0) {
+        number = Number(num.substring(0, dotpo));
+        decimal_text = num.substring(dotpo);
 
-        } else {
-            number = Number(num);
-        }
-        if (num == 0) {
-            return 0.00;
-        } else {
-            return number.toLocaleString() + decimal_text;
-        }
+    } else {
+        number = Number(num);
+    }
+    if (num == 0) {
+        return 0.00;
+    } else {
+        return number.toLocaleString() + decimal_text;
+    }
     //}
     //return 0.00;
 
 }
 function getNumber(_str) {
-    if(_str < 0){
+    if (_str < 0) {
         isNegative = true;
-    }else{
+    } else {
         isNegative = false;
     }
     var arr = _str.split('');
@@ -3074,9 +3109,9 @@ function getNumber(_str) {
             out.push(arr[cnt]);
         }
     }
-    if(isNegative){
-        return '-'+out.join('');
-    }else{
+    if (isNegative) {
+        return '-' + out.join('');
+    } else {
         return out.join('');
     }
 }
@@ -3123,117 +3158,107 @@ function assignProjectID() {
 }
 
 
-function deleteattchment()
-{
-    var fullurl= document.getElementById('removepath').value;
-    var paths= document.getElementById('attach-'+attach_pos).value;
+function deleteattchment() {
+    var fullurl = document.getElementById('removepath').value;
+    var paths = document.getElementById('attach-' + attach_pos).value;
 
-    var pathlist=paths.split(",");
-    var lists='';
+    var pathlist = paths.split(",");
+    var lists = '';
     var index = pathlist.indexOf(fullurl);
-    
-    if (index >-1) {
+
+    if (index > -1) {
         pathlist.splice(index, 1);
     }
-    for(var i=0;i<pathlist.length;i++)
-    {
-        if(lists!='')
-         {
-           
-            lists= lists+','+pathlist[i];
-         }else{
-            lists=pathlist[i];
-         }
+    for (var i = 0; i < pathlist.length; i++) {
+        if (lists != '') {
+
+            lists = lists + ',' + pathlist[i];
+        } else {
+            lists = pathlist[i];
+        }
     }
-   
-    document.getElementById('attach-'+attach_pos).value=lists;
+
+    document.getElementById('attach-' + attach_pos).value = lists;
     setBillCodeMenuData();
 }
 
-function setBillCodeMenuData()
-{
-    
-    current_bill_name=document.getElementById('description'+attach_pos).innerText;
-    var sortname=current_bill_name.length>10?current_bill_name.slice(0,10)+'...':current_bill_name;
-    var paths= document.getElementById('attach-'+attach_pos).value;
-   
-    var pathlist=paths.split(",");
-   
-    var ul='';
-  var data= ' <li>'+
-                                                
-   ' <a onclick="myFunction(\''+sortname.trim()+'\',\''+sortname.trim()+'\')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="'+current_bill_name+'">'+
-     ' <label   id="l'+sortname.trim()+'" class=" tree_label  active1 ">'+sortname+'</label>'+
-     ' <div id="arrow'+sortname.trim()+'" style="float: right;" class="fa fa-angle-down  active1 "></div> </a>';
-     
-     var framedata='';   
-if(pathlist[0]!='')
-{
-    var counts='0 file';
-    if(pathlist.length>1)
-    counts=pathlist.length+' files';
-    else
-    counts=pathlist.length+' file';
+function setBillCodeMenuData() {
 
-    document.getElementById("icon-"+attach_pos).setAttribute("data-content", ""+counts);
-   var ul='<ul id="ul'+sortname.trim()+'" style="display: block">';
-        for(var i=0;i<pathlist.length;i++)
-        {
+    current_bill_name = document.getElementById('description' + attach_pos).innerText;
+    var sortname = current_bill_name.length > 10 ? current_bill_name.slice(0, 10) + '...' : current_bill_name;
+    var paths = document.getElementById('attach-' + attach_pos).value;
+
+    var pathlist = paths.split(",");
+
+    var ul = '';
+    var data = ' <li>' +
+
+        ' <a onclick="myFunction(\'' + sortname.trim() + '\',\'' + sortname.trim() + '\')" class="popovers" data-placement="top" data-container="body" data-trigger="hover"  data-content="' + current_bill_name + '">' +
+        ' <label   id="l' + sortname.trim() + '" class=" tree_label  active1 ">' + sortname + '</label>' +
+        ' <div id="arrow' + sortname.trim() + '" style="float: right;" class="fa fa-angle-down  active1 "></div> </a>';
+
+    var framedata = '';
+    if (pathlist[0] != '') {
+        var counts = '0 file';
+        if (pathlist.length > 1)
+            counts = pathlist.length + ' files';
+        else
+            counts = pathlist.length + ' file';
+
+        document.getElementById("icon-" + attach_pos).setAttribute("data-content", "" + counts);
+        var ul = '<ul id="ul' + sortname.trim() + '" style="display: block">';
+        for (var i = 0; i < pathlist.length; i++) {
             var filename = pathlist[i].replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
-            var sortname=filename.length>10?filename.slice(0,10)+'...':filename;
-            var uniq_id=filename.length>7?filename.substring(-7):filename;
+            var sortname = filename.length > 10 ? filename.slice(0, 10) + '...' : filename;
+            var uniq_id = filename.length > 7 ? filename.substring(-7) : filename;
             var extension = pathlist[i].split('.').pop();
-          var classnm='';
-          var frameclassnm='fade';
-          if(i==0)
-          {
-             classnm='aclass active1';
-             frameclassnm='active';
-          }else
-          {
-            classnm='';
-            frameclassnm='fade';
-          }
+            var classnm = '';
+            var frameclassnm = 'fade';
+            if (i == 0) {
+                classnm = 'aclass active1';
+                frameclassnm = 'active';
+            } else {
+                classnm = '';
+                frameclassnm = 'fade';
+            }
 
-            ul+= ' <li>'+
-          
-         '<a style="color: #636364;"  id="a'+uniq_id.trim()+'" class="'+classnm+'" href="#tab_'+uniq_id.trim()+'" data-toggle="tab">'+
-         '<span onclick="removeactive(\''+uniq_id.trim()+'\',\''+uniq_id.trim()+'\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+sortname+'</span>'+
-          ' </a>  </li>';
-       
-       
-          framedata+= '<div class="tab-pane '+frameclassnm+'" id="tab_'+uniq_id.trim()+'" >'+
-                       
-          '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>'+
-              
-          '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="'+pathlist[i].replace(/^.*[\\\/]/, '')+'">'+filename.substring(0,35)+'</h4>'+
-              '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\''+pathlist[i]+'\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>'+
-               
-                  '</div></div>'+
-         ' <div class="row"><div>';
-         if(extension.toLowerCase()=='pdf')
-         {
-            framedata+= '<iframe src="'+pathlist[i]+'" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
-         }else{
-            framedata+= '<img src="'+pathlist[i]+'" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
-         }
-         framedata+= '</div></div> </div>';
-       
+            ul += ' <li>' +
+
+                '<a style="color: #636364;"  id="a' + uniq_id.trim() + '" class="' + classnm + '" href="#tab_' + uniq_id.trim() + '" data-toggle="tab">' +
+                '<span onclick="removeactive(\'' + uniq_id.trim() + '\',\'' + uniq_id.trim() + '\');" class="tree_label1  popovers"  data-placement="top" data-container="body" data-trigger="hover"  data-content="' + pathlist[i].replace(/^.*[\\\/]/, '') + '">' + sortname + '</span>' +
+                ' </a>  </li>';
+
+
+            framedata += '<div class="tab-pane ' + frameclassnm + '" id="tab_' + uniq_id.trim() + '" >' +
+
+                '<div class="row" style="border-bottom: 1px solid #d7d7d7; margin-bottom: 7px;"><div>' +
+
+                '<h4 class="title pull-left popovers" data-container="body" data-trigger="hover"   data-placement="left" data-content="' + pathlist[i].replace(/^.*[\\\/]/, '') + '">' + filename.substring(0, 35) + '</h4>' +
+                '  <h2 class="pull-right mr-2" style="margin-top: 8px;" ><a data-toggle="modal"  href="#attach-delete" onclick="document.getElementById(\'removepath\').value =\'' + pathlist[i] + '\'"  ><i class=" popovers fa fa-trash-o" style="color: #A0ACAC;margin-left: -15px;" data-container="body" data-trigger="hover"   data-placement="left" data-content="Delete attachment" ></i></a></h2>' +
+
+                '</div></div>' +
+                ' <div class="row"><div>';
+            if (extension.toLowerCase() == 'pdf') {
+                framedata += '<iframe src="' + pathlist[i] + '" width="100%" height="800px" style="border: 1px solid #f1efef;"></iframe>';
+            } else {
+                framedata += '<img src="' + pathlist[i] + '" class="img-fluid" style="max-width: 100%;max-height: 100%;"/>';
+            }
+            framedata += '</div></div> </div>';
+
         }
-        data+=ul+'</ul>';
+        data += ul + '</ul>';
     }
-if(framedata=='')
-{
-    document.getElementById('yesview').style.display="none";
-    document.getElementById('noview').style.display="block";
-}else{
-    document.getElementById('yesview').style.display="block";
-    document.getElementById('noview').style.display="none";
-}
+    if (framedata == '') {
+        document.getElementById('yesview').style.display = "none";
+        document.getElementById('noview').style.display = "block";
+    } else {
+        document.getElementById('yesview').style.display = "block";
+        document.getElementById('noview').style.display = "none";
+    }
 
-    data+='</li>'; 
+    data += '</li>';
     document.getElementById('ulmenu').innerHTML = data;
-    document.getElementById('frame_view').innerHTML =framedata;
+    document.getElementById('frame_view').innerHTML = framedata;
 
 }
 
@@ -3250,9 +3275,9 @@ function imposeMinMax(el) {
 }
 
 function changeSeparatorVal(prefix) {
-    if (prefix == "") { 
+    if (prefix == "") {
         $("#separator").prop('disabled', true);
-        document.getElementById("separator").value='';
+        document.getElementById("separator").value = '';
     } else {
         $("#separator").prop('disabled', false);
     }
@@ -3268,7 +3293,7 @@ function saveSequence() {
     var last_no = document.getElementById("seq_no").value;
     var separator = document.getElementById("separator").value;
     data = {
-        'prefix': prefix, 
+        'prefix': prefix,
         'last_no': last_no,
         'seprator': separator
     };
@@ -3282,9 +3307,9 @@ function saveSequence() {
         success: function (response) {
             obj = JSON.parse(response);
             if (obj.status == 1) {
-                addOptionIntoDropdown('seq_no_drpdwn',obj);
+                addOptionIntoDropdown('seq_no_drpdwn', obj);
                 clearNewSequenceForm();
-            } else if(obj.status == 2) {
+            } else if (obj.status == 2) {
                 document.getElementById('seq_error').innerHTML = '';
                 $('#confirm').modal("show");
                 $('#use_existing_no').on('click', function (e) {
@@ -3319,7 +3344,7 @@ function saveSequence() {
                         success: function (response) {
                             obj = JSON.parse(response);
                             if (obj.status == 1) {
-                                addOptionIntoDropdown('seq_no_drpdwn',obj);
+                                addOptionIntoDropdown('seq_no_drpdwn', obj);
                                 clearNewSequenceForm();
                             }
                         }
@@ -3340,7 +3365,7 @@ function clearNewSequenceForm() {
     document.getElementById("newSequencePanel").style.display = 'none';
 }
 
-function addOptionIntoDropdown(id_of_drpdwn,obj_data) {
+function addOptionIntoDropdown(id_of_drpdwn, obj_data) {
     var x = document.getElementById(id_of_drpdwn);
     var option = document.createElement("option");
     option.text = obj_data.name;
@@ -3363,7 +3388,7 @@ function validateDate() {
     }
 }
 
-function changerOrderAmountCheck(){
+function changerOrderAmountCheck() {
     //order_value  = getamt(document.getElementById('total_change_order_amount').value);
     // if(order_value > 0){
     //     return true;
@@ -3377,15 +3402,15 @@ function changerOrderAmountCheck(){
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
             bill_code = document.getElementById('bill_code' + int).value;
-            if(bill_code == ''){
+            if (bill_code == '') {
                 document.getElementById('change_order_amount_error').style.display = "block";
                 billcodeNull = true;
             }
         });
-        if(billcodeNull){
+        if (billcodeNull) {
             return false;
-        }else{
-            return true; 
+        } else {
+            return true;
         }
     }
     catch (o) {
