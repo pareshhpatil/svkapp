@@ -41,38 +41,19 @@
                         @foreach($notifications as $notification)
                             @if(empty($notification->read_at))
                                 <div class="alert dark" role="alert">
-                                    <a href="{!! url('/merchant/invoice/viewg703/' . $notification->data['payment_request_id']) !!}" class="notification-link">
+                                    <a href="{!! url('/merchant/invoice/viewg703/' . $notification->data['payment_request_id']).'?notification_id=' . $notification->id !!}" class="notification-link">
                                         <strong>{!! $notification->data['invoice_number'] !!}</strong> Pending for approval
                                     </a>
                                 </div>
                             @else
                                 <div class="alert dark" role="alert">
-                                    <a href="{!! url('/merchant/invoice/viewg703/' . $notification->data['payment_request_id']) !!}" class="notification-link">
+                                    <a href="{!! url('/merchant/invoice/viewg703/' . $notification->data['payment_request_id']).'?notification_id=' . $notification->id !!}" class="notification-link">
                                         <strong>{!! $notification->data['invoice_number'] !!}</strong> Pending for approval
                                     </a>
                                 </div>
                             @endif
 
                         @endforeach
-
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
-                        <div class="alert light" role="alert">
-                            <strong>Invoice First</strong> Pending for approval
-                        </div>
                     </div>
 
                 </div>

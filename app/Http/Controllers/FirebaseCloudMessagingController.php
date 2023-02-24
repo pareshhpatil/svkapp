@@ -35,6 +35,27 @@ class FirebaseCloudMessagingController extends AppController
 
     public function getNotifications()
     {
+//        $data = DB::table('briq_privileges')
+//            ->where('is_active', 1)
+//            ->where('type', '!=', 'change-order')
+//            ->whereIn('access', ['full','approve'])
+//            ->get()->collect();
+//
+//        $contractUsers = clone $data->where('type', 'contract')
+//            ->where('type_id', '313')->pluck('user_id');
+//
+//        $contractUsersWithFullAccess = $contractUsers->toArray();
+//
+//        $customerUsers = clone $data->where('type', 'customer')
+//            ->where('type_id', '3360')->pluck('user_id');
+//
+//        $customerUsersWithFullAccess = $customerUsers->toArray();
+//
+//        $invoiceUsers = clone $data->where('type', 'invoice')
+//            ->where('type_id', 'R000029871')->pluck('user_id');
+//
+//        $invoiceUsersWithFullAccess = $invoiceUsers->toArray();
+//        dd($contractUsersWithFullAccess, $customerUsersWithFullAccess, $invoiceUsersWithFullAccess);
         $authUser = auth()->user();
 
         // Get Notifications

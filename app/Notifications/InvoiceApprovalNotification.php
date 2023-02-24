@@ -104,6 +104,7 @@ class InvoiceApprovalNotification extends Notification
     public function toArray($notifiable)
     {
         return [
+            'type' => 'invoice',
             'user_id' => $this->User->user_id,
             'payment_request_id' => Encrypt::encode($this->paymentRequestID),
             'invoice_number' => $this->invoiceNumber,

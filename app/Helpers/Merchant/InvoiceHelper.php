@@ -38,38 +38,32 @@ class InvoiceHelper
             $customerID = $Contract->customer_id;
             $projectID = $Contract->project_id;
 
-            $contractUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'contract')
-                ->where('type_id', $contractID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $customerUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'customer')
-                ->where('type_id', $customerID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $projectUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'project')
-                ->where('type_id', $projectID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $invoiceUserWithApprovalAccessIDs = DB::table('briq_privileges')
-                ->where('is_active', 1)
+            $data = DB::table('briq_privileges')
                 ->where('merchant_id', $merchantID)
-                ->where('type', 'invoice')
-                ->where('type_id', 'all')
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
+                ->where('is_active', 1)
+                ->where('type', '!=', 'change-order')
+                ->whereIn('access', ['full','approve'])
+                ->get()->collect();
+
+            $customerUsers = clone $data->where('type', 'customer')
+                ->where('type_id', $customerID)->pluck('user_id');
+
+            $customerUsersWithFullAccess = $customerUsers->toArray();
+
+            $contractUsers = clone $data->where('type', 'contract')
+                ->where('type_id', $contractID)->pluck('user_id');
+
+            $contractUsersWithFullAccess = $contractUsers->toArray();
+
+            $projectUsers = clone $data->where('type', 'project')
+                ->where('type_id', $projectID)->pluck('user_id');
+
+            $projectUsersWithFullAccess = $projectUsers->toArray();
+
+            $invoiceUsers = clone $data->where('type', 'invoice')
+                ->where('type_id', $projectID)->pluck('user_id');
+
+            $invoiceUsersWithFullAccess = $invoiceUsers->toArray();
 
             $adminRole = DB::table('briq_roles')
                 ->where('merchant_id', $merchantID)
@@ -82,7 +76,7 @@ class InvoiceHelper
                 ->pluck('user_id')
                 ->toArray();
 
-            $uniqueUserIDs = array_unique(array_merge($invoiceUserWithApprovalAccessIDs, $adminRoleUserIDs, $contractUserWithFullAccess, $customerUserWithFullAccess, $projectUserWithFullAccess));
+            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess, $contractUsersWithFullAccess, $projectUsersWithFullAccess, $invoiceUsersWithFullAccess));
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)

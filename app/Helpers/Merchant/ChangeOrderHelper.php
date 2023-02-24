@@ -33,38 +33,65 @@ class ChangeOrderHelper
             $customerID = $Contract->customer_id;
             $projectID = $Contract->project_id;
 
-            $contractUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'contract')
-                ->where('type_id', $contractID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $customerUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'customer')
-                ->where('type_id', $customerID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $projectUserWithFullAccess = DB::table('briq_privileges')
-                ->where('is_active', 1)
-                ->where('type', 'project')
-                ->where('type_id', $projectID)
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
-
-            $changeOrderUserWithApprovalAccessIDs = DB::table('briq_privileges')
-                ->where('is_active', 1)
+            $data = DB::table('briq_privileges')
                 ->where('merchant_id', $merchantID)
-                ->where('type', 'change-order')
-                ->where('type_id', 'all')
-                ->where('access', 'full')
-                ->pluck('user_id')
-                ->toArray();
+                ->where('is_active', 1)
+                ->where('type', '!=', 'invoice')
+                ->whereIn('access', ['full','approve'])
+                ->get()->collect();
+
+            $customerUsers = clone $data->where('type', 'customer')
+                ->where('type_id', $customerID)->pluck('user_id');
+
+            $customerUsersWithFullAccess = $customerUsers->toArray();
+
+            $contractUsers = clone $data->where('type', 'contract')
+                ->where('type_id', $contractID)->pluck('user_id');
+
+            $contractUsersWithFullAccess = $contractUsers->toArray();
+
+            $projectUsers = clone $data->where('type', 'project')
+                ->where('type_id', $projectID)->pluck('user_id');
+
+            $projectUsersWithFullAccess = $projectUsers->toArray();
+
+            $changeOrderUsers = clone $data->where('type', 'change-order')
+                ->where('type_id', $projectID)->pluck('user_id');
+
+            $changeOrderUsersWithFullAccess = $changeOrderUsers->toArray();
+
+//            $contractUserWithFullAccess = DB::table('briq_privileges')
+//                ->where('is_active', 1)
+//                ->where('type', 'contract')
+//                ->where('type_id', $contractID)
+//                ->where('access', 'full')
+//                ->pluck('user_id')
+//                ->toArray();
+//
+//            $customerUserWithFullAccess = DB::table('briq_privileges')
+//                ->where('is_active', 1)
+//                ->where('type', 'customer')
+//                ->where('type_id', $customerID)
+//                ->where('access', 'full')
+//                ->pluck('user_id')
+//                ->toArray();
+//
+//            $projectUserWithFullAccess = DB::table('briq_privileges')
+//                ->where('is_active', 1)
+//                ->where('type', 'project')
+//                ->where('type_id', $projectID)
+//                ->where('access', 'full')
+//                ->pluck('user_id')
+//                ->toArray();
+//
+//            $changeOrderUserWithApprovalAccessIDs = DB::table('briq_privileges')
+//                ->where('is_active', 1)
+//                ->where('merchant_id', $merchantID)
+//                ->where('type', 'change-order')
+//                ->where('type_id', 'all')
+//                ->where('access', 'full')
+//                ->pluck('user_id')
+//                ->toArray();
 
             $adminRole = DB::table('briq_roles')
                 ->where('merchant_id', $merchantID)
@@ -77,7 +104,7 @@ class ChangeOrderHelper
                 ->pluck('user_id')
                 ->toArray();
 
-            $uniqueUserIDs = array_unique(array_merge($changeOrderUserWithApprovalAccessIDs, $adminRoleUserIDs, $contractUserWithFullAccess, $customerUserWithFullAccess, $projectUserWithFullAccess));
+            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess, $contractUsersWithFullAccess, $projectUsersWithFullAccess, $changeOrderUsersWithFullAccess));
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
@@ -93,7 +120,7 @@ class ChangeOrderHelper
 
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
-                    $User->notify(new ChangeOrderNotification());
+                    $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
                     //$User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
                 }
             }

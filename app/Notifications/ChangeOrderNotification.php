@@ -77,7 +77,6 @@ class ChangeOrderNotification extends Notification
                 'order_id' => Encrypt::encode($this->orderID),
                 'order_number' => $this->orderNumber
             ]);
-
     }
 
     /**
@@ -90,7 +89,7 @@ class ChangeOrderNotification extends Notification
     {
         return (new FirebaseMessage())
             ->withTitle($this->orderNumber)
-            ->withBody($this->orderNumber . ' Invoice Pending for approval')
+            ->withBody($this->orderNumber . ' Change Order Pending for approval')
             ->withPriority('low')->asMessage($this->User->fcm_token);
     }
 
@@ -103,6 +102,7 @@ class ChangeOrderNotification extends Notification
     public function toArray($notifiable)
     {
         return [
+            'type' => 'change-order',
             'user_id' => $this->User->user_id,
             'order_id' => $this->orderID,
             'order_number' => $this->orderNumber

@@ -141,7 +141,7 @@
         <div class="panel">
             <div>
                 <h3 class="modal-title">
-                    Set Privileges
+                    Set Privileges for <span id="panel-user-name"></span>
                     <a class="close " data-toggle="modal"  onclick="closePrivilegesDrawer()">
                         <button type="button" class="close" aria-hidden="true"></button>
                     </a>
@@ -316,13 +316,16 @@
             let invoiceValArr = [];
             let changeOrderValArr = [];
             let userID;
+            let userName;
 
             $(document).on("click",".open-privileges-drawer-btn",function() {
                 let panelWrap =  document.getElementById("panelWrapPrivileges");
                 userID = $(this).attr("data-user-id");
+                userName = $(this).attr("data-user-name");
                 panelWrap.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
                 panelWrap.style.transform = "translateX(0%)";
                 panelWrap.getElementsByClassName('panel-user-id')[0].value = userID;
+                document.getElementById("panel-user-name").innerHTML = userName;
 
                 fetch(`/merchant/subusers/privileges/${userID}`)
                     .then((response) => response.json())
@@ -719,8 +722,8 @@
 <select class="privileges-access privileges-access-dropdown" data-id="${index}" data-type="${type}">
     <option value="full" ${privileges === 'full' ? 'selected' : ''}>Full</option>
     <option value="edit" ${privileges === 'edit' ? 'selected' : ''}>Edit</option>
+    <option value="approve" ${privileges === 'approve' ? 'selected' : ''}>Approve</option>
     <option value="comment" ${privileges === 'comment' ? 'selected' : ''}>Comment</option>
-    ${type === 'change-order' || type === 'invoice' ? approveHTML(privileges) : ''}
     <option value="view-only" ${privileges === 'view-only' ? 'selected' : ''}>View Only</option>
 </select>
 <a class="close" style="margin-left: 10px">
