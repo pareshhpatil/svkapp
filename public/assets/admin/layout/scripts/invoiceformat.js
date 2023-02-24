@@ -194,7 +194,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
             }
         });
     }
-    if (exist == 0 && defaultval!='') {
+    if (exist == 0 && defaultval != '') {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
     produ_text = produ_text + '</select></td>';
@@ -2674,6 +2674,21 @@ function setAdvanceDropdownOrder2(numrow) {
             if (document.getElementById('prolist' + pind)) {
             } else {
                 $('.select2-results').append('<div class="wrapper" id="prolist' + pind + '" > <a class="clicker" onclick="billIndex(' + numrow + ',' + numrow + ',' + project_id + ');">Add new bill code</a> </div>');
+            }
+        });
+
+
+        $('#cost_type' + numrow).select2({
+            tags: true,
+
+            insertTag: function (data, tag) {
+                var $found = false;
+                $.each(data, function (index, value) {
+                    if ($.trim(tag.text).toUpperCase() == $.trim(value.text).toUpperCase()) {
+                        $found = true;
+                    }
+                });
+                if (!$found) data.unshift(tag);
             }
         });
 
