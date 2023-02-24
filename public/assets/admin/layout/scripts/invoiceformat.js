@@ -194,7 +194,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
             }
         });
     }
-    if (exist == 0) {
+    if (exist == 0 && defaultval!='') {
         produ_text = produ_text + '<option selected value="' + defaultval + '">' + defaultval + '</option>';
     }
     produ_text = produ_text + '</select></td>';
