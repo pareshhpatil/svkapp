@@ -178,7 +178,7 @@ function getCostTypeCode(defaultval, type, numrow = 1) {
     var produ_text = '<td class="col-id-no" scope="row">' +
         '<select style="width:100%;" required id="cost_type' + numrow + '" ' +
         'name="' + type + 'cost_type[]" data-cy="particular_product' + numrow + '" ' +
-        'data-placeholder="Type or Select" class="form-control input-sm productselect2" >';
+        'data-placeholder="Type or Select" class="form-control input-sm productselect2" ><option value="">Type or Select</option>';
     if (cost_type_list != null) {
         $.each(cost_type_list, function (value, arr) {
             var selected = '';
