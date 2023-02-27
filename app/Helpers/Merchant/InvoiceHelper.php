@@ -19,9 +19,10 @@ class InvoiceHelper
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
 
-        $paymentRequestDetail = DB::table('payment_request')
-            ->where('payment_request_id', $paymentRequestID)
-            ->first();
+        $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $merchantID);
+//        $paymentRequestDetail = DB::table('payment_request')
+//            ->where('payment_request_id', $paymentRequestID)
+//            ->first();
 
         if (!empty($paymentRequestDetail)) {
             $invoiceNumber = $paymentRequestDetail->invoice_number;
@@ -89,7 +90,7 @@ class InvoiceHelper
 //                if(!empty($testUser->fcm_token)) {
 //                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
 //                }
-
+            dd($Users);
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
                     $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));

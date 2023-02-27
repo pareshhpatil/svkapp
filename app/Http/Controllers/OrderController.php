@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Merchant\ChangeOrderHelper;
 use App\Libraries\Helpers;
 use App\Model\Contract;
 use App\Model\Invoice;
@@ -99,42 +100,50 @@ class OrderController extends Controller
 
     public function save(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'order_no' => 'required',
-            'order_date' => 'required'
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        } else {
-            $main_array = [];
-            $request->totalcost = str_replace(',', '', $request->totalcost);
-            $request->contract_amount = str_replace(',', '', $request->contract_amount);
-            $request->total_original_contract_amount = str_replace(',', '', $request->total_original_contract_amount);
-            $request->total_change_order_amount = str_replace(',', '', $request->total_change_order_amount);
-            if (!empty($request->bill_code)) {
-                foreach ($request->bill_code as $skey => $bill_code) {
-                    if ($request->original_contract_amount[$skey] == '') {
-                        $request->original_contract_amount[$skey] = 0;
+        try {
+            $validator = Validator::make($request->all(), [
+                'order_no' => 'required',
+                'order_date' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return redirect()->back()->withInput()->withErrors($validator);
+            } else {
+                $main_array = [];
+                $request->totalcost = str_replace(',', '', $request->totalcost);
+                $request->contract_amount = str_replace(',', '', $request->contract_amount);
+                $request->total_original_contract_amount = str_replace(',', '', $request->total_original_contract_amount);
+                $request->total_change_order_amount = str_replace(',', '', $request->total_change_order_amount);
+                if (!empty($request->bill_code)) {
+                    foreach ($request->bill_code as $skey => $bill_code) {
+                        if ($request->original_contract_amount[$skey] == '') {
+                            $request->original_contract_amount[$skey] = 0;
+                        }
+                        $row_array = [];
+                        $row_array["bill_code"] = $bill_code;
+                        $row_array["description"] = $request->description[$skey];
+                        $row_array["original_contract_amount"] = str_replace(',', '', $request->original_contract_amount[$skey]);
+                        $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
+                        $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
+                        $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
+                        $row_array["order_description"] = $request->order_description[$skey];
+                        $row_array["cost_type"] = $request->cost_type[$skey];
+                        $row_array["retainage_percent"] = $request->retainage_percent[$skey];
+                        $row_array["pint"] = $request->pint[$skey];
+                        array_push($main_array, $row_array);
                     }
-                    $row_array = [];
-                    $row_array["bill_code"] = $bill_code;
-                    $row_array["description"] = $request->description[$skey];
-                    $row_array["original_contract_amount"] = str_replace(',', '', $request->original_contract_amount[$skey]);
-                    $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
-                    $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
-                    $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
-                    $row_array["order_description"] = $request->order_description[$skey];
-                    $row_array["cost_type"] = $request->cost_type[$skey];
-                    $row_array["retainage_percent"] = $request->retainage_percent[$skey];
-                    $row_array["pint"] = $request->pint[$skey];
-                    array_push($main_array, $row_array);
                 }
-            }
-            $request->particulars = json_encode($main_array);
-            $request->order_date = Helpers::sqlDate($request->order_date);
-            $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+                $request->particulars = json_encode($main_array);
+                $request->order_date = Helpers::sqlDate($request->order_date);
+                $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
 
-            return redirect('merchant/order/list')->with('success', "Change Order has been created");
+                $InvoiceHelper = new ChangeOrderHelper();
+
+                $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
+
+                return redirect('merchant/order/list')->with('success', "Change Order has been created");
+            }
+        } catch (\Exception $exception) {
+dd($exception);
         }
     }
 

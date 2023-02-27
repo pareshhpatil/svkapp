@@ -160,7 +160,7 @@
 
                                 </ul>
                                 <div style="text-align: center;padding: 10px 0;">
-                                    <a href="/merchant/notifications/all" target="_blank">View More</a>
+                                    <a href="/merchant/notifications" target="_blank">View More</a>
                                 </div>
                             </div>
                         </li>
@@ -1247,15 +1247,25 @@ if ($this->document_upload == true) {
 
                 notificationDropdown.empty();
                 notifications.forEach((notification, i) => {
+                    console.log(notification);
                     let html = `<li style="border-bottom: 1px solid #eee;padding: 10px 15px">
                                     <div style="width: 300px">
-                                        <a href="/merchant/invoice/viewg703/${notification.data.payment_request_id}?notification_id=${notification.id}" target="_blank" style="color: #495555;">${notification.data.invoice_number} invoice pending for approval</a>
+                                        ${notification.data.type === 'invoice' ? invoiceNotificationText(notification) : ''}
+                                        ${notification.data.type === 'change-order' ? changeOrderNotificationText(notification): ''}
                                     </div>
                                 </li>`;
 
                     notificationDropdown.append(html);
                 })
             })
+    }
+
+    function invoiceNotificationText(notification) {
+        return `<a href="/merchant/invoice/viewg703/${notification.data.payment_request_id}?notification_id=${notification.id}" target="_blank" style="color: #495555;">${notification.data.invoice_number} invoice pending for approval</a>`
+    }
+
+    function changeOrderNotificationText(notification) {
+        return `<a href="/merchant/invoice/viewg703/${notification.data.order_id}" target="_blank" style="color: #495555;">${notification.data.order_number} order pending for approval</a>`
     }
     // })
 

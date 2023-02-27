@@ -56,8 +56,10 @@
         Your invoice has been saved and will appear in the Requests and Reports tabs.
     </p>
     <p>
-        <a class="btn blue" data-toggle="modal" href="#respond">
-            Settle </a>
+        @if($info['invoice_access'] == 'all-full')
+            <a class="btn blue" data-toggle="modal" href="#respond">
+                Settle </a>
+        @endif
         <a class="btn green" href="/merchant/invoice/update/{{$info['link']}}">
             Update @if($info['invoice_type']==1)invoice @else estimate @endif </a>
         <a class="btn green" href="/merchant/invoice/download/{{$info['link']}}@if(isset($info['gtype'])) /0/{{$info['gtype']}}@endif">

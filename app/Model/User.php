@@ -531,9 +531,9 @@ class User extends ParentModel
             $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray);
         }
 
-//        if(!empty($contractPrivilegesArray)) {
+        if(!empty($contractPrivilegesArray)) {
             $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray);
-//        }
+        }
 
         if(!empty($contractPrivilegesArray)) {
             $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);

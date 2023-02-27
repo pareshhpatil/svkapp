@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Model\Master;
 use App\Model\InvoiceFormat;
 use App\Model\Invoice;
+use App\Model\Notification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Maatwebsite\Excel\Concerns\ToArray;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -376,6 +379,7 @@ class MasterController extends AppController
 
         // Get Notifications
         $Notifications = $authUser->unreadNotifications()
+            ->latest()
             ->limit(9)
             ->get();
 
@@ -385,20 +389,61 @@ class MasterController extends AppController
         ]);
     }
 
+    public function getNotificationIndex() 
+    {
+        $title =  'Notifications';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        
+        return view('app/merchant/notifications/index', $data);
+    }
+
     public function getAllNotifications()
     {
         $authUser = auth()->user();
 
-        $title =  'Notifications';
-        $data = Helpers::setBladeProperties($title,  [],  []);
-
         // Get Notifications
         $Notifications = $authUser->unreadNotifications()
-            ->limit(99)
-            ->get();
+            ->paginate(2);
+        
+        $notificationMap = $Notifications
+            ->map(function ($Notification) {
+                $type = $Notification->data['type'];
+                $Notification->type = $type;
 
-        $data['notifications'] = $Notifications;
+                if($type == 'invoice') {
+                    $typeID = Encrypt::decode($Notification->data['payment_request_id']);
+                    $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($typeID, $this->merchant_id);
+                    // $detail = $this->masterModel->getTableRow('payment_request', 'payment_request_id', $typeID);
+                    $status = 'View';
+                    if($paymentRequestDetail->payment_request_status == '14') {
+                        $status = 'Approve';
+                    }
 
-        return view('app/merchant/notifications/index', $data);
+                    $Notification->type_status = $status;
+                    $Notification->invoice_number = $paymentRequestDetail->invoice_number;
+                    $Notification->customer_name = $paymentRequestDetail->customer_name;
+                    $Notification->amount = $paymentRequestDetail->grand_total;
+                    $Notification->currency_icon = $paymentRequestDetail->currency_icon;
+                    $Notification->updated_date = $paymentRequestDetail->last_update_date;
+                    $Notification->updated_by = $paymentRequestDetail->last_updated_by_user;
+                };
+                
+                $Notification->created_at_human = $Notification->created_at->diffForHumans();
+
+                return $Notification;
+            });
+       
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'notifications' => $notificationMap,
+                'total' => $Notifications->total(),
+                'lastPage' => $Notifications->lastPage(),
+                'nextPageUrl' => $Notifications->nextPageUrl(),
+                'previousPageUrl' => $Notifications->previousPageUrl(),
+                'perPage' => $Notifications->perPage(),
+                'currentPage' => $Notifications->currentPage(),
+            ]
+        ]);
     }
 }

@@ -104,7 +104,7 @@ class ChangeOrderNotification extends Notification
         return [
             'type' => 'change-order',
             'user_id' => $this->User->user_id,
-            'order_id' => $this->orderID,
+            'order_id' => Encrypt::encode($this->orderID),
             'order_number' => $this->orderNumber
         ];
     }

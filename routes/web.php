@@ -481,7 +481,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //Notifications Route
   Route::get('user/notifications', 'MasterController@getNotifications');
-  Route::get('notifications/all', 'MasterController@getAllNotifications')->name('notifications');
+  Route::get('notifications', 'MasterController@getNotificationIndex')->name('notifications');
+  Route::get('notifications/all', 'MasterController@getAllNotifications');
 
     Route::get('/email-notification', function () {
         $testUser = User::query()
