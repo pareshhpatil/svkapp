@@ -72,7 +72,7 @@ class InvoiceApprovalNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject($this->invoiceNumber . 'Requested for approval')
+            ->subject($this->invoiceNumber . ' Requested for approval')
             ->markdown('emails.invoice.approve', [
                 'user_id' => $notifiable->user_id,
                 'payment_request_id' => Encrypt::encode($this->paymentRequestID),

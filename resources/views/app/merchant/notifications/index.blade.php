@@ -40,6 +40,10 @@
 
     .load-more-btn {
         display: none;
+        background-color: #ffffff;
+        border: 1px solid #D9DEDE;
+        color: #3E4AA3;
+        padding: 10px 15px;
     }
 </style>
 @section('content')
@@ -95,35 +99,15 @@
 
                             data.forEach(notification => {
                                 console.log(notification);
-                                let html = `<div class="notification-item"><a href=/merchant/invoice/viewg703/${notification.data['payment_request_id']}?notification_id=${notification.id} class="notification-item-link">
-                                    <div>
-                                        <p class="notification-item-value">${notification.invoice_number}</p>
-                                        <p class="notification-item-label">Invoice  Number</p>
-                                    </div>
-                                    <div>
-                                        <p class="notification-item-value">${notification.customer_name}</p>
-                                        <p class="notification-item-label">Client Name</p>
-                                    </div>
-                                    <div>
-                                        <p class="notification-item-value">${notification.currency_icon} ${notification.amount}</p>
-                                        <p class="notification-item-label">Amount</p>
-                                    </div>
-                                    <div>
-                                        <p class="notification-item-value">${notification.updated_date}</p>
-                                        <p class="notification-item-label">Updated Date</p>
-                                    </div>
-                                    <div>
-                                        <p class="notification-item-value">${notification.updated_by}</p>
-                                        <p class="notification-item-label">Updated by</p>
-                                    </div>
-                                    <div>
-                                        <p class="notification-item-value">${notification.type_status}</p>
-                                        <p class="notification-item-label">Action</p>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-angle-right notification-item-link-icon"></i>
-                                    </div>
-                                </a></div>`;
+                                let html = '';
+                                if(notification.type == "change-order") {
+                                    html = changeOrderHTML(notification); 
+                                }
+
+                                if(notification.type == "invoice") {
+                                    html = invoiceHTML(notification); 
+                                }
+
                                 notificationWrapper.append(html);
                             });
                             document.getElementById('loader').style.display = 'none';
@@ -131,6 +115,74 @@
 
                     }
                 });
+            }
+
+            function invoiceHTML(notification) {
+                let html = `<div class="notification-item"><a href=/merchant/invoice/viewg703/${notification.data['payment_request_id']}?notification_id=${notification.id} class="notification-item-link">
+                            <div>
+                                <p class="notification-item-value">${notification.invoice_number}</p>
+                                <p class="notification-item-label">Invoice  Number</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.customer_name}</p>
+                                <p class="notification-item-label">Client Name</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.currency_icon} ${notification.amount}</p>
+                                <p class="notification-item-label">Amount</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.updated_date}</p>
+                                <p class="notification-item-label">Updated Date</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.updated_by}</p>
+                                <p class="notification-item-label">Updated by</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.type_status}</p>
+                                <p class="notification-item-label">Action</p>
+                            </div>
+                            <div>
+                                <i class="fa fa-angle-right notification-item-link-icon"></i>
+                            </div>
+                        </a></div>`;
+
+                        return html;
+            }
+
+            function changeOrderHTML(notification) {
+                let html = `<div class="notification-item"><a href=/merchant/invoice/viewg703/${notification.data['order_id']}?notification_id=${notification.id} class="notification-item-link">
+                            <div>
+                                <p class="notification-item-value">${notification.order_number}</p>
+                                <p class="notification-item-label">Order  Number</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.customer_name}</p>
+                                <p class="notification-item-label">Client Name</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.total_change_order_amount}</p>
+                                <p class="notification-item-label">Change Order Amount</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.order_date}</p>
+                                <p class="notification-item-label">Order Date</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.updated_by}</p>
+                                <p class="notification-item-label">Updated by</p>
+                            </div>
+                            <div>
+                                <p class="notification-item-value">${notification.type_status ? notification.type_status: ''}</p>
+                                <p class="notification-item-label">Action</p>
+                            </div>
+                            <div>
+                                <i class="fa fa-angle-right notification-item-link-icon"></i>
+                            </div>
+                        </a></div>`;
+
+                        return html;
             }
 
             loadMoreBtn.on('click', function() {
