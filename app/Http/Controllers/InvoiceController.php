@@ -707,7 +707,7 @@ class InvoiceController extends AppController
             if (isset($data['payment_request_id'])) {
                 $data['contract_particulars'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $data['payment_request_id']);
             } else {
-                $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $data['contract_id']);
+                $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $data['contract_id'],'NA');
                 $change_order_data = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
                 $change_order_data = json_decode($change_order_data, true);
 
@@ -3600,10 +3600,9 @@ class InvoiceController extends AppController
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
-            $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id);
+            $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id,$request_id);
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
-                //  dd($particulars);
                 foreach ($particulars as $key => $row) {
                     $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
                     $particulars[$key]->current_billed_amount = '';
