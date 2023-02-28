@@ -25,7 +25,6 @@ class Subdomain
         if ($request_url != $this->host(env('APP_URL'))) {
             $subdomain = current(explode('.', $request->getHost()));
             $exclude = ['api', 'swipez','www'];
-            dd($subdomain);
             if (!in_array($subdomain, $exclude)) {
                 $exist = DB::table('merchant')->where('display_url', $subdomain)->first();
                 if ($exist != null) {
