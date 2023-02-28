@@ -249,7 +249,7 @@ class Dashboard extends Controller
                     $completion_percentage += 16.67;
                 }
             }
-            dd($completion_percentage);
+
             if ($completion_percentage > 14 && $completion_percentage < 19) {
                 $completion_percentage = 16.67;
                 $circular_percentage = 17;
@@ -299,7 +299,7 @@ class Dashboard extends Controller
             } else {
                 $settlement = 0;
             }
-
+            dd($settlement);
             $online_trans = $on_tr['unsettled'] + $ex_tr['unsettled'] + $on_tr['settled'] + $ex_tr['settled'];
             //$pending_settlement = $online_trans - $totalcapture;
             $pending_settlement = $on_tr['unsettled'] + $ex_tr['unsettled'];
