@@ -346,7 +346,7 @@ class Dashboard extends Controller
 
             $this->view->from_date = new DateTime(date('Y-m-d'));
             $this->view->to_date = new DateTime(date('Y-m-d'));
-            dd($report_days);
+
             if ($this->view->help_hero_popup == 0) {
                 $this->session->remove('new_merchant');
             }
@@ -365,7 +365,7 @@ class Dashboard extends Controller
                 $this->view->software_suggest = 1;
                 $this->session->removeCookie('registration_campaign_id');
             }
-
+            dd($campaign_id);
             $this->view->render('header/app');
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');
