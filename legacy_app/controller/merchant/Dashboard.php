@@ -369,7 +369,6 @@ class Dashboard extends Controller
             $this->view->render('header/app');
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');
-            dd($campaign_id);
         } catch (Exception $e) {
             Sentry\captureException($e);
 

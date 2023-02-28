@@ -64,7 +64,7 @@
 
     <div id="dashboard">
         <!-- BEGIN PAGE HEADER -->
-        <?php if ($this->is_patron == 1) { ?>
+        <?php dd("bnm"); if ($this->is_patron == 1) { ?>
             <h3 class="page-title ml-0">Dashboard</h3>
         <?php } else { ?>
             <div class="page-bar">
