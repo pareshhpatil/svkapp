@@ -367,6 +367,7 @@ class Dashboard extends Controller
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');
         } catch (Exception $e) {
+            dd($e);
             Sentry\captureException($e);
 
             SwipezLogger::error(__CLASS__, '[E001]Error while merchant dashboard initiate Error: for merchant [' . $user_id . '] ' . $e->getMessage());
