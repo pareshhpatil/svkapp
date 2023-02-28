@@ -21,11 +21,11 @@ class Subdomain
     {
         #Take request URL from laravel function
         $request_url = $request->getHost();
-        dd($request_url, env('APP_URL'), $this->host(env('APP_URL')));
         #compair with APP_URL from .env if url is diffrent then check partner config file to set partner properties
         if ($request_url != $this->host(env('APP_URL'))) {
             $subdomain = current(explode('.', $request->getHost()));
             $exclude = ['api', 'swipez','www'];
+            dd($subdomain);
             if (!in_array($subdomain, $exclude)) {
                 $exist = DB::table('merchant')->where('display_url', $subdomain)->first();
                 if ($exist != null) {
