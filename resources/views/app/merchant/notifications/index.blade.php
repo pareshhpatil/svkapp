@@ -125,7 +125,7 @@
                             </div>
                             <div>
                                 <p class="notification-item-value">${notification.customer_name}</p>
-                                <p class="notification-item-label">Client Name</p>
+                                <p class="notification-item-label">Company Name</p>
                             </div>
                             <div>
                                 <p class="notification-item-value">${notification.currency_icon} ${notification.amount}</p>
@@ -159,7 +159,7 @@
                             </div>
                             <div>
                                 <p class="notification-item-value">${notification.customer_name}</p>
-                                <p class="notification-item-label">Client Name</p>
+                                <p class="notification-item-label">Company Name</p>
                             </div>
                             <div>
                                 <p class="notification-item-value">${notification.total_change_order_amount}</p>

@@ -50,9 +50,9 @@ class InvoiceApprovalNotification extends Notification
             return ['database'];
         }
 
-//        if($preferences->send_email == 1) {
-//            $channels[] = 'mail';
-//        }
+        if($preferences->send_email == 1) {
+            $channels[] = 'mail';
+        }
 
         if($preferences->send_push == 1) {
             $channels[] = 'firebase';

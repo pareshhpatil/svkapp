@@ -122,7 +122,6 @@ class ChangeOrderHelper
                 if($User->email_id != 'Sub@gmail.com') {
                     if(!empty($User->fcm_token)) {
                         $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
-                        //$User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
                     }
                 }
             }

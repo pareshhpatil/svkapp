@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Merchant;
 
+use App\Jobs\ProcessInvoiceApprove;
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
 use App\Notifications\InvoiceApprovalNotification;
@@ -90,10 +91,11 @@ class InvoiceHelper
 //                if(!empty($testUser->fcm_token)) {
 //                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
 //                }
-            dd($Users);
+
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
-                    $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                    dispatch(new ProcessInvoiceApprove($invoiceNumber, $paymentRequestID, $User));
+//                    $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
                 }
             }
         }

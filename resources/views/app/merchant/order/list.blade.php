@@ -335,6 +335,34 @@
 <script>
     list_name = '{{$list_name}}';
     //showLastRememberSearchCriteria = '{{isset($showLastRememberSearchCriteria) ? $showLastRememberSearchCriteria : ''}}';
+
+
+    $(function() {
+
+        let getUrlParameter = function getUrlParameter(sParam) {
+            let sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+        let orderID = getUrlParameter('order_id');
+
+        if(orderID) {
+            $('#basic2').modal('show');
+            $('#basic2').find("#encrypt_id").val(orderID)
+
+        }
+    })
  </script>
 
 @endsection
