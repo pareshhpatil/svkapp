@@ -365,10 +365,11 @@ class Dashboard extends Controller
                 $this->view->software_suggest = 1;
                 $this->session->removeCookie('registration_campaign_id');
             }
-            dd($campaign_id);
+            
             $this->view->render('header/app');
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');
+            dd($campaign_id);
         } catch (Exception $e) {
             Sentry\captureException($e);
 
