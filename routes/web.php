@@ -440,7 +440,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('import/contract/upload',  'ImportController@uploadContract')->name("merchant.imports.contract.upload");
   Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
-  Route::get('contract/import/{contract_id}', 'ImportController@contract')->name('merchant.import.contract');
+  Route::get('contract/import/{contract_id?}', 'ImportController@contract')->name('merchant.import.contract');
 
 });
 

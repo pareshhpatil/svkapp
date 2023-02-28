@@ -255,6 +255,8 @@
                 $('#headerRow').css('z-index',3);
                 $('#footerRow').css('z-index',3);
             });*/
+
+            this.saveParticulars();
         }
         @php 
             $billcodeJson=json_encode($bill_codes);

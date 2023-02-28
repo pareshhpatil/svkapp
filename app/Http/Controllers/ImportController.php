@@ -46,7 +46,7 @@ class ImportController extends Controller
         //dd($data['list']);
         foreach ($data['list'] as $k => $v) {
             $data['list']{
-            $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
+                $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
         }
         $data['project_id'] = ($project_id != null) ? Encrypt::decode($project_id) : 0;
         $data['datatablejs'] = 'table-no-export';
@@ -63,15 +63,17 @@ class ImportController extends Controller
      *
      * @return void
      */
-    public function contract($contract_id)
+    public function contract($contract_id = null)
     {
 
         $data = Helpers::setBladeProperties('Import Contract', [], [14]);
         $data['list'] = $this->importModel->getContractUploadList($this->merchant_id);
         //dd($data['list']);
         foreach ($data['list'] as $k => $v) {
-            $data['list']{$k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
-            $data['list']{$k}->contract_id = Encrypt::encode($v->parent_id);
+            $data['list']{
+                $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
+            $data['list']{
+                $k}->contract_id = Encrypt::encode($v->parent_id);
         }
         $data['contract_id'] = ($contract_id != null) ? Encrypt::decode($contract_id) : 0;
         $data['datatablejs'] = 'table-no-export';
@@ -284,6 +286,10 @@ class ImportController extends Controller
             $column_name[] = 'Description';
             $column_name[] = 'Scheduled Value';
             $column_name[] = 'Work Retainage %';
+            $column_name[] = 'Project Id';
+            $column_name[] = 'Cost Code';
+            $column_name[] = 'Sub Total Group';
+            $column_name[] = 'Bill Code Detail (Yes/No)';
             $title = 'Contract';
         }
 
