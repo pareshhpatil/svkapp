@@ -148,7 +148,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold">PERIOD TO: {{ $info['cycle_name'] }}</p>
                         </td>
                         <td width="25%" class="text-right">
-                        <label class="text-xs mr-2 mt-1">OWNER</label> <input class=""   type="checkbox" value="" id="flexCheckDefault3">
+                        <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">OWNER</label> <input class="" type="checkbox" value=""></p>
    
                         </td>
                     </tr>
@@ -158,7 +158,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold">CONTRACT FOR:</p>
                         </td>
                         <td width="25%" class="text-right"> 
-                            <label class="text-xs mr-2 mt-1">ARCHITECT</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">
+                            <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">ARCHITECT</label> <input class="" type="checkbox" value=""></p>
    
                         </td>
                     </tr>
@@ -173,7 +173,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold">CONTRACT DATE: <x-localize :date="$info['project_details']->contract_date" type="date" /></p>
                         </td>
                         <td width="25%" class="text-right"> 
-                            <label class="text-xs mr-2 mt-1">CONTRACTOR</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">
+                            <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">CONTRACTOR</label> <input class="" type="checkbox" value=""></p>
    
                         </td>    </tr>
                     <tr>
@@ -189,7 +189,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold">PROJECT NOS: {{$info['project_details']->project_code}}</p>
                         </td>
                         <td width="25%" class="text-right"> 
-                            <label class="text-xs mr-2 mt-1">FIELD</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">
+                            <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">FIELD</label> <input class="" type="checkbox" value=""></p>
    
                         </td>    </tr>
                     <tr>
@@ -198,7 +198,7 @@ $header='app.patron.invoice.invoice-master';}
                             <p class="text-xs font-bold"></p>
                         </td>
                         <td width="25%" class="text-right"> 
-                            <label class="text-xs mr-2 mt-1">OTHER</label> <input class="" type="checkbox" value="" id="flexCheckDefault3">
+                            <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">OTHER</label> <input class="" type="checkbox" value=""></p>
    
                         </td>  </tr>
                   
