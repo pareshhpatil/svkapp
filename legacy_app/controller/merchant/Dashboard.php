@@ -153,7 +153,7 @@ class Dashboard extends Controller
             $merchant_id = $this->session->get('merchant_id');
             $profile_step = $this->session->get('profile_step');
             $this->view->profile_step = $profile_step;
-            dd($profile_step);
+
             if ($profile_step > 0 && $profile_step < 4) {
                 header('Location: /merchant/getting-started', 301);
                 die();
@@ -185,7 +185,7 @@ class Dashboard extends Controller
                 $this->view->total_customer_display = $this->moneyFormatIndia($this->view->total_customer);
             }
             $this->view->paid_per = round($total_paid_sum * 100 / $total_invoice_sum);
-            
+            dd($total_invoice_sum);
             if ($total_invoice_sum == 0) {
                 $this->view->has_invoice = $this->model->getInvoiceCount($merchant_id);
             } else {
