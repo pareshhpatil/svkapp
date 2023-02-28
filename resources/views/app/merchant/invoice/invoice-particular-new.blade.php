@@ -1717,11 +1717,11 @@
                     },
                     initializeDropdowns(){
                         for(let v=0; v < this.fields.length; v++){
-                           // this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,'body',v)
-                           // this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,'body',v)
-                           // this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,'body',v)
                             // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
-                           // this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,'body',v)
+                            this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,'body',v)
                         }
                     },
                     virtualSelect(id, type, options, selectedValue,dropboxWrapper='body',index){
