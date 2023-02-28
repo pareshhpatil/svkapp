@@ -3320,6 +3320,7 @@ class InvoiceController extends AppController
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);
+
         if (strlen($request_id) != 10) {
             throw new Exception('Invalid id ' . $request_id);
         }
@@ -3559,7 +3560,6 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
-
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
@@ -3610,6 +3610,7 @@ class InvoiceController extends AppController
                     $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
                     $particulars[$key]->retainage_amount_stored_materials = '';
                     $particulars[$key]->current_stored_materials = '';
+                    $particulars[$key]->id = '';
                 }
             }
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
