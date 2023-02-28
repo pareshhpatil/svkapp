@@ -153,6 +153,7 @@ class Dashboard extends Controller
             $merchant_id = $this->session->get('merchant_id');
             $profile_step = $this->session->get('profile_step');
             $this->view->profile_step = $profile_step;
+            dd($profile_step);
             if ($profile_step > 0 && $profile_step < 4) {
                 header('Location: /merchant/getting-started', 301);
                 die();
@@ -367,7 +368,6 @@ class Dashboard extends Controller
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');
         } catch (Exception $e) {
-            dd($e);
             Sentry\captureException($e);
 
             SwipezLogger::error(__CLASS__, '[E001]Error while merchant dashboard initiate Error: for merchant [' . $user_id . '] ' . $e->getMessage());
