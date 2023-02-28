@@ -56,6 +56,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        dd($exception);
         if ($exception instanceof NotFoundHttpException) {
             // pass to legacy framework - contents of index.php
             App::make("SwipezLegacyFramework");
