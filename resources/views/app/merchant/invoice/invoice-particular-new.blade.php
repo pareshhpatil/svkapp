@@ -1736,10 +1736,12 @@
                                     selectedValue='Yes';
                                 }
                             }
-                            allowNewOption= false;
+                            if(type!='group') {
+                                allowNewOption= false;
+                            }
                             search= false;
                         }
-
+                       
                         if(type === 'bill_code') {
                             vs_class = 'vs-option'
                         }else {
@@ -1779,8 +1781,20 @@
                                 }
                             }
                             if(type === 'group'){
+                                if(!groups.includes(this.value) && this.value !== '') {
+                                    groups.push(this.value)
+                                    for (let g = 0; g < particularray.length; g++) {
+                                        let groupSelector = document.querySelector('#group' + particularray[g].pint);
+
+                                        if('group'+id === 'group' + particularray[g].pint)
+                                            groupSelector.setOptions(groups, this.value);
+                                        else
+                                            groupSelector.setOptions( groups, particularray[g].group);
+                                    }
+                                }
                                 particularray[index].group = this.value
                             }
+
                             if(type === 'cost_type'){
                                 particularray[index].cost_type = this.value
                             }
