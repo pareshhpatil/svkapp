@@ -327,7 +327,7 @@ class Dashboard extends Controller
                 $merchant_notification = $this->common->getListValue('merchant_notification', 'merchant_id', $merchant_id, 1, ' and notification_sent > DATE_SUB(now(), INTERVAL 6 MONTH) order by id desc limit 20');
                 $this->session->set('merchant_notification', $merchant_notification);
             }
-            dd($merchant_notification);
+
             $merchant_notification = $this->setNotificationTime($merchant_notification);
             $this->view->merchant_notification = $merchant_notification;
             $this->view->document_upload = $this->session->get('document_upload');
@@ -346,7 +346,7 @@ class Dashboard extends Controller
 
             $this->view->from_date = new DateTime(date('Y-m-d'));
             $this->view->to_date = new DateTime(date('Y-m-d'));
-
+            dd($report_days);
             if ($this->view->help_hero_popup == 0) {
                 $this->session->remove('new_merchant');
             }
