@@ -299,7 +299,7 @@ class Dashboard extends Controller
             } else {
                 $settlement = 0;
             }
-            dd($settlement);
+
             $online_trans = $on_tr['unsettled'] + $ex_tr['unsettled'] + $on_tr['settled'] + $ex_tr['settled'];
             //$pending_settlement = $online_trans - $totalcapture;
             $pending_settlement = $on_tr['unsettled'] + $ex_tr['unsettled'];
@@ -327,6 +327,7 @@ class Dashboard extends Controller
                 $merchant_notification = $this->common->getListValue('merchant_notification', 'merchant_id', $merchant_id, 1, ' and notification_sent > DATE_SUB(now(), INTERVAL 6 MONTH) order by id desc limit 20');
                 $this->session->set('merchant_notification', $merchant_notification);
             }
+            dd($merchant_notification);
             $merchant_notification = $this->setNotificationTime($merchant_notification);
             $this->view->merchant_notification = $merchant_notification;
             $this->view->document_upload = $this->session->get('document_upload');
