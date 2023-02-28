@@ -58,6 +58,7 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof NotFoundHttpException) {
             // pass to legacy framework - contents of index.php
+            dd("bnm");
             App::make("SwipezLegacyFramework");
             die();
         }
