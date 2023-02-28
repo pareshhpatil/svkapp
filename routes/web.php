@@ -376,7 +376,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
 //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
-  Route::any('contract/create/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.create.new');
+  Route::any('contract/create/{step?}/{contract_id?}/{bulk_id?}', 'ContractController@loadContract')->name('contract.create.new');
 
   Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')->name('contract.update.new');
 
@@ -429,7 +429,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 
   Route::get('imports',  'CompanyProfileController@imports')->name("merchant.imports");
-  Route::get('import/format/billCode',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
+  Route::get('import/format/{type}',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
   Route::get('import/billcodes/approve/{bulk_id}',  'ImportController@approveBillCodes')->name("merchant.imports.billCode.approve");
   Route::get('import/billcodes/error/{bulk_id}',  'ImportController@errorBillCodes')->name("merchant.imports.billCode.approve");
   Route::get('import/download/{bulk_id}',  'ImportController@downloadImportFile')->name("merchant.imports.billCode.download");
@@ -437,8 +437,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('import/billCodes/delete/{type}/{id}',  'ImportController@deleteBillCode')->name("merchant.imports.billCode.delete");
   Route::get('import/delete/{id}',  'ImportController@deleteSheet')->name("merchant.imports.delete");
   Route::post('import/billCode/upload',  'ImportController@uploadBillCode')->name("merchant.imports.billCode.upload");
+  Route::post('import/contract/upload',  'ImportController@uploadContract')->name("merchant.imports.contract.upload");
   Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
+  Route::get('contract/import/{contract_id}', 'ImportController@contract')->name('merchant.import.contract');
+
 });
 
 Route::group(['prefix' => 'patron'], function () {

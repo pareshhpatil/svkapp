@@ -2688,7 +2688,8 @@ class InvoiceController extends AppController
             if (!empty($change_order_ids)) {
                 $info['last_month_co_amount'] = 0;
                 $info['this_month_co_amount'] = 0;
-                $start_date = date("Y-m-d", strtotime("first day of previous month"));
+                //$start_date = date("Y-m-d", strtotime("first day of previous month"));
+                $start_date='1990-01-01';
                 $end_date = date("Y-m-01");
                 $info['last_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
                 $start_date = date("Y-m-01");
