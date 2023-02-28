@@ -13,32 +13,43 @@ header('Cache-Control: max-age=604800');
   |
  */
 
-Route::get('/', 'HomeController@homepage')->name('home');
-Route::get('merchant/register', 'HomeController@register')->name('home.register');
-Route::get('login', 'HomeController@login')->name('home.login');
-Route::get('billing-software', 'HomeController@billing')->name('home.billing');
-Route::get('bulk-invoicing', 'HomeController@bulkinvoicing')->name('home.billing.feature.bulkinvoicing');
-Route::get('payment-reminder', 'HomeController@paymentreminder')->name('home.billing.feature.paymentreminder');
-Route::get('payment-collections', 'HomeController@paymentcollections')->name('home.paymentcollections');
-Route::get('gst-filing-software', 'HomeController@gstfiling')->name('home.gstfiling');
-Route::get('gst-reconciliation-software', 'HomeController@gstrecon')->name('home.gstrecon');
-Route::get('payouts', 'HomeController@payouts')->name('home.payouts');
-Route::get('expense-management-software', 'HomeController@expenses')->name('home.expenses');
-Route::get('event-registration', 'HomeController@event')->name('home.event');
-Route::get('venue-booking-software', 'HomeController@venuebooking')->name('home.booking');
-Route::get('website-builder', 'HomeController@websitebuilder')->name('home.websitebuilder');
-Route::get('online-form-builder', 'HomeController@formbuilder')->name('home.formbuilder');
-Route::get('url-shortener', 'HomeController@urlshortener')->name('home.urlshortener');
-Route::get('inventory-management-software', 'HomeController@inventorymanagement')->name('home.inventorymanagement');
-Route::get('woocommerce-invoicing', 'HomeController@woocommerce_invoicing')->name('home.woocommerce.invoice');
-Route::get('woocommerce-payment-gateway', 'HomeController@woocommerce_paymentgateway')->name('home.woocommerce.paymentgateway');
-Route::get('e-invoicing', 'HomeController@einvoicing')->name('home.einvoicing');
-Route::get('download-invoice-format', 'DownloadInvoiceFormatsController@index')->name('home.invoiceformats');
-Route::get('invoice-template', 'DownloadInvoiceFormatsController@invoiceTemplate')->name('home.invoicetemplates');
-Route::get('invoice-template-word', 'DownloadInvoiceFormatsController@invoiceTemplateWord')->name('home.wordinvoicetemplates');
-Route::get('invoice-template-excel', 'DownloadInvoiceFormatsController@invoiceTemplateExcel')->name('home.excelinvoicetemplates');
-Route::get('invoice-template-pdf', 'DownloadInvoiceFormatsController@invoiceTemplatePDF')->name('home.pdfinvoicetemplates');
-Route::get('payment-link', 'HomeController@paymentLink')->name('home.paymentlink');
+//Route::get('/', 'HomeController@homepage')->name('home');
+
+//Route::get('merchant/register', 'HomeController@register')->name('home.register');
+
+if(env('BRIQ_URL_REDIRECTION')){
+  Route::redirect('login', env('BRIQ_APP_URL'), 301);
+  Route::redirect('merchant/register',env('BRIQ_APP_URL'), 301);
+  Route::redirect('/', env('BRIQ_APP_URL'), 301);
+}
+else {
+  Auth::routes(['register' => false]);
+  Route::redirect('/', '/login' , 301);
+}
+Route::get('404', 'HomeController@pagenotfound');
+// Route::get('billing-software', 'HomeController@billing')->name('home.billing');
+//Route::get('bulk-invoicing', 'HomeController@bulkinvoicing')->name('home.billing.feature.bulkinvoicing');
+//Route::get('payment-reminder', 'HomeController@paymentreminder')->name('home.billing.feature.paymentreminder');
+//Route::get('payment-collections', 'HomeController@paymentcollections')->name('home.paymentcollections');
+//Route::get('gst-filing-software', 'HomeController@gstfiling')->name('home.gstfiling');
+//Route::get('gst-reconciliation-software', 'HomeController@gstrecon')->name('home.gstrecon');
+//Route::get('payouts', 'HomeController@payouts')->name('home.payouts');
+//Route::get('expense-management-software', 'HomeController@expenses')->name('home.expenses');
+//Route::get('event-registration', 'HomeController@event')->name('home.event');
+//Route::get('venue-booking-software', 'HomeController@venuebooking')->name('home.booking');
+//Route::get('website-builder', 'HomeController@websitebuilder')->name('home.websitebuilder');
+// Route::get('online-form-builder', 'HomeController@formbuilder')->name('home.formbuilder');
+// Route::get('url-shortener', 'HomeController@urlshortener')->name('home.urlshortener');
+// Route::get('inventory-management-software', 'HomeController@inventorymanagement')->name('home.inventorymanagement');
+// Route::get('woocommerce-invoicing', 'HomeController@woocommerce_invoicing')->name('home.woocommerce.invoice');
+// Route::get('woocommerce-payment-gateway', 'HomeController@woocommerce_paymentgateway')->name('home.woocommerce.paymentgateway');
+// Route::get('e-invoicing', 'HomeController@einvoicing')->name('home.einvoicing');
+// Route::get('download-invoice-format', 'DownloadInvoiceFormatsController@index')->name('home.invoiceformats');
+// Route::get('invoice-template', 'DownloadInvoiceFormatsController@invoiceTemplate')->name('home.invoicetemplates');
+// Route::get('invoice-template-word', 'DownloadInvoiceFormatsController@invoiceTemplateWord')->name('home.wordinvoicetemplates');
+// Route::get('invoice-template-excel', 'DownloadInvoiceFormatsController@invoiceTemplateExcel')->name('home.excelinvoicetemplates');
+// Route::get('invoice-template-pdf', 'DownloadInvoiceFormatsController@invoiceTemplatePDF')->name('home.pdfinvoicetemplates');
+// Route::get('payment-link', 'HomeController@paymentLink')->name('home.paymentlink');
 
 Route::get('sitemap.xml', 'SitemapController@index');
 
@@ -59,59 +70,58 @@ Route::get('download-estimate-format', 'DownloadInvoiceFormatsController@Estimat
 
 Route::any('export-invoice-formats', 'DownloadInvoiceFormatsController@download')->middleware('throttle:5,1');
 
-Route::get('billing-software-for-cable-operator', 'HomeController@cable')->name('home.industry.cable');
-Route::get('billing-software-for-franchise-business', 'HomeController@franchise')->name('home.industry.franchise');
-Route::get('billing-software-for-isp-telcos', 'HomeController@isp')->name('home.industry.isp');
+//Route::get('billing-software-for-cable-operator', 'HomeController@cable')->name('home.industry.cable');
+//Route::get('billing-software-for-franchise-business', 'HomeController@franchise')->name('home.industry.franchise');
+//Route::get('billing-software-for-isp-telcos', 'HomeController@isp')->name('home.industry.isp');
 
-Route::get('billing-software-for-school', 'HomeController@education')->name('home.industry.education');
-Route::get('billing-software-for-travel-and-tour-operator', 'HomeController@travelntour')->name('home.industry.travelntour');
-Route::get('event-registration-for-entertainment-event', 'HomeController@entertainmentevent')->name('home.industry.entertainmentevent');
-Route::get('event-registration-for-hospitality-event', 'HomeController@hospitalityevent')->name('home.industry.hospitalityevent');
-Route::get('venue-booking-management-for-health-and-fitness', 'HomeController@venuebookingfitness')->name('home.industry.bookingfitness');
-Route::get('billing-and-venue-booking-software-for-housing-societies', 'HomeController@societybooking')->name('home.industry.societybooking');
-Route::get('milk-dairy-billing-software', 'HomeController@milkdairy')->name('home.industry.milkdairy');
+//Route::get('billing-software-for-school', 'HomeController@education')->name('home.industry.education');
+//Route::get('billing-software-for-travel-and-tour-operator', 'HomeController@travelntour')->name('home.industry.travelntour');
+//Route::get('event-registration-for-entertainment-event', 'HomeController@entertainmentevent')->name('home.industry.entertainmentevent');
+//Route::get('event-registration-for-hospitality-event', 'HomeController@hospitalityevent')->name('home.industry.hospitalityevent');
+//Route::get('venue-booking-management-for-health-and-fitness', 'HomeController@venuebookingfitness')->name('home.industry.bookingfitness');
+//Route::get('billing-and-venue-booking-software-for-housing-societies', 'HomeController@societybooking')->name('home.industry.societybooking');
+//Route::get('milk-dairy-billing-software', 'HomeController@milkdairy')->name('home.industry.milkdairy');
 
 //Route::get('short-url-solution-for-utility-provider', 'HomeController@utilityprovider')->name('home.industry.utilityprovider');
-Route::get('short-url-solution-for-enterprise', 'HomeController@enterprises')->name('home.industry.enterprises');
-Route::get('invoicing-software-for-freelancers-and-consultants', 'HomeController@freelancers')->name('home.industry.freelancers');
+//Route::get('short-url-solution-for-enterprise', 'HomeController@enterprises')->name('home.industry.enterprises');
+//Route::get('invoicing-software-for-freelancers-and-consultants', 'HomeController@freelancers')->name('home.industry.freelancers');
 
-Route::get('pricing', 'HomeController@pricing')->name('home.pricing');
-Route::get('billing-software-pricing', 'HomeController@billingpricing')->name('home.pricing.billing');
-Route::get('event-registration-pricing', 'HomeController@eventpricing')->name('home.pricing.event');
-Route::get('venue-booking-software-pricing', 'HomeController@bookingcalendarpricing')->name('home.pricing.bookingcalendar');
-Route::get('website-builder-pricing', 'HomeController@websitebuilderpricing')->name('home.pricing.websitebuilder');
-Route::get('url-shortener-pricing', 'HomeController@urlshortenerpricing')->name('home.pricing.urlshortener');
-Route::get('payment-gateway-charges', 'HomeController@paymentgatewaycharges')->name('home.pricing.onlinetransactions');
+// Route::get('pricing', 'HomeController@pricing')->name('home.pricing');
+// Route::get('billing-software-pricing', 'HomeController@billingpricing')->name('home.pricing.billing');
+// Route::get('event-registration-pricing', 'HomeController@eventpricing')->name('home.pricing.event');
+// Route::get('venue-booking-software-pricing', 'HomeController@bookingcalendarpricing')->name('home.pricing.bookingcalendar');
+// Route::get('website-builder-pricing', 'HomeController@websitebuilderpricing')->name('home.pricing.websitebuilder');
+// Route::get('url-shortener-pricing', 'HomeController@urlshortenerpricing')->name('home.pricing.urlshortener');
+// Route::get('payment-gateway-charges', 'HomeController@paymentgatewaycharges')->name('home.pricing.onlinetransactions');
 
 Route::get('package/{link}', 'UserController@paymentLogin');
 
-Route::get('terms', 'HomeController@terms')->name('home.footer.terms');
-Route::get('privacy', 'HomeController@privacy')->name('home.footer.privacy');
-Route::get('terms-popup', 'HomeController@termspopup')->name('home.footer.terms.popup');
-Route::get('terms-popup/{merchant_id}', 'HomeController@termspopup')->name('home.footer.terms.popup.merchant');
-Route::get('privacy-popup', 'HomeController@privacypopup')->name('home.footer.privacy.popup');
-Route::get('privacy-popup/{merchant_id}', 'HomeController@privacypopup')->name('home.footer.privacy.popup.merchant');
-Route::get('partner', 'HomeController@partner')->name('home.footer.partner');
-Route::get('in-the-news', 'HomeController@inthenews')->name('home.footer.inthenews');
-Route::get('aboutus', 'HomeController@aboutus')->name('home.footer.aboutus');
-Route::get('contactus', 'HomeController@contactus')->name('home.footer.contactus');
-Route::get('workfromhome', 'HomeController@workfromhome')->name('home.footer.workfromhome');
-Route::get('customerstories', 'HomeController@customerstories')->name('home.footer.customerstories');
-Route::get('tradeindia', 'HomeController@tradeindia')->name('home.footer.tradeindia');
-Route::get('boost360', 'HomeController@boost360')->name('home.footer.boost360');
-Route::get('yatra', 'HomeController@partnerPage');
-Route::get('nsrcel', 'HomeController@partnerPage');
-Route::get('taxprint', 'HomeController@partnerPage');
+// Route::get('terms', 'HomeController@terms')->name('home.footer.terms');
+// Route::get('privacy', 'HomeController@privacy')->name('home.footer.privacy');
+// Route::get('terms-popup', 'HomeController@termspopup')->name('home.footer.terms.popup');
+// Route::get('terms-popup/{merchant_id}', 'HomeController@termspopup')->name('home.footer.terms.popup.merchant');
+// Route::get('privacy-popup', 'HomeController@privacypopup')->name('home.footer.privacy.popup');
+// Route::get('privacy-popup/{merchant_id}', 'HomeController@privacypopup')->name('home.footer.privacy.popup.merchant');
+// Route::get('partner', 'HomeController@partner')->name('home.footer.partner');
+// Route::get('in-the-news', 'HomeController@inthenews')->name('home.footer.inthenews');
+// Route::get('aboutus', 'HomeController@aboutus')->name('home.footer.aboutus');
+// Route::get('contactus', 'HomeController@contactus')->name('home.footer.contactus');
+// Route::get('workfromhome', 'HomeController@workfromhome')->name('home.footer.workfromhome');
+// Route::get('customerstories', 'HomeController@customerstories')->name('home.footer.customerstories');
+// Route::get('tradeindia', 'HomeController@tradeindia')->name('home.footer.tradeindia');
+// Route::get('boost360', 'HomeController@boost360')->name('home.footer.boost360');
+// Route::get('yatra', 'HomeController@partnerPage');
+// Route::get('nsrcel', 'HomeController@partnerPage');
+// Route::get('taxprint', 'HomeController@partnerPage');
 
 Route::get('moneycontrol/easybiz/{link}', 'UserController@easybizsetpassword');
 Route::get('moneycontrol/easybiz', 'UserController@easybizlanding');
-Route::get('collect-it', 'HomeController@collectit')->name('home.collectit');
+//Route::get('collect-it', 'HomeController@collectit')->name('home.collectit');
 Route::get('collect-it-billing-app', 'HomeController@collectit')->name('home.collectit.billing');
 
-Route::get('getintouch/{subject}', 'HomeController@getintouch');
-Route::get('404', 'HomeController@pagenotfound');
+//Route::get('getintouch/{subject}', 'HomeController@getintouch');
 Route::get('briq-register', 'HomeController@merchantnotfound');
-Route::get('lp/{page}/{company}', 'HomeController@landingpage');
+//Route::get('lp/{page}/{company}', 'HomeController@landingpage');
 
 
 Route::get('/m/{url}', 'MerchantPagesController@merchantIndex')->name('mpages.home');
@@ -471,7 +481,7 @@ Route::post('merchant/register/validateotp', 'UserController@validateOTP')->midd
 
 Route::post('login/passwordsave', 'UserController@passwordsave')->middleware('throttle:5,1');
 
-Auth::routes(['register' => false]);
+
 Route::get('register', 'HomeController@register')->name('register');
 
 
@@ -539,23 +549,23 @@ Route::get('online-compound-interest-calculator', 'FreeBusinessToolsController@c
 Route::get('free-online-gst-lookup', 'FreeBusinessToolsController@gst_lookup');
 Route::post('free-online-gst-lookup', 'FreeBusinessToolsController@gst_lookup')->middleware("Captcha");
 Route::get('online-hsn-code-lookup', 'FreeBusinessToolsController@hsn_code_lookup');
-Route::get('payment-page', 'HomeController@paymentpage')->name('home.feature.custom.payment.page');
-Route::get('online-invoicing', 'HomeController@invoicing')->name('home.billing.feature.onlineinvoicing');
-Route::get('quickbooks-alternative', 'HomeController@quickbooks')->name('home.alternative.quickbooks');
-Route::get('partner-benefits', 'HomeController@benifits')->name('home.partnerbenefits');
-Route::get('integrations', 'HomeController@integration_landing_page')->name('home.integrations');
-Route::get('/partner-benefits/razorpay', 'HomeController@razorpay');
-Route::get('/partner-benefits/cashfree', 'HomeController@cashfree');
-Route::get('cashfree-payout', 'HomeController@cashfree_payout');
-Route::get('/partner-benefits/stripe', 'HomeController@stripe');
-Route::get('/partner-benefits/payoneer', 'HomeController@payoneer');
-Route::get('/partner-benefits/amazon-web-services', 'HomeController@amazon');
-Route::get('/partner-benefits/lending-kart', 'HomeController@lending_kart');
-Route::get('/partner-benefits/boot-360', 'HomeController@boot');
-Route::get('/partner-benefits/dalal-street', 'HomeController@dalal_street');
-Route::get('/partner-benefits/scatter', 'HomeController@scatter_content');
-Route::get('/partner-benefits/sms', 'HomeController@swipez_sms');
-Route::get('/partner-benefits/website-builder', 'HomeController@website_builder');
+//Route::get('payment-page', 'HomeController@paymentpage')->name('home.feature.custom.payment.page');
+//Route::get('online-invoicing', 'HomeController@invoicing')->name('home.billing.feature.onlineinvoicing');
+//Route::get('quickbooks-alternative', 'HomeController@quickbooks')->name('home.alternative.quickbooks');
+//Route::get('partner-benefits', 'HomeController@benifits')->name('home.partnerbenefits');
+//Route::get('integrations', 'HomeController@integration_landing_page')->name('home.integrations');
+//Route::get('/partner-benefits/razorpay', 'HomeController@razorpay');
+//Route::get('/partner-benefits/cashfree', 'HomeController@cashfree');
+//Route::get('cashfree-payout', 'HomeController@cashfree_payout');
+// Route::get('/partner-benefits/stripe', 'HomeController@stripe');
+// Route::get('/partner-benefits/payoneer', 'HomeController@payoneer');
+// Route::get('/partner-benefits/amazon-web-services', 'HomeController@amazon');
+// Route::get('/partner-benefits/lending-kart', 'HomeController@lending_kart');
+// Route::get('/partner-benefits/boot-360', 'HomeController@boot');
+// Route::get('/partner-benefits/dalal-street', 'HomeController@dalal_street');
+// Route::get('/partner-benefits/scatter', 'HomeController@scatter_content');
+// Route::get('/partner-benefits/sms', 'HomeController@swipez_sms');
+// Route::get('/partner-benefits/website-builder', 'HomeController@website_builder');
 
 Route::post('/setu/webhook/notifications', 'MerchantPagesController@setu');
 Route::any('/stripe/webhook/notifications', 'MerchantPagesController@stripe');
