@@ -122,12 +122,13 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
-    public function getPreviousContractBill($merchant_id, $contract_id)
+    public function getPreviousContractBill($merchant_id, $contract_id,$request_id)
     {
         $retObj = DB::table('payment_request')
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
+            ->where('payment_request_id', '<>',$request_id)
             ->whereNotIn('payment_request_status', [11, 3])
             ->orderBy('payment_request_id', 'desc')
             ->first();
