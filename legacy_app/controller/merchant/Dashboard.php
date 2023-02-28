@@ -185,7 +185,7 @@ class Dashboard extends Controller
                 $this->view->total_customer_display = $this->moneyFormatIndia($this->view->total_customer);
             }
             $this->view->paid_per = round($total_paid_sum * 100 / $total_invoice_sum);
-            dd($total_invoice_sum);
+
             if ($total_invoice_sum == 0) {
                 $this->view->has_invoice = $this->model->getInvoiceCount($merchant_id);
             } else {
@@ -249,6 +249,7 @@ class Dashboard extends Controller
                     $completion_percentage += 16.67;
                 }
             }
+            dd($completion_percentage);
             if ($completion_percentage > 14 && $completion_percentage < 19) {
                 $completion_percentage = 16.67;
                 $circular_percentage = 17;
