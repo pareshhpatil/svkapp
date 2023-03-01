@@ -178,14 +178,14 @@ class ImportController extends Controller
         return redirect()->back()->withErrors(['Invalid request']);
     }
 
-    public function errorBillCodes($link)
+    public function errorImports($link)
     {
         $bulk_id = Encrypt::decode($link);
         if (is_numeric($bulk_id)) {
-            $error_json = $this->importModel->getColumnValue('bulk_upload', 'bulk_upload_id', $bulk_id, 'error_json', ['type' => '11', 'merchant_id' => $this->merchant_id]);
+            $error_json = $this->importModel->getColumnValue('bulk_upload', 'bulk_upload_id', $bulk_id, 'error_json', ['merchant_id' => $this->merchant_id]);
             if ($error_json != false) {
 
-                $data = Helpers::setBladeProperties('Errors Bill codes', [], [14]);
+                $data = Helpers::setBladeProperties('Errors in sheet', [], [14]);
                 $errors = json_decode($error_json, 1);
                 foreach ($errors as $row) {
                     foreach ($row as $key => $val) {

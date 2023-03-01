@@ -152,7 +152,7 @@
                                     $link='/merchant/import/billCode/view/';
                                     }elseif($v->status==1)
                                     {
-                                    $link='/merchant/import/billcodes/error/';
+                                    $link='/merchant/import/error/';
                                     }
                                     else{
                                     $link='';
@@ -236,7 +236,7 @@
 
                                             @if($v->status=='1' || $v->status=='9')
                                             <li>
-                                                <a href="/merchant/import/billcodes/error/{{$v->bulk_id}}" target="_blank" ><i class="fa fa-exclamation-triangle"></i> View errors</a>
+                                                <a href="/merchant/import/error/{{$v->bulk_id}}" target="_blank" ><i class="fa fa-exclamation-triangle"></i> View errors</a>
                                             </li>
                                             @endif
 

@@ -5,7 +5,6 @@
 <div class="page-content">
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('merchant.import.billCode') }}
     </div>
     <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
     <!-- BEGIN PAGE CONTENT-->
