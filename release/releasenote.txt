@@ -3,3 +3,11 @@ composer require league/iso3166
 
 
 UPDATE `swipez_briq`.`customer_mandatory_column` SET `column_name` = 'Contact person name' WHERE (`id` = '2');
+=======
+Darland setup 
+----------------------------
+
+Add below lines in stage and Live Env files
+
+BRIQ_APP_URL=https://app.br.iq/#/home
+BRIQ_URL_REDIRECTION= true

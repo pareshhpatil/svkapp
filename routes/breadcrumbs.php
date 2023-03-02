@@ -468,3 +468,8 @@ Breadcrumbs::for('merchant.import.billCode', function ($trail) {
     $trail->push('Imports', url('/merchant/imports'));
     $trail->push('Bill codes');
 });
+Breadcrumbs::for('merchant.import.contract', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Imports', url('/merchant/imports'));
+    $trail->push('Contract');
+});

@@ -5,14 +5,15 @@
 <div class="page-content">
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('merchant.import.billCode') }}
+        {{ Breadcrumbs::render('merchant.import.contract') }}
     </div>
     <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
     <!-- BEGIN PAGE CONTENT-->
     <div class="row">
         @include('layouts.alerts')
         <div class="col-md-12">
-            <form action="/merchant/import/billCode/upload" enctype="multipart/form-data" method="post">
+            @if($contract_id>0)
+            <form action="/merchant/import/contract/upload" enctype="multipart/form-data" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="">
 
@@ -27,10 +28,10 @@
                                 </div>
                                 <div id="collapse_1" class="panel-collapse in">
                                     <div class="panel-body">
-                                        <p>Download the excel format for upload bill codes <a href="/merchant/import/format/billCode" class="btn btn-xs blue">Download
+                                        <p>Download the excel format for upload contract <a href="/merchant/import/format/contract" class="btn btn-xs blue">Download
                                                 format</a>
                                         </p>
-                                        <p>In the downloaded excel sheet enter bill code details. Use column names
+                                        <p>In the downloaded excel sheet enter contract details. Use column names
                                             mentioned in the excel sheet as reference.
                                         </p>
                                     </div>
@@ -55,21 +56,7 @@
                                                     <label class="control-label">Upload filled excel sheet</label>
                                                     
                                                     </div>
-                                                    
-                                                        @if($project_id==0)
-                                                        <div class="col-md-3 pl-0">
-                                                            <select name="project_id" style="width: 100%;" required class="form-control select2me" data-placeholder="Select project...">
-                                                                <option value=""></option>
-                                                                @foreach($projectLists as $v)
-                                                                <option value="{{$v->id}}">
-                                                                    {{$v->project_name}} | {{$v->project_id}}
-                                                                </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        @else
-                                                        <input type="hidden" name="project_id" value="{{$project_id}}" />
-                                                        @endif
+                                                        <input type="hidden" name="contract_id" value="{{$contract_id}}" />
                                                         <div class="col-md-3 pl-1" style="width: auto;">
                                                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                 <span class="btn default btn-file">
@@ -99,6 +86,9 @@
                     </div>
                 </div>
             </form>
+            @else
+            <a href="/merchant/contract/create" data-toggle="modal" class="btn green pull-right"> Create Contract </a>
+            @endif
             <!-- END UPLOAD EXCEL BOX -->
             <!-- BEGIN CREATED TEMPLATES LISTING BOX -->
             
@@ -143,13 +133,13 @@
                                 </td>
                                
                                 <td class="td-c">
-                                    {{$v->project_name}}
+                                    {{$v->contract_code}}
                                 </td>
                                 <td class="td-c">
                                     @php
                                     if(in_array($v->status,[3,4,5,9]))
                                     {
-                                    $link='/merchant/import/billCode/view/';
+                                    $link='/merchant/contract/create/2/'.$v->contract_id.'/';
                                     }elseif($v->status==1)
                                     {
                                     $link='/merchant/import/error/';
@@ -211,15 +201,12 @@
                                             </li>
                                             @if($v->status==3 || $v->status=='9')
                                             <li>
-                                                <a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View codes</a>
+                                                <a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View contract</a>
                                             </li>
-                                            <li>
-                                                <a href="#sendinvoice" onclick="document.getElementById('sendanchor').href = '/merchant/import/billcodes/approve/{{$v->bulk_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve
-                                                    codes</a>
-                                            </li>
+                                            
                                             @endif
                                             @if($v->status==5)
-                                            <li><a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View codes</a>
+                                            <li><a href="/merchant/contract/update/2/{{$v->contract_id}}"><i class="fa fa-table"></i> View contract</a>
                                             </li>
                                             @endif
                                             @if(in_array($v->status, [1,2,3]))
