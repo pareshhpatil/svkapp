@@ -32,8 +32,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="help-block">{$customer_default_column.customer_name|default:'Customer name'}</label>
-                            <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Customer name'}" name="customer_name">
+                            <label class="help-block">{$customer_default_column.customer_name|default:'Contact person name'}</label>
+                            <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Contact person name'}" name="customer_name">
                                 <option value=""></option>
                                 {foreach from=$customer_list item=v}
                                     {if {{$customer_selected}=={$v.customer_id}}}
@@ -145,7 +145,7 @@
                                 {$customer_default_column.customer_code|default:'Customer code'}
                                 </th>
                                 <th>
-                                {$customer_default_column.customer_name|default:'Customer name'}
+                                {$customer_default_column.customer_name|default:'Contact person name'}
                                 </th>
                                 <th>
                                     {$company_column_name}
