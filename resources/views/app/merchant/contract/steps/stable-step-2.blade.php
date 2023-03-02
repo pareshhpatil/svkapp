@@ -88,6 +88,8 @@
                 <div class="col-md-6">
                     <a data-cy="add_particulars_btn" href="javascript:;"  @click="await addNewRow()"
                        class="btn green pull-right mb-1"> Add new row </a>
+                    <a data-cy="add_particulars_btn" href="/merchant/contract/import/{{$contract_id}}"  
+                       class="btn green pull-right mb-1 mr-1"> Import </a>
                 </div>
             </div>
             <div class="table-scrollable tableFixHead">
@@ -253,6 +255,8 @@
                 $('#headerRow').css('z-index',3);
                 $('#footerRow').css('z-index',3);
             });*/
+
+            this.saveParticulars();
         }
         @php 
             $billcodeJson=json_encode($bill_codes);
@@ -674,6 +678,7 @@
                             _token: '{{ csrf_token() }}',
                             form_data: JSON.stringify(data),
                             link: $('#contract_id').val(),
+                            bulk_id: $('#bulk_id').val(),
                             contract_amount : $('#particulartotal').val().replace(/,/g,'')
                         },
                         success: function(data) {

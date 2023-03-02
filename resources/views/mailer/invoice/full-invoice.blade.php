@@ -252,7 +252,7 @@
                                             </div>
                                         </td>
 
-                                        <td style="width: 30%">
+                                        <td style="width: 30%;text-align: right;">
                                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</div>
                                                     <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif </div>
                                                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if( $contract_sum_to_date < 0)({{str_replace('-','',number_format($contract_sum_to_date,2))}}) @else{{number_format(($contract_sum_to_date),2)}}@endif</div>
@@ -272,7 +272,7 @@
                 <div style="margin-top: 8px; font-size: 12px; font-weight: 300">Total Retainage <span style="font-weight: 300;font-style: italic;">(Lines 5a + 5b, or Total in Column I of G703)</span>
                 </div>
                 </td>
-                <td style="width: 30%">
+                <td style="width: 30%;text-align: right;">
                     <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($info['total_retainage_amount'],2) < 0)({{str_replace('-','',number_format($info['total_retainage_amount'],2))}}) @else{{number_format($info['total_retainage_amount'],2)}}@endif</div>
                             <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($info['total_rasm'],2) < 0)({{str_replace('-','',number_format($info['total_rasm'],2))}})@else{{number_format($info['total_rasm'],2)}}@endif</div>
                                     @php $total_retainage = $info['total_retainage']; if($total_retainage == 0) $total_retainage = $info['total_i']; @endphp
@@ -286,7 +286,7 @@
                             <div style="margin-top: 0; font-size: 12px; font-weight: 700">6. TOTAL EARNED LESS RETAINAGE </div>
                             <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 4 minus Line 5 Total)</div>
                         </td>
-                        <td style="width: 30%">
+                        <td style="width: 30%;text-align: right;">
                             @php $total_earned_less_retain = $info['total_g']-($total_retainage) @endphp
                             <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if( $total_earned_less_retain < 0)({{str_replace('-','',number_format( $total_earned_less_retain , 2))}}) @else{{number_format( $total_earned_less_retain ,2)}}@endif</div>
                         </td>
@@ -299,7 +299,7 @@
                             <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 6 from prior Certificate)</div>
                         </td>
 
-                        <td style="width: 30%">
+                        <td style="width: 30%;text-align: right;">
                             <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['less_previous_certificates_for_payment'] < 0)({{str_replace('-','',number_format($info['less_previous_certificates_for_payment'],2))}}) @else{{number_format($info['less_previous_certificates_for_payment'],2)}}@endif</div>
                         </td>
 
@@ -310,7 +310,7 @@
                         <td>
                             <div style="margin-top: 0; font-size: 12px; font-weight: 700">8. CURRENT PAYMENT DUE </div>
                         </td>
-                        <td style="width: 30%">
+                        <td style="width: 30%;text-align: right;">
                             <div style="margin-top: 0; border: 1px solid; padding-top: 4px; padding-bottom: 4px; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['grand_total'] < 0)0.00 @else{{number_format($info['grand_total'],2)}}@endif</div>
                         </td>
                     </tr>
@@ -321,7 +321,7 @@
                             <div style="margin-top: 0; font-size: 12px; font-weight: 700">9. BALANCE TO FINISH, INCLUDING RETAINAGE </div>
                             <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 3 minus Line 6)</div>
                         </td>
-                        <td style="width: 30%">
+                        <td style="width: 30%;text-align: right;">
                             @php $balance_to_finish = $contract_sum_to_date - $total_earned_less_retain; @endphp
                             <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($balance_to_finish < 0) ({{str_replace('-','',number_format($balance_to_finish,2))}}) @else{{number_format($balance_to_finish,2)}}@endif</div>
                         </td>
@@ -336,13 +336,13 @@
                     </tr>
                     <tr>
                         <td style="font-size: 12px;padding: 2px;">Total changes approved in previous months by Owner</td>
-                        <td style="padding: 2px;font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </td>
-                        <td style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif</td>
+                        <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </td>
+                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif</td>
                     </tr>
                     <tr>
                         <td style="font-size: 12px;padding: 2px;">Total approved this month </td>
-                        <td style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif</td>
-                        <td style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif</td>
+                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif</td>
+                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif</td>
                     </tr>
                     <tr>
                         <td style=" text-align: right;font-size: 12px;padding: 2px;">TOTAL </td>
@@ -360,12 +360,12 @@
                         $tt1=$tt1+$info['last_month_co_amount'];
                         }
                         @endphp
-                        <td style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>{{number_format($tt,2)}} </td>
-                        <td style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif</td>
+                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>{{number_format($tt,2)}} </td>
+                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif</td>
                     </tr>
                     <tr>
                         <td style="font-size: 12px;padding: 2px;">NET CHANGES by Change Order </td>
-                        <td colspan="2" style="font-size: 12px;padding: 2px;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif </td>
+                        <td colspan="2" style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif </td>
                     </tr>
                 </table>
                 </td>
@@ -403,7 +403,7 @@
                                 <div style="margin-top: 0; font-size: 12px; font-weight: 700">AMOUNT CERTIFIED</div>
                             </td>
                             <td style="width: 30%">
-                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['grand_total'] < 0)0.00 @else{{number_format($info['grand_total'],2)}} @endif</div>
+                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['grand_total'] < 0)0.00 @else{{number_format($info['grand_total'],2)}} @endif</div>
                             </td>
                         </tr>
                     </table>
@@ -590,7 +590,7 @@
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px"> @if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
                                 </td>
-                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: center">
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</div>
                                 </td>
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
@@ -602,7 +602,12 @@
                                 @php
                                 $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                if($sub_total_g>0 && $sub_total_c>0)
+                                {
+                                    $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                }else{
+                                    $sub_total_g_by_c=0;
+                                }
                                 @endphp
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px">
@@ -626,7 +631,7 @@
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px"> @if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
                                 </td>
-                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: center">
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</div>
                                 </td>
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
@@ -658,9 +663,9 @@
                                     <div style="font-size: 14px"> @if($item['c'] < 0)({{str_replace('-','',number_format($item['c'],2))}}) @else{{ number_format($item['c'],2) }} @endif</div>
                                 </td>
                                 <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
-                                    <div style="font-size: 14px">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
+                                    <div style="font-size: 14px">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ number_format($item['d'],2) }} @endif </div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: center">
+                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',number_format($item['e'],2))}}) @else{{ number_format($item['e'],2) }} @endif</div>
                                 </td>
                                 <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
@@ -696,7 +701,7 @@
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 14px"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_d'] < 0) ({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{ number_format($info['total_d'], 2) }} @endif </div>
                                 </td>
-                                <td style="min-width: 90px;border-right:1px solid #313131; border-top:1px solid #313131; padding: 8px 2px; text-align: center">
+                                <td style="min-width: 90px;border-right:1px solid #313131; border-top:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 14px"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['total_e'] < 0) ({{str_replace('-','',number_format($info['total_e'],2))}}) @else{{ number_format($info['total_e'], 2) }} @endif</div>
                                 </td>
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131; padding: 8px 2px; text-align: right">

@@ -133,10 +133,12 @@
                                     <a href="/merchant/profile/settings">
                                         <i class="fa fa-cog"></i> Setting </a>
                                 </li>
+                                <?php if(env('BRIQ_URL_REDIRECTION') != true) { ?>
                                 <li>
                                     <a href="/logout">
                                         <i class="fa fa-sign-out"></i> <?php echo $menu['logout']; ?> </a>
                                 </li>
+                                <?php } ?>
                             </ul>
                         </li>
 

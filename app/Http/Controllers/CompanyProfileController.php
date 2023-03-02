@@ -353,6 +353,11 @@ class CompanyProfileController extends AppController
                             "title": "Bulk upload invoices / estimates",
                             "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
                             "link": "/merchant/bulkupload/newupload"
+                        },
+                        {
+                            "title": "Bulk upload Contracts",
+                            "desc": "Bulk upload contract for a project with an excel upload. Prepare contract information in excel and associate with a project with a simple upload.",
+                            "link": "/merchant/contract/import"
                         }
                     ]
                 }

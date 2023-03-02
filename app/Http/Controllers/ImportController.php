@@ -57,6 +57,33 @@ class ImportController extends Controller
     /**
      * @author Paresh
      *
+     * Renders form to upload contract particulars
+     *
+     * @param $contract_id - Encrypted contract id
+     *
+     * @return void
+     */
+    public function contract($contract_id = null)
+    {
+
+        $data = Helpers::setBladeProperties('Import Contract', [], [14]);
+        $data['list'] = $this->importModel->getContractUploadList($this->merchant_id);
+        //dd($data['list']);
+        foreach ($data['list'] as $k => $v) {
+            $data['list']{
+                $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
+            $data['list']{
+                $k}->contract_id = Encrypt::encode($v->parent_id);
+        }
+        $data['contract_id'] = ($contract_id != null) ? Encrypt::decode($contract_id) : 0;
+        $data['datatablejs'] = 'table-no-export';
+        $data['hide_first_col'] = 1;
+        return view('app/merchant/import/contract', $data);
+    }
+
+    /**
+     * @author Paresh
+     *
      * Validate and upload bill code sheet
      *
      * @param 
@@ -71,7 +98,7 @@ class ImportController extends Controller
             'fileupload' => ['required', new ExcelRule($file)],
         ]);
         //Validate uploaded excel file data
-        $response = $this->validateSheet($file->getPathName());
+        $response = $this->validateSheet($file->getPathName(), 'BillCodes');
         if (!is_numeric($response)) {
             return redirect()->back()->withErrors([$response]);
         }
@@ -87,7 +114,40 @@ class ImportController extends Controller
         return redirect()->back()->with('success', "File uploaded. You will be notified via email once the upload is completed.");
     }
 
-    private function validateSheet($file)
+    /**
+     * @author Paresh
+     *
+     * Validate and upload contract sheet
+     *
+     * @param 
+     *
+     * @return void
+     */
+    public function uploadContract(Request $request)
+    {
+        $file = $request->file('fileupload');
+        $request->validate([
+            'contract_id' => 'required',
+            'fileupload' => ['required', new ExcelRule($file)],
+        ]);
+        //Validate uploaded excel file data
+        $response = $this->validateSheet($file->getPathName(), 'Contract');
+        if (!is_numeric($response)) {
+            return redirect()->back()->withErrors([$response]);
+        }
+        $merchant_filename = $file->getClientOriginalName();
+        $id = $this->importModel->saveBulkuploadRecord($this->merchant_id, 12, $request->contract_id, $merchant_filename, $merchant_filename, 0, $response - 1, $this->user_id);
+        $encryptedFileName = $id * env('IMPORT_ENC_NUMBER');
+        $fileExtension = $file->getClientOriginalExtension();
+        $encryptedFileNameExt = $encryptedFileName . '.' . $fileExtension;
+
+        $this->importModel->updateBulkuploadStatus($id, $encryptedFileNameExt, 2);
+        Storage::disk('s3_bulkupload')->put($encryptedFileNameExt, file_get_contents($file));
+
+        return redirect()->back()->with('success', "File uploaded. You will be notified via email once the upload is completed.");
+    }
+
+    private function validateSheet($file, $type)
     {
         $inputFileType = PHPExcel_IOFactory::identify($file);
         $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -95,7 +155,7 @@ class ImportController extends Controller
         $worksheet = $objPHPExcel->getSheet(0);
         $subject = $objPHPExcel->getProperties()->getSubject();
         $highestRow = $worksheet->getHighestRow(); // e.g. 10
-        if ($subject != 'billCodes') {
+        if ($subject != $type) {
             return 'Invalid sheet please download format sheet and upload again';
         }
         if ($highestRow < 2) {
@@ -118,14 +178,14 @@ class ImportController extends Controller
         return redirect()->back()->withErrors(['Invalid request']);
     }
 
-    public function errorBillCodes($link)
+    public function errorImports($link)
     {
         $bulk_id = Encrypt::decode($link);
         if (is_numeric($bulk_id)) {
-            $error_json = $this->importModel->getColumnValue('bulk_upload', 'bulk_upload_id', $bulk_id, 'error_json', ['type' => '11', 'merchant_id' => $this->merchant_id]);
+            $error_json = $this->importModel->getColumnValue('bulk_upload', 'bulk_upload_id', $bulk_id, 'error_json', ['merchant_id' => $this->merchant_id]);
             if ($error_json != false) {
 
-                $data = Helpers::setBladeProperties('Errors Bill codes', [], [14]);
+                $data = Helpers::setBladeProperties('Errors in sheet', [], [14]);
                 $errors = json_decode($error_json, 1);
                 foreach ($errors as $row) {
                     foreach ($row as $key => $val) {
@@ -214,17 +274,31 @@ class ImportController extends Controller
     }
 
 
-    public function formatBillCode()
+    public function formatBillCode($type)
     {
+        if ($type == 'billCode') {
+            $column_name[] = 'Bill Code';
+            $column_name[] = 'Description';
+            $title = 'BillCodes';
+        } elseif ($type == 'contract') {
+            $column_name[] = 'Bill Code';
+            $column_name[] = 'Cost Type';
+            $column_name[] = 'Description';
+            $column_name[] = 'Scheduled Value';
+            $column_name[] = 'Work Retainage %';
+            $column_name[] = 'Project Id';
+            $column_name[] = 'Cost Code';
+            $column_name[] = 'Sub Total Group';
+            $column_name[] = 'Bill Code Detail (Yes/No)';
+            $title = 'Contract';
+        }
 
-        $column_name[] = 'Bill Code';
-        $column_name[] = 'Description';
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->getProperties()->setCreator("Briq")
             ->setLastModifiedBy("Briq")
-            ->setTitle("BillCodes")
-            ->setSubject('billCodes')
-            ->setDescription("Import bill codes");
+            ->setTitle($title)
+            ->setSubject($title)
+            ->setDescription("Import " . $title);
         #create array of excel column
         $first = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
         $column = array();
@@ -244,7 +318,7 @@ class ImportController extends Controller
 
         $objPHPExcel->getDefaultStyle()->getFont()->setName('verdana')
             ->setSize(10);
-        $objPHPExcel->getActiveSheet()->setTitle('BillCodes');
+        $objPHPExcel->getActiveSheet()->setTitle($title);
         $int++;
         $autosize = 0;
         while ($autosize < $int) {
@@ -252,7 +326,7 @@ class ImportController extends Controller
             $autosize++;
         }
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="BillCodes.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
