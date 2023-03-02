@@ -221,8 +221,8 @@ class SubUserController extends AppController
                 $requestCustomerIDs = [];
                 foreach ($customerPrivilegesDecode as $customer) {
                     $requestCustomerIDs[] = $customer->value;
-                    if(!empty($customer->rule_engine)) {
-                        $ruleEngineQuery = json_encode($customer->rule_engine);
+                    if(!empty($customer->rule_engine_query)) {
+                        $ruleEngineQuery = json_encode($customer->rule_engine_query);
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -276,8 +276,8 @@ class SubUserController extends AppController
                 $requestProjectIDs = [];
                 foreach ($projectsPrivilegesDecode as $project) {
                     $requestProjectIDs[] = $project->value;
-                    if(!empty($project->rule_engine)) {
-                        $ruleEngineQuery = json_encode($project->rule_engine);
+                    if(!empty($project->rule_engine_query)) {
+                        $ruleEngineQuery = json_encode($project->rule_engine_query);
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -330,8 +330,8 @@ class SubUserController extends AppController
 
                 foreach ($contractsPrivilegesDecode as $contract) {
                     $requestContractIDs[] = $contract->value;
-                    if(!empty($contract->rule_engine)) {
-                        $ruleEngineQuery = json_encode($contract->rule_engine);
+                    if(!empty($contract->rule_engine_query)) {
+                        $ruleEngineQuery = json_encode($contract->rule_engine_query);
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -383,8 +383,8 @@ class SubUserController extends AppController
                 $requestInvoiceIDs = [];
                 foreach ($invoicesPrivilegesDecode as $invoice) {
                     $requestInvoiceIDs[] = $invoice->value;
-                    if(!empty($invoice->rule_engine)) {
-                        $ruleEngineQuery = json_encode($invoice->rule_engine);
+                    if(!empty($invoice->rule_engine_query)) {
+                        $ruleEngineQuery = json_encode($invoice->rule_engine_query);
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -435,8 +435,8 @@ class SubUserController extends AppController
                 $requestChangeOrderIDs = [];
                 foreach ($changeOrdersPrivilegesDecode as $changeOrder) {
                     $requestChangeOrderIDs[] = $changeOrder->value;
-                    if(!empty($changeOrder->rule_engine)) {
-                        $ruleEngineQuery = json_encode($changeOrder->rule_engine);
+                    if(!empty($changeOrder->rule_engine_query)) {
+                        $ruleEngineQuery = json_encode($changeOrder->rule_engine_query);
                     }
 
 

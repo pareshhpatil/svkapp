@@ -4,6 +4,8 @@
         background: #FFFFFF;
         border: 1px solid #FFFFFF;
         box-shadow: 0 3px 3px rgb(0 0 0 / 12%);
+        display: flex;
+        flex-direction: column;
         margin-bottom: 20px;
     }
 
@@ -15,11 +17,6 @@
     }
 
     .privileges-access-item-title, .privileges-form label {
-        color: #394242;
-    }
-
-    .privileges-access-dropdown {
-        padding: 5px 10px;
         color: #394242;
     }
 
@@ -100,6 +97,10 @@
         margin-bottom: 15px;
     }
 
+    .rule-engine-row, .add-rule-engine-btn {
+        align-self: end;
+    }
+
     .add-rule-engine-btn {
         background: transparent;
         border: 0;
@@ -118,40 +119,19 @@
     }
 
     .rule-engine-query-name {
-        padding: 8px 10px;
-        color: #394242;
-        border: 1px solid #394242;
-        font-size: 14px;
-        margin-left: 10px;
-        border-radius: 4px !important;
+        width: auto;
+        margin: 5px;
     }
 
     .rule-engine-operator {
         color: #394242;
         margin: 5px;
-        padding: 6px 8px;
-        border-radius: 4px !important;
+        width: auto;
     }
 
     .rule-engine-value {
-        border: 1px solid #394242;
-        border-radius: 4px !important;
-        color: #394242;
-        height: 33px;
+        width: auto;
         margin: 5px 10px;
-        padding: 5px 10px;
-    }
-
-    .remove-query-btn {
-        border: 0;
-        background: transparent;
-        height: 24px;
-        align-self: center;
-        color: #394242;
-    }
-
-    .remove-query-btn .fa-times-circle-o {
-        font-size: 18px;
     }
 
     .custom-show {
@@ -427,11 +407,11 @@
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine: rule_engine
+                                rule_engine_query: rule_engine
                             })
                             customerArrayHTML.append(html);
                         });
-
+                        console.log(customerValArr);
                         projectArrayHTML.empty();
                         projectPrivilegesData.forEach((el, i) => {
                             let ruleEngine = [];
@@ -468,7 +448,7 @@
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine: rule_engine
+                                rule_engine_query: rule_engine
                             })
                             projectArrayHTML.append(html);
                         });
@@ -508,7 +488,7 @@
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine: rule_engine
+                                rule_engine_query: rule_engine
                             })
                             contractArrayHTML.append(html);
                         });
@@ -547,7 +527,7 @@
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine: rule_engine
+                                rule_engine_query: rule_engine
                             })
                             invoiceArrayHTML.append(html);
                         });
@@ -587,7 +567,7 @@
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine: rule_engine
+                                rule_engine_query: rule_engine
                             })
                             changeOrderArrayHTML.append(html);
                         });
@@ -646,12 +626,6 @@
             select2Customer.on('select2:select', function (e) {
                 let selected = select2Customer.find(':selected');
                 let customerValArrLength = customerValArr.length;
-                customerValArr.push({
-                    value: selected[0].value,
-                    label: selected[0].text,
-                    access: 'full'
-                });
-
                 let rule_engine = [
                     {
                         query_name: 'grand_total',
@@ -659,6 +633,15 @@
                         query_value: '',
                     }
                 ];
+
+                customerValArr.push({
+                    value: selected[0].value,
+                    label: selected[0].text,
+                    access: 'full',
+                    rule_engine_query: rule_engine
+                });
+
+
 
                 let html = accessHTML(selected[0].text, 'full', customerValArrLength, 'customer', false, rule_engine);
 
@@ -812,12 +795,6 @@
             select2Invoice.on('select2:select', function (e) {
                 let selected = select2Invoice.find(':selected');
                 let invoiceValArrLength = invoiceValArr.length;
-                invoiceValArr.push({
-                    value: selected[0].value,
-                    label: selected[0].text,
-                    access: 'full',
-                    rule_engine: []
-                });
 
                 let rule_engine = [
                     {
@@ -826,6 +803,13 @@
                         query_value: '',
                     }
                 ];
+
+                invoiceValArr.push({
+                    value: selected[0].value,
+                    label: selected[0].text,
+                    access: 'full',
+                    rule_engine_query: rule_engine
+                });
 
                 let html = accessHTML(selected[0].text, 'full', invoiceValArrLength, 'invoice', false, rule_engine);
 
@@ -952,20 +936,70 @@
             $(document).on("click", ".delete-privilege-access", function() {
                 let privilegesType = $(this).attr('data-type');
                 let privilegesIndex = $(this).attr('data-id');
+
                 switch (privilegesType) {
                     case 'customer':
                         customerValArr.splice(privilegesIndex, 1);
                         customerArrayHTML.empty();
                         customerValArr.forEach((el, i) => {
-                            let html = accessHTML(el.label, el.access, i, 'customer');
+                            let hasRuleEngine = false;
+
+                            if(el.rule_engine_query) {
+                                hasRuleEngine = el.rule_engine_query.length > 0;
+                            }
+
+                            let rule_engine = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ];
+
+                            if(hasRuleEngine) {
+                                rule_engine = [
+                                    {
+                                        query_name: 'grand_total',
+                                        query_operator: el.rule_engine_query[0].query_operator,
+                                        query_value: el.rule_engine_query[0].query_value
+                                    }
+                                ]
+                            }
+
+                            let html = accessHTML(el.label, el.access, i, 'customer', hasRuleEngine, rule_engine);
                             customerArrayHTML.append(html);
                         });
                         break;
                     case 'project':
                         projectValArr.splice(privilegesIndex, 1);
+                        // $("#project-access-item-"+privilegesIndex).remove();
                         projectArrayHTML.empty();
                         projectValArr.forEach((el, i) => {
-                            let html = accessHTML(el.label, el.access, i, 'project');
+                            let hasRuleEngine = false;
+
+                            if(el.rule_engine_query) {
+                                hasRuleEngine = el.rule_engine_query.length > 0;
+                            }
+
+                            let rule_engine = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ];
+
+                            if(hasRuleEngine) {
+                                rule_engine = [
+                                    {
+                                        query_name: 'grand_total',
+                                        query_operator: el.rule_engine_query[0].query_operator,
+                                        query_value: el.rule_engine_query[0].query_value
+                                    }
+                                ]
+                            }
+
+                            let html = accessHTML(el.label, el.access, i, 'project', hasRuleEngine, rule_engine);
                             projectArrayHTML.append(html);
                         });
                         break;
@@ -973,7 +1007,31 @@
                         contractValArr.splice(privilegesIndex, 1);
                         contractArrayHTML.empty();
                         contractValArr.forEach((el, i) => {
-                            let html = accessHTML(el.label, el.access, i, 'contract');
+                            let hasRuleEngine = false;
+
+                            if(el.rule_engine_query) {
+                                hasRuleEngine = el.rule_engine_query.length > 0;
+                            }
+
+                            let rule_engine = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ];
+
+                            if(hasRuleEngine) {
+                                rule_engine = [
+                                    {
+                                        query_name: 'grand_total',
+                                        query_operator: el.rule_engine_query[0].query_operator,
+                                        query_value: el.rule_engine_query[0].query_value
+                                    }
+                                ]
+                            }
+
+                            let html = accessHTML(el.label, el.access, i, 'contract', hasRuleEngine, rule_engine);
                             contractArrayHTML.append(html);
                         });
                         break;
@@ -981,7 +1039,31 @@
                         invoiceValArr.splice(privilegesIndex, 1);
                         invoiceArrayHTML.empty();
                         invoiceValArr.forEach((el, i) => {
-                            let html = accessHTML(el.label, el.access, i, 'invoice');
+                            let hasRuleEngine = false;
+
+                            if(el.rule_engine_query) {
+                                hasRuleEngine = el.rule_engine_query.length > 0;
+                            }
+
+                            let rule_engine = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ];
+
+                            if(hasRuleEngine) {
+                                rule_engine = [
+                                    {
+                                        query_name: 'grand_total',
+                                        query_operator: el.rule_engine_query[0].query_operator,
+                                        query_value: el.rule_engine_query[0].query_value
+                                    }
+                                ]
+                            }
+
+                            let html = accessHTML(el.label, el.access, i, 'invoice', hasRuleEngine, rule_engine);
                             invoiceArrayHTML.append(html);
                         });
                         break;
@@ -989,7 +1071,30 @@
                         changeOrderValArr.splice(privilegesIndex, 1);
                         changeOrderArrayHTML.empty();
                         changeOrderValArr.forEach((el, i) => {
-                            let html = accessHTML(el.label, el.access, i, 'change-order');
+                            let hasRuleEngine = false;
+
+                            if(el.rule_engine_query) {
+                                hasRuleEngine = el.rule_engine_query.length > 0;
+                            }
+
+                            let rule_engine = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ];
+
+                            if(hasRuleEngine) {
+                                rule_engine = [
+                                    {
+                                        query_name: 'grand_total',
+                                        query_operator: el.rule_engine_query[0].query_operator,
+                                        query_value: el.rule_engine_query[0].query_value
+                                    }
+                                ]
+                            }
+                            let html = accessHTML(el.label, el.access, i, 'change-order', hasRuleEngine, rule_engine);
                             changeOrderArrayHTML.append(html);
                         });
                         break;
@@ -1000,13 +1105,13 @@
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-
+                console.log(privilegesID, type, customerValArr);
                 switch (type) {
                     case 'customer':
                         $('#customer-rule-engine-'+privilegesID).removeClass('custom-hide');
                         $('#customer-rule-engine-'+privilegesID).addClass('custom-show');
 
-                        customerValArr[privilegesID].rule_engine = [
+                        customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: 'gt',
@@ -1018,7 +1123,7 @@
                         $('#project-rule-engine-'+privilegesID).removeClass('custom-hide');
                         $('#project-rule-engine-'+privilegesID).addClass('custom-show');
 
-                        projectValArr[privilegesID].rule_engine = [
+                        projectValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: 'gt',
@@ -1030,7 +1135,7 @@
                         $('#contract-rule-engine-'+privilegesID).removeClass('custom-hide');
                         $('#contract-rule-engine-'+privilegesID).addClass('custom-show');
 
-                        contractValArr[privilegesID].rule_engine = [
+                        contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: 'gt',
@@ -1042,7 +1147,7 @@
                         $('#invoice-rule-engine-'+privilegesID).removeClass('custom-hide');
                         $('#invoice-rule-engine-'+privilegesID).addClass('custom-show');
 
-                        invoiceValArr[privilegesID].rule_engine = [
+                        invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: 'gt',
@@ -1054,7 +1159,7 @@
                         $('#change-order-rule-engine-'+privilegesID).removeClass('custom-hide');
                         $('#change-order-rule-engine-'+privilegesID).addClass('custom-show');
 
-                        changeOrderValArr[privilegesID].rule_engine = [
+                        changeOrderValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: 'gt',
@@ -1069,10 +1174,11 @@
             });
 
             $(document).on("click", ".remove-query-btn", function() {
+
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-
+                console.log(privilegesID, type)
                 $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
                 $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
                 $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show');
@@ -1087,7 +1193,7 @@
 
                 switch(type) {
                     case 'customer':
-                        customerValArr[privilegesID].rule_engine = [
+                        customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: val,
@@ -1096,7 +1202,7 @@
                         ];
                         break;
                     case 'contract':
-                        contractValArr[privilegesID].rule_engine = [
+                        contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: val,
@@ -1105,7 +1211,7 @@
                         ];
                         break;
                     case 'project':
-                        projectValArr[privilegesID].rule_engine = [
+                        projectValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: val,
@@ -1114,7 +1220,7 @@
                         ];
                         break;
                     case 'invoice':
-                        invoiceValArr[privilegesID].rule_engine = [
+                        invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: val,
@@ -1123,7 +1229,7 @@
                         ];
                         break;
                     case 'change-order':
-                        changeOrderValArr[privilegesID].rule_engine = [
+                        changeOrderValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: val,
@@ -1142,7 +1248,7 @@
 
                 switch(type) {
                     case 'customer':
-                        customerValArr[privilegesID].rule_engine = [
+                        customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: queryOperator,
@@ -1151,7 +1257,7 @@
                         ];
                         break;
                     case 'contract':
-                        contractValArr[privilegesID].rule_engine = [
+                        contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: queryOperator,
@@ -1160,7 +1266,7 @@
                         ];
                         break;
                     case 'project':
-                        projectValArr[privilegesID].rule_engine = [
+                        projectValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: queryOperator,
@@ -1169,7 +1275,7 @@
                         ];
                         break;
                     case 'invoice':
-                        invoiceValArr[privilegesID].rule_engine = [
+                        invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: queryOperator,
@@ -1178,7 +1284,7 @@
                         ];
                         break;
                     case 'change-order':
-                        changeOrderValArr[privilegesID].rule_engine = [
+                        changeOrderValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
                                 query_operator: queryOperator,
@@ -1195,7 +1301,7 @@
 <div class="privileges-access-item">
 <p class="privileges-access-item-title">${label}</p>
 <div style="display: flex;align-items: center;">
-<select class="privileges-access privileges-access-dropdown" data-id="${index}" data-type="${type}">
+<select class="privileges-access privileges-access-dropdown form-control" data-id="${index}" data-type="${type}">
     <option value="full" ${privileges === 'full' ? 'selected' : ''}>Full</option>
     <option value="edit" ${privileges === 'edit' ? 'selected' : ''}>Edit</option>
     <option value="approve" ${privileges === 'approve' ? 'selected' : ''}>Approve</option>
@@ -1217,11 +1323,14 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
             }
 
             function showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine) {
-                console.log(rule_engine);
+
                 return `<div class="rule-engine-row ${hasRuleEngine ? 'custom-show' : 'custom-hide'}" id="${type}-rule-engine-${index}">
                         <div class="rule-engine-query">
-                            <p class="rule-engine-text">if <span class="rule-engine-query-name">grand total</span></p>
-                            <select name="rule-engine-operator" class="rule-engine-operator" data-id="${index}" data-type="${type}">
+                            <p class="rule-engine-text">if Invoice</p>
+<select name="rule-engine-operator" class="rule-engine-query-name form-control">
+<option value="grand total" selected>grand total</option>
+</select>
+                            <select name="rule-engine-operator" class="rule-engine-operator form-control" data-id="${index}" data-type="${type}">
                             <option value="gt" ${rule_engine.query_operator
                 === 'gt' ? 'selected' : ''}>greater than</option>
 <option value="lt" ${rule_engine.query_operator
@@ -1231,8 +1340,10 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
 <option value="net" ${rule_engine.query_operator
                 === 'net' ? 'selected' : ''}>not equals to</option>
 </select>
-<input type="number" name="rule-engine-value" value="${rule_engine.query_value}" class="rule-engine-value" data-id="${index}" data-type="${type}">
-<button type="button" class="remove-query-btn" data-id="${index}" data-type="${type}"><i class="fa fa-times-circle-o"></i></button>
+<input type="number" name="rule-engine-value" value="${rule_engine.query_value}" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">
+<a class="close remove-query-btn" style="margin-right: 5px; align-self: center" data-id="${index}" data-type="${type}">
+    <button type="button" class="close" data-id="${index}" data-type="${type}" aria-hidden="true"></button>
+</a>
                         </div>
                         </div>`;
             }
