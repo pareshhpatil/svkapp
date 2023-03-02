@@ -3,12 +3,9 @@
 namespace App\Helpers\Merchant;
 
 use App\Libraries\Encrypt;
-use App\Model\Invoice;
 use App\Notifications\ChangeOrderNotification;
-use App\Notifications\InvoiceApprovalNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -26,6 +23,7 @@ class ChangeOrderHelper
 
         if (!empty($orderDetail)) {
             $Contract = DB::table('contract')
+                        ->where('is_active', 1)
                         ->where('contract_id', $orderDetail->contract_id)
                         ->first();
 
@@ -59,39 +57,6 @@ class ChangeOrderHelper
                 ->where('type_id', $projectID)->pluck('user_id');
 
             $changeOrderUsersWithFullAccess = $changeOrderUsers->toArray();
-
-//            $contractUserWithFullAccess = DB::table('briq_privileges')
-//                ->where('is_active', 1)
-//                ->where('type', 'contract')
-//                ->where('type_id', $contractID)
-//                ->where('access', 'full')
-//                ->pluck('user_id')
-//                ->toArray();
-//
-//            $customerUserWithFullAccess = DB::table('briq_privileges')
-//                ->where('is_active', 1)
-//                ->where('type', 'customer')
-//                ->where('type_id', $customerID)
-//                ->where('access', 'full')
-//                ->pluck('user_id')
-//                ->toArray();
-//
-//            $projectUserWithFullAccess = DB::table('briq_privileges')
-//                ->where('is_active', 1)
-//                ->where('type', 'project')
-//                ->where('type_id', $projectID)
-//                ->where('access', 'full')
-//                ->pluck('user_id')
-//                ->toArray();
-//
-//            $changeOrderUserWithApprovalAccessIDs = DB::table('briq_privileges')
-//                ->where('is_active', 1)
-//                ->where('merchant_id', $merchantID)
-//                ->where('type', 'change-order')
-//                ->where('type_id', 'all')
-//                ->where('access', 'full')
-//                ->pluck('user_id')
-//                ->toArray();
 
             $adminRole = DB::table('briq_roles')
                 ->where('merchant_id', $merchantID)

@@ -646,6 +646,7 @@ Route::post('/fcm-token', 'FirebaseCloudMessagingController@updateToken')->name(
 Route::get('/test-event', 'FirebaseCloudMessagingController@testEvent');
 Route::get('/get-notifications', 'FirebaseCloudMessagingController@getNotifications');
 Route::get('/test-rule-engine', 'FirebaseCloudMessagingController@getUserPrivileges');
+Route::get('/test-user-notify', 'FirebaseCloudMessagingController@invoiceNotifyTest');
 //Route::post('/send-notification', [\App\Http\Controllers\PdfController::class, 'notification'])->name('notification');
 
 

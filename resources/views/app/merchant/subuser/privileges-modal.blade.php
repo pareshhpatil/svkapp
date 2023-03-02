@@ -881,52 +881,110 @@
                 switch (privilegesType) {
                     case 'customer':
                         if(val === 'full' || val === 'approve') {
-                            $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            if(!$('#customer-rule-engine-'+privilegesID).hasClass('custom-show')) {
+                                $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                                $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            }
+                            // $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                            // $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
                         } else {
                             $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
+                            $('#customer-rule-engine-'+privilegesID).removeClass('custom-show');
+                            $('#customer-rule-engine-'+privilegesID).addClass('custom-hide');
+                            customerValArr[privilegesID].rule_engine_query = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ]
                         }
                         customerValArr[privilegesID].access = val;
                         break;
                     case 'project':
                         if(val === 'full' || val === 'approve') {
-                            $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            if(!$('#project-rule-engine-'+privilegesID).hasClass('custom-show')) {
+                                $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                                $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            }
+
                         } else {
                             $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
+                            $('#project-rule-engine-'+privilegesID).removeClass('custom-show');
+                            $('#project-rule-engine-'+privilegesID).addClass('custom-hide');
+                            projectValArr[privilegesID].rule_engine_query = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ]
                         }
                         projectValArr[privilegesID].access = val;
                         break;
                     case 'contract':
                         if(val === 'full' || val === 'approve') {
-                            $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            if(!$('#contract-rule-engine-'+privilegesID).hasClass('custom-show')) {
+                                $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                                $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            }
                         } else {
                             $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
+                            $('#contract-rule-engine-'+privilegesID).removeClass('custom-show');
+                            $('#contract-rule-engine-'+privilegesID).addClass('custom-hide');
+                            contractValArr[privilegesID].rule_engine_query = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ]
                         }
                         contractValArr[privilegesID].access = val;
                         break;
                     case 'invoice':
                         if(val === 'full' || val === 'approve') {
-                            $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            if(!$('#invoice-rule-engine-'+privilegesID).hasClass('custom-show')) {
+                                $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                                $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            }
                         } else {
                             $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
+                            $('#invoice-rule-engine-'+privilegesID).removeClass('custom-show');
+                            $('#invoice-rule-engine-'+privilegesID).addClass('custom-hide');
+                            invoiceValArr[privilegesID].rule_engine_query = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ]
                         }
 
                         invoiceValArr[privilegesID].access = val;
                         break;
                     case 'change-order':
                         if(val === 'full' || val === 'approve') {
-                            $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            if(!$('#change-order-rule-engine-'+privilegesID).hasClass('custom-show')) {
+                                $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
+                                $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
+                            }
                         } else {
                             $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
+                            $('#change-order-rule-engine-'+privilegesID).removeClass('custom-show');
+                            $('#change-order-rule-engine-'+privilegesID).addClass('custom-hide');
+                            changeOrderValArr[privilegesID].rule_engine_query = [
+                                {
+                                    query_name: 'grand_total',
+                                    query_operator: '',
+                                    query_value: '',
+                                }
+                            ]
                         }
                         changeOrderValArr[privilegesID].access = val;
                         break;
@@ -1178,11 +1236,29 @@
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-                console.log(privilegesID, type)
+
                 $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
                 $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
                 $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show');
                 $('#'+type+'-rule-engine-'+privilegesID).addClass('custom-hide');
+
+                switch(type) {
+                    case 'customer':
+                        customerValArr[privilegesID].rule_engine_query = [];
+                        break;
+                    case 'contract':
+                        contractValArr[privilegesID].rule_engine_query = [];
+                        break;
+                    case 'project':
+                        projectValArr[privilegesID].rule_engine_query = [];
+                        break;
+                    case 'invoice':
+                        invoiceValArr[privilegesID].rule_engine_query = [];
+                        break;
+                    case 'change-order':
+                        changeOrderValArr[privilegesID].rule_engine_query = [];
+                        break;
+                }
             });
 
             $(document).on("change", ".rule-engine-operator", function() {

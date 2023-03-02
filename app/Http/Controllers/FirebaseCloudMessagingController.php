@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Libraries\Encrypt;
+use App\Model\Invoice;
 use App\Notifications\InvoiceApprovalNotification;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class FirebaseCloudMessagingController extends AppController
 {
@@ -65,6 +68,205 @@ class FirebaseCloudMessagingController extends AppController
                                     ->get();
 
         dd($Notifications);
+    }
+
+    public function invoiceNotifyTest()
+    {
+        $paymentRequestID = 'R000030221';
+        $merchantID = Encrypt::decode(Session::get('merchant_id'));
+
+        $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $merchantID);
+
+        if (!empty($paymentRequestDetail)) {
+            $invoiceNumber = $paymentRequestDetail->invoice_number;
+            if (substr($paymentRequestDetail->invoice_number, 0, 16) == 'System generated') {
+                $invoiceNumber = (new Invoice())->getAutoInvoiceNo((substr($paymentRequestDetail->invoice_number, 16)));
+            }
+
+            $Contract = DB::table('contract')
+                ->where('is_active', 1)
+                ->where('contract_id', $paymentRequestDetail->contract_id)
+                ->first();
+
+            $contractID = $Contract->contract_id;
+            $customerID = $Contract->customer_id;
+            $projectID = $Contract->project_id;
+
+            $data = DB::table('briq_privileges')
+                ->where('merchant_id', $merchantID)
+                ->where('is_active', 1)
+                ->where('type', '!=', 'change-order')
+                ->whereIn('access', ['full','approve'])
+                ->get()->collect();
+
+
+            $CustomerCollect = clone $data->where('type', 'customer')
+                ->whereIn('type_id', [$customerID, 'all'])
+                ->values();
+
+            $customerUsersWithFullAccess = [];
+//            if(!empty($CustomerCollect->rule_engine_query)) {
+//                $ruleEngineQuery = json_decode($CustomerCollect->rule_engine_query, true);
+//                $stat = (new RuleEngineManager('customer_id', $CustomerCollect->type_id, $ruleEngineQuery))->run();
+//
+//                if(!empty($stat)) {
+//                    if(in_array($paymentRequestID, $stat)) {
+//                        $customerUsersWithFullAccess[] = $CustomerCollect->user_id;
+//                    }
+//                }
+//            } else {
+//                $customerUsersWithFullAccess[] = $CustomerCollect->user_id;
+//            }
+
+            $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestID) {
+                $userIDs = [];
+
+                if(!empty($Customer->rule_engine_query)) {
+                    $ruleEngineQuery = json_decode($Customer->rule_engine_query, true);
+                    $stat = (new RuleEngineManager('customer_id', $Customer->type_id, $ruleEngineQuery))->run();
+
+                    if(!empty($stat)) {
+                        if(in_array($paymentRequestID, $stat)) {
+                            $userIDs[] = $Customer->user_id;
+                        }
+                    }
+                } else {
+                    $userIDs[] = $Customer->user_id;
+                }
+
+                return $userIDs;
+            });
+
+
+//            $customerUsers = clone $data->where('type', 'customer')
+//                ->where('type_id', $customerID)->pluck('user_id');
+
+//            $customerUsersWithFullAccess = $customerUsers->toArray();
+
+//            $contractUsers = clone $data->where('type', 'contract')
+//                ->where('type_id', $contractID)->pluck('user_id');
+//
+//            $contractUsersWithFullAccess = $contractUsers->toArray();
+
+            $ContractCollect = clone $data->where('type', 'contract')
+                ->where('type_id', $contractID)->values();
+            $contractUsersWithFullAccess = $ContractCollect->map(function ($Contract)  use($paymentRequestID) {
+                $userIDs = [];
+
+                if(!empty($Contract->rule_engine_query)) {
+                    $ruleEngineQuery = json_decode($Contract->rule_engine_query, true);
+                    $stat = (new RuleEngineManager('contract_id', $Contract->type_id, $ruleEngineQuery))->run();
+
+                    if(!empty($stat)) {
+                        if(in_array($paymentRequestID, $stat)) {
+                            $userIDs[] = $Contract->user_id;
+                        }
+                    }
+                } else {
+                    $userIDs[] = $Contract->user_id;
+                }
+
+                return $userIDs;
+            });
+
+//            $projectUsers = clone $data->where('type', 'project')
+//                ->where('type_id', $projectID)->pluck('user_id');
+//
+//            $projectUsersWithFullAccess = $projectUsers->toArray();
+
+            $ProjectCollect = clone $data->where('type', 'project')
+                ->where('type_id', $projectID)->values();
+            $projectUsersWithFullAccess = $ProjectCollect->map(function ($Project) use($paymentRequestID) {
+                $userIDs = [];
+
+                if(($Project->access == 'full' || $Project->access == 'approve') && !empty($Project->rule_engine_query)) {
+                    $ContractIDs = DB::table('contract')
+                        ->where('project_id', $Project->type_id)
+                        ->pluck('contract_id');
+
+                    $ruleEngineQuery = json_decode($Project->rule_engine_query, true);
+
+                    $ss = [];
+                    foreach ($ContractIDs as $ContractID) {
+                        $ids = (new RuleEngineManager('contract_id', $ContractID, $ruleEngineQuery))->run();
+                        if(!empty($ids)) {
+
+                            foreach ($ids as $id) {
+                                $ss[] = $id;
+                            }
+                        }
+                    }
+
+                    if(!empty($ss)) {
+                        if(in_array($paymentRequestID, $ss)) {
+                            $userIDs[] = $Project->user_id;
+                        }
+                    }
+                } elseif($Project->access == 'full' || $Project->access == 'approve') {
+                    $userIDs[] = $Project->user_id;
+                }
+
+                return $userIDs;
+            });
+
+//            $invoiceUsers = clone $data->where('type', 'invoice')
+//                ->where('type_id', $projectID)->pluck('user_id');
+//
+//            $invoiceUsersWithFullAccess = $invoiceUsers->toArray();
+            $InvoiceCollect = clone $data->where('type', 'invoice')->values();
+
+            $invoiceUsersWithFullAccess = $InvoiceCollect->map(function ($Invoice) use($paymentRequestID) {
+                $userIDs = [];
+
+                if(($Invoice->access == 'full' || $Invoice->access == 'approve') && !empty($Invoice->rule_engine_query)) {
+//                    $ContractIDs = DB::table('contract')
+//                        ->where('project_id', $Invoice->type_id)
+//                        ->pluck('contract_id');
+
+                    $ruleEngineQuery = json_decode($Invoice->rule_engine_query, true);
+
+                    $ids = (new RuleEngineManager('payment_request_id', $paymentRequestID, $ruleEngineQuery))->run();
+
+
+                } elseif($Invoice->access == 'full' || $Invoice->access == 'approve') {
+                    $userIDs[] = $Invoice->user_id;
+                }
+
+                return $userIDs;
+            });
+
+            $adminRole = DB::table('briq_roles')
+                ->where('merchant_id', $merchantID)
+                ->where('name', 'Admin')
+                ->first();
+
+            $adminRoleUserIDs = DB::table('briq_user_roles')
+                ->where('role_id', $adminRole->id)
+                ->where('role_name', 'Admin')
+                ->pluck('user_id')
+                ->toArray();
+
+            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess, $contractUsersWithFullAccess, $projectUsersWithFullAccess, $invoiceUsersWithFullAccess));
+
+            $Users = User::query()
+                ->whereIn('user_id', $uniqueUserIDs)
+                ->get();
+
+//                $testUser = User::query()
+//                    ->where('email_id', 'nitish.harchand@briq.com')
+//                    ->first();
+//                //dd($testUser);
+//                if(!empty($testUser->fcm_token)) {
+//                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
+//                }
+
+            foreach ($Users as $User) {
+                if(!empty($User->fcm_token)) {
+//                    dispatch(new ProcessInvoiceApprove($invoiceNumber, $paymentRequestID, $User));
+                    //$User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                }
+            }
+        }
     }
 
     public function getUserPrivileges() {

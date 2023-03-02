@@ -113,7 +113,7 @@
                                             @if(!empty($privileges))
                                                 @if(in_array('all', array_keys($privileges)) && !in_array($v->contract_id, array_keys($privileges)))
                                                     <ul class="dropdown-menu" role="menu">
-                                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
+                                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'edit' || $privileges['all'] == 'approve')
                                                             <li>
                                                                 <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
                                                             </li>
@@ -126,7 +126,7 @@
                                                     </ul>
                                                 @else
                                                     <ul class="dropdown-menu" role="menu">
-                                                        @if($privileges[$v->contract_id] == 'full' || $privileges[$v->contract_id] == 'edit')
+                                                        @if($privileges[$v->contract_id] == 'full' || $privileges[$v->contract_id] == 'edit' || $privileges[$v->contract_id] == 'approve')
                                                             <li>
                                                                 <a href="{{ route('contract.update.new', ['step' =>1, 'contract_id' =>$v->encrypted_id]) }}"><i class="fa fa-edit"></i> Update</a>
                                                             </li>

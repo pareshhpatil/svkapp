@@ -81,11 +81,11 @@ class SSP
                         $row[$column['dt']] .= '<ul class="dropdown-menu" role="menu">';
 
                         if ($hasAllPrivileges && !in_array($data[$i]['customer_id'], array_keys($privilegesArray))) {
-                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only') {
+                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
                             }
 
-                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit') {
+                            if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li>';
                             }
 
@@ -93,11 +93,11 @@ class SSP
                                 $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
                             }
                         } else {
-                            if($privilegesArray[$data[$i]['customer_id']] == 'full' || $privilegesArray[$data[$i]['customer_id']] == 'view-only') {
+                            if($privilegesArray[$data[$i]['customer_id']] == 'full' || $privilegesArray[$data[$i]['customer_id']] == 'view-only' ||  $privilegesArray[$data[$i]['customer_id']] == 'approve') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
                             }
 
-                            if($privilegesArray[$data[$i]['customer_id']] == 'edit' || $privilegesArray[$data[$i]['customer_id']] == 'full') {
+                            if($privilegesArray[$data[$i]['customer_id']] == 'edit' || $privilegesArray[$data[$i]['customer_id']] == 'full' || $privilegesArray[$data[$i]['customer_id']] == 'approve') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/update/' . $enc_id . '" target="_BLANK" ><i class="fa fa-edit"></i> Edit</a></li>';
                             }
 

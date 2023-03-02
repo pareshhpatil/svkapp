@@ -61,8 +61,11 @@ class RuleEngineHelper
     {
         /** @var Builder $Builder */
         $Builder = DB::table($table)
-                    ->where('is_active', 1)
-                    ->where($type, $typeID);
+                    ->where('is_active', 1);
+
+        if($typeID != 'all') {
+            $Builder = $Builder->where($type, $typeID);
+        }
 
         switch ($this->queryOperator) {
             case 'et':

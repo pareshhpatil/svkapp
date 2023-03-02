@@ -41,14 +41,14 @@ class PrivilegesAccess
                 $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($contractPrivilegesAccessIDs)) && !in_array($modelID, array_keys($contractPrivilegesAccessIDs))) {
-                    if ($contractPrivilegesAccessIDs['all'] == 'full' || $contractPrivilegesAccessIDs['all'] == 'edit') {
+                    if ($contractPrivilegesAccessIDs['all'] == 'full' || $contractPrivilegesAccessIDs['all'] == 'edit' || $contractPrivilegesAccessIDs['all'] == 'approve') {
                         $result = true;
                     }
                 } else {
-                    if($pathArray[2] == 'create' && (in_array('full', array_values($contractPrivilegesAccessIDs)) || in_array('edit', array_values($contractPrivilegesAccessIDs)))) {
+                    if($pathArray[2] == 'create' && (in_array('full', array_values($contractPrivilegesAccessIDs)) || in_array('edit', array_values($contractPrivilegesAccessIDs)) || in_array('approve', array_values($contractPrivilegesAccessIDs)))) {
                         $result = true;
                     } else {
-                        if(!empty($modelID) && ($contractPrivilegesAccessIDs[$modelID] == 'full' || $contractPrivilegesAccessIDs[$modelID] == 'edit')) {
+                        if(!empty($modelID) && ($contractPrivilegesAccessIDs[$modelID] == 'full' || $contractPrivilegesAccessIDs[$modelID] == 'edit' || $contractPrivilegesAccessIDs[$modelID] == 'approve')) {
                             $result = true;
                         }
                     }
@@ -70,14 +70,14 @@ class PrivilegesAccess
                     }
                 } else {
                     if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($modelID, array_keys($orderPrivilegesAccessIDs))) {
-                        if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'edit') {
+                        if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'edit' || $orderPrivilegesAccessIDs['all'] == 'approve') {
                             $result = true;
                         }
                     } else {
-                        if($pathArray[2] == 'create' && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)))) {
+                        if($pathArray[2] == 'create' && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
-                            if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit')) {
+                            if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit' || $orderPrivilegesAccessIDs[$modelID] == 'approve')) {
                                 $result = true;
                             }
                         }
@@ -89,7 +89,7 @@ class PrivilegesAccess
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($invoicePrivilegesAccessIDs)) && !in_array($modelID, array_keys($invoicePrivilegesAccessIDs))) {
-                    if ($invoicePrivilegesAccessIDs['all'] == 'full' || $invoicePrivilegesAccessIDs['all'] == 'edit') {
+                    if ($invoicePrivilegesAccessIDs['all'] == 'full' || $invoicePrivilegesAccessIDs['all'] == 'edit' ||  $invoicePrivilegesAccessIDs['all'] == 'approve') {
                         $result = true;
                     }
                 } else {
@@ -115,14 +115,14 @@ class PrivilegesAccess
                 $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($projectPrivilegesAccessIDs)) && !in_array($modelID, array_keys($projectPrivilegesAccessIDs))) {
-                    if ($projectPrivilegesAccessIDs['all'] == 'full' || $projectPrivilegesAccessIDs['all'] == 'edit') {
+                    if ($projectPrivilegesAccessIDs['all'] == 'full' || $projectPrivilegesAccessIDs['all'] == 'edit' || $projectPrivilegesAccessIDs['all'] == 'approve') {
                         $result = true;
                     }
                 } else {
-                    if($pathArray[2] == 'create' && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)))) {
+                    if($pathArray[2] == 'create' && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)) || in_array('approve', array_values($projectPrivilegesAccessIDs)))) {
                         $result = true;
                     } else {
-                        if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit')) {
+                        if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit' || $projectPrivilegesAccessIDs[$modelID] == 'approve')) {
                             $result = true;
                         }
                     }

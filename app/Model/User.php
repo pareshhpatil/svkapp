@@ -494,32 +494,37 @@ class User extends ParentModel
         $privilegesCollect = DB::table('briq_privileges')
             ->where('user_id', $user_id)
             ->where('is_active', 1)
-            ->select(['type', 'type_id', 'access'])
+            ->select(['type', 'type_id', 'access', 'rule_engine_query'])
             ->get()
             ->collect();
 
         $ruleEngineInvoices = $this->fetchRuleEngineInvoices($privilegesCollect);
 
-        $customerPrivilegesCollect = clone $privilegesCollect->where('type', 'customer')
-            ->pluck('access', 'type_id');
+        $customerPrivilegesArray = $ruleEngineInvoices["customer_ids"];
+        $projectPrivilegesArray = $ruleEngineInvoices["project_ids"];
+        $contractPrivilegesArray = $ruleEngineInvoices["contract_ids"];
+        $invoicePrivilegesArray = $ruleEngineInvoices["invoice_ids"];
+        
+//        $customerPrivilegesCollect = clone $privilegesCollect->where('type', 'customer')
+//            ->pluck('access', 'type_id');
+//
+//        $customerPrivilegesArray = $customerPrivilegesCollect->toArray();
+//
+//        $projectPrivilegesCollect = clone $privilegesCollect->where('type', 'project')
+//            ->pluck('access', 'type_id');
+//
+//        $projectPrivilegesArray = $projectPrivilegesCollect->toArray();
+//
+//
+//        $contractPrivilegesCollect = clone $privilegesCollect->where('type', 'contract')
+//            ->pluck('access', 'type_id');
+//
+//        $contractPrivilegesArray = $contractPrivilegesCollect->toArray();
 
-        $customerPrivilegesArray = $customerPrivilegesCollect->toArray();
-
-        $projectPrivilegesCollect = clone $privilegesCollect->where('type', 'project')
-            ->pluck('access', 'type_id');
-
-        $projectPrivilegesArray = $projectPrivilegesCollect->toArray();
-
-
-        $contractPrivilegesCollect = clone $privilegesCollect->where('type', 'contract')
-            ->pluck('access', 'type_id');
-
-        $contractPrivilegesArray = $contractPrivilegesCollect->toArray();
-
-        $invoicePrivilegesCollect = clone $privilegesCollect->where('type', 'invoice')
-            ->pluck('access', 'type_id');
-
-        $invoicePrivilegesArray = $invoicePrivilegesCollect->toArray();
+//        $invoicePrivilegesCollect = clone $privilegesCollect->where('type', 'invoice')
+//            ->pluck('access', 'type_id');
+//
+//        $invoicePrivilegesArray = $invoicePrivilegesCollect->toArray();
 
         $orderPrivilegesCollect = clone $privilegesCollect->where('type', 'change-order')
             ->pluck('access', 'type_id');
@@ -644,10 +649,10 @@ class User extends ParentModel
     public function fetchRuleEngineInvoices($PrivilegesCollect)
     {
         $customerPrivilegesCollect = clone $PrivilegesCollect->where('type', 'customer')->values();
-        $customerInvoiceIDs = $this->ruleEngineInvoices('customer_id', $customerPrivilegesCollect);
+        $customerInvoiceIDs = $this->customerRuleEngineInvoices('customer_id', $customerPrivilegesCollect);
 
         $contractPrivilegesCollect = clone $PrivilegesCollect->where('type', 'contract')->values();
-        $contractInvoiceIDs = $this->ruleEngineInvoices('contract_id', $contractPrivilegesCollect);
+        $contractInvoiceIDs = $this->contractRuleEngineInvoices('contract_id', $contractPrivilegesCollect);
 
         $projectPrivilegesCollect = clone $PrivilegesCollect->where('type', 'project')->values();
         $projectInvoiceIDs = $this->projectRuleEngineInvoices($projectPrivilegesCollect);
@@ -656,40 +661,77 @@ class User extends ParentModel
 //        $changeOrderInvoiceIDs = $this->changeOrderRuleEngineInvoices($changeOrderPrivilegesCollect);
 
         $invoicePrivilegesCollect = clone $PrivilegesCollect->where('type', 'invoices')->values();
-        $invoiceIDs = $this->ruleEngineInvoices('payment_request_id', $invoicePrivilegesCollect);
+        $paymentRequestIDs = $this->invoiceRuleEngineInvoices('payment_request_id', $invoicePrivilegesCollect);
 
 
         $finalArray = [];
 
-        foreach ($invoiceIDs as $key => $invoiceID){
-            $finalArray[$key] = $invoiceID;
-        }
+        $invoiceIDs = [];
+        foreach ($paymentRequestIDs as $paymentRequestID) {
+            foreach ($paymentRequestID["payment_request_ids"] as $key => $payment_request_id) {
+                if(!isset($finalArray[$key])) {
+                    $finalArray[$key] = $payment_request_id;
+                }
+            }
 
-        foreach ($projectInvoiceIDs as $key => $projectInvoiceID){
-            if(!isset($finalArray[$key])) {
-                $finalArray[$key] = $projectInvoiceID;
+            foreach ($paymentRequestID["invoice_ids"] as $key => $invoiceID) {
+                $invoiceIDs[$key] = $invoiceID;
             }
         }
 
-        foreach ($contractInvoiceIDs as $key => $contractInvoiceID){
-            if(!isset($finalArray[$key])) {
-                $finalArray[$key] = $contractInvoiceID;
+        $projectIDs = [];
+        foreach ($projectInvoiceIDs as $projectInvoiceID){
+            foreach ($projectInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+                if(!isset($finalArray[$key])) {
+                    $finalArray[$key] = $payment_request_id;
+                }
+            }
+
+            foreach ($projectInvoiceID["project_ids"] as $key => $invoiceID) {
+                $projectIDs[$key] = $invoiceID;
             }
         }
 
-        foreach ($customerInvoiceIDs as $key => $customerInvoiceID){
-            if(!isset($finalArray[$key])) {
-                $finalArray[$key] = $customerInvoiceID;
+        $contractIDs = [];
+        foreach ($contractInvoiceIDs as $contractInvoiceID){
+            foreach ($contractInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+                if(!isset($finalArray[$key])) {
+                    $finalArray[$key] = $payment_request_id;
+                }
+            }
+
+            foreach ($contractInvoiceID["contract_ids"] as $key => $contractID) {
+                $contractIDs[$key] = $contractID;
             }
         }
 
-        return array_filter($finalArray);
+        $customerIDs = [];
+        foreach ($customerInvoiceIDs as $customerInvoiceID) {
+            foreach ($customerInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+                if(!isset($finalArray[$key])) {
+                    $finalArray[$key] = $payment_request_id;
+                }
+            }
+
+            foreach ($customerInvoiceID["customer_ids"] as $key => $customerID) {
+                $customerIDs[$key] = $customerID;
+            }
+        }
+
+        return [
+            'customer_ids' => $customerIDs,
+            'project_ids' => $projectIDs,
+            'contract_ids' => $contractIDs,
+            'invoice_ids' => $invoiceIDs,
+            'payment_request_ids' => array_filter($finalArray)
+        ];
     }
 
-    public function ruleEngineInvoices($type, $customerPrivilegesCollect)
+    public function customerRuleEngineInvoices($type, $customerPrivilegesCollect)
     {
         return $customerPrivilegesCollect->map(function ($customerPrivilege) use($type) {
             $invoiceIDs = [];
+            $customerIDs = [];
             $typeID = $customerPrivilege->type_id;
             if(($customerPrivilege->access == 'full' || $customerPrivilege->access == 'approve') && !empty($customerPrivilege->rule_engine_query)) {
                 $ruleEngineQuery = json_decode($customerPrivilege->rule_engine_query, true);
@@ -701,9 +743,42 @@ class User extends ParentModel
                         $invoiceIDs[$id] = $customerPrivilege->access;
                     }
                 }
+            } else {
+                $customerIDs[$typeID] = $customerPrivilege->access;
             }
 
-            return $invoiceIDs;
+            return [
+                'payment_request_ids' => $invoiceIDs,
+                'customer_ids' => $customerIDs
+            ];
+        });
+    }
+
+    public function contractRuleEngineInvoices($type, $contractPrivilegesCollect)
+    {
+
+        return $contractPrivilegesCollect->map(function ($contractPrivilege) use($type) {
+            $invoiceIDs = [];
+            $customerIDs = [];
+            $typeID = $contractPrivilege->type_id;
+            if(($contractPrivilege->access == 'full' || $contractPrivilege->access == 'approve') && !empty($contractPrivilege->rule_engine_query)) {
+                $ruleEngineQuery = json_decode($contractPrivilege->rule_engine_query, true);
+
+                $ids = (new RuleEngineManager($type, $typeID, $ruleEngineQuery))->run();
+
+                if(!empty($ids)) {
+                    foreach ($ids as $id) {
+                        $invoiceIDs[$id] = $contractPrivilege->access;
+                    }
+                }
+            } else {
+                $customerIDs[$typeID] = $contractPrivilege->access;
+            }
+
+            return [
+                'payment_request_ids' => $invoiceIDs,
+                'contract_ids' => $customerIDs
+            ];
         });
     }
 
@@ -711,6 +786,7 @@ class User extends ParentModel
     {
         return $projectPrivilegesCollect->map(function ($projectPrivilege) {
             $invoiceIDs = [];
+            $projectIds = [];
             $typeID = $projectPrivilege->type_id;
 
             if(($projectPrivilege->access == 'full' || $projectPrivilege->access == 'approve') && !empty($projectPrivilege->rule_engine_query)) {
@@ -728,9 +804,42 @@ class User extends ParentModel
                         }
                     }
                 }
+            } else {
+                $projectIds[$typeID] = $projectPrivilege->access;
             }
 
-            return $invoiceIDs;
+            return [
+                'payment_request_ids' => $invoiceIDs,
+                'project_ids' => $projectIds
+            ];
+        });
+    }
+
+    public function invoiceRuleEngineInvoices($type, $invoicePrivilegesCollect)
+    {
+        return $invoicePrivilegesCollect->map(function ($invoicePrivilege) use($type) {
+            $IDs = [];
+            $invoiceIDs = [];
+
+            $typeID = $invoicePrivilege->type_id;
+            if(($invoicePrivilege->access == 'full' || $invoicePrivilege->access == 'approve') && !empty($invoicePrivilege->rule_engine_query)) {
+                $ruleEngineQuery = json_decode($invoicePrivilege->rule_engine_query, true);
+
+                $ids = (new RuleEngineManager($type, $typeID, $ruleEngineQuery))->run();
+
+                if(!empty($ids)) {
+                    foreach ($ids as $id) {
+                        $IDs[$id] = $invoicePrivilege->access;
+                    }
+                }
+            } else {
+                $invoiceIDs[$typeID] = $invoicePrivilege->access;
+            }
+
+            return [
+                'payment_request_ids' => $IDs,
+                'invoice_ids' => $invoiceIDs
+            ];
         });
     }
 
