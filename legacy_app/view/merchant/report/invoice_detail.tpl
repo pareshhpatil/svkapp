@@ -57,8 +57,8 @@
                         {/if}
 
                         <div class="form-group">
-                            <label class="help-block">{$customer_default_column.customer_name|default:'Customer name'}</label>
-                            <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Customer name'}" name="customer_id">
+                            <label class="help-block">{$customer_default_column.customer_name|default:'Contact person name'}</label>
+                            <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Contact person name'}" name="customer_id">
                                 <option value=""></option>
                                 {foreach from=$customer_list item=v}
                                     {if {{$customer_selected}=={$v.customer_id}}}

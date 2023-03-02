@@ -162,14 +162,14 @@ class OrderController extends Controller
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'change_order_list';
-        $data['customer_name'] = 'Customer name';
+        $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
 
         $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
-            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Contact person name';
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 

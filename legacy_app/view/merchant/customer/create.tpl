@@ -44,7 +44,7 @@
                                         {$customer_default_column.customer_code|default:'Customer code'}
                                     </th>
                                     <th class="td-c">
-                                        {$customer_default_column.customer_name|default:'Customer name'}
+                                        {$customer_default_column.customer_name|default:'Contact person name'}
                                     </th>
                                     <th class="td-c">
                                         {$customer_default_column.email|default:'Email'}
@@ -110,10 +110,22 @@
                                         </div>
 
                                     </div>
+                                    {foreach from=$column item=v}
+                                        {if $v.column_datatype=='company_name'}
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">{$v.column_name}<span
+                                                        class="required"></span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" maxlength="100" class="form-control" value="{$v.value}"
+                                                            name="company_name">
+                                                </div>
+                                            </div>
+                                        {/if}
+                                    {/foreach}
 
                                     <div class="form-group">
                                         <label
-                                            class="control-label col-md-5">{$customer_default_column.customer_name|default:'Customer name'}<span
+                                            class="control-label col-md-5">{$customer_default_column.customer_name|default:'Contact person name'}<span
                                                 class="required">*
                                             </span></label>
                                         <div class="col-md-7">
@@ -137,7 +149,7 @@
                                         <label class="control-label col-md-5">{$customer_default_column.mobile|default:'Mobile'}</label>
                                         <div class="col-md-7">
                                             <div class="input-group">
-                                            <span class="input-group-addon" id="country_code_txt">+91</span>
+                                            <span class="input-group-addon" id="country_code_txt">+{$selected_mobile_code}</span>
                                             {* {$validate.mobile} *}
                                             <input type="text" pattern="([0-9]{ldelim}10{rdelim})" title="Enter your valid mobile number" name="mobile" id="defaultmobile" aria-describedby="defaultmobile-error" value="{$post.mobile}" class="form-control" maxlength="10">
                                             </div>
@@ -162,7 +174,7 @@
                                                 data-placeholder="Select..." onchange="showStateDiv(this.value);">
                                                 <option value="">Select Country</option>
                                                 {foreach from=$country_code item=v}
-                                                    <option {if $v.config_value=='India'} selected {/if} value="{$v.config_value}">{$v.config_value}</option>
+                                                    <option {if $v.config_value==$selected_country} selected {/if} value="{$v.config_value}">{$v.config_value}</option>
                                                 {/foreach}
                                             </select>
                                         </div>
@@ -172,7 +184,7 @@
                                             class="control-label col-md-4">{$customer_default_column.state|default:'State'}<span
                                                 class="required">
                                             </span></label>
-                                        <div class="col-md-7" id="state_drpdown">
+                                        <div class="col-md-7" id="state_drpdown" style="{($selected_country=='India') ? 'display:block;' : 'display:none;'}">
                                             <select name="state" class="form-control select2me"
                                                 data-placeholder="Select...">
                                                 <option value="">Select State</option>
@@ -182,7 +194,7 @@
                                                 {/foreach}
                                             </select>
                                         </div>
-                                        <div class="col-md-7" id="state_txt" hidden>
+                                        <div class="col-md-7" id="state_txt" style="{($selected_country!='India') ? 'display:block;' : 'display:none;'}">
                                             <input type="text" name="state1" value="{$post.state}"
                                                 class="form-control">
                                         </div>
@@ -219,9 +231,9 @@
                                         <div class="form-group">
                                             {if $v.column_datatype!='company_name'}
                                                 <input name="column_id[]" type="hidden" value="{$v.column_id}">
-                                            {/if}
-                                            <label class="control-label col-md-5">{$v.column_name}<span
+                                                <label class="control-label col-md-5">{$v.column_name}<span
                                                     class="required"></span></label>
+                                            {/if}
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
                                                     <textarea class="form-control" maxlength="500"
@@ -233,8 +245,8 @@
                                                     <input type="number" autocomplete="false" maxlength="100" class="form-control"
                                                         value="{$v.value}" name="column_value[]">
                                                 {elseif $v.column_datatype=='company_name'}
-                                                    <input type="text" maxlength="100" class="form-control" value="{$v.value}"
-                                                        name="company_name">
+                                                    {* <input type="text" maxlength="100" class="form-control" value="{$v.value}"
+                                                        name="company_name"> *}
                                                 {else}
                                                     <input type="text" maxlength="100" class="form-control" value="{$v.value}"
                                                         name="column_value[]">
@@ -252,9 +264,10 @@
                                         <div class="form-group">
                                             {if $v.column_datatype!='company_name'}
                                                 <input name="column_id[]" type="hidden" value="{$v.column_id}">
+                                                <label class="control-label col-md-4">{$v.column_name}<span
+                                                class="required"></span></label>
                                             {/if}
-                                            <label class="control-label col-md-4">{$v.column_name}<span
-                                                    class="required"></span></label>
+                                           
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
                                                     <textarea maxlength="500" class="form-control"
@@ -266,8 +279,8 @@
                                                     <input type="number" autocomplete="false" maxlength="100" class="form-control"
                                                         value="{$v.value}" name="column_value[]">
                                                 {elseif $v.column_datatype=='company_name'}
-                                                    <input type="text" maxlength="100" class="form-control" value="{$v.value}"
-                                                        name="company_name">
+                                                    {* <input type="text" maxlength="100" class="form-control" value="{$v.value}"
+                                                        name="company_name"> *}
                                                 {else}
                                                     <input type="text" maxlength="100" class="form-control" value="{$v.value}"
                                                         name="column_value[]">
