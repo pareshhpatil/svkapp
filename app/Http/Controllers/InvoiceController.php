@@ -3317,6 +3317,7 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
+        
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);
@@ -3744,9 +3745,10 @@ class InvoiceController extends AppController
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $merchant_cost_types_array = $this->getKeyArrayJson($merchant_cost_types, 'value');
         $data['billed_transactions'] = $billed_transactions;
-
         $data['merchant_cost_types'] = $merchant_cost_types;
+        $data['cost_types_array'] = $merchant_cost_types_array;
         $data['cost_types'] = $merchant_cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
@@ -3761,12 +3763,22 @@ class InvoiceController extends AppController
         $data['link'] = $link;
         $data['particulars'] = $particulars;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
+        $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
         $data['total'] = $total;
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
 
         return view('app/merchant/invoice/invoice-particular-new', $data);
+    }
+
+    private function getKeyArrayJson($array, $key)
+    {
+        $data = [];
+        foreach ($array as $row) {
+            $data[$row[$key]] = $row;
+        }
+        return json_encode($data);
     }
 
     public function preview($link)
