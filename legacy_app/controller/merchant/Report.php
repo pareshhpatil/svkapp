@@ -128,7 +128,7 @@ class Report extends Controller
             $column[] = 'company_name';
             $column[] = 'current';
             $column_display[] = 'Customer code';
-            $column_display[] = 'Customer name';
+            $column_display[] = 'Contact person name';
             $column_display[] = ($this->get_custom_company_col_name != false) ? $this->get_custom_company_col_name : 'Company name';
             $column_display[] = 'Today';
             $int = 1;

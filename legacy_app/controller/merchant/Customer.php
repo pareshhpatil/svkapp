@@ -1,5 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Redis;
+use Carbon\Carbon;
+use DateTimeZone;
+use League\ISO3166\ISO3166;
 /**
  * @author Paresh
  * @version 2.0
@@ -152,6 +155,30 @@ class Customer extends Controller
             );
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
+            
+            //find customer region setting for timezone
+            $region_setting = $this->common->getSingleValue('preferences', 'user_id', $this->user_id);
+            $selected_country = 'United States';
+            $selected_mobile_code = '+1';
+
+            if($region_setting!='') {
+                $dateTime = Carbon::now($region_setting['timezone']);
+                // Get the country code for the timezone
+                $timeZone = new DateTimeZone($dateTime->getTimezone()->getName());
+                $countryCode = $timeZone->getLocation()['country_code'];
+                // Get the country name from the country code
+                $iso = new ISO3166();
+                $countryInfo = $iso->alpha2($countryCode);
+                //find mobile code from config table 
+                $find_mobile_code = $this->common->getSingleValue('config', 'config_value', $countryInfo['name']);
+                if($find_mobile_code!='') {
+                    $selected_country = $countryInfo['name'];
+                    $selected_mobile_code = $find_mobile_code['description'];
+                }
+            }
+            
+            $this->smarty->assign("selected_country", $selected_country);
+            $this->smarty->assign("selected_mobile_code", $selected_mobile_code);
             $this->session->set('valid_ajax', 'country_code');
             $this->view->selectedMenu = array(2, 15, 68);
             $this->view->canonical = 'merchant/customer/structure';
