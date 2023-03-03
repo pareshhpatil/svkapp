@@ -82,7 +82,7 @@ class RuleEngineHelper
                 break;
         }
 
-        return $Builder->pluck('payment_request_id')->toArray();
+        return $Builder->pluck($type)->toArray();
     }
 }
 

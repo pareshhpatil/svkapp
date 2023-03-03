@@ -388,6 +388,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -397,6 +398,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: ruleEngine[0].query_operator,
                                         query_value: ruleEngine[0].query_value
                                     }
@@ -411,7 +413,7 @@
                             })
                             customerArrayHTML.append(html);
                         });
-                        console.log(customerValArr);
+
                         projectArrayHTML.empty();
                         projectPrivilegesData.forEach((el, i) => {
                             let ruleEngine = [];
@@ -427,6 +429,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -436,6 +439,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: ruleEngine[0].query_operator,
                                         query_value: ruleEngine[0].query_value
                                     }
@@ -468,6 +472,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -477,6 +482,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: ruleEngine[0].query_operator,
                                         query_value: ruleEngine[0].query_value
                                     }
@@ -508,6 +514,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: ''
                                 }
@@ -516,6 +523,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: ruleEngine[0].query_operator,
                                         query_value: ruleEngine[0].query_value
                                     }
@@ -547,7 +555,8 @@
 
                             let rule_engine = [
                                 {
-                                    query_name: 'grand_total',
+                                    query_name: 'total_change_order_amount',
+                                    query_model: 'change_order',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -556,7 +565,8 @@
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
-                                        query_name: 'grand_total',
+                                        query_name: 'total_change_order_amount',
+                                        query_model: 'change_order',
                                         query_operator: ruleEngine[0].query_operator,
                                         query_value: ruleEngine[0].query_value
                                     }
@@ -581,7 +591,7 @@
             })
 
             $('.save-btn').on("click", function() {
-                console.log(invoiceValArr);
+
                 privilegesFormWrap.find('[name="customers_privileges"]').val(JSON.stringify(customerValArr));
                 privilegesFormWrap.find('[name="projects_privileges"]').val(JSON.stringify(projectValArr));
                 privilegesFormWrap.find('[name="contracts_privileges"]').val(JSON.stringify(contractValArr));
@@ -629,6 +639,7 @@
                 let rule_engine = [
                     {
                         query_name: 'grand_total',
+                        query_model: 'payment_request',
                         query_operator: '',
                         query_value: '',
                     }
@@ -694,6 +705,7 @@
                 let rule_engine = [
                     {
                         query_name: 'grand_total',
+                        query_model: 'payment_request',
                         query_operator: '',
                         query_value: '',
                     }
@@ -749,6 +761,7 @@
                 let rule_engine = [
                     {
                         query_name: 'grand_total',
+                        query_model: 'payment_request',
                         query_operator: '',
                         query_value: '',
                     }
@@ -799,6 +812,7 @@
                 let rule_engine = [
                     {
                         query_name: 'grand_total',
+                        query_model: 'payment_request',
                         query_operator: '',
                         query_value: '',
                     }
@@ -860,7 +874,8 @@
 
                 let rule_engine = [
                     {
-                        query_name: 'grand_total',
+                        query_name: 'total_change_order_amount',
+                        query_model: 'change_order',
                         query_operator: '',
                         query_value: '',
                     }
@@ -885,8 +900,6 @@
                                 $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
                                 $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
                             }
-                            // $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                            // $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
                         } else {
                             $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-show');
                             $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
@@ -895,6 +908,7 @@
                             customerValArr[privilegesID].rule_engine_query = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -917,6 +931,7 @@
                             projectValArr[privilegesID].rule_engine_query = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -938,6 +953,7 @@
                             contractValArr[privilegesID].rule_engine_query = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -959,6 +975,7 @@
                             invoiceValArr[privilegesID].rule_engine_query = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -980,7 +997,8 @@
                             $('#change-order-rule-engine-'+privilegesID).addClass('custom-hide');
                             changeOrderValArr[privilegesID].rule_engine_query = [
                                 {
-                                    query_name: 'grand_total',
+                                    query_name: 'total_change_order_amount',
+                                    query_model: 'change_order',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1009,6 +1027,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1018,6 +1037,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: el.rule_engine_query[0].query_operator,
                                         query_value: el.rule_engine_query[0].query_value
                                     }
@@ -1042,6 +1062,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1051,6 +1072,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: el.rule_engine_query[0].query_operator,
                                         query_value: el.rule_engine_query[0].query_value
                                     }
@@ -1074,6 +1096,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1083,6 +1106,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: el.rule_engine_query[0].query_operator,
                                         query_value: el.rule_engine_query[0].query_value
                                     }
@@ -1106,6 +1130,7 @@
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
+                                    query_model: 'payment_request',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1115,6 +1140,7 @@
                                 rule_engine = [
                                     {
                                         query_name: 'grand_total',
+                                        query_model: 'payment_request',
                                         query_operator: el.rule_engine_query[0].query_operator,
                                         query_value: el.rule_engine_query[0].query_value
                                     }
@@ -1137,7 +1163,8 @@
 
                             let rule_engine = [
                                 {
-                                    query_name: 'grand_total',
+                                    query_name: 'total_change_order_amount',
+                                    query_model: 'change_order',
                                     query_operator: '',
                                     query_value: '',
                                 }
@@ -1146,7 +1173,8 @@
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
-                                        query_name: 'grand_total',
+                                        query_name: 'total_change_order_amount',
+                                        query_model: 'change_order',
                                         query_operator: el.rule_engine_query[0].query_operator,
                                         query_value: el.rule_engine_query[0].query_value
                                     }
@@ -1172,6 +1200,7 @@
                         customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: 'gt',
                                 query_value: '',
                             }
@@ -1184,6 +1213,7 @@
                         projectValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: 'gt',
                                 query_value: '',
                             }
@@ -1196,6 +1226,7 @@
                         contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: 'gt',
                                 query_value: '',
                             }
@@ -1208,6 +1239,7 @@
                         invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: 'gt',
                                 query_value: '',
                             }
@@ -1219,7 +1251,8 @@
 
                         changeOrderValArr[privilegesID].rule_engine_query = [
                             {
-                                query_name: 'grand_total',
+                                query_name: 'total_change_order_amount',
+                                query_model: 'change_order',
                                 query_operator: 'gt',
                                 query_value: '',
                             }
@@ -1272,6 +1305,7 @@
                         customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: val,
                                 query_value: queryVal,
                             }
@@ -1281,6 +1315,7 @@
                         contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: val,
                                 query_value: queryVal,
                             }
@@ -1299,6 +1334,7 @@
                         invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: val,
                                 query_value: queryVal,
                             }
@@ -1307,7 +1343,8 @@
                     case 'change-order':
                         changeOrderValArr[privilegesID].rule_engine_query = [
                             {
-                                query_name: 'grand_total',
+                                query_name: 'total_change_order_amount',
+                                query_model: 'change_order',
                                 query_operator: val,
                                 query_value: queryVal,
                             }
@@ -1327,6 +1364,7 @@
                         customerValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: queryOperator,
                                 query_value: val,
                             }
@@ -1336,6 +1374,7 @@
                         contractValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: queryOperator,
                                 query_value: val,
                             }
@@ -1345,6 +1384,7 @@
                         projectValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: queryOperator,
                                 query_value: val,
                             }
@@ -1354,6 +1394,7 @@
                         invoiceValArr[privilegesID].rule_engine_query = [
                             {
                                 query_name: 'grand_total',
+                                query_model: 'payment_request',
                                 query_operator: queryOperator,
                                 query_value: val,
                             }
@@ -1362,7 +1403,8 @@
                     case 'change-order':
                         changeOrderValArr[privilegesID].rule_engine_query = [
                             {
-                                query_name: 'grand_total',
+                                query_name: 'total_change_order_amount',
+                                query_model: 'change_order',
                                 query_operator: queryOperator,
                                 query_value: val,
                             }
@@ -1394,18 +1436,15 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
 </div>`;
             }
 
-            function approveHTML(privileges) {
-                return `<option value="approve" ${privileges === 'approve' ? 'selected' : ''}>Approve</option>`
-            }
+            // function approveHTML(privileges) {
+            //     return `<option value="approve" ${privileges === 'approve' ? 'selected' : ''}>Approve</option>`
+            // }
 
             function showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine) {
 
                 return `<div class="rule-engine-row ${hasRuleEngine ? 'custom-show' : 'custom-hide'}" id="${type}-rule-engine-${index}">
                         <div class="rule-engine-query">
-                            <p class="rule-engine-text">if Invoice</p>
-<select name="rule-engine-operator" class="rule-engine-query-name form-control">
-<option value="grand total" selected>grand total</option>
-</select>
+                            ${type === 'change-order' ? changeOrderOptions() : invoiceOptions()}
                             <select name="rule-engine-operator" class="rule-engine-operator form-control" data-id="${index}" data-type="${type}">
                             <option value="gt" ${rule_engine.query_operator
                 === 'gt' ? 'selected' : ''}>greater than</option>
@@ -1431,5 +1470,18 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
 
                 return `<button type="button" class="add-rule-engine-btn ${privileges === 'full' || privileges === 'approve' ? 'custom-show' : 'custom-hide'}" data-id="${index}" data-type="${type}">Add Rule</button>`
             }
+
+            function invoiceOptions() {
+                return `<p class="rule-engine-text">if Invoice</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
+<option value="grand_total" selected>grand total</option>
+</select>`;
+            }
+
+            function changeOrderOptions() {
+                return `<p class="rule-engine-text">if Change Order</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
+<option value="total_change_order_amount" selected>total amount</option>
+</select>`;
+            }
+
         })
     </script>

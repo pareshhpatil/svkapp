@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Merchant;
 
+use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Libraries\Encrypt;
 use App\Notifications\ChangeOrderNotification;
 use App\User;
@@ -53,10 +54,35 @@ class ChangeOrderHelper
 
             $projectUsersWithFullAccess = $projectUsers->toArray();
 
-            $changeOrderUsers = clone $data->where('type', 'change-order')
-                ->where('type_id', $projectID)->pluck('user_id');
+//            $changeOrderUsers = clone $data->where('type', 'change-order')
+//                ->where('type_id', $projectID)->pluck('user_id');
+//
+//            $changeOrderUsersWithFullAccess = $changeOrderUsers->toArray();
 
-            $changeOrderUsersWithFullAccess = $changeOrderUsers->toArray();
+            $ChangeOrderCollect = clone $data->where('type', 'change-order')
+                ->whereIn('type_id', [$orderDetail->order_id, 'all'])->values();
+
+            $changeOrderUsersWithFullAccess = $ChangeOrderCollect->map(function ($ChangeOrder) use($orderDetail) {
+                $userIDs = [];
+
+                if($ChangeOrder->type_id == $orderDetail->order_id || $ChangeOrder->type_id == 'all') {
+                    if(!empty($ChangeOrder->rule_engine_query)) {
+                        $ruleEngineQuery = json_decode($ChangeOrder->rule_engine_query, true);
+                        $ids = (new RuleEngineManager('order_id', $ChangeOrder->type_id, $ruleEngineQuery))->run();
+
+                        if(!empty($ids)) {
+                            if(in_array($orderDetail->order_id, $ids)) {
+                                $userIDs[] = $ChangeOrder->user_id;
+                            }
+                        }
+                    } else {
+                        $userIDs[] = $ChangeOrder->user_id;
+                    }
+                }
+
+                return $userIDs;
+            });
+
 
             $adminRole = DB::table('briq_roles')
                 ->where('merchant_id', $merchantID)
@@ -84,10 +110,8 @@ class ChangeOrderHelper
 //                }
 
             foreach ($Users as $User) {
-                if($User->email_id != 'Sub@gmail.com') {
-                    if(!empty($User->fcm_token)) {
-                        $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
-                    }
+                if(!empty($User->fcm_token)) {
+                    $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
                 }
             }
         }

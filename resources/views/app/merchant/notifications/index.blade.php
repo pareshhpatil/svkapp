@@ -152,7 +152,7 @@
             }
 
             function changeOrderHTML(notification) {
-                let html = `<div class="notification-item"><a href=/merchant/invoice/viewg703/${notification.data['order_id']}?notification_id=${notification.id} class="notification-item-link">
+                let html = `<div class="notification-item"><a href=/merchant/order/list?order_id=${notification.data['order_id']}&notification_id=${notification.id} class="notification-item-link">
                             <div>
                                 <p class="notification-item-value">${notification.order_number}</p>
                                 <p class="notification-item-label">Order  Number</p>

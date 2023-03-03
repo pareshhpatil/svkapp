@@ -1265,7 +1265,7 @@ if ($this->document_upload == true) {
     }
 
     function changeOrderNotificationText(notification) {
-        return `<a href="/merchant/invoice/viewg703/${notification.data.order_id}" target="_blank" style="color: #495555;">${notification.data.order_number} order pending for approval</a>`
+        return `<a href="/merchant/order/list?order_id=${notification.data.order_id}&notification_id=${notification.id}" target="_blank" style="color: #495555;">${notification.data.order_number} order pending for approval</a>`
     }
     // })
 

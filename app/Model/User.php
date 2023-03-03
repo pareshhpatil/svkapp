@@ -544,9 +544,9 @@ class User extends ParentModel
             $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices);
         }
 
-        if(!empty($contractPrivilegesArray)) {
-            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);
-        }
+//        if(!empty($contractPrivilegesArray)) {
+//            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);
+//        }
 
         return [
             'customer_privileges' => $customerPrivilegesArray,
@@ -662,7 +662,7 @@ class User extends ParentModel
         $paymentRequestIDs = $this->invoiceRuleEngineInvoices('payment_request_id', $invoicePrivilegesCollect);
 
         $changeOrderPrivilegesCollect = clone $PrivilegesCollect->where('type', 'change-order')->values();
-        $changeOrderInvoiceIDs = $this->changeOrderRuleEngineInvoices($changeOrderPrivilegesCollect);
+        $changeOrderInvoiceIDs = $this->changeOrderRuleEngineIDs($changeOrderPrivilegesCollect);
 
         $finalArray = [];
 
@@ -681,12 +681,6 @@ class User extends ParentModel
 
         $changeOrderIds = [];
         foreach ($changeOrderInvoiceIDs as $changeOrderInvoiceID) {
-            foreach ($changeOrderInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-                if(!isset($finalArray[$key])) {
-                    $finalArray[$key] = $payment_request_id;
-                }
-            }
-
             foreach ($changeOrderInvoiceID["change_order_ids"] as $key => $invoiceID) {
                 $changeOrderIds[$key] = $invoiceID;
             }
@@ -739,6 +733,7 @@ class User extends ParentModel
             'change_order_ids' => $changeOrderIds,
             'payment_request_ids' => array_filter($finalArray)
         ];
+
     }
 
     public function customerRuleEngineInvoices($type, $customerPrivilegesCollect)
@@ -857,39 +852,27 @@ class User extends ParentModel
         });
     }
 
-    public function changeOrderRuleEngineInvoices($changeOrderPrivilegesCollect)
+    public function changeOrderRuleEngineIDs($changeOrderPrivilegesCollect)
     {
         return $changeOrderPrivilegesCollect->map(function ($changeOrderPrivilege) {
-            $invoiceIDs = [];
             $changeOrderIDs = [];
             $typeID = $changeOrderPrivilege->type_id;
 
             if(($changeOrderPrivilege->access == 'full' || $changeOrderPrivilege->access == 'approve') && !empty($changeOrderPrivilege->rule_engine_query)) {
-                $Order = DB::table('order')
-                                ->where('is_active', 1)
-                                ->where('order_id', $typeID)
-                                ->first();
-                $paymentRequestIds = DB::table('payment_request')
-                    ->where('is_active', 1)
-                    ->where('contract_id', $Order->contract_id)
-                    ->pluck('payment_request_id');
-
                 $ruleEngineQuery = json_decode($changeOrderPrivilege->rule_engine_query, true);
 
-                foreach ($paymentRequestIds as $paymentRequestId) {
-                    $ids = (new RuleEngineManager('payment_request_id', $paymentRequestId, $ruleEngineQuery))->run();
-                    if(!empty($ids)) {
-                        foreach ($ids as $id) {
-                            $invoiceIDs[$id] = $changeOrderPrivilege->access;
-                        }
+                $ids = (new RuleEngineManager('order_id', $typeID, $ruleEngineQuery))->run();
+                if(!empty($ids)) {
+                    foreach ($ids as $id) {
+                        $changeOrderIDs[$id] = $changeOrderPrivilege->access;
                     }
                 }
+
             } else {
                 $changeOrderIDs[$typeID] = $changeOrderPrivilege->access;
             }
 
             return [
-                'payment_request_ids' => $invoiceIDs,
                 'change_order_ids' => $changeOrderIDs
             ];
         });
