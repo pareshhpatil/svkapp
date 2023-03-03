@@ -504,6 +504,7 @@ class User extends ParentModel
         $projectPrivilegesArray = $ruleEngineInvoices["project_ids"];
         $contractPrivilegesArray = $ruleEngineInvoices["contract_ids"];
         $invoicePrivilegesArray = $ruleEngineInvoices["invoice_ids"];
+        $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
         
 //        $customerPrivilegesCollect = clone $privilegesCollect->where('type', 'customer')
 //            ->pluck('access', 'type_id');
@@ -526,10 +527,10 @@ class User extends ParentModel
 //
 //        $invoicePrivilegesArray = $invoicePrivilegesCollect->toArray();
 
-        $orderPrivilegesCollect = clone $privilegesCollect->where('type', 'change-order')
-            ->pluck('access', 'type_id');
-
-        $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
+//        $orderPrivilegesCollect = clone $privilegesCollect->where('type', 'change-order')
+//            ->pluck('access', 'type_id');
+//
+//        $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
 
         if(!empty($customerPrivilegesArray)) {
             $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray);
@@ -657,12 +658,11 @@ class User extends ParentModel
         $projectPrivilegesCollect = clone $PrivilegesCollect->where('type', 'project')->values();
         $projectInvoiceIDs = $this->projectRuleEngineInvoices($projectPrivilegesCollect);
 
-//        $changeOrderPrivilegesCollect = clone $PrivilegesCollect->where('type', 'change-order')->values();
-//        $changeOrderInvoiceIDs = $this->changeOrderRuleEngineInvoices($changeOrderPrivilegesCollect);
-
         $invoicePrivilegesCollect = clone $PrivilegesCollect->where('type', 'invoices')->values();
         $paymentRequestIDs = $this->invoiceRuleEngineInvoices('payment_request_id', $invoicePrivilegesCollect);
 
+        $changeOrderPrivilegesCollect = clone $PrivilegesCollect->where('type', 'change-order')->values();
+        $changeOrderInvoiceIDs = $this->changeOrderRuleEngineInvoices($changeOrderPrivilegesCollect);
 
         $finalArray = [];
 
@@ -676,6 +676,19 @@ class User extends ParentModel
 
             foreach ($paymentRequestID["invoice_ids"] as $key => $invoiceID) {
                 $invoiceIDs[$key] = $invoiceID;
+            }
+        }
+
+        $changeOrderIds = [];
+        foreach ($changeOrderInvoiceIDs as $changeOrderInvoiceID) {
+            foreach ($changeOrderInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+                if(!isset($finalArray[$key])) {
+                    $finalArray[$key] = $payment_request_id;
+                }
+            }
+
+            foreach ($changeOrderInvoiceID["change_order_ids"] as $key => $invoiceID) {
+                $changeOrderIds[$key] = $invoiceID;
             }
         }
 
@@ -723,6 +736,7 @@ class User extends ParentModel
             'project_ids' => $projectIDs,
             'contract_ids' => $contractIDs,
             'invoice_ids' => $invoiceIDs,
+            'change_order_ids' => $changeOrderIds,
             'payment_request_ids' => array_filter($finalArray)
         ];
     }
@@ -847,12 +861,17 @@ class User extends ParentModel
     {
         return $changeOrderPrivilegesCollect->map(function ($changeOrderPrivilege) {
             $invoiceIDs = [];
+            $changeOrderIDs = [];
             $typeID = $changeOrderPrivilege->type_id;
 
             if(($changeOrderPrivilege->access == 'full' || $changeOrderPrivilege->access == 'approve') && !empty($changeOrderPrivilege->rule_engine_query)) {
+                $Order = DB::table('order')
+                                ->where('is_active', 1)
+                                ->where('order_id', $typeID)
+                                ->first();
                 $paymentRequestIds = DB::table('payment_request')
                     ->where('is_active', 1)
-                    ->where('change_order_id', 'like', '%'.$typeID.'%')
+                    ->where('contract_id', $Order->contract_id)
                     ->pluck('payment_request_id');
 
                 $ruleEngineQuery = json_decode($changeOrderPrivilege->rule_engine_query, true);
@@ -865,9 +884,14 @@ class User extends ParentModel
                         }
                     }
                 }
+            } else {
+                $changeOrderIDs[$typeID] = $changeOrderPrivilege->access;
             }
 
-            return $invoiceIDs;
+            return [
+                'payment_request_ids' => $invoiceIDs,
+                'change_order_ids' => $changeOrderIDs
+            ];
         });
     }
 
