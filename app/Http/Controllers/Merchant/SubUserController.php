@@ -66,7 +66,11 @@ class SubUserController extends AppController
      */
     public function store(StoreUserRequest $request)
     {
-        $this->subUserHelper->storeUser($this->user_id, $request);
+        $status = $this->subUserHelper->storeUser($this->user_id, $request);
+
+        if(!$status['send_email_success']) {
+            return redirect()->to('merchant/subusers')->with('error', "User created but error in email sending. Bcz email is not verified");
+        }
 
         return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
     }

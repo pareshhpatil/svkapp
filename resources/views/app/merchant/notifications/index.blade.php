@@ -45,6 +45,10 @@
         color: #3E4AA3;
         padding: 10px 15px;
     }
+
+    .notification-readed {
+        background-color: #F7F8F8;
+    }
 </style>
 @section('content')
     <div class="page-content">
@@ -118,7 +122,7 @@
             }
 
             function invoiceHTML(notification) {
-                let html = `<div class="notification-item"><a href=/merchant/invoice/viewg703/${notification.data['payment_request_id']}?notification_id=${notification.id} class="notification-item-link">
+                let html = `<div class="notification-item ${notification.read_at ? 'notification-readed' : ''}"><a href=/merchant/invoice/viewg703/${notification.data['payment_request_id']}?notification_id=${notification.id} class="notification-item-link">
                             <div>
                                 <p class="notification-item-value">${notification.invoice_number}</p>
                                 <p class="notification-item-label">Invoice  Number</p>
@@ -152,7 +156,7 @@
             }
 
             function changeOrderHTML(notification) {
-                let html = `<div class="notification-item"><a href=/merchant/order/list?order_id=${notification.data['order_id']}&notification_id=${notification.id} class="notification-item-link">
+                let html = `<div class="notification-item ${notification.read_at ? 'notification-readed' : ''}"><a href=/merchant/order/list?order_id=${notification.data['order_id']}&notification_id=${notification.id} class="notification-item-link">
                             <div>
                                 <p class="notification-item-value">${notification.order_number}</p>
                                 <p class="notification-item-label">Order  Number</p>

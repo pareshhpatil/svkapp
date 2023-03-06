@@ -378,7 +378,7 @@ class MasterController extends AppController
         $authUser = auth()->user();
 
         // Get Notifications
-        $Notifications = $authUser->unreadNotifications()
+        $Notifications = $authUser->notifications()
             ->latest()
             ->limit(9)
             ->get();
@@ -402,7 +402,7 @@ class MasterController extends AppController
         $authUser = auth()->user();
 
         // Get Notifications
-        $Notifications = $authUser->unreadNotifications()
+        $Notifications = $authUser->notifications()
             ->paginate(2);
         
         $notificationMap = $Notifications

@@ -13,6 +13,10 @@
         padding-top: 9px !important;
         padding-bottom: 9px !important;
     }
+
+    .notification-readed {
+        background-color: #F7F8F8;
+    }
 </style>
 <script>
     // @see https://docs.headwayapp.co/widget for more configuration options.
@@ -1247,8 +1251,7 @@ if ($this->document_upload == true) {
 
                 notificationDropdown.empty();
                 notifications.forEach((notification, i) => {
-                    console.log(notification);
-                    let html = `<li style="border-bottom: 1px solid #eee;padding: 10px 15px">
+                    let html = `<li style="border-bottom: 1px solid #eee;padding: 10px 15px" class="${notification.read_at ? 'notification-readed' : ''}">
                                     <div style="width: 300px">
                                         ${notification.data.type === 'invoice' ? invoiceNotificationText(notification) : ''}
                                         ${notification.data.type === 'change-order' ? changeOrderNotificationText(notification): ''}

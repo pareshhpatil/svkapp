@@ -65,8 +65,18 @@ class SubUserHelper
 
         $this->addUserRole($SubUser, $request->get('role'));
 
-        $this->sendVerifyMail($SubUser);
+        $emailSuccess = false;
+        try {
+            $this->sendVerifyMail($SubUser);
+            $emailSuccess = true;
+        } catch(\Exception $exception) {
+        }
+
         $this->addUserPrefrences($SubUser);
+
+        return [
+            'send_email_success' => $emailSuccess
+        ];
     }
 
     /**
