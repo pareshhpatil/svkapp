@@ -1897,7 +1897,7 @@
                         options = merchant_cost_types;
                         selectedValue = particularray[id].cost_type;
                     } else if (type == 'bill_code_detail') {
-                        options = bill_code_detail;
+                        options = bill_code_details;
                         selectedValue = particularray[id].bill_code_detail;
                         if (selectedValue == '') {
                             selectedValue = 'Yes';
