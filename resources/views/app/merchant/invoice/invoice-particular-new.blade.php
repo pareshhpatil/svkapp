@@ -1398,9 +1398,10 @@
 
                         cost_code_selected=particularray[field].bill_code;
                         cost_type_selected=this.fields[field].cost_type;
-                        this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
-                        this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
-
+                        particularray[field].cost_type=cost_type_selected;
+                        this.virtualSelectInit(field, 'cost_types');
+                        this.virtualSelectInit(field, 'cost_codes');
+                        
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
 
@@ -1611,9 +1612,10 @@
                         //////
 
                         cost_code_selected=particularray[field.pint].bill_code;
-                        cost_type_selected=field.cost_type;
-                        this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
-                        this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+                        particularray[field.pint].cost_type=field.cost_type;
+
+                        this.virtualSelectInit(field.pint, 'cost_types');
+                        this.virtualSelectInit(field.pint, 'cost_codes');
 
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
