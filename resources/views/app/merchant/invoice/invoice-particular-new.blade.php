@@ -506,14 +506,23 @@
                 $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
                 $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
 
+                //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $ArrayBillCodeJson=str_replace("\\",'\\\\', $csi_codes_array); 
+                $ArrayBillCodeJson=str_replace("'","\'",$ArrayBillCodeJson);
+                $ArrayBillCodeJson=str_replace('"','\\"',$ArrayBillCodeJson);
+
                 $merchantCostTypeJson=json_encode($merchant_cost_types);
                 $merchantCostTypeJson=str_replace("\\",'\\\\', $merchantCostTypeJson); 
                 $merchantCostTypeJson=str_replace("'","\'",$merchantCostTypeJson);
                 $merchantCostTypeJson=str_replace('"','\\"',$merchantCostTypeJson);
+
+                $merchantCostTypeJsonArray=str_replace("\\",'\\\\', $cost_types_array); 
+                $merchantCostTypeJsonArray=str_replace("'","\'",$merchantCostTypeJsonArray);
+                $merchantCostTypeJsonArray=str_replace('"','\\"',$merchantCostTypeJsonArray);
             @endphp
 
             csi_codes = JSON.parse('{!! $billcodeJson !!}');
-            csi_codes_array = JSON.parse('{!! $csi_codes_array !!}');
+            csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
             var particularray = JSON.parse('{!! $particularJson !!}');
             //console.log(particularray);
             var previewArray = [];
@@ -526,7 +535,7 @@
             var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
             var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
-            var cost_types_array = JSON.parse('{!! $cost_types_array !!}');
+            var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
             function initializeParticulars(){
                 this.initializeDropdowns();
                 this.calculateTotal();
