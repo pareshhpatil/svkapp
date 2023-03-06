@@ -335,6 +335,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
   Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703');
+  Route::get('invoice/viewg703V2/{link}', 'InvoiceController@view_g703_v2');
   Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
   Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/document/{link}', 'InvoiceController@documents');

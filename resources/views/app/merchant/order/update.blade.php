@@ -171,6 +171,15 @@
                                             Description
                                         </th>
                                         <th class="td-c">
+                                            Group
+                                        </th>
+                                        <th class="td-c">
+                                            Sub group 1
+                                        </th>
+                                        <th class="td-c">
+                                            Sub group 2
+                                        </th>
+                                        <th class="td-c">
 
                                         </th>
                                     </tr>
@@ -223,6 +232,30 @@
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        </td>
+                                        @elseif ($v == 'group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="group[]"  id="group_select">
+                                                @if(!empty($group_codes))
+                                                @foreach($group_codes as $value)
+                                                @if($row[$v]==$value)
+                                                <option selected value="{{$value}}">{{$value}}</option>
+                                                @else
+                                                <option value="{{$value}}">{{$value}}</option>
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        @elseif ($v == 'sub_group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="sub_group[]"  id="sample-select-1">
+                                                <option value="{{$row[$v]}}">{{$row[$v]}}</option>
+                                                </select>
+                                            </div>
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
@@ -278,6 +311,9 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -348,6 +384,27 @@
 </script>
 @section('footer')
 <script>
+     VirtualSelect.init({
+        ele: '#group_select',
+        allowNewOption: true,
+        dropboxWrapper: 'body',
+        name: 'group[]',
+        multiple:false,
+        additionalClasses : 'vs-option',
+        searchPlaceholderText : 'Search or Add new',
+        search:true,
+    });
+    VirtualSelect.init({
+        ele: '#sample-select-1',
+        allowNewOption: true,
+        dropboxWrapper: 'body',
+        name: 'sub_group[]',
+        multiple:false,
+        additionalClasses : 'vs-option',
+        searchPlaceholderText : 'Search or Add new',
+        search:true,
+    });
+
     project_id = '{{$detail2->project_id}}'
     projectSelected(project_id)
     $('.tableFixHead').css('max-height', screen.height/2);

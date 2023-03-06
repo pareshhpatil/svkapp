@@ -242,6 +242,7 @@
                                                                         </div>
                                                                     @elseif($k=='group')
                                                                         <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                        <input type="hidden" name="sub_group[]"  x-model="field.sub_group">
                                                                     @elseif($k=='bill_type')
                                                                         <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
                                                                             <option value="">Select..</option>
@@ -600,6 +601,7 @@
                     group_show: false,
                     bill_code_name: '',
                     bill_code_description: '',
+                    sub_group: '',
                     selected_group: [],
                     panel: true,
                     billcodepanel: false,
@@ -795,6 +797,7 @@
                                          particularray[i].calculated_perc = this.fields[i].calculated_perc;
                                          particularray[i].calculated_row = this.fields[i].calculated_row;
                                          particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
+                                         particularray[i].sub_group = this.fields[i].sub_group;
                                          particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
                                          particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
                                          particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
