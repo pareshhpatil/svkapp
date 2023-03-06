@@ -68,6 +68,10 @@ class SubUserController extends AppController
     {
         $status = $this->subUserHelper->storeUser($this->user_id, $request);
 
+        if(isset($status['email_exist']) && $status['email_exist'] === true) {
+            return back()->with('error', "User email already exists");
+        }
+
         if(!$status['send_email_success']) {
             return redirect()->to('merchant/subusers')->with('error', "User created but error in email sending. Bcz email is not verified");
         }

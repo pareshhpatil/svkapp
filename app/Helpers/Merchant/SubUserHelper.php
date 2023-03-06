@@ -32,11 +32,22 @@ class SubUserHelper
     /**
      * @param $userID
      * @param $request
-     * @return void
+     * @return bool[]
      */
     public function storeUser($userID, $request)
     {
         $groupID = $this->getGroupID($userID);
+
+        $checkEmail = DB::table('user')
+                        ->where('email_id', $request->get('email_id'))
+                        ->where('group_id', $groupID)
+                        ->exists();
+
+        if($checkEmail) {
+            return [
+                'email_exist' => true
+            ];
+        }
 
         $userIDSequence = $this->createUserIDSequence();
 
