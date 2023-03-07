@@ -2686,16 +2686,33 @@ class InvoiceController extends AppController
 
             $change_order_ids = json_decode($info['change_order_id'], 1);
             if (!empty($change_order_ids)) {
-                $info['last_month_co_amount'] = 0;
-                $info['this_month_co_amount'] = 0;
-                //$start_date = date("Y-m-d", strtotime("first day of previous month"));
+                $info['last_month_co_amount_positive'] = 0;
+                $info['last_month_co_amount_negative'] = 0;
+                $info['this_month_co_amount_positive'] = 0;
+                $info['this_month_co_amount_negative'] = 0;
+
                 $start_date = '1990-01-01';
                 $end_date = date("Y-m-01");
-                $info['last_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
+                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date , '<');
+
                 $start_date = date("Y-m-01");
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
-                $info['this_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $info['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
+                $info['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
+
+                $info['last_month_co_amount'] = $info['last_month_co_amount_positive'] +  $info['last_month_co_amount_negative'];
+                $info['this_month_co_amount'] = $info['this_month_co_amount_positive'] +  $info['this_month_co_amount_negative'];
+
+                $info['total_co_amount_positive'] = $info['last_month_co_amount_positive'] +  $info['this_month_co_amount_positive'];
+                $info['total_co_amount_negative'] =$info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
             } else {
+                
+                $info['last_month_co_amount_positive'] = 0;
+                $info['last_month_co_amount_negative'] = 0;
+                $info['this_month_co_amount_positive'] = 0;
+                $info['this_month_co_amount_negative'] = 0;
+                
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
                 if ($pre_month_change_order_amount[0]->change_order_amount != null) {
@@ -3317,6 +3334,7 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
+        
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);
@@ -3744,9 +3762,10 @@ class InvoiceController extends AppController
 
         Session::put('valid_ajax', 'expense');
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $merchant_cost_types_array = $this->getKeyArrayJson($merchant_cost_types, 'value');
         $data['billed_transactions'] = $billed_transactions;
-
         $data['merchant_cost_types'] = $merchant_cost_types;
+        $data['cost_types_array'] = $merchant_cost_types_array;
         $data['cost_types'] = $merchant_cost_types;
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
@@ -3761,12 +3780,22 @@ class InvoiceController extends AppController
         $data['link'] = $link;
         $data['particulars'] = $particulars;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
+        $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
         $data['total'] = $total;
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
 
         return view('app/merchant/invoice/invoice-particular-new', $data);
+    }
+
+    private function getKeyArrayJson($array, $key)
+    {
+        $data = [];
+        foreach ($array as $row) {
+            $data[$row[$key]] = $row;
+        }
+        return json_encode($data);
     }
 
     public function preview($link)

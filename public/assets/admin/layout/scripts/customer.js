@@ -755,6 +755,12 @@ function showStateDiv(country_name) {
                 }
             });
         }
+    } else {
+        $('#state_drpdown').hide();
+        $('#s2id_state_drpdown').hide();
+        $('#state_txt').show();
+        $("#defaultmobile").attr('pattern', "([0-9]{7,10})");
+        $("#defaultmobile").attr('maxlength', "10");
     }
 }
 

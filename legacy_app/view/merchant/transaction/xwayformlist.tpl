@@ -71,7 +71,7 @@
                                         Transaction #
                                     </th>
                                     <th>
-                                    {$customer_default_column.customer_name|default:'Customer name'}
+                                    {$customer_default_column.customer_name|default:'Contact person name'}
                                     </th>
                                     <th>
                                         Email ID

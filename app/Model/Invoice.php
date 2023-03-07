@@ -848,13 +848,15 @@ class Invoice extends ParentModel
         return $seq_row->prefix . $seprator .  $seq_no;
     }
 
-    public function getChangeOrderAmount($ids, $start_date, $end_date)
+    public function getChangeOrderAmount($ids, $start_date, $end_date, $operator)
     {
         $sum = DB::table('order')
             ->where('approved_date', '>=', $start_date)
             ->where('approved_date', '<', $end_date)
+            ->where('total_change_order_amount', $operator, 0)
             ->wherein('order_id', $ids)
             ->sum('total_change_order_amount');
+            
         return $sum;
     }
 }
