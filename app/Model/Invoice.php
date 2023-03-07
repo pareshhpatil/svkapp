@@ -630,6 +630,7 @@ class Invoice extends ParentModel
 
     public function updateInvoiceDetail($request_id, $amount, $ids, $previous_amount = 0)
     {
+        $amount = (is_numeric($amount)) ? $amount : 0; 
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
                 'absolute_cost' => $amount - $previous_amount,
