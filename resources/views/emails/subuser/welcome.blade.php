@@ -545,7 +545,6 @@
 <body>
 <!--*|IF:MC_PREVIEW_TEXT|*-->
 <!--[if !gte mso 9]>
-<span class="mcnPreviewText" style="display:none; font-size:0; line-height:0; max-height:0; max-width:0; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">{!! $invoice_number !!} Pending for Approval</span>
 <![endif]-->
 <!--*|END:IF|*-->
 <center>

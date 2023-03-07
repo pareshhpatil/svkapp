@@ -73,7 +73,7 @@ class SubUserController extends AppController
         }
 
         if(!$status['send_email_success']) {
-            return redirect()->to('merchant/subusers')->with('error', "User created but error in email sending. Bcz email is not verified");
+            return redirect()->to('merchant/subusers')->with('error', "User created but error in email sending. Bcz email is not white listed");
         }
 
         return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
