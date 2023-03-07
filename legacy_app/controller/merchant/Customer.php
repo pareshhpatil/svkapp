@@ -159,21 +159,25 @@ class Customer extends Controller
             //find customer region setting for timezone
             $region_setting = $this->common->getSingleValue('preferences', 'user_id', $this->user_id);
             $selected_country = 'United States';
-            $selected_mobile_code = '+1';
+            $selected_mobile_code = '1';
 
             if($region_setting!='') {
                 $dateTime = Carbon::now($region_setting['timezone']);
                 // Get the country code for the timezone
                 $timeZone = new DateTimeZone($dateTime->getTimezone()->getName());
+                
                 $countryCode = $timeZone->getLocation()['country_code'];
-                // Get the country name from the country code
-                $iso = new ISO3166();
-                $countryInfo = $iso->alpha2($countryCode);
-                //find mobile code from config table 
-                $find_mobile_code = $this->common->getSingleValue('config', 'config_value', $countryInfo['name']);
-                if($find_mobile_code!='') {
-                    $selected_country = $countryInfo['name'];
-                    $selected_mobile_code = $find_mobile_code['description'];
+                if($countryCode!='??') {
+                    // Get the country name from the country code
+                    $iso = new ISO3166();
+                    $countryInfo = $iso->alpha2($countryCode);
+                    //find mobile code from config table 
+                    $find_mobile_code = $this->common->getSingleValue('config', 'config_value', $countryInfo['name']);
+                    
+                    if($find_mobile_code!='') {
+                        $selected_country = $find_mobile_code['config_value'];
+                        $selected_mobile_code = $find_mobile_code['description'];
+                    }
                 }
             }
             
