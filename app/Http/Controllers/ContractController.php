@@ -687,4 +687,21 @@ class ContractController extends Controller
             return redirect('/merchant/code/list/' . $id)->with('success', "Record has been updated");
         }
     }
+
+    function createTokenAPI() {
+        $model = new Master();
+        $user_row = $model->getTableRow('user', 'user_id', $this->user_id);
+        $user = User::find($user_row->id);
+       
+        //$token = $user->createToken('token-name');
+        $token = $user->createToken('my-token')->plainTextToken;
+        dd($token);
+    }
+
+    function getContractApi(Request $request) {
+        $data["project_list"] = $this->masterModel->getProjectList("M000000041");
+        
+        return json_encode($data["project_list"],true);
+        die();
+    }
 }

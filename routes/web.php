@@ -1,7 +1,6 @@
 <?php
 
 header('Cache-Control: max-age=604800');
-
 /*
   |--------------------------------------------------------------------------
   | Web Routes
@@ -586,3 +585,8 @@ Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCa
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
 
+Route::any('create-token', 'ContractController@createTokenAPI');
+
+// Route::middleware('auth:sanctum')->group(function () {
+//   Route::get('getContractApi','ContractController@getContractApi');
+// });
