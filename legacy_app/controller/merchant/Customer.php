@@ -392,11 +392,11 @@ class Customer extends Controller
                     $hasErrors = array_merge($hasErrors, $custErrors);
                 }
             }
-            
+           
             if ($hasErrors == FALSE) {
                 $column_id = (empty($_POST['column_id'])) ? array() : $_POST['column_id'];
                 $column_value = (empty($_POST['column_value'])) ? array() : $_POST['column_value'];
-                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'India';
+                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'United States';
                 $_POST['state'] = (isset($_POST['country']) && $_POST['country']=='India') ? $_POST['state'] : $_POST['state1'];
 
                 $result = $this->model->saveCustomer($this->user_id, $merchant_id, $customer_code, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['mobile'], $_POST['address'], $_POST['address2'], $_POST['city'], $_POST['state'], $_POST['zipcode'], $column_id, $column_value, 0, $_POST['password'], $_POST['GST'], $_POST['company_name'],$_POST['country']);
@@ -552,7 +552,7 @@ class Customer extends Controller
                 $excolumn_value = (empty($_POST['values'])) ? array() : $_POST['values'];
                 $column_id = (empty($_POST['column_id'])) ? array() : $_POST['column_id'];
                 $column_value = (empty($_POST['column_value'])) ? array() : $_POST['column_value'];
-                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'India';
+                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'United States';
                 $_POST['state'] = (isset($_POST['country']) && $_POST['country']=='India') ? $_POST['state'] : $_POST['state1'];
 
                 $result = $this->model->updateCustomer($this->user_id, $customer_id, $customer_code, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['mobile'], $_POST['address'], $_POST['address2'], $_POST['city'], $_POST['state'], $_POST['zipcode'], $column_id, $column_value, $excolumn_id, $excolumn_value, $_POST['password'], $_POST['GST'], $_POST['company_name'], $_POST['country']);
