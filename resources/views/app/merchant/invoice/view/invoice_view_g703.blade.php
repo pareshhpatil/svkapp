@@ -338,7 +338,12 @@
                                     @php
                                         $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                         $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                        if($sub_total_g>0 && $sub_total_c>0)
+                                        {
+                                            $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                        }else{
+                                            $sub_total_g_by_c=0;
+                                        }
                                     @endphp
                                     <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
                                         <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
