@@ -658,7 +658,7 @@ class User extends ParentModel
         $projectPrivilegesCollect = clone $PrivilegesCollect->where('type', 'project')->values();
         $projectInvoiceIDs = $this->projectRuleEngineInvoices($projectPrivilegesCollect);
 
-        $invoicePrivilegesCollect = clone $PrivilegesCollect->where('type', 'invoices')->values();
+        $invoicePrivilegesCollect = clone $PrivilegesCollect->where('type', 'invoice')->values();
         $paymentRequestIDs = $this->invoiceRuleEngineInvoices('payment_request_id', $invoicePrivilegesCollect);
 
         $changeOrderPrivilegesCollect = clone $PrivilegesCollect->where('type', 'change-order')->values();

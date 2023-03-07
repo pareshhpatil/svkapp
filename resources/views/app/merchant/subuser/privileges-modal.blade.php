@@ -905,14 +905,15 @@
                             $('#customer-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
                             $('#customer-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#customer-rule-engine-'+privilegesID).addClass('custom-hide');
-                            customerValArr[privilegesID].rule_engine_query = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
+                            customerValArr[privilegesID].rule_engine_query = [];
+                            // customerValArr[privilegesID].rule_engine_query = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
                         }
                         customerValArr[privilegesID].access = val;
                         break;
@@ -928,14 +929,15 @@
                             $('#project-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
                             $('#project-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#project-rule-engine-'+privilegesID).addClass('custom-hide');
-                            projectValArr[privilegesID].rule_engine_query = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
+                            projectValArr[privilegesID].rule_engine_query = [];
+                            // projectValArr[privilegesID].rule_engine_query = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
                         }
                         projectValArr[privilegesID].access = val;
                         break;
@@ -950,14 +952,15 @@
                             $('#contract-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
                             $('#contract-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#contract-rule-engine-'+privilegesID).addClass('custom-hide');
-                            contractValArr[privilegesID].rule_engine_query = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
+                            contractValArr[privilegesID].rule_engine_query = [];
+                            // contractValArr[privilegesID].rule_engine_query = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
                         }
                         contractValArr[privilegesID].access = val;
                         break;
@@ -972,14 +975,15 @@
                             $('#invoice-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
                             $('#invoice-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#invoice-rule-engine-'+privilegesID).addClass('custom-hide');
-                            invoiceValArr[privilegesID].rule_engine_query = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
+                            invoiceValArr[privilegesID].rule_engine_query = [];
+                            // invoiceValArr[privilegesID].rule_engine_query = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
                         }
 
                         invoiceValArr[privilegesID].access = val;
@@ -995,14 +999,15 @@
                             $('#change-order-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-hide');
                             $('#change-order-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#change-order-rule-engine-'+privilegesID).addClass('custom-hide');
-                            changeOrderValArr[privilegesID].rule_engine_query = [
-                                {
-                                    query_name: 'total_change_order_amount',
-                                    query_model: 'change_order',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
+                            changeOrderValArr[privilegesID].rule_engine_query = [];
+                            // changeOrderValArr[privilegesID].rule_engine_query = [
+                            //     {
+                            //         query_name: 'total_change_order_amount',
+                            //         query_model: 'change_order',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
                         }
                         changeOrderValArr[privilegesID].access = val;
                         break;
@@ -1441,7 +1446,6 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
             // }
 
             function showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine) {
-
                 return `<div class="rule-engine-row ${hasRuleEngine ? 'custom-show' : 'custom-hide'}" id="${type}-rule-engine-${index}">
                         <div class="rule-engine-query">
                             ${type === 'change-order' ? changeOrderOptions() : invoiceOptions()}
