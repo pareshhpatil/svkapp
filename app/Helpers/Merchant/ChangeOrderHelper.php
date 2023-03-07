@@ -95,7 +95,7 @@ class ChangeOrderHelper
                 ->pluck('user_id')
                 ->toArray();
 
-            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess, $contractUsersWithFullAccess, $projectUsersWithFullAccess, $changeOrderUsersWithFullAccess));
+            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess, $contractUsersWithFullAccess, $projectUsersWithFullAccess, $changeOrderUsersWithFullAccess->toArray()));
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
