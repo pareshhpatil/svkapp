@@ -699,9 +699,10 @@ class ContractController extends Controller
     }
 
     function getContractApi(Request $request) {
-        $data["project_list"] = $this->masterModel->getProjectList("M000000041");
+        echo 'hi';
+        // $data["project_list"] = $this->masterModel->getProjectList("M000000041");
         
-        return json_encode($data["project_list"],true);
+        // return json_encode($data["project_list"],true);
         die();
     }
 }
