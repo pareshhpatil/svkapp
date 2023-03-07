@@ -138,10 +138,10 @@ $validate=(array)$validate;
             <input type="hidden" name="payment_request_status" value="{{$info['payment_request_status']}}" />
 
             <div class="view-footer-btn-rht-align">
-                @if(!empty($info['invoice_access']))
-                    @if($info['payment_request_status'] == 14 && $info['invoice_access'] == 'all-full')
+                @if(!empty($invoice_access))
+                    @if($info['payment_request_status'] == 14 && $invoice_access == 'all-full')
                         <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                    @elseif($info['invoice_access'] == 'all-full')
+                    @elseif($invoice_access == 'all-full')
                         @if($info['notify_patron'] == 1)
                             <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
                         @else
