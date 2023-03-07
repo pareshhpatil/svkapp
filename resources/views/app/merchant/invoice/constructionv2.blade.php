@@ -249,7 +249,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4">Client name</label>
+                                <label class="control-label col-md-4">Contact person name</label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
                                         <input type="text" readonly class="form-control cust_det" value="{{$customer->first_name??null}} {{$customer->last_name??null}}">

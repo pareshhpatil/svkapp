@@ -1,3 +1,9 @@
+composer require league/iso3166
+
+
+
+UPDATE `swipez_briq`.`customer_mandatory_column` SET `column_name` = 'Contact person name' WHERE (`id` = '2');
+=======
 Darland setup 
 ----------------------------
 

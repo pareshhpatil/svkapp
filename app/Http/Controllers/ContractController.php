@@ -430,12 +430,12 @@ class ContractController extends Controller
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
-        $data['customer_name'] = 'Customer name';
+        $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
-            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Contact person name';
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 
@@ -477,13 +477,13 @@ class ContractController extends Controller
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'contract_list';
-        $data['customer_name'] = 'Customer name';
+        $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
         $data['privileges'] = $privilegesIDs;
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
-            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Contact person name';
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 

@@ -300,29 +300,20 @@ body{
                             </tr>
                             <tr>
                                 <td style="font-size: 12px;padding: 2px;">Total changes approved in previous months by Owner</td>
-                                <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif</td>
+                                <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount_positive']>=0){{number_format($info['last_month_co_amount_positive'],2)}}@else{{0}} @endif </td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['last_month_co_amount_negative'],2))}})@else{{0}} @endif</td>
                             </tr>
                             <tr>
                                 <td style="font-size: 12px;padding: 2px;">Total approved this month </td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif</td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif</td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount_positive']>=0){{number_format($info['this_month_co_amount_positive'],2)}}@else{{0}} @endif</td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['this_month_co_amount_negative'],2))}})@else{{0}} @endif</td>
                             </tr>
                             <tr>
                                 <td style="text-align: right;font-size: 12px;padding: 2px;">TOTAL </td>
                                 @php
-                                    $tt=0;
-                                    $tt1=0;
-                                    if($info['this_month_co_amount']>0)
-                                    $tt=$info['this_month_co_amount'];
-                                    else {
-                                        $tt1=$info['this_month_co_amount'];
-                                    }
-                                    if($info['last_month_co_amount']>0)
-                                    $tt=$tt+$info['last_month_co_amount'];
-                                    else {
-                                        $tt1=$tt1+$info['last_month_co_amount'];
-                                    }
+                                    $tt= $info['total_co_amount_positive'];
+                                    $tt1= $info['total_co_amount_negative'];
+                                    
                                 @endphp
                                 <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>{{number_format($tt,2)}} </td>
                                 <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif</td>

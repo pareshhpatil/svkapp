@@ -329,29 +329,20 @@ $header='app.patron.invoice.invoice-master';}
                             </tr>
                             <tr>
                                 <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">Total changes approved in previous months by Owner </p></td>
-                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </p></td>
-                                <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif </p> </td>
+                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount_positive']>=0){{number_format($info['last_month_co_amount_positive'],2)}}@else{{0}} @endif </p></td>
+                                <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['last_month_co_amount_negative'],2))}})@else{{0}} @endif </p> </td>
                             </tr>
                             <tr>
                                 <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">Total approved this month </p></td>
-                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif </p></td>
-                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount_positive']>=0){{number_format($info['this_month_co_amount_positive'],2)}}@else{{0}} @endif </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['this_month_co_amount_negative'],2))}})@else{{0}} @endif </p></td>
                             </tr>
                             <tr>
                                 <td class="text-right border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">TOTAL</p> </td>
                                 @php
-                                    $tt=0;
-                                    $tt1=0;
-                                    if($info['this_month_co_amount']>0)
-                                    $tt=$info['this_month_co_amount'];
-                                    else {
-                                        $tt1=$info['this_month_co_amount'];
-                                    }
-                                    if($info['last_month_co_amount']>0)
-                                    $tt=$tt+$info['last_month_co_amount'];
-                                    else {
-                                        $tt1=$tt1+$info['last_month_co_amount'];
-                                    }
+                                    $tt= $info['total_co_amount_positive'];
+                                    $tt1= $info['total_co_amount_negative'];
+                              
                                 @endphp
                                 <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}{{number_format($tt,2)}} </p></td>
                                 <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif </p></td>

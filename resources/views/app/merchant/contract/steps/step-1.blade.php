@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-4">Customer name</label>
+                    <label class="control-label col-md-4">Contact person name</label>
                     <div class="col-md-8">
                         <div class="input-icon right">
                             <input type="text" id="customer_name" name="customer_name" readonly class="form-control" value="{{ $project->name??null }}">

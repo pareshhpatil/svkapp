@@ -105,7 +105,7 @@
                                         {$customer_default_column.customer_code|default:'Customer code'}
                                     </th>
                                     <th class="td-c">
-                                        {$customer_default_column.customer_name|default:'Name'}
+                                        {$customer_default_column.customer_name|default:'Contact person name'}
                                     </th>
                                     <th class="td-c">
                                         Description
