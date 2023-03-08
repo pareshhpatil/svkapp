@@ -82,6 +82,9 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+{{--                                            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">--}}
+{{--                                                Launch demo modal--}}
+{{--                                            </button>--}}
                                         </div>
 
                                     </div>
@@ -111,4 +114,64 @@
         <!-- END PAGE CONTENT-->
     </div>
     <!-- END CONTENT -->
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/merchant/roles/create" onsubmit="loader();" method="POST" class="form-horizontal form-row-sepe">
+                    {{ csrf_field() }}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Add new role</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="modal-body">
+                            <div class="portlet-body form">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-danger display-none">
+                                                <button class="close" data-dismiss="alert"></button>
+                                                You have some form errors. Please check below.
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Name <span class="required">*</span></label>
+                                                <div class="col-md-8">
+                                                    <input type="text" minlength="2" maxlength="50" name="name" class="form-control" placeholder="Role name" value="{{ old('name') }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Description </label>
+                                                <div class="col-md-8">
+                                                    <input type="text" minlength="1" name="description" class="form-control" placeholder="Description" value="{{ old('description') }}">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn blue" id="save-role-btn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            let saveRoleBtn = $("#save-role-btn");
+
+            saveRoleBtn.on("click", function () {
+                console.log("bnm");
+            });
+        })
+    </script>
 @endsection
