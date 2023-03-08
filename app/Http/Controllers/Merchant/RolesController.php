@@ -75,6 +75,43 @@ class RolesController extends AppController
         return redirect()->to('merchant/roles')->with('success', "Role has been created");
     }
 
+    public function storeAjax(Request $request)
+    {
+        try {
+            $rules = [
+                'name' => 'required|unique:briq_roles,name,NULL,id,deleted_at,NULL',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => 'false',
+                    'messages' => $validator->messages()
+                ]);
+            }
+
+            /** @var Role $Role */
+            $Role = new Role();
+
+            $Role->merchant_id = $this->merchant_id;
+            $Role->name = $request->get('name');
+            $Role->description = $request->get('description');
+            $Role->created_by = $this->user_id;
+            $Role->last_updated_by = $this->user_id;
+
+            $Role->save();
+
+            return response()->json([
+                'success' => 'true',
+                'messages' => 'Role created successfully',
+                'data' => $Role
+            ]);
+        } catch (\Exception $exception) {
+            dd($exception);
+        }
+    }
+
     /**
      * @return \Illuminate\Contracts\View\View
      * @author Nitish

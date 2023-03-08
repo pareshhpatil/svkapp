@@ -468,6 +468,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('roles', 'Merchant\RolesController@index')->name('merchant.roles.index');
   Route::get('roles/create', 'Merchant\RolesController@create')->name('merchant.roles.create');
   Route::post('roles/create', 'Merchant\RolesController@store');
+  Route::post('roles/create/ajax', 'Merchant\RolesController@storeAjax');
   Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');
   Route::post('roles/{id}/edit', 'Merchant\RolesController@update')->name('merchant.roles.update');
   Route::get('roles/delete/{id}', 'Merchant\RolesController@delete');
