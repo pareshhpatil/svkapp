@@ -149,7 +149,7 @@ $validate=(array)$validate;
                         @endif
                         {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
                     @elseif($info['payment_request_status'] == 14 && ($invoice_access == 'edit' || $invoice_access == 'all-edit'))
-                        <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                        <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
                     @elseif($info['payment_request_status'] != 14)
                         <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
                     @endif
