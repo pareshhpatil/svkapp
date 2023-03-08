@@ -691,6 +691,8 @@ class Invoice extends Controller
                 $this->setInvalidLinkError();
             }
             $notify_patron = $_POST['notify_patron'];
+            $prevPaymentRequestStatus = $this->common->getRowValue('payment_request_status', 'payment_request', 'payment_request_id', $payment_request_id);
+
             //first update payment request status & notify patron into table
             $this->common->genericupdate('payment_request', 'payment_request_status', $_POST['payment_request_status'], 'payment_request_id', $payment_request_id);
             $this->common->genericupdate('payment_request', 'notify_patron', $notify_patron, 'payment_request_id', $payment_request_id);
@@ -714,12 +716,11 @@ class Invoice extends Controller
                     $notification->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
                 }
 
-                if($get_payment_request_details['payment_request_status'] == 14) {
+                if($prevPaymentRequestStatus == 11 && $get_payment_request_details['payment_request_status'] == 14) {
                     $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
 
                     $InvoiceHelper->sendInvoiceForApprovalNotification($payment_request_id);
                 }
-
 
                 $get_payment_request_details['change_order_id'] = json_decode($get_payment_request_details['change_order_id'], 1);
                 foreach ($get_payment_request_details['change_order_id'] as $order_id) {
