@@ -1,7 +1,6 @@
 <?php
 
 header('Cache-Control: max-age=604800');
-
 /*
   |--------------------------------------------------------------------------
   | Web Routes
@@ -453,6 +452,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
   Route::get('contract/import/{contract_id?}', 'ImportController@contract')->name('merchant.import.contract');
 
+  Route::get('/user/create-token', 'ProjectController@createToken')->name('merchant.user.create-token');
+  Route::post('/user/save-token','ProjectController@saveToken')->name('merchant.user.save-token');
 });
 
 Route::group(['prefix' => 'patron'], function () {
@@ -586,4 +587,3 @@ Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'Booki
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
-

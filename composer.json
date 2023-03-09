@@ -23,6 +23,7 @@
         "kelvinmo/simplejwt": "0.3.*",
         "kreait/firebase-php": "^5.19",
         "laravel/framework": "^8.0",
+        "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "league/flysystem-aws-s3-v3": "~1.0",
