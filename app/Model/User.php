@@ -689,11 +689,11 @@ class User extends ParentModel
 
         $projectIDs = [];
         foreach ($projectInvoiceIDs as $projectInvoiceID){
-            foreach ($projectInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-                if(!isset($finalArray[$key])) {
-                    $finalArray[$key] = $payment_request_id;
-                }
-            }
+//            foreach ($projectInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+//                if(!isset($finalArray[$key])) {
+//                    $finalArray[$key] = $payment_request_id;
+//                }
+//            }
 
             foreach ($projectInvoiceID["project_ids"] as $key => $invoiceID) {
                 $projectIDs[$key] = $invoiceID;
@@ -702,11 +702,11 @@ class User extends ParentModel
 
         $contractIDs = [];
         foreach ($contractInvoiceIDs as $contractInvoiceID){
-            foreach ($contractInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-                if(!isset($finalArray[$key])) {
-                    $finalArray[$key] = $payment_request_id;
-                }
-            }
+//            foreach ($contractInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
+//                if(!isset($finalArray[$key])) {
+//                    $finalArray[$key] = $payment_request_id;
+//                }
+//            }
 
             foreach ($contractInvoiceID["contract_ids"] as $key => $contractID) {
                 $contractIDs[$key] = $contractID;
