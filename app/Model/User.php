@@ -742,7 +742,7 @@ class User extends ParentModel
             $invoiceIDs = [];
             $customerIDs = [];
             $typeID = $customerPrivilege->type_id;
-            if(($customerPrivilege->access == 'full' || $customerPrivilege->access == 'approve') && !empty($customerPrivilege->rule_engine_query)) {
+//            if(($customerPrivilege->access == 'full' || $customerPrivilege->access == 'approve') && !empty($customerPrivilege->rule_engine_query)) {
                 $ruleEngineQuery = json_decode($customerPrivilege->rule_engine_query, true);
 
                 $ids = (new RuleEngineManager($type, $typeID, $ruleEngineQuery))->run();
@@ -752,9 +752,10 @@ class User extends ParentModel
                         $invoiceIDs[$id] = $customerPrivilege->access;
                     }
                 }
-            } else {
-                $customerIDs[$typeID] = $customerPrivilege->access;
-            }
+            $customerIDs[$typeID] = $customerPrivilege->access;
+//            } else {
+//                $customerIDs[$typeID] = $customerPrivilege->access;
+//            }
 
             return [
                 'payment_request_ids' => $invoiceIDs,
@@ -768,9 +769,9 @@ class User extends ParentModel
 
         return $contractPrivilegesCollect->map(function ($contractPrivilege) use($type) {
             $invoiceIDs = [];
-            $customerIDs = [];
+            $contractIDs = [];
             $typeID = $contractPrivilege->type_id;
-            if(($contractPrivilege->access == 'full' || $contractPrivilege->access == 'approve') && !empty($contractPrivilege->rule_engine_query)) {
+//            if(($contractPrivilege->access == 'full' || $contractPrivilege->access == 'approve') && !empty($contractPrivilege->rule_engine_query)) {
                 $ruleEngineQuery = json_decode($contractPrivilege->rule_engine_query, true);
 
                 $ids = (new RuleEngineManager($type, $typeID, $ruleEngineQuery))->run();
@@ -780,13 +781,14 @@ class User extends ParentModel
                         $invoiceIDs[$id] = $contractPrivilege->access;
                     }
                 }
-            } else {
-                $customerIDs[$typeID] = $contractPrivilege->access;
-            }
+            $contractIDs[$typeID] = $contractPrivilege->access;
+//            } else {
+//                $customerIDs[$typeID] = $contractPrivilege->access;
+//            }
 
             return [
                 'payment_request_ids' => $invoiceIDs,
-                'contract_ids' => $customerIDs
+                'contract_ids' => $contractIDs
             ];
         });
     }
@@ -798,7 +800,7 @@ class User extends ParentModel
             $projectIds = [];
             $typeID = $projectPrivilege->type_id;
 
-            if(($projectPrivilege->access == 'full' || $projectPrivilege->access == 'approve') && !empty($projectPrivilege->rule_engine_query)) {
+//            if(($projectPrivilege->access == 'full' || $projectPrivilege->access == 'approve') && !empty($projectPrivilege->rule_engine_query)) {
                 $ContractIDs = DB::table('contract')
                     ->where('project_id', $typeID)
                     ->pluck('contract_id');
@@ -813,9 +815,10 @@ class User extends ParentModel
                         }
                     }
                 }
-            } else {
-                $projectIds[$typeID] = $projectPrivilege->access;
-            }
+            $projectIds[$typeID] = $projectPrivilege->access;
+//            } else {
+//                $projectIds[$typeID] = $projectPrivilege->access;
+//            }
 
             return [
                 'payment_request_ids' => $invoiceIDs,
