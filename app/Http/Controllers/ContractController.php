@@ -688,16 +688,6 @@ class ContractController extends Controller
         }
     }
 
-    function createTokenAPI() {
-        $model = new Master();
-        $user_row = $model->getTableRow('user', 'user_id', $this->user_id);
-        $user = User::find($user_row->id);
-       
-        //$token = $user->createToken('token-name');
-        $token = $user->createToken('my-token')->plainTextToken;
-        dd($token);
-    }
-
     function getContractApi(Request $request) {
         echo 'hi';
         // $data["project_list"] = $this->masterModel->getProjectList("M000000041");

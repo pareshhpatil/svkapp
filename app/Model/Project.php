@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Model\ParentModel;
 use Illuminate\Support\Facades\DB;
-use App\Customer;
 
-class Project extends Model
+
+class Project extends ParentModel
 {
     use HasFactory;
     //protected $table = 'project';
@@ -27,4 +27,48 @@ class Project extends Model
             ->get();
         return $retObj;
     }
+
+    public function getBillCodesList($merchant_id, $project_id, $start, $limit) {
+        $retObj = DB::table('csi_code')
+            ->select(DB::raw('*'))
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('project_id', $project_id);
+
+        $retObj =  $retObj->offset($start)
+            ->limit($limit)
+            ->get();
+        return $retObj;
+    }
+
+    public function updateBillcode($data, $user_id)
+    {
+        DB::table('csi_code')
+            ->where('id', $data->bill_code_id)
+            ->update([
+                'code' => $data->bill_code,
+                'title' => $data->bill_description,
+                'description' => $data->bill_description,
+                'last_update_by' => $user_id,
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]);
+    }
+    
+
+    // public function createProject($data,$merchant_id,$user_id) {
+    //     return DB::table('project')->insertGetId(
+    //         [
+    //             'merchant_id' => $merchant_id,
+    //             'project_id' => $data->project_code,
+    //             'project_name' => $data->project_name,
+    //             'customer_id' => $data->customer_id,
+    //             'end_date' => $data->end_date,
+    //             'start_date' => $data->start_date,
+    //             'sequence_number' => $data->sequence_number,
+    //             'created_by' => $user_id,
+    //             'last_update_by' => $user_id,
+    //             'created_date' => date('Y-m-d H:i:s')
+    //         ]
+    //     );
+    // }
 }

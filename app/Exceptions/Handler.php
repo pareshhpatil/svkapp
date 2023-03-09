@@ -7,7 +7,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\App as App;
 use Throwable;
-
+use Illuminate\Auth\AuthenticationException;
 class Handler extends ExceptionHandler
 {
 
@@ -59,6 +59,11 @@ class Handler extends ExceptionHandler
             App::make("SwipezLegacyFramework");
             die();
         }
+        
+        // if ($exception instanceof AuthenticationException) {
+        //     return response()->json(['error' => 'Unauthenticated.'], 401);
+        // }
+        
         $response = parent::render($request, $exception);
         if(env('APP_ENV')=='LOCAL' || env('APP_ENV')=='DEV') {
             dd($exception);
