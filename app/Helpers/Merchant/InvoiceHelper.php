@@ -187,8 +187,8 @@ class InvoiceHelper
 
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
-                    dispatch(new ProcessInvoiceApprove($invoiceNumber, $paymentRequestID, $User))->onQueue(env('SQS_PATRON_NOTIFICATION'));
-//                    $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+//                    dispatch(new ProcessInvoiceApprove($invoiceNumber, $paymentRequestID, $User))->onQueue(env('SQS_PATRON_NOTIFICATION'));
+                    $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
                 }
             }
         }
