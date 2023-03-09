@@ -924,6 +924,67 @@ class InvoiceController extends AppController
         }
     }
 
+    public function view_g703_v2($link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
+            #get default billing profile
+
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $info = (array)$info;
+            $info['gtype'] = '703';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if (!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
+            }
+            if ($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+            //end code for new design
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'] ?? '';
+
+            if (isset($info['image_path'])) {
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+            if (Session::get('success_array')) {
+                $whatsapp_share = $this->getWhatsapptext($info);
+                $success_array = Session::get('success_array');
+                $active_payment = Session::get('has_payment_active');
+                Session::remove('success_array');
+                $info["invoice_success"] = true;
+
+                $info["whatsapp_share"] = $whatsapp_share;
+                foreach ($success_array as $key => $val) {
+                    $info[$key] = $val;
+                }
+                if (Session::get('has_payment_active') == false) {
+                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                }
+                if ($success_array['type'] == 'insert' && $active_payment == false) {
+                    $info["payment_gateway_info"] = true;
+                }
+            }
+
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id);
+            return view('app/merchant/invoice/view/invoice_view_g703', $data);
+        } else {
+        }
+    }
+
     public function documents($link, $parentnm = '', $sub = '', $docpath = '')
     {
         $payment_request_id = Encrypt::decode($link);
@@ -2926,6 +2987,623 @@ class InvoiceController extends AppController
         return $data;
     }
 
+    public function setdataV2($data, $info, $banklist, $payment_request_id, $type = 'Invoice', $user_type = 'merchant', $staging = 0)
+    {
+
+        $responce_tax =  $this->invoiceModel->getInvoiceTax($payment_request_id);
+        $responce_meta =  $this->invoiceModel->getInvoiceMetadata($info['template_id'], $payment_request_id);
+        $cust_values = $this->invoiceModel->getCustomerbreckup($info['customer_id']);
+
+        //find  payment reuest count 
+        $paymentRequestData = PaymentRequest::find($payment_request_id);
+        $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequestData->contract_id);
+        $isFirstInvoice = false;
+        $prevDPlusE = [];
+        if (!empty($firstpaymentRequest)) {
+            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                $isFirstInvoice = true;
+            }
+        } else {
+            $isFirstInvoice = true;
+        }
+
+        if ($isFirstInvoice == false) {
+            $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequestData->contract_id, $paymentRequestData->created_date);
+            $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+            $prevDPlusE = [];
+            foreach ($previousInvoiceParticulars as $k => $val) {
+                $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+            }
+        }
+
+        $info['user_type'] = $user_type;
+        $info['staging'] = $staging;
+        $data['links'] = $payment_request_id;
+        $data['formatename'] = $info['design_name'];
+        $data['colors'] = $info['design_color'];
+        $data['isFirstInvoice'] = $isFirstInvoice;
+        $data['prevDPlusE'] = $prevDPlusE;
+
+        $merchant_header[] = array('column_name' => 'Company name', 'value' => $info['company_name']);
+        $merchant_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
+        $merchant_header[] = array('column_name' => 'Merchant email', 'value' => $info['business_email']);
+        $merchant_header[] = array('column_name' => 'Merchant contact', 'value' => $info['business_contact']);
+
+        $travel_json = $info['properties'];
+        $data['metadata']['travel_particular'] = json_decode($travel_json, 1);
+
+        $responce_travel_particulars = '';
+        $responce_particular = '';
+        if ($info['template_type'] == 'travel') {
+            $responce_travel_particulars = $this->invoiceModel->getTravelInvoiceParticular($payment_request_id);
+        }
+
+        if ($staging == 0) {
+            $responce_particular = $this->parentModel->getTableList('invoice_particular', 'payment_request_id', $payment_request_id, 1);
+        } else {
+            $responce_particular = $this->parentModel->getTableList('staging_invoice_particular', 'payment_request_id', $payment_request_id, 1);
+        }
+        $data['metadata']['travel_data'] = json_decode($responce_travel_particulars, 1);
+        $data['metadata']['vehicle_details'] = json_decode($responce_meta, 1);
+        $data['metadata']['particular'] = json_decode($responce_particular, 1);
+        $data['metadata']['tax'] = json_decode($responce_tax, 1);
+
+        if (isset($info['tnc'])) {
+            $tnc = preg_replace('/[[:^print:]]/', '', $info['tnc']);
+            $info['tnc'] = str_replace("<p>", "<p class='text-sm mt-1'>",  $tnc);
+        } else {
+            $info['tnc'] = '';
+        }
+
+        $num_words = Numbers_Words::toCurrency($info['absolute_cost'], "en_IN", $info['currency']);
+        $num_words1 = str_replace("Indian Rupees", "Rupees", $num_words);
+        $money_words = ucwords($num_words1);
+        $info['absolute_cost_words'] = str_replace('Zero Paises', '', $money_words);
+
+        $data['tax_heders'] = [
+            "tax_name" => "Tax name",
+            "tax_percent" => "Percentage",
+            "applicable" => "Applicable",
+            "tax_amount" => "Amount"
+
+        ];
+        $data['table_heders'] = json_decode($info['particular_column'], 1);
+        $info['its_from'] = 'real';  //To do rename as source
+        $rows = json_decode($responce_meta, 1);
+
+        $headerinc = 0;
+        $bdsinc = 0;
+        $tnckey = 0;
+        $header = array();
+        $particular = array();
+        foreach ($rows as $row) {
+
+            if ($row['column_type'] == 'H') {
+                $header[$headerinc]['column_name'] = $row['column_name'];
+                $header[$headerinc]['value'] = $row['value'];
+                $header[$headerinc]['position'] = $row['position'];
+                $header[$headerinc]['function_id'] = $row['function_id'];
+                $header[$headerinc]['column_position'] = $row['column_position'];
+                $header[$headerinc]['datatype'] = $row['column_datatype'];
+                if ($row['save_table_name'] == 'request') {
+                    if ($info['template_type'] == 'simple') {
+                        switch ($row['column_position']) {
+                            case 4:
+                                if ($info['bill_date'] != '31 Dec 2050') {
+                                    $header[$headerinc]['value'] = $info['bill_date'];
+                                }
+                                break;
+                            case 5:
+                                if ($info['due_date'] != '31 Dec 2050') {
+                                    $header[$headerinc]['value'] = $info['due_date'];
+                                }
+                                break;
+                            case 8:
+                                $header[$headerinc]['value'] = $info['invoice_total'];
+                                break;
+                            case 9:
+                                $header[$headerinc]['value'] = $info['late_fee'];
+                                break;
+                            case 10:
+                                $header[$headerinc]['value'] = $info['invoice_total'];
+                                break;
+                        }
+                    } else {
+                        switch ($row['column_position']) {
+                            case 5:
+                                if ($info['bill_date'] != '31 Dec 2050') {
+                                    $header[$headerinc]['value'] = $info['bill_date'];
+                                }
+                                break;
+                            case 6:
+                                if ($info['due_date'] != '31 Dec 2050') {
+                                    $header[$headerinc]['value'] = $info['due_date'];
+                                }
+                                break;
+                        }
+                    }
+                }
+                if ($row['function_id'] == 4) {
+                    $info['previous_due'] = $row['value'];
+                }
+                $headerinc++;
+            }
+
+            if ($row['column_type'] == 'BDS') {
+                $bds[$bdsinc]['column_name'] = $row['column_name'];
+                $bds[$bdsinc]['value'] = $row['value'];
+                $bds[$bdsinc]['position'] = $row['position'];
+                $bds[$bdsinc]['function_id'] = $row['function_id'];
+                $bds[$bdsinc]['column_position'] = $row['column_position'];
+                $bds[$bdsinc]['datatype'] = $row['column_datatype'];
+                $bdsinc++;
+            }
+
+            if ($row['column_type'] == 'M') {
+
+                switch ($row['column_name']) {
+                    case 'Company name':
+                        $value = $info['company_name'];
+                        break;
+                    case 'Merchant contact':
+                        $value = $info['business_contact'];
+                        break;
+                    case 'Merchant email':
+                        $value = $info['business_email'];
+                        break;
+                    case 'Merchant address':
+                        $value = str_replace('|', '<br>', $info['merchant_address']);
+                        break;
+                    case 'Merchant website':
+                        $value = $info['merchant_website'];
+                        break;
+                    case 'Company pan':
+                        $value = $info['pan'];
+                        break;
+                    case 'GSTIN Number':
+                        if ($info['gst_number'] !== '') {
+                            $value = $info['gst_number'];
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 'Company TAN':
+                        if ($info['tan'] !== '') {
+                            $value = $info['tan'];
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 17:
+                        $value = '';
+                        break;
+                    case 'CIN Number':
+                        $value = $info['cin_no'];
+                        break;
+                }
+
+
+                $main_header[] = array('column_name' => $row['column_name'], 'value' => $value);
+            }
+
+            if ($row['column_type'] == 'C') {
+                if ($row['save_table_name'] == 'customer') {
+                    switch ($row['customer_column_id']) {
+                        case 1:
+                            $value = $info['customer_code'];
+                            break;
+                        case 2:
+                            $value = $info['customer_name'];
+                            break;
+                        case 3:
+                            $value = $info['customer_email'];
+                            break;
+                        case 4:
+                            $value = $info['customer_mobile'];
+                            break;
+                        case 5:
+                            $value = $info['customer_address'];
+                            break;
+                        case 6:
+                            $value = $info['customer_city'];
+                            break;
+                        case 7:
+                            $value = $info['customer_state'];
+                            break;
+                        case 8:
+                            $value = $info['customer_zip'];
+                            break;
+                        case 9:
+                            $value = $info['customer_country'];
+                            break;
+                    }
+                } else {
+                    if (isset($cust_values[$row['customer_column_id']])) {
+                        $value = $cust_values[$row['customer_column_id']];
+                    } else {
+                        $value = '';
+                    }
+                }
+
+                $customer_breckup[] = array('column_name' => $row['column_name'], 'value' => $value);
+            }
+            if ($row['function_id'] == 4) {
+                $data['previousdue'] = $row['value'];
+                $data['previousdue_col'] = $row['column_name'];
+            }
+            if ($row['function_id'] == 12) {
+                $data['adjustment'] = $row['value'];
+                $data['adjustment_col'] = $row['column_name'];
+            }
+            if ($row['function_id'] == 14) {
+                $data['discount'] = $row['value'];
+                $data['discount_col'] = $row['column_name'];
+            }
+        }
+
+
+        $plugin = json_decode($info['plugin_value'], 1);
+        if ($info['franchise_id'] > 0) {
+            if ($plugin['franchise_name_invoice'] == 1) {
+                $info['main_company_name'] = $info['company_name'];
+                $franchise = $this->parentModel->getTableRow('franchise', 'franchise_id', $info['franchise_id']);
+                $info['company_name'] = $franchise['franchise_name'];
+                $info['gst_number'] = $franchise['gst_number'];
+                $info['pan'] = $franchise['pan'];
+            }
+        }
+
+        if (isset($plugin['has_signature'])) {
+            if ($plugin['has_signature'] == 1) {
+                $info['signature'] = isset($plugin['signature']) ? $plugin['signature'] : '';
+            }
+        }
+
+        $merchant_page = null;
+        if ($info['display_url'] != '') {
+            $merchant_page = env('APP_URL') . '/m/' . $info['display_url'];
+        }
+
+
+        if (empty($main_header)) {
+            $main_header[] = array('column_name' => 'Company name', 'value' => $info['company_name']);
+            $main_header[] = array('column_name' => 'Merchant email', 'value' => $info['business_email']);
+
+            $main_header[] = array('column_name' => 'Merchant address', 'value' => $info['merchant_address']);
+        }
+
+        if (isset($plugin['has_partial'])) {
+            $partial_payments =  $this->invoiceModel->querylist("call get_partial_payments('" . $payment_request_id . "')");
+            $info["partial_payments"] = $partial_payments;
+        } else {
+            if ($info['payment_request_status'] == 1) {
+                $param['payment_transaction_status'] = 1;
+                $res = $this->parentModel->getTableRow('payment_transaction', 'payment_request_id', $payment_request_id, 0, $param);
+                $receipt_info = $this->invoiceModel->getReceipt($res->pay_transaction_id, 'Online');
+                $info["transaction"] = $receipt_info;
+            } elseif ($info['payment_request_status'] == 2) {
+                $res = $this->parentModel->getTableRow('offline_response', 'payment_request_id', $payment_request_id, 1);
+                $res = (array)$res;
+
+                $receipt_info = $this->invoiceModel->getReceipt($res['offline_response_id'], 'Offline');
+                $info["transaction"] = $receipt_info;
+            }
+        }
+
+        if ($row['column_type'] == 'TC') {
+            $tnc[$tnckey] = $row;
+            $val = str_replace('&lt;', '<', $row['column_name']);
+            $val = str_replace('&gt;', '>', $val);
+            $tnc[$tnckey]['column_name'] = $val;
+            $tnckey++;
+        }
+        $tnc = str_replace('&lt;', '<', $info['tnc']);
+        $tnc = str_replace('&gt;', '>', $tnc);
+        $info["absolute_cost"] = $info['absolute_cost'] - $info['paid_amount'];
+        if (isset($plugin['roundoff'])) {
+            if ($plugin['roundoff'] == 1) {
+                $info["absolute_cost"] = round($info["absolute_cost"], 0);
+            }
+        }
+
+        $info['grand_total'] = $info['grand_total'] - $info['paid_amount'];
+        $grand_total = $info['grand_total'];
+        $date = date("m/d/Y");
+        $refDate = date("m/d/Y", strtotime($info['due_date']));
+        if ($date > $refDate) {
+            $info["invoice_total"] = $info['invoice_total'];
+            if ($info['grand_total'] > 0) {
+                $grand_total = $info['grand_total'] + $info['late_fee'];
+            }
+        }
+        $info['tnc'] = $tnc;
+        $num = $info['absolute_cost'];
+        $num_words = Numbers_Words::toCurrency($num, "en_IN", $info['currency']);
+        $num_words1 = str_replace("Indian Rupees", "Rupees", $num_words);
+        $money_words = ucwords($num_words1);
+        $info['money_words'] = str_replace('Zero Paises', '', $money_words);
+        if ($staging == 0) {
+            foreach ($banklist as $value) {
+                $bank_ids[] = $value['config_key'];
+                $bank_values[] = $value['config_value'];
+            }
+            $info["bank_id"] = $bank_ids;
+            $info["bank_value"] = $bank_values;
+            $bankselect = isset($_POST['bank_name']) ? $_POST['bank_name'] : '';
+            $info["bank_selected"] = $bankselect;
+
+
+            $commentlist = $this->parentModel->getTableList('comments', 'parent_id', $payment_request_id);
+            $commentlist = json_decode($commentlist, 1);
+            $int = 0;
+            foreach ($commentlist as $list) {
+                $commentlist[$int]['link'] =  Encrypt::encode($list['id']);
+                $int++;
+            }
+            $info["commentlist"] = $commentlist;
+        }
+        $info["properties"] = json_decode($info['properties'], 1);
+        if ($info['template_type'] == 'travel_ticket_booking' || $info['template_type'] == 'travel') {
+            if ($staging == 1) {
+                $ticket_details = $this->parentModel->getTableList('staging_invoice_travel_particular', 'payment_request_id', $payment_request_id, 1);
+            } else {
+                $ticket_details = $this->parentModel->getTableList('invoice_travel_particular', 'payment_request_id', $payment_request_id, 1);
+            }
+            $info["ticket_detail"] = json_decode($ticket_details, 1);
+            $info['sec_col'] = array("A", "B", "C", "D", "E", "F", "G", "H", "I");
+            $ticket_details = json_decode($ticket_details, 1);
+
+            if ($info['template_type'] == 'travel') {
+                $secarray = array();
+                foreach ($ticket_details as $td) {
+                    if (!in_array($td['type'], $secarray)) {
+                        if ($td['type'] == 1 && isset($info['properties']['travel_section'])) {
+                            $secarray[] = $td['type'];
+                        } elseif ($td['type'] == 2 && isset($info['properties']['travel_cancel_section'])) {
+                            $secarray[] = $td['type'];
+                        } elseif ($td['type'] == 3 && isset($info['properties']['hotel_section'])) {
+                            $secarray[] = $td['type'];
+                        } elseif ($td['type'] == 4 && isset($info['properties']['facility_section'])) {
+                            $secarray[] = $td['type'];
+                        }
+                    }
+
+                    $info['secarray'] = $secarray;
+                }
+            }
+        } else if ($info['template_type'] == 'construction') {
+            $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+            //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+            $tt = json_decode($constriuction_details, 1);
+
+            $info['constriuction_details'] = $this->getData703V2($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
+            $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
+            $info['project_details'] = $project_details;
+
+            $change_order_ids = json_decode($info['change_order_id'], 1);
+            if (!empty($change_order_ids)) {
+                $info['last_month_co_amount'] = 0;
+                $info['this_month_co_amount'] = 0;
+                $start_date = date("Y-m-d", strtotime("first day of previous month"));
+                $end_date = date("Y-m-01");
+                $info['last_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $start_date = date("Y-m-01");
+                $end_date = date("Y-m-d", strtotime("first day of next month"));
+                $info['this_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+            } else {
+                $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+                where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+                if ($pre_month_change_order_amount[0]->change_order_amount != null) {
+                    $info['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
+                } else {
+                    $info['last_month_co_amount'] = 0;
+                }
+                $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+              where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "') AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
+                if ($current_month_change_order_amount[0]->change_order_amount != null) {
+                    $info['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
+                } else {
+                    $info['this_month_co_amount'] = 0;
+                }
+            }
+
+
+            $sumOfc = 0;
+            $sumOfd = 0;
+            $sumOfe = 0;
+            $sumOff = 0;
+            $sumOfrasm = 0;
+            $sumOfg = 0;
+            $sumOfh = 0;
+            $sumOfi = 0;
+            $sumOforg = 0;
+            $total_appro = 0;
+            $total_appro = 0;
+            $total_retainage_amount = 0;
+            $retainage_amount_for_this_draw = 0;
+            $total_previously_billed_amount = 0;
+            $retainage_amount_stored_materials = 0;
+            $retainage_release_amount = 0;
+            $retainage_stored_materials_release_amount = 0;
+            foreach ($tt as $itesm) {
+                $total_appro += $itesm['approved_change_order_amount'];
+                $sumOforg += $itesm['original_contract_amount'];
+                $sumOfc += $itesm['current_contract_amount'];
+                if ($data['isFirstInvoice'] == true) {
+                    $sumOfd += $itesm['previously_billed_amount'];
+                    $prevBillAmt = $itesm['previously_billed_amount'];
+                } else {
+                    $sumOfd += $data['prevDPlusE'][$itesm['pint']] ?? 0;
+                    $prevBillAmt = $data['prevDPlusE'][$itesm['pint']] ?? 0;
+                }
+                //$sumOfd += $itesm['previously_billed_amount'];
+                $sumOfe += $itesm['current_billed_amount'];
+                $total_previously_billed_amount += $itesm['previously_billed_amount'];
+                $sumOff += $itesm['stored_materials'];
+                $sumOfrasm += $itesm['retainage_amount_stored_materials'] + $itesm['retainage_amount_previously_stored_materials'] - $itesm['retainage_stored_materials_release_amount'];
+                $retainage_amount_stored_materials += $itesm['retainage_amount_stored_materials'];
+                $total_retainage_amount += $itesm['retainage_amount_for_this_draw'] + $itesm['retainage_amount_previously_withheld'] - $itesm['retainage_release_amount'];
+                $retainage_amount_for_this_draw += $itesm['retainage_amount_for_this_draw'];
+
+                $retainage_release_amount += $itesm['retainage_release_amount'];
+                $retainage_stored_materials_release_amount += $itesm['retainage_stored_materials_release_amount'];
+
+                //$sumOfg += $sumOfd + $sumOfe + $sumOff; 
+                $sumOfg += $prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials'];
+                $sumOfh += $itesm['current_contract_amount'] - ($prevBillAmt + $itesm['current_billed_amount'] + $itesm['stored_materials']);
+                //$sumOfh += $sumOfc - $sumOfg;
+
+                if (!empty($itesm['total_outstanding_retainage'])) {
+                    $sumOfi += $itesm['total_outstanding_retainage'];
+                } else {
+                    $sumOfi += $itesm['retainage_amount_previously_withheld'];
+                }
+            }
+            $info['total_c'] = $sumOfc;
+            $info['total_d'] = $sumOfd;
+            $info['total_e'] = $sumOfe;
+            $info['total_retainage_amount'] = $total_retainage_amount;
+            $info['total_f'] = $sumOff;
+            $info['total_rasm'] = $sumOfrasm;
+            $info['percent_rasm'] = 0;
+            $info['percent_rcw'] = 0;
+            $totalBilledAmount = $total_previously_billed_amount + $sumOfe;
+            if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
+                $info['percent_rcw'] = $total_retainage_amount * 100 / $totalBilledAmount;
+            }
+
+            $info['total_retainage'] = $info['total_retainage_amount'] + $sumOfrasm;
+
+            if ($sumOff > 0 && $sumOfrasm > 0) {
+                $info['percent_rasm'] = $sumOfrasm * 100 / $sumOff;
+            }
+
+            $info['total_g'] = $sumOfg;
+            $info['total_h'] = $sumOfc - $sumOfg;   //$sumOfh;
+            $info['total_i'] = $sumOfi;
+            $info['total_original_contract'] = $sumOforg;
+            $info['total_approve'] = $total_appro;
+        }
+
+
+
+        if ($info['template_type'] == 'franchise' || $info['template_type'] == 'nonbrandfranchise') {
+            $sale_details = $this->parentModel->getTableList('invoice_food_franchise_sales', 'payment_request_id', $payment_request_id, 1);
+            $sale_summary = $this->parentModel->getTableList('invoice_food_franchise_summary', 'payment_request_id', $payment_request_id);
+            $info["sale_details"] = json_decode($sale_details, 1);
+            $info["sale_summary"] = json_decode($sale_summary, 1);
+        }
+
+        $info["Url"] =  Encrypt::encode($payment_request_id);
+        $info["customer_breckup"] = $customer_breckup;
+
+        $info["merchant_page"] = $merchant_page;
+        $info["merchant_id"] = $info['merchant_user_id'];
+
+
+        $info["payment_request_id"] = $payment_request_id;
+        $info["money_text"] = $money_words;
+
+        if (strrpos($info['narrative'], 'http') > 0) {
+            $link = substr($info['narrative'], strrpos($info['narrative'], 'http'), strrpos($info['narrative'], ' '));
+            $info['narrative'] = str_replace($link, '<a target="_BLANK" href="' . $link . '">' . $link . '</a>', $info['narrative']);
+        }
+        $info["narrative"] = str_replace('|', '<br>', $info['narrative']);
+
+        $info["amount"] = $info['invoice_total'];
+        $info["grand_total"] = $grand_total;
+        $info["surcharge_amount"] = 0;
+
+        if ($user_type == 'patron') {
+            $count_res =  $this->invoiceModel->querylist("select fee_detail_id from merchant_fee_detail where (surcharge_enabled=1 or pg_surcharge_enabled=1) and is_active=1 and merchant_id='" . $info['merchant_id'] . "'");
+            if (empty($count_res)) {
+                $info["is_surcharge"] = 0;
+            } else {
+                $info["is_surcharge"] = 1;
+            }
+        }
+
+
+        $info["currentdate"] = date("d M Y");
+        if (isset($plugin['has_supplier'])) {
+            if ($plugin['has_supplier'] == 1) {
+                $supplierlist = $this->invoiceModel->getInvoiceSupplierlist($plugin['supplier']);
+
+                $info["supplierlist"] = json_decode($supplierlist, 1);
+            }
+        }
+        if (isset($plugin['coupon_id'])) {
+            if ($plugin['coupon_id'] > 0) {
+                $coupon_details = $this->invoiceModel->getCouponDetails($plugin['coupon_id']);
+
+                $info["coupon_details"] = (array)$coupon_details;
+            }
+        }
+
+
+        switch ($info['payment_request_status']) {
+            case 1:
+                $info["error"] = 'This invoice has already been paid online.';
+                break;
+                //            case 2:
+                //                $info["error"] =  'This invoice has already been settled.';
+                //                break;
+            case 3:
+                $info["error"] =  'This invoice has already been deleted.';
+                break;
+            default:
+                break;
+        }
+
+        if ($info['is_expire'] == 1) {
+            $id = $this->parentModel->getTableRow('payment_request', 'payment_request_id', 'merchant_id', $info['merchant_id'], 0, ' and customer_id=' . $info['customer_id'] . ' and (expiry_date is null or expiry_date>curdate()) order by payment_request_id desc limit 1');
+            $info["error"] = 'This invoice has expired and cannot be paid online anymore. ';
+            if ($id != false) {
+                $link =  Encrypt::encode($id);
+                $info["error"] .= '<a href="/' . $user_type . '/paymentrequest/view/' . $link . '">View latest invoice</a>';
+            }
+        }
+        if ($info['short_url'] == '') {
+            $link = Encrypt::encode($info['payment_request_id']);
+            $info["patron_url"] = env('APP_URL') . '/patron/paymentrequest/view/' . $link;
+        } else {
+            $info["patron_url"] = $info['short_url'];
+        }
+        if (isset($info['error'])) {
+            if ($info['error'] != '') {
+                $info["is_online_payment"] = 0;
+            }
+        }
+        if (substr($info['invoice_number'], 0, 16) == 'System generated') {
+            $info['invoice_number'] = $this->invoiceModel->getAutoInvoiceNo(substr($info['invoice_number'], 16));
+        }
+        //get less Previous certificates for payment from previous invoice
+        $info["less_previous_certificates_for_payment"] = 0;
+        if (isset($info['project_details'])) {
+            $info["less_previous_certificates_for_payment"] = $this->getLessPreviousCertificatesForPayment($info['project_details']->contract_id, $payment_request_id);
+            // $info['grand_total'] = $info['grand_total'] - $info["less_previous_certificates_for_payment"];
+        }
+
+        $info['user_name'] = Session::get('user_name');
+        $data['metadata']['plugin'] = $plugin;
+        $data['info'] = $info;
+        $data['metadata']['header'] = $main_header;
+        $data['metadata']['customer'] = $customer_breckup;
+        $data['metadata']['invoice'] = $header;
+
+        $plugins = json_decode($info['plugin_value'], 1);
+        $hasAIALicense = false;
+        if(isset($plugins['invoice_output'])) {
+            if(isset($plugins['has_aia_license'])) {
+                $hasAIALicense = true;
+            }
+        }
+
+        $data['has_aia_license'] = $hasAIALicense;
+            
+        return $data;
+    }
+
     /**
      * @param $contract_id
      * @param $customer_id
@@ -3242,6 +3920,355 @@ class InvoiceController extends AppController
         return $grouping_data;
     }
 
+    public function getData703V2($tt, $isFirstInvoice = true, $prevParictular = null)
+    {
+        $group_names = array();
+        $grouping_data = array();
+        foreach ($tt as $td) {
+            if (!in_array($td['group'], $group_names)) {
+                $group_names[] = $td['group'];
+            }
+        }
+        $result = array();
+        foreach ($tt as $element) {
+            $result[$element['group']][] = $element;
+        }
+
+        $sub_result = array();
+        foreach ($tt as $element) {
+            $sub_result[$element['group']][$element['sub_group']][] = $element;
+        }
+
+        $single_data1 = array();
+
+        foreach ($group_names as $names) {
+            $type = "";
+            $bill_code = '';
+            $desc = '';
+            $c = 0;
+            $d = 0;
+            $e = 0;
+            $f = 0;
+            $g = 0;
+            $retain = 0;
+            $isattach = '';
+            $bill_desc = '';
+            $pos = 0;
+            $pos1 = 0;
+            $sub_c = 0;
+            $sub_d = 0;
+            $sub_e = 0;
+            $sub_f = 0;
+            $sub_g = 0;
+            $sub_g_per = 0;
+            $sub_h = 0;
+            $sub_i = 0;
+            $attach_count = 0;
+            $sub_key = '';
+            foreach ($sub_result[$names] as $key=>$data2) {
+
+                foreach ($data2 as $data){
+                    
+                    $pos1++;
+                    if (!empty($data['group']) && $data['bill_code_detail'] == 'No') {
+                        $type = 'combine';
+                        $desc = $names;
+                        $c += $data['current_contract_amount'];
+    
+                        if ($isFirstInvoice == true) {
+                            $d += $data['previously_billed_amount'];
+                        } else {
+                            if (isset($prevParictular[$data['pint']])) {
+                                if (is_numeric($prevParictular[$data['pint']])) {
+                                    $pp = $prevParictular[$data['pint']] ?? 0;
+                                    $d += $pp;
+                                }
+                            }
+                        }
+    
+                        //$d += $data['previously_billed_amount'];
+                        $e += $data['current_billed_amount'];
+                        $f += $data['stored_materials'];
+                        $retain += $data['total_outstanding_retainage'];
+                        $counts = 0;
+                        if (empty($bill_code)) {
+                            $bill_code = $data['bill_code'];
+                        }
+                        $data['attachments'] = str_replace('"undefined",', '', $data['attachments']);
+                        $data['attachments'] = str_replace('"undefined"', '', $data['attachments']);
+                        $data['attachments'] = str_replace('[]', '', $data['attachments']);
+                        if (!empty($data['attachments']))
+                            $counts = count(json_decode($data['attachments'], 1));
+    
+    
+    
+                        $attach_count += $counts;
+                        if (empty($isattach)) {
+                            $nm = '';
+                            if (!empty($data['attachments'])) {
+                                $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                            }
+    
+    
+                            $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
+                        }
+                        if (empty($bill_desc)) {
+                            if (!empty($data['description']))
+                                $bill_desc = str_replace(' ', '_', strlen($data['bill_code']) > 7 ? substr($data['bill_code'], 0, 7) : $data['bill_code']);
+                            else
+                                $bill_desc = str_replace(' ', '_', strlen($data['bill_code']) > 7 ? substr($data['bill_code'], 0, 7) : $data['bill_code']);
+                        }
+                    } else  if (!empty($data['group']) && $data['bill_code_detail'] == 'Yes') {
+                        if ($pos == 0) {
+                            $single_data = array();
+                            $single_data['a'] = '';
+                            $single_data['type'] = 'heading';
+                            $single_data['b'] = $names;
+                            $single_data['c'] = '';
+                            $single_data['d'] = '';
+                            $single_data['e'] = '';
+    
+                            $single_data['f'] = '';
+                            $single_data['g'] = '';
+                            $single_data['g_per'] = '';
+                            $single_data['h'] = '';
+                            $single_data['i'] = '';
+                            $grouping_data[] = $single_data;
+                        }
+                        
+                        $current_sub_key =  $names.$key ;
+
+                        if($key != '' && $sub_key != $current_sub_key){
+                            $single_data = array();
+                            $single_data['a'] = '';
+                            $single_data['type'] = 'sub-heading';
+                            $single_data['b'] = $key;
+                            $single_data['c'] = '';
+                            $single_data['d'] = '';
+                            $single_data['e'] = '';
+                            $single_data['f'] = '';
+                            $single_data['g'] = '';
+                            $single_data['g_per'] = '';
+                            $single_data['h'] = '';
+                            $single_data['i'] = '';
+                            $grouping_data[] = $single_data;
+                        }
+                        
+                        $single_data = array();
+                        $single_data['a'] = $data['code']; // $data['bill_code'];
+                        $single_data['type'] = '';
+                        $single_data['b'] = $data['description'];
+                        $single_data['group_name'] = str_replace(' ', '_', strlen($names) > 7 ? substr($names, 0, 7) : $names);
+                        $single_data['c'] = $data['current_contract_amount'];
+                        if ($isFirstInvoice == true) {
+                            $single_data['d'] = ($data['previously_billed_amount']);
+                        } else {
+                            $single_data['d'] = $prevParictular[$data['pint']] ?? 0;
+                        }
+                        //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                        $single_data['e'] = $data['current_billed_amount'];
+                        $single_data['f'] = $data['stored_materials'];
+    
+                        $nm = '';
+                        if (!empty($data['attachments'])) {
+                            $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        }
+    
+                        $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
+    
+                        $counts = 0;
+                        if (!empty($data['attachments']))
+                            $counts = count(json_decode($data['attachments'], 1));
+    
+                        if ($counts > 1)
+                            $single_data['files'] = $counts . ' files';
+                        else
+                            $single_data['files'] = $counts . ' file';
+    
+                        //$single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
+                        $single_data['g'] = $single_data['d'] + $single_data['e'] + $single_data['f'];
+                        $per = 0;
+                        if ($data['current_contract_amount'] > 0)
+                            $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
+    
+                        $single_data['g_per'] = number_format($per, 2);
+                        $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
+    
+                        if (!empty($data['total_outstanding_retainage'])) {
+                            $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+                        } else {
+                            $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
+                        }
+    
+    
+                        $grouping_data[] = $single_data;
+    
+                        $pos++;
+                        $sub_c += $data['current_contract_amount'];
+    
+                        if ($isFirstInvoice == true) {
+                            $sub_d += $data['previously_billed_amount'];
+                        } else {
+                            $sub_d += $prevParictular[$data['pint']] ?? 0;
+                        }
+                        //$sub_d += $data['previously_billed_amount'];
+                        $sub_e += $data['current_billed_amount'];
+                        $sub_f += $data['stored_materials'];
+                        //$sub_g += $data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'];
+                        $sub_g += $single_data['g'];
+                        $sub_g_per += $per;
+                        $sub_h += $data['current_contract_amount'] - ($single_data['d'] + $single_data['e'] + $single_data['f']);
+                        //$sub_i += $data['total_outstanding_retainage'];
+    
+                        if (!empty(floatval($data['total_outstanding_retainage']))) {
+                            $sub_i += $data['total_outstanding_retainage'];
+                        } else {
+                            $sub_i += $data['retainage_amount_previously_withheld'];
+                        }
+
+                        if($key != '' ){
+                            if ($pos1 == count($sub_result[$names][$key]) ||  $pos == count($sub_result[$names][$key])) {
+                                $single_data = array();
+                                $single_data['a'] = '';
+                                $single_data['type'] = 'footer';
+                                $single_data['b'] = $key.' SUB TOTAL';
+                                $single_data['c'] = number_format($sub_c, 2);
+                                $single_data['d'] = number_format($sub_d, 2);
+                                $single_data['e'] = number_format($sub_e, 2);
+                                $single_data['f'] = number_format($sub_f, 2);
+        
+                                $single_data['g'] = number_format($sub_g, 2);
+                                $single_data['g_per'] = number_format($sub_g_per, 2);
+                                $single_data['h'] = number_format($sub_h, 2);
+                                $single_data['i'] = number_format($sub_i, 2);
+                                $grouping_data[] = $single_data;
+                            }
+                        }
+    
+                        if ($pos1 == count($result[$names]) ||  $pos == count($result[$names])) {
+                            $single_data = array();
+                            $single_data['a'] = '';
+                            $single_data['type'] = 'footer';
+                            $single_data['b'] = $names. ' SUB TOTAL';
+                            $single_data['c'] = number_format($sub_c, 2);
+                            $single_data['d'] = number_format($sub_d, 2);
+                            $single_data['e'] = number_format($sub_e, 2);
+                            $single_data['f'] = number_format($sub_f, 2);
+    
+                            $single_data['g'] = number_format($sub_g, 2);
+                            $single_data['g_per'] = number_format($sub_g_per, 2);
+                            $single_data['h'] = number_format($sub_h, 2);
+                            $single_data['i'] = number_format($sub_i, 2);
+                            $grouping_data[] = $single_data;
+                        }
+                    } else {
+    
+                        $single_data = array();
+                        $single_data['a'] = $data['code']; //$data['bill_code'];
+                        $single_data['b'] = $data['description'];
+                        $single_data['type'] = '';
+                        $single_data['c'] = $data['current_contract_amount'];
+                        if ($isFirstInvoice == true) {
+                            $single_data['d'] = $data['previously_billed_amount'];
+                        } else {
+                            $single_data['d'] = $prevParictular[$data['pint']] ?? 0;
+                        }
+                        //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
+                        $single_data['e'] = $data['current_billed_amount'];
+                        $single_data['f'] = $data['stored_materials'];
+                        $single_data['g'] = $single_data['d'] + $single_data['e'] + $single_data['f'];
+                        //  $single_data['attachment']=$data['attachments']?substr(substr(substr(basename(json_decode($data['attachments'],1)[0]), 0, strrpos(basename(json_decode($data['attachments'],1)[0]), '.')),0,-4),0,7):'';
+                        $nm = '';
+                        if (!empty($data['attachments'])) {
+                            $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
+                        }
+    
+    
+                        $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
+                        $counts = 0;
+                        if (!empty($data['attachments']))
+                            $counts = count(json_decode($data['attachments'], 1));
+    
+                        if ($counts > 1)
+                            $single_data['files'] = $counts . ' files';
+                        else
+                            $single_data['files'] = $counts . ' file';
+    
+                        $per = 0;
+    
+                        if (!empty($data['current_contract_amount'])) {
+                            if ($data['current_contract_amount'] > 0) {
+                                $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
+                            }
+                        }
+                        $per = str_replace(',', '', $per);
+                        $single_data['g_per'] = number_format($per, 2);
+                        $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
+    
+                        if (!empty($data['total_outstanding_retainage'])) {
+                            $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
+                        } else {
+                            $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
+                        }
+    
+                        $grouping_data[] = $single_data;
+                    }
+                    
+                $sub_key =  $names.$key;
+                }
+                
+                
+            }
+
+            if (!empty($type)) {
+                $g = $d + $e + $f;
+                $single_data1['a'] = $bill_code;
+                $single_data1['type'] = $type;
+                $single_data1['b'] = $desc;
+                $single_data1['c'] = number_format($c, 2);
+
+                //not added here
+                // if($isFirstInvoice == true) {
+                //     $single_data1['d'] = number_format($d, 2);
+                // } else {
+                //     $single_data1['d'] = $prevParictular[$data['pint']]??0;
+                // }
+
+                $single_data1['d'] = number_format($d, 2);
+                $single_data1['e'] = number_format($e, 2);
+                $single_data1['group_name'] = $bill_desc;
+                $single_data1['f'] = number_format($f, 2);
+                $single_data1['g'] = number_format($g, 2);
+                if ($attach_count > 1)
+                    $single_data1['files'] = $attach_count . ' files';
+                else
+                    $single_data1['files'] = $attach_count . ' file';
+
+
+                if ($c > 0)
+                    $single_data1['g_per'] = number_format(($g / $c), 2);
+                else
+                    $single_data1['g_per'] = number_format(0, 2);
+                $single_data1['h'] = number_format(($c - $g), 2);
+                $single_data1['i'] = number_format($retain, 2);
+                $single_data1['attachment'] = $isattach;
+
+                $grouping_data[] = $single_data1;
+                $bill_code = '';
+                $type = '';
+                $desc = '';
+                $c = 0;
+                $d = 0;
+                $e = 0;
+                $f = 0;
+                $g = 0;
+                $retain = 0;
+            }
+        }
+
+        return $grouping_data;
+    }
+
 
     public function save(Request $request)
     {
@@ -3403,7 +4430,9 @@ class InvoiceController extends AppController
                     $data['project'] = $request->project[$k];
                     $data['cost_code'] = $request->cost_code[$k];
                     $data['cost_type'] = $request->cost_type[$k];
+                    $data['group'] = $request->group[$k];		
                     $data['group'] = $request->group[$k];
+                    $data['sub_group'] = $request->sub_group[$k];
                     $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
                     $data['calculated_perc'] = $request->calculated_perc[$k];
                     $data['calculated_row'] = $request->calculated_row[$k];
@@ -3656,10 +4685,11 @@ class InvoiceController extends AppController
                         $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
                         $co_particulars[] = array(
-                            'bill_code' => $key,
-                            'change_order_amount' => array_sum($value),
-                            'description' =>  $kdata["description"],
-                            'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '',
+                            'bill_code' => $key, 
+                            'change_order_amount' => array_sum($value), 
+                            'description' =>  $kdata["description"], 
+                            'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '', 
+                            'sub_group' => isset($kdata["sub_group"]) ? $kdata["sub_group"] : '', 
                             'cost_type' =>  $kdata["cost_type"]
                         );
                     }
@@ -3694,6 +4724,7 @@ class InvoiceController extends AppController
                     if (isset($cop[$v["bill_code"]])) {
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                         $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
+                        $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         if (!empty($cp[$v["bill_code"]])) {
@@ -3711,6 +4742,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->bill_type = '% Complete';
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
+                        $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }

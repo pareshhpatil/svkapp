@@ -1,5 +1,8 @@
 @extends('app.master')
 <style>
+    .vs-option {
+            z-index: 99;
+        }
     .lable-heading {
         font-style: normal;
         font-weight: 400;
@@ -200,6 +203,12 @@
                                             Description
                                         </th>
                                         <th class="td-c">
+                                            Group level 1
+                                        </th>
+                                        <th class="td-c">
+                                            Group level 2
+                                        </th>
+                                        <th class="td-c">
 
                                         </th>
                                     </tr>
@@ -254,6 +263,28 @@
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td> 
+                                        @elseif ($v == 'group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="group[]"  id="group_select">
+                                                @if(!empty($group_codes))
+                                                @foreach($group_codes as $value)
+                                                @if($row[$v]==$value)
+                                                <option selected value="{{$value}}">{{$value}}</option>
+                                                @else
+                                                <option value="{{$value}}">{{$value}}</option>
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        @elseif ($v == 'sub_group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <div id="sub_group"></div>
+                                            </div>
+                                        </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no" scope="row">
                                             <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
@@ -308,6 +339,8 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="0" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -376,9 +409,32 @@
     @if(isset($project_id))
     project_id = {!!$project_id!!};
     @endif
+    @if(isset($group_codes))
+    group_codes = {!!$group_codes_json!!};
+    @endif
 </script>
 @section('footer')
 <script>
+    VirtualSelect.init({
+        ele: '#group_select',
+        allowNewOption: true,
+        dropboxWrapper: 'body',
+        name: 'group[]',
+        multiple:false,
+        additionalClasses : 'vs-option',
+        searchPlaceholderText : 'Search or Add new',
+        search:true,
+    });
+    VirtualSelect.init({
+        ele: '#sub_group',
+        allowNewOption: true,
+        dropboxWrapper: 'body',
+        name: 'sub_group[]',
+        multiple:false,
+        additionalClasses : 'vs-option',
+        searchPlaceholderText : 'Search or Add new',
+        search:true,
+    });
     calculateChangeOrder();
     $('.tableFixHead').css('max-height', screen.height/2);
 </script>
