@@ -232,7 +232,11 @@ class SubUserController extends AppController
                 foreach ($customerPrivilegesDecode as $customer) {
                     $requestCustomerIDs[] = $customer->value;
                     if(!empty($customer->rule_engine_query)) {
-                        $ruleEngineQuery = json_encode($customer->rule_engine_query);
+                        $ruleEngine = json_encode($customer->rule_engine_query);
+                    }
+                    $ruleEngineQuery = '';
+                    if($customer->access == 'full' || $customer->access == 'approve') {
+                        $ruleEngineQuery = $ruleEngine ?? '';
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -245,7 +249,7 @@ class SubUserController extends AppController
                                 'type_label' => $customer->label,
                                 'merchant_id' => $this->merchant_id,
                                 'access' => $customer->access,
-                                'rule_engine_query' => $ruleEngineQuery ?? '',
+                                'rule_engine_query' => $ruleEngineQuery,
                                 'is_active' => 1,
                                 'created_at' => Carbon::now()->toDateTimeString(),
                                 'updated_at' => Carbon::now()->toDateTimeString(),
@@ -287,7 +291,12 @@ class SubUserController extends AppController
                 foreach ($projectsPrivilegesDecode as $project) {
                     $requestProjectIDs[] = $project->value;
                     if(!empty($project->rule_engine_query)) {
-                        $ruleEngineQuery = json_encode($project->rule_engine_query);
+                        $ruleEngine = json_encode($project->rule_engine_query);
+                    }
+
+                    $ruleEngineQuery = '';
+                    if($project->access == 'full' || $project->access == 'approve') {
+                        $ruleEngineQuery = $ruleEngine ?? '';
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -341,7 +350,11 @@ class SubUserController extends AppController
                 foreach ($contractsPrivilegesDecode as $contract) {
                     $requestContractIDs[] = $contract->value;
                     if(!empty($contract->rule_engine_query)) {
-                        $ruleEngineQuery = json_encode($contract->rule_engine_query);
+                        $ruleEngine = json_encode($contract->rule_engine_query);
+                    }
+                    $ruleEngineQuery = '';
+                    if($contract->access == 'full' || $contract->access == 'approve') {
+                        $ruleEngineQuery = $ruleEngine ?? '';
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -394,7 +407,12 @@ class SubUserController extends AppController
                 foreach ($invoicesPrivilegesDecode as $invoice) {
                     $requestInvoiceIDs[] = $invoice->value;
                     if(!empty($invoice->rule_engine_query)) {
-                        $ruleEngineQuery = json_encode($invoice->rule_engine_query);
+                        $ruleEngine = json_encode($invoice->rule_engine_query);
+                    }
+
+                    $ruleEngineQuery = '';
+                    if($invoice->access == 'full' || $invoice->access == 'approve') {
+                        $ruleEngineQuery = $ruleEngine ?? '';
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -446,9 +464,13 @@ class SubUserController extends AppController
                 foreach ($changeOrdersPrivilegesDecode as $changeOrder) {
                     $requestChangeOrderIDs[] = $changeOrder->value;
                     if(!empty($changeOrder->rule_engine_query)) {
-                        $ruleEngineQuery = json_encode($changeOrder->rule_engine_query);
+                        $ruleEngine = json_encode($changeOrder->rule_engine_query);
                     }
 
+                    $ruleEngineQuery = '';
+                    if($changeOrder->access == 'full' || $changeOrder->access == 'approve') {
+                        $ruleEngineQuery = $ruleEngine ?? '';
+                    }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
                         ->updateOrInsert([
