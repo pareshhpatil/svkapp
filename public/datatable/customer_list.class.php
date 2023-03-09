@@ -352,7 +352,7 @@ class SSP
                 "SELECT type_id, access
 			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
             );
-            dd($customerPrivileges);
+            var_dump($customerPrivileges);
             $privilegesArray = [];
             foreach ($customerPrivileges as $customerPrivilege) {
                 $privilegesArray[$customerPrivilege['type_id']] = $customerPrivilege['access'];
