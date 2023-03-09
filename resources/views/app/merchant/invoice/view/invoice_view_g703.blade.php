@@ -348,34 +348,22 @@ $header = 'app.patron.invoice.invoice-master';
                                 @php
                                 $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                if($sub_total_g>0 && $sub_total_c>0)
+                                {
                                 $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                }else{
+                                $sub_total_g_by_c=0;
+                                }
                                 @endphp
                                 <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
                                     <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
-
-                                    </td>
-                                    <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
-                                    </td>
-                                    <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
-                                    </td>
-                                    <td class="border border-gray-500 px-2 py-2 text-right">
-                                        <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
-                                    </td>
-                                    @php
-                                        $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        if($sub_total_g>0 && $sub_total_c>0)
-                                        {
-                                            $sub_total_g_by_c = $sub_total_g / $sub_total_c;
-                                        }else{
-                                            $sub_total_g_by_c=0;
-                                        }
-                                    @endphp
-                                    <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
-                                        <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
-
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
+                                </td>
                             </tr>
                             @elseif ($item['type'] == 'combine')
                             <tr>
