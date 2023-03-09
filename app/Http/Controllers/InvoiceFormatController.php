@@ -103,7 +103,6 @@ class InvoiceFormatController extends AppController
         $data['available_fields'] = json_encode($added_available_fields, 1);
 
         $data['customerColumns'] = $this->formatModel->getTableList('customer_mandatory_column', 'is_active', 1);
-
         $data["product_list"] = [];
         $product_list = $this->invoiceModel->getAllParentProducts($this->merchant_id);
         if (!empty($product_list)) {

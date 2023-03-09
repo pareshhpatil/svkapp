@@ -45,6 +45,18 @@
                                         </div>
 
                                     </div>
+                                    
+                                    {foreach from=$column item=v}
+                                        {if $v.column_datatype=='company_name'}
+                                            <div  class="form-group">
+                                                <label class="control-label col-md-5">{$v.column_name}<span class="required"></span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" maxlength="100" class="form-control" value="{$detail.company_name}"
+                                                            name="company_name">
+                                                </div>
+                                            </div>
+                                        {/if}
+                                    {/foreach}
 
                                     <div class="form-group">
                                         <label class="control-label col-md-5">{$customer_default_column.customer_name|default:$lang_title.customer_name}<span class="required">* </span></label>
@@ -135,8 +147,9 @@
                                                     {$name='column_value[]'}
                                                     <input name="column_id[]" type="hidden" value="{$v.column_id}">
                                                 {/if}
+                                                <label class="control-label col-md-5">{$v.column_name}<span class="required"></span></label>
                                             {/if}
-                                            <label class="control-label col-md-5">{$v.column_name}<span class="required"></span></label>
+                                            
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
                                                     <textarea class="form-control" maxlength="500" name="{$name}">{$v.value}</textarea>
@@ -145,8 +158,8 @@
                                                 {elseif $v.column_datatype=='number'}
                                                     <input type="number" autocomplete="false" maxlength="100" class="form-control" value="{$v.value}" name="{$name}">
                                                 {elseif $v.column_datatype=='company_name'}
-                                                    <input type="text" maxlength="100" class="form-control" value="{$detail.company_name}"
-                                                        name="company_name">
+                                                    {* <input type="text" maxlength="100" class="form-control" value="{$detail.company_name}"
+                                                        name="company_name">  *}
                                                 {else}
                                                     <input type="text" maxlength="100" class="form-control" value="{$v.value}" name="{$name}">
                                                 {/if}
@@ -170,8 +183,9 @@
                                                     {$name='column_value[]'}
                                                     <input name="column_id[]" type="hidden" value="{$v.column_id}">
                                                 {/if}
+                                                <label class="control-label col-md-4">{$v.column_name}<span class="required"></span></label>
                                             {/if}
-                                            <label class="control-label col-md-4">{$v.column_name}<span class="required"></span></label>
+                                            
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
                                                     <textarea class="form-control" maxlength="500" name="{$name}">{$v.value}</textarea>
@@ -180,8 +194,8 @@
                                                 {elseif $v.column_datatype=='number'}
                                                     <input type="number" autocomplete="false" maxlength="100" class="form-control" value="{$v.value}" name="{$name}">
                                                 {elseif $v.column_datatype=='company_name'}
-                                                    <input type="text" maxlength="100" class="form-control" value="{$detail.company_name}"
-                                                        name="company_name">
+                                                    {* <input type="text" maxlength="100" class="form-control" value="{$detail.company_name}"
+                                                        name="company_name"> *}
                                                 {else}
                                                     <input type="text" maxlength="100" class="form-control" value="{$v.value}" name="{$name}">
                                                 {/if}

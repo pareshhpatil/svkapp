@@ -16,7 +16,7 @@
                                 </div>
 
                             <div class="form-group">
-                                <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Customer name'}" name="customer_name">
+                                <select class="form-control  select2me" data-placeholder="{$customer_default_column.customer_name|default:'Contact person name'}" name="customer_name">
                                     <option value=""></option>
                                     {foreach from=$customer_list item=v}
                                         {if {{$customer_selected}=={$v.name}}}
@@ -49,7 +49,7 @@
                             <thead>
                                 <tr>
                                     <th>
-                                    {$customer_default_column.customer_name|default:'Customer name'}
+                                    {$customer_default_column.customer_name|default:'Contact person name'}
                                     </th>
                                     <th>
                                         Invoice Balance

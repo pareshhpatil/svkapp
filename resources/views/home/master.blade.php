@@ -122,7 +122,7 @@
             <div class="navbar-collapse collapse" id="navbarColor02">
                 <ul class="navbar-nav ml-auto d-flex align-items-center">
                     @if(!isset($has_partner))
-                    <li class="nav-item dropdown megamenu">
+                    {{-- <li class="nav-item dropdown megamenu">
                         <a id="megamenu" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             class="nav-link dropdown-toggle">Products</a>
                         <div aria-labelledby="megamenu" class="dropdown-menu border-0 p-0 m-0 dropdown-menu-right">
@@ -161,8 +161,8 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li class="nav-item dropdown megamenu">
+                    </li> --}}
+                    {{-- <li class="nav-item dropdown megamenu">
                         <a id="megamenu" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             class="nav-link dropdown-toggle">Features</a>
                         <div aria-labelledby="megamenu" class="dropdown-menu border-0 p-0 m-0 dropdown-menu-right">
@@ -216,8 +216,8 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li class="nav-item dropdown megamenu">
+                    </li> --}}
+                    {{-- <li class="nav-item dropdown megamenu">
                         <a id="megamenu" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             class="nav-link dropdown-toggle">Industry</a>
                         <div aria-labelledby="megamenu" class="dropdown-menu border-0 p-0 m-0 dropdown-menu-right">
@@ -268,8 +268,8 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li class="nav-item dropdown megamenu">
+                    </li> --}}
+                    {{-- <li class="nav-item dropdown megamenu">
                         <a id="megamenu" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             class="nav-link dropdown-toggle">Resources</a>
                         <div aria-labelledby="megamenu" class="dropdown-menu border-0 p-0 m-0 dropdown-menu-right">
@@ -329,21 +329,21 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
 
                     <!-- li class="nav-item"><a class="nav-link" href="">Customer
                             stories</a></li -->
-                    <li class="nav-item"><a class="nav-link" href="{{ route('home.pricing') }}">Pricing</a></li>
+                    {{-- <li class="nav-item"><a class="nav-link" href="{{ route('home.pricing') }}">Pricing</a></li> --}}
                     @endif
                     @guest
-                    <li class="nav-item"><a class="nav-link" href="{{ config('app.APP_URL') }}login">Login</a></li>
+                    {{-- <li class="nav-item"><a class="nav-link" href="{{ config('app.APP_URL') }}login">Login</a></li>
                     <li class="nav-item"><span class="nav-link" href="#"><a class="btn btn-secondary"
-                                href="{{ config('app.APP_URL') }}merchant/register">Sign Up</a></span></li>
+                                href="{{ config('app.APP_URL') }}merchant/register">Sign Up</a></span></li> --}}
                     @else
                     <li class="nav-item"><a class="btn btn-secondary"
                             href="{{ config('app.APP_URL') }}merchant/dashboard">Dashboard</a></li>
-                    <li class="nav-item"><span class="nav-link" href="#"><a class="nav-link"
-                                href="/logout">Logout</a></span></li>
+                    {{-- <li class="nav-item"><span class="nav-link" href="#"><a class="nav-link"
+                                href="/logout">Logout</a></span></li> --}}
                     @endguest
 
 

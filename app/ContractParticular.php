@@ -31,6 +31,7 @@ class ContractParticular extends Model
         'project_address',
         'owner_address',
         'contractor_address',
+        'bulk_id',
         'architect_address'
     ];
 

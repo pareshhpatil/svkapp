@@ -15,7 +15,7 @@
 </a>
 @endif
 
-<footer class="navbar navbar-expand-lg navbar-dark bg-secondary pt-4 pb-1" id="footer">
+{{-- <footer class="navbar navbar-expand-lg navbar-dark bg-secondary pt-4 pb-1" id="footer">
     <div class="container d-lg-block">
         <div class="row row-eq-height">
             <div class="col-6 col-md-3 pb-4">
@@ -114,7 +114,7 @@
             </div>
         </div>
     </div>
-</footer>
+</footer> --}}
 
 @if(env('APP_ENV')=='PROD')
 <div class="modal left fade" id="chatnowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

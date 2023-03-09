@@ -103,7 +103,7 @@ class ContractController extends Controller
     }
 
 
-    public function loadContract($step = 1, $contract_id = null)
+    public function loadContract($step = 1, $contract_id = null, $bulk_id = null)
     {
 
         Helpers::hasRole(2, 27);
@@ -138,9 +138,16 @@ class ContractController extends Controller
         $data['project'] = $project;
         $data['merchant_id'] = $this->merchant_id;
         $data['needValidationOnStep2'] = $needValidationOnStep2;
-
+        $data['bulk_id'] = 0;
         if ($step == 2 || $step == 3) {
             $data = $this->step2Data($data, $contract, $project->project_id ?? '', $step);
+        }
+
+        if ($bulk_id != null) {
+            $bulk_id = Encrypt::decode($bulk_id);
+            $particulars = $this->contract_model->getColumnValue('staging_contract', 'bulk_id', $bulk_id, 'particulars');
+            $data['particulars'] = json_decode($particulars, 1);
+            $data['bulk_id'] = $bulk_id;
         }
 
         return view('app/merchant/contract/createv6', $data);
@@ -158,8 +165,10 @@ class ContractController extends Controller
 
         $step = $request->step;
         $contract = null;
-        if ($request->contract_id)
+        if ($request->contract_id) {
             $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
+            $bulk_id = $contract->bulk_id;
+        }
 
         switch ($step) {
             case 1:
@@ -176,6 +185,9 @@ class ContractController extends Controller
                 break;
             case 3:
                 $contract->update(['status' => 1]);
+                if ($bulk_id > 0) {
+                    $this->contract_model->updateTable('bulk_upload', 'bulk_upload_id', $bulk_id, 'status', 5);
+                }
                 return redirect()->route('contract.list.new');
                 break;
         }
@@ -418,12 +430,12 @@ class ContractController extends Controller
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
-        $data['customer_name'] = 'Customer name';
+        $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
-            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Contact person name';
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 
@@ -458,12 +470,12 @@ class ContractController extends Controller
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'contract_list';
-        $data['customer_name'] = 'Customer name';
+        $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
-            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Customer name';
+            $data['customer_name'] = isset($default_column['customer_name']) ? $default_column['customer_name'] : 'Contact person name';
             $data['customer_code'] = isset($default_column['customer_code']) ? $default_column['customer_code'] : 'Customer code';
         }
 
@@ -618,9 +630,8 @@ class ContractController extends Controller
     {
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
-
         $contract = ContractParticular::find($id);
-        $contract->update(['particulars' => json_decode($formData), 'contract_amount' => $request->contract_amount]);
+        $contract->update(['particulars' => json_decode($formData), 'contract_amount' => $request->contract_amount, 'bulk_id' => $request->bulk_id]);
 
         return response()->json(array('message' => 'Particulars saved properly'), 200);
     }
