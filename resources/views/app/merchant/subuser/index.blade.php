@@ -73,7 +73,7 @@
                                                 <li>
                                                     <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                 </li>
-                                                @if($subUser->user_role_name !== 'Admin')
+                                                @if($subUser->user_role_name !== 'Admin' && $auth_user_role == 'Admin')
                                                     <li>
                                                         <button type="button" data-user-id="{{$subUser->user_id}}" data-user-name="{{$subUser->first_name}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
                                                     </li>

@@ -13,6 +13,7 @@ use App\Model\Merchant\SubUser\SubUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Validator;
 
 class SubUserController extends AppController
@@ -39,6 +40,7 @@ class SubUserController extends AppController
         $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
 
         $data['datatablejs'] = 'table-no-export';
+        $data['auth_user_role'] = Session::get('user_role');
 
         return view('app/merchant/subuser/index', $data);
     }
