@@ -2773,6 +2773,9 @@ class InvoiceController extends AppController
                 $info['last_month_co_amount_negative'] = 0;
                 $info['this_month_co_amount_positive'] = 0;
                 $info['this_month_co_amount_negative'] = 0;
+
+                $info['total_co_amount_negative'] = 0;
+                $info['total_co_amount_positive'] = 0;
                 
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
@@ -3382,15 +3385,36 @@ class InvoiceController extends AppController
 
             $change_order_ids = json_decode($info['change_order_id'], 1);
             if (!empty($change_order_ids)) {
-                $info['last_month_co_amount'] = 0;
-                $info['this_month_co_amount'] = 0;
-                $start_date = date("Y-m-d", strtotime("first day of previous month"));
+                $info['last_month_co_amount_positive'] = 0;
+                $info['last_month_co_amount_negative'] = 0;
+                $info['this_month_co_amount_positive'] = 0;
+                $info['this_month_co_amount_negative'] = 0;
+
+                $start_date = '1990-01-01';
                 $end_date = date("Y-m-01");
-                $info['last_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
+                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date , '<');
+
                 $start_date = date("Y-m-01");
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
-                $info['this_month_co_amount'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date);
+                $info['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
+                $info['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
+
+                $info['last_month_co_amount'] = $info['last_month_co_amount_positive'] +  $info['last_month_co_amount_negative'];
+                $info['this_month_co_amount'] = $info['this_month_co_amount_positive'] +  $info['this_month_co_amount_negative'];
+
+                $info['total_co_amount_positive'] = $info['last_month_co_amount_positive'] +  $info['this_month_co_amount_positive'];
+                $info['total_co_amount_negative'] =$info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
             } else {
+                
+                $info['last_month_co_amount_positive'] = 0;
+                $info['last_month_co_amount_negative'] = 0;
+                $info['this_month_co_amount_positive'] = 0;
+                $info['this_month_co_amount_negative'] = 0;
+
+                $info['total_co_amount_negative'] = 0;
+                $info['total_co_amount_positive'] = 0;
+                
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
                 if ($pre_month_change_order_amount[0]->change_order_amount != null) {
