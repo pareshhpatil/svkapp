@@ -38,7 +38,7 @@ class SSP
         if(in_array('all', array_keys($privilegesArray))) {
             $hasAllPrivileges = true;
         }
-
+        var_dump($privilegesArray);
         $out = array();
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
@@ -106,7 +106,7 @@ class SSP
                                 $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
                             }
                         }
-                        $row[$column['dt']] .= $privilegesArray[$data[$i]['customer_id']];
+
                         $row[$column['dt']] .= '</ul>';
                         $row[$column['dt']] .= '</div>';
 
