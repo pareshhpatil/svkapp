@@ -2,15 +2,20 @@
 
 @section('header')
 @endsection
-
+<style>
+    .no-permission-heading {
+        font-size: 3em;
+        margin-top: 80px;
+    }
+</style>
 @section('content')
 
 <div class="page-content">
-    <section class="jumbotron bg-transparent py-3" id="header" style="background:#fff;">
+    <section class="bg-transparent py-3" id="header" style="background:#fff;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 col-md-6 col-lg-6 col-xl-5 d-none d-lg-block">
-                    <h1>You don't have permission to access this page</h1>
+                    <h1 class="no-permission-heading">You don't have permission to access this page</h1>
                     <p class="lead mb-5">Contact your admin for access.</p>
                 </div>
                 <div class="col-6 col-md-6 m-auto ml-lg-auto mr-lg-0 col-lg-6 pt-5 pt-lg-0 d-none d-lg-block">
