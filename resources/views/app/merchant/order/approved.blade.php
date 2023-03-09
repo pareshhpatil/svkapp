@@ -148,6 +148,12 @@
                                         <th class="td-c">
                                             Description
                                         </th>
+                                        <th class="td-c">
+                                            Group level 1
+                                        </th>
+                                        <th class="td-c">
+                                        Group level 2
+                                        </th>
                                     </tr>
                                 </thead>
 
@@ -230,6 +236,8 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>

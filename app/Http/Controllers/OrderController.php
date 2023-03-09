@@ -65,8 +65,16 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
             $row->json_particulars = json_decode($row->particulars, true);
-
             $data['detail'] = $row;
+
+            $group_codes = [];
+            foreach($row->json_particulars as $row_particular){
+                if (!in_array($row_particular['group'], $group_codes)){
+                    array_push($group_codes,$row_particular['group']);
+                }
+            }
+            $data['group_codes'] = $group_codes;
+            $data['group_codes_json'] =  json_encode($data['group_codes']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row->project_id);
             $data['project_id'] = $row->project_id;
@@ -89,6 +97,8 @@ class OrderController extends Controller
         $data["default_particulars"]["rate"] = 'Rate';
         $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
         $data["default_particulars"]["order_description"] = 'Description';
+        $data["default_particulars"]["group"] = 'Group';
+        $data["default_particulars"]["sub_group"] = 'Sub Group';
 
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
@@ -126,6 +136,8 @@ class OrderController extends Controller
                     $row_array["cost_type"] = $request->cost_type[$skey];
                     $row_array["retainage_percent"] = $request->retainage_percent[$skey];
                     $row_array["pint"] = $request->pint[$skey];
+                    $row_array["group"] = $request->group[$skey];
+                    $row_array["sub_group"] = $request->sub_group[$skey];
                     array_push($main_array, $row_array);
                 }
             }
@@ -224,6 +236,15 @@ class OrderController extends Controller
                     $row_data["cost_type"] = null;
                 }
             }
+            $group_codes = [];
+            foreach($row->json_particulars as $row_particular){
+                if (!in_array($row_particular['group'], $group_codes)){
+                    array_push($group_codes,$row_particular['group']);
+                }
+            }
+            $data['group_codes'] = $group_codes;
+            $data['group_codes_json'] =  json_encode($data['group_codes']);
+
             $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
             foreach ($cust_list as $cust_data) {
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
@@ -240,6 +261,8 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["group"] = 'Group';
+            $data["default_particulars"]["sub_group"] = 'Sub Group';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
@@ -286,6 +309,8 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["group"] = 'Group';
+            $data["default_particulars"]["sub_group"] = 'Sub Group';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
@@ -329,6 +354,8 @@ class OrderController extends Controller
             $row_array["order_description"] = $request->order_description[$skey];
             $row_array["cost_type"] = $request->cost_type[$skey];
             $row_array["retainage_percent"] = $request->retainage_percent[$skey];
+            $row_array["group"] = $request->group[$skey];
+            $row_array["sub_group"] = $request->sub_group[$skey];
             $row_array["pint"] = $request->pint[$skey];
             array_push($main_array, $row_array);
         }
