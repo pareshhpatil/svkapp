@@ -687,12 +687,4 @@ class ContractController extends Controller
             return redirect('/merchant/code/list/' . $id)->with('success', "Record has been updated");
         }
     }
-
-    function getContractApi(Request $request) {
-        echo 'hi';
-        // $data["project_list"] = $this->masterModel->getProjectList("M000000041");
-        
-        // return json_encode($data["project_list"],true);
-        die();
-    }
 }
