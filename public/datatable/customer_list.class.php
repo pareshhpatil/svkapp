@@ -93,6 +93,7 @@ class SSP
                                 $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
                             }
                         } else {
+
                             if($privilegesArray[$data[$i]['customer_id']] == 'full' || $privilegesArray[$data[$i]['customer_id']] == 'view-only' ||  $privilegesArray[$data[$i]['customer_id']] == 'approve') {
                                 $row[$column['dt']] .= '<li><a href="/merchant/customer/view/' . $enc_id . '" target="_BLANK" ><i class="fa fa-table"></i> View</a></li>';
                             }
@@ -105,7 +106,7 @@ class SSP
                                 $row[$column['dt']] .= '<li><a href="#basic" id="deletecustomer" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/customer/delete/' . $enc_id . "'" . '" data-toggle="modal"><i class="fa fa-times"></i> Delete</a></li>';
                             }
                         }
-
+                        $row[$column['dt']] .= $privilegesArray[$data[$i]['customer_id']];
                         $row[$column['dt']] .= '</ul>';
                         $row[$column['dt']] .= '</div>';
 
