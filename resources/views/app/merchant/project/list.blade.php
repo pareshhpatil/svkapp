@@ -5,7 +5,7 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.projectlist') }}
-        @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
+        @if(in_array('full', array_values($privileges)) || in_array('edit', array_values($privileges)) || (in_array('all', array_keys($privileges)) && $privileges['all'] == 'full'))
             <a href="/merchant/project/create" class="btn blue pull-right"> Create project </a>
         @endif
     </div>

@@ -119,7 +119,7 @@ class PrivilegesAccess
                         $result = true;
                     }
                 } else {
-                    if($pathArray[2] == 'create' && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)) || in_array('approve', array_values($projectPrivilegesAccessIDs)))) {
+                    if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)) || in_array('approve', array_values($projectPrivilegesAccessIDs)))) {
                         $result = true;
                     } else {
                         if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit' || $projectPrivilegesAccessIDs[$modelID] == 'approve')) {
@@ -127,7 +127,6 @@ class PrivilegesAccess
                         }
                     }
                 }
-
                 break;
         }
 
