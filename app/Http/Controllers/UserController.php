@@ -295,7 +295,7 @@ class UserController extends Controller
         $this->checkUserRole($user);
 
         $role = $user->role() ? $user->role()->name : '';
-        dd($role);
+
         Session::put('user_status', $user->user_status);
         Session::put('user_name', $user->name);
         Session::put('display_name', $user->first_name);
