@@ -335,6 +335,7 @@ class UserController extends Controller
         Redis::set('change_order_privileges_' . $user->user_id, json_encode($privileges['change_order_privileges']));
         // Store in Session bcz of legacy_app
         Session::put('invoice_privileges', json_encode($privileges['invoice_privileges']));
+        Session::put('customer_privileges', json_encode($privileges['customer_privileges']));
 
         //Checking whether user is a cable customer
         if ($user->login_type == 2) {
