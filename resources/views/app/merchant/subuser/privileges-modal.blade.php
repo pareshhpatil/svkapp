@@ -385,31 +385,24 @@
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
 
-                            let rule_engine = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ];
+                            let rule_engine = [];
 
-                            if(hasRuleEngine) {
-                                rule_engine = [
-                                    {
-                                        query_name: 'grand_total',
-                                        query_model: 'payment_request',
-                                        query_operator: ruleEngine[0].query_operator,
-                                        query_value: ruleEngine[0].query_value
-                                    }
-                                ]
-                            }
-                            let html = accessHTML(el.type_label, el.access, i, 'customer', hasRuleEngine, rule_engine);
+                            // if(hasRuleEngine) {
+                            //     rule_engine = [
+                            //         {
+                            //             query_name: 'grand_total',
+                            //             query_model: 'payment_request',
+                            //             query_operator: ruleEngine[0].query_operator,
+                            //             query_value: ruleEngine[0].query_value
+                            //         }
+                            //     ]
+                            // }
+                            let html = accessHTML(el.type_label, el.access, i, 'customer', hasRuleEngine, ruleEngine);
                             customerValArr.push({
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine_query: rule_engine
+                                rule_engine_query: ruleEngine
                             })
                             customerArrayHTML.append(html);
                         });
@@ -426,33 +419,33 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            let rule_engine = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ];
+                            // let rule_engine = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ];
 
-                            if(hasRuleEngine) {
-                                rule_engine = [
-                                    {
-                                        query_name: 'grand_total',
-                                        query_model: 'payment_request',
-                                        query_operator: ruleEngine[0].query_operator,
-                                        query_value: ruleEngine[0].query_value
-                                    }
-                                ]
-                            }
+                            // if(hasRuleEngine) {
+                            //     rule_engine = [
+                            //         {
+                            //             query_name: 'grand_total',
+                            //             query_model: 'payment_request',
+                            //             query_operator: ruleEngine[0].query_operator,
+                            //             query_value: ruleEngine[0].query_value
+                            //         }
+                            //     ]
+                            // }
 
-                            let html = accessHTML(el.type_label, el.access, i, 'project', hasRuleEngine, rule_engine);
+                            let html = accessHTML(el.type_label, el.access, i, 'project', hasRuleEngine, ruleEngine);
 
                             projectValArr.push({
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine_query: rule_engine
+                                rule_engine_query: ruleEngine
                             })
                             projectArrayHTML.append(html);
                         });
@@ -469,32 +462,32 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            let rule_engine = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ];
+                            // let rule_engine = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ];
 
-                            if(hasRuleEngine) {
-                                rule_engine = [
-                                    {
-                                        query_name: 'grand_total',
-                                        query_model: 'payment_request',
-                                        query_operator: ruleEngine[0].query_operator,
-                                        query_value: ruleEngine[0].query_value
-                                    }
-                                ]
-                            }
+                            // if(hasRuleEngine) {
+                            //     rule_engine = [
+                            //         {
+                            //             query_name: 'grand_total',
+                            //             query_model: 'payment_request',
+                            //             query_operator: ruleEngine[0].query_operator,
+                            //             query_value: ruleEngine[0].query_value
+                            //         }
+                            //     ]
+                            // }
 
-                            let html = accessHTML(el.type_label, el.access, i, 'contract', hasRuleEngine, rule_engine);
+                            let html = accessHTML(el.type_label, el.access, i, 'contract', hasRuleEngine, ruleEngine);
                             contractValArr.push({
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine_query: rule_engine
+                                rule_engine_query: ruleEngine
                             })
                             contractArrayHTML.append(html);
                         });
@@ -511,31 +504,31 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            let rule_engine = [
-                                {
-                                    query_name: 'grand_total',
-                                    query_model: 'payment_request',
-                                    query_operator: '',
-                                    query_value: ''
-                                }
-                            ]
-                            if(hasRuleEngine) {
-                                rule_engine = [
-                                    {
-                                        query_name: 'grand_total',
-                                        query_model: 'payment_request',
-                                        query_operator: ruleEngine[0].query_operator,
-                                        query_value: ruleEngine[0].query_value
-                                    }
-                                ]
-                            }
+                            // let rule_engine = [
+                            //     {
+                            //         query_name: 'grand_total',
+                            //         query_model: 'payment_request',
+                            //         query_operator: '',
+                            //         query_value: ''
+                            //     }
+                            // ]
+                            // if(hasRuleEngine) {
+                            //     rule_engine = [
+                            //         {
+                            //             query_name: 'grand_total',
+                            //             query_model: 'payment_request',
+                            //             query_operator: ruleEngine[0].query_operator,
+                            //             query_value: ruleEngine[0].query_value
+                            //         }
+                            //     ]
+                            // }
 
-                            let html = accessHTML(el.type_label, el.access, i, 'invoice', hasRuleEngine, rule_engine);
+                            let html = accessHTML(el.type_label, el.access, i, 'invoice', hasRuleEngine, ruleEngine);
                             invoiceValArr.push({
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine_query: rule_engine
+                                rule_engine_query: ruleEngine
                             })
                             invoiceArrayHTML.append(html);
                         });
@@ -553,31 +546,31 @@
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
 
-                            let rule_engine = [
-                                {
-                                    query_name: 'total_change_order_amount',
-                                    query_model: 'change_order',
-                                    query_operator: '',
-                                    query_value: '',
-                                }
-                            ]
-
-                            if(hasRuleEngine) {
-                                rule_engine = [
-                                    {
-                                        query_name: 'total_change_order_amount',
-                                        query_model: 'change_order',
-                                        query_operator: ruleEngine[0].query_operator,
-                                        query_value: ruleEngine[0].query_value
-                                    }
-                                ]
-                            }
-                            let html = accessHTML(el.type_label, el.access, i, 'change-order', hasRuleEngine, rule_engine);
+                            // let rule_engine = [
+                            //     {
+                            //         query_name: 'total_change_order_amount',
+                            //         query_model: 'change_order',
+                            //         query_operator: '',
+                            //         query_value: '',
+                            //     }
+                            // ]
+                            //
+                            // if(hasRuleEngine) {
+                            //     rule_engine = [
+                            //         {
+                            //             query_name: 'total_change_order_amount',
+                            //             query_model: 'change_order',
+                            //             query_operator: ruleEngine[0].query_operator,
+                            //             query_value: ruleEngine[0].query_value
+                            //         }
+                            //     ]
+                            // }
+                            let html = accessHTML(el.type_label, el.access, i, 'change-order', hasRuleEngine, ruleEngine);
                             changeOrderValArr.push({
                                 value: el.type_id,
                                 label: el.type_label,
                                 access: el.access,
-                                rule_engine_query: rule_engine
+                                rule_engine_query: ruleEngine
                             })
                             changeOrderArrayHTML.append(html);
                         });
@@ -591,7 +584,6 @@
             })
 
             $('.save-btn').on("click", function() {
-
                 privilegesFormWrap.find('[name="customers_privileges"]').val(JSON.stringify(customerValArr));
                 privilegesFormWrap.find('[name="projects_privileges"]').val(JSON.stringify(projectValArr));
                 privilegesFormWrap.find('[name="contracts_privileges"]').val(JSON.stringify(contractValArr));
@@ -636,14 +628,16 @@
             select2Customer.on('select2:select', function (e) {
                 let selected = select2Customer.find(':selected');
                 let customerValArrLength = customerValArr.length;
-                let rule_engine = [
-                    {
-                        query_name: 'grand_total',
-                        query_model: 'payment_request',
-                        query_operator: '',
-                        query_value: '',
-                    }
-                ];
+                // let rule_engine = [
+                //     {
+                //         query_name: 'grand_total',
+                //         query_model: 'payment_request',
+                //         query_operator: '',
+                //         query_value: '',
+                //     }
+                // ];
+
+                let rule_engine = [];
 
                 customerValArr.push({
                     value: selected[0].value,
@@ -651,8 +645,6 @@
                     access: 'full',
                     rule_engine_query: rule_engine
                 });
-
-
 
                 let html = accessHTML(selected[0].text, 'full', customerValArrLength, 'customer', false, rule_engine);
 
@@ -696,20 +688,22 @@
             select2Project.on('select2:select', function (e) {
                 let selected = select2Project.find(':selected');
                 let projectValArrLength = projectValArr.length;
+                let rule_engine = [];
                 projectValArr.push({
                     value: selected[0].value,
                     label: selected[0].text,
-                    access: 'full'
+                    access: 'full',
+                    rule_engine_query: rule_engine
                 });
 
-                let rule_engine = [
-                    {
-                        query_name: 'grand_total',
-                        query_model: 'payment_request',
-                        query_operator: '',
-                        query_value: '',
-                    }
-                ];
+                // let rule_engine = [
+                //     {
+                //         query_name: 'grand_total',
+                //         query_model: 'payment_request',
+                //         query_operator: '',
+                //         query_value: '',
+                //     }
+                // ];
 
                 let html = accessHTML(selected[0].text, 'full', projectValArrLength, 'project', false, rule_engine);
 
@@ -752,20 +746,14 @@
             select2Contract.on('select2:select', function (e) {
                 let selected = select2Contract.find(':selected');
                 let contractValArrLength = contractValArr.length;
+                let rule_engine = [];
+
                 contractValArr.push({
                     value: selected[0].value,
                     label: selected[0].text,
-                    access: 'full'
+                    access: 'full',
+                    rule_engine_query: rule_engine
                 });
-
-                let rule_engine = [
-                    {
-                        query_name: 'grand_total',
-                        query_model: 'payment_request',
-                        query_operator: '',
-                        query_value: '',
-                    }
-                ];
 
                 let html = accessHTML(selected[0].text, 'full', contractValArrLength, 'contract', false, rule_engine);
 
@@ -809,14 +797,7 @@
                 let selected = select2Invoice.find(':selected');
                 let invoiceValArrLength = invoiceValArr.length;
 
-                let rule_engine = [
-                    {
-                        query_name: 'grand_total',
-                        query_model: 'payment_request',
-                        query_operator: '',
-                        query_value: '',
-                    }
-                ];
+                let rule_engine = [];
 
                 invoiceValArr.push({
                     value: selected[0].value,
@@ -866,20 +847,14 @@
             select2ChangeOrder.on('select2:select', function (e) {
                 let selected = select2ChangeOrder.find(':selected');
                 let changeOrderValArrLength = changeOrderValArr.length;
+                let rule_engine = [];
+
                 changeOrderValArr.push({
                     value: selected[0].value,
                     label: selected[0].text,
-                    access: 'full'
+                    access: 'full',
+                    rule_engine_query: rule_engine
                 });
-
-                let rule_engine = [
-                    {
-                        query_name: 'total_change_order_amount',
-                        query_model: 'change_order',
-                        query_operator: '',
-                        query_value: '',
-                    }
-                ];
 
                 let html = accessHTML(selected[0].text, 'full', changeOrderValArrLength, 'change-order', false, rule_engine);
 
@@ -1449,17 +1424,8 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
                 return `<div class="rule-engine-row ${hasRuleEngine ? 'custom-show' : 'custom-hide'}" id="${type}-rule-engine-${index}">
                         <div class="rule-engine-query">
                             ${type === 'change-order' ? changeOrderOptions() : invoiceOptions()}
-                            <select name="rule-engine-operator" class="rule-engine-operator form-control" data-id="${index}" data-type="${type}">
-                            <option value="gt" ${rule_engine.query_operator
-                === 'gt' ? 'selected' : ''}>greater than</option>
-<option value="lt" ${rule_engine.query_operator
-                === 'lt' ? 'selected' : ''}>lesser than</option>
-<option value="et" ${rule_engine.query_operator
-                === 'et' ? 'selected' : ''}>equals to</option>
-<option value="net" ${rule_engine.query_operator
-                === 'net' ? 'selected' : ''}>not equals to</option>
-</select>
-<input type="number" name="rule-engine-value" value="${rule_engine.query_value}" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">
+                            ${ruleEngineOperators(rule_engine?.query_operator, index, type)}
+${ruleEngineValue(rule_engine?.query_value, index, type)}
 <a class="close remove-query-btn" style="margin-right: 5px; align-self: center" data-id="${index}" data-type="${type}">
     <button type="button" class="close" data-id="${index}" data-type="${type}" aria-hidden="true"></button>
 </a>
@@ -1485,6 +1451,41 @@ ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
                 return `<p class="rule-engine-text">if Change Order</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
 <option value="total_change_order_amount" selected>total amount</option>
 </select>`;
+            }
+
+            function ruleEngineOperators(queryOperator, index, type) {
+                let html = '';
+                if(queryOperator) {
+                    html = `<select name="rule-engine-operator" class="rule-engine-operator form-control" data-id="${index}" data-type="${type}">
+                            <option value="gt" ${queryOperator
+                    === 'gt' ? 'selected' : ''}>greater than</option>
+<option value="lt" ${queryOperator
+                    === 'lt' ? 'selected' : ''}>lesser than</option>
+<option value="et" ${queryOperator
+                    === 'et' ? 'selected' : ''}>equals to</option>
+<option value="net" ${queryOperator
+                    === 'net' ? 'selected' : ''}>not equals to</option>
+</select>`;
+                } else {
+                    html = `<select name="rule-engine-operator" class="rule-engine-operator form-control" data-id="${index}" data-type="${type}">
+                            <option value="gt">greater than</option>
+<option value="lt">lesser than</option>
+<option value="et">equals to</option>
+<option value="net">not equals to</option>
+</select>`;
+                }
+
+                return html;
+            }
+
+            function ruleEngineValue(queryValue, index, type) {
+                let html = '';
+                if(queryValue) {
+                    html = `<input type="number" name="rule-engine-value" value="${queryValue}" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">`;
+                } else {
+                    html = `<input type="number" name="rule-engine-value" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">`;
+                }
+                return html;
             }
 
         })

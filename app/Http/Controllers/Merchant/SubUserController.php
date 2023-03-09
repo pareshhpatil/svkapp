@@ -229,14 +229,15 @@ class SubUserController extends AppController
                 $existCustomerTypeIDs = $existCustomers->toArray();
 
                 $requestCustomerIDs = [];
+
                 foreach ($customerPrivilegesDecode as $customer) {
                     $requestCustomerIDs[] = $customer->value;
-                    if(!empty($customer->rule_engine_query)) {
-                        $ruleEngine = json_encode($customer->rule_engine_query);
-                    }
-                    $ruleEngineQuery = '';
-                    if($customer->access == 'full' || $customer->access == 'approve') {
-                        $ruleEngineQuery = $ruleEngine ?? '';
+
+                    $ruleEngine = '';
+                    if($customer->access == 'full' || $customer->access == 'approve' && !empty($customer->rule_engine_query)) {
+                        if(count($customer->rule_engine_query) > 0) {
+                            $ruleEngine = json_encode($customer->rule_engine_query);
+                        }
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -249,7 +250,7 @@ class SubUserController extends AppController
                                 'type_label' => $customer->label,
                                 'merchant_id' => $this->merchant_id,
                                 'access' => $customer->access,
-                                'rule_engine_query' => $ruleEngineQuery,
+                                'rule_engine_query' => $ruleEngine,
                                 'is_active' => 1,
                                 'created_at' => Carbon::now()->toDateTimeString(),
                                 'updated_at' => Carbon::now()->toDateTimeString(),
@@ -265,6 +266,7 @@ class SubUserController extends AppController
                         ->where('type_id', $customerIDToBeDisabled)
                         ->update([
                             'is_active' => 0,
+                            'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                 }
@@ -275,6 +277,7 @@ class SubUserController extends AppController
                     ->where('user_id', $userID)
                     ->update([
                         'is_active' => 0,
+                        'rule_engine_query' => '',
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ]);
             }
@@ -290,13 +293,12 @@ class SubUserController extends AppController
                 $requestProjectIDs = [];
                 foreach ($projectsPrivilegesDecode as $project) {
                     $requestProjectIDs[] = $project->value;
-                    if(!empty($project->rule_engine_query)) {
-                        $ruleEngine = json_encode($project->rule_engine_query);
-                    }
 
-                    $ruleEngineQuery = '';
-                    if($project->access == 'full' || $project->access == 'approve') {
-                        $ruleEngineQuery = $ruleEngine ?? '';
+                    $ruleEngine = '';
+                    if($project->access == 'full' || $project->access == 'approve' && !empty($project->rule_engine_query)) {
+                        if(count($project->rule_engine_query) > 0) {
+                            $ruleEngine = json_encode($project->rule_engine_query);
+                        }
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -308,7 +310,7 @@ class SubUserController extends AppController
                             'type_label' => $project->label,
                             'merchant_id' => $this->merchant_id,
                             'access' => $project->access,
-                            'rule_engine_query' => $ruleEngineQuery ?? '',
+                            'rule_engine_query' => $ruleEngine,
                             'is_active' => 1,
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString(),
@@ -324,6 +326,7 @@ class SubUserController extends AppController
                         ->where('type_id', $projectIDToBeDisabled)
                         ->update([
                             'is_active' => 0,
+                            'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                 }
@@ -333,6 +336,7 @@ class SubUserController extends AppController
                     ->where('user_id', $userID)
                     ->update([
                         'is_active' => 0,
+                        'rule_engine_query' => '',
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ]);
             }
@@ -349,12 +353,11 @@ class SubUserController extends AppController
 
                 foreach ($contractsPrivilegesDecode as $contract) {
                     $requestContractIDs[] = $contract->value;
-                    if(!empty($contract->rule_engine_query)) {
-                        $ruleEngine = json_encode($contract->rule_engine_query);
-                    }
-                    $ruleEngineQuery = '';
-                    if($contract->access == 'full' || $contract->access == 'approve') {
-                        $ruleEngineQuery = $ruleEngine ?? '';
+                    $ruleEngine = '';
+                    if($contract->access == 'full' || $contract->access == 'approve' && !empty($contract->rule_engine_query)) {
+                        if(count($contract->rule_engine_query) > 0) {
+                            $ruleEngine = json_encode($contract->rule_engine_query);
+                        }
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -366,7 +369,7 @@ class SubUserController extends AppController
                             'type_label' => $contract->label,
                             'merchant_id' => $this->merchant_id,
                             'access' => $contract->access,
-                            'rule_engine_query' => $ruleEngineQuery ?? '',
+                            'rule_engine_query' => $ruleEngine,
                             'is_active' => 1,
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString(),
@@ -382,6 +385,7 @@ class SubUserController extends AppController
                         ->where('type_id', $contractIDToBeDisabled)
                         ->update([
                             'is_active' => 0,
+                            'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                 }
@@ -391,6 +395,7 @@ class SubUserController extends AppController
                     ->where('user_id', $userID)
                     ->update([
                         'is_active' => 0,
+                        'rule_engine_query' => '',
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ]);
             }
@@ -406,13 +411,11 @@ class SubUserController extends AppController
                 $requestInvoiceIDs = [];
                 foreach ($invoicesPrivilegesDecode as $invoice) {
                     $requestInvoiceIDs[] = $invoice->value;
-                    if(!empty($invoice->rule_engine_query)) {
-                        $ruleEngine = json_encode($invoice->rule_engine_query);
-                    }
-
-                    $ruleEngineQuery = '';
-                    if($invoice->access == 'full' || $invoice->access == 'approve') {
-                        $ruleEngineQuery = $ruleEngine ?? '';
+                    $ruleEngine = '';
+                    if($invoice->access == 'full' || $invoice->access == 'approve' && !empty($invoice->rule_engine_query)) {
+                        if(count($invoice->rule_engine_query) > 0) {
+                            $ruleEngine = json_encode($invoice->rule_engine_query);
+                        }
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -424,7 +427,7 @@ class SubUserController extends AppController
                             'type_label' => $invoice->label,
                             'merchant_id' => $this->merchant_id,
                             'access' => $invoice->access,
-                            'rule_engine_query' => $ruleEngineQuery ?? '',
+                            'rule_engine_query' => $ruleEngine,
                             'is_active' => 1,
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString(),
@@ -439,6 +442,7 @@ class SubUserController extends AppController
                         ->where('type_id', $invoiceIDToBeDisabled)
                         ->update([
                             'is_active' => 0,
+                            'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                 }
@@ -448,6 +452,7 @@ class SubUserController extends AppController
                     ->where('user_id', $userID)
                     ->update([
                         'is_active' => 0,
+                        'rule_engine_query' => '',
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ]);
             }
@@ -463,13 +468,11 @@ class SubUserController extends AppController
                 $requestChangeOrderIDs = [];
                 foreach ($changeOrdersPrivilegesDecode as $changeOrder) {
                     $requestChangeOrderIDs[] = $changeOrder->value;
-                    if(!empty($changeOrder->rule_engine_query)) {
-                        $ruleEngine = json_encode($changeOrder->rule_engine_query);
-                    }
-
-                    $ruleEngineQuery = '';
-                    if($changeOrder->access == 'full' || $changeOrder->access == 'approve') {
-                        $ruleEngineQuery = $ruleEngine ?? '';
+                    $ruleEngine = '';
+                    if($changeOrder->access == 'full' || $changeOrder->access == 'approve' && !empty($changeOrder->rule_engine_query)) {
+                        if(count($changeOrder->rule_engine_query) > 0) {
+                            $ruleEngine = json_encode($changeOrder->rule_engine_query);
+                        }
                     }
 
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -481,7 +484,7 @@ class SubUserController extends AppController
                             'type_label' => $changeOrder->label,
                             'merchant_id' => $this->merchant_id,
                             'access' => $changeOrder->access,
-                            'rule_engine_query' => $ruleEngineQuery ?? '',
+                            'rule_engine_query' => $ruleEngine,
                             'is_active' => 1,
                             'created_at' => Carbon::now()->toDateTimeString(),
                             'updated_at' => Carbon::now()->toDateTimeString(),
@@ -496,6 +499,7 @@ class SubUserController extends AppController
                         ->where('type_id', $changeOrderIDToBeDisabled)
                         ->update([
                             'is_active' => 0,
+                            'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
                 }
@@ -505,6 +509,7 @@ class SubUserController extends AppController
                     ->where('user_id', $userID)
                     ->update([
                         'is_active' => 0,
+                        'rule_engine_query' => '',
                         'updated_at' => Carbon::now()->toDateTimeString()
                     ]);
             }
