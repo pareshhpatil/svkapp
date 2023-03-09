@@ -343,7 +343,7 @@ class SSP
         $where = self::filter($request, $columns, $bindings);
         $bulk_id = $_SESSION['customer_bulk_id'];
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
-
+        var_dump($merchant_id, $user_id);
         if($_SESSION['user_role'] == 'Admin') {
             $privilegesArray = ['all' => 'full'];
         } else {
@@ -352,7 +352,7 @@ class SSP
                 "SELECT type_id, access
 			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
             );
-            var_dump($customerPrivileges);
+
             $privilegesArray = [];
             foreach ($customerPrivileges as $customerPrivilege) {
                 $privilegesArray[$customerPrivilege['type_id']] = $customerPrivilege['access'];
