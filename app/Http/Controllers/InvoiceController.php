@@ -2755,6 +2755,9 @@ class InvoiceController extends AppController
                 $info['last_month_co_amount_negative'] = 0;
                 $info['this_month_co_amount_positive'] = 0;
                 $info['this_month_co_amount_negative'] = 0;
+
+                $info['total_co_amount_positive'] = 0;
+                $info['total_co_amount_negative'] = 0;
                 
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
