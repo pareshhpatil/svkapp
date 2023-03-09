@@ -45,7 +45,7 @@ class PrivilegesAccess
                         $result = true;
                     }
                 } else {
-                    if($pathArray[2] == 'create' && (in_array('full', array_values($contractPrivilegesAccessIDs)) || in_array('edit', array_values($contractPrivilegesAccessIDs)) || in_array('approve', array_values($contractPrivilegesAccessIDs)))) {
+                    if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($contractPrivilegesAccessIDs)) || in_array('edit', array_values($contractPrivilegesAccessIDs)) || in_array('approve', array_values($contractPrivilegesAccessIDs)))) {
                         $result = true;
                     } else {
                         if(!empty($modelID) && ($contractPrivilegesAccessIDs[$modelID] == 'full' || $contractPrivilegesAccessIDs[$modelID] == 'edit' || $contractPrivilegesAccessIDs[$modelID] == 'approve')) {
@@ -74,7 +74,7 @@ class PrivilegesAccess
                             $result = true;
                         }
                     } else {
-                        if($pathArray[2] == 'create' && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
+                        if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
                             if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit' || $orderPrivilegesAccessIDs[$modelID] == 'approve')) {

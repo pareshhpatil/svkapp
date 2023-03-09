@@ -5,9 +5,12 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.contractlist') }}
-        @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
+        @if(in_array('full', array_values($privileges)) || in_array('edit', array_values($privileges)) || (in_array('all', array_keys($privileges)) && $privileges['all'] == 'full'))
             <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>
         @endif
+{{--        @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')--}}
+{{--            <a href="{{ route('contract.create.new') }}" class="btn blue pull-right"> Create Contract </a>--}}
+{{--        @endif--}}
 
     </div>
     <!-- BEGIN SEARCH CONTENT-->
