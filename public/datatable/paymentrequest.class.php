@@ -196,7 +196,7 @@ class SSP
                                     }
 
                                     if ($status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
 
                                     }
