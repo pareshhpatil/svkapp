@@ -868,7 +868,7 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-
+        dd($payment_request_id);
         if(!empty($notificationID)) {
             /** @var Notification $Notification */
             $Notification = Notification::findOrFail($notificationID);
