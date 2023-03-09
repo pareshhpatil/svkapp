@@ -130,7 +130,7 @@
     }
 
     .rule-engine-value {
-        width: auto;
+        width: 60px;
         margin: 5px 10px;
     }
 
