@@ -38,7 +38,7 @@ class SSP
         if(in_array('all', array_keys($privilegesArray))) {
             $hasAllPrivileges = true;
         }
-        var_dump($privilegesArray);
+
         $out = array();
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
@@ -352,6 +352,7 @@ class SSP
                 "SELECT type_id, access
 			 FROM   `briq_privileges` WHERE type = 'customer' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
             );
+            dd($customerPrivileges);
             $privilegesArray = [];
             foreach ($customerPrivileges as $customerPrivilege) {
                 $privilegesArray[$customerPrivilege['type_id']] = $customerPrivilege['access'];
