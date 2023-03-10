@@ -40,7 +40,7 @@ class ProjectController extends Controller
             'limit' => 'numeric',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         }
         $start = ($request->start > 0) ? $request->start : 0;
         $limit = ($request->limit > 0) ? $request->limit : 15;
@@ -48,15 +48,14 @@ class ProjectController extends Controller
         $projectlists = $this->projectModel->getProjectList($request->merchant_id,$start,$limit);
         $response['lastno'] = count($projectlists) + $start;
         $response['list'] = $projectlists;
-        
-        return $this->apiController->APIResponse('', $response);
-        //return response()->json(['success' => $success], 200);
+        //return $this->apiController->APIResponse('', $response);
+        return response()->json($this->apiController->APIResponse('',$response), 200);
     }
 
     function getProjectDetails($project_id) {
         if($project_id!=null) {
             $projectDetails = $this->projectModel->getTableRow('project', 'id', $project_id);
-            return $this->apiController->APIResponse('', $projectDetails);
+            return response()->json($this->apiController->APIResponse('',$projectDetails), 200);
         }
     }
 
@@ -68,14 +67,15 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         }
         
         //check project code is already exist or not
-        $exists = $this->masterModel->isExistData($request->merchant_id,'project', 'project_id', $request->project_code);
-
+        $exists = $this->masterModel->isExistData($request->merchant_id,'project', 'project_id', $request->project_id);
+            
         if ($exists) {
-            return response()->json(['error' => 'Project code already exists'], 422);
+            $error['project_id'][] = 'Project id already exists';
+            return response()->json($this->apiController->APIResponse(0,'',$error), 422);
         }
         
         $request->start_date = Helpers::sqlDate($request->start_date);
@@ -89,9 +89,11 @@ class ProjectController extends Controller
 
         
         if ($prefix == '' && $separator != '') {
-            return response()->json(['error' => 'You can not add separator without prefix'], 422);
+            $error['separator'][] = 'You can not add separator without prefix';
+            return response()->json($this->apiController->APIResponse(0,'',$error), 422);
         } else if ($number == '') {
-            return response()->json(['error' => 'Sequence number is required'], 422);
+            $error['sequence_number'][] = 'Sequence number is required';
+            return response()->json($this->apiController->APIResponse(0,'',$error), 422);
         } else {
             $existsSequence = $this->invoiceFormatModel->existInvoicePrefix($request->merchant_id, $prefix, $separator);
             
@@ -105,7 +107,7 @@ class ProjectController extends Controller
 
             $project_id=$this->masterModel->saveNewProject($request, $request->merchant_id, $request->user_id);
             $project =  $this->projectModel->getTableRow('project', 'id', $project_id);
-            return $this->apiController->APIResponse('', $project);
+            return response()->json($this->apiController->APIResponse('',$project), 200);
         }
 
     }
@@ -118,7 +120,7 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         }
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
@@ -130,9 +132,11 @@ class ProjectController extends Controller
         $separator = isset($request->invoice_sequence_number['separator']) ? $request->invoice_sequence_number['separator'] : '';
 
         if ($prefix == '' && $separator != '') {
-            return response()->json(['error' => 'You can not add separator without prefix'], 422);
+            $error['separator'][] = 'You can not add separator without prefix';
+            return response()->json($this->apiController->APIResponse(0,'',$error), 422);
         } else if ($number == '') {
-            return response()->json(['error' => 'Sequence number is required'], 422);
+            $error['sequence_number'][] = 'Sequence number is required';
+            return response()->json($this->apiController->APIResponse(0,'',$error), 422);
         } else {
             $existsSequence = $this->invoiceFormatModel->existInvoicePrefix($request->merchant_id, $prefix, $separator);
             
@@ -146,7 +150,7 @@ class ProjectController extends Controller
             $request->id=$request->project_id;
             $this->masterModel->updateProject($request, $request->merchant_id, $request->user_id);
             $project =  $this->projectModel->getTableRow('project', 'id', $request->project_id);
-            return $this->apiController->APIResponse('', $project);
+            return response()->json($this->apiController->APIResponse('',$project), 200);
         }
        
     }
@@ -157,11 +161,11 @@ class ProjectController extends Controller
                 'project_id' => 'required|numeric'
             ]);
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 422);
+                return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
             }
             $this->masterModel->deleteTableRow('project', 'id', $request->project_id, $request->merchant_id, $request->user_id);
             $response['project_id'] = $request->project_id;
-            return $this->apiController->APIResponse('', $response);
+            return response()->json($this->apiController->APIResponse('',$response), 200);
         } catch (Exception $e) {
             Log::error('Error while deleting project :' . $e->getMessage());
         }
@@ -173,7 +177,7 @@ class ProjectController extends Controller
             'limit' => 'numeric',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         }
         $start = ($request->start > 0) ? $request->start : 0;
         $limit = ($request->limit > 0) ? $request->limit : 15;
@@ -181,14 +185,13 @@ class ProjectController extends Controller
         $billCodeLists = $this->projectModel->getBillCodesList($request->merchant_id,$request->project_id,$start,$limit);
         $response['lastno'] = count($billCodeLists) + $start;
         $response['list'] = $billCodeLists;
-        //return response()->json(['success' => $success], 200);
-        return $this->apiController->APIResponse('', $response);
+        return response()->json($this->apiController->APIResponse('',$response), 200);
     }
 
     function getBillCodeDetails($billcode_id) {
         if($billcode_id!=null) {
             $billCodeDetails = $this->projectModel->getTableRow('csi_code', 'id', $billcode_id);
-            return $this->apiController->APIResponse('', $billCodeDetails);
+            return response()->json($this->apiController->APIResponse('',$billCodeDetails), 200);
         }
     }
 
@@ -199,7 +202,7 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         } else {
             $billCode = CsiCode::create([
                 'code' => $request->bill_code,
@@ -211,7 +214,7 @@ class ProjectController extends Controller
                 'last_update_by' => $request->user_id,
                 'created_date' => date('Y-m-d H:i:s')
             ]);
-            return $this->apiController->APIResponse('', $billCode);
+            return response()->json($this->apiController->APIResponse('',$billCode), 200);
         }
        
     }
@@ -223,11 +226,11 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
         } else {
             $this->projectModel->updateBillcode($request, $request->user_id);
-            $project =  $this->projectModel->getTableRow('csi_code', 'id', $request->bill_code_id);
-            return $this->apiController->APIResponse('', $project);
+            $billCode =  $this->projectModel->getTableRow('csi_code', 'id', $request->bill_code_id);
+            return response()->json($this->apiController->APIResponse('',$billCode), 200);
         }
     }
 
@@ -237,11 +240,11 @@ class ProjectController extends Controller
                 'bill_code_id' => 'required|numeric'
             ]);
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 422);
+                return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
             }
             $this->masterModel->deleteTableRow('csi_code', 'id', $request->bill_code_id, $request->merchant_id, $request->user_id);
             $response['bill_code_id'] = $request->bill_code_id;
-            return $this->apiController->APIResponse('', $response);
+            return response()->json($this->apiController->APIResponse('',$response), 200);
         } catch (Exception $e) {
             Log::error('Error while deleting bill code :' . $e->getMessage());
         }

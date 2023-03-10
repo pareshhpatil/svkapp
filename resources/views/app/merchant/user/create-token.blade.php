@@ -9,7 +9,7 @@
     <!-- BEGIN PAGE HEADER-->
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('home.projectcreate') }}
+        {{ Breadcrumbs::render('merchant.user.create-token') }}
     </div>
     <!-- END PAGE HEADER-->
     <!-- BEGIN PAGE CONTENT-->
