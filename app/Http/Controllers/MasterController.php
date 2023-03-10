@@ -448,7 +448,7 @@ class MasterController extends AppController
                 };
 
                 if($type == 'change-order') {
-                    $typeID = $Notification->data['order_id'];
+                    $typeID = Encrypt::decode($Notification->data['order_id']);
                     
                     $orderDetail = DB::table('order')
                                 ->join('contract', 'contract.contract_id', '=', 'order.contract_id')
@@ -457,6 +457,7 @@ class MasterController extends AppController
                                 ->select('order.*', 'contract.customer_id as customer_id', 'customer.first_name as customer_first_name', 'customer.last_name as customer_last_name', 'user.first_name as user_first_name', 'user.last_name as user_last_name')
                                 ->where('order_id', $typeID)
                                 ->first();
+
                     if(!empty($orderDetail)) {
                         $Notification->type_status = '';
                         if(empty($orderDetail->approved_date)) {
