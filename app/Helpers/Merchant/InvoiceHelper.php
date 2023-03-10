@@ -170,7 +170,7 @@ class InvoiceHelper
                 ->where('role_name', 'Admin')
                 ->pluck('user_id')
                 ->toArray();
-
+            dd($uniqueUserIDs, $adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray());
             $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray()));
 
             $Users = User::query()
