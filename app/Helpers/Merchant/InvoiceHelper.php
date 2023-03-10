@@ -72,6 +72,10 @@ class InvoiceHelper
                 return $userIDs;
             });
 
+            $customerUsersWithFullAccess = $customerUsersWithFullAccess->filter(function ($value) {
+                return !empty($value);
+            });
+
             $ContractCollect = clone $data->where('type', 'contract')
                                         ->whereIn('type_id', [$contractID, 'all'])
                                         ->values();
@@ -95,6 +99,10 @@ class InvoiceHelper
                 }
 
                 return $userIDs;
+            });
+
+            $contractUsersWithFullAccess = $contractUsersWithFullAccess->filter(function ($value) {
+                return !empty($value);
             });
 
             $ProjectCollect = clone $data->where('type', 'project')
@@ -136,6 +144,10 @@ class InvoiceHelper
                 return $userIDs;
             });
 
+            $projectUsersWithFullAccess = $projectUsersWithFullAccess->filter(function ($value) {
+                return !empty($value);
+            });
+
             $InvoiceCollect = clone $data->where('type', 'invoice')
                 ->whereIn('type_id', [$paymentRequestID,'all'])->values();
 
@@ -160,6 +172,10 @@ class InvoiceHelper
                 return $userIDs;
             });
 
+            $invoiceUsersWithFullAccess = $invoiceUsersWithFullAccess->filter(function ($value) {
+                return !empty($value);
+            });
+
             $adminRole = DB::table('briq_roles')
                 ->where('merchant_id', $merchantID)
                 ->where('name', 'Admin')
@@ -170,9 +186,9 @@ class InvoiceHelper
                 ->where('role_name', 'Admin')
                 ->pluck('user_id')
                 ->toArray();
-            dd($uniqueUserIDs, $adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray());
-            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray()));
 
+            $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray()));
+            dd($uniqueUserIDs, $adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray());
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
                 ->get();
