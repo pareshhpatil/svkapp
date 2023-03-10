@@ -457,16 +457,18 @@ class MasterController extends AppController
                                 ->select('order.*', 'contract.customer_id as customer_id', 'customer.first_name as customer_first_name', 'customer.last_name as customer_last_name', 'user.first_name as user_first_name', 'user.last_name as user_last_name')
                                 ->where('order_id', $typeID)
                                 ->first();
-                    
-                    $Notification->type_status = '';
-                    if(empty($orderDetail->approved_date)) {
-                        $Notification->type_status = 'Approve';
+                    if(!empty($orderDetail)) {
+                        $Notification->type_status = '';
+                        if(empty($orderDetail->approved_date)) {
+                            $Notification->type_status = 'Approve';
+                        }
+                        $Notification->order_number = $orderDetail->order_no;
+                        $Notification->customer_name = $orderDetail->customer_first_name  .' '. $orderDetail->customer_last_name;
+                        $Notification->total_change_order_amount = $orderDetail->total_change_order_amount;
+                        $Notification->order_date = Carbon::parse($orderDetail->order_date)->format('d M Y');
+                        $Notification->updated_by = $orderDetail->user_first_name .' '. $orderDetail->user_last_name;
                     }
-                    $Notification->order_number = $orderDetail->order_no;
-                    $Notification->customer_name = $orderDetail->customer_first_name  .' '. $orderDetail->customer_last_name;
-                    $Notification->total_change_order_amount = $orderDetail->total_change_order_amount;
-                    $Notification->order_date = Carbon::parse($orderDetail->order_date)->format('d M Y');
-                    $Notification->updated_by = $orderDetail->user_first_name .' '. $orderDetail->user_last_name;
+
                 }
                 
                 $Notification->created_at_human = $Notification->created_at->diffForHumans();
