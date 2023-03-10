@@ -8,6 +8,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\App as App;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
+use App\Http\Controllers\API\APIController;
+
 class Handler extends ExceptionHandler
 {
 
@@ -29,6 +31,8 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    private $apiController = null;
 
     /**
      * Report or log an exception.
@@ -60,10 +64,18 @@ class Handler extends ExceptionHandler
             die();
         }
         
-        // if ($exception instanceof AuthenticationException) {
-        //     return response()->json(['error' => 'Unauthenticated.'], 401);
-        // }
-        
+        //this is only for apis request to handle unatheticated exception
+        $is_api_request = $request->route()->getPrefix() === 'api';
+        if($is_api_request) {
+            $this->apiController = new APIController();
+            define('REQ_TIME', date("Y-m-d H:i:s"));
+            if ($exception instanceof AuthenticationException) {
+                return response()->json($this->apiController->APIResponse('ER02056'), 401);
+            } else {
+                return response()->json($this->apiController->APIResponse('ER02057'), 401);
+            }
+        } 
+
         $response = parent::render($request, $exception);
         if(env('APP_ENV')=='LOCAL' || env('APP_ENV')=='DEV') {
             dd($exception);

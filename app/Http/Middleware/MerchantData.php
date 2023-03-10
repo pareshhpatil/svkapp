@@ -49,33 +49,33 @@ class MerchantData
         switch($method) {
             case('getProjectDetails'):
                 $parameters = $request->route()->parameter('project_id');
-                return $this->checkAccess('project','id',$parameters,'merchant_id','ER02044', 'ER02043',$request);
+                $this->checkAccess('project','id',$parameters,'merchant_id','ER02044', 'ER02043',$request);
                 break;
             case('getBillCodesList'): 
-                return $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02044','ER02053',$request);
+                $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02044','ER02053',$request);
                 break;
             case('getBillCodeDetails'):
                 $parameters = $request->route()->parameter('billcode_id');
-                return $this->checkAccess('csi_code','id',$parameters,'merchant_id','ER02045', 'ER02043',$request);
+                $this->checkAccess('csi_code','id',$parameters,'merchant_id','ER02045', 'ER02043',$request);
                 break;
             case('createBillCode'):
-                return $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02046','ER02053',$request);
+                $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02046','ER02053',$request);
                 break;
             case('updateBillCode'):
-                return $this->checkAccess('csi_code','id',$request->bill_code_id,'merchant_id','ER02047','ER02054', $request);
+                $this->checkAccess('csi_code','id',$request->bill_code_id,'merchant_id','ER02047','ER02054', $request);
                 break;
             case('deleteBillCode'):
-                return $this->checkAccess('csi_code','id',$request->bill_code_id,'merchant_id', 'ER02048','ER02054',$request);
+                $this->checkAccess('csi_code','id',$request->bill_code_id,'merchant_id', 'ER02048','ER02054',$request);
                 break;
             case('createProject'):
-                return $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02049','ER02055',$request);
+                $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02049','ER02055',$request);
                 break;
             case('deleteProject'):
-                return $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02050','ER02053',$request);
+                $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02050','ER02053',$request);
                 break;
             case('updateProject'):
-                //return $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02051','ER02055',$request);
-                return $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02052','ER02053',$request);
+                $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02051','ER02055',$request);
+                $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02052','ER02053',$request);
                 break;
         }
     }
@@ -88,14 +88,17 @@ class MerchantData
             
             if($getProjectMerchant!=false) {
                 if($getProjectMerchant!=$request->merchant_id) {         
-                    return $this->apiController->APIResponse($message1);
+                    echo json_encode($this->apiController->APIResponse($message1));
+                    die();
                 }
             } else {
-                return $this->apiController->APIResponse($message2);
+                echo json_encode($this->apiController->APIResponse($message2));
+                die();
             }
         } else {
-            return $this->apiController->APIResponse($message2);
-            //echo json_encode(['error' => 'Invalid '. $message2], 401);
+            //$this->apiController->APIResponse($message2);
+            echo json_encode($this->apiController->APIResponse($message2));
+            die();
         }
     }
     

@@ -20,7 +20,8 @@ class APIController extends Controller
         $errorMessage = ($error_code != '') ? $this->fetchError($error_code) : '';
         $response['errmsg'] = $errorMessage;
         $response['errlist'] = $errorlist;
-        return response()->json($response);
+        //return response()->json($response);
+        return $response;
     }
 
 
@@ -93,6 +94,8 @@ class APIController extends Controller
         $errors["ER02053"] = "Invalid project id";
         $errors["ER02054"] = "Invalid bill code id";
         $errors["ER02055"] = "Invalid Customer id";
+        $errors["ER02056"] = "Unautheticated request";
+        $errors["ER02057"] = "Something went wrong";
         
         return $errors[$error_code];
     }
