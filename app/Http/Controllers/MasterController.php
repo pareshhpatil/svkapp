@@ -186,10 +186,29 @@ class MasterController extends AppController
 
     public function projectcreate()
     {
+        $userRole = Session::get('user_role');
+
+        $where = '';
+        if($userRole != 'Admin') {
+            $customerIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
+
+            $customerWhereIds = [];
+            foreach ($customerIDs as $key => $customerID) {
+                if($customerID == 'full' || $customerID == 'approve' || $customerID == 'edit') {
+                    $customerWhereIds[] = $key;
+                }
+            }
+
+            if(!empty($customerWhereIds)) {
+                $ids = implode(",", $customerWhereIds);
+                $where = "WHERE customer_id in($ids)";
+            }
+        }
+
         $title = 'Create Project';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
-        $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+        $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
         $model = new InvoiceFormat();
         $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
         $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
