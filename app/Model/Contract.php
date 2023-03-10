@@ -71,12 +71,23 @@ class Contract extends ParentModel
             ]);
     }
 
-    public function getContractList($merchant_id, $from_date, $to_data, $project)
+    public function getContractList($merchant_id, $from_date, $to_data, $project, $start='',$limit='')
     {
         $project_cond = "";
 
         if ($project != '') {
             $project_cond = "AND a.project_id = '$project'";
+        }
+
+        if($limit!='') {
+            $limit = "limit ".$limit;
+        }
+        if($start!='') {
+            if($start==-1) {
+                $start = "offset 0";
+            }else{
+                $start = "offset ".$start;
+            }
         }
 
         $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
@@ -88,8 +99,8 @@ class Contract extends ParentModel
         AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
         AND a.is_active ='1'
         AND a.status ='1'
-        ORDER BY a.created_date desc");
-
+        ORDER BY a.created_date desc $limit $start");
+        
         return $retObj;
     }
 

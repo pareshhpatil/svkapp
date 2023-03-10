@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\APIController;
 
 class ContractController extends Controller
 {
@@ -33,7 +34,7 @@ class ContractController extends Controller
     private $invoiceModel = null;
     private $merchant_id = null;
     private $user_id = null;
-
+    private $apiController = null;
     //    use ContractParticulars;
 
     public function __construct()
@@ -44,6 +45,7 @@ class ContractController extends Controller
 
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
+        $this->apiController = new APIController();
     }
 
     public function create($version = null)
@@ -685,6 +687,52 @@ class ContractController extends Controller
             // $data  = [$request->bill_code, $request->bill_description, $request->bill_id,];
             $id = Encrypt::encode($request->project_id);
             return redirect('/merchant/code/list/' . $id)->with('success', "Record has been updated");
+        }
+    }
+
+    /*api function - delete contract  */
+
+    public function deleteContract(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'contract_id' => 'required|numeric'
+            ]);
+            if ($validator->fails()) {
+                return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+            }
+            $this->masterModel->deleteTableRow('contract', 'contract_id', $request->contract_id, $request->merchant_id, $request->user_id);
+            $response['contract_id'] = $request->contract_id;
+            return response()->json($this->apiController->APIResponse('',$response), 200);
+        } catch (Exception $e) {
+            Log::error('Error while deleting contract :' . $e->getMessage());
+        }
+    }
+
+    public function getContractList(Request $request) {
+       
+        $validator = Validator::make($request->all(), [
+            'start' => 'numeric',
+            'limit' => 'numeric',
+            'project_id' => 'numeric'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+        }
+        $start = ($request->start > 0) ? $request->start : -1;
+        $limit = ($request->limit > 0) ? $request->limit : 15;
+        $from_date = isset($request->from_date) ? Helpers::sqlDate($request->from_date) : date('Y-m-d', strtotime(date('01 M Y')));
+        $to_date= isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
+
+        $list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id,$start,$limit);
+        $response['lastno'] = count($list) + $start;
+        $response['list'] = $list;
+        return response()->json($this->apiController->APIResponse('',$response), 200);
+    }
+
+    public function getContractDetails($contract_id) {
+        if($contract_id!=null) {
+            $contractDetails = $this->contract_model->getTableRow('contract', 'contract_id', $contract_id, 1);
+            return response()->json($this->apiController->APIResponse('',$contractDetails), 200);
         }
     }
 }

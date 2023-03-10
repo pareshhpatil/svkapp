@@ -96,6 +96,9 @@ class APIController extends Controller
         $errors["ER02055"] = "Invalid Customer id";
         $errors["ER02056"] = "Unautheticated request";
         $errors["ER02057"] = "Something went wrong";
+        $errors["ER02058"] = "You do not have access to this contract";
+        $errors["ER02059"] = "Invalid contract id";
+        $errors["ER02060"] = "You do not have access to delete this contract";
         
         return $errors[$error_code];
     }

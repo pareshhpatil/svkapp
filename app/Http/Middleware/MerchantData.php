@@ -76,6 +76,16 @@ class MerchantData
             case('updateProject'):
                 $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02051','ER02055',$request);
                 $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02052','ER02053',$request);
+            case('getContractDetails'):
+                $parameters = $request->route()->parameter('contract_id');
+                $this->checkAccess('contract','contract_id',$parameters,'merchant_id','ER02058', 'ER02059',$request);
+                break;
+            case('deleteContract'):
+                $this->checkAccess('contract','contract_id',$request->contract_id,'merchant_id','ER02060', 'ER02059',$request);
+                break;
+            case('createContract'):
+                break;
+            case('updateContract'):
                 break;
         }
     }
