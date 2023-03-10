@@ -212,7 +212,7 @@ class SSP
                                 }
 
                                 if($privilegesArray['all'] == 'full') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
                                                            data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
@@ -254,7 +254,7 @@ class SSP
                                     }
 
                                     if ($status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
                                     }
 
@@ -269,7 +269,7 @@ class SSP
                                 }
 
                                 if($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
                                                            data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
