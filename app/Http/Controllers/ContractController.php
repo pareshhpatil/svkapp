@@ -106,8 +106,23 @@ class ContractController extends Controller
 
     public function loadContract($step = 1, $contract_id = null, $bulk_id = null)
     {
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($privilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
         Helpers::hasRole(2, 27);
-        $project_list = $this->masterModel->getProjectList($this->merchant_id);
+        $project_list = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs);
         if (Route::getCurrentRoute()->getName() == 'contract.create.new') {
             $title = "Create";
             $needValidationOnStep2 = false;
