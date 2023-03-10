@@ -82,6 +82,8 @@
                                                     @if($privileges['all'] == 'full' || $privileges['all'] == 'view-only' || $privileges['all'] == 'approve')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                                         </li>
+                                                        <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
+                                                        </li>
                                                         <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
                                                         </li>
                                                     @endif
@@ -99,6 +101,8 @@
                                                     @endif
                                                     @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'view-only' || $privileges[$v->id] == 'approve')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
+                                                        </li>
+                                                        <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
                                                         </li>
                                                         <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
                                                         </li>
