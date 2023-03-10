@@ -218,10 +218,10 @@ class SubUserHelper
                     'send_email' => 1,
                     'send_push' => 1,
                     'send_app' => 1,
-                    'timezone' => '',
-                    'currency' => '',
-                    'date_format' => '',
-                    'time_format' => '',
+                    'timezone' => 'UTC',
+                    'currency' => 'USD',
+                    'date_format' => 'M d yyyy',
+                    'time_format' => '12',
                     'created_date'  => Carbon::now()->toDateTimeString(),
                     'last_update_date'  => Carbon::now()->toDateTimeString()
                 ]);
