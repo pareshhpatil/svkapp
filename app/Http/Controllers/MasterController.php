@@ -194,7 +194,7 @@ class MasterController extends AppController
 
             $customerWhereIds = [];
             foreach ($customerIDs as $key => $customerID) {
-                if($customerID == 'full' || $customerID == 'approve' || $customerID == 'edit') {
+                if($customerID == 'full') {
                     $customerWhereIds[] = $key;
                 }
             }
