@@ -421,9 +421,10 @@
 @section('footer')
 <script>
     sub_group_codes = [];
+    rows  = [];
+    @if(isset($detail))
     rows  = {!!$detail->particulars!!};
-    
-     @foreach($detail->json_particulars as $key=>$row)
+    @foreach($detail->json_particulars as $key=>$row)
         key  = '{{$key}}';
         VirtualSelect.init({
             ele: '#group_select'+key,
@@ -484,6 +485,8 @@
         });
 
      @endforeach
+    @endif
+   
    
   
     
