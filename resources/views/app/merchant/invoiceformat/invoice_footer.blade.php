@@ -171,18 +171,14 @@ $validate=(array)$validate;
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#convert">
             Convert to Invoice
         </a>
-            @if($invoice_access == 'all-full')
-                <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
-                    Settle
-                </a>
-            @endif
+        <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
+            Settle
+        </a>
         @endif
         @else
-            @if($invoice_access == 'all-full')
-                <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
-                    Settle
-                </a>
-           @endif
+            <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
+                Settle
+            </a>
         @endif
         @endif
         @endif
