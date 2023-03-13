@@ -188,7 +188,7 @@ class InvoiceHelper
                 ->toArray();
 
             $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray()));
-
+            dd($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray());
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
                 ->get();
