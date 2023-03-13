@@ -327,7 +327,7 @@ class UserController extends Controller
         } else {
             $privileges = $this->user_model->getUserPrivileges($user->user_id);
         }
-
+        dd($privileges);
         Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));
         Redis::set('project_privileges_' . $user->user_id, json_encode($privileges['project_privileges']));
         Redis::set('contract_privileges_' . $user->user_id, json_encode($privileges['contract_privileges']));
