@@ -57,19 +57,19 @@ class InvoiceHelper
                     if(($Customer->access == 'full' || $Customer->access == 'approve') && !empty($Customer->rule_engine_query)) {
                         $ruleEngineQuery = json_decode($Customer->rule_engine_query, true);
                         $stat = (new RuleEngineManager('customer_id', $Customer->type_id, $ruleEngineQuery))->run();
-                        dd($stat, $Customer);
+
                         if(!empty($stat)) {
-                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
+//                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
                                 //$userIDs[] = $Customer->user_id;
                                 return $Customer->user_id;
-                            }
+//                            }
                         }
                     }
                 }
 
                 return [];
             });
-
+            dd($customerUsersWithFullAccess->toArray());
             $customerUsersWithFullAccess = $customerUsersWithFullAccess->filter(function ($value) {
                 return !empty($value);
             });
