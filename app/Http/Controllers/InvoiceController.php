@@ -264,7 +264,24 @@ class InvoiceController extends AppController
 
 
         $data['contract_id'] = 0;
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+
+        //contracts from privileges
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        $whereContractIDs = [];
+        foreach ($privilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs);
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
