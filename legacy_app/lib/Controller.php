@@ -1,5 +1,7 @@
 <?php
+
 use Illuminate\Support\Facades\Redis;
+
 class Controller
 {
 
@@ -602,29 +604,14 @@ class Controller
                 if ($language == null) {
                     $language = $this->session->get('language');
                 }
-                $service_id = $this->session->get('service_id');
-                if ($service_id > 0) {
-                    $merge = $this->common->getRowValue('merge_menu', 'merchant_active_apps', 'user_id', $this->user_id, 1, ' and service_id=' . $service_id);
-                    if ($merge == 1) {
-                        $ser_list = $this->common->getListValue('merchant_active_apps', 'user_id', $this->user_id, 1, ' and merge_menu= 1 and status=1');
-                        foreach ($ser_list as $r) {
-                            $men = $this->common->getRowValue('menus', 'swipez_services', 'service_id', $r['service_id']);
-                            $menus = $menus . ',' . $men;
-                        }
-                        if (substr($menus, 0, 1) == ',') {
-                            $menus = substr($menus, 1);
-                        }
-                        $menu_array = explode(',', $menus);
-                        $menus = implode(',', array_unique($menu_array));
-                    } else {
-                        $menus = $this->common->getRowValue('menus', 'swipez_services', 'service_id', $service_id);
-                    }
-                    if ($menus != '') {
-                        $list = $this->common->getListValue('menu', 'is_active', 1, 0, ' and id in (' . $menus . ') order by seq,id');
-                    } else {
-                        $list = $this->common->getListValue('menu', 'id', 1);
-                    }
+                $custom_menu = $this->session->get('custom_menu');
+                if ($custom_menu == 1) {
+                    $list = $this->common->getListValue('merchant_menu', 'merchant_id', $this->merchant_id, 1, '  order by seq,id');
                 } else {
+                    $list = $this->common->getListValue('menu', 'is_active', 1, '  order by seq,id');
+                }
+
+                if (empty($list)) {
                     $list = $this->common->getListValue('menu', 'id', 1);
                 }
 
@@ -877,13 +864,14 @@ class Controller
         }
     }
 
-    function getSearchParamRedis($list_name=null) {
-        $getRediscache = Redis::get('merchantSearchCriteria'.$this->merchant_id);
-        $redis_items = json_decode($getRediscache, 1); 
+    function getSearchParamRedis($list_name = null)
+    {
+        $getRediscache = Redis::get('merchantSearchCriteria' . $this->merchant_id);
+        $redis_items = json_decode($getRediscache, 1);
 
         if (!empty($_POST)) {
             $redis_items[$list_name]['search_param'] = $_POST;
-            Redis::set('merchantSearchCriteria'.$this->merchant_id, json_encode($redis_items));
+            Redis::set('merchantSearchCriteria' . $this->merchant_id, json_encode($redis_items));
         }
         return $redis_items;
     }
