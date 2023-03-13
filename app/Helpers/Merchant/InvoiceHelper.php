@@ -50,7 +50,7 @@ class InvoiceHelper
                 ->whereIn('type_id', [$customerID, 'all'])
                 ->values();
 
-
+            dd($CustomerCollect, $customerID);
             $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestDetail, $customerID) {
                 $userIDs = [];
 
@@ -188,7 +188,7 @@ class InvoiceHelper
                 ->toArray();
 
             $uniqueUserIDs = array_unique(array_merge($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray()));
-            dd($adminRoleUserIDs, $customerUsersWithFullAccess->toArray(), $contractUsersWithFullAccess->toArray(), $projectUsersWithFullAccess->toArray(), $invoiceUsersWithFullAccess->toArray());
+
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
                 ->get();
