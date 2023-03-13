@@ -44,4 +44,18 @@ class TestJob implements ShouldQueue
                 IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
             ]);
     }
+
+    public function failed()
+    {
+        DB::table('briq_roles')
+            ->insert([
+                'merchant_id' => 'M000000041',
+                'name' => "Failed Job Role",
+                'description' => "Test Job Role",
+                'created_by' => 'U000000165',
+                'last_updated_by' => 'U000000165',
+                IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+            ]);
+    }
 }
