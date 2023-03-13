@@ -33,16 +33,20 @@ class SubUserController extends AppController
      */
     public function index()
     {
-        $title = 'Team Members';
+        try {
+            $title = 'Team Members';
 
-        $data = Helpers::setBladeProperties($title);
+            $data = Helpers::setBladeProperties($title);
 
-        $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
+            $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
 
-        $data['datatablejs'] = 'table-no-export';
-        $data['auth_user_role'] = Session::get('user_role');
+            $data['datatablejs'] = 'table-no-export';
+            $data['auth_user_role'] = Session::get('user_role');
 
-        return view('app/merchant/subuser/index', $data);
+            return view('app/merchant/subuser/index', $data);
+        } catch (\Exception $exception) {
+            dd($exception);
+        }
     }
 
     /**

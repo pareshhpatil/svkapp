@@ -11,7 +11,9 @@
         <div class="page-bar">
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render() }}
-            <a href="{{ url('/merchant/subusers/create') }}" class="btn blue pull-right"> Add Team Member</a>
+            @if($auth_user_role == 'Admin')
+                <a href="{{ url('/merchant/subusers/create') }}" class="btn blue pull-right"> Add Team Member</a>
+            @endif
         </div>
         <!-- BEGIN SEARCH CONTENT-->
         <div class="row">
@@ -65,24 +67,26 @@
                                         @endif
                                     </td>
                                     <td class="td-c">
-                                        <div class="btn-group dropup">
-                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
-                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li>
-                                                    <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
-                                                </li>
-                                                @if($subUser->user_role_name !== 'Admin' && $auth_user_role == 'Admin')
+                                        @if($auth_user_role == 'Admin')
+                                            <div class="btn-group dropup">
+                                                <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <button type="button" data-user-id="{{$subUser->user_id}}" data-user-name="{{$subUser->first_name}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
+                                                        <a href="{{ url('merchant/subusers/'. $subUser->user_id .'/edit') }}"><i class="fa fa-edit"></i> Update</a>
                                                     </li>
-                                                @endif
-                                                <li>
-                                                    <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red" style="text-align: left"><i class="fa fa-remove"></i> Delete </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                                    @if($subUser->user_role_name !== 'Admin')
+                                                        <li>
+                                                            <button type="button" data-user-id="{{$subUser->user_id}}" data-user-name="{{$subUser->first_name}}" class="open-privileges-drawer-btn"><i class="fa fa-info-circle"></i> Permissions</button>
+                                                        </li>
+                                                    @endif
+                                                    <li>
+                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/subusers/delete/{!! $subUser->user_id !!}'" data-toggle="modal" class="btn btn-xs red" style="text-align: left"><i class="fa fa-remove"></i> Delete </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @endif
 {{--                                        <a href="#basic" class="btn btn-xs red"><i class="fa fa-remove"></i> Delete </a>--}}
 
                                     </td>

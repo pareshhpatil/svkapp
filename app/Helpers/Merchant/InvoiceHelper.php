@@ -202,7 +202,7 @@ class InvoiceHelper
 //                if(!empty($testUser->fcm_token)) {
 //                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
 //                }
-            
+
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
 //                    ProcessInvoiceApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
