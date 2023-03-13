@@ -362,6 +362,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
+  
+  Route::get('invoice/downloadV2/{link}', 'InvoiceController@downloadV2');
+  Route::get('invoice/downloadV2/full/{link}', 'InvoiceController@downloadFullInvoiceV2');
+  Route::get('invoice/downloadV2/{link}/{id}', 'InvoiceController@downloadV2');
+  Route::get('invoice/downloadV2/{link}/{id}/{type}', 'InvoiceController@downloadV2');
 
   Route::get('invoiceformat/choose-design/{from}/{link}', 'InvoiceFormatController@chooseDesign')->name('choose.design.invoiceformat');
   Route::get('invoiceformat/choose-color/{from}/{design}/{color}/{link}', 'InvoiceFormatController@chooseColor')->name('choose.color.invoiceformat');

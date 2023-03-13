@@ -1900,6 +1900,116 @@ class InvoiceController extends AppController
         } else {
         }
     }
+
+    public function downloadV2($link, $savepdf = 0, $type = null)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info = (array)$info;
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            if (isset($info['image_path'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+                if ($info['image_path'] != '') {
+                    try {
+                        $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    } catch (Exception $o) {
+                    }
+                }
+            } else {
+                $info['image_path'] = '';
+            }
+
+            if ($type === '703' || $type === '702') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $arrContextOptions = [
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                            "allow_self_signed" => true,
+                        ]
+                    ];
+
+                    $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
+                } catch (Exception $o) {
+                }
+            }
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id);
+            if ($savepdf == 2) {
+                $data['viewtype'] = 'print';
+                if ($info['template_type'] == 'construction') {
+
+                    return view('mailer/invoice/format-' . $type, $data);
+                } else {
+                    return view('mailer/invoice/' . $info['design_name'], $data);
+                }
+                die();
+            } else if ($savepdf == 1) {
+
+                $data['viewtype'] = 'pdf';
+                define("DOMPDF_ENABLE_HTML5PARSER", true);
+                define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+                define("DOMPDF_UNICODE_ENABLED", true);
+                define("DOMPDF_DPI", 120);
+                define("DOMPDF_ENABLE_REMOTE", true);
+                $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+                $name = str_replace('-', '', $name);
+                $name = str_replace(':', '', $name);
+                if ($info['template_type'] == 'construction') {
+
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
+                    $pdf->setPaper("a4", "landscape");
+                    $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
+                    $pdf->setPaper("a4", "landscape");
+                    $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
+                }
+
+
+
+
+                return $name;
+            } else {
+                $data['viewtype'] = 'pdf';
+                define("DOMPDF_ENABLE_HTML5PARSER", true);
+                define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+                define("DOMPDF_UNICODE_ENABLED", true);
+                define("DOMPDF_DPI", 120);
+                define("DOMPDF_ENABLE_REMOTE", true);
+                if ($info['template_type'] == 'construction') {
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
+                    $pdf->setPaper("a4", "landscape");
+                } else {
+                    $pdf = DOMPDF::loadView('mailer.invoice.' . $info['design_name'], $data);
+                    $pdf->setPaper("a4", "portrait");
+                }
+
+
+                $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+
+                // return  $pdf->stream();
+                return $pdf->download($name . '.pdf');
+            }
+        } else {
+        }
+    }
+
     public function downloadPatron($link, $savepdf = 0, $type = null)
     {
 
@@ -2238,6 +2348,256 @@ class InvoiceController extends AppController
 
             $info['bill_code_attachments'] = $billCodeAttachments;
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+
+            $data['viewtype'] = 'pdf';
+            define("DOMPDF_ENABLE_HTML5PARSER", true);
+            define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+            define("DOMPDF_UNICODE_ENABLED", true);
+            define("DOMPDF_DPI", 120);
+            define("DOMPDF_ENABLE_REMOTE", true);
+
+            if ($info['template_type'] == 'construction') {
+                $pdf = DOMPDF::loadView('mailer.invoice.full-invoice', $data);
+                $pdf->setPaper("a4", "landscape");
+            }
+
+            $name = str_replace(" ", "_", $info['customer_name']) . '_' . time() . '.pdf';
+
+            if (count($pdf_link_array) > 0) {
+                Storage::disk('local')->put($name, $pdf->output());
+                $DOMpath = Storage::disk('local')->path($name);
+                $oMerger->addPDF($DOMpath, 'all', 'L');
+
+                foreach ($pdf_link_array as $path) {
+                    $oMerger->addPDF($path, 'all');
+                }
+
+                $oMerger->merge();
+                $oMerger->setFileName($name);
+                $oMerger->save();
+                return $oMerger->download();
+            } else {
+                return $pdf->download($name);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Payment request ID'
+        ]);
+    }
+
+    public function downloadFullInvoiceV2($link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info = (array)$info;
+
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            $logoPath = env('APP_URL') . '/images/logo-703.PNG';
+            try {
+                $arrContextOptions = [
+                    "ssl" => [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false,
+                        "allow_self_signed" => true,
+                    ]
+                ];
+
+                $info['logo'] = base64_encode(file_get_contents($logoPath, false, stream_context_create($arrContextOptions)));
+            } catch (Exception $o) {
+            }
+
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            $IAM_KEY = config('filesystems.disks.s3_expense.key');
+            $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
+            $region = config('filesystems.disks.s3_expense.region');
+
+            $s3 = S3Client::factory(
+                array(
+                    'credentials' => array(
+                        'key' => $IAM_KEY,
+                        'secret' => $IAM_SECRET
+                    ),
+                    'version' => 'latest',
+                    'region'  => $region
+                )
+            );
+
+            $invoicePaymentRequest = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+            $invoiceAttachments = [];
+            if (!empty($invoicePaymentRequest->plugin_value)) {
+                $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
+                if (isset($pluginValue->has_upload)) {
+                    //uat.expense/invoices/download 190637995.jpeg
+                    $files = $pluginValue->files;
+                    foreach ($files as $file) {
+                        if (!empty($file)) {
+                            $fileUrlExplode = explode('/', $file);
+                            $fileLastFromURL = end($fileUrlExplode);
+                            $fileExplode = explode('.', $fileLastFromURL);
+
+                            $fileName = Arr::first($fileExplode);
+                            $fileType = Arr::last($fileExplode);
+                            $fileContent = '';
+
+                            if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                $filePath = 'invoices/' . $fileLastFromURL;
+                                $bucketName = 'uat.expense';
+
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $bucketName,
+                                    'Key'    => $filePath
+                                ));
+
+                                $body = $result->get('Body');
+                                $fileContent = base64_encode($body->getContents());
+                            }
+
+                            $invoiceAttachments[] = [
+                                'fileName' => $fileName,
+                                'fileNameSlug' => Str::slug($fileName, '-'),
+                                'fileType' => $fileType,
+                                'fileContent' => $fileContent,
+                                'url' => $file
+                            ];
+                        }
+                    }
+                }
+            }
+
+
+            $info['invoice_attachments'] = $invoiceAttachments;
+
+
+            $mandatoryDocumentAttachments = [];
+            $pdf_link_array = [];
+            if (isset($pluginValue->has_mandatory_upload)) {
+                $oMerger = PDFMerger::init();
+                if ($pluginValue->has_mandatory_upload == 1) {
+                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+
+                        foreach ($mandatory_files as $file) {
+                            if (!empty($file->file_url)) {
+                                $fileUrlExplode = explode('/', $file->file_url);
+                                $fileLastFromURL = end($fileUrlExplode);
+                                $fileExplode = explode('.', $fileLastFromURL);
+
+                                $fileName = Arr::first($fileExplode);
+                                $fileType = Arr::last($fileExplode);
+                                $fileContent = '';
+
+                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 'uat.expense';
+
+                                    $result = $s3->getObject(array(
+                                        'Bucket' => $bucketName,
+                                        'Key'    => $filePath
+                                    ));
+
+                                    $body = $result->get('Body');
+                                    $fileContent = base64_encode($body->getContents());
+                                }
+
+                                if ($fileType == 'pdf') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 's3_expense';
+
+                                    $source_path = 'invoices/' . basename($file->file_url);
+                                    $file_content = Storage::disk($bucketName)->get($source_path);
+                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                    array_push($pdf_link_array, $path);
+                                }
+
+                                $mandatoryDocumentAttachments[] = [
+                                    'fileName' => $fileName,
+                                    'name' => $mandatory_data->name,
+                                    'fileNameSlug' => Str::slug($fileName, '-'),
+                                    'fileType' => $fileType,
+                                    'fileContent' => $fileContent,
+                                    'url' => $file->file_url
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            $info['mandatory_document_attachments'] = $mandatoryDocumentAttachments;
+
+            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+
+            $billCodeAttachments = [];
+            foreach ($constructionParticulars as $constructionParticular) {
+                $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
+                $particularAttachments = json_decode($constructionParticular->attachments);
+
+                $billCodeAttachments[$billCode->id] = [
+                    'billCodeId' => $billCode->id,
+                    'billCode' => $billCode->code,
+                    'billName' => $billCode->title,
+                    'attachments' => []
+                ];
+
+                if (!empty($particularAttachments)) {
+                    foreach ($particularAttachments as $particularAttachment) {
+                        $urlExplode = explode('/', $particularAttachment);
+                        $file = end($urlExplode);
+                        $fileExplode = explode('.', $file);
+
+                        $fileName = Arr::first($fileExplode);
+                        $fileType = Arr::last($fileExplode);
+                        $fileContent = '';
+
+                        if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                            $filePath = 'invoices/' . $billCode->id . '/' . $file;
+                            $bucketName = 'uat.expense';
+
+                            $result = $s3->getObject(array(
+                                'Bucket' => $bucketName,
+                                'Key'    => $filePath
+                            ));
+
+                            $body = $result->get('Body');
+                            $fileContent = base64_encode($body->getContents());
+                        }
+
+
+                        $billCodeAttachments[$billCode->id]['attachments'][] = [
+                            'fileName' => $fileName,
+                            'fileNameSlug' => Str::slug($fileName, '-'),
+                            'fileType' => $fileType,
+                            'fileContent' => $fileContent,
+                            'url' => $particularAttachment
+                        ];
+                    }
+                }
+            }
+
+            $info['bill_code_attachments'] = $billCodeAttachments;
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id);
 
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
@@ -2971,6 +3331,7 @@ class InvoiceController extends AppController
         }
 
         $info['user_name'] = Session::get('user_name');
+        $info['grouping'] = false;
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
         $data['metadata']['header'] = $main_header;
@@ -3609,6 +3970,7 @@ class InvoiceController extends AppController
         }
 
         $info['user_name'] = Session::get('user_name');
+        $info['grouping'] = true;
         $data['metadata']['plugin'] = $plugin;
         $data['info'] = $info;
         $data['metadata']['header'] = $main_header;
@@ -4150,8 +4512,8 @@ class InvoiceController extends AppController
                             $sub_i += $data['retainage_amount_previously_withheld'];
                         }
 
-                        if($key != '' ){
-                            if ($pos1 == count($sub_result[$names][$key]) ||  $pos == count($sub_result[$names][$key])) {
+                        if($key != '' && $sub_key != $current_sub_key){
+                            // if ($sub_key == count($sub_result[$names][$key])) {
                                 $single_data = array();
                                 $single_data['a'] = '';
                                 $single_data['type'] = 'footer';
@@ -4166,7 +4528,7 @@ class InvoiceController extends AppController
                                 $single_data['h'] = number_format($sub_h, 2);
                                 $single_data['i'] = number_format($sub_i, 2);
                                 $grouping_data[] = $single_data;
-                            }
+                            // }
                         }
     
                         if ($pos1 == count($result[$names]) ||  $pos == count($result[$names])) {

@@ -1,8 +1,9 @@
 @extends('app.master')
 <style>
     .vs-option {
-            z-index: 99;
-        }
+        z-index: 99;
+    }
+
     .lable-heading {
         font-style: normal;
         font-weight: 400;
@@ -26,7 +27,7 @@
         padding: 3px !important;
         font-weight: 400;
         color: #333;
-        background:#eee;
+        background: #eee;
     }
 
     .table tfoot tr th {
@@ -53,18 +54,23 @@
     table tfoot {
         position: sticky;
     }
+
     table thead {
-        inset-block-start: 0; /* "top" */
+        inset-block-start: 0;
+        /* "top" */
     }
+
     table tfoot {
-        inset-block-end: 0; /* "bottom" */
+        inset-block-end: 0;
+        /* "bottom" */
     }
 
     .tableFixHead {
         overflow: auto !important;
     }
+
     .headFootZIndex {
-            z-index: 3;
+        z-index: 3;
     }
 </style>
 @section('content')
@@ -253,7 +259,7 @@
                                         </td>
                                         @elseif ($v == 'retainage_percent')
                                         <td class="col-id-no">
-                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
+                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
@@ -262,20 +268,20 @@
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
-                                        </td> 
+                                        </td>
                                         @elseif ($v == 'group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <select name="group[]"  id="group_select">
-                                                @if(!empty($group_codes))
-                                                @foreach($group_codes as $value)
-                                                @if($row[$v]==$value)
-                                                <option selected value="{{$value}}">{{$value}}</option>
-                                                @else
-                                                <option value="{{$value}}">{{$value}}</option>
-                                                @endif
-                                                @endforeach
-                                                @endif
+                                                <select name="group[]" id="group_select">
+                                                    @if(!empty($group_codes))
+                                                    @foreach($group_codes as $value)
+                                                    @if($row[$v]==$value)
+                                                    <option selected value="{{$value}}">{{$value}}</option>
+                                                    @else
+                                                    <option value="{{$value}}">{{$value}}</option>
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                         </td>
@@ -287,17 +293,16 @@
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no" scope="row">
-                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
-                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
+                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]" data-placeholder="Type or Select" class="form-control input-sm productselect2">
                                                 <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))
-                                                    @foreach($cost_type_list as $pk=>$vk)
-                                                        @if($row[$v]==$vk->id)
-                                                            <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @else
-                                                            <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @endif
-                                                    @endforeach
+                                                @foreach($cost_type_list as $pk=>$vk)
+                                                @if($row[$v]==$vk->id)
+                                                <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                @else
+                                                <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                @endif
+                                                @endforeach
                                                 @endif
                                             </select>
                                         </td>
@@ -420,22 +425,27 @@
         allowNewOption: true,
         dropboxWrapper: 'body',
         name: 'group[]',
-        multiple:false,
-        additionalClasses : 'vs-option',
-        searchPlaceholderText : 'Search or Add new',
-        search:true,
+        multiple: false,
+        additionalClasses: 'vs-option',
+        searchPlaceholderText: 'Search or Add new',
+        search: true,
     });
     VirtualSelect.init({
         ele: '#sub_group',
         allowNewOption: true,
         dropboxWrapper: 'body',
         name: 'sub_group[]',
-        multiple:false,
-        additionalClasses : 'vs-option',
-        searchPlaceholderText : 'Search or Add new',
-        search:true,
+        multiple: false,
+        additionalClasses: 'vs-option',
+        searchPlaceholderText: 'Search or Add new',
+        search: true,
+    });
+    $('#group_select').change(function() {
+        let groupSelector = document.querySelector('#group_select');
+        groupSelector.setOptions(group_codes, this.value);
+
     });
     calculateChangeOrder();
-    $('.tableFixHead').css('max-height', screen.height/2);
+    $('.tableFixHead').css('max-height', screen.height / 2);
 </script>
 @endsection

@@ -569,6 +569,40 @@
                                     <div style="font-size: 14px">{{ $item['b'] }} </div>
                                 </td>
                             </tr>
+                            
+                            @elseif ($item['type']=='sub-heading')
+                            <tr>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px">{{ $item['b'] }} </div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"> </div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                            </tr>
                             @elseif ($item['type']=='footer')
                             <tr>
                                 <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding: 8px 2px;text-align: center">
