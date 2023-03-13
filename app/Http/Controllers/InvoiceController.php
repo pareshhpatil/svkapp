@@ -5076,6 +5076,7 @@ class InvoiceController extends AppController
                             'description' =>  $kdata["description"], 
                             'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '', 
                             'sub_group' => isset($kdata["sub_group"]) ? $kdata["sub_group"] : '', 
+                            'group' => isset($kdata["group"]) ? $kdata["group"] : '', 
                             'cost_type' =>  $kdata["cost_type"]
                         );
                     }
@@ -5111,6 +5112,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
                         $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                         $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
+                        $cop[$v["bill_code"]]->group = $v["group"];
                     } else {
                         $cop[$v["bill_code"]] = (object)[];
                         if (!empty($cp[$v["bill_code"]])) {
@@ -5129,6 +5131,7 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]->description = $v["description"];
                         $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
                         $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
+                        $cop[$v["bill_code"]]->group = $v["group"];
                         $cop[$v["bill_code"]]->calculated_perc = '';
                         $cop[$v["bill_code"]]->calculated_row  = '';
                     }

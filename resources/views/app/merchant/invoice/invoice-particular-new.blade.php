@@ -832,6 +832,7 @@
                                          particularray[i].calculated_row = this.fields[i].calculated_row;
                                          particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
                                          particularray[i].sub_group = this.fields[i].sub_group;
+                                         particularray[i].group = this.fields[i].group;
                                          particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
                                          particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
                                          particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
