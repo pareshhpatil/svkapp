@@ -50,7 +50,6 @@ class InvoiceHelper
                 ->whereIn('type_id', [$customerID, 'all'])
                 ->values();
 
-            dd($CustomerCollect, $customerID);
             $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestDetail, $customerID) {
                 $userIDs = [];
 
@@ -71,7 +70,7 @@ class InvoiceHelper
 
                 return $userIDs;
             });
-
+            dd($customerUsersWithFullAccess->toArray());
             $customerUsersWithFullAccess = $customerUsersWithFullAccess->filter(function ($value) {
                 return !empty($value);
             });
