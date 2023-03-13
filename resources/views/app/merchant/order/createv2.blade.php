@@ -272,7 +272,7 @@
                                         @elseif ($v == 'group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <select name="group[]" id="group_select">
+                                                <select name="group[]" id="group_select{{$key}}">
                                                     @if(!empty($group_codes))
                                                     @foreach($group_codes as $value)
                                                     @if($row[$v]==$value)
@@ -288,7 +288,7 @@
                                         @elseif ($v == 'sub_group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <div id="sub_group"></div>
+                                                <div id="sub_group{{$key}}"></div>
                                             </div>
                                         </td>
                                         @elseif ($v == 'cost_type')
@@ -420,31 +420,74 @@
 </script>
 @section('footer')
 <script>
-    VirtualSelect.init({
-        ele: '#group_select',
-        allowNewOption: true,
-        dropboxWrapper: 'body',
-        name: 'group[]',
-        multiple: false,
-        additionalClasses: 'vs-option',
-        searchPlaceholderText: 'Search or Add new',
-        search: true,
-    });
-    VirtualSelect.init({
-        ele: '#sub_group',
-        allowNewOption: true,
-        dropboxWrapper: 'body',
-        name: 'sub_group[]',
-        multiple: false,
-        additionalClasses: 'vs-option',
-        searchPlaceholderText: 'Search or Add new',
-        search: true,
-    });
-    $('#group_select').change(function() {
-        let groupSelector = document.querySelector('#group_select');
-        groupSelector.setOptions(group_codes, this.value);
+    sub_group_codes = [];
+    rows  = {!!$detail->particulars!!};
+    
+     @foreach($detail->json_particulars as $key=>$row)
+        key  = '{{$key}}';
+        VirtualSelect.init({
+            ele: '#group_select'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search or Add new',
+            search: true,
+            options: group_codes
+        });
 
-    });
+        $('#group_select'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!group_codes.includes(this.value) && this.value !== '') {
+                group_codes.push(this.value)
+            for (let g = 0; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#group_select' +g);
+
+                if ('group_select' + key === 'group_select' + g)
+                    groupSelector.setOptions(group_codes, this.value);
+                else
+                    groupSelector.setOptions(group_codes,options);
+            }
+        }
+        });
+
+        VirtualSelect.init({
+            ele: '#sub_group'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'sub_group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search or Add new',
+            search: true,
+            options: sub_group_codes
+        });
+
+        $('#sub_group'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!sub_group_codes.includes(this.value) && this.value !== '') {
+                sub_group_codes.push(this.value)
+            for (let g = 0; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#sub_group' +g);
+
+                if ('sub_group' + key === 'sub_group' + g)
+                    groupSelector.setOptions(sub_group_codes, this.value);
+                else
+                    groupSelector.setOptions(sub_group_codes,options);
+            }
+        }
+        });
+
+     @endforeach
+   
+  
+    
+    
     calculateChangeOrder();
     $('.tableFixHead').css('max-height', screen.height / 2);
 </script>
