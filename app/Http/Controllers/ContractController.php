@@ -252,6 +252,11 @@ class ContractController extends Controller
         }
         $data['bill_codes'] = $this->getBillCodes($contract->project_id);
         $data['cost_types'] = $this->getCostTypes();
+
+        $merchant_cost_types_array = $this->getKeyArrayJson($data['cost_types'], 'value');
+        $data['cost_types_array'] = $merchant_cost_types_array;
+        $data['csi_codes_array'] = $this->getKeyArrayJson($data['bill_codes'], 'value');
+
         $data['project_id'] = $contract->project_id;
         $data['total'] = $total;
         $data['groups'] = $groups;
@@ -259,6 +264,16 @@ class ContractController extends Controller
 
         return $data;
     }
+
+    private function getKeyArrayJson($array, $key)
+    {
+        $data = [];
+        foreach ($array as $row) {
+            $data[$row[$key]] = $row;
+        }
+        return json_encode($data);
+    }
+
 
     public function getBillCodes($project_id)
     {
@@ -631,7 +646,20 @@ class ContractController extends Controller
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
         $contract = ContractParticular::find($id);
-        $contract->update(['particulars' => json_decode($formData), 'contract_amount' => $request->contract_amount, 'bulk_id' => $request->bulk_id]);
+       
+        $particulars = json_decode($formData, true);
+        $particulars = json_decode($particulars, true);
+        $array = ['bill_code', 'bill_type', 'original_contract_amount', 'retainage_percent', 'retainage_amount', 'project', 'project_code', 'cost_code', 'cost_type', 'group', 'bill_code_detail'];
+        foreach ($particulars as $k => $v) {
+            foreach($array as $a)
+            {
+                if (isset($v['show'.$a])) {
+                    unset($particulars[$k]['show'.$a]);
+                }
+            }
+           
+        }
+        $contract->update(['particulars' => json_encode($particulars), 'contract_amount' => $request->contract_amount, 'bulk_id' => $request->bulk_id]);
 
         return response()->json(array('message' => 'Particulars saved properly'), 200);
     }

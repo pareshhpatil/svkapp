@@ -224,7 +224,7 @@
                                                                 @if(in_array($k, $dropdown_array))
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
-                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}')@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
+                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
@@ -1411,8 +1411,8 @@
                         cost_code_selected=particularray[field].bill_code;
                         cost_type_selected=this.fields[field].cost_type;
                         particularray[field].cost_type=cost_type_selected;
-                        this.virtualSelectInit(field, 'cost_types');
-                        this.virtualSelectInit(field, 'cost_codes');
+                        this.virtualSelectInit(pint, 'cost_types',field);
+                        this.virtualSelectInit(pint, 'cost_codes',field);
                         
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
@@ -1626,8 +1626,8 @@
                         cost_code_selected=particularray[field.pint].bill_code;
                         particularray[field.pint].cost_type=field.cost_type;
 
-                        this.virtualSelectInit(field.pint, 'cost_types');
-                        this.virtualSelectInit(field.pint, 'cost_codes');
+                        this.virtualSelectInit(field.pint, 'cost_types',field.pint);
+                        this.virtualSelectInit(field.pint, 'cost_codes',field.pint);
 
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
@@ -1766,6 +1766,7 @@
                             const x = await this.wait(10);
                             id = this.fields.length - 1;
                             this.count = id;
+
                             //this.virtualSelect(pint, 'bill_code', bill_codes,null,'body',id)
                            // this.virtualSelect(pint, 'group', groups,null,'body',id)
                            // this.virtualSelect(pint, 'cost_type', merchant_cost_types,null,'body',id)
@@ -1896,23 +1897,37 @@
                         
 
                     },
-                    virtualSelectInit(id, type) {
+                    virtualSelectInit(id, type,index) {
                     allowNewOption = true;
                     search = true;
-                    index = id;
                     dropboxWrapper = 'body';
                     vs_class = 'vs-option1';
 
                     if (type == 'group') {
-                        selectedValue = particularray[id].group;
-                        id = particularray[id].pint;
+						try{
+                             selectedValue = particularray[index].group;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        
                         options = groups;
                     } else if (type == 'cost_type') {
                         options = merchant_cost_types;
-                        selectedValue = particularray[id].cost_type;
+						try{
+                             selectedValue = particularray[index].cost_type;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                     } else if (type == 'bill_code_detail') {
                         options = bill_code_details;
-                        selectedValue = particularray[id].bill_code_detail;
+						try{
+                             selectedValue = particularray[index].bill_code_detail;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                         if (selectedValue == '') {
                             selectedValue = 'Yes';
                         }
@@ -1920,7 +1935,12 @@
                     } else if (type == 'bill_code') {
                         vs_class = 'vs-option';
                         options = csi_codes;
-                        selectedValue = particularray[id].bill_code;
+                        try{
+                            selectedValue = particularray[index].bill_code;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                     }
 
 
@@ -1962,12 +1982,16 @@
                             if (!groups.includes(this.value) && this.value !== '') {
                                 groups.push(this.value)
                                 for (let g = 0; g < particularray.length; g++) {
+									try{
                                     let groupSelector = document.querySelector('#group' + particularray[g].pint);
 
                                     if ('group' + id === 'group' + particularray[g].pint)
                                         groupSelector.setOptions(groups, this.value);
                                     else
                                         groupSelector.setOptions(groups, particularray[g].group);
+									
+									}catch(o)
+									{}
                                 }
                             }
                             particularray[index].group = this.value;

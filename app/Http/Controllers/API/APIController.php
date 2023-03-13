@@ -20,8 +20,8 @@ class APIController extends Controller
         $errorMessage = ($error_code != '') ? $this->fetchError($error_code) : '';
         $response['errmsg'] = $errorMessage;
         $response['errlist'] = $errorlist;
-
-        return response()->json($response);
+        //return response()->json($response);
+        return $response;
     }
 
 
@@ -81,7 +81,22 @@ class APIController extends Controller
         $errors["ER02040"] = "User has not yet been verified. Please verify email before logging in.";
         $errors["ER02041"] = "Invalid Username/Password combination. Please try again.";
         $errors["ER02042"] = "Invalid partial amount";
-
+        $errors["ER02043"] = "Invalid parameter";
+        $errors["ER02044"] = "You do not have access to this project";
+        $errors["ER02045"] = "You do not have access to this bill code";
+        $errors["ER02046"] = "You do not have access to create bill code of this project";
+        $errors["ER02047"] = "You do not have access to update this bill code";
+        $errors["ER02048"] = "You do not have access to delete this bill code";
+        $errors["ER02049"] = "You do not have access to create project for this customer";
+        $errors["ER02050"] = "You do not have access to delete this project";
+        $errors["ER02051"] = "You do not have access to update the project for this customer";
+        $errors["ER02052"] = "You do not have access to update this project";
+        $errors["ER02053"] = "Invalid project id";
+        $errors["ER02054"] = "Invalid bill code id";
+        $errors["ER02055"] = "Invalid Customer id";
+        $errors["ER02056"] = "Unautheticated request";
+        $errors["ER02057"] = "Something went wrong";
+        
         return $errors[$error_code];
     }
 }

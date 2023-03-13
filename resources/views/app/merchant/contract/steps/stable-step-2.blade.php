@@ -100,23 +100,38 @@
                     <tbody>
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
-                                @php $readonly_array=array('retainage_amount','bill_code_detail','group','bill_type','bill_code');
-                                         $number_array=array('original_contract_amount','retainage_percent');
+                                @php
+                                    $readonly_array=array('retainage_amount');
+                                    $dropdown_array=array('bill_code_detail','group','cost_type','bill_code');
+                                    $number_array=array('original_contract_amount','retainage_percent');
 //                                  @endphp
                                 @foreach($particular_column as $column => $details)
-                                    @php $readonly=false; @endphp
+                                    @php $readonly=false;
+                                    $dropdown=false;
+                                    $k=$column; @endphp
                                     @php $number='type="text"'; @endphp
                                     @if($column != 'description')
                                         @if(in_array($column, $readonly_array))
                                             @php $readonly=true; @endphp
                                         @endif
+                                        @if(in_array($column, $dropdown_array))
+                                            @php $dropdown=true; @endphp
+                                        @endif
                                         @if(in_array($column, $number_array))
                                             @php $number='type=number step=0.00'; @endphp
                                         @endif
-                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`" @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif" x-on:blur="field.show{{$column}} = false" @endif  class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
+                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`" 
+                                    @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$column}}',`${index}`)@endif" x-on:blur="field.show{{$column}} = false" @endif 
+                                     class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
-                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" ></div>
+
+                                                <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                    <span x-show="! field.show{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                            <span style="width:100%;" x-show="field.show{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
+
                                                 <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
                                                 <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
                                                 <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
@@ -138,16 +153,19 @@
                                             @break
 
                                             @case('group')
-                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}"></div>
+                                            <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                        <span :id="`groupspan${field.pint}`" x-show="! field.showgroup" x-text="field.group"></span>
+                                                                        <span :id="`groupdropdown${field.pint}`" x-show="field.showgroup" >
+                                                                        <div  :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                         </span>
                                             @break
 
                                             @case('bill_code_detail')
-                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
-                                                {{--<select required style="width: 100%; min-width: 200px;" :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]" data-placeholder="Select.." class="form-control  input-sm billcodedetail">
-                                                    <option value="">Select..</option>
-                                                    <option value="Yes">Yes</option>
-                                                    <option value="No">No</option>
-                                                </select>--}}
+                                            <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                    <span x-show="! field.show{{$k}}" x-text="field.bill_code_detail"></span>
+                                                                            <span style="width:100%;" x-show="field.show{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
                                             @break
 
                                             @case('original_contract_amount')
@@ -196,7 +214,11 @@
                                             @break
 
                                             @case('cost_type')
-                                                <div :id="`{{$column}}${field.introw}`" x-model="field.{{$column}}" name="{{$column}}[]"></div>
+                                            <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                    <span x-show="! field.show{{$k}}"  x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                            <span style="width:100%;" x-show="field.show{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
                                             @break
 
                                             @default
@@ -278,8 +300,19 @@
             $onlyBillCodeJson=str_replace("\\",'\\\\', $onlyBillCodeJson); 
             $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
             $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
+
+            $ArrayBillCodeJson=str_replace("\\",'\\\\', $csi_codes_array); 
+            $ArrayBillCodeJson=str_replace("'","\'",$ArrayBillCodeJson);
+            $ArrayBillCodeJson=str_replace('"','\\"',$ArrayBillCodeJson);
+
+            $merchantCostTypeJsonArray=str_replace("\\",'\\\\', $cost_types_array); 
+            $merchantCostTypeJsonArray=str_replace("'","\'",$merchantCostTypeJsonArray);
+            $merchantCostTypeJsonArray=str_replace('"','\\"',$merchantCostTypeJsonArray);
+
         @endphp
         var particularsArray = JSON.parse('{!! $particularJson !!}');
+        csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
+        var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
         var bill_codes = JSON.parse('{!! $billcodeJson !!}');
         var groups = JSON.parse('{!! $groupJson !!}');
         var bill_types = [{'label' : '% Complete', 'value' : '% Complete'}, { 'label' : 'Unit', 'value' : 'Unit'}, { 'label' : 'Calculated', 'value' : 'Calculated'}];
@@ -328,7 +361,6 @@
             $('#new_bill_description').val(null);
             $('#selectedBillCodeId').val(null);
         }
-
         function handle_particulars(){
             return {
                 fields : JSON.parse('{!! $particularJson !!}'),
@@ -343,10 +375,10 @@
                     for(let v=0; v < this.fields.length; v++){
                         //console.log('Initializing dropdowns' + this.fields[v].introw);
 
-                        this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code, v)
-                        this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group, v)
-                        this.virtualSelect(this.fields[v].introw, 'cost_type', cost_types, this.fields[v].cost_type, v)
-                        this.virtualSelect(this.fields[v].introw, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail, v)
+                       // this.virtualSelect(this.fields[v].introw, 'bill_code', bill_codes, this.fields[v].bill_code, v)
+                       // this.virtualSelect(this.fields[v].introw, 'group', groups, this.fields[v].group, v)
+                       // this.virtualSelect(this.fields[v].introw, 'cost_type', cost_types, this.fields[v].cost_type, v)
+                       // this.virtualSelect(this.fields[v].introw, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail, v)
                     }
                 },
                 virtualSelect(id, type, options, selectedValue, index){
@@ -455,6 +487,120 @@
                     // });
 
                 } ,
+
+                virtualSelectInit(id, type,index) {
+                    allowNewOption = true;
+                    search = true;
+                    id = particularsArray[index].pint;
+                    dropboxWrapper = 'body';
+                    vs_class = 'vs-option1';
+
+                    if (type == 'group') {
+                        selectedValue = particularsArray[index].group;
+                        options = groups;
+                    } else if (type == 'cost_type') {
+                        options = cost_types;
+                        selectedValue = particularsArray[index].cost_type;
+                    } else if (type == 'bill_code_detail') {
+                        options = bill_code_details;
+                        selectedValue = particularsArray[index].bill_code_detail;
+                        if (selectedValue == '') {
+                            selectedValue = 'Yes';
+                        }
+                        search = false;
+                    } else if (type == 'bill_code') {
+                        vs_class = 'vs-option';
+                        options = bill_codes;
+                        selectedValue = particularsArray[index].bill_code;
+                    }
+
+
+                    VirtualSelect.init({
+                        ele: '#' + type + id,
+                        options: options,
+                        //name: type + '[]',
+                        dropboxWrapper: dropboxWrapper,
+                        allowNewOption: allowNewOption,
+                        search: search,
+                        multiple: false,
+                        selectedValue: selectedValue,
+                        additionalClasses: vs_class
+                    });
+
+                    $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
+                        $(this).addClass('form-control input-sm mw-150');
+                    })
+
+
+                    $('#' + type + id).change(function() {
+                        if (type === 'bill_code') {
+                            particularsArray[index].bill_code = this.value;
+                            
+                            let displayValue = this.getDisplayValue().split('|');
+                            if (displayValue[1] !== undefined) {
+                                $('#description' + id).val(displayValue[1].trim())
+                                particularsArray[index].description = displayValue[1].trim();
+                            }
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(parseInt(this.value))) {
+                                console.log(particularsArray[index].pint);
+                                //  only_bill_codes.push(this.value)
+                                $('#new_bill_code').val(this.value)
+                                $('#selectedBillCodeId').val(type + id)
+                                billIndex(0, 0, 0)
+                            }
+                        }
+                        if (type === 'group') {
+                            if (!groups.includes(this.value) && this.value !== '') {
+                                groups.push(this.value)
+                                for (let g = 0; g < particularsArray.length; g++) {
+                                    let groupSelector = document.querySelector('#group' + particularsArray[g].pint);
+
+                                    if ('group' + id === 'group' + particularsArray[g].pint)
+                                        groupSelector.setOptions(groups, this.value);
+                                    else
+                                        groupSelector.setOptions(groups, particularsArray[g].group);
+                                }
+                            }
+                            particularsArray[index].group = this.value;
+                        }
+
+                        if (type === 'cost_type') {
+                            particularsArray[index].cost_type = this.value
+                        }
+
+                        if (type === 'bill_type') {
+                            //console.log(fields);
+                            particularsArray[index].bill_type = this.value
+                            if (this.value === 'Calculated')
+                                fields[index].bill_type = this.value
+                        }
+
+                        if (type === 'bill_code_detail') {
+                            particularsArray[index].bill_code_detail = this.value
+                        }
+
+                        if (type === 'cost_codes' || type === 'cost_types') {
+                            //_('filterbutton').click();
+                        }
+                    });
+
+                    
+
+                    $('#' + type + id).on('beforeOpen', function() {
+                        //console.log('#'+type+id)
+                        let dropboxContainer = $('#' + type + id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#' + dropboxContainer).css('z-index', 4);
+                    });
+                    try {
+                        $("#table-scroll").scroll(function() {
+                          //  document.querySelector('#' + type + id).close();
+                        });
+                    } catch (o) {
+
+                    }
+
+
+                },
                 addNewBillCode(token){
 
                     let new_bill_code = $('#new_bill_code').val();
@@ -736,6 +882,8 @@
                         'calculated_row' : null,
                         'description' : null,
                         'introw' : pint,
+                        'showbill_code': true,
+                        'showcost_type': true,
                         'pint' : pint,
                         'bill_type' : null,
                         'original_contract_amount' : null,
@@ -755,6 +903,8 @@
                         'calculated_row' : null,
                         'description' : null,
                         'introw' : pint,
+                        'showbill_code': true,
+                        'showcost_type': true,
                         'pint' : pint,
                         'bill_type' : null,
                         'original_contract_amount' : null,
@@ -773,10 +923,10 @@
                     this.count = id;
                     
                     const x = await this.wait(10);
-                    this.virtualSelect(pint, 'bill_code', bill_codes,null)
-                    this.virtualSelect(pint, 'group', groups, null)
-                    this.virtualSelect(pint, 'cost_type', cost_types, null)
-                    this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes', null)
+                    this.virtualSelectInit(pint, 'bill_code',id)
+                    this.virtualSelectInit(pint, 'group',id)
+                    this.virtualSelectInit(pint, 'cost_type',id)
+                    this.virtualSelectInit(pint, 'bill_code_detail',id)
                     
                     setTimeout(function () {
                         document.getElementById('loader').style.display = 'none';
@@ -894,6 +1044,40 @@
                         }
                     }
                 },
+
+                setdropdowndiv(type,field)
+                    {
+                        if(type=='bill_code')
+                        {
+                            if(field.bill_code>0)
+                            {
+                                try{
+                                    return csi_codes_array[field.bill_code].label;
+                                }catch(o)
+                                {
+                                    return '';
+                                }
+                                
+                            }else{
+                                return '';
+                            }
+                            
+                        }else if(type=='cost_type')
+                        {
+                            if(field.cost_type>0)
+                            {
+                                try{
+                                    return cost_types_array[field.cost_type].label;
+                                }catch(o)
+                                {
+                                    return '';
+                                }
+                            }else{
+                                return '';
+                            }
+                        }
+                        
+                    },
 
                 setAOriginalContractAmount() {
                     let valid = true;
