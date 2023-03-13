@@ -52,9 +52,9 @@ class InvoiceHelper
 
             $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestDetail, $customerID) {
 //                $userIDs = [];
-//                dd($Customer);
+
                 if($Customer->type_id == $customerID || $Customer->type_id == 'all') {
-                    if(($Customer->access == 'full' || $Customer->access == 'approve') && !empty($Customer->rule_engine_query)) {
+                    if(!empty($Customer->rule_engine_query)) {
                         $ruleEngineQuery = json_decode($Customer->rule_engine_query, true);
                         $stat = (new RuleEngineManager('customer_id', $Customer->type_id, $ruleEngineQuery))->run();
 
@@ -63,12 +63,14 @@ class InvoiceHelper
                             return $Customer->user_id;
 //                            }
                         }
+                    } else {
+                        return $Customer->user_id;
                     }
                 }
 
                 return '';
             });
-            dd($customerUsersWithFullAccess->toArray());
+
             $customerUsersWithFullAccess = $customerUsersWithFullAccess->filter(function ($value) {
                 return !empty($value);
             });
@@ -78,7 +80,7 @@ class InvoiceHelper
                                         ->values();
 
             $contractUsersWithFullAccess = $ContractCollect->map(function ($Contract) use($paymentRequestDetail, $contractID) {
-                $userIDs = [];
+//                $userIDs = [];
 
                 if($Contract->type_id == $contractID || $Contract->type_id == 'all') {
                     if(!empty($Contract->rule_engine_query)) {
@@ -86,16 +88,17 @@ class InvoiceHelper
                         $stat = (new RuleEngineManager('contract_id', $Contract->type_id, $ruleEngineQuery))->run();
 
                         if(!empty($stat)) {
-                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
-                                $userIDs[] = $Contract->user_id;
-                            }
+                            return $Contract->user_id;
+//                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
+//                                $userIDs[] = $Contract->user_id;
+//                            }
                         }
                     } else {
-                        $userIDs[] = $Contract->user_id;
+                        return $Contract->user_id;
                     }
                 }
 
-                return $userIDs;
+                return '';
             });
 
             $contractUsersWithFullAccess = $contractUsersWithFullAccess->filter(function ($value) {
@@ -107,7 +110,7 @@ class InvoiceHelper
                                         ->values();
 
             $projectUsersWithFullAccess = $ProjectCollect->map(function ($Project) use($paymentRequestDetail, $projectID) {
-                $userIDs = [];
+//                $userIDs = [];
 
                 if($Project->type_id == $projectID || $Project->type_id == 'all') {
                     if(!empty($ProjectCollect->rule_engine_query)) {
@@ -129,16 +132,18 @@ class InvoiceHelper
                         }
 
                         if(!empty($contractInvoiceIds)) {
-                            if(in_array($paymentRequestDetail->payment_request_id, $contractInvoiceIds)) {
-                                $userIDs[] = $Project->user_id;
-                            }
+//                            if(in_array($paymentRequestDetail->payment_request_id, $contractInvoiceIds)) {
+//                                $userIDs[] = $Project->user_id;
+                                return $Project->user_id;
+//                            }
                         }
                     } else {
-                        $userIDs[] = $Project->user_id;
+//                        $userIDs[] = $Project->user_id;
+                        return $Project->user_id;
                     }
                 }
 
-                return $userIDs;
+                return '';
             });
 
             $projectUsersWithFullAccess = $projectUsersWithFullAccess->filter(function ($value) {
@@ -197,7 +202,7 @@ class InvoiceHelper
 //                if(!empty($testUser->fcm_token)) {
 //                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
 //                }
-            dd($Users);
+            
             foreach ($Users as $User) {
                 if(!empty($User->fcm_token)) {
 //                    ProcessInvoiceApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
