@@ -104,12 +104,11 @@ class Invoice extends ParentModel
 
     public function getContract($merchant_id, $privilegesIDs = [])
     {
-        $ids = implode(",", $privilegesIDs);
         if (!empty($ids) && !in_array('all', $privilegesIDs)) {
             $retObj = DB::table('contract as c')
                 ->select(DB::raw('*'))
                 ->join('project as p', 'p.id', '=', 'c.project_id')
-                ->whereIn('c.id', $ids)
+                ->whereIn('c.contract_id', $ids)
                 ->where('c.is_active', 1)
                 ->where('c.status', 1)
                 ->where('c.merchant_id', $merchant_id)
