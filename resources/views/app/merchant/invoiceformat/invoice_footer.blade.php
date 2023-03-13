@@ -172,12 +172,12 @@ $validate=(array)$validate;
             Convert to Invoice
         </a>
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
-            Settle
+            Settle One
         </a>
         @endif
         @else
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
-            Settle
+            Settle Two
         </a>
         @endif
         @endif
