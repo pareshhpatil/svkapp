@@ -51,7 +51,7 @@ class InvoiceHelper
                 ->values();
 
             $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestDetail, $customerID) {
-                //$userIDs = [];
+                $userIDs = [];
 //                dd($Customer);
                 if($Customer->type_id == $customerID || $Customer->type_id == 'all') {
                     if(($Customer->access == 'full' || $Customer->access == 'approve') && !empty($Customer->rule_engine_query)) {
@@ -60,14 +60,13 @@ class InvoiceHelper
 
                         if(!empty($stat)) {
 //                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
-                                //$userIDs[] = $Customer->user_id;
-                                return $Customer->user_id;
+                                $userIDs[] = $Customer->user_id;
 //                            }
                         }
                     }
                 }
 
-                return [];
+                return $userIDs;
             });
             dd($customerUsersWithFullAccess->toArray());
             $customerUsersWithFullAccess = $customerUsersWithFullAccess->filter(function ($value) {
