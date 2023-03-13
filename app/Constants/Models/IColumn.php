@@ -25,4 +25,5 @@ interface IColumn
     const  LAST_UPDATE_AT = 'last_update_at';
     const  ROLE_ID = 'role_id';
     const  ROLE_NAME = 'role_name';
+    const  GROUP_ID = 'group_id';
 }
