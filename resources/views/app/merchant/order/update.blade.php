@@ -180,13 +180,10 @@
                                             Description
                                         </th>
                                         <th class="td-c">
-                                            Group
+                                            Group level 1
                                         </th>
                                         <th class="td-c">
-                                            Sub group 1
-                                        </th>
-                                        <th class="td-c">
-                                            Sub group 2
+                                            Group level 2
                                         </th>
                                         <th class="td-c">
 
@@ -262,7 +259,9 @@
                                         <td class="col-id-no">
                                             <div class="text-center">
                                                 <select name="sub_group[]"  id="sub_group{{$key+1}}">
+                                                @isset($row[$v])
                                                 <option value="{{$row[$v]}}">{{$row[$v]}}</option>
+                                                @endisset
                                                 </select>
                                             </div>
                                         </td>
@@ -407,7 +406,7 @@
             name: 'group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
             options: group_codes
         });
@@ -418,7 +417,7 @@
             ];
             if (!group_codes.includes(this.value) && this.value !== '') {
                 group_codes.push(this.value)
-            for (let g = 0; g < rows.length; g++) {
+            for (let g = 0; g <= rows.length; g++) {
                 let groupSelector = document.querySelector('#group_select' +g);
 
                 if ('group_select' + key === 'group_select' + g)
@@ -436,7 +435,7 @@
             name: 'sub_group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
             options: sub_group_codes
         });
@@ -447,7 +446,7 @@
             ];
             if (!sub_group_codes.includes(this.value) && this.value !== '') {
                 sub_group_codes.push(this.value)
-            for (let g = 0; g < rows.length; g++) {
+            for (let g = 0; g <= rows.length; g++) {
                 let groupSelector = document.querySelector('#sub_group' +g);
 
                 if ('sub_group' + key === 'sub_group' + g)
