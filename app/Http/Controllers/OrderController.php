@@ -152,7 +152,7 @@ class OrderController extends Controller
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
         $userRole = Session::get('user_role');
 
-        //find last search criteria into Redis 
+        //find last search criteria into Redis
         $redis_items = $this->getSearchParamRedis('change_order_list', $this->merchant_id);
 
         if (isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param'] != null) {
@@ -163,9 +163,11 @@ class OrderController extends Controller
 
         if($userRole == 'Admin') {
             $privilegesIDs = ['all' => 'full'];
+            $contractPrivilegesIDs = ['all' => 'full'];
         } else {
             //get privileges from redis
             $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         }
 
         $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
@@ -181,7 +183,15 @@ class OrderController extends Controller
         $data['customer_code'] = 'Customer code';
         $data['privileges'] = $privilegesIDs;
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs);
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
