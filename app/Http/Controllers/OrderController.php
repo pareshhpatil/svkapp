@@ -70,7 +70,9 @@ class OrderController extends Controller
             $group_codes = [];
             foreach($row->json_particulars as $row_particular){
                 if (!in_array($row_particular['group'], $group_codes)){
-                    array_push($group_codes,$row_particular['group']);
+                    if($row_particular['group'] !=''){
+                        array_push($group_codes,$row_particular['group']);
+                    }
                 }
             }
             $data['group_codes'] = $group_codes;
@@ -239,7 +241,9 @@ class OrderController extends Controller
             $group_codes = [];
             foreach($row->json_particulars as $row_particular){
                 if (!in_array($row_particular['group'], $group_codes)){
-                    array_push($group_codes,$row_particular['group']);
+                    if($row_particular['group'] !=''){
+                        array_push($group_codes,$row_particular['group']);
+                    }
                 }
             }
             $data['group_codes'] = $group_codes;

@@ -4,6 +4,11 @@
         z-index: 99;
     }
 
+    .vscomp-toggle-button{
+        height: 28px;
+
+    }
+
     .lable-heading {
         font-style: normal;
         font-weight: 400;
@@ -272,7 +277,7 @@
                                         @elseif ($v == 'group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <select name="group[]" id="group_select{{$key}}">
+                                                <select name="group[]" id="group_select{{$key+1}}">
                                                     @if(!empty($group_codes))
                                                     @foreach($group_codes as $value)
                                                     @if($row[$v]==$value)
@@ -288,13 +293,12 @@
                                         @elseif ($v == 'sub_group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <div id="sub_group{{$key}}"></div>
+                                                <div id="sub_group{{$key+1}}"></div>
                                             </div>
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no" scope="row">
-                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]" data-placeholder="Type or Select" class="form-control input-sm productselect2">
-                                                <option value="">Type or Select</option>
+                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 @if(!empty($cost_type_list))
                                                 @foreach($cost_type_list as $pk=>$vk)
                                                 @if($row[$v]==$vk->id)
@@ -425,7 +429,7 @@
     @if(isset($detail))
     rows  = {!!$detail->particulars!!};
     @foreach($detail->json_particulars as $key=>$row)
-        key  = '{{$key}}';
+        key  = '{{$key+1}}';
         VirtualSelect.init({
             ele: '#group_select'+key,
             allowNewOption: true,
@@ -433,7 +437,7 @@
             name: 'group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
             options: group_codes
         });
@@ -452,6 +456,9 @@
                 else
                     groupSelector.setOptions(group_codes,options);
             }
+            // $('select[name="item[]"]').each(function (indx, arr) {
+            //     $(this).change();
+            // });
         }
         });
 
@@ -462,7 +469,7 @@
             name: 'sub_group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
             options: sub_group_codes
         });
@@ -483,7 +490,17 @@
             }
         }
         });
-
+        
+        VirtualSelect.init({
+            ele: '#cost_type'+key,
+            dropboxWrapper: 'body',
+            name: 'cost_type[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true
+        });
+    
      @endforeach
     @endif
    

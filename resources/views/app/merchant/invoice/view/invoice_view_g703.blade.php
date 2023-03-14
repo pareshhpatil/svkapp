@@ -108,7 +108,7 @@ $header = 'app.patron.invoice.invoice-master';
                     </ul>
                 </div>
             </div>
-            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;">
+            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;  color:#394242;">
                 <div class="flex flex-row  gap-4">
                     @if($has_aia_license)
                     <div>
@@ -120,16 +120,16 @@ $header = 'app.patron.invoice.invoice-master';
                         @endif --}}
                     </div>
                     <div>
-                        <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G703® – 1992</h1>
+                        <h1 class="text-3xl text-left mt-8 font-bold">Document G703® – 1992</h1>
                     </div>
                     @else
                     <div>
-                        <h1 class="text-3xl text-left font-bold  text-black">Document G703 – 1992</h1>
+                        <h1 class="text-3xl text-left font-bold">Document G703 – 1992</h1>
                     </div>
                     @endif
 
                 </div>
-                <h1 class="text-2xl text-left mt-4 font-bold  text-black">Continuation Sheet</h1>
+                <h1 class="text-2xl text-left mt-4 font-bold">Continuation Sheet</h1>
                 <div class="w-full h-0.5 bg-gray-900 mt-1 mb-1"></div>
 
                 <div class="grid grid-cols-3  gap-4">
@@ -193,7 +193,7 @@ $header = 'app.patron.invoice.invoice-master';
                 <div class='overflow-x-auto w-full mt-4 mb-4'>
                     <table class=' mx-auto  w-full border-collapse border border-gray-500 overflow-hidden'>
                         <thead>
-                            <tr class="text-black text-center">
+                            <tr class=" text-center">
                                 <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> A </td>
                                 <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> B </td>
                                 <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> C </td>
@@ -205,7 +205,7 @@ $header = 'app.patron.invoice.invoice-master';
                                 <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> H</td>
                                 <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> I </td>
                             </tr>
-                            <tr class="text-black text-center ">
+                            <tr class=" text-center ">
                                 <td class=" font-regular text-xs  border-r border-l border-gray-500  px-2 py-2 text-center">
                                 </td>
                                 <td class=" font-regular text-xs   border-r border-l border-gray-500  px-2 py-2 text-center">
@@ -224,7 +224,7 @@ $header = 'app.patron.invoice.invoice-master';
                                 </td>
 
                             </tr>
-                            <tr class="text-black text-center">
+                            <tr class=" text-center">
                                 <td style="min-width:70px" class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
                                     ITEM
                                     NO. </td>
@@ -292,43 +292,85 @@ $header = 'app.patron.invoice.invoice-master';
                             <tr>
                                 <td colspan="10" class="border border-gray-500 px-2 py-2 text-left">
 
-                                    <p class="text-sm ">{{ $item['b'] }} </p>
+                                    <p class="text-sm" style="color: #6F8181;">{{ $item['b'] }} </p>
 
 
                                 </td>
                             </tr>
                             @elseif ($item['type'] == 'sub-heading')
                             <tr>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
-                                    <p class="text-sm ">{{ $item['b'] }} </p>
+                                <td class="px-2 py-2 text-left">
+                                    <p class="text-sm" style="color: #6F8181;">{{ $item['b'] }} </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left">
+                                <td class="px-2 py-2 text-left">
+                                </td>
+                            </tr>
+                            @elseif ($item['type'] == 'sub-footer')
+                            <tr>
+                                <td class="border border-gray-500 px-2 py-2" style="border-right: none;">
+                                    <p class="text-sm" style="color: #6F8181;"></p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-left" style="border-left: none;">
+                                    <p class="text-sm" style="color: #6F8181;"> {{ $item['b'] }}</p>
+                                </td>
+
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</p>
+
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
+
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
+                                </td>
+                                @php
+                                $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                if($sub_total_g>0 && $sub_total_c>0)
+                                {
+                                $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                }else{
+                                $sub_total_g_by_c=0;
+                                }
+                                @endphp
+                                <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
+                                    <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
+                                </td>
+                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                    <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                 </td>
                             </tr>
                             @elseif ($item['type'] == 'footer')
-
-
-
                             <tr>
-                                <td colspan="2" class="border border-gray-500 px-2 py-2   text-center text-black">
-
-                                    <p class=" font-regular text-xs"> {{ $item['b'] }}</p>
+                                <td colspan="2" class="border border-gray-500 px-2 py-2 text-left">
+                                    <p class="text-sm" style="color: #6F8181;"> {{ $item['b'] }}</p>
                                 </td>
 
                                 <td class="border border-gray-500 px-2 py-2 text-right">

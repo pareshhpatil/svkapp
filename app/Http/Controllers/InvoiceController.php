@@ -4205,7 +4205,7 @@ class InvoiceController extends AppController
                         $single_data = array();
                         $single_data['a'] = '';
                         $single_data['type'] = 'footer';
-                        $single_data['b'] = 'SUB TOTAL';
+                        $single_data['b'] = 'sub total';
                         $single_data['c'] = number_format($sub_c, 2);
                         $single_data['d'] = number_format($sub_d, 2);
                         $single_data['e'] = number_format($sub_e, 2);
@@ -4530,8 +4530,8 @@ class InvoiceController extends AppController
                             // if ($sub_key == count($sub_result[$names][$key])) {
                                 $single_data = array();
                                 $single_data['a'] = '';
-                                $single_data['type'] = 'footer';
-                                $single_data['b'] = $key.' SUB TOTAL';
+                                $single_data['type'] = 'sub-footer';
+                                $single_data['b'] = $key.' sub total';
                                 $single_data['c'] = number_format($sub_c, 2);
                                 $single_data['d'] = number_format($sub_d, 2);
                                 $single_data['e'] = number_format($sub_e, 2);
@@ -4549,7 +4549,7 @@ class InvoiceController extends AppController
                             $single_data = array();
                             $single_data['a'] = '';
                             $single_data['type'] = 'footer';
-                            $single_data['b'] = $names. ' SUB TOTAL';
+                            $single_data['b'] = $names. ' sub total';
                             $single_data['c'] = number_format($sub_c, 2);
                             $single_data['d'] = number_format($sub_d, 2);
                             $single_data['e'] = number_format($sub_e, 2);

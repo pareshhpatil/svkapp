@@ -67,6 +67,15 @@
     .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
+
+    .vscomp-toggle-button{
+        height: 28px;
+
+    }
+
+    .vs-option {
+        z-index: 99;
+    }
 </style>
 @section('content')
 <div class="page-content">
@@ -236,7 +245,7 @@
                                         @elseif ($v == 'group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <select name="group[]"  id="group_select{{$key}}">
+                                                <select name="group[]"  id="group_select{{$key+1}}">
                                                 @if(!empty($group_codes))
                                                 @foreach($group_codes as $value)
                                                 @if($row[$v]==$value)
@@ -252,15 +261,14 @@
                                         @elseif ($v == 'sub_group')
                                         <td class="col-id-no">
                                             <div class="text-center">
-                                                <select name="sub_group[]"  id="sub_group{{$key}}">
+                                                <select name="sub_group[]"  id="sub_group{{$key+1}}">
                                                 <option value="{{$row[$v]}}">{{$row[$v]}}</option>
                                                 </select>
                                             </div>
                                         </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
-                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
-                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
+                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))
                                                     @foreach($cost_type_list as $pk=>$vk)
@@ -389,9 +397,9 @@
 <script>
     sub_group_codes = [];
     rows  = {!!$detail->particulars!!};
-    
+    @if(isset($detail))
      @foreach($detail->json_particulars as $key=>$row)
-        key  = '{{$key}}';
+        key  = '{{$key+1}}';
         VirtualSelect.init({
             ele: '#group_select'+key,
             allowNewOption: true,
@@ -450,8 +458,19 @@
         }
         });
 
-     @endforeach
+           
+        VirtualSelect.init({
+            ele: '#cost_type'+key,
+            dropboxWrapper: 'body',
+            name: 'cost_type[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true
+        });
 
+     @endforeach
+    @endif
     project_id = '{{$detail2->project_id}}'
     projectSelected(project_id)
     $('.tableFixHead').css('max-height', screen.height/2);

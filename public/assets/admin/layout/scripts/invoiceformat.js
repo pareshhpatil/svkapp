@@ -175,7 +175,7 @@ function getGroupDropdown(defaultval, type, numrow = 1) {
         type = '';
     }
     var produ_text = '<td class="col-id-no">' +
-        '<select id="group_select' + '" ' +
+        '<select id="group_select' + numrow + '" ' +
         'name="' + type + 'group[]" >';
     if (group_codes != null) {
         $.each(group_codes, function (value, arr) {
@@ -197,7 +197,7 @@ function getSubGroupDropdown(defaultval, type, numrow = 1) {
         type = '';
     }
     var produ_text = '<td class="col-id-no">' +
-        '<select id="sub_group' + '" ' +
+        '<select id="sub_group' +numrow+ '" ' +
         'name="' + type + 'sub_group[]" >';
 
     produ_text = produ_text + '</select></td>';
@@ -2704,25 +2704,53 @@ function setAdvanceDropdownOrder(numrow) {
 function setVirtualSelectDropdownOrder(numrow) {
     try {
         VirtualSelect.init({
-            ele: '#group_select',
+            ele: '#group_select'+numrow,
             allowNewOption: true,
             dropboxWrapper: 'body',
             name: 'group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
         });
+
+        
+        let groupSelector = document.querySelector('#group_select' +numrow);
+        groupSelector.setOptions(group_codes);
+
+        $('#group_select'+numrow).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!group_codes.includes(this.value) && this.value !== '') {
+                group_codes.push(this.value)
+                rows.push(this.value)
+            for (let g = 0; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#group_select' +g);
+
+                if ('group_select' + numrow === 'group_select' + g)
+                    groupSelector.setOptions(group_codes, this.value);
+                else
+                    groupSelector.setOptions(group_codes,options);
+            }
+        }
+        });
+
         VirtualSelect.init({
-            ele: '#sub_group',
+            ele: '#sub_group'+numrow,
             allowNewOption: true,
             dropboxWrapper: 'body',
             name: 'sub_group[]',
             multiple: false,
             additionalClasses: 'vs-option',
-            searchPlaceholderText: 'Search or Add new',
+            searchPlaceholderText: 'Search',
             search: true,
         });
+
+        
+        let subgroupSelector = document.querySelector('#sub_group' +numrow);
+        subgroupSelector.setOptions(sub_group_codes);
+
     } catch (o) {
     }
 }

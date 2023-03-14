@@ -546,48 +546,93 @@
                             @foreach ($info['constriuction_details'] as $key => $item)
                             @if($item['type']=='heading')
                             <tr>
-                                <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px">{{ $item['b'] }} </div>
+                                <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px; color: #6F8181;">{{ $item['b'] }} </div>
                                 </td>
                             </tr>
                             
                             @elseif ($item['type']=='sub-heading')
                             <tr>
-                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px">{{ $item['b'] }} </div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px"> </div>
                                 </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px;color: #6F8181;">{{ $item['b'] }}</div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px"></div>
                                 </td>
-                               <td style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"> </div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                            </tr>
+                            @elseif ($item['type']=='sub-footer')
+                            <tr>
+                            
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
+                                    <div style="font-size: 14px"></div>
+                                </td>
+                                <td  style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px;color: #6F8181;"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"> @if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"> @if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</div>
+                                </td>
+                                @php
+                                $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                if($sub_total_g>0 && $sub_total_c>0)
+                                {
+                                $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                }else{
+                                $sub_total_g_by_c=0;
+                                }
+                                @endphp
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">
+                                        @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}}) @else{{number_format($sub_total_g_by_c * 100,2)}}@endif% </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</div>
+                                </td>
+                                <td style=" border-top:1px solid #313131;border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</div>
                                 </td>
                             </tr>
                             @elseif ($item['type']=='footer')
                             <tr>
-                                <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding: 8px 2px;text-align: center">
-                                    <div style="font-size: 12px"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
+                            <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px;color: #6F8181;"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
                                 </td>
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 14px"> @if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</div>

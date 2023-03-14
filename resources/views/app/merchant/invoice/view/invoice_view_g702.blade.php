@@ -98,8 +98,8 @@ $header='app.patron.invoice.invoice-master';}
         </ul>
     </div>
     </div>
-    <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10"
-       style="max-width: 1400px;">
+    <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10"
+       style="max-width: 1400px; color:#394242;">
 
             <div class="flex flex-row  gap-4">
                 @if($has_aia_license)
@@ -107,20 +107,20 @@ $header='app.patron.invoice.invoice-master';}
                         <img src="{{ asset('images/logo-703.PNG') }}" />
                     </div>
                     <div>
-                        <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G702® – 1992</h1>
+                        <h1 class="text-3xl text-left mt-8 font-bold">Document G702® – 1992</h1>
                     </div>
                 @else
                     <div>
-                        <h1 class="text-3xl text-left font-bold  text-black">Document G702 – 1992</h1>
+                        <h1 class="text-3xl text-left font-bold">Document G702 – 1992</h1>
                     </div>
                 @endif
 
             </div>
-            <h1 class="text-2xl text-left mt-4  font-bold  text-black">Application and Certificate for Payment </h1>
+            <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
             <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
 
             <div>
-                <table width="100%">
+                <table width="100%" >
                     <tr>
                         <td width="25%">
                             <p class="text-xs font-bold">TO OWNER: </p>

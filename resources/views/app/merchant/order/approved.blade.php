@@ -210,7 +210,7 @@
                                         </td>
                                         @else
                                         <td>
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]) {{$row[$v]}} @endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @endif
                                         @endforeach
