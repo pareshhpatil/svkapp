@@ -413,4 +413,12 @@ class OrderController extends Controller
         $response['list'] = $list;
         return response()->json($this->apiController->APIResponse('', $response), 200);
     }
+
+    public function getOrderDetails($order_id) {
+        if ($order_id != null) {
+            $info =  $this->orderModel->getOrderData($order_id);
+            $info->particulars = json_decode($info->particulars,true);
+            return response()->json($this->apiController->APIResponse('', $info), 200);
+        }
+    }
 }

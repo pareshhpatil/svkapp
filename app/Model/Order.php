@@ -116,4 +116,18 @@ class Order extends ParentModel
             return $retObj;
         }
     }
+
+    public function getOrderData($order_id) {
+       
+        $retObj = DB::table('order as o')
+            ->select(DB::raw("o.*,c.contract_code,p.project_id,p.project_name,u.customer_id,u.customer_code,concat(first_name,' ', last_name) name"))
+            ->join('contract as c', 'o.contract_id', '=', 'c.contract_id')
+            ->join('project as p','c.project_id','=','p.id')
+            ->join('customer as u','c.customer_id','=','u.customer_id')
+            ->where('o.order_id',$order_id)
+            //->whereRaw("d.payment_request_id='" . $payment_request_id . "' or (d.project_id='" . $project_id . "' and d.date<='" . $date . "' and d.status=0 and d.is_active=1)")
+            ->first();
+
+        return $retObj;
+    }
 }

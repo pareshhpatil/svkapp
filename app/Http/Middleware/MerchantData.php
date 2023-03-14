@@ -108,6 +108,10 @@ class MerchantData
                     dd();
                 }
                 break;
+            case('getOrderDetails'):
+                $parameters = $request->route()->parameter('order_id');
+                $this->checkAccess('order','order_id',$parameters,'merchant_id','ER02066', 'ER02067',$request);
+                break;
         }
     }
 
