@@ -1,5 +1,14 @@
 @extends('app.master')
 <style>
+    .vs-option {
+        z-index: 99;
+    }
+
+    .vscomp-toggle-button{
+        height: 28px;
+
+    }
+
     .lable-heading {
         font-style: normal;
         font-weight: 400;
@@ -23,7 +32,7 @@
         padding: 3px !important;
         font-weight: 400;
         color: #333;
-        background:#eee;
+        background: #eee;
     }
 
     .table tfoot tr th {
@@ -50,18 +59,23 @@
     table tfoot {
         position: sticky;
     }
+
     table thead {
-        inset-block-start: 0; /* "top" */
+        inset-block-start: 0;
+        /* "top" */
     }
+
     table tfoot {
-        inset-block-end: 0; /* "bottom" */
+        inset-block-end: 0;
+        /* "bottom" */
     }
 
     .tableFixHead {
         overflow: auto !important;
     }
+
     .headFootZIndex {
-            z-index: 3;
+        z-index: 3;
     }
 </style>
 @section('content')
@@ -200,6 +214,12 @@
                                             Description
                                         </th>
                                         <th class="td-c">
+                                            Group level 1
+                                        </th>
+                                        <th class="td-c">
+                                            Group level 2
+                                        </th>
+                                        <th class="td-c">
 
                                         </th>
                                     </tr>
@@ -244,7 +264,7 @@
                                         </td>
                                         @elseif ($v == 'retainage_percent')
                                         <td class="col-id-no">
-                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
+                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
                                         <td class="col-id-no">
@@ -253,20 +273,40 @@
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
-                                        </td> 
+                                        </td>
+                                        @elseif ($v == 'group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="group[]" id="group_select{{$key+1}}">
+                                                    @if(!empty($group_codes))
+                                                    @foreach($group_codes as $value)
+                                                    @if($row[$v]==$value)
+                                                    <option selected value="{{$value}}">{{$value}}</option>
+                                                    @else
+                                                    <option value="{{$value}}">{{$value}}</option>
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        @elseif ($v == 'sub_group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <div id="sub_group{{$key+1}}"></div>
+                                            </div>
+                                        </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no" scope="row">
-                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
-                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
-                                                <option value="">Type or Select</option>
+                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 @if(!empty($cost_type_list))
-                                                    @foreach($cost_type_list as $pk=>$vk)
-                                                        @if($row[$v]==$vk->id)
-                                                            <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @else
-                                                            <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @endif
-                                                    @endforeach
+                                                @foreach($cost_type_list as $pk=>$vk)
+                                                @if($row[$v]==$vk->id)
+                                                <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                @else
+                                                <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
+                                                @endif
+                                                @endforeach
                                                 @endif
                                             </select>
                                         </td>
@@ -308,6 +348,8 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="0" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -376,10 +418,97 @@
     @if(isset($project_id))
     project_id = {!!$project_id!!};
     @endif
+    @if(isset($group_codes))
+    group_codes = {!!$group_codes_json!!};
+    @endif
 </script>
 @section('footer')
 <script>
+    sub_group_codes = [];
+    rows  = [];
+    @if(isset($detail))
+    rows  = {!!$detail->particulars!!};
+    @foreach($detail->json_particulars as $key=>$row)
+        key  = '{{$key+1}}';
+        VirtualSelect.init({
+            ele: '#group_select'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true,
+            options: group_codes
+        });
+
+        $('#group_select'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!group_codes.includes(this.value) && this.value !== '') {
+                group_codes.push(this.value)
+            for (let g = 1; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#group_select' +g);
+
+                if ('group_select' + key === 'group_select' + g)
+                    groupSelector.setOptions(group_codes, this.value);
+                else
+                    groupSelector.setOptions(group_codes,options);
+            }
+            // $('select[name="item[]"]').each(function (indx, arr) {
+            //     $(this).change();
+            // });
+        }
+        });
+
+        VirtualSelect.init({
+            ele: '#sub_group'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'sub_group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true,
+            options: sub_group_codes
+        });
+
+        $('#sub_group'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!sub_group_codes.includes(this.value) && this.value !== '') {
+                sub_group_codes.push(this.value)
+            for (let g = 1; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#sub_group' +g);
+
+                if ('sub_group' + key === 'sub_group' + g)
+                    groupSelector.setOptions(sub_group_codes, this.value);
+                else
+                    groupSelector.setOptions(sub_group_codes,options);
+            }
+        }
+        });
+        
+        VirtualSelect.init({
+            ele: '#cost_type'+key,
+            dropboxWrapper: 'body',
+            name: 'cost_type[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true
+        });
+    
+     @endforeach
+    @endif
+   
+   
+  
+    
+    
     calculateChangeOrder();
-    $('.tableFixHead').css('max-height', screen.height/2);
+    $('.tableFixHead').css('max-height', screen.height / 2);
 </script>
 @endsection

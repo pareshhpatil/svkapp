@@ -159,21 +159,25 @@ class Customer extends Controller
             //find customer region setting for timezone
             $region_setting = $this->common->getSingleValue('preferences', 'user_id', $this->user_id);
             $selected_country = 'United States';
-            $selected_mobile_code = '+1';
+            $selected_mobile_code = '1';
 
             if($region_setting!='') {
                 $dateTime = Carbon::now($region_setting['timezone']);
                 // Get the country code for the timezone
                 $timeZone = new DateTimeZone($dateTime->getTimezone()->getName());
+                
                 $countryCode = $timeZone->getLocation()['country_code'];
-                // Get the country name from the country code
-                $iso = new ISO3166();
-                $countryInfo = $iso->alpha2($countryCode);
-                //find mobile code from config table 
-                $find_mobile_code = $this->common->getSingleValue('config', 'config_value', $countryInfo['name']);
-                if($find_mobile_code!='') {
-                    $selected_country = $countryInfo['name'];
-                    $selected_mobile_code = $find_mobile_code['description'];
+                if($countryCode!='??') {
+                    // Get the country name from the country code
+                    $iso = new ISO3166();
+                    $countryInfo = $iso->alpha2($countryCode);
+                    //find mobile code from config table 
+                    $find_mobile_code = $this->common->getSingleValue('config', 'config_value', $countryInfo['name']);
+                    
+                    if($find_mobile_code!='') {
+                        $selected_country = $find_mobile_code['config_value'];
+                        $selected_mobile_code = $find_mobile_code['description'];
+                    }
                 }
             }
             
@@ -392,11 +396,11 @@ class Customer extends Controller
                     $hasErrors = array_merge($hasErrors, $custErrors);
                 }
             }
-            
+           
             if ($hasErrors == FALSE) {
                 $column_id = (empty($_POST['column_id'])) ? array() : $_POST['column_id'];
                 $column_value = (empty($_POST['column_value'])) ? array() : $_POST['column_value'];
-                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'India';
+                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'United States';
                 $_POST['state'] = (isset($_POST['country']) && $_POST['country']=='India') ? $_POST['state'] : $_POST['state1'];
 
                 $result = $this->model->saveCustomer($this->user_id, $merchant_id, $customer_code, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['mobile'], $_POST['address'], $_POST['address2'], $_POST['city'], $_POST['state'], $_POST['zipcode'], $column_id, $column_value, 0, $_POST['password'], $_POST['GST'], $_POST['company_name'],$_POST['country']);
@@ -552,7 +556,7 @@ class Customer extends Controller
                 $excolumn_value = (empty($_POST['values'])) ? array() : $_POST['values'];
                 $column_id = (empty($_POST['column_id'])) ? array() : $_POST['column_id'];
                 $column_value = (empty($_POST['column_value'])) ? array() : $_POST['column_value'];
-                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'India';
+                $_POST['country'] = (isset($_POST['country']) && $_POST['country']!='') ? $_POST['country'] : 'United States';
                 $_POST['state'] = (isset($_POST['country']) && $_POST['country']=='India') ? $_POST['state'] : $_POST['state1'];
 
                 $result = $this->model->updateCustomer($this->user_id, $customer_id, $customer_code, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['mobile'], $_POST['address'], $_POST['address2'], $_POST['city'], $_POST['state'], $_POST['zipcode'], $column_id, $column_value, $excolumn_id, $excolumn_value, $_POST['password'], $_POST['GST'], $_POST['company_name'], $_POST['country']);

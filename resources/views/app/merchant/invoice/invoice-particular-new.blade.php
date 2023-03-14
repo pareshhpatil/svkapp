@@ -202,9 +202,9 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','cost_type','bill_code_detail','group','bill_type','bill_code','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
                                                 $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
-                                                $dropdown_array=array('group','bill_type','bill_code','bill_code_detail','cost_type');
+                                                $dropdown_array=array('group','bill_code','bill_code_detail','cost_type');
                                                @endphp
 
                                                 <tbody>
@@ -224,10 +224,14 @@
                                                                 @if(in_array($k, $dropdown_array))
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
-                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true; " x-on:blur="field.txt{{$k}} = false" @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
+                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
-                                                                            <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                        <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                    <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                            <span style="width:100%;" x-show="field.txt{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
                                                                             <input type="hidden" name="attachments[]" x-model="field.attachments" :id="`attach-${field.pint}`" value=""/>
                                                                             <a @click="showupdatebillcodeattachment(`${field.pint}`);" :id="`attacha-${field.pint}`" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
                                                                                 <i :id="`icon-${field.pint}`"  class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
@@ -241,7 +245,12 @@
                                                                             </div>
                                                                         </div>
                                                                     @elseif($k=='group')
-                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                    <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                        <span :id="`groupspan${field.pint}`" x-show="! field.txtgroup" x-text="field.group"></span>
+                                                                        <span :id="`groupdropdown${field.pint}`" x-show="field.txtgroup" >
+                                                                        <div  :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                        <input type="hidden" name="sub_group[]"  x-model="field.sub_group">
+                                                                         </span>
                                                                     @elseif($k=='bill_type')
                                                                         <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
                                                                             <option value="">Select..</option>
@@ -251,9 +260,17 @@
                                                                             <option value="Cost">Cost</option>
                                                                         </select>
                                                                     @elseif($k=='bill_code_detail')
-                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                    <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                    <span x-show="! field.txt{{$k}}" x-text="field.bill_code_detail"></span>
+                                                                            <span style="width:100%;" x-show="field.txt{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
                                                                     @elseif($k=='cost_type')
-                                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                    <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                    <span x-show="! field.txt{{$k}}"  x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                            <span style="width:100%;" x-show="field.txt{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
                                                                     @else
                                                                         @if($k=='original_contract_amount')
                                                                             <template x-if="field.bill_type!='Calculated'">
@@ -490,13 +507,23 @@
                 $onlyBillCodeJson=str_replace("'","\'",$onlyBillCodeJson);
                 $onlyBillCodeJson=str_replace('"','\\"',$onlyBillCodeJson);
 
+                //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $ArrayBillCodeJson=str_replace("\\",'\\\\', $csi_codes_array); 
+                $ArrayBillCodeJson=str_replace("'","\'",$ArrayBillCodeJson);
+                $ArrayBillCodeJson=str_replace('"','\\"',$ArrayBillCodeJson);
+
                 $merchantCostTypeJson=json_encode($merchant_cost_types);
                 $merchantCostTypeJson=str_replace("\\",'\\\\', $merchantCostTypeJson); 
                 $merchantCostTypeJson=str_replace("'","\'",$merchantCostTypeJson);
                 $merchantCostTypeJson=str_replace('"','\\"',$merchantCostTypeJson);
+
+                $merchantCostTypeJsonArray=str_replace("\\",'\\\\', $cost_types_array); 
+                $merchantCostTypeJsonArray=str_replace("'","\'",$merchantCostTypeJsonArray);
+                $merchantCostTypeJsonArray=str_replace('"','\\"',$merchantCostTypeJsonArray);
             @endphp
 
             csi_codes = JSON.parse('{!! $billcodeJson !!}');
+            csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
             var particularray = JSON.parse('{!! $particularJson !!}');
             //console.log(particularray);
             var previewArray = [];
@@ -509,6 +536,7 @@
             var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
             var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
+            var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
             function initializeParticulars(){
                 this.initializeDropdowns();
                 this.calculateTotal();
@@ -550,7 +578,8 @@
                         $('#description' + v).val( newBillCode.description )
 
                     }
-                    else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
+                    
+                    //else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
 
                 }
                 closeSidePanelBillCode();
@@ -600,6 +629,7 @@
                     group_show: false,
                     bill_code_name: '',
                     bill_code_description: '',
+                    sub_group: '',
                     selected_group: [],
                     panel: true,
                     billcodepanel: false,
@@ -632,6 +662,12 @@
                                 bill_codes.push(
                                     { value: data.billCode.id, label: label, description: data.billCode.description }
                                 )
+                                csi_codes.push(
+                                    { value: data.billCode.id, label: label, description: data.billCode.description }
+                                )
+                                csi_codes_array[data.billCode.id]= { value: data.billCode.id, label: label, description: data.billCode.description }
+
+                                console.log(csi_codes_array);
                                 updateBillCodeDropdowns(bill_codes, data.billCode)
                             }
                         });
@@ -795,6 +831,8 @@
                                          particularray[i].calculated_perc = this.fields[i].calculated_perc;
                                          particularray[i].calculated_row = this.fields[i].calculated_row;
                                          particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
+                                         particularray[i].sub_group = this.fields[i].sub_group;
+                                         particularray[i].group = this.fields[i].group;
                                          particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
                                          particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
                                          particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
@@ -927,7 +965,7 @@
                             if (exist != false) {
                             let pint = this.fields[p].pint;
                             if(particularray[p].bill_code === null || particularray[p].bill_code === '') {
-                                $('#cell_bill_code_' + pint).addClass(' error-corner');
+                               // $('#cell_bill_code_' + pint).addClass(' error-corner');
                                 addPopover('cell_bill_code_' + pint, "Please select Bill code");
                                 this.goAhead = false;
                             }else{
@@ -1373,9 +1411,10 @@
 
                         cost_code_selected=particularray[field].bill_code;
                         cost_type_selected=this.fields[field].cost_type;
-                        this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
-                        this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
-
+                        particularray[field].cost_type=cost_type_selected;
+                        this.virtualSelectInit(pint, 'cost_types',field);
+                        this.virtualSelectInit(pint, 'cost_codes',field);
+                        
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
 
@@ -1586,9 +1625,10 @@
                         //////
 
                         cost_code_selected=particularray[field.pint].bill_code;
-                        cost_type_selected=field.cost_type;
-                        this.virtualSelect('', 'cost_codes', cost_codes, cost_code_selected,null);
-                        this.virtualSelect('', 'cost_types', cost_types, cost_type_selected,null);
+                        particularray[field.pint].cost_type=field.cost_type;
+
+                        this.virtualSelectInit(field.pint, 'cost_types',field.pint);
+                        this.virtualSelectInit(field.pint, 'cost_codes',field.pint);
 
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
@@ -1639,6 +1679,28 @@
 
 
                     },
+                    setdropdowndiv(type,field)
+                    {
+                        if(type=='bill_code')
+                        {
+                            if(field.bill_code>0)
+                            {
+                                return csi_codes_array[field.bill_code].label;
+                            }else{
+                                return '';
+                            }
+                            
+                        }else if(type=='cost_type')
+                        {
+                            if(field.cost_type>0)
+                            {
+                                return cost_types_array[field.cost_type].label;
+                            }else{
+                                return '';
+                            }
+                        }
+                        
+                    },
 
                     init() {
                         console.log('I will get evaluated when initializing each "dropdown" component.')
@@ -1683,6 +1745,8 @@
                                 bill_code: '',
                                 bill_type: '',
                                 group: '',
+                                txtbill_code: true,
+                                txtcost_type: true,
                                 override: true,
                                 bill_code_detail: 'Yes',
                                 cost_type: '',
@@ -1703,25 +1767,28 @@
                             const x = await this.wait(10);
                             id = this.fields.length - 1;
                             this.count = id;
-                            this.virtualSelect(pint, 'bill_code', bill_codes,null,'body',id)
-                            this.virtualSelect(pint, 'group', groups,null,'body',id)
-                            this.virtualSelect(pint, 'cost_type', merchant_cost_types,null,'body',id)
+
+                            //this.virtualSelect(pint, 'bill_code', bill_codes,null,'body',id)
+                           // this.virtualSelect(pint, 'group', groups,null,'body',id)
+                           // this.virtualSelect(pint, 'cost_type', merchant_cost_types,null,'body',id)
                             // this.virtualSelect(id, 'bill_type', bill_types)
-                            this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
+                            //this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
                             this.addbuttonactive=true;
 
-                            setTimeout(function () {
+                            this.virtualSelectInit(pint, 'bill_code');
+                            this.virtualSelectInit(pint, 'cost_type');
+
+                           // setTimeout(function () {
                                 document.getElementById('loader').style.display = 'none';
-                            }, 1000);
+                          //  }, 1000);
                         }
                     },
                     initializeDropdowns(){
                         for(let v=0; v < this.fields.length; v++){
-                            this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,'body',v)
-                            this.virtualSelect(this.fields[v].pint, 'group', groups, this.fields[v].group,'body',v)
-                            this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,'body',v)
+                          //  this.virtualSelect(this.fields[v].pint, 'bill_code', bill_codes, this.fields[v].bill_code,'body',v)
+                          //  this.virtualSelect(this.fields[v].pint, 'cost_type', merchant_cost_types,this.fields[v].cost_type,'body',v)
                             // this.virtualSelect(v, 'bill_type', bill_types, this.fields[v].bill_type)
-                            this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,'body',v)
+                          //  this.virtualSelect(this.fields[v].pint, 'bill_code_detail', bill_code_details, this.fields[v].bill_code_detail,'body',v)
                         }
                     },
                     virtualSelect(id, type, options, selectedValue,dropboxWrapper='body',index){
@@ -1831,6 +1898,143 @@
                         
 
                     },
+                    virtualSelectInit(id, type,index) {
+                    allowNewOption = true;
+                    search = true;
+                    dropboxWrapper = 'body';
+                    vs_class = 'vs-option1';
+
+                    if (type == 'group') {
+						try{
+                             selectedValue = particularray[index].group;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        
+                        options = groups;
+                    } else if (type == 'cost_type') {
+                        options = merchant_cost_types;
+						try{
+                             selectedValue = particularray[index].cost_type;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                    } else if (type == 'bill_code_detail') {
+                        options = bill_code_details;
+						try{
+                             selectedValue = particularray[index].bill_code_detail;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        if (selectedValue == '') {
+                            selectedValue = 'Yes';
+                        }
+                        search = false;
+                    } else if (type == 'bill_code') {
+                        vs_class = 'vs-option';
+                        options = csi_codes;
+                        try{
+                            selectedValue = particularray[index].bill_code;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                    }
+
+
+                    VirtualSelect.init({
+                        ele: '#' + type + id,
+                        options: options,
+                        //name: type + '[]',
+                        dropboxWrapper: dropboxWrapper,
+                        allowNewOption: allowNewOption,
+                        search: search,
+                        multiple: false,
+                        selectedValue: selectedValue,
+                        additionalClasses: vs_class
+                    });
+
+                    $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
+                        $(this).addClass('form-control input-sm mw-150');
+                    })
+
+
+                    $('#' + type + id).change(function() {
+                        if (type === 'bill_code') {
+                            particularray[index].bill_code = this.value;
+                            
+                            let displayValue = this.getDisplayValue().split('|');
+                            if (displayValue[1] !== undefined) {
+                                $('#description' + id).val(displayValue[1].trim())
+                                particularray[index].description = displayValue[1].trim();
+                            }
+                            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(parseInt(this.value))) {
+                                console.log(particularray[index].pint);
+                                //  only_bill_codes.push(this.value)
+                                $('#new_bill_code').val(this.value)
+                                $('#selectedBillCodeId').val(type + id)
+                                billIndex(0, 0, 0)
+                            }
+                        }
+                        if (type === 'group') {
+                            if (!groups.includes(this.value) && this.value !== '') {
+                                groups.push(this.value)
+                                for (let g = 0; g < particularray.length; g++) {
+									try{
+                                    let groupSelector = document.querySelector('#group' + particularray[g].pint);
+
+                                    if ('group' + id === 'group' + particularray[g].pint)
+                                        groupSelector.setOptions(groups, this.value);
+                                    else
+                                        groupSelector.setOptions(groups, particularray[g].group);
+									
+									}catch(o)
+									{}
+                                }
+                            }
+                            particularray[index].group = this.value;
+                        }
+
+                        if (type === 'cost_type') {
+                            particularray[index].cost_type = this.value
+                        }
+
+                        if (type === 'bill_type') {
+                            //console.log(fields);
+                            particularray[index].bill_type = this.value
+                            if (this.value === 'Calculated')
+                                fields[id].bill_type = this.value
+                        }
+
+                        if (type === 'bill_code_detail') {
+                            particularray[index].bill_code_detail = this.value
+                        }
+
+                        if (type === 'cost_codes' || type === 'cost_types') {
+                            //_('filterbutton').click();
+                        }
+                    });
+
+                    
+
+                    $('#' + type + id).on('beforeOpen', function() {
+                        //console.log('#'+type+id)
+                        let dropboxContainer = $('#' + type + id).find('.vscomp-ele-wrapper').attr('aria-controls');
+                        $('#' + dropboxContainer).css('z-index', 4);
+                    });
+                    try {
+                        $("#table-scroll").scroll(function() {
+                          //  document.querySelector('#' + type + id).close();
+                        });
+                    } catch (o) {
+
+                    }
+
+
+                },
                     closeAttachmentPanel(){
                         let attachment_pos = $('#attachment_pos_id').val();
                         let attach_index = $('#index'+attachment_pos).val();

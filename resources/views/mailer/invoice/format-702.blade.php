@@ -50,7 +50,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
 body{
     font-family: Roboto;
     letter-spacing: 0px;
-    line-height: 75%;
+    line-height: 93%;
 }
     </style>
 
@@ -300,29 +300,20 @@ body{
                             </tr>
                             <tr>
                                 <td style="font-size: 12px;padding: 2px;">Total changes approved in previous months by Owner</td>
-                                <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif</td>
+                                <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount_positive']>=0){{number_format($info['last_month_co_amount_positive'],2)}}@else{{0}} @endif </td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['last_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['last_month_co_amount_negative'],2))}})@else{{0}} @endif</td>
                             </tr>
                             <tr>
                                 <td style="font-size: 12px;padding: 2px;">Total approved this month </td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif</td>
-                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif</td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount_positive']>=0){{number_format($info['this_month_co_amount_positive'],2)}}@else{{0}} @endif</td>
+                                <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if($info['this_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['this_month_co_amount_negative'],2))}})@else{{0}} @endif</td>
                             </tr>
                             <tr>
                                 <td style="text-align: right;font-size: 12px;padding: 2px;">TOTAL </td>
                                 @php
-                                    $tt=0;
-                                    $tt1=0;
-                                    if($info['this_month_co_amount']>0)
-                                    $tt=$info['this_month_co_amount'];
-                                    else {
-                                        $tt1=$info['this_month_co_amount'];
-                                    }
-                                    if($info['last_month_co_amount']>0)
-                                    $tt=$tt+$info['last_month_co_amount'];
-                                    else {
-                                        $tt1=$tt1+$info['last_month_co_amount'];
-                                    }
+                                    $tt= $info['total_co_amount_positive'];
+                                    $tt1= $info['total_co_amount_negative'];
+                                    
                                 @endphp
                                 <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>{{number_format($tt,2)}} </td>
                                 <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($info['currency_icon']=='₹')DejaVu Sans;@endif sans-serif;">{{$info['currency_icon']}}</span>@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif</td>
@@ -342,14 +333,7 @@ which previous Certificates for Payment were issued and payments received from t
 that current payment shown herein is now due.</div>
 <div style="margin-top: 5px; font-size: 14px; font-weight: 700">CONTRACTOR:</div>
 <table style="width:100%">
-    <tr>
-    <td style="width: 70%" >
-<div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: {{$metadata['header'][0]['value'] }} </div>
-    </td>
-    <td style="width: 30%"> 
-               <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></div> 
-    </td>
-    </tr>
+    
     </table>
 <div style="margin-top: 0px; font-size: 12px">State of:</div>
 <div style="margin-top: 3px; font-size: 12px">County of:</div>
@@ -374,17 +358,7 @@ that current payment shown herein is now due.</div>
     </table>  
       <div style="margin-top: 0px; font-size: 12px; font-weight: 300;font-style: italic;">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
         Application and on the Continuation Sheet that are changed to conform with the amount certified.)</div>
-        <div style="margin-top: 0px; font-size: 12px; font-weight: 700">ARCHITECT:</div>
-        <table style="width:100%">
-            <tr>
-            <td style="width: 70%" >
-        <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: {{$metadata['header'][0]['value'] }}</div>
-            </td>
-            <td style="width: 30%"> 
-                       <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></div> 
-            </td>
-            </tr>
-            </table>
+        
         <div style="margin-top: 0px; font-size: 12px">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
             named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
             the Owner or Contractor under this Contract.</div>

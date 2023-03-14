@@ -630,6 +630,7 @@ class Invoice extends ParentModel
 
     public function updateInvoiceDetail($request_id, $amount, $ids, $previous_amount = 0)
     {
+        $amount = (is_numeric($amount)) ? $amount : 0; 
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
                 'absolute_cost' => $amount - $previous_amount,
@@ -699,6 +700,7 @@ class Invoice extends ParentModel
                 'cost_code' => $data['cost_code'],
                 'cost_type' => $data['cost_type'],
                 'group' => $data['group'],
+                'sub_group' => $data['sub_group'],
                 'bill_code_detail' => $data['bill_code_detail'],
                 'calculated_perc' => $data['calculated_perc'],
                 'calculated_row' => $data['calculated_row'],
@@ -751,6 +753,7 @@ class Invoice extends ParentModel
                     'cost_code' => $data['cost_code'],
                     'cost_type' => $data['cost_type'],
                     'group' => $data['group'],
+                    'sub_group' => $data['sub_group'],
                     'bill_code_detail' => $data['bill_code_detail'],
                     'calculated_perc' => $data['calculated_perc'],
                     'calculated_row' => $data['calculated_row'],
@@ -847,13 +850,15 @@ class Invoice extends ParentModel
         return $seq_row->prefix . $seprator .  $seq_no;
     }
 
-    public function getChangeOrderAmount($ids, $start_date, $end_date)
+    public function getChangeOrderAmount($ids, $start_date, $end_date, $operator)
     {
         $sum = DB::table('order')
             ->where('approved_date', '>=', $start_date)
             ->where('approved_date', '<', $end_date)
+            ->where('total_change_order_amount', $operator, 0)
             ->wherein('order_id', $ids)
             ->sum('total_change_order_amount');
+            
         return $sum;
     }
 

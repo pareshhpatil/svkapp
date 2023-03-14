@@ -98,8 +98,8 @@ $header='app.patron.invoice.invoice-master';}
         </ul>
     </div>
     </div>
-    <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10"
-       style="max-width: 1400px;">
+    <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10"
+       style="max-width: 1400px; color:#394242;">
 
             <div class="flex flex-row  gap-4">
                 @if($has_aia_license)
@@ -107,20 +107,20 @@ $header='app.patron.invoice.invoice-master';}
                         <img src="{{ asset('images/logo-703.PNG') }}" />
                     </div>
                     <div>
-                        <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G702® – 1992</h1>
+                        <h1 class="text-3xl text-left mt-8 font-bold">Document G702® – 1992</h1>
                     </div>
                 @else
                     <div>
-                        <h1 class="text-3xl text-left font-bold  text-black">Document G702 – 1992</h1>
+                        <h1 class="text-3xl text-left font-bold">Document G702 – 1992</h1>
                     </div>
                 @endif
 
             </div>
-            <h1 class="text-2xl text-left mt-4  font-bold  text-black">Application and Certificate for Payment </h1>
+            <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
             <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
 
             <div>
-                <table width="100%">
+                <table width="100%" >
                     <tr>
                         <td width="25%">
                             <p class="text-xs font-bold">TO OWNER: </p>
@@ -329,29 +329,20 @@ $header='app.patron.invoice.invoice-master';}
                             </tr>
                             <tr>
                                 <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">Total changes approved in previous months by Owner </p></td>
-                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount']>=0){{number_format($info['last_month_co_amount'],2)}}@else{{0}} @endif </p></td>
-                                <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount']<0)({{str_replace('-','',number_format($info['last_month_co_amount'],2))}})@else{{0}} @endif </p> </td>
+                                <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount_positive']>=0){{number_format($info['last_month_co_amount_positive'],2)}}@else{{0}} @endif </p></td>
+                                <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['last_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['last_month_co_amount_negative'],2))}})@else{{0}} @endif </p> </td>
                             </tr>
                             <tr>
                                 <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs">Total approved this month </p></td>
-                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount']>=0){{number_format($info['this_month_co_amount'],2)}}@else{{0}} @endif </p></td>
-                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount']<0)({{str_replace('-','',number_format($info['this_month_co_amount'],2))}})@else{{0}} @endif </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount_positive']>=0){{number_format($info['this_month_co_amount_positive'],2)}}@else{{0}} @endif </p></td>
+                                <td class="border-collapse border border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if($info['this_month_co_amount_negative']<0)({{str_replace('-','',number_format($info['this_month_co_amount_negative'],2))}})@else{{0}} @endif </p></td>
                             </tr>
                             <tr>
                                 <td class="text-right border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs">TOTAL</p> </td>
                                 @php
-                                    $tt=0;
-                                    $tt1=0;
-                                    if($info['this_month_co_amount']>0)
-                                    $tt=$info['this_month_co_amount'];
-                                    else {
-                                        $tt1=$info['this_month_co_amount'];
-                                    }
-                                    if($info['last_month_co_amount']>0)
-                                    $tt=$tt+$info['last_month_co_amount'];
-                                    else {
-                                        $tt1=$tt1+$info['last_month_co_amount'];
-                                    }
+                                    $tt= $info['total_co_amount_positive'];
+                                    $tt1= $info['total_co_amount_negative'];
+                              
                                 @endphp
                                 <td class="border-collapse border-r border-gray-500 py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}{{number_format($tt,2)}} </p></td>
                                 <td class="py-1 px-1"><p class="text-xs text-right">{{$info['currency_icon']}}@if(number_format($tt1,2)<0)({{str_replace('-','',number_format($tt1,2))}}) @else{{number_format($tt1,2)}} @endif </p></td>
@@ -373,17 +364,7 @@ that current payment shown herein is now due.</p>
 
 <p class="font-bold text-sm mt-1">CONTRACTOR:</p>
 <div class="grid grid-cols-3 gap-2 mt-1">
-    <div class="col-span-2">
-<p class="font-normal text-xs mt-1 border-b border-gray-600"> By: {{$metadata['header'][0]['value'] }}</p>
-
-
-</div>
-    <div>
-      
-        <p class="font-normal text-xs border-b   border-gray-600 mt-1">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></p>
-      
-     
-    </div>
+    
 </div>
 <p class="text-xs mt-1">State of: </p>
 <p class="text-xs mt-2">County of:</p>
@@ -411,20 +392,7 @@ that current payment shown herein is now due.</p>
 
     <p class="text-xs font-light mt-1 italic">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
         Application and on the Continuation Sheet that are changed to conform with the amount certified.)</p>
-        <p class="font-bold text-xs mt-1">ARCHITECT:</p>
-        <div class="grid grid-cols-3 gap-2 mt-1">
-            <div class="col-span-2">
-        <p class="font-normal text-xs mt-1 border-b border-gray-600"> By: {{$metadata['header'][0]['value'] }}</p>
-        
-        
-        </div>
-            <div>
-              
-                <p class="font-normal text-xs border-b   border-gray-600 mt-1">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></p>
-              
-             
-            </div>
-        </div>
+        <br>
         <p class="text-xs mt-1">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
             named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
             the Owner or Contractor under this Contract.</p>

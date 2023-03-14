@@ -418,6 +418,8 @@ class UserController extends Controller
                 Session::put('request_demo', $setting->request_demo);
                 Session::put('profile_step', $profile_step);
                 Session::put('currency', $currency);
+                Session::put('custom_menu', $setting->custom_menu);
+
                 $isBankVerified = 0;
                 if ($bankdetail != false) {
                     $isBankVerified = ($bankdetail->verification_status == 2) ? 1 : 0;

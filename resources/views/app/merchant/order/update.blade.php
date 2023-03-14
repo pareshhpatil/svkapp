@@ -67,6 +67,15 @@
     .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
+
+    .vscomp-toggle-button{
+        height: 28px;
+
+    }
+
+    .vs-option {
+        z-index: 99;
+    }
 </style>
 @section('content')
 <div class="page-content">
@@ -171,6 +180,15 @@
                                             Description
                                         </th>
                                         <th class="td-c">
+                                            Group
+                                        </th>
+                                        <th class="td-c">
+                                            Sub group 1
+                                        </th>
+                                        <th class="td-c">
+                                            Sub group 2
+                                        </th>
+                                        <th class="td-c">
 
                                         </th>
                                     </tr>
@@ -224,10 +242,33 @@
                                         <td class="col-id-no">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
+                                        @elseif ($v == 'group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="group[]"  id="group_select{{$key+1}}">
+                                                @if(!empty($group_codes))
+                                                @foreach($group_codes as $value)
+                                                @if($row[$v]==$value)
+                                                <option selected value="{{$value}}">{{$value}}</option>
+                                                @else
+                                                <option value="{{$value}}">{{$value}}</option>
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        @elseif ($v == 'sub_group')
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="sub_group[]"  id="sub_group{{$key+1}}">
+                                                <option value="{{$row[$v]}}">{{$row[$v]}}</option>
+                                                </select>
+                                            </div>
+                                        </td>
                                         @elseif ($v == 'cost_type')
                                         <td class="col-id-no">
-                                            <select style="width:100%;" id="cost_type{{$key+1}}" name="cost_type[]"
-                                            data-placeholder="Type or Select" class="form-control input-sm productselect2" >
+                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))
                                                     @foreach($cost_type_list as $pk=>$vk)
@@ -278,6 +319,9 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -345,9 +389,88 @@
     @if(isset($project_id))
     project_id = {!!$project_id!!};
     @endif
+    @if(isset($group_codes))
+    group_codes = {!!$group_codes_json!!};
+    @endif
 </script>
 @section('footer')
 <script>
+    sub_group_codes = [];
+    rows  = {!!$detail->particulars!!};
+    @if(isset($detail))
+     @foreach($detail->json_particulars as $key=>$row)
+        key  = '{{$key+1}}';
+        VirtualSelect.init({
+            ele: '#group_select'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search or Add new',
+            search: true,
+            options: group_codes
+        });
+
+        $('#group_select'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!group_codes.includes(this.value) && this.value !== '') {
+                group_codes.push(this.value)
+            for (let g = 0; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#group_select' +g);
+
+                if ('group_select' + key === 'group_select' + g)
+                    groupSelector.setOptions(group_codes, this.value);
+                else
+                    groupSelector.setOptions(group_codes,options);
+            }
+        }
+        });
+
+        VirtualSelect.init({
+            ele: '#sub_group'+key,
+            allowNewOption: true,
+            dropboxWrapper: 'body',
+            name: 'sub_group[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search or Add new',
+            search: true,
+            options: sub_group_codes
+        });
+
+        $('#sub_group'+key).change(function() {
+            var options = [
+                { label: this.value, value: this.value }
+            ];
+            if (!sub_group_codes.includes(this.value) && this.value !== '') {
+                sub_group_codes.push(this.value)
+            for (let g = 0; g < rows.length; g++) {
+                let groupSelector = document.querySelector('#sub_group' +g);
+
+                if ('sub_group' + key === 'sub_group' + g)
+                    groupSelector.setOptions(sub_group_codes, this.value);
+                else
+                    groupSelector.setOptions(sub_group_codes,options);
+            }
+        }
+        });
+
+           
+        VirtualSelect.init({
+            ele: '#cost_type'+key,
+            dropboxWrapper: 'body',
+            name: 'cost_type[]',
+            multiple: false,
+            additionalClasses: 'vs-option',
+            searchPlaceholderText: 'Search',
+            search: true
+        });
+
+     @endforeach
+    @endif
     project_id = '{{$detail2->project_id}}'
     projectSelected(project_id)
     $('.tableFixHead').css('max-height', screen.height/2);
