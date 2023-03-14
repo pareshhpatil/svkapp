@@ -70,7 +70,7 @@ class Contract extends ParentModel
                 'created_date' => date('Y-m-d H:i:s')
             ]);
     }
-
+    //DBTodo - remove raw query 
     public function getContractList($merchant_id, $from_date, $to_data, $project, $start='',$limit='')
     {
         $project_cond = "";
@@ -90,7 +90,7 @@ class Contract extends ParentModel
             }
         }
 
-        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
+        $retObj =  DB::select("SELECT a.contract_id,a.contract_code,a.customer_id,a.project_id,a.contract_amount,a.contract_date,a.bill_date,a.billing_frequency,a.created_date,a.last_update_date,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
         FROM contract a
         join project b on a.project_id  = b.id
         join customer c on a.customer_id  = c.customer_id

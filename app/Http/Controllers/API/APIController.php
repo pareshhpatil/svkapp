@@ -10,7 +10,7 @@ class APIController extends Controller
 
     function APIResponse($error_code = '', $srvrsp = '', $errorlist = '', $total_rows = 0)
     {
-        $response['reqtime'] = REQ_TIME;
+        $response['reqtime'] =  date("Y-m-d H:i:s");//REQ_TIME;
         $response['resptime'] = date("Y-m-d H:i:s");
         if ($total_rows == 1) {
             $response['total_records'] = count($srvrsp);
@@ -99,6 +99,11 @@ class APIController extends Controller
         $errors["ER02058"] = "You do not have access to this contract";
         $errors["ER02059"] = "Invalid contract id";
         $errors["ER02060"] = "You do not have access to delete this contract";
+        $errors["ER02061"] = "Please add bill code,bill type,cost type & original contract amount for every particulars";
+        $errors["ER02062"] = "Invalid bill type for particular";
+        $errors["ER02063"] = "Please enter valid bill code ";
+        $errors["ER02064"] = "You do not have access for this contract";
+        $errors["ER02065"] = "Invalid payment request id";
         
         return $errors[$error_code];
     }
