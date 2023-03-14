@@ -59,7 +59,23 @@ class OrderController extends Controller
             $cust_data->customer_code =  $cust_data->company_name ?? null . ' | ' . $cust_data->customer_code ?? null;
         }
         $data["cust_list"] = $cust_list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
         if($userRole == 'Admin') {
             $contractPrivilegesIDs = ['all' => 'full'];
@@ -192,7 +208,22 @@ class OrderController extends Controller
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'change_order_list';
@@ -272,7 +303,22 @@ class OrderController extends Controller
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
             }
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
@@ -318,7 +364,21 @@ class OrderController extends Controller
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
             }
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';

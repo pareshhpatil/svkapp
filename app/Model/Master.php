@@ -63,17 +63,22 @@ class Master extends ParentModel
 
     }
 
-    public function getProjectList($merchant_id, $privilegesIDs = [])
+    public function getProjectList($merchant_id, $privilegesIDs = [], $userRole)
     {
         $ids = implode(",", $privilegesIDs);
-        if (!empty($ids) && !in_array('all', $privilegesIDs)) {
-            $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+        if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            
+            if(empty($ids)) {
+                $retObj = [];
+            } else {
+                $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
                             FROM project a
                             join customer b on a.customer_id = b.customer_id
                             WHERE a.id in($ids)
                             and a.merchant_id = '$merchant_id' 
                             and a.is_active ='1'
                             ORDER by 1 DESC");
+            }
         } else {
             $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
                             FROM project a

@@ -74,7 +74,23 @@ class ContractController extends Controller
         }
         $data["cust_list"] = $cust_list;
         $data["project_id"] = 0;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
         // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
 
@@ -122,7 +138,7 @@ class ContractController extends Controller
         }
 
         Helpers::hasRole(2, 27);
-        $project_list = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs);
+        $project_list = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         if (Route::getCurrentRoute()->getName() == 'contract.create.new') {
             $title = "Create";
             $needValidationOnStep2 = false;
@@ -442,7 +458,22 @@ class ContractController extends Controller
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
         $data['customer_name'] = 'Contact person name';
@@ -488,7 +519,22 @@ class ContractController extends Controller
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'contract_list';
@@ -535,7 +581,21 @@ class ContractController extends Controller
             }
 
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
