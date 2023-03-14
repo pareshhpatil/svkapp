@@ -2725,7 +2725,7 @@ function setVirtualSelectDropdownOrder(numrow) {
             if (!group_codes.includes(this.value) && this.value !== '') {
                 group_codes.push(this.value)
                 rows.push(this.value)
-            for (let g = 0; g < rows.length; g++) {
+            for (let g = 1; g < rows.length; g++) {
                 let groupSelector = document.querySelector('#group_select' +g);
 
                 if ('group_select' + numrow === 'group_select' + g)
