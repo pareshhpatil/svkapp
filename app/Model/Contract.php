@@ -70,8 +70,8 @@ class Contract extends ParentModel
                 'created_date' => date('Y-m-d H:i:s')
             ]);
     }
-
-    public function getContractList($merchant_id, $from_date, $to_data, $project)
+    //DBTodo - remove raw query 
+    public function getContractList($merchant_id, $from_date, $to_data, $project, $start='',$limit='')
     {
         $project_cond = "";
 
@@ -79,7 +79,18 @@ class Contract extends ParentModel
             $project_cond = "AND a.project_id = '$project'";
         }
 
-        $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
+        if($limit!='') {
+            $limit = "limit ".$limit;
+        }
+        if($start!='') {
+            if($start==-1) {
+                $start = "offset 0";
+            }else{
+                $start = "offset ".$start;
+            }
+        }
+
+        $retObj =  DB::select("SELECT a.contract_id,a.contract_code,a.customer_id,a.project_id,a.contract_amount,a.contract_date,a.bill_date,a.billing_frequency,a.created_date,a.last_update_date,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
         FROM contract a
         join project b on a.project_id  = b.id
         join customer c on a.customer_id  = c.customer_id
@@ -88,8 +99,8 @@ class Contract extends ParentModel
         AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
         AND a.is_active ='1'
         AND a.status ='1'
-        ORDER BY a.created_date desc");
-
+        ORDER BY a.created_date desc $limit $start");
+        
         return $retObj;
     }
 

@@ -15,4 +15,15 @@ Route::middleware('auth:sanctum','merchantdata')->group(function () {
     Route::post('/v1/deleteBillCode','ProjectController@deleteBillCode');
     Route::post('/v1/deleteProject','ProjectController@deleteProject');
     Route::post('/v1/updateProject','ProjectController@updateProject');
+
+    Route::post('/v1/createContract','ContractController@createContract');
+    Route::post('/v1/updateContract','ContractController@updateContract');
+    Route::get('/v1/getContractDetails/{contract_id}','ContractController@getContractDetails');
+    Route::post('/v1/getContractList','ContractController@getContractList');
+    Route::post('/v1/deleteContract','ContractController@deleteContract');
+
+    Route::post('/v1/getchangeOrderList','OrderController@getchangeOrderList');
+    Route::post('/v1/getInvoiceList','InvoiceController@getInvoiceList');
+    Route::get('/v1/getInvoiceDetails/{payment_request_id}', 'InvoiceController@getInvoiceDetails');
+    
 });
