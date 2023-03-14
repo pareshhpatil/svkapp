@@ -499,7 +499,7 @@ class User extends ParentModel
             ->collect();
 
         $ruleEngineInvoices = $this->fetchRuleEngineInvoices($privilegesCollect);
-
+        dd($ruleEngineInvoices);
         $customerPrivilegesArray = $ruleEngineInvoices["customer_ids"];
         $projectPrivilegesArray = $ruleEngineInvoices["project_ids"];
         $contractPrivilegesArray = $ruleEngineInvoices["contract_ids"];
