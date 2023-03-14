@@ -87,7 +87,7 @@ class PrivilegesAccess
                 break;
             case 'invoice':
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $userID), true);
-                
+
                 if(in_array('all', array_keys($invoicePrivilegesAccessIDs)) && !in_array($modelID, array_keys($invoicePrivilegesAccessIDs))) {
                     if ($invoicePrivilegesAccessIDs['all'] == 'full' || $invoicePrivilegesAccessIDs['all'] == 'edit' ||  $invoicePrivilegesAccessIDs['all'] == 'approve') {
                         $result = true;
@@ -96,10 +96,14 @@ class PrivilegesAccess
                     if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
                         $result = true;
                     } else {
-                        if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-                            $result = true;
-                        }
+                        dd("check");
                     }
+//                    else {
+//
+//                        if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+//                            $result = true;
+//                        }
+//                    }
 
 //                    if($pathArray[2] == 'create' && (in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs)))) {
 //                        $result = true;
@@ -121,11 +125,12 @@ class PrivilegesAccess
                 } else {
                     if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)) || in_array('approve', array_values($projectPrivilegesAccessIDs)))) {
                         $result = true;
-                    } else {
-                        if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit' || $projectPrivilegesAccessIDs[$modelID] == 'approve')) {
-                            $result = true;
-                        }
                     }
+//                    else {
+//                        if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit' || $projectPrivilegesAccessIDs[$modelID] == 'approve')) {
+//                            $result = true;
+//                        }
+//                    }
                 }
                 break;
         }
