@@ -191,76 +191,76 @@ $header = 'app.patron.invoice.invoice-master';
 
                 </div>
                 <div class='overflow-x-auto w-full mt-4 mb-4'>
-                    <table class=' mx-auto  w-full border-collapse border border-gray-500 overflow-hidden'>
+                    <table class=' mx-auto  w-full border-collapse border border-[#A0ACAC] overflow-hidden'>
                         <thead>
                             <tr class=" text-center">
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> A </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> B </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> C </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center">D </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> E </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> F </td>
-                                <td colspan="2" class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> G
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> A </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> B </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> C </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">D </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> E </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> F </td>
+                                <td colspan="2" class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> G
                                 </td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> H</td>
-                                <td class="border border-gray-500 font-regular text-xs  px-2 py-2 text-center"> I </td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> H</td>
+                                <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> I </td>
                             </tr>
                             <tr class=" text-center ">
-                                <td class=" font-regular text-xs  border-r border-l border-gray-500  px-2 py-2 text-center">
+                                <td class=" font-regular text-xs  border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
                                 </td>
-                                <td class=" font-regular text-xs   border-r border-l border-gray-500  px-2 py-2 text-center">
+                                <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
                                 </td>
-                                <td class=" font-regular text-xs   border-r border-l border-gray-500  px-2 py-2 text-center">
+                                <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
                                 </td>
-                                <td colspan="2" class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td colspan="2" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     WORK COMPLETED </td>
-                                <td class="font-regular text-xs   border-r border-l border-gray-500 px-2 py-2 text-center">
+                                <td class="font-regular text-xs   border-r border-l border-[#A0ACAC] px-2 py-2 text-center">
                                 </td>
-                                <td class=" font-regular text-xs   border-r border-l border-gray-500  px-2 py-2 text-center">
+                                <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
                                 </td>
-                                <td class=" font-regular text-xs   border-r border-l border-gray-500  px-2 py-2 text-center">
+                                <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
                                 </td>
-                                <td class=" font-regular text-xs   border-r border-l border-gray-500 px-2 py-2 text-center">
+                                <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC] px-2 py-2 text-center">
                                 </td>
 
                             </tr>
                             <tr class=" text-center">
-                                <td style="min-width:70px" class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td style="min-width:70px" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     ITEM
                                     NO. </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     DESCRIPTION
                                     OF WORK </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     SCHEDULED
                                     VALUE </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     FROM
                                     PREVIOUS APPLICATION
                                     <br />(D + E)
                                 </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     THIS PERIOD
                                 </td>
-                                <td class="border-b border-r border-l border-gray-500  font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC]  font-regular text-xs  px-2 py-2 text-center">
                                     MATERIALS
                                     PRESENTLY
                                     STORED<br />
                                     (Not in D or E) </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     TOTAL
                                     COMPLETED AND
                                     STORED TO DATE<br />
                                     (D+E+F) </td>
-                                <td style="min-width:80px" class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td style="min-width:80px" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     %(G ÷ C)
                                 </td>
 
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     BALANCE TO
                                     FINISH<br />
                                     (C – G) </td>
-                                <td class="border-b border-r border-l border-gray-500 font-regular text-xs  px-2 py-2 text-center">
+                                <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
                                     RETAINAGE
                                     <br />(If variable rate)
                                 </td>
@@ -290,7 +290,7 @@ $header = 'app.patron.invoice.invoice-master';
                             @endphp
                             @if ($item['type'] == 'heading')
                             <tr>
-                                <td colspan="10" class="border border-gray-500 px-2 py-2 text-left">
+                                <td colspan="10" class="border border-[#A0ACAC] px-2 py-2 text-left">
 
                                     <p class="text-sm" style="color: #6F8181;">{{ $item['b'] }} </p>
 
@@ -323,28 +323,28 @@ $header = 'app.patron.invoice.invoice-master';
                             </tr>
                             @elseif ($item['type'] == 'sub-footer')
                             <tr>
-                                <td class="border border-gray-500 px-2 py-2" style="border-right: none;">
+                                <td class="border border-[#A0ACAC] px-2 py-2" style="border-right: none;">
                                     <p class="text-sm" style="color: #6F8181;"></p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-left" style="border-left: none;">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-left" style="border-left: none;">
                                     <p class="text-sm" style="color: #6F8181;"> {{ $item['b'] }}</p>
                                 </td>
 
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
                                 </td>
                                 @php
@@ -357,37 +357,37 @@ $header = 'app.patron.invoice.invoice-master';
                                 $sub_total_g_by_c=0;
                                 }
                                 @endphp
-                                <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right" style="min-width: 90px;">
                                     <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                 </td>
                             </tr>
                             @elseif ($item['type'] == 'footer')
                             <tr>
-                                <td colspan="2" class="border border-gray-500 px-2 py-2 text-left">
+                                <td colspan="2" class="border border-[#A0ACAC] px-2 py-2 text-left">
                                     <p class="text-sm" style="color: #6F8181;"> {{ $item['b'] }}</p>
                                 </td>
 
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</p>
                                 </td>
                                 @php
@@ -400,19 +400,19 @@ $header = 'app.patron.invoice.invoice-master';
                                 $sub_total_g_by_c=0;
                                 }
                                 @endphp
-                                <td class="border border-gray-500 px-2 py-2 text-right" style="min-width: 90px;">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right" style="min-width: 90px;">
                                     <p class="text-sm"> @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}})@else{{number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                 </td>
                             </tr>
                             @elseif ($item['type'] == 'combine')
                             <tr>
-                                <td colspan="2" class=" border border-gray-500 px-2 py-2 text-left">
+                                <td colspan="2" class=" border border-[#A0ACAC] px-2 py-2 text-left">
 
                                     <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
                                         <a href="/{{ $info['user_type'] }}/invoice/document/{{ $info['Url'] }}/{{ str_replace(' ', '_', strlen($item['b']) > 7 ? substr($item['b'], 0, 7) : $item['b'])}}/@if(empty($item['group_name'])){{ str_replace(' ', '_', strlen($item['a']) > 7 ? substr($item['a'], 0, 7) : $item['a'])}}@else{{str_replace(' ', '_', strlen($item['group_name']) > 7 ? substr($item['group_name'], 0, 7) : $item['group_name'])}}@endif/{{ $item['attachment'] }}">
@@ -423,44 +423,44 @@ $header = 'app.patron.invoice.invoice-master';
 
                                 </td>
 
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif </p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['g'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per'] * 100,2))}}) @else{{ number_format($item['g_per'] * 100, 2) }}@endif%</p>
 
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif </p>
                                 </td>
-                                <td class="border border-gray-500 px-2 py-2 text-right">
+                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                 </td>
 
                             </tr>
                             @else
                             <tr class="border-row">
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-left">
 
                                     <p class="text-sm">{{ $item['a'] }} </p>
 
 
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-left">
 
                                     @if (isset($item['group_name']))
                                     <p class="text-sm">{{ $item['b'] }} @if (!empty($item['attachment']))
@@ -476,31 +476,31 @@ $header = 'app.patron.invoice.invoice-master';
                                     </p>
                                     @endif
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif </p>
 
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['d'] < 0)({{str_replace('-','',number_format($item['d'],2))}}) @else{{ number_format($item['d'],2) }} @endif</p>
 
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</p>
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g'] < 0)({{str_replace('-','',number_format($item['g'],2))}}) @else{{ number_format($item['g'],2) }} @endif</p>
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2)}}@endif%</p>
 
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</p>
                                 </td>
-                                <td class="border-r border-l border-gray-500 px-2 py-2 text-right">
+                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</p>
                                 </td>
 
@@ -509,39 +509,39 @@ $header = 'app.patron.invoice.invoice-master';
                             @endforeach
 
                             <tr>
-                                <td style="min-width: 40px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-left">
+                                <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-left">
 
                                     <p class="text-sm"> </p>
 
 
                                 </td>
-                                <td style="min-width: 40px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-left">
+                                <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-left">
                                     <p class="text-xs"><b>GRAND TOTAL</b> </p>
 
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_c'] < 0) ({{str_replace('-','',number_format($info['total_c'],2))}}) @else{{ number_format($info['total_c'], 2) }} @endif </p>
 
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_d'] < 0) ({{str_replace('-','',number_format($info['total_d'],2))}}) @else{{ number_format($info['total_d'], 2) }} @endif </p>
                                 </td>
-                                <td style="min-width: 90px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 90px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_e'] < 0)({{str_replace('-','',number_format($info['total_e'],2))}}) @else{{ number_format($info['total_e'], 2) }}@endif </p>
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_f'] < 0) ({{str_replace('-','',number_format($info['total_f'],2))}}) @else{{ number_format($info['total_f'], 2) }} @endif </p>
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_g'] < 0) ({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{ number_format($info['total_g'], 2) }} @endif </p>
                                 </td>
-                                <td style="min-width: 40px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($info['total_c']!=0)@if($info['total_g']/$info['total_c'] < 0) ({{str_replace('-','',number_format($info['total_g']/$info['total_c'] * 100,2))}}) @else{{ number_format($info['total_g']/$info['total_c'] * 100, 2) }} @endif @else 0 @endif%</p>
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> {{ $info['currency_icon'] }}@if($info['total_h'] < 0) ({{str_replace('-','',number_format($info['total_h'],2))}}) @else{{ number_format($info['total_h'], 2) }} @endif </p>
                                 </td>
-                                <td style="min-width: 70px" class="border-r border-t border-l border-gray-500 px-2 py-2 text-right">
+                                <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">{{ $info['currency_icon'] }}@if($info['total_i'] < 0) ({{str_replace('-','',number_format($info['total_i'],2))}}) @else{{ number_format($info['total_i'], 2) }} @endif </p>
                                 </td>
                             </tr>
