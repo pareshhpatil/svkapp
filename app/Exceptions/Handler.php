@@ -63,26 +63,25 @@ class Handler extends ExceptionHandler
             App::make("SwipezLegacyFramework");
             die();
         }
-        
+
         //this is only for apis request to handle unatheticated exception
         $is_api_request = $request->route()->getPrefix() === 'api';
-        if($is_api_request) {
+        if ($is_api_request) {
             $this->apiController = new APIController();
-            define('REQ_TIME', date("Y-m-d H:i:s"));
+            //define('REQ_TIME', date("Y-m-d H:i:s"));
             if ($exception instanceof AuthenticationException) {
                 return response()->json($this->apiController->APIResponse('ER02056'), 401);
             } else {
                 return response()->json($this->apiController->APIResponse('ER02057'), 401);
             }
-        } 
+        }
 
         $response = parent::render($request, $exception);
-        if(env('APP_ENV')=='LOCAL' || env('APP_ENV')=='DEV') {
+        if (env('APP_ENV') == 'LOCAL' || env('APP_ENV') == 'DEV') {
             dd($exception);
             return $response;
         }
 
         return response(view('errors.system', ['status' =>  $response->status()]), $response->status());
     }
-
 }

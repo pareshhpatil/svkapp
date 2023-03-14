@@ -32,7 +32,7 @@ use App\Model\CostType;
 use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
-use App;
+use App\Http\Controllers\API\APIController;
 
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
@@ -43,6 +43,8 @@ class InvoiceController extends AppController
 
     private $invoiceModel;
     private $parentModel;
+    private $apiController = null;
+
     public function __construct()
     {
 
@@ -52,7 +54,7 @@ class InvoiceController extends AppController
         $this->parentModel = new ParentModel();
         $this->formatModel = new InvoiceFormat();
         $this->inventory_service_id = Encrypt::encode('15'); //15 service_id
-
+        $this->apiController = new APIController();
     }
     /**
      * Renders form to create invoice
@@ -5358,5 +5360,35 @@ class InvoiceController extends AppController
         $response['id'] = $id;
         $response['status'] = 1;
         echo json_encode($response);
+    }
+
+    public function getInvoiceList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'start' => 'numeric',
+            'limit' => 'numeric',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
+        }
+        $start = ($request->start > 0) ? $request->start : -1;
+        $limit = ($request->limit > 0) ? $request->limit : 15;
+        $from_date = isset($request->from_date) ? Helpers::sqlDate($request->from_date) : date('Y-m-d', strtotime(date('01 M Y')));
+        $to_date = isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
+        //$invoice_status =  isset($request->invoice_status) ? $request->invoice_status : '0';
+
+        $list = $this->invoiceModel->getInvoiceList($request->merchant_id, $from_date, $to_date, $start, $limit);
+
+        $response['lastno'] = count($list) + $start;
+        $response['list'] = $list;
+        return response()->json($this->apiController->APIResponse('', $response), 200);
+    }
+
+    public function getInvoiceDetails($payment_request_id)
+    {
+        if ($payment_request_id != null) {
+            $info =  $this->invoiceModel->getInvoiceDetails($payment_request_id);
+            return response()->json($this->apiController->APIResponse('', $info), 200);
+        }
     }
 }

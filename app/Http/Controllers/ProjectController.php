@@ -54,14 +54,16 @@ class ProjectController extends Controller
 
     function getProjectDetails($project_id) {
         if($project_id!=null) {
-            $projectDetails = $this->projectModel->getTableRow('project', 'id', $project_id);
+            $projectDetails = $this->projectModel->getTableRow('project', 'id', $project_id,1);
             return response()->json($this->apiController->APIResponse('',$projectDetails), 200);
         }
     }
 
     function createProject(Request $request) {
         $validator = Validator::make($request->all(), [
+            'project_id' => 'required|max:45',
             'project_name' => 'required|max:100',
+            'customer_id'=> 'required',
             'start_date' => 'required',
             'end_date' => 'required'
         ]);
@@ -114,7 +116,9 @@ class ProjectController extends Controller
 
     function updateProject(Request $request){
         $validator = Validator::make($request->all(), [
+            //'project_id' => 'required|max:45',
             'project_name' => 'required|max:100',
+            'customer_id'=> 'required',
             'start_date' => 'required',
             'end_date' => 'required'
         ]);
@@ -190,7 +194,7 @@ class ProjectController extends Controller
 
     function getBillCodeDetails($billcode_id) {
         if($billcode_id!=null) {
-            $billCodeDetails = $this->projectModel->getTableRow('csi_code', 'id', $billcode_id);
+            $billCodeDetails = $this->projectModel->getTableRow('csi_code', 'id', $billcode_id,1);
             return response()->json($this->apiController->APIResponse('',$billCodeDetails), 200);
         }
     }

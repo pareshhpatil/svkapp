@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\APIController;
+use Illuminate\Support\Str;
 
 class ContractController extends Controller
 {
@@ -33,7 +35,8 @@ class ContractController extends Controller
     private $invoiceModel = null;
     private $merchant_id = null;
     private $user_id = null;
-
+    private $apiController = null;
+    private $costTypeModel = null;
     //    use ContractParticulars;
 
     public function __construct()
@@ -41,9 +44,10 @@ class ContractController extends Controller
         $this->contract_model = new Contract();
         $this->masterModel = new Master();
         $this->invoiceModel = new Invoice();
-
+        $this->costTypeModel = new CostType();
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
+        $this->apiController = new APIController();
     }
 
     public function create($version = null)
@@ -169,7 +173,6 @@ class ContractController extends Controller
             $contract = ContractParticular::find(Encrypt::decode($request->contract_id));
             $bulk_id = $contract->bulk_id;
         }
-
         switch ($step) {
             case 1:
                 $response = $this->step1Store($request, $contract);
@@ -209,14 +212,13 @@ class ContractController extends Controller
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-
+        
         if (is_null($contract))
             $contract = ContractParticular::create($data);
         else {
             $data = $this->checkIfProjectIsChanged($data, $contract);
             $contract->update($data);
         }
-
         return $contract;
     }
 
@@ -713,6 +715,216 @@ class ContractController extends Controller
             // $data  = [$request->bill_code, $request->bill_description, $request->bill_id,];
             $id = Encrypt::encode($request->project_id);
             return redirect('/merchant/code/list/' . $id)->with('success', "Record has been updated");
+        }
+    }
+
+    /*api function - delete contract  */
+
+    public function deleteContract(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'contract_id' => 'required|numeric'
+            ]);
+            if ($validator->fails()) {
+                return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+            }
+            $this->masterModel->deleteTableRow('contract', 'contract_id', $request->contract_id, $request->merchant_id, $request->user_id);
+            $response['contract_id'] = $request->contract_id;
+            return response()->json($this->apiController->APIResponse('',$response), 200);
+        } catch (Exception $e) {
+            Log::error('Error while deleting contract :' . $e->getMessage());
+        }
+    }
+
+    public function getContractList(Request $request) {
+       
+        $validator = Validator::make($request->all(), [
+            'start' => 'numeric',
+            'limit' => 'numeric',
+            'project_id' => 'numeric'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+        }
+        $start = ($request->start > 0) ? $request->start : -1;
+        $limit = ($request->limit > 0) ? $request->limit : 15;
+        $from_date = isset($request->from_date) ? Helpers::sqlDate($request->from_date) : date('Y-m-d', strtotime(date('01 M Y')));
+        $to_date= isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
+
+        $list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id,$start,$limit);
+        $response['lastno'] = count($list) + $start;
+        $response['list'] = $list;
+        return response()->json($this->apiController->APIResponse('',$response), 200);
+    }
+
+    public function getContractDetails($contract_id) {
+        if($contract_id!=null) {
+            $contractDetails = $this->contract_model->getTableRow('contract', 'contract_id', $contract_id, 1);
+            return response()->json($this->apiController->APIResponse('',$contractDetails), 200);
+        }
+    }
+    
+    public function createContract(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'contract_code' => 'required',
+            'project_id' => 'required',
+            'contract_date' => 'required',
+            'bill_date' => 'required',
+            'billing_frequency' => 'required',
+            'project_address' => 'required',
+            'owner_address' => 'required',
+            'contractor_address' => 'required',
+            'architect_address' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+        }
+
+        $data = $validator->validated();
+        
+        $project = $this->getProject($request->project_id);
+
+        $data['customer_id'] = $project->customer_id;
+        $data['contract_date'] = Helpers::sqlDate($data['contract_date']);
+        $data['bill_date'] = Helpers::sqlDate($data['bill_date']);
+        $data['created_by'] = $request->user_id;
+        $data['last_update_by'] = $request->user_id;
+        $data['created_date'] = date('Y-m-d H:i:s');
+        $data['merchant_id']= $request->merchant_id;
+        $data['particulars'] = $request->particulars;
+
+        $contract_amt=0;
+        if(!empty($data['particulars'])) {
+            foreach($data['particulars'] as $p=>$particular)
+            {
+                //dd($particular);
+                if($particular['bill_code']==null || $particular['cost_type']==null || $particular['original_contract_amount']==null || $particular['bill_type']==null) {
+                    return response()->json($this->apiController->APIResponse('ER02061'), 422);
+                } else if(!in_array($particular['bill_type'],array('% Complete','Unit','Calculated','Cost'))) {
+                    return response()->json($this->apiController->APIResponse('ER02062'), 422);
+                } else {
+                    $billCode =  $this->contract_model->getTableRow('csi_code', 'id', $particular['bill_code']);
+                    $data['particulars'][$p]['description'] = $billCode->description;
+                    $data['particulars'][$p]['introw'] = $p;
+                    $data['particulars'][$p]['pint'] = $p;
+                    $data['particulars'][$p]['project'] = $project->project_id;
+                    
+                    //find cost type and fetch id or save as new cost type
+                    $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'],$request->merchant_id,$request->user_id);
+                    
+                    if($particular['bill_type']!='Calculated') {
+                        $data['particulars'][$p]['calculated_perc']=null;
+                        $data['particulars'][$p]['calculated_row']=null;
+                    } else {
+
+                    }
+                    if($particular['retainage_percent'] > 0) {
+                        $data['particulars'][$p]['retainage_amount']=$particular['original_contract_amount']*$particular['retainage_percent']/100;
+                    } else {
+                        $data['particulars'][$p]['retainage_amount']=0;
+                    }
+                    $data['particulars'][$p]['show'] = false;
+                    $contract_amt = $contract_amt + $particular['original_contract_amount'];
+                }
+            }
+        }
+
+        $data['contract_amount'] = $contract_amt;
+        $data['particulars'] = json_encode($data['particulars']);
+        $data['status'] = 1;
+        $data['version'] = "v1";
+        $contract = ContractParticular::create($data);
+        if($contract!=null) {
+            return response()->json($this->apiController->APIResponse('',$contract), 200);
+        } else {
+            return response()->json($this->apiController->APIResponse('ER02057'), 422);
+        }
+    }
+
+    public function updateContract(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'contract_id' => 'required',
+            'contract_code' => 'required',
+            'project_id' => 'required',
+            'contract_date' => 'required',
+            'bill_date' => 'required',
+            'billing_frequency' => 'required',
+            'project_address' => 'required',
+            'owner_address' => 'required',
+            'contractor_address' => 'required',
+            'architect_address' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+        }
+
+        $data = $validator->validated();
+        $project = $this->getProject($request->project_id);
+        $data['customer_id'] = $project->customer_id;
+        $data['contract_date'] = Helpers::sqlDate($data['contract_date']);
+        $data['bill_date'] = Helpers::sqlDate($data['bill_date']);
+        $data['created_by'] = $request->user_id;
+        $data['last_update_by'] = $request->user_id;
+        $data['created_date'] = date('Y-m-d H:i:s');
+        $data['merchant_id']= $request->merchant_id;
+        $data['particulars'] = $request->particulars;
+
+        if ($request->contract_id) {
+            $contract = ContractParticular::find($request->contract_id);
+
+            $contract_amt=0;
+            if(!empty($data['particulars'])) {
+                foreach($data['particulars'] as $p=>$particular)
+                {
+                    //dd($particular);
+                    if($particular['bill_code']==null || $particular['cost_type']==null || $particular['original_contract_amount']==null || $particular['bill_type']==null) {
+                        return response()->json($this->apiController->APIResponse('ER02061'), 422);
+                    } else if(!in_array($particular['bill_type'],array('% Complete','Unit','Calculated','Cost'))) {
+                        return response()->json($this->apiController->APIResponse('ER02062'), 422);
+                    } else {
+                        $billCode =  $this->contract_model->getTableRow('csi_code', 'id', $particular['bill_code']);
+                        if($billCode->project_id==$request->project_id) {
+                            $data['particulars'][$p]['description'] = $billCode->description;
+                            $data['particulars'][$p]['introw'] = $p;
+                            $data['particulars'][$p]['pint'] = $p;
+                            $data['particulars'][$p]['project'] = $project->project_id;
+                            
+                            //find cost type and fetch id or save as new cost type
+                            $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'],$request->merchant_id,$request->user_id);
+                            
+                            if($particular['bill_type']!='Calculated') {
+                                $data['particulars'][$p]['calculated_perc']=null;
+                                $data['particulars'][$p]['calculated_row']=null;
+                            } else {
+
+                            }
+                            if($particular['retainage_percent'] > 0) {
+                                $data['particulars'][$p]['retainage_amount']=$particular['original_contract_amount']*$particular['retainage_percent']/100;
+                            }else {
+                                $data['particulars'][$p]['retainage_amount']=0;
+                            }
+                            $data['particulars'][$p]['show'] = false;
+                            $contract_amt = $contract_amt + $particular['original_contract_amount'];
+                        } else {
+                            $p=$p+1;
+                            $res = $this->apiController->APIResponse('ER02063');
+                            $res['errmsg'] = $res['errmsg'] . ' for '.$p.' particulars row';
+                            return response()->json($res, 422);
+                        }
+                    }
+                }
+            }
+
+            $data['contract_amount'] = $contract_amt;
+            $data['particulars'] = json_encode($data['particulars']);
+            $contract->update($data);
+            if($contract!=null) {
+                return response()->json($this->apiController->APIResponse('',$contract), 200);
+            } else {
+                return response()->json($this->apiController->APIResponse('ER02057'), 422);
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ class MerchantData
     {
         
         if (Auth::check()) {
-            define('REQ_TIME', date("Y-m-d H:i:s"));
+            //define('REQ_TIME', date("Y-m-d H:i:s"));
             $user = Auth::user();
             $request->user = $user;
             $request->user_id = $user->user_id;
@@ -76,6 +76,37 @@ class MerchantData
             case('updateProject'):
                 $this->checkAccess('customer','customer_id',$request->customer_id,'merchant_id', 'ER02051','ER02055',$request);
                 $this->checkAccess('project','id',$request->project_id,'merchant_id', 'ER02052','ER02053',$request);
+                break;
+            case('getContractDetails'):
+                $parameters = $request->route()->parameter('contract_id');
+                $this->checkAccess('contract','contract_id',$parameters,'merchant_id','ER02058', 'ER02059',$request);
+                break;
+            case('deleteContract'):
+                $this->checkAccess('contract','contract_id',$request->contract_id,'merchant_id','ER02060', 'ER02059',$request);
+                break;
+            case('createContract'):
+                break;
+            case('updateContract'):
+                break;
+            case('getchangeOrderList'):
+                if($request->contract_id!='') {
+                    $this->checkAccess('contract','contract_id',$request->contract_id,'merchant_id','ER02064', 'ER02059',$request);
+                }
+                break;
+            case('getInvoiceDetails'):
+                $model = new ParentModel();
+                $this->apiController = new APIController();
+                $parameters = $request->route()->parameter('payment_request_id');
+                $getProjectMerchant = $model->getColumnValue('payment_request','payment_request_id', $parameters, 'merchant_id');
+                if($getProjectMerchant!=false) {
+                    if($getProjectMerchant!=$request->merchant_id) {    
+                        echo json_encode($this->apiController->APIResponse('ER02065'));
+                        dd();
+                    }
+                } else {
+                    echo json_encode($this->apiController->APIResponse('ER02065'));
+                    dd();
+                }
                 break;
         }
     }
