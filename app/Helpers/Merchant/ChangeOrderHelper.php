@@ -63,7 +63,7 @@ class ChangeOrderHelper
                 ->whereIn('type_id', [$orderDetail->order_id, 'all'])->values();
 
             $changeOrderUsersWithFullAccess = $ChangeOrderCollect->map(function ($ChangeOrder) use($orderDetail) {
-                $userIDs = [];
+                //$userIDs = [];
 
                 if($ChangeOrder->type_id == $orderDetail->order_id || $ChangeOrder->type_id == 'all') {
                     if(!empty($ChangeOrder->rule_engine_query)) {
@@ -71,16 +71,16 @@ class ChangeOrderHelper
                         $ids = (new RuleEngineManager('order_id', $ChangeOrder->type_id, $ruleEngineQuery))->run();
 
                         if(!empty($ids)) {
-                            if(in_array($orderDetail->order_id, $ids)) {
-                                $userIDs[] = $ChangeOrder->user_id;
-                            }
+//                            if(in_array($orderDetail->order_id, $ids)) {
+                            return $ChangeOrder->user_id;
+//                            }
                         }
                     } else {
-                        $userIDs[] = $ChangeOrder->user_id;
+                        return $ChangeOrder->user_id;
                     }
                 }
 
-                return $userIDs;
+                return '';
             });
 
 
@@ -110,9 +110,9 @@ class ChangeOrderHelper
 //                }
 
             foreach ($Users as $User) {
-                if(!empty($User->fcm_token)) {
+//                if(!empty($User->fcm_token)) {
                     $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
-                }
+//                }
             }
         }
     }

@@ -21,7 +21,6 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        TestJob::dispatch();
-        //TestJob::dispatch()->onQueue('promotion-sms-dev')->onConnection('sqs');
+        TestJob::dispatch()->onQueue('promotion-sms-dev');
     }
 }

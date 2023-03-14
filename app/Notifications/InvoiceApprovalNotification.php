@@ -55,7 +55,9 @@ class InvoiceApprovalNotification extends Notification
         }
 
         if($preferences->send_push == 1) {
-            $channels[] = 'firebase';
+            if (!empty($this->User->fcm_token)) {
+                $channels[] = 'firebase';
+            }
         }
 
         $channels[] = 'database';
