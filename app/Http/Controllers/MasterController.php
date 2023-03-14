@@ -191,7 +191,7 @@ class MasterController extends AppController
         $where = '';
         if($userRole != 'Admin') {
             $customerIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
-
+            dd($userRole, $customerIDs);
             $customerWhereIds = [];
             foreach ($customerIDs as $key => $customerID) {
                 if($customerID == 'full') {
