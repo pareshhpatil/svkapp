@@ -201,13 +201,17 @@ class MasterController extends AppController
             if(!empty($customerWhereIds)) {
                 $ids = implode(",", $customerWhereIds);
                 $where = "WHERE customer_id in($ids)";
+                $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
+            } else {
+                $cust_list = [];
             }
         }
 
         $title = 'Create Project';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
-        $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
+        $data["cust_list"] = $cust_list;
+
         $model = new InvoiceFormat();
         $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
         $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
