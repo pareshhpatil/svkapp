@@ -606,7 +606,7 @@ class Controller
                 }
                 $custom_menu = $this->session->get('custom_menu');
                 if ($custom_menu == 1) {
-                    $list = $this->common->getListValue('merchant_menu', 'merchant_id', $this->merchant_id, 1, '  order by seq,id');
+                    $list = $this->common->getListValue('user_menu', 'merchant_id', $this->user_id, 1, '  order by seq,id');
                 } else {
                     $list = $this->common->getListValue('menu', 'is_active', 1, '  order by seq,id');
                 }
