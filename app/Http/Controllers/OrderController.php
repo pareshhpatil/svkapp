@@ -218,7 +218,7 @@ class OrderController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if($privilegesID == 'full' || $privilegesID == 'edit') {
                 $whereProjectIDs[] = $key;
             }
         }
