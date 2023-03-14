@@ -47,6 +47,8 @@ class OrderController extends Controller
         $particulars = null;
 
         Session::put('valid_ajax', 'expense');
+        $userRole = Session::get('user_role');
+
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3, 180]);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
@@ -59,7 +61,22 @@ class OrderController extends Controller
         $data["cust_list"] = $cust_list;
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        if($userRole == 'Admin') {
+            $contractPrivilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
 
         $data['project_id'] = 0;
         if (isset($request->contract_id)) {
@@ -191,7 +208,7 @@ class OrderController extends Controller
             }
         }
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs);
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');

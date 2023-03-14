@@ -17,6 +17,7 @@ namespace App\Model;
 use Illuminate\Support\Facades\DB;
 use App\Model\ParentModel;
 use App\Constants\Models\ITable;
+use Illuminate\Support\Facades\Session;
 
 class Invoice extends ParentModel
 {
@@ -102,9 +103,9 @@ class Invoice extends ParentModel
         return $data;
     }
 
-    public function getContract($merchant_id, $privilegesIDs = [])
+    public function getContract($merchant_id, $privilegesIDs = [], $userRole)
     {
-        if (!empty($privilegesIDs) && !in_array('all', $privilegesIDs)) {
+        if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
             $retObj = DB::table('contract as c')
                 ->select(DB::raw('*'))
                 ->join('project as p', 'p.id', '=', 'c.project_id')

@@ -108,7 +108,24 @@ class InvoiceController extends AppController
 
 
         $data['contract_id'] = 0;
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $contractPrivilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -281,7 +298,7 @@ class InvoiceController extends AppController
             }
         }
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs);
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -510,7 +527,23 @@ class InvoiceController extends AppController
             }
 
             if ($info->template_type == 'construction') {
-                $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+                $userRole = Session::get('user_role');
+                if($userRole == 'Admin') {
+                    $contractPrivilegesIDs = ['all' => 'full'];
+                } else {
+                    //get privileges from redis
+                    $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+                }
+
+                //contracts from privileges
+                $whereContractIDs = [];
+                foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+                    if($contractPrivilegesID == 'full') {
+                        $whereContractIDs[] = $key;
+                    }
+                }
+
+                $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
                 $data['invoice_particular'] = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             }
 
@@ -709,8 +742,23 @@ class InvoiceController extends AppController
         }
         if ($data['type'] == 'construction') {
             // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
+            $userRole = Session::get('user_role');
 
-            $contract = $this->invoiceModel->getContractDetail($data['contract_id']);
+            if($userRole == 'Admin') {
+                $contractPrivilegesIDs = ['all' => 'full'];
+            } else {
+                //get privileges from redis
+                $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            }
+
+            //contracts from privileges
+            $whereContractIDs = [];
+            foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+                if($contractPrivilegesID == 'full') {
+                    $whereContractIDs[] = $key;
+                }
+            }
+            $contract = $this->invoiceModel->getContractDetail($data['contract_id'], $whereContractIDs, $userRole);
             $model = new Master();
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $contract->id);
 
