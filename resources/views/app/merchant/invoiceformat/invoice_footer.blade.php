@@ -125,7 +125,7 @@ $validate=(array)$validate;
         <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             @csrf
             <div class="col-md-4 pull-left btn-pl-0">
-                @if(!empty($info['invoice_access']) && $info['invoice_access'] == 'all-full')
+                @if(!empty($info['invoice_access']) && $info['invoice_access'] == 'full')
                     <div class="input-icon">
                         <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
                         <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
@@ -139,16 +139,16 @@ $validate=(array)$validate;
 
             <div class="view-footer-btn-rht-align">
                 @if(!empty($invoice_access))
-                    @if($info['payment_request_status'] == 14 && $invoice_access == 'all-full')
+                    @if($info['payment_request_status'] == 14 && $invoice_access == 'full')
                         <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                    @elseif($invoice_access == 'all-full')
+                    @elseif($invoice_access == 'full')
                         @if($info['notify_patron'] == 1)
                             <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
                         @else
                             <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
                         @endif
                         {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                    @elseif($info['payment_request_status'] == 14 && ($invoice_access == 'edit' || $invoice_access == 'all-edit'))
+                    @elseif($info['payment_request_status'] == 14 && $invoice_access == 'edit')
                         <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
                     @elseif($info['payment_request_status'] != 14)
                         <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
@@ -171,24 +171,30 @@ $validate=(array)$validate;
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#convert">
             Convert to Invoice
         </a>
-        <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
-            Settle
-        </a>
-        @endif
-        @else
-            <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
+        @if($invoice_access == 'full' || $invoice_access == 'approve')
+            <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
                 Settle
             </a>
         @endif
         @endif
+        @else
+            @if($invoice_access == 'full' || $invoice_access == 'approve')
+                <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
+                    Settle
+                </a>
+            @endif
+        @endif
+        @endif
         @endif
         @if($info['payment_request_status']!=6 && $info['payment_request_status']!=7)
-        <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
+            @if($invoice_access == 'full' || $invoice_access == 'edit' || $invoice_access == 'approve')
+                <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
 
-            <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$info['Url']}}">
-                Update @if($info['invoice_type']==1) invoice @else estimate @endif
-            </a>
-        </div>
+                    <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$info['Url']}}">
+                        Update @if($info['invoice_type']==1) invoice @else estimate @endif
+                    </a>
+                </div>
+            @endif
         @endif
         @if($info['payment_request_status']!=11)
         @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file'] ==1)

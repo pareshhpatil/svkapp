@@ -933,7 +933,7 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-        
+
         if(!empty($notificationID)) {
             /** @var Notification $Notification */
             $Notification = Notification::findOrFail($notificationID);
@@ -946,15 +946,14 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-
             $info = (array)$info;
             $info['gtype'] = '703';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
-
             if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
+
             if (!isset($info['payment_request_status'])) {
                 return redirect('/error/invalidlink');
             }
@@ -3044,19 +3043,24 @@ class InvoiceController extends AppController
             }
         }
 
+
         if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
             if($invoicePrivilegesAccessIDs['all'] == 'full') {
-                $invoiceAccess = 'all-full';
+                $invoiceAccess = 'full';
             }
 
             if($invoicePrivilegesAccessIDs['all'] == 'edit') {
-                $invoiceAccess = 'all-edit';
+                $invoiceAccess = 'edit';
             }
         } elseif (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
             if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
-                $invoiceAccess = 'all-full';
-            } else {
+                $invoiceAccess = 'full';
+            } elseif($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
                 $invoiceAccess = 'edit';
+            } elseif($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            } elseif($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
+                $invoiceAccess = 'approve';
             }
         } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
             $invoiceAccess = 'edit';

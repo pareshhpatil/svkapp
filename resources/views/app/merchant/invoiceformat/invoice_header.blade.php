@@ -56,7 +56,7 @@
         Your invoice has been saved and will appear in the Requests and Reports tabs.
     </p>
     <p>
-        @if($invoice_access == 'all-full')
+        @if($invoice_access == 'full')
             <a class="btn blue" data-toggle="modal" href="#respond">
                 Settle </a>
         @endif
