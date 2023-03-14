@@ -33,20 +33,16 @@ class SubUserController extends AppController
      */
     public function index()
     {
-        try {
-            $title = 'Team Members';
+        $title = 'Team Members';
 
-            $data = Helpers::setBladeProperties($title);
+        $data = Helpers::setBladeProperties($title);
 
-            $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
+        $data['subUsers'] = $this->subUserHelper->indexTableData($this->user_id);
 
-            $data['datatablejs'] = 'table-no-export';
-            $data['auth_user_role'] = Session::get('user_role');
+        $data['datatablejs'] = 'table-no-export';
+        $data['auth_user_role'] = Session::get('user_role');
 
-            return view('app/merchant/subuser/index', $data);
-        } catch (\Exception $exception) {
-            dd($exception);
-        }
+        return view('app/merchant/subuser/index', $data);
     }
 
     /**
@@ -154,6 +150,8 @@ class SubUserController extends AppController
             ->select('user.user_id', 'briq_user_roles.role_name')
             ->count();
 
+        $userID = Encrypt::decode($userID);
+
         /** @var \App\User $User */
         $User = \App\User::query()
                         ->where(IColumn::USER_ID, $userID)
@@ -163,7 +161,7 @@ class SubUserController extends AppController
             return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
         }
 
-        if($User->role()->role_name == 'Admin' && $countAdminUsers == 1) {
+        if($User->role()->name == 'Admin' && $countAdminUsers == 1) {
             return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
         }
 
