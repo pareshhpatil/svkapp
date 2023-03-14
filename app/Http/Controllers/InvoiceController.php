@@ -32,6 +32,7 @@ use App\Model\CostType;
 use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
+use App;
 
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
@@ -1842,16 +1843,20 @@ class InvoiceController extends AppController
             }
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
-            if ($savepdf == 2) {
-                $data['viewtype'] = 'print';
-                if ($info['template_type'] == 'construction') {
 
-                    return view('mailer/invoice/format-' . $type, $data);
-                } else {
-                    return view('mailer/invoice/' . $info['design_name'], $data);
-                }
-                die();
-            } else if ($savepdf == 1) {
+
+            // if ($savepdf == 2) {
+            //    $data['viewtype'] = 'print';
+            //   if ($info['template_type'] == 'construction') {
+
+            //     return view('mailer/invoice/format-' . $type, $data);
+            //  } else {
+            //       return view('mailer/invoice/' . $info['design_name'], $data);
+            //  }
+            //   die();
+            //  } else
+
+            if ($savepdf == 1) {
 
                 $data['viewtype'] = 'pdf';
                 define("DOMPDF_ENABLE_HTML5PARSER", true);
@@ -1891,11 +1896,14 @@ class InvoiceController extends AppController
                     $pdf->setPaper("a4", "portrait");
                 }
 
-
+               
                 $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
-
-                // return  $pdf->stream();
-                return $pdf->download($name . '.pdf');
+                
+                if ($savepdf == 2) {
+                    return  $pdf->stream();
+                } else {
+                    return $pdf->download($name . '.pdf');
+                }
             }
         } else {
         }
@@ -2145,7 +2153,7 @@ class InvoiceController extends AppController
             $data = $this->setBladeProperties('Invoice view', [], [3]);
 
             #get default billing profile
-            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
 
             $banklist = $this->parentModel->getConfigList('Bank_name');
@@ -2357,7 +2365,9 @@ class InvoiceController extends AppController
             define("DOMPDF_ENABLE_REMOTE", true);
 
             if ($info['template_type'] == 'construction') {
-                $pdf = DOMPDF::loadView('mailer.invoice.full-invoice', $data);
+                $pdf = App::make('dompdf.wrapper');
+                $data['pdf']=$pdf;
+                $pdf->loadView('mailer.invoice.full-invoice', $data);
                 $pdf->setPaper("a4", "landscape");
             }
 
@@ -2733,8 +2743,12 @@ class InvoiceController extends AppController
         }
 
         if ($isFirstInvoice == false) {
+            $previousInvoiceParticulars=[];
             $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequestData->contract_id, $paymentRequestData->created_date);
+            if($previousInvoice)
+            {
             $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+            }
             $prevDPlusE = [];
             foreach ($previousInvoiceParticulars as $k => $val) {
                 $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
@@ -3115,7 +3129,7 @@ class InvoiceController extends AppController
                 $start_date = '1990-01-01';
                 $end_date = date("Y-m-01");
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
-                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date , '<');
+                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
                 $start_date = date("Y-m-01");
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
@@ -3126,9 +3140,9 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount'] = $info['this_month_co_amount_positive'] +  $info['this_month_co_amount_negative'];
 
                 $info['total_co_amount_positive'] = $info['last_month_co_amount_positive'] +  $info['this_month_co_amount_positive'];
-                $info['total_co_amount_negative'] =$info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
+                $info['total_co_amount_negative'] = $info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
             } else {
-                
+
                 $info['last_month_co_amount_positive'] = 0;
                 $info['last_month_co_amount_negative'] = 0;
                 $info['this_month_co_amount_positive'] = 0;
@@ -3136,7 +3150,7 @@ class InvoiceController extends AppController
 
                 $info['total_co_amount_negative'] = 0;
                 $info['total_co_amount_positive'] = 0;
-                
+
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
                 if ($pre_month_change_order_amount[0]->change_order_amount != null) {
@@ -3754,7 +3768,7 @@ class InvoiceController extends AppController
                 $start_date = '1990-01-01';
                 $end_date = date("Y-m-01");
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
-                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date , '<');
+                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
                 $start_date = date("Y-m-01");
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
@@ -3765,9 +3779,9 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount'] = $info['this_month_co_amount_positive'] +  $info['this_month_co_amount_negative'];
 
                 $info['total_co_amount_positive'] = $info['last_month_co_amount_positive'] +  $info['this_month_co_amount_positive'];
-                $info['total_co_amount_negative'] =$info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
+                $info['total_co_amount_negative'] = $info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
             } else {
-                
+
                 $info['last_month_co_amount_positive'] = 0;
                 $info['last_month_co_amount_negative'] = 0;
                 $info['this_month_co_amount_positive'] = 0;
@@ -3775,7 +3789,7 @@ class InvoiceController extends AppController
 
                 $info['total_co_amount_negative'] = 0;
                 $info['total_co_amount_positive'] = 0;
-                
+
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
                 if ($pre_month_change_order_amount[0]->change_order_amount != null) {
@@ -3979,14 +3993,14 @@ class InvoiceController extends AppController
 
         $plugins = json_decode($info['plugin_value'], 1);
         $hasAIALicense = false;
-        if(isset($plugins['invoice_output'])) {
-            if(isset($plugins['has_aia_license'])) {
+        if (isset($plugins['invoice_output'])) {
+            if (isset($plugins['has_aia_license'])) {
                 $hasAIALicense = true;
             }
         }
 
         $data['has_aia_license'] = $hasAIALicense;
-            
+
         return $data;
     }
 
@@ -4351,16 +4365,16 @@ class InvoiceController extends AppController
             $sub_i = 0;
             $attach_count = 0;
             $sub_key = '';
-            foreach ($sub_result[$names] as $key=>$data2) {
+            foreach ($sub_result[$names] as $key => $data2) {
 
-                foreach ($data2 as $data){
-                    
+                foreach ($data2 as $data) {
+
                     $pos1++;
                     if (!empty($data['group']) && $data['bill_code_detail'] == 'No') {
                         $type = 'combine';
                         $desc = $names;
                         $c += $data['current_contract_amount'];
-    
+
                         if ($isFirstInvoice == true) {
                             $d += $data['previously_billed_amount'];
                         } else {
@@ -4371,7 +4385,7 @@ class InvoiceController extends AppController
                                 }
                             }
                         }
-    
+
                         //$d += $data['previously_billed_amount'];
                         $e += $data['current_billed_amount'];
                         $f += $data['stored_materials'];
@@ -4385,17 +4399,17 @@ class InvoiceController extends AppController
                         $data['attachments'] = str_replace('[]', '', $data['attachments']);
                         if (!empty($data['attachments']))
                             $counts = count(json_decode($data['attachments'], 1));
-    
-    
-    
+
+
+
                         $attach_count += $counts;
                         if (empty($isattach)) {
                             $nm = '';
                             if (!empty($data['attachments'])) {
                                 $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                             }
-    
-    
+
+
                             $isattach = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                         }
                         if (empty($bill_desc)) {
@@ -4413,7 +4427,7 @@ class InvoiceController extends AppController
                             $single_data['c'] = '';
                             $single_data['d'] = '';
                             $single_data['e'] = '';
-    
+
                             $single_data['f'] = '';
                             $single_data['g'] = '';
                             $single_data['g_per'] = '';
@@ -4421,10 +4435,10 @@ class InvoiceController extends AppController
                             $single_data['i'] = '';
                             $grouping_data[] = $single_data;
                         }
-                        
-                        $current_sub_key =  $names.$key ;
 
-                        if($key != '' && $sub_key != $current_sub_key){
+                        $current_sub_key =  $names . $key;
+
+                        if ($key != '' && $sub_key != $current_sub_key) {
                             $single_data = array();
                             $single_data['a'] = '';
                             $single_data['type'] = 'sub-heading';
@@ -4439,7 +4453,7 @@ class InvoiceController extends AppController
                             $single_data['i'] = '';
                             $grouping_data[] = $single_data;
                         }
-                        
+
                         $single_data = array();
                         $single_data['a'] = $data['code']; // $data['bill_code'];
                         $single_data['type'] = '';
@@ -4454,44 +4468,44 @@ class InvoiceController extends AppController
                         //$single_data['d'] = number_format(($data['previously_billed_amount']), 2);
                         $single_data['e'] = $data['current_billed_amount'];
                         $single_data['f'] = $data['stored_materials'];
-    
+
                         $nm = '';
                         if (!empty($data['attachments'])) {
                             $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                         }
-    
+
                         $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
-    
+
                         $counts = 0;
                         if (!empty($data['attachments']))
                             $counts = count(json_decode($data['attachments'], 1));
-    
+
                         if ($counts > 1)
                             $single_data['files'] = $counts . ' files';
                         else
                             $single_data['files'] = $counts . ' file';
-    
+
                         //$single_data['g'] = number_format($data['previously_billed_amount'] + $data['current_billed_amount'] + $data['stored_materials'], 2);
                         $single_data['g'] = $single_data['d'] + $single_data['e'] + $single_data['f'];
                         $per = 0;
                         if ($data['current_contract_amount'] > 0)
                             $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
-    
+
                         $single_data['g_per'] = number_format($per, 2);
                         $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
-    
+
                         if (!empty($data['total_outstanding_retainage'])) {
                             $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                         } else {
                             $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
                         }
-    
-    
+
+
                         $grouping_data[] = $single_data;
-    
+
                         $pos++;
                         $sub_c += $data['current_contract_amount'];
-    
+
                         if ($isFirstInvoice == true) {
                             $sub_d += $data['previously_billed_amount'];
                         } else {
@@ -4505,42 +4519,42 @@ class InvoiceController extends AppController
                         $sub_g_per += $per;
                         $sub_h += $data['current_contract_amount'] - ($single_data['d'] + $single_data['e'] + $single_data['f']);
                         //$sub_i += $data['total_outstanding_retainage'];
-    
+
                         if (!empty(floatval($data['total_outstanding_retainage']))) {
                             $sub_i += $data['total_outstanding_retainage'];
                         } else {
                             $sub_i += $data['retainage_amount_previously_withheld'];
                         }
 
-                        if($key != '' && $sub_key != $current_sub_key){
+                        if ($key != '' && $sub_key != $current_sub_key) {
                             // if ($sub_key == count($sub_result[$names][$key])) {
-                                $single_data = array();
-                                $single_data['a'] = '';
-                                $single_data['type'] = 'footer';
-                                $single_data['b'] = $key.' SUB TOTAL';
-                                $single_data['c'] = number_format($sub_c, 2);
-                                $single_data['d'] = number_format($sub_d, 2);
-                                $single_data['e'] = number_format($sub_e, 2);
-                                $single_data['f'] = number_format($sub_f, 2);
-        
-                                $single_data['g'] = number_format($sub_g, 2);
-                                $single_data['g_per'] = number_format($sub_g_per, 2);
-                                $single_data['h'] = number_format($sub_h, 2);
-                                $single_data['i'] = number_format($sub_i, 2);
-                                $grouping_data[] = $single_data;
-                            // }
-                        }
-    
-                        if ($pos1 == count($result[$names]) ||  $pos == count($result[$names])) {
                             $single_data = array();
                             $single_data['a'] = '';
                             $single_data['type'] = 'footer';
-                            $single_data['b'] = $names. ' SUB TOTAL';
+                            $single_data['b'] = $key . ' SUB TOTAL';
                             $single_data['c'] = number_format($sub_c, 2);
                             $single_data['d'] = number_format($sub_d, 2);
                             $single_data['e'] = number_format($sub_e, 2);
                             $single_data['f'] = number_format($sub_f, 2);
-    
+
+                            $single_data['g'] = number_format($sub_g, 2);
+                            $single_data['g_per'] = number_format($sub_g_per, 2);
+                            $single_data['h'] = number_format($sub_h, 2);
+                            $single_data['i'] = number_format($sub_i, 2);
+                            $grouping_data[] = $single_data;
+                            // }
+                        }
+
+                        if ($pos1 == count($result[$names]) ||  $pos == count($result[$names])) {
+                            $single_data = array();
+                            $single_data['a'] = '';
+                            $single_data['type'] = 'footer';
+                            $single_data['b'] = $names . ' SUB TOTAL';
+                            $single_data['c'] = number_format($sub_c, 2);
+                            $single_data['d'] = number_format($sub_d, 2);
+                            $single_data['e'] = number_format($sub_e, 2);
+                            $single_data['f'] = number_format($sub_f, 2);
+
                             $single_data['g'] = number_format($sub_g, 2);
                             $single_data['g_per'] = number_format($sub_g_per, 2);
                             $single_data['h'] = number_format($sub_h, 2);
@@ -4548,7 +4562,7 @@ class InvoiceController extends AppController
                             $grouping_data[] = $single_data;
                         }
                     } else {
-    
+
                         $single_data = array();
                         $single_data['a'] = $data['code']; //$data['bill_code'];
                         $single_data['b'] = $data['description'];
@@ -4568,20 +4582,20 @@ class InvoiceController extends AppController
                         if (!empty($data['attachments'])) {
                             $nm = substr(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')), -10);
                         }
-    
-    
+
+
                         $single_data['attachment'] = str_replace(' ', '_', $data['attachments'] ? strlen(substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($data['attachments'], 1)[0]), 0, strrpos(basename(json_decode($data['attachments'], 1)[0]), '.')) : $nm : '');
                         $counts = 0;
                         if (!empty($data['attachments']))
                             $counts = count(json_decode($data['attachments'], 1));
-    
+
                         if ($counts > 1)
                             $single_data['files'] = $counts . ' files';
                         else
                             $single_data['files'] = $counts . ' file';
-    
+
                         $per = 0;
-    
+
                         if (!empty($data['current_contract_amount'])) {
                             if ($data['current_contract_amount'] > 0) {
                                 $per = number_format(($single_data['g']) / $data['current_contract_amount'], 2);
@@ -4590,20 +4604,18 @@ class InvoiceController extends AppController
                         $per = str_replace(',', '', $per);
                         $single_data['g_per'] = number_format($per, 2);
                         $single_data['h'] = number_format($data['current_contract_amount'] - ($single_data['g']), 2);
-    
+
                         if (!empty($data['total_outstanding_retainage'])) {
                             $single_data['i'] = number_format($data['total_outstanding_retainage'], 2);
                         } else {
                             $single_data['i'] = number_format($data['retainage_amount_previously_withheld'], 2);
                         }
-    
+
                         $grouping_data[] = $single_data;
                     }
-                    
-                $sub_key =  $names.$key;
+
+                    $sub_key =  $names . $key;
                 }
-                
-                
             }
 
             if (!empty($type)) {
@@ -4747,7 +4759,7 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-        
+
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);
@@ -4816,7 +4828,7 @@ class InvoiceController extends AppController
                     $data['project'] = $request->project[$k];
                     $data['cost_code'] = $request->cost_code[$k];
                     $data['cost_type'] = $request->cost_type[$k];
-                    $data['group'] = $request->group[$k];		
+                    $data['group'] = $request->group[$k];
                     $data['group'] = $request->group[$k];
                     $data['sub_group'] = $request->sub_group[$k];
                     $data['bill_code_detail'] = ($request->bill_code_detail[$k] == '') ? 'Yes' : $request->bill_code_detail[$k];
@@ -5071,11 +5083,11 @@ class InvoiceController extends AppController
                         $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
 
                         $co_particulars[] = array(
-                            'bill_code' => $key, 
-                            'change_order_amount' => array_sum($value), 
-                            'description' =>  $kdata["description"], 
-                            'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '', 
-                            'sub_group' => isset($kdata["sub_group"]) ? $kdata["sub_group"] : '', 
+                            'bill_code' => $key,
+                            'change_order_amount' => array_sum($value),
+                            'description' =>  $kdata["description"],
+                            'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '',
+                            'sub_group' => isset($kdata["sub_group"]) ? $kdata["sub_group"] : '',
                             'cost_type' =>  $kdata["cost_type"]
                         );
                     }

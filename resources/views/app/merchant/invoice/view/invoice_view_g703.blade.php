@@ -27,6 +27,9 @@ $header = 'app.patron.invoice.invoice-master';
     .tabbable-line>.nav-tabs>li:hover {
         border-bottom: 4px solid #3E4AA3 !important;
     }
+    .border-row{
+        border: solid 1px #A0ACAC;
+    }
 </style>
 
 
@@ -408,7 +411,7 @@ $header = 'app.patron.invoice.invoice-master';
 
                             </tr>
                             @else
-                            <tr>
+                            <tr class="border-row">
                                 <td class="border-r border-l border-gray-500 px-2 py-2 text-left">
 
                                     <p class="text-sm">{{ $item['a'] }} </p>

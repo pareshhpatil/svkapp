@@ -169,6 +169,7 @@ Route::post('/merchant/registersave', 'GettingStarted@merchantRegister');
   return view('home/index');
   });
  */
+Route::get('merchant/invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
 
 Route::post('/autocollect/subscription/payment', 'AutocollectController@paymentstatus');
 
@@ -358,7 +359,6 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('invoice/bulkview/{link}', 'InvoiceController@bulkview');
   Route::get('invoice/download/{link}', 'InvoiceController@download');
-  Route::get('invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
   
