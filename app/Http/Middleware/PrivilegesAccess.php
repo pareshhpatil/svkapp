@@ -87,7 +87,7 @@ class PrivilegesAccess
                 break;
             case 'invoice':
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $userID), true);
-                dd($invoicePrivilegesAccessIDs, $modelID);
+                
                 if(in_array('all', array_keys($invoicePrivilegesAccessIDs)) && !in_array($modelID, array_keys($invoicePrivilegesAccessIDs))) {
                     if ($invoicePrivilegesAccessIDs['all'] == 'full' || $invoicePrivilegesAccessIDs['all'] == 'edit' ||  $invoicePrivilegesAccessIDs['all'] == 'approve') {
                         $result = true;
