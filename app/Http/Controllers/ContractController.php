@@ -474,6 +474,7 @@ class ContractController extends Controller
         }
 
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
+        dd($data["project_list"]);
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
         $data['customer_name'] = 'Contact person name';
