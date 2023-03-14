@@ -204,7 +204,7 @@ class MasterController extends AppController
                 $where = "WHERE customer_id in($ids)";
             }
         }
-
+        dd($where);
         $title = 'Create Project';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
