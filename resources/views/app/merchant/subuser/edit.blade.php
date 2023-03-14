@@ -73,7 +73,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <a href="http://swipez.prod/merchant/subusers" class="btn default">Cancel</a>
+                                            <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                             <input type="submit" value="Update" class="btn blue"/>
                                         </div>
                                     </div>
