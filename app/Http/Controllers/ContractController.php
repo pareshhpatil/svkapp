@@ -468,7 +468,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve' || $privilegesID == 'view-only') {
                 $whereProjectIDs[] = $key;
             }
         }
