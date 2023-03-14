@@ -802,13 +802,74 @@ class InvoiceController extends AppController
 
         return $this->create($request, 'subscription', 2);
     }
+
+    public function view_702($link, $version =  null)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
+
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info = (array)$info;
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
+            }
+            $info['gtype'] = '702';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if (!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+
+            if ($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+
+            //end code for new design
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+
+            $imgpath = '';
+            if (isset($info['image_path'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+            if (Session::get('success_array')) {
+                $whatsapp_share = $this->getWhatsapptext($info);
+                $success_array = Session::get('success_array');
+                $active_payment = Session::get('has_payment_active');
+                Session::remove('success_array');
+                $info["invoice_success"] = true;
+
+                $info["whatsapp_share"] = $whatsapp_share;
+                foreach ($success_array as $key => $val) {
+                    $info[$key] = $val;
+                }
+                if (Session::get('has_payment_active') == false) {
+                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                }
+                if ($success_array['type'] == 'insert' && $active_payment == false) {
+                    $info["payment_gateway_info"] = true;
+                }
+            }
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            return view('app/merchant/invoice/G702/index', $data);
+        }
+    }
+
     public function view_g702($link)
     {
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
-            #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -2694,7 +2755,7 @@ class InvoiceController extends AppController
                 $start_date = '1990-01-01';
                 $end_date = date("Y-m-01");
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
-                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date , '<');
+                $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
                 $start_date = date("Y-m-01");
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
@@ -2705,9 +2766,9 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount'] = $info['this_month_co_amount_positive'] +  $info['this_month_co_amount_negative'];
 
                 $info['total_co_amount_positive'] = $info['last_month_co_amount_positive'] +  $info['this_month_co_amount_positive'];
-                $info['total_co_amount_negative'] =$info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
+                $info['total_co_amount_negative'] = $info['last_month_co_amount_negative'] +  $info['this_month_co_amount_negative'];
             } else {
-                
+
                 $info['last_month_co_amount_positive'] = 0;
                 $info['last_month_co_amount_negative'] = 0;
                 $info['this_month_co_amount_positive'] = 0;
@@ -2715,7 +2776,7 @@ class InvoiceController extends AppController
 
                 $info['total_co_amount_positive'] = 0;
                 $info['total_co_amount_negative'] = 0;
-                
+
                 $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
                 where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $info['created_date'] . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $info['created_date'] . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $info['project_details']->contract_id . "'");
                 if ($pre_month_change_order_amount[0]->change_order_amount != null) {
@@ -3337,7 +3398,7 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-        
+
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);

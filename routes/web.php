@@ -340,6 +340,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('einvoice/cancel/{id}',  'EinvoiceController@canceleInvoice');
   Route::get('einvoice/errors/{id}',  'EinvoiceController@errorseInvoice');
 
+  //code refactor routes 
+  Route::get('invoice/view/702/{link}', 'InvoiceController@view_702');
 
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
