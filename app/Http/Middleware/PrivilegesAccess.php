@@ -95,11 +95,8 @@ class PrivilegesAccess
                 } else {
                     if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
                         $result = true;
-                    } else {
-                        dd("check");
                     }
 //                    else {
-//
 //                        if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
 //                            $result = true;
 //                        }
