@@ -93,7 +93,7 @@ class PrivilegesAccess
                         $result = true;
                     }
                 } else {
-                    if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
+                    if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve' || $invoicePrivilegesAccessIDs[$modelID] == 'view-only')) {
                         $result = true;
                     }
 //                    else {
