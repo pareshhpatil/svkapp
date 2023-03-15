@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum','merchantdata')->group(function () {
     Route::post('/v1/deleteContract','ContractController@deleteContract');
 
     Route::post('/v1/getchangeOrderList','OrderController@getchangeOrderList');
+    Route::get('/v1/getOrderDetails/{order_id}','OrderController@getOrderDetails');
+
     Route::post('/v1/getInvoiceList','InvoiceController@getInvoiceList');
     Route::get('/v1/getInvoiceDetails/{payment_request_id}', 'InvoiceController@getInvoiceDetails');
     

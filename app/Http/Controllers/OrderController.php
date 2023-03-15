@@ -412,10 +412,29 @@ class OrderController extends Controller
         $to_date = isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
 
         $list = $this->orderModel->getOrderList($request->merchant_id, $from_date, $to_date, $request->contract_id, $start, $limit);
-
+        foreach ($list as $ck => $row) {
+            if($row->status==0) {
+                $list[$ck]->status = 'Pending';
+            } else {
+                $list[$ck]->status = 'Approved';
+            }
+        }
         //$list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id,$start,$limit);
         $response['lastno'] = count($list) + $start;
         $response['list'] = $list;
         return response()->json($this->apiController->APIResponse('', $response), 200);
+    }
+
+    public function getOrderDetails($order_id) {
+        if ($order_id != null) {
+            $info =  $this->orderModel->getOrderData($order_id);
+            $info->particulars = json_decode($info->particulars,true);
+            if($info->status==0) {
+                $info->status = 'Pending';
+            } else {
+                $info->status = 'Approved';
+            }
+            return response()->json($this->apiController->APIResponse('', $info), 200);
+        }
     }
 }
