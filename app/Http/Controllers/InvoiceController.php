@@ -886,10 +886,11 @@ class InvoiceController extends AppController
             if($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                    if($contractPrivilegesAccessIDs[$info->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$info->payment_request_id] != 'view-only') {
-                        $hasAccess = true;
-                    }
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
                 }
             }
 
@@ -968,10 +969,11 @@ class InvoiceController extends AppController
             if($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                    if($contractPrivilegesAccessIDs[$info->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$info->payment_request_id] != 'view-only') {
-                        $hasAccess = true;
-                    }
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
                 }
             }
 
@@ -1089,10 +1091,11 @@ class InvoiceController extends AppController
             if($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                    if($contractPrivilegesAccessIDs[$info->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$info->payment_request_id] != 'view-only') {
-                        $hasAccess = true;
-                    }
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
                 }
             }
 
