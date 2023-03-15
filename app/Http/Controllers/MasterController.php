@@ -189,7 +189,10 @@ class MasterController extends AppController
         $userRole = Session::get('user_role');
 
         $where = '';
-        if($userRole != 'Admin') {
+        $cust_list = [];
+        if($userRole == 'Admin') {
+            $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
+        } else {
             $customerIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
             $customerWhereIds = [];
             foreach ($customerIDs as $key => $customerID) {
@@ -202,8 +205,6 @@ class MasterController extends AppController
                 $ids = implode(",", $customerWhereIds);
                 $where = "WHERE customer_id in($ids)";
                 $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
-            } else {
-                $cust_list = [];
             }
         }
 
