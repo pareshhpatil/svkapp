@@ -490,16 +490,20 @@ class User extends ParentModel
         $payment_gateway = DB::table('merchant_fee_detail')->where('merchant_id', $merchant_id)->get();
     }
 
-    public function getUserPrivileges($user_id) {
+    public function getUserPrivileges($user_id, $group_id)
+    {
+        $merchant = $this->getTableRow('merchant', 'group_id', $group_id);
+
         $privilegesCollect = DB::table('briq_privileges')
             ->where('user_id', $user_id)
+            ->where('merchant_id', $merchant->merchant_id)
             ->where('is_active', 1)
             ->select(['type', 'type_id', 'access', 'rule_engine_query'])
             ->get()
             ->collect();
 
         $ruleEngineInvoices = $this->fetchRuleEngineInvoices($privilegesCollect);
-
+        
         $customerPrivilegesArray = $ruleEngineInvoices["customer_ids"];
         $projectPrivilegesArray = $ruleEngineInvoices["project_ids"];
         $contractPrivilegesArray = $ruleEngineInvoices["contract_ids"];
@@ -533,15 +537,15 @@ class User extends ParentModel
 //        $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
 
         if(!empty($customerPrivilegesArray)) {
-            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray);
+            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant->merchant_id);
         }
 
         if (!empty($projectPrivilegesArray)) {
-            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray);
+            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $merchant->merchant_id);
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"]);
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $merchant->merchant_id);
         }
 
 //        if(!empty($contractPrivilegesArray)) {
@@ -557,10 +561,27 @@ class User extends ParentModel
         ];
     }
 
-    public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray) {
+    public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant_id)
+    {
+        $allArr= [];
+        if (in_array('all', array_keys($customerPrivilegesArray))) {
+            $projectIDs = DB::table('project')
+                ->where('is_active', 1)
+                ->where('merchant_id', $merchant_id)
+                ->whereNotIn('id', array_keys($projectPrivilegesArray))
+                ->select(['id', 'customer_id'])
+                ->get()
+                ->toArray();
+
+
+            foreach ($projectIDs as $projectID) {
+                $allArr[$projectID->id] = $customerPrivilegesArray['all'];
+            }
+        }
 
         $projectIDs = DB::table('project')
             ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
             ->whereIn('customer_id', array_keys($customerPrivilegesArray))
             ->whereNotIn('id', array_keys($projectPrivilegesArray))
             ->select(['id', 'customer_id'])
@@ -569,17 +590,37 @@ class User extends ParentModel
 
         $tempArr= [];
         foreach ($projectIDs as $projectID) {
-            $tempArr[$projectID->id] = $customerPrivilegesArray[$projectID->customer_id];
+            if(!isset($allArr[$projectID->id])) {
+                $tempArr[$projectID->id] = $customerPrivilegesArray[$projectID->customer_id];
+            }
         }
 
         return $projectPrivilegesArray + $tempArr;
     }
 
-    public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray) {
+    public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $merchant_id)
+    {
+        $allArr = [];
+        if (in_array('all', array_keys($projectPrivilegesArray))) {
+            $contractIDs = DB::table('contract')
+                ->where('is_active', 1)
+                ->where('merchant_id', $merchant_id)
+                ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
+                ->select(['contract_id', 'project_id'])
+                ->get()
+                ->toArray();
+
+            
+            foreach ($contractIDs as $contractID) {
+                $allArr[$contractID->contract_id] = $projectPrivilegesArray[$contractID->project_id];
+            }
+        }
+        
         $tempArr= [];
 
         $contractIDs = DB::table('contract')
             ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
             ->whereIn('project_id', array_keys($projectPrivilegesArray))
             ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
             ->select(['contract_id', 'project_id'])
@@ -587,18 +628,35 @@ class User extends ParentModel
             ->toArray();
 
         foreach ($contractIDs as $contractID) {
-            $tempArr[$contractID->contract_id] = $projectPrivilegesArray[$contractID->project_id];
+            if(!isset($allArr[$contractID->contract_id])) {
+                $tempArr[$contractID->contract_id] = $projectPrivilegesArray[$contractID->project_id];
+            }
         }
 
         return $contractPrivilegesArray + $tempArr;
     }
 
-    public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray) {
-        //invoiceIDS
-        //fetch contract_ids from payment_request and assign it
+    public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $merchant_id)
+    {
+        $allArr = [];
+        if (in_array('all', array_keys($contractPrivilegesArray))) {
+            $allOrderIDs = DB::table('order')
+                ->where('is_active', 1)
+                ->where('merchant_id', $merchant_id)
+                ->whereNotIn('order_id', array_keys($orderPrivilegesArray))
+                ->select(['order_id', 'contract_id'])
+                ->get()
+                ->toArray();
+
+            foreach ($allOrderIDs as $orderID) {
+                $allArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+            }
+
+        }
 
         $orderIDs = DB::table('order')
             ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
             ->whereNotIn('order_id', array_keys($orderPrivilegesArray))
             ->select(['order_id', 'contract_id'])
@@ -607,7 +665,9 @@ class User extends ParentModel
 
         $tempArr= [];
         foreach ($orderIDs as $orderID) {
-            $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+            if(!isset($allArr[$orderID->order_id])) {
+                $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+            }
         }
 
         return $orderPrivilegesArray + $tempArr;
@@ -619,10 +679,11 @@ class User extends ParentModel
      * @param $invoicePrivilegesArray
      * @return array
      */
-    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices): array
+    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices, $merchant_id): array
     {
         $invoiceIDs = DB::table('payment_request')
             ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
             ->whereNotIn('payment_request_id', array_keys($invoicePrivilegesArray))
             ->orWhere('created_by', $user_id)

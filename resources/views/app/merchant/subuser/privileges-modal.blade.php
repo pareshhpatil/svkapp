@@ -608,8 +608,7 @@
                     processResults: (data, params) => {
                         let all = {
                             customer_id: 'all',
-                            first_name: 'All',
-                            last_name: ''
+                            company_name: 'All'
                         }
                         data.unshift(all);
                         const results = data.map(item => {

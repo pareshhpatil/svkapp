@@ -161,7 +161,7 @@ class MasterController extends AppController
         }
 
         if(!empty($privilegesIDs)) {
-            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs));
+            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs), $userRole);
             foreach ($list as $ck => $row) {
                 $list[$ck]->encrypted_id = Encrypt::encode($row->id);
             }
