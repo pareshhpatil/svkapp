@@ -160,7 +160,7 @@ class SubUserController extends AppController
         if(!$User) {
             return redirect()->to('merchant/subusers')->with('error', "Unable to find this User!");
         }
-        dd($User->role());
+
         if($User->role()->name == 'Admin' && $countAdminUsers == 1) {
             return redirect()->to('merchant/subusers')->with('error', "At least One Active Admin is required in the system!");
         }

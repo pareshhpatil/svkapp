@@ -615,7 +615,7 @@
                         const results = data.map(item => {
                             return {
                                 id: item.customer_id,
-                                text: item.first_name + ' ' + item.last_name,
+                                text: item.company_name,
                             };
                         });
                         return {
@@ -1397,8 +1397,8 @@
             function accessHTML(label, privileges = '', index, type, hasRuleEngine, rule_engine = []) {
                 return `<div id="${type}-access-item-${index}" class="privileges-access-row">
 <div class="privileges-access-item">
-<p class="privileges-access-item-title">${label}</p>
-<div style="display: flex;align-items: center;">
+${accessItemTitle(type, label)}
+<div style="display: flex;align-items: center;align-self: start">
 <select class="privileges-access privileges-access-dropdown form-control" data-id="${index}" data-type="${type}">
     <option value="full" ${privileges === 'full' ? 'selected' : ''}>Full</option>
     <option value="edit" ${privileges === 'edit' ? 'selected' : ''}>Edit</option>
@@ -1442,14 +1442,14 @@ ${ruleEngineValue(rule_engine?.query_value, index, type)}
             }
 
             function invoiceOptions() {
-                return `<p class="rule-engine-text">if Invoice</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
-<option value="grand_total" selected>grand total</option>
+                return `<p class="rule-engine-text">If invoice</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
+<option value="grand_total" selected>Grand total</option>
 </select>`;
             }
 
             function changeOrderOptions() {
-                return `<p class="rule-engine-text">if Change Order</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
-<option value="total_change_order_amount" selected>total amount</option>
+                return `<p class="rule-engine-text">If Change Order</p><select name="rule-engine-operator" class="rule-engine-query-name form-control">
+<option value="total_change_order_amount" selected>Total amount</option>
 </select>`;
             }
 
@@ -1486,6 +1486,16 @@ ${ruleEngineValue(rule_engine?.query_value, index, type)}
                     html = `<input type="number" name="rule-engine-value" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">`;
                 }
                 return html;
+            }
+
+            function accessItemTitle(type, label) {
+                if(type === 'customer') {
+                    return `<div>
+<p class="privileges-access-item-title">${label}</p>
+<p class="text-gray-400 text-font-12">COMPANY NAME</p>
+</div>`;
+                }
+                return `<p class="privileges-access-item-title">${label}</p>`;
             }
 
         })

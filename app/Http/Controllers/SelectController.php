@@ -31,13 +31,10 @@ class SelectController extends AppController
                 $data = DB::table('customer')
                     ->where('merchant_id', $merchantID)
                     ->where('is_active', 1)
-                    ->where(function($query) use($search) {
-                        $query->where('first_name', 'LIKE', '%'.$search.'%')
-                            ->orWhere('last_name', 'LIKE', '%'.$search.'%')
-                            ->orWhere('email', 'LIKE', '%'.$search.'%');
-                    })
+                    ->whereNotNull('company_name')
+                    ->where('company_name', 'LIKE', '%'.$search.'%')
                     ->limit(10)
-                    ->select(['customer_id', 'first_name', 'last_name'])
+                    ->select(['customer_id', 'company_name'])
                     ->get();
                 break;
             case 'project':
