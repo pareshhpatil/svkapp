@@ -104,7 +104,8 @@ class APIController extends Controller
         $errors["ER02063"] = "Please enter valid bill code ";
         $errors["ER02064"] = "You do not have access for this contract";
         $errors["ER02065"] = "Invalid payment request id";
-        
+        $errors["ER02066"] = "You do not have access for this change order";
+        $errors["ER02067"] = "Invalid change order id";
         return $errors[$error_code];
     }
 }

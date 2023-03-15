@@ -759,7 +759,8 @@ class ContractController extends Controller
 
     public function getContractDetails($contract_id) {
         if($contract_id!=null) {
-            $contractDetails = $this->contract_model->getTableRow('contract', 'contract_id', $contract_id, 1);
+            $contractDetails = $this->contract_model->getContractData($contract_id);
+            $contractDetails->particulars = json_decode($contractDetails->particulars,true);
             return response()->json($this->apiController->APIResponse('',$contractDetails), 200);
         }
     }

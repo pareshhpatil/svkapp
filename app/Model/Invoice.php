@@ -877,11 +877,13 @@ class Invoice extends ParentModel
             }
         }
 
-        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,a.payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
+        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
         FROM `payment_request` a
         join customer c on a.customer_id  = c.customer_id
         Join contract con on a.contract_id = con.contract_id
         INNER JOIN project p ON con.project_id = p.id
+        join config cf on a.payment_request_status = cf.config_key 
+        AND cf.config_type = 'payment_request_status'
         WHERE a.merchant_id = '$merchant_id' 
         AND a.payment_request_status not in (3,8) 
         AND a.payment_request_type <>4
@@ -895,11 +897,13 @@ class Invoice extends ParentModel
 
     //DBTodo - make as separate 
     public function getInvoiceDetails($payment_request_id) { 
-        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,a.payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
+        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
         FROM `payment_request` a
         join customer c on a.customer_id  = c.customer_id
         Join contract con on a.contract_id = con.contract_id
         INNER JOIN project p ON con.project_id = p.id
+        join config cf on a.payment_request_status = cf.config_key 
+        AND cf.config_type = 'payment_request_status'
         WHERE
         a.payment_request_id = '$payment_request_id'
         AND a.is_active ='1' ");

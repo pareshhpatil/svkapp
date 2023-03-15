@@ -145,4 +145,15 @@ class Contract extends ParentModel
                 'created_date' => date('Y-m-d H:i:s')
             ]);
     }
+
+    public function getContractData($contract_id) {
+        $retObj = DB::table('contract as c')
+        ->select(DB::raw("c.contract_id,c.contract_code,c.project_id,p.project_id,p.project_name,c.contract_amount,c.contract_date,c.bill_date,c.billing_frequency,c.project_address,c.owner_address,c.contractor_address,c.architect_address,u.customer_id,u.customer_code,concat(first_name,' ', last_name) name,c.status,c.particulars"))
+        ->join('project as p','c.project_id','=','p.id')
+        ->join('customer as u','c.customer_id','=','u.customer_id')
+        ->where('c.contract_id',$contract_id)
+        ->first();
+
+        return $retObj;
+    }
 }
