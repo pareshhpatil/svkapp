@@ -325,7 +325,7 @@ class UserController extends Controller
                 "change_order_privileges" => ['all' => 'full']
             ];
         } else {
-            $privileges = $this->user_model->getUserPrivileges($user->user_id, $user->group_id);
+            $privileges = $this->user_model->getUserPrivileges($user->user_id, $user->group_id, $role);
         }
         
         Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));

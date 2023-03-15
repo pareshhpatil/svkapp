@@ -3155,6 +3155,8 @@ class InvoiceController extends AppController
             }
         }
 
+        dd($invoiceAccess, $invoicePrivilegesAccessIDs, $contractPrivilegesAccessIDs, $info['payment_request_id']);
+
         $data['invoice_access'] = $invoiceAccess;
 
         return $data;

@@ -490,7 +490,7 @@ class User extends ParentModel
         $payment_gateway = DB::table('merchant_fee_detail')->where('merchant_id', $merchant_id)->get();
     }
 
-    public function getUserPrivileges($user_id, $group_id)
+    public function getUserPrivileges($user_id, $group_id, $user_role)
     {
         $merchant = $this->getTableRow('merchant', 'group_id', $group_id);
 
@@ -545,7 +545,7 @@ class User extends ParentModel
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $merchant->merchant_id);
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $merchant->merchant_id, $user_role);
         }
 
 //        if(!empty($contractPrivilegesArray)) {
@@ -679,14 +679,13 @@ class User extends ParentModel
      * @param $invoicePrivilegesArray
      * @return array
      */
-    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices, $merchant_id): array
+    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices, $merchant_id, $user_role): array
     {
         $invoiceIDs = DB::table('payment_request')
             ->where('is_active', 1)
             ->where('merchant_id', $merchant_id)
             ->whereIn('contract_id', array_keys($contractPrivilegesArray))
             ->whereNotIn('payment_request_id', array_keys($invoicePrivilegesArray))
-            ->orWhere('created_by', $user_id)
             ->select(['payment_request_id', 'contract_id'])
             ->get()
             ->toArray();
@@ -705,7 +704,26 @@ class User extends ParentModel
             }
         }
 
-        return $tempArr + $ruleEngineInvoices;
+        $createdByArr = [];
+        if ($user_role != 'Admin') {
+            $createdByInvoiceIDs = DB::table('payment_request')
+                ->where('is_active', 1)
+                ->where('merchant_id', $merchant_id)
+                ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
+                ->whereNotIn('payment_request_id', array_keys($invoicePrivilegesArray))
+                ->Where('created_by', $user_id)
+                ->select(['payment_request_id', 'contract_id'])
+                ->get()
+                ->toArray();
+
+            foreach ($createdByInvoiceIDs as $createdByInvoiceID) {
+                if(!isset($tempArr[$createdByInvoiceID->payment_request_id])) {
+                    $createdByArr[$createdByInvoiceID->payment_request_id] = 'edit';
+                }
+            }
+        }
+
+        return $tempArr + $ruleEngineInvoices + $createdByArr;
     }
 
     public function fetchRuleEngineInvoices($PrivilegesCollect)
