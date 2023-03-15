@@ -595,7 +595,7 @@ class User extends ParentModel
             }
         }
 
-        return $projectPrivilegesArray + $tempArr;
+        return $projectPrivilegesArray + $tempArr + $allArr;
     }
 
     public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $merchant_id)
@@ -633,7 +633,7 @@ class User extends ParentModel
             }
         }
 
-        return $contractPrivilegesArray + $tempArr;
+        return $contractPrivilegesArray + $tempArr + $allArr;
     }
 
     public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $merchant_id)
@@ -670,7 +670,7 @@ class User extends ParentModel
             }
         }
 
-        return $orderPrivilegesArray + $tempArr;
+        return $orderPrivilegesArray + $tempArr + $allArr;
     }
 
     /**

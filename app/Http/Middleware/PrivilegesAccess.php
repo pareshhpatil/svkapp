@@ -86,7 +86,6 @@ class PrivilegesAccess
 
                 break;
             case 'invoice':
-
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $userID), true);
 
                 if(in_array('all', array_keys($invoicePrivilegesAccessIDs)) && !in_array($modelID, array_keys($invoicePrivilegesAccessIDs))) {
@@ -94,11 +93,14 @@ class PrivilegesAccess
                         $result = true;
                     }
                 } else {
-                    if($pathArray[2] == 'viewg703' || $pathArray[2] == 'viewg702' || $pathArray[2] == 'document') {
-                        if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve' || $invoicePrivilegesAccessIDs[$modelID] == 'view-only')) {
-                            $result = true;
-                        }
+                    if($pathArray[2] == 'create' || $pathArray[2] == 'viewg703' || $pathArray[2] == 'viewg702' || $pathArray[2] == 'document') {
+                        $result = true;
                     }
+//                    if($pathArray[2] == 'viewg703' || $pathArray[2] == 'viewg702' || $pathArray[2] == 'document') {
+//                        if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve' || $invoicePrivilegesAccessIDs[$modelID] == 'view-only')) {
+//                            $result = true;
+//                        }
+//                    }
 
                     if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
                         $result = true;
