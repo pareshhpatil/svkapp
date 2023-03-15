@@ -448,7 +448,7 @@ class MasterController extends AppController
                     $Notification->amount = $paymentRequestDetail->grand_total;
                     $Notification->currency_icon = $paymentRequestDetail->currency_icon;
                     $Notification->updated_date = $paymentRequestDetail->last_update_date;
-                    $Notification->updated_by = $paymentRequestDetail->last_updated_by_user;
+                    $Notification->updated_by = $paymentRequestDetail->last_updated_by_user ?? 'N.A';
                 };
 
                 if($type == 'change-order') {
