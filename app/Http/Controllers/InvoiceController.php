@@ -3126,7 +3126,7 @@ class InvoiceController extends AppController
 //        elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
 //            $invoiceAccess = 'edit';
 //        }
-
+        dd($invoiceAccess);
         $data['invoice_access'] = $invoiceAccess;
 
         return $data;
