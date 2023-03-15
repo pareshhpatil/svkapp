@@ -91,7 +91,6 @@ class ContractController extends Controller
         }
 
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
-        dd($whereProjectIDs, $data["project_list"]);
 
         // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
 
@@ -133,7 +132,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($privilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
                 $whereProjectIDs[] = $key;
             }
         }
