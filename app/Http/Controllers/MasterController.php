@@ -193,7 +193,7 @@ class MasterController extends AppController
             $customerIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
             $customerWhereIds = [];
             foreach ($customerIDs as $key => $customerID) {
-                if($customerID == 'full') {
+                if($customerID == 'full' || $customerID == 'edit' || $customerID == 'approve') {
                     $customerWhereIds[] = $key;
                 }
             }
