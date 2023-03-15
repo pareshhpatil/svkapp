@@ -3062,9 +3062,10 @@ class InvoiceController extends AppController
             } elseif($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
                 $invoiceAccess = 'approve';
             }
-        } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-            $invoiceAccess = 'edit';
         }
+//        elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
+//            $invoiceAccess = 'edit';
+//        }
 
         $data['invoice_access'] = $invoiceAccess;
 
