@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Merchant;
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
 use App\Helpers\Merchant\SubUserHelper;
+use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Http\Controllers\AppController;
 use App\Http\Requests\StoreUserRequest;
+use App\Jobs\ProcessInvoiceForApprove;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
+use App\Model\Invoice;
 use App\Model\Merchant\SubUser\SubUser;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -411,10 +415,12 @@ class SubUserController extends AppController
                 $existInvoiceTypeIDs = $existInvoices->toArray();
 
                 $requestInvoiceIDs = [];
+                $notifyInvoicePrivilegesTypeIDs = [];
                 foreach ($invoicesPrivilegesDecode as $invoice) {
                     $requestInvoiceIDs[] = $invoice->value;
                     $ruleEngine = '';
-                    if($invoice->access == 'full' || $invoice->access == 'approve' && !empty($invoice->rule_engine_query)) {
+                    if($invoice->access == 'full' || $invoice->access == 'approve') {
+                        $notifyInvoicePrivilegesTypeIDs[] = $invoice->value;
                         if(count($invoice->rule_engine_query) > 0) {
                             $ruleEngine = json_encode($invoice->rule_engine_query);
                         }
@@ -435,8 +441,10 @@ class SubUserController extends AppController
                             'updated_at' => Carbon::now()->toDateTimeString(),
                         ]);
                 }
-                $invoiceIDsToBeDisabled = array_diff($existInvoiceTypeIDs, $requestInvoiceIDs);
 
+                $invoiceIDsToBeDisabled = array_diff($existInvoiceTypeIDs, $requestInvoiceIDs);
+                $notifyInvoicePrivilegesTypeIDs = array_diff($notifyInvoicePrivilegesTypeIDs, $existInvoiceTypeIDs);
+               
                 foreach ($invoiceIDsToBeDisabled as $invoiceIDToBeDisabled) {
                     DB::table(ITable::BRIQ_PRIVILEGES)
                         ->where('type', 'invoice')
@@ -447,6 +455,11 @@ class SubUserController extends AppController
                             'rule_engine_query' => '',
                             'updated_at' => Carbon::now()->toDateTimeString()
                         ]);
+                }
+
+                if(!empty($notifyInvoicePrivilegesTypeIDs)) {
+                    //Notify User If access is full or approve
+                    $this->invoicesTobeNotify($notifyInvoicePrivilegesTypeIDs, $userID);
                 }
             } else {
                 DB::table(ITable::BRIQ_PRIVILEGES)
@@ -518,7 +531,7 @@ class SubUserController extends AppController
 
             return redirect()->back()->with('success', 'Privileges Set for User Successfully!');
         } catch (\Exception $exception) {
-
+            dd($exception);
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
@@ -564,5 +577,58 @@ class SubUserController extends AppController
         $SubUser->user_status = $status;
 
         $SubUser->save();
+    }
+
+    /**
+     * @param $notifyInvoicePrivilegesTypeIDs
+     * @param $userID
+     * @return void
+     * @author Nitish
+     */
+    private function invoicesTobeNotify($notifyInvoicePrivilegesTypeIDs, $userID)
+    {
+        $InvoicesTobeNotify = DB::table(ITable::BRIQ_PRIVILEGES)
+            ->where('type', 'invoice')
+            ->where('is_active', 1)
+            ->where('user_id', $userID)
+            ->where('merchant_id', $this->merchant_id)
+            ->whereIn('type_id', $notifyInvoicePrivilegesTypeIDs)
+            ->select(['user_id', 'type_id', 'rule_engine_query'])
+            ->get();
+
+        $paymentRequestIDs = [];
+        foreach ($InvoicesTobeNotify as $InvoiceTobeNotify) {
+
+            if(!empty($InvoiceTobeNotify->rule_engine_query)) {
+                $ruleEngineQuery = json_decode($InvoiceTobeNotify->rule_engine_query, true);
+                $ids = (new RuleEngineManager('payment_request_id', $InvoiceTobeNotify->type_id, $ruleEngineQuery))->run();
+
+                if(!empty($ids)) {
+                    if(in_array($InvoiceTobeNotify->type_id, $ids)) {
+                        $paymentRequestIDs[] = $InvoiceTobeNotify->type_id;
+
+                    }
+                }
+            } else {
+                $paymentRequestIDs[] = $InvoiceTobeNotify->type_id;
+            }
+        }
+
+        if(!empty($paymentRequestIDs)) {
+            $merchant = DB::table('merchant')
+                ->where('merchant_id', $this->merchant_id)
+                ->first();
+
+            $User = User::query()
+                ->where('user_id', $userID)
+                ->where('group_id', $merchant->group_id)
+                ->first();
+
+            foreach ($paymentRequestIDs as $paymentRequestID) {
+                $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $this->merchant_id);
+                ProcessInvoiceForApprove::dispatch($paymentRequestDetail->invoice_number, $paymentRequestDetail->payment_request_id, $User)->onQueue('promotion-sms-dev');
+            }
+
+        }
     }
 }
