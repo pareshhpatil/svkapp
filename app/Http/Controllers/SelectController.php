@@ -17,12 +17,16 @@ class SelectController extends AppController
                     ->where('user_id', Encrypt::decode($userID))
                     ->first();
 
-        if ($User->user_status == 20) {
-            $merchant = (new ParentModel())->getTableRow('merchant', 'group_id', $User->group_id);
-        } else {
-            $merchant = (new ParentModel())->getTableRow('merchant', 'user_id', $User->user_id);
-        }
+//        if ($User->user_status == 20) {
+        $merchant = (new ParentModel())->getTableRow('merchant', 'group_id', $User->group_id);
+//        } else {
+//            $merchant = (new ParentModel())->getTableRow('merchant', 'user_id', $User->user_id);
+//        }
 
+        if (empty($merchant)) {
+            return [];
+        }
+        
         $merchantID = $merchant->merchant_id;
 
         $data = [];
