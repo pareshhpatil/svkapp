@@ -165,9 +165,13 @@
                                     @endphp
                                     <tr>
                                         @foreach($default_particulars as $v=>$r)
-                                        @if ($v == 'original_contract_amount' || $v == 'retainage_percent')
+                                        @if ($v == 'original_contract_amount' )
                                         <td class="td-r">
                                             <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                        </td>
+                                        @elseif ($v == 'retainage_percent')
+                                        <td class="td-r">
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v])@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
                                         @elseif ($v == 'bill_code')
                                         <td class="col-id-no">
