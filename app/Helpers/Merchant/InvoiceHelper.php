@@ -3,13 +3,11 @@
 namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
-use App\Jobs\ProcessInvoiceApprove;
+use App\Jobs\ProcessInvoiceForApprove;
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
-use App\Notifications\InvoiceApprovalNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -194,20 +192,9 @@ class InvoiceHelper
                 ->whereIn('user_id', $uniqueUserIDs)
                 ->get();
 
-//                $testUser = User::query()
-//                    ->where('email_id', 'nitish.harchand@briq.com')
-//                    ->first();
-//                //dd($testUser);
-//                if(!empty($testUser->fcm_token)) {
-//                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
-//                }
-
             foreach ($Users as $User) {
-                    ProcessInvoiceApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
-//                    dispatch(new ProcessInvoiceApprove($invoiceNumber, $paymentRequestID, $User))->onQueue('promotion-sms-dev');
-//                $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                    ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
             }
         }
-//        ProcessInvoiceApprove::dispatch($paymentRequestID, $merchantID)->onQueue('promotion-sms-dev');
     }
 }

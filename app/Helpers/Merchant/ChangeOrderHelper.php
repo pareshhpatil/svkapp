@@ -3,8 +3,8 @@
 namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
+use App\Jobs\ProcessChangeOrderForApproveJob;
 use App\Libraries\Encrypt;
-use App\Notifications\ChangeOrderNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -111,7 +111,8 @@ class ChangeOrderHelper
 
             foreach ($Users as $User) {
 //                if(!empty($User->fcm_token)) {
-                    $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
+                ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue('promotion-sms-dev');
+//                    $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
 //                }
             }
         }
