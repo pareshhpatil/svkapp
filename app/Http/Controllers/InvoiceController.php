@@ -3036,7 +3036,7 @@ class InvoiceController extends AppController
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
-        dd($invoicePrivilegesAccessIDs, $info['payment_request_id']);
+
         if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
             if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
                 $invoiceAccess = 'all-full';
