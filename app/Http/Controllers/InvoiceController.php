@@ -3095,14 +3095,14 @@ class InvoiceController extends AppController
 
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
-
-        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
-            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
-                $invoiceAccess = 'all-full';
-            }
-        }
-
+        dd($contractPrivilegesAccessIDs, $info);
+//        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
+//            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
+//                $invoiceAccess = 'full';
+//            }
+//        }
 
         if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
             if($invoicePrivilegesAccessIDs['all'] == 'full') {
@@ -3122,7 +3122,7 @@ class InvoiceController extends AppController
             } elseif($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
                 $invoiceAccess = 'approve';
             }
-        }
+        } 
 //        elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
 //            $invoiceAccess = 'edit';
 //        }
