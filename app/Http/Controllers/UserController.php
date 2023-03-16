@@ -541,6 +541,25 @@ class UserController extends Controller
             }
 
         }
+
+        //check if team member role exists
+        $hasTeamMemberRoleExists = DB::table(ITable::BRIQ_ROLES)
+            ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+            ->where(IColumn::NAME, "Team Member")
+            ->exists();
+
+        if(!$hasTeamMemberRoleExists) {
+            DB::table(ITable::BRIQ_ROLES)
+                ->insert([
+                    'merchant_id' => $merchant->merchant_id,
+                    'name' => 'Team Member',
+                    'description' => 'Team member can only update assigned objects',
+                    'created_by' => $user->created_by,
+                    'last_updated_by' => $user->created_by,
+                    IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                    IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                ]);
+        }
     }
 
     /*
