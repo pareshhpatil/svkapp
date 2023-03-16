@@ -240,11 +240,13 @@ class SubUserHelper
     }
 
     /**
+     * @param $merchantID
      * @return array
      */
-    public function getRoles()
+    public function getRoles($merchantID)
     {
         return DB::table(ITable::BRIQ_ROLES)
+                    ->where('merchant_id', $merchantID)
                     ->get()
                     ->toArray();
     }

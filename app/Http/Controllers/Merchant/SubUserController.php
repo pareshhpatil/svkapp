@@ -60,7 +60,7 @@ class SubUserController extends AppController
         $title = 'Create sub-user';
         $data = Helpers::setBladeProperties($title);
 
-        $data['briqRoles'] = $this->subUserHelper->getRoles();
+        $data['briqRoles'] = $this->subUserHelper->getRoles($this->merchant_id);
 
         return view('app/merchant/subuser/create', $data);
     }
