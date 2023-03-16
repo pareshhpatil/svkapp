@@ -153,6 +153,7 @@ class Dashboard extends Controller
             $merchant_id = $this->session->get('merchant_id');
             $profile_step = $this->session->get('profile_step');
             $this->view->profile_step = $profile_step;
+
             if ($profile_step > 0 && $profile_step < 4) {
                 header('Location: /merchant/getting-started', 301);
                 die();
@@ -184,7 +185,7 @@ class Dashboard extends Controller
                 $this->view->total_customer_display = $this->moneyFormatIndia($this->view->total_customer);
             }
             $this->view->paid_per = round($total_paid_sum * 100 / $total_invoice_sum);
-            
+
             if ($total_invoice_sum == 0) {
                 $this->view->has_invoice = $this->model->getInvoiceCount($merchant_id);
             } else {
@@ -248,6 +249,7 @@ class Dashboard extends Controller
                     $completion_percentage += 16.67;
                 }
             }
+
             if ($completion_percentage > 14 && $completion_percentage < 19) {
                 $completion_percentage = 16.67;
                 $circular_percentage = 17;
@@ -325,6 +327,7 @@ class Dashboard extends Controller
                 $merchant_notification = $this->common->getListValue('merchant_notification', 'merchant_id', $merchant_id, 1, ' and notification_sent > DATE_SUB(now(), INTERVAL 6 MONTH) order by id desc limit 20');
                 $this->session->set('merchant_notification', $merchant_notification);
             }
+
             $merchant_notification = $this->setNotificationTime($merchant_notification);
             $this->view->merchant_notification = $merchant_notification;
             $this->view->document_upload = $this->session->get('document_upload');
@@ -362,7 +365,7 @@ class Dashboard extends Controller
                 $this->view->software_suggest = 1;
                 $this->session->removeCookie('registration_campaign_id');
             }
-
+            
             $this->view->render('header/app');
             $this->view->render('merchant/dashboard/dashboard');
             $this->view->render('footer/mDashboard');

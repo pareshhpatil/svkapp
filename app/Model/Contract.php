@@ -7,13 +7,16 @@ namespace App\Model;
  * @author Paresh
  */
 
+use Illuminate\Support\Facades\Session;
 use Log;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Model\ParentModel;
+use App\Constants\Models\ITable;
 
 class Contract extends ParentModel
 {
+    protected $table = ITable::CONTRACT;
 
     public function saveNewContract($data, $merchant_id, $user_id)
     {
@@ -69,7 +72,55 @@ class Contract extends ParentModel
                 'last_update_by' => $user_id
             ]);
     }
-    //DBTodo - remove raw query 
+
+    public function getPrivilegesContractList($merchant_id, $from_date, $to_data, $project, $privilegesIDs = [])
+    {
+        $userRole = Session::get('user_role');
+        $project_cond = "";
+        $contract_cond = "WHERE a.contract_id in('')";
+
+        if ($project != '') {
+            $project_cond = "AND a.project_id = '$project'";
+        }
+
+        $ids = implode(",", $privilegesIDs);
+
+        if($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            if(!empty($ids)) {
+                $contract_cond = "WHERE a.contract_id in($ids)";
+            }
+        }
+
+        if($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
+        FROM contract a
+        join project b on a.project_id  = b.id
+        join customer c on a.customer_id  = c.customer_id
+        $contract_cond
+        AND a.merchant_id = '$merchant_id' 
+        $project_cond
+        AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
+        AND a.is_active ='1'
+        AND a.status ='1'
+        ORDER BY a.created_date desc");
+        } else {
+            $retObj =  DB::select("SELECT a.*,c.company_name,b.project_name, b.project_id  project_code,c.customer_code,  concat(first_name,' ', last_name) name
+        FROM contract a
+        join project b on a.project_id  = b.id
+        join customer c on a.customer_id  = c.customer_id
+        WHERE a.merchant_id = '$merchant_id' 
+        $project_cond
+        AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_data')
+        AND a.is_active ='1'
+        AND a.status ='1'
+        ORDER BY a.created_date desc");
+        }
+
+
+        return $retObj;
+    }
+
+    //DBTodo - remove raw query
     public function getContractList($merchant_id, $from_date, $to_data, $project, $start='',$limit='')
     {
         $project_cond = "";
@@ -99,7 +150,7 @@ class Contract extends ParentModel
         AND a.is_active ='1'
         AND a.status ='1'
         ORDER BY a.created_date desc $limit $start");
-        
+
         return $retObj;
     }
 

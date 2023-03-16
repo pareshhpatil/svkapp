@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Model\Master;
 use App\Model\InvoiceFormat;
 use App\Model\Invoice;
+use App\Model\Notification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
+use Maatwebsite\Excel\Concerns\ToArray;
 use Validator;
 use App\Libraries\Helpers;
 use App\Libraries\Encrypt;
@@ -148,12 +152,24 @@ class MasterController extends AppController
     {
         $title = 'Project list';
         $data = Helpers::setBladeProperties($title,  [],  []);
-        $list = $this->masterModel->getProjectList($this->merchant_id);
-        foreach ($list as $ck => $row) {
-            $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         }
-        $data['list'] = $list;
+
+        if(!empty($privilegesIDs)) {
+            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs), $userRole);
+            foreach ($list as $ck => $row) {
+                $list[$ck]->encrypted_id = Encrypt::encode($row->id);
+            }
+        }
+
+        $data['list'] = $list ?? [];
         $data['datatablejs'] = 'table-no-export';
+        $data['privileges'] = $privilegesIDs;
         return view('app/merchant/project/list', $data);
     }
 
@@ -170,10 +186,33 @@ class MasterController extends AppController
 
     public function projectcreate()
     {
+        $userRole = Session::get('user_role');
+
+        $where = '';
+        $cust_list = [];
+        if($userRole == 'Admin') {
+            $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
+        } else {
+            $customerIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
+            $customerWhereIds = [];
+            foreach ($customerIDs as $key => $customerID) {
+                if($customerID == 'full' || $customerID == 'edit' || $customerID == 'approve') {
+                    $customerWhereIds[] = $key;
+                }
+            }
+
+            if(!empty($customerWhereIds)) {
+                $ids = implode(",", $customerWhereIds);
+                $where = "WHERE customer_id in($ids)";
+                $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, $where);
+            }
+        }
+
         $title = 'Create Project';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $data["date"] = date("Y M d");
-        $data["cust_list"] = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
+        $data["cust_list"] = $cust_list;
+
         $model = new InvoiceFormat();
         $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
         $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
@@ -348,5 +387,111 @@ class MasterController extends AppController
         $data['merchant_id'] = $this->merchant_id;
         $this->masterModel->saveBilledTransaction($data, $this->user_id);
         return redirect('/merchant/billedtransaction/list/' . Encrypt::encode($request->project_id))->with('success', "Bill transaction detail saved");
+    }
+
+    public function noPermission()
+    {
+        $title =  'Permission not granted';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        return view('/errors/no-permission', $data);
+    }
+
+    public function getNotifications()
+    {
+        $authUser = auth()->user();
+
+        // Get Notifications
+        $Notifications = $authUser->notifications()
+            ->latest()
+            ->limit(9)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $Notifications
+        ]);
+    }
+
+    public function getNotificationIndex() 
+    {
+        $title =  'Notifications';
+        $data = Helpers::setBladeProperties($title,  [],  []);
+        
+        return view('app/merchant/notifications/index', $data);
+    }
+
+    public function getAllNotifications()
+    {
+        $authUser = auth()->user();
+
+        // Get Notifications
+        $Notifications = $authUser->notifications()
+            ->paginate(2);
+        
+        $notificationMap = $Notifications
+            ->map(function ($Notification) {
+                $type = $Notification->data['type'];
+                $Notification->type = $type;
+
+                if($type == 'invoice') {
+                    $typeID = Encrypt::decode($Notification->data['payment_request_id']);
+                    $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($typeID, $this->merchant_id);
+                    // $detail = $this->masterModel->getTableRow('payment_request', 'payment_request_id', $typeID);
+                    $status = 'View';
+                    if($paymentRequestDetail->payment_request_status == '14') {
+                        $status = 'Approve';
+                    }
+
+                    $Notification->type_status = $status;
+                    $Notification->invoice_number = $paymentRequestDetail->invoice_number;
+                    $Notification->customer_name = $paymentRequestDetail->customer_name;
+                    $Notification->amount = $paymentRequestDetail->grand_total;
+                    $Notification->currency_icon = $paymentRequestDetail->currency_icon;
+                    $Notification->updated_date = $paymentRequestDetail->last_update_date;
+                    $Notification->updated_by = $paymentRequestDetail->last_updated_by_user ?? 'N.A';
+                };
+
+                if($type == 'change-order') {
+                    $typeID = Encrypt::decode($Notification->data['order_id']);
+                    
+                    $orderDetail = DB::table('order')
+                                ->join('contract', 'contract.contract_id', '=', 'order.contract_id')
+                                ->join('customer', 'customer.customer_id', '=', 'contract.customer_id')
+                                ->join('user', 'user.user_id', '=', 'order.last_update_by')
+                                ->select('order.*', 'contract.customer_id as customer_id', 'customer.first_name as customer_first_name', 'customer.last_name as customer_last_name', 'user.first_name as user_first_name', 'user.last_name as user_last_name')
+                                ->where('order_id', $typeID)
+                                ->first();
+
+                    if(!empty($orderDetail)) {
+                        $Notification->type_status = '';
+                        if(empty($orderDetail->approved_date)) {
+                            $Notification->type_status = 'Approve';
+                        }
+                        $Notification->order_number = $orderDetail->order_no;
+                        $Notification->customer_name = $orderDetail->customer_first_name  .' '. $orderDetail->customer_last_name;
+                        $Notification->total_change_order_amount = $orderDetail->total_change_order_amount;
+                        $Notification->order_date = Carbon::parse($orderDetail->order_date)->format('d M Y');
+                        $Notification->updated_by = $orderDetail->user_first_name .' '. $orderDetail->user_last_name;
+                    }
+
+                }
+                
+                $Notification->created_at_human = $Notification->created_at->diffForHumans();
+
+                return $Notification;
+            });
+       
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'notifications' => $notificationMap,
+                'total' => $Notifications->total(),
+                'lastPage' => $Notifications->lastPage(),
+                'nextPageUrl' => $Notifications->nextPageUrl(),
+                'previousPageUrl' => $Notifications->previousPageUrl(),
+                'perPage' => $Notifications->perPage(),
+                'currentPage' => $Notifications->currentPage(),
+            ]
+        ]);
     }
 }

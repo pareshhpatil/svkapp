@@ -14,6 +14,7 @@ use App\Libraries\Helpers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Swipez\ShortUrl\ShortUrl;
 use Validator;
 use SwipezShortURLWrapper;
 use Illuminate\Support\Facades\Redis;
@@ -218,7 +219,8 @@ class CompanyProfileController extends AppController
             $long_urls[] = $long_url;
             define('SWIPEZ_UTIL_PATH', getenv('SWIPEZ_BASE') . 'swipezutil');
             require SWIPEZ_UTIL_PATH . '/src/shorturl/SwipezShortURLWrapper.php';
-            $shortUrlWrap = new SwipezShortURLWrapper();
+//            $shortUrlWrap = new SwipezShortURLWrapper();
+            $shortUrlWrap = new ShortUrl();
             $shortUrls = $shortUrlWrap->SaveUrl($long_urls);
             $shortUrl = $shortUrls[0];
             return $shortUrl;
@@ -230,10 +232,7 @@ class CompanyProfileController extends AppController
 
     public function collect_payment_landingpage()
     {
-
         $data = $this->setBladeProperties('Collect payments', [], [3]);
-
-
 
         $user = null;
 

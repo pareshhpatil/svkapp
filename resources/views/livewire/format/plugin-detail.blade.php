@@ -419,6 +419,9 @@
                                     <th class="td-c  default-font">
                                         Document description
                                     </th>
+                                    <th class="td-c  default-font">
+                                        Required action
+                                    </th>
                                     
                                     <th class="td-c" style="width: 80px;">
                                     </th>
@@ -434,6 +437,7 @@
                                         <input type="hidden" name="mandatory_document_action[]" value="{{$v['required']}}">
                                     </td>
                                     <td class="td-c  default-font">{{$v['description']}}</td>
+                                    <td class="td-c  default-font">{{$v['required']}}</td>
                                     <td class="td-c"><a href="javascript:;" onclick="$(this).closest('tr').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>
                                 </tr>
                                 @endforeach
@@ -1318,10 +1322,10 @@
                                         </span></label>
                                     <div class="col-md-4">
                                         <input type="text" required id="document_description" maxlength="250" class="form-control" value="">
-                                        <input type="hidden" id="document_action"  value="Non-mandatory">
+                                        <!-- <input type="hidden" id="document_action" value="Non-mandatory"> -->
                                     </div>
                                 </div>
-                                <!--<div class="form-group">
+                                <div class="form-group">
                                     <label class="control-label col-md-4">Required for action <span class="required">*
                                         </span></label>
                                     <div class="col-md-4">
@@ -1331,7 +1335,7 @@
                                             <option value="Mandatory on submission">Mandatory on submission</option>
                                         </select>
                                     </div>
-                                </div>-->
+                                </div>
                             </div>
 
 

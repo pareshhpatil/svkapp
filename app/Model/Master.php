@@ -63,15 +63,30 @@ class Master extends ParentModel
 
     }
 
-    public function getProjectList($merchant_id)
+    public function getProjectList($merchant_id, $privilegesIDs = [], $userRole)
     {
-
-        $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+        $ids = implode(",", $privilegesIDs);
+        if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            
+            if(empty($ids)) {
+                $retObj = [];
+            } else {
+                $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
                             FROM project a
                             join customer b on a.customer_id = b.customer_id
-                            WHERE a.merchant_id = '$merchant_id' 
+                            WHERE a.id in($ids)
+                            and a.merchant_id = '$merchant_id' 
                             and a.is_active ='1'
                             ORDER by 1 DESC");
+            }
+        } else {
+            $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+                            FROM project a
+                            join customer b on a.customer_id = b.customer_id
+                            and a.merchant_id = '$merchant_id' 
+                            and a.is_active ='1'
+                            ORDER by 1 DESC");
+        }
 
         return $retObj;
     }
@@ -167,5 +182,11 @@ class Master extends ParentModel
         return CostType::where('merchant_id', $merchant_id)->where('is_active', 1)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
+    }
+
+    public function getUsersListByMerchant($user_id)
+    {       
+        $retObj = DB::select("call `get_sub_userlist`('$user_id')");
+        return $retObj;
     }
 }

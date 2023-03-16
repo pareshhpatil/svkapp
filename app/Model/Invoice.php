@@ -16,9 +16,12 @@ namespace App\Model;
 
 use Illuminate\Support\Facades\DB;
 use App\Model\ParentModel;
+use App\Constants\Models\ITable;
+use Illuminate\Support\Facades\Session;
 
 class Invoice extends ParentModel
 {
+    protected $table = ITable::INVOICE;
 
     public function getActiveCoupon($merchant_id)
     {
@@ -100,15 +103,33 @@ class Invoice extends ParentModel
         return $data;
     }
 
-    public function getContract($merchant_id)
+    /**
+     * @param $merchant_id
+     * @param $privilegesIDs
+     * @param $userRole
+     * @return \Illuminate\Support\Collection
+     */
+    public function getContract($merchant_id, $privilegesIDs = [], $userRole)
     {
-        $retObj = DB::table('contract as c')
-            ->select(DB::raw('*'))
-            ->join('project as p', 'p.id', '=', 'c.project_id')
-            ->where('c.is_active', 1)
-            ->where('c.status', 1)
-            ->where('c.merchant_id', $merchant_id)
-            ->get();
+        if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            $retObj = DB::table('contract as c')
+                ->select(DB::raw('*'))
+                ->join('project as p', 'p.id', '=', 'c.project_id')
+                ->whereIn('c.contract_id', $privilegesIDs)
+                ->where('c.is_active', 1)
+                ->where('c.status', 1)
+                ->where('c.merchant_id', $merchant_id)
+                ->get();
+        } else {
+            $retObj = DB::table('contract as c')
+                ->select(DB::raw('*'))
+                ->join('project as p', 'p.id', '=', 'c.project_id')
+                ->where('c.is_active', 1)
+                ->where('c.status', 1)
+                ->where('c.merchant_id', $merchant_id)
+                ->get();
+        }
+
         return $retObj;
     }
 
@@ -862,6 +883,32 @@ class Invoice extends ParentModel
         return $sum;
     }
 
+    public function updatePaymentRequestStatusAndNotifyPatron($payment_request_id, $status, $notifyPatron)
+    {
+        DB::table('payment_request')->where('payment_request_id', $payment_request_id)
+            ->update([
+                'payment_request_status' => $status,
+                'notify_patron' => $notifyPatron
+            ]);
+    }
+
+    public function getInvoiceColumnValues($payment_request_id) {
+        $values = DB::table('invoice_column_values')
+                    ->where('payment_request_id', $payment_request_id)
+                    ->pluck('value')->toArray();
+
+        return $values;
+    }
+
+    public function saveInvoicePreview($merchant_id, $user_id, $payment_request_id, $invoice_type, $invoice_values, $invoice_number, $payment_request_status, $payment_request_type)
+    {
+        $values = implode('~', $invoice_values);
+
+        $retObj = DB::select("call `convert_draft_invoice`('$merchant_id','$user_id','$payment_request_id','$invoice_type','$values','$invoice_number','$payment_request_status','$payment_request_status');");
+
+        return $retObj[0];
+    }
+
     public function getInvoiceList($merchant_id,$from_date,$to_date,$start,$limit)
     {
         $where = '';
@@ -896,8 +943,9 @@ class Invoice extends ParentModel
     }
 
     //DBTodo - make as separate 
-    public function getInvoiceDetails($payment_request_id) { 
-        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
+    public function getInvoiceDetails($payment_request_id)
+    {
+        $retObj = DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
         FROM `payment_request` a
         join customer c on a.customer_id  = c.customer_id
         Join contract con on a.contract_id = con.contract_id
@@ -907,10 +955,10 @@ class Invoice extends ParentModel
         WHERE
         a.payment_request_id = '$payment_request_id'
         AND a.is_active ='1' ");
-        
-        if($retObj!=[]) {
-            $particulars =  DB::table('invoice_construction_particular as ip')
-            ->select(DB::raw('ip.id,ip.pint,ip.bill_code,ip.description,ip.bill_type,ip.original_contract_amount, 
+
+        if ($retObj != []) {
+            $particulars = DB::table('invoice_construction_particular as ip')
+                ->select(DB::raw('ip.id,ip.pint,ip.bill_code,ip.description,ip.bill_type,ip.original_contract_amount, 
             ip.current_contract_amount,ip.previously_billed_percent,
             ip.previously_billed_amount,ip.current_billed_percent,ip.current_billed_amount,
             ip.total_billed,ip.retainage_percent,ip.retainage_amount_previously_withheld,ip.retainage_amount_for_this_draw,
@@ -918,16 +966,16 @@ class Invoice extends ParentModel
             ip.retainage_stored_materials_release_amount,ip.retainage_amount_stored_materials,
             ip.net_billed_amount,ip.retainage_release_amount,ip.total_outstanding_retainage,
             ip.stored_materials,ip.previously_stored_materials,ip.current_stored_materials,ip.project,ip.cost_type,ip.group,ip.bill_code_detail,csi_code.code'))
-            ->join('csi_code', 'csi_code.id', '=', 'ip.bill_code')
-            ->where('payment_request_id', $payment_request_id)
-            ->where('ip.is_active', 1)
-            ->get()->toArray();
+                ->join('csi_code', 'csi_code.id', '=', 'ip.bill_code')
+                ->where('payment_request_id', $payment_request_id)
+                ->where('ip.is_active', 1)
+                ->get()->toArray();
 
             $attchement = DB::table('invoice_attatchments as ia')
-            ->select(DB::raw('ia.id,ia.attatchment_name,ia.file_url,ia.attatchment_description,ia.file_name'))
-            ->where('payment_request_id', $payment_request_id)
-            ->where('is_active', 1)
-            ->get()->toArray();
+                ->select(DB::raw('ia.id,ia.attatchment_name,ia.file_url,ia.attatchment_description,ia.file_name'))
+                ->where('payment_request_id', $payment_request_id)
+                ->where('is_active', 1)
+                ->get()->toArray();
 
             $retObj[0]->particulars = $particulars;
             $retObj[0]->attachments = $attchement;

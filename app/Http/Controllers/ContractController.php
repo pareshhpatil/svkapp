@@ -18,6 +18,7 @@ use App\Project;
 use App\Traits\Contract\ContractParticulars;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Validator;
 use Illuminate\Support\Facades\Session;
@@ -77,7 +78,23 @@ class ContractController extends Controller
         }
         $data["cust_list"] = $cust_list;
         $data["project_id"] = 0;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
         // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
 
@@ -109,9 +126,23 @@ class ContractController extends Controller
 
     public function loadContract($step = 1, $contract_id = null, $bulk_id = null)
     {
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($privilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+                $whereProjectIDs[] = $key;
+            }
+        }
 
         Helpers::hasRole(2, 27);
-        $project_list = $this->masterModel->getProjectList($this->merchant_id);
+        $project_list = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         if (Route::getCurrentRoute()->getName() == 'contract.create.new') {
             $title = "Create";
             $needValidationOnStep2 = false;
@@ -444,7 +475,22 @@ class ContractController extends Controller
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
         $data['customer_name'] = 'Contact person name';
@@ -466,6 +512,7 @@ class ContractController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['project_id'] = isset($request->project_id) ? $request->project_id : '';
+        $userRole = Session::get('user_role');
 
         //store last search criteria into Redis
         $redis_items = $this->getSearchParamRedis('contract_list', $this->merchant_id);
@@ -477,18 +524,40 @@ class ContractController extends Controller
             $data['project_id'] = $redis_items['contract_list']['search_param']['project_id'];
         }
         //$data['showLastRememberSearchCriteria'] = true;
+        //get contract privileges from redis
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
 
-        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['project_id']);
+        $list = $this->contract_model->getPrivilegesContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'], $data['project_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve' || $privilegesID == 'view-only') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'contract_list';
         $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
+        $data['privileges'] = $privilegesIDs;
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
@@ -529,7 +598,21 @@ class ContractController extends Controller
             }
 
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
