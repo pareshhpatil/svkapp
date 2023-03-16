@@ -585,7 +585,7 @@ $header = 'app.patron.invoice.invoice-master';
             $footers = 'app.patron.invoice.invoice-footer';
             }
             if($info['grouping'] == true){
-                $footers = 'app.merchant.invoiceformat.invoice_footerV2';
+                $footers = 'app.merchant.invoiceformat.invoice_footer';
             }
 
             @endphp
