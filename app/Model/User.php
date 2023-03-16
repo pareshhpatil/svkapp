@@ -693,6 +693,8 @@ class User extends ParentModel
             }
         }
 
+        dd($tempArr, $ruleEngineInvoices, $createdByArr);
+
         return $tempArr + $ruleEngineInvoices + $createdByArr;
     }
 
