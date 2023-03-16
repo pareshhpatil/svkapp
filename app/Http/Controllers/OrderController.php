@@ -220,7 +220,7 @@ class OrderController extends Controller
             $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         }
 
-        $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
+        $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
         }

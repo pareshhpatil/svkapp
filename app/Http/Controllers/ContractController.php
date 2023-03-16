@@ -531,7 +531,7 @@ class ContractController extends Controller
             $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         }
 
-        $list = $this->contract_model->getContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'], $data['project_id'], array_keys($privilegesIDs));
+        $list = $this->contract_model->getPrivilegesContractList($this->merchant_id, $dates['from_date'],  $dates['to_date'], $data['project_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->contract_id);
         }
