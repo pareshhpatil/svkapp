@@ -523,3 +523,9 @@ Breadcrumbs::for('notifications', function ($trail) {
     $trail->parent('home');
     $trail->push('Notifications');
 });
+
+Breadcrumbs::for('merchant.user.create-token', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Create Token');
+});

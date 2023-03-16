@@ -366,16 +366,7 @@
                         which previous Certificates for Payment were issued and payments received from the Owner, and
                         that current payment shown herein is now due.</div>
                     <div style="margin-top: 5px; font-size: 13px; font-weight: 700">CONTRACTOR:</div>
-                    <table style="width:100%">
-                        <tr>
-                            <td style="width: 70%">
-                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: {{$metadata['header'][0]['value'] }} </div>
-                            </td>
-                            <td style="width: 30%">
-                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></div>
-                            </td>
-                        </tr>
-                    </table>
+                    
                     <div style="margin-top: 0; font-size: 10px">State of:</div>
                     <div style="margin-top: 3px; font-size: 10px">County of:</div>
                     <div style="margin-top: 3px; font-size: 10px">Subscribed and sworn to before me this <span style="margin-left: 32px"> day of</span></div>
@@ -399,17 +390,7 @@
                     </table>
                     <div style="margin-top: 0; font-size: 12px; font-weight: 300;font-style: italic;">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
                         Application and on the Continuation Sheet that are changed to conform with the amount certified.)</div>
-                    <div style="margin-top: 0; font-size: 12px; font-weight: 700">ARCHITECT:</div>
-                    <table style="width:100%">
-                        <tr>
-                            <td style="width: 70%">
-                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: {{$metadata['header'][0]['value'] }}</div>
-                            </td>
-                            <td style="width: 30%">
-                                <div style="margin-top: 0;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: <x-localize :date="$info['project_details']->contract_date" type="date" /></div>
-                            </td>
-                        </tr>
-                    </table>
+                    
                     <div style="margin-top: 0; font-size: 12px">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
                         named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
                         the Owner or Contractor under this Contract.</div>
@@ -565,14 +546,93 @@
                             @foreach ($info['constriuction_details'] as $key => $item)
                             @if($item['type']=='heading')
                             <tr>
-                                <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding: 8px 2px;text-align: left">
-                                    <div style="font-size: 13px">{{ $item['b'] }} </div>
+                                <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px; color: #6F8181;">{{ $item['b'] }} </div>
+                                </td>
+                            </tr>
+                            
+                            @elseif ($item['type']=='sub-heading')
+                            <tr>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"> </div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px;color: #6F8181;">{{ $item['b'] }}</div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"> </div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                            </tr>
+                            @elseif ($item['type']=='sub-footer')
+                            <tr>
+                            
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
+                                    <div style="font-size: 13px"></div>
+                                </td>
+                                <td  style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px;color: #6F8181;"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px"> @if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px"> @if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">@if($item['f'] < 0)({{str_replace('-','',$item['f'])}}) @else{{ $item['f'] }} @endif</div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">@if($item['g'] < 0)({{str_replace('-','',$item['g'])}}) @else{{ $item['g'] }} @endif</div>
+                                </td>
+                                @php
+                                $sub_total_g = filter_var($item['g'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $sub_total_c = filter_var($item['c'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                if($sub_total_g>0 && $sub_total_c>0)
+                                {
+                                $sub_total_g_by_c = $sub_total_g / $sub_total_c;
+                                }else{
+                                $sub_total_g_by_c=0;
+                                }
+                                @endphp
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">
+                                        @if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c * 100, 2))}}) @else{{number_format($sub_total_g_by_c * 100,2)}}@endif% </div>
+                                </td>
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</div>
+                                </td>
+                                <td style=" border-top:1px solid #313131;border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 13px">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i'] }} @endif</div>
                                 </td>
                             </tr>
                             @elseif ($item['type']=='footer')
                             <tr>
-                                <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding: 8px 2px;text-align: center">
-                                    <div style="font-size: 12px"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
+                            <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 13px;color: #6F8181;"> @if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
                                 </td>
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding: 8px 2px;text-align: right">
                                     <div style="font-size: 13px"> @if($item['c'] < 0)({{str_replace('-','',$item['c'])}}) @else{{ $item['c'] }} @endif</div>
@@ -643,35 +703,35 @@
                             </tr>
                             @else
                             <tr>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: left">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: left">
                                     <div style="font-size: 13px">@if($item['a'] < 0)({{str_replace('-','',$item['a'])}}) @else{{ $item['a'] }} @endif </div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: left">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: left">
                                     <div style="font-size: 13px">@if($item['b'] < 0)({{str_replace('-','',$item['b'])}}) @else{{ $item['b'] }} @endif </div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px"> @if($item['c'] < 0)({{str_replace('-','',number_format($item['c'],2))}}) @else{{ number_format($item['c'],2) }} @endif</div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ number_format($item['d'],2) }} @endif </div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['e'] < 0)({{str_replace('-','',number_format($item['e'],2))}}) @else{{ number_format($item['e'],2) }} @endif</div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['f'] < 0)({{str_replace('-','',number_format($item['f'],2))}}) @else{{ number_format($item['f'],2) }} @endif</div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['g'] < 0)({{str_replace('-','',number_format($item['g'],2))}}) @else{{number_format($item['g'],2) }} @endif</div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">
                                         @if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2) }}@endif% </div>
                                 </td>
-                                <td style="border-right:1px solid #313131; padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</div>
                                 </td>
-                                <td style="padding: 8px 2px; text-align: right">
+                                <td style="border-bottom: solid 1px #A0ACAC;padding: 8px 2px; text-align: right">
                                     <div style="font-size: 13px">@if($item['i'] < 0)({{str_replace('-','',$item['i'])}}) @else{{ $item['i']}} @endif</div>
                                 </td>
                             </tr>
@@ -727,7 +787,9 @@
                     </div>
                 </div>
             </div>
+            
         </div>
+        
     </div>
     
 
@@ -809,6 +871,7 @@
 
     @endif
     </div>
+    
 </body>
 
 </html>

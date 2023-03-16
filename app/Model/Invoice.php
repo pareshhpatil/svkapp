@@ -103,6 +103,12 @@ class Invoice extends ParentModel
         return $data;
     }
 
+    /**
+     * @param $merchant_id
+     * @param $privilegesIDs
+     * @param $userRole
+     * @return \Illuminate\Support\Collection
+     */
     public function getContract($merchant_id, $privilegesIDs = [], $userRole)
     {
         if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
@@ -715,6 +721,7 @@ class Invoice extends ParentModel
                 'cost_code' => $data['cost_code'],
                 'cost_type' => $data['cost_type'],
                 'group' => $data['group'],
+                'sub_group' => $data['sub_group'],
                 'bill_code_detail' => $data['bill_code_detail'],
                 'calculated_perc' => $data['calculated_perc'],
                 'calculated_row' => $data['calculated_row'],
@@ -767,6 +774,7 @@ class Invoice extends ParentModel
                     'cost_code' => $data['cost_code'],
                     'cost_type' => $data['cost_type'],
                     'group' => $data['group'],
+                    'sub_group' => $data['sub_group'],
                     'bill_code_detail' => $data['bill_code_detail'],
                     'calculated_perc' => $data['calculated_perc'],
                     'calculated_row' => $data['calculated_row'],
@@ -899,5 +907,80 @@ class Invoice extends ParentModel
         $retObj = DB::select("call `convert_draft_invoice`('$merchant_id','$user_id','$payment_request_id','$invoice_type','$values','$invoice_number','$payment_request_status','$payment_request_status');");
 
         return $retObj[0];
+    }
+
+    public function getInvoiceList($merchant_id,$from_date,$to_date,$start,$limit)
+    {
+        $where = '';
+
+        if($limit!='') {
+            $limit = "limit ".$limit;
+        }
+        if($start!='') {
+            if($start==-1) {
+                $start = "offset 0";
+            }else{
+                $start = "offset ".$start;
+            }
+        }
+
+        $retObj =  DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
+        FROM `payment_request` a
+        join customer c on a.customer_id  = c.customer_id
+        Join contract con on a.contract_id = con.contract_id
+        INNER JOIN project p ON con.project_id = p.id
+        join config cf on a.payment_request_status = cf.config_key 
+        AND cf.config_type = 'payment_request_status'
+        WHERE a.merchant_id = '$merchant_id' 
+        AND a.payment_request_status not in (3,8) 
+        AND a.payment_request_type <>4
+        AND DATE(a.created_date) between DATE('$from_date') AND DATE('$to_date')
+        AND a.is_active ='1'
+        AND (expiry_date is null or expiry_date>curdate())
+        ORDER BY a.created_date desc $limit $start");
+        
+        return $retObj;
+    }
+
+    //DBTodo - make as separate 
+    public function getInvoiceDetails($payment_request_id)
+    {
+        $retObj = DB::select("SELECT a.payment_request_id,a.payment_request_type,a.invoice_type,a.absolute_cost,cf.config_value as payment_request_status,a.created_date,a.due_date,a.invoice_number,a.currency,a.revision_no,a.contract_id,c.company_name,concat(first_name,' ', last_name) name , c.customer_id, c.customer_code, p.project_id,p.project_name
+        FROM `payment_request` a
+        join customer c on a.customer_id  = c.customer_id
+        Join contract con on a.contract_id = con.contract_id
+        INNER JOIN project p ON con.project_id = p.id
+        join config cf on a.payment_request_status = cf.config_key 
+        AND cf.config_type = 'payment_request_status'
+        WHERE
+        a.payment_request_id = '$payment_request_id'
+        AND a.is_active ='1' ");
+
+        if ($retObj != []) {
+            $particulars = DB::table('invoice_construction_particular as ip')
+                ->select(DB::raw('ip.id,ip.pint,ip.bill_code,ip.description,ip.bill_type,ip.original_contract_amount, 
+            ip.current_contract_amount,ip.previously_billed_percent,
+            ip.previously_billed_amount,ip.current_billed_percent,ip.current_billed_amount,
+            ip.total_billed,ip.retainage_percent,ip.retainage_amount_previously_withheld,ip.retainage_amount_for_this_draw,
+            ip.retainage_percent_stored_materials,ip.retainage_amount_previously_stored_materials,
+            ip.retainage_stored_materials_release_amount,ip.retainage_amount_stored_materials,
+            ip.net_billed_amount,ip.retainage_release_amount,ip.total_outstanding_retainage,
+            ip.stored_materials,ip.previously_stored_materials,ip.current_stored_materials,ip.project,ip.cost_type,ip.group,ip.bill_code_detail,csi_code.code'))
+                ->join('csi_code', 'csi_code.id', '=', 'ip.bill_code')
+                ->where('payment_request_id', $payment_request_id)
+                ->where('ip.is_active', 1)
+                ->get()->toArray();
+
+            $attchement = DB::table('invoice_attatchments as ia')
+                ->select(DB::raw('ia.id,ia.attatchment_name,ia.file_url,ia.attatchment_description,ia.file_name'))
+                ->where('payment_request_id', $payment_request_id)
+                ->where('is_active', 1)
+                ->get()->toArray();
+
+            $retObj[0]->particulars = $particulars;
+            $retObj[0]->attachments = $attchement;
+
+            return $retObj[0];
+        }
     }
 }

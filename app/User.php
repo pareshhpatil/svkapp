@@ -12,13 +12,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Notifications\Notification;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property mixed $user_id
  */
 class User extends Authenticatable {
 
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     /**
      * Changed auth table users to user
