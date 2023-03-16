@@ -361,7 +361,7 @@ class UserController extends Controller
                     Session::put('group_type', 1);
                     $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
                 }
-                dd($merchant);
+
                 if (!empty($merchant)) {
                     if ($user->master_login_group_id > 0) {
                         $this->setMasterLogin($user);
