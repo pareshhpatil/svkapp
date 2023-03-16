@@ -1039,6 +1039,11 @@
 
                     setParticulars()
                     {
+                        try{
+                            document.getElementById('cell_cost_code_'+particularray[0].pint).click();
+                        }catch(o)
+                        {}
+                        
                         particularray.forEach(function(currentValue, index, arr) {
                             document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
                             // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
