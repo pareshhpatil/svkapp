@@ -968,7 +968,7 @@ class InvoiceController extends AppController
             $userRole = Session::get('user_role');
             $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-
+            dd($info->payment_request_id, $invoicePrivilegesAccessIDs);
             $hasAccess = false;
             if($userRole == 'Admin') {
                 $hasAccess = true;
