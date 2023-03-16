@@ -96,7 +96,7 @@ class SubUserController extends AppController
         $title = 'Edit sub-user';
         $data = Helpers::setBladeProperties($title);
 
-        $data['briqRoles'] = $this->subUserHelper->getRoles();
+        $data['briqRoles'] = $this->subUserHelper->getRoles($this->merchant_id);
 
         /** @var \App\User $User */
         $User = \App\User::query()
