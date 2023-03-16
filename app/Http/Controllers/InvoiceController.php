@@ -1766,7 +1766,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
         } else {
