@@ -693,8 +693,6 @@ class User extends ParentModel
             }
         }
 
-        dd($tempArr, $ruleEngineInvoices, $createdByArr);
-
         return $tempArr + $ruleEngineInvoices + $createdByArr;
     }
 
@@ -715,19 +713,15 @@ class User extends ParentModel
         $changeOrderPrivilegesCollect = clone $PrivilegesCollect->where('type', 'change-order')->values();
         $changeOrderInvoiceIDs = $this->changeOrderRuleEngineIDs($changeOrderPrivilegesCollect);
 
-        $finalArray = [];
+//        $finalArray = [];
 
         $invoiceIDs = [];
 
         foreach ($paymentRequestIDs as $paymentRequestID) {
             foreach ($paymentRequestID["payment_request_ids"] as $key => $payment_request_id) {
                 if(!isset($finalArray[$key])) {
-                    $finalArray[$key] = $payment_request_id;
+                    $invoiceIDs[$key] = $payment_request_id;
                 }
-            }
-
-            foreach ($paymentRequestID["invoice_ids"] as $key => $invoiceID) {
-                $invoiceIDs[$key] = $invoiceID;
             }
         }
 
@@ -764,9 +758,8 @@ class User extends ParentModel
             'customer_ids' => $customerIDs,
             'project_ids' => $projectIDs,
             'contract_ids' => $contractIDs,
-            'invoice_ids' => $invoiceIDs,
             'change_order_ids' => $changeOrderIds,
-            'payment_request_ids' => array_filter($finalArray)
+            'payment_request_ids' => $invoiceIDs
         ];
 
     }
@@ -871,8 +864,7 @@ class User extends ParentModel
             }
 
             return [
-                'payment_request_ids' => $IDs,
-                'invoice_ids' => $invoiceIDs
+                'payment_request_ids' => $IDs + $invoiceIDs,
             ];
         });
     }
