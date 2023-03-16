@@ -245,7 +245,7 @@
                                                                             </div>
                                                                         </div>
                                                                     @elseif($k=='group')
-                                                                    <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                    <input  type="hidden" :id="`grouphidden${field.pint}`" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                         <span :id="`groupspan${field.pint}`" x-show="! field.txtgroup" x-text="field.group"></span>
                                                                         <span :id="`groupdropdown${field.pint}`" x-show="field.txtgroup" >
                                                                         <div  :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
@@ -976,6 +976,7 @@
                             }else{
                                 $('#cell_bill_type_' + pint).removeClass(' error-corner').popover('destroy')
                             }
+							document.getElementById('grouphidden'+pint).value=particularray[p].group;
 
                             if(this.fields[p].current_billed_amount !== null && this.fields[p].current_billed_amount !== undefined && this.fields[p].current_billed_amount !== '' ){
 
