@@ -33,6 +33,7 @@ use App\PaymentRequest;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use App\Http\Controllers\API\APIController;
+use App;
 
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 

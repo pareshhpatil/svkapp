@@ -608,7 +608,7 @@ class Controller
                 if ($custom_menu == 1) {
                     $list = $this->common->getListValue('user_menu', 'user_id', $this->user_id, 1, '  order by seq,id');
                 } else {
-                    $list = $this->common->getListValue('menu', 'is_active', 1, '  order by seq,id');
+                    $list = $this->common->getListValue('menu', 'is_active', 1,0, '  order by seq,id');
                 }
 
                 if (empty($list)) {

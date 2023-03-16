@@ -252,7 +252,7 @@
                                                                         <input type="hidden" name="sub_group[]"  x-model="field.sub_group">
                                                                          </span>
                                                                     @elseif($k=='bill_type')
-                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
+                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model.lazy="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
                                                                             <option value="">Select..</option>
                                                                             <option value="% Complete">% Complete</option>
                                                                             <option value="Unit">Unit</option>
@@ -302,7 +302,7 @@
                                                                                 </template>
                                                                             </div>
                                                                             <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Calculated'">
@@ -338,19 +338,19 @@
                                                                     @elseif($k=='current_billed_percent')
                                                                         <template x-if="field.bill_type!='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
 
                                                                         <template x-if="field.bill_type=='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -667,7 +667,6 @@
                                 )
                                 csi_codes_array[data.billCode.id]= { value: data.billCode.id, label: label, description: data.billCode.description }
 
-                                console.log(csi_codes_array);
                                 updateBillCodeDropdowns(bill_codes, data.billCode)
                             }
                         });
@@ -747,7 +746,6 @@
                         previewv5(previewArray);
                     },
                     saveParticulars(){
-                        return true;
 
                         var particulars = this.getParticularsInfo();
                         /*Hack - need to change in future */
@@ -1775,8 +1773,8 @@
                             //this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
                             this.addbuttonactive=true;
 
-                            this.virtualSelectInit(pint, 'bill_code');
-                            this.virtualSelectInit(pint, 'cost_type');
+                            this.virtualSelectInit(pint, 'bill_code',id);
+                            this.virtualSelectInit(pint, 'cost_type',id);
 
                            // setTimeout(function () {
                                 document.getElementById('loader').style.display = 'none';
@@ -1960,7 +1958,6 @@
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
                         $(this).addClass('form-control input-sm mw-150');
                     })
-
 
                     $('#' + type + id).change(function() {
                         if (type === 'bill_code') {

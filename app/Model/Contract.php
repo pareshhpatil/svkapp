@@ -66,8 +66,7 @@ class Contract extends ParentModel
                 'billing_frequency' => $data->billing_frequency,
                 'particulars' => $data->particulars,
                 'created_by' => $user_id,
-                'last_update_by' => $user_id,
-                'created_date' => date('Y-m-d H:i:s')
+                'last_update_by' => $user_id
             ]);
     }
     //DBTodo - remove raw query 
@@ -141,8 +140,7 @@ class Contract extends ParentModel
                 'code' => $data->bill_code,
                 'title' => $data->bill_description,
                 'description' => $data->bill_description,
-                'last_update_by' => $user_id,
-                'created_date' => date('Y-m-d H:i:s')
+                'last_update_by' => $user_id
             ]);
     }
 

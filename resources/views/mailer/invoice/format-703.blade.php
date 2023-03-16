@@ -2,7 +2,7 @@
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
 
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="x-apple-disable-message-reformatting">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,6 +28,25 @@
             line-height: 75%;
         }
 
+        #header,
+#footer {
+  position: fixed;
+  left: 0;
+	right: 0;
+	color: #aaa;
+	font-size: 0.9em;
+}
+#header {
+  top: 0;
+	border-bottom: 0.1pt solid #aaa;
+}
+#footer {
+  bottom: 0;
+}
+.page-number:before {
+  content: "Page " counter(page);
+}
+
 
         @if($viewtype=='print') @page {
             margin-top: 0px;
@@ -50,12 +69,29 @@
             margin-right: 20px
         }
     </style>
-
+    
 </head>
 
 <body style="word-break: break-word; -webkit-font-smoothing: antialiased; margin: 0; width: 100%; padding: 0">
+
+<script type="text/php">
+    if (isset($pdf)) {
+        if ($PAGE_COUNT > 0) {
+        $text = "Page {PAGE_NUM} / {PAGE_COUNT}";
+        $size = 10;
+        $font = $fontMetrics->getFont("Verdana");
+        $width = $fontMetrics->get_text_width($text, $font, $size) / 3;
+        $x = ($pdf->get_width() - $width - 12);
+        $y = $pdf->get_height() - 25;
+        $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    }
+</script>
+
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
+
+        
         <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px">
             <div id="tab" style="width: 100%; background-color: #fff; padding: 16px">
                 <table>
