@@ -143,7 +143,7 @@
 <script type="text/php">
     if (isset($pdf)) {
         if ($PAGE_COUNT > 0) {
-        $text = "Page {PAGE_NUM} / {PAGE_COUNT}";
+        $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
         $size = 10;
         $font = $fontMetrics->getFont("Verdana");
         $width = $fontMetrics->get_text_width($text, $font, $size) / 3;
