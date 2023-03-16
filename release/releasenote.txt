@@ -5,3 +5,7 @@ ADD COLUMN `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `updated_at`;
 
 ALTER TABLE `swipez_briq`.`personal_access_tokens` 
 CHANGE COLUMN `plain_text` `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `token`;
+
+// CO grouping in invoice 
+ALTER TABLE `swipez`.`invoice_construction_particular`
+ADD COLUMN `sub_group` VARCHAR(45) NULL DEFAULT NULL AFTER `group`;
