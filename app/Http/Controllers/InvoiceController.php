@@ -1798,6 +1798,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -2150,6 +2151,7 @@ class InvoiceController extends AppController
      */
     public function downloadFullInvoice($link)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
