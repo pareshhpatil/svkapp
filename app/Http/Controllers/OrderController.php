@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\APIController;
 
 class OrderController extends Controller
 {
@@ -23,6 +24,7 @@ class OrderController extends Controller
     private $orderModel = null;
     private $merchant_id = null;
     private $user_id = null;
+    private $apiController = null;
 
     public function __construct()
     {
@@ -30,8 +32,7 @@ class OrderController extends Controller
         $this->masterModel = new Master();
         $this->invoiceModel = new Invoice();
         $this->orderModel = new Order();
-
-
+        $this->apiController = new APIController();
 
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
@@ -65,8 +66,20 @@ class OrderController extends Controller
             $model = new Master();
             $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
             $row->json_particulars = json_decode($row->particulars, true);
-
             $data['detail'] = $row;
+
+            $group_codes = [];
+            foreach($row->json_particulars as $row_particular){
+                if(isset($row_particular['group'])){
+                    if (!in_array($row_particular['group'], $group_codes)){
+                        if($row_particular['group'] !=''){
+                            array_push($group_codes,$row_particular['group']);
+                        }
+                    }
+                }
+            }
+            $data['group_codes'] = $group_codes;
+            $data['group_codes_json'] =  json_encode($data['group_codes']);
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row->project_id);
             $data['project_id'] = $row->project_id;
@@ -89,6 +102,8 @@ class OrderController extends Controller
         $data["default_particulars"]["rate"] = 'Rate';
         $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
         $data["default_particulars"]["order_description"] = 'Description';
+        $data["default_particulars"]["group"] = 'Group';
+        $data["default_particulars"]["sub_group"] = 'Sub Group';
 
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
@@ -126,6 +141,8 @@ class OrderController extends Controller
                     $row_array["cost_type"] = $request->cost_type[$skey];
                     $row_array["retainage_percent"] = $request->retainage_percent[$skey];
                     $row_array["pint"] = $request->pint[$skey];
+                    $row_array["group"] = $request->group[$skey];
+                    $row_array["sub_group"] = $request->sub_group[$skey];
                     array_push($main_array, $row_array);
                 }
             }
@@ -224,6 +241,20 @@ class OrderController extends Controller
                     $row_data["cost_type"] = null;
                 }
             }
+            $group_codes = [];
+            foreach($row->json_particulars as $row_particular){
+                if(isset($row_particular['group'])){
+                    if (!in_array($row_particular['group'], $group_codes)){
+                        if($row_particular['group'] !=''){
+                            array_push($group_codes,$row_particular['group']);
+                        }
+                    }
+                }
+                
+            }
+            $data['group_codes'] = $group_codes;
+            $data['group_codes_json'] =  json_encode($data['group_codes']);
+
             $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
             foreach ($cust_list as $cust_data) {
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
@@ -240,6 +271,8 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["group"] = 'Group';
+            $data["default_particulars"]["sub_group"] = 'Sub Group';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
@@ -286,6 +319,8 @@ class OrderController extends Controller
             $data["default_particulars"]["rate"] = 'Rate';
             $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
             $data["default_particulars"]["order_description"] = 'Description';
+            $data["default_particulars"]["group"] = 'Group';
+            $data["default_particulars"]["sub_group"] = 'Sub Group';
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
@@ -329,6 +364,8 @@ class OrderController extends Controller
             $row_array["order_description"] = $request->order_description[$skey];
             $row_array["cost_type"] = $request->cost_type[$skey];
             $row_array["retainage_percent"] = $request->retainage_percent[$skey];
+            $row_array["group"] = $request->group[$skey];
+            $row_array["sub_group"] = $request->sub_group[$skey];
             $row_array["pint"] = $request->pint[$skey];
             array_push($main_array, $row_array);
         }
@@ -356,6 +393,48 @@ class OrderController extends Controller
             $id = $this->contract_model->saveNewBillCode($request, $this->merchant_id, $this->user_id);
             $data  = [$request->bill_code, $request->bill_description, $id];
             return $data;
+        }
+    }
+
+    public function getchangeOrderList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'start' => 'numeric',
+            'limit' => 'numeric',
+            'contract_id' => 'numeric'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
+        }
+        $start = ($request->start > 0) ? $request->start : -1;
+        $limit = ($request->limit > 0) ? $request->limit : 15;
+        $from_date = isset($request->from_date) ? Helpers::sqlDate($request->from_date) : date('Y-m-d', strtotime(date('01 M Y')));
+        $to_date = isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
+
+        $list = $this->orderModel->getOrderList($request->merchant_id, $from_date, $to_date, $request->contract_id, $start, $limit);
+        foreach ($list as $ck => $row) {
+            if($row->status==0) {
+                $list[$ck]->status = 'Pending';
+            } else {
+                $list[$ck]->status = 'Approved';
+            }
+        }
+        //$list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id,$start,$limit);
+        $response['lastno'] = count($list) + $start;
+        $response['list'] = $list;
+        return response()->json($this->apiController->APIResponse('', $response), 200);
+    }
+
+    public function getOrderDetails($order_id) {
+        if ($order_id != null) {
+            $info =  $this->orderModel->getOrderData($order_id);
+            $info->particulars = json_decode($info->particulars,true);
+            if($info->status==0) {
+                $info->status = 'Pending';
+            } else {
+                $info->status = 'Approved';
+            }
+            return response()->json($this->apiController->APIResponse('', $info), 200);
         }
     }
 }

@@ -1,13 +1,11 @@
-composer require league/iso3166
 
 
+ALTER TABLE `swipez_briq`.`personal_access_tokens` 
+ADD COLUMN `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `updated_at`;
 
-UPDATE `swipez_briq`.`customer_mandatory_column` SET `column_name` = 'Contact person name' WHERE (`id` = '2');
-=======
-Darland setup 
-----------------------------
+ALTER TABLE `swipez_briq`.`personal_access_tokens` 
+CHANGE COLUMN `plain_text` `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `token`;
 
-Add below lines in stage and Live Env files
-
-BRIQ_APP_URL=https://app.br.iq/#/home
-BRIQ_URL_REDIRECTION= true
+// CO grouping in invoice 
+ALTER TABLE `swipez`.`invoice_construction_particular`
+ADD COLUMN `sub_group` VARCHAR(45) NULL DEFAULT NULL AFTER `group`;

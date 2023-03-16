@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:60,1',
             'bindings',
             'APIAccess',
@@ -69,6 +70,7 @@ class Kernel extends HttpKernel
         'APIAccess' => \App\Http\Middleware\APIAccess::class,
         'Captcha' => \App\Http\Middleware\Captcha::class,
         'FrameGuard' => \App\Http\Middleware\FrameGuard::class,
+        'merchantdata' => \App\Http\Middleware\MerchantData::class,
         
     ];
 
