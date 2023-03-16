@@ -415,12 +415,12 @@ class SubUserController extends AppController
                 $existInvoiceTypeIDs = $existInvoices->toArray();
 
                 $requestInvoiceIDs = [];
-                $notifyInvoicePrivilegesTypeIDs = [];
+//                $notifyInvoicePrivilegesTypeIDs = [];
                 foreach ($invoicesPrivilegesDecode as $invoice) {
                     $requestInvoiceIDs[] = $invoice->value;
                     $ruleEngine = '';
                     if($invoice->access == 'full' || $invoice->access == 'approve') {
-                        $notifyInvoicePrivilegesTypeIDs[] = $invoice->value;
+//                        $notifyInvoicePrivilegesTypeIDs[] = $invoice->value;
                         if(count($invoice->rule_engine_query) > 0) {
                             $ruleEngine = json_encode($invoice->rule_engine_query);
                         }
@@ -443,7 +443,7 @@ class SubUserController extends AppController
                 }
 
                 $invoiceIDsToBeDisabled = array_diff($existInvoiceTypeIDs, $requestInvoiceIDs);
-                $notifyInvoicePrivilegesTypeIDs = array_diff($notifyInvoicePrivilegesTypeIDs, $existInvoiceTypeIDs);
+//                $notifyInvoicePrivilegesTypeIDs = array_diff($notifyInvoicePrivilegesTypeIDs, $existInvoiceTypeIDs);
                
                 foreach ($invoiceIDsToBeDisabled as $invoiceIDToBeDisabled) {
                     DB::table(ITable::BRIQ_PRIVILEGES)
@@ -457,10 +457,10 @@ class SubUserController extends AppController
                         ]);
                 }
 
-                if(!empty($notifyInvoicePrivilegesTypeIDs)) {
-                    //Notify User If access is full or approve
-                    $this->invoicesTobeNotify($notifyInvoicePrivilegesTypeIDs, $userID);
-                }
+//                if(!empty($notifyInvoicePrivilegesTypeIDs)) {
+//                    //Notify User If access is full or approve
+//                    $this->invoicesTobeNotify($notifyInvoicePrivilegesTypeIDs, $userID);
+//                }
             } else {
                 DB::table(ITable::BRIQ_PRIVILEGES)
                     ->where('type', 'invoice')
@@ -531,7 +531,6 @@ class SubUserController extends AppController
 
             return redirect()->back()->with('success', 'Privileges Set for User Successfully!');
         } catch (\Exception $exception) {
-            dd($exception);
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
@@ -627,6 +626,53 @@ class SubUserController extends AppController
             foreach ($paymentRequestIDs as $paymentRequestID) {
                 $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $this->merchant_id);
                 ProcessInvoiceForApprove::dispatch($paymentRequestDetail->invoice_number, $paymentRequestDetail->payment_request_id, $User)->onQueue('promotion-sms-dev');
+            }
+
+        }
+    }
+
+    private function changeOrderTobeNotify($notifyChangeOrderPrivilegesTypeIDs, $userID)
+    {
+        $ChangeOrdersTobeNotify = DB::table(ITable::BRIQ_PRIVILEGES)
+            ->where('type', 'change-order')
+            ->where('is_active', 1)
+            ->where('user_id', $userID)
+            ->where('merchant_id', $this->merchant_id)
+            ->whereIn('type_id', $notifyChangeOrderPrivilegesTypeIDs)
+            ->select(['user_id', 'type_id', 'rule_engine_query'])
+            ->get();
+
+        $changeOrderIds = [];
+        foreach ($ChangeOrdersTobeNotify as $ChangeOrderTobeNotify) {
+
+            if(!empty($ChangeOrderTobeNotify->rule_engine_query)) {
+                $ruleEngineQuery = json_decode($ChangeOrderTobeNotify->rule_engine_query, true);
+                $ids = (new RuleEngineManager('payment_request_id', $ChangeOrderTobeNotify->type_id, $ruleEngineQuery))->run();
+
+                if(!empty($ids)) {
+                    if(in_array($ChangeOrderTobeNotify->type_id, $ids)) {
+                        $changeOrderIds[] = $ChangeOrderTobeNotify->type_id;
+
+                    }
+                }
+            } else {
+                $changeOrderIds[] = $ChangeOrderTobeNotify->type_id;
+            }
+        }
+
+        if(!empty($changeOrderIds)) {
+            $merchant = DB::table('merchant')
+                ->where('merchant_id', $this->merchant_id)
+                ->first();
+
+            $User = User::query()
+                ->where('user_id', $userID)
+                ->where('group_id', $merchant->group_id)
+                ->first();
+
+            foreach ($changeOrderIds as $changeOrderId) {
+//                $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $this->merchant_id);
+//                ProcessInvoiceForApprove::dispatch($paymentRequestDetail->invoice_number, $paymentRequestDetail->payment_request_id, $User)->onQueue('promotion-sms-dev');
             }
 
         }
