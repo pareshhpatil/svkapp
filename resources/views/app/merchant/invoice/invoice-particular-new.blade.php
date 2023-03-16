@@ -825,12 +825,12 @@
                                          particularray[i].project = this.fields[i].project;
                                          particularray[i].project_code = this.fields[i].project;
                                          particularray[i].cost_code = (this.fields[i].cost_code === undefined) ? '' : this.fields[i].cost_code ;
-                                         particularray[i].cost_type = (this.fields[i].cost_type === undefined) ? '' : this.fields[i].cost_type ;
+                                         particularray[i].cost_type = (particularray[i].cost_type === undefined) ? '' : particularray[i].cost_type ;
                                          particularray[i].calculated_perc = this.fields[i].calculated_perc;
                                          particularray[i].calculated_row = this.fields[i].calculated_row;
                                          particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
                                          particularray[i].sub_group = this.fields[i].sub_group;
-                                         particularray[i].group = this.fields[i].group;
+                                         //particularray[i].group = this.fields[i].group;
                                          particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
                                          particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
                                          particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
@@ -845,7 +845,7 @@
                                          particularray[i].total_billed = this.fields[i].total_billed;
                                          particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
                                          particularray[i].txtoriginal_contract_amount = this.fields[i].txtoriginal_contract_amount;
-                                         particularray[i].bill_code_detail = (this.fields[i].bill_code_detail === '' || this.fields[i].bill_code_detail === null)? 'Yes' : this.fields[i].bill_code_detail ;
+                                         particularray[i].bill_code_detail = (particularray[i].bill_code_detail === '' || particularray[i].bill_code_detail === null)? 'Yes' : particularray[i].bill_code_detail ;
                                      }
                                      return particularray
                                  },
@@ -1039,15 +1039,11 @@
 
                     setParticulars()
                     {
-                        try{
-                            document.getElementById('cell_cost_code_'+particularray[0].pint).click();
-                        }catch(o)
-                        {}
-                        
-                        particularray.forEach(function(currentValue, index, arr) {
-                            document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
-                            // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
-                        });
+                       
+                       // particularray.forEach(function(currentValue, index, arr) {
+                       //     document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
+                       //     // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
+                       // });
                         this.validateParticulars();
                     },
 
