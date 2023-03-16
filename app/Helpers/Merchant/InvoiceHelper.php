@@ -48,7 +48,6 @@ class InvoiceHelper
                 ->values();
 
             $customerUsersWithFullAccess = $CustomerCollect->map(function ($Customer) use($paymentRequestDetail, $customerID) {
-//                $userIDs = [];
 
                 if($Customer->type_id == $customerID || $Customer->type_id == 'all') {
                     if(!empty($Customer->rule_engine_query)) {
@@ -56,9 +55,7 @@ class InvoiceHelper
                         $stat = (new RuleEngineManager('customer_id', $Customer->type_id, $ruleEngineQuery))->run();
 
                         if(!empty($stat)) {
-//                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
                             return $Customer->user_id;
-//                            }
                         }
                     } else {
                         return $Customer->user_id;
@@ -77,7 +74,6 @@ class InvoiceHelper
                 ->values();
 
             $contractUsersWithFullAccess = $ContractCollect->map(function ($Contract) use($paymentRequestDetail, $contractID) {
-//                $userIDs = [];
 
                 if($Contract->type_id == $contractID || $Contract->type_id == 'all') {
                     if(!empty($Contract->rule_engine_query)) {
@@ -86,9 +82,6 @@ class InvoiceHelper
 
                         if(!empty($stat)) {
                             return $Contract->user_id;
-//                            if(in_array($paymentRequestDetail->payment_request_id, $stat)) {
-//                                $userIDs[] = $Contract->user_id;
-//                            }
                         }
                     } else {
                         return $Contract->user_id;
@@ -107,7 +100,6 @@ class InvoiceHelper
                 ->values();
 
             $projectUsersWithFullAccess = $ProjectCollect->map(function ($Project) use($paymentRequestDetail, $projectID) {
-//                $userIDs = [];
 
                 if($Project->type_id == $projectID || $Project->type_id == 'all') {
                     if(!empty($ProjectCollect->rule_engine_query)) {
@@ -129,13 +121,9 @@ class InvoiceHelper
                         }
 
                         if(!empty($contractInvoiceIds)) {
-//                            if(in_array($paymentRequestDetail->payment_request_id, $contractInvoiceIds)) {
-//                                $userIDs[] = $Project->user_id;
                             return $Project->user_id;
-//                            }
                         }
                     } else {
-//                        $userIDs[] = $Project->user_id;
                         return $Project->user_id;
                     }
                 }

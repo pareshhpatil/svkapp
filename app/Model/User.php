@@ -509,32 +509,6 @@ class User extends ParentModel
         $contractPrivilegesArray = $ruleEngineInvoices["contract_ids"];
         $invoicePrivilegesArray = $ruleEngineInvoices["payment_request_ids"];
         $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
-        
-//        $customerPrivilegesCollect = clone $privilegesCollect->where('type', 'customer')
-//            ->pluck('access', 'type_id');
-//
-//        $customerPrivilegesArray = $customerPrivilegesCollect->toArray();
-//
-//        $projectPrivilegesCollect = clone $privilegesCollect->where('type', 'project')
-//            ->pluck('access', 'type_id');
-//
-//        $projectPrivilegesArray = $projectPrivilegesCollect->toArray();
-//
-//
-//        $contractPrivilegesCollect = clone $privilegesCollect->where('type', 'contract')
-//            ->pluck('access', 'type_id');
-//
-//        $contractPrivilegesArray = $contractPrivilegesCollect->toArray();
-
-//        $invoicePrivilegesCollect = clone $privilegesCollect->where('type', 'invoice')
-//            ->pluck('access', 'type_id');
-//
-//        $invoicePrivilegesArray = $invoicePrivilegesCollect->toArray();
-
-//        $orderPrivilegesCollect = clone $privilegesCollect->where('type', 'change-order')
-//            ->pluck('access', 'type_id');
-//
-//        $orderPrivilegesArray = $orderPrivilegesCollect->toArray();
 
         if(!empty($customerPrivilegesArray)) {
             $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant->merchant_id);
@@ -548,10 +522,6 @@ class User extends ParentModel
             $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $merchant->merchant_id, $user_role);
         }
 
-//        if(!empty($contractPrivilegesArray)) {
-//            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray);
-//        }
-        //dd($invoicePrivilegesArray);
         return [
             'customer_privileges' => $customerPrivilegesArray,
             'project_privileges' => $projectPrivilegesArray,
@@ -768,12 +738,6 @@ class User extends ParentModel
 
         $projectIDs = [];
         foreach ($projectInvoiceIDs as $projectInvoiceID){
-//            foreach ($projectInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-//                if(!isset($finalArray[$key])) {
-//                    $finalArray[$key] = $payment_request_id;
-//                }
-//            }
-
             foreach ($projectInvoiceID["project_ids"] as $key => $invoiceID) {
                 $projectIDs[$key] = $invoiceID;
             }
@@ -781,12 +745,6 @@ class User extends ParentModel
 
         $contractIDs = [];
         foreach ($contractInvoiceIDs as $contractInvoiceID){
-//            foreach ($contractInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-//                if(!isset($finalArray[$key])) {
-//                    $finalArray[$key] = $payment_request_id;
-//                }
-//            }
-
             foreach ($contractInvoiceID["contract_ids"] as $key => $contractID) {
                 $contractIDs[$key] = $contractID;
             }
@@ -794,11 +752,6 @@ class User extends ParentModel
 
         $customerIDs = [];
         foreach ($customerInvoiceIDs as $customerInvoiceID) {
-//            foreach ($customerInvoiceID["payment_request_ids"] as $key => $payment_request_id) {
-//                if(!isset($finalArray[$key])) {
-//                    $finalArray[$key] = $payment_request_id;
-//                }
-//            }
 
             foreach ($customerInvoiceID["customer_ids"] as $key => $customerID) {
                 $customerIDs[$key] = $customerID;
@@ -819,7 +772,6 @@ class User extends ParentModel
     public function customerRuleEngineInvoices($type, $customerPrivilegesCollect)
     {
         return $customerPrivilegesCollect->map(function ($customerPrivilege) use($type) {
-//            $invoiceIDs = [];
             $customerIDs = [];
             $typeID = $customerPrivilege->type_id;
             if(($customerPrivilege->access == 'full' || $customerPrivilege->access == 'approve') && !empty($customerPrivilege->rule_engine_query)) {
@@ -829,17 +781,12 @@ class User extends ParentModel
 
                 if(!empty($ids)) {
                     $customerIDs[$typeID] = $customerPrivilege->access;
-//                    foreach ($ids as $id) {
-//                        $invoiceIDs[$id] = $customerPrivilege->access;
-//                    }
                 }
-            //$customerIDs[$typeID] = $customerPrivilege->access;
             } else {
                 $customerIDs[$typeID] = $customerPrivilege->access;
             }
 
             return [
-//                'payment_request_ids' => $invoiceIDs,
                 'customer_ids' => $customerIDs
             ];
         });
@@ -849,7 +796,6 @@ class User extends ParentModel
     {
 
         return $contractPrivilegesCollect->map(function ($contractPrivilege) use($type) {
-//            $invoiceIDs = [];
             $contractIDs = [];
             $typeID = $contractPrivilege->type_id;
             if(($contractPrivilege->access == 'full' || $contractPrivilege->access == 'approve') && !empty($contractPrivilege->rule_engine_query)) {
@@ -859,16 +805,14 @@ class User extends ParentModel
 
                 if(!empty($ids)) {
                     foreach ($ids as $id) {
-                        $invoiceIDs[$id] = $contractPrivilege->access;
+                        $contractIDs[$id] = $contractPrivilege->access;
                     }
                 }
-//            $contractIDs[$typeID] = $contractPrivilege->access;
             } else {
-                $customerIDs[$typeID] = $contractPrivilege->access;
+                $contractIDs[$typeID] = $contractPrivilege->access;
             }
 
             return [
-//                'payment_request_ids' => $invoiceIDs,
                 'contract_ids' => $contractIDs
             ];
         });
@@ -877,7 +821,6 @@ class User extends ParentModel
     public function projectRuleEngineInvoices($projectPrivilegesCollect)
     {
         return $projectPrivilegesCollect->map(function ($projectPrivilege) {
-//            $invoiceIDs = [];
             $projectIds = [];
             $typeID = $projectPrivilege->type_id;
 
@@ -890,22 +833,15 @@ class User extends ParentModel
                 $tempIDs = [];
                 foreach ($ContractIDs as $ContractID) {
                     $tempIDs = (new RuleEngineManager('contract_id', $ContractID, $ruleEngineQuery))->run();
-//                    if(!empty($ids)) {
-//                        foreach ($ids as $id) {
-//                            $invoiceIDs[$id] = $projectPrivilege->access;
-//                        }
-//                    }
                 }
                 if(!empty($tempIDs)) {
                     $projectIds[$typeID] = $projectPrivilege->access;
                 }
-//            $projectIds[$typeID] = $projectPrivilege->access;
             } else {
                 $projectIds[$typeID] = $projectPrivilege->access;
             }
 
             return [
-//                'payment_request_ids' => $invoiceIDs,
                 'project_ids' => $projectIds
             ];
         });

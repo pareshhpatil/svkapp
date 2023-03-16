@@ -1037,40 +1037,6 @@ class InvoiceController extends AppController
                 }
             }
 
-//            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-//            $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
-//            $invoiceAccess = '';
-//
-//            if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
-//                if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
-//                    $invoiceAccess = 'all-full';
-//                }
-//            }
-//
-//            if(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
-//                if($invoicePrivilegesAccessIDs['all'] == 'full') {
-//                    $invoiceAccess = 'all-full';
-//                }
-//
-//                if($invoicePrivilegesAccessIDs['all'] == 'edit') {
-//                    $invoiceAccess = 'all-edit';
-//                }
-//            } elseif (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
-//                if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
-//                    $invoiceAccess = 'all-full';
-//                } else {
-//                    $invoiceAccess = 'edit';
-//                }
-//            } elseif(in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-//                $invoiceAccess = 'edit';
-//            }
-//
-//
-////            if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-////                $hasCreateAccess = true;
-////            }
-//            $info['invoice_access'] = $invoiceAccess;
-
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {

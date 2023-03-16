@@ -54,16 +54,10 @@ class ChangeOrderHelper
 
             $projectUsersWithFullAccess = $projectUsers->toArray();
 
-//            $changeOrderUsers = clone $data->where('type', 'change-order')
-//                ->where('type_id', $projectID)->pluck('user_id');
-//
-//            $changeOrderUsersWithFullAccess = $changeOrderUsers->toArray();
-
             $ChangeOrderCollect = clone $data->where('type', 'change-order')
                 ->whereIn('type_id', [$orderDetail->order_id, 'all'])->values();
 
             $changeOrderUsersWithFullAccess = $ChangeOrderCollect->map(function ($ChangeOrder) use($orderDetail) {
-                //$userIDs = [];
 
                 if($ChangeOrder->type_id == $orderDetail->order_id || $ChangeOrder->type_id == 'all') {
                     if(!empty($ChangeOrder->rule_engine_query)) {
@@ -71,9 +65,7 @@ class ChangeOrderHelper
                         $ids = (new RuleEngineManager('order_id', $ChangeOrder->type_id, $ruleEngineQuery))->run();
 
                         if(!empty($ids)) {
-//                            if(in_array($orderDetail->order_id, $ids)) {
                             return $ChangeOrder->user_id;
-//                            }
                         }
                     } else {
                         return $ChangeOrder->user_id;
@@ -101,19 +93,8 @@ class ChangeOrderHelper
                 ->whereIn('user_id', $uniqueUserIDs)
                 ->get();
 
-//                $testUser = User::query()
-//                    ->where('email_id', 'nitish.harchand@briq.com')
-//                    ->first();
-//                //dd($testUser);
-//                if(!empty($testUser->fcm_token)) {
-//                    $testUser->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $testUser));
-//                }
-
             foreach ($Users as $User) {
-//                if(!empty($User->fcm_token)) {
                 ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue('promotion-sms-dev');
-//                    $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
-//                }
             }
         }
     }
