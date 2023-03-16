@@ -47,7 +47,7 @@
     body{
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0;
-    line-height: 75%;
+    line-height: 93%;
     margin: 10px 20px 5px;
     }
 
