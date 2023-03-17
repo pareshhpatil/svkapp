@@ -26,6 +26,7 @@ class SSP
         $encrypt = new Encryption();
         $out = array();
         $customer_code_text = (isset($_SESSION['_customer_code_text'])) ? $_SESSION['_customer_code_text'] : 'CUSTOMER CODE';
+
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
             for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
@@ -35,7 +36,7 @@ class SSP
                     if ($column['datatype'] == 'datetime') {
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
-                        $row[$column['dt']] = formatDateString($data[$i][$column['db']]); 
+                        $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'specialDate') {
                         //$row[$column['dt']] = formatTimeString($data[$i][$column['db']]);
 
@@ -54,15 +55,15 @@ class SSP
                         }
                         $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
-                        if($data[$i][$column['db']] < 0){
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '('. number_format(str_replace('-','',$data[$i][$column['db']])) .')'. '</span>';
-                        }else{
+                        if ($data[$i][$column['db']] < 0) {
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '(' . number_format(str_replace('-', '', $data[$i][$column['db']])) . ')' . '</span>';
+                        } else {
                             $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]) . '</span>';
                         }
                     } else if ($column['datatype'] == 'cost') {
-                        if($data[$i][$column['db']] < 0){
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '('. number_format(str_replace('-','',$data[$i][$column['db']])).')';
-                        }else{
+                        if ($data[$i][$column['db']] < 0) {
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '(' . number_format(str_replace('-', '', $data[$i][$column['db']])) . ')';
+                        } else {
                             $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]);
                         }
                     }
@@ -72,7 +73,7 @@ class SSP
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
                     $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link . '/702';
 
-                    if(!empty($data[$i]['short_url'])) {
+                    if (!empty($data[$i]['short_url'])) {
                         $copy_link = $data[$i]['short_url'];
                     }
 
@@ -80,6 +81,7 @@ class SSP
                     $request_type = $data[$i]['invoice_type'];
                     $invoice_type = ($data[$i]['invoice_type'] == 2) ? 'Estimate' : 'Invoice';
 
+                    $custom_invoice_status = (isset($_SESSION['_custom_invoice_status'])) ? $_SESSION['_custom_invoice_status'] : [];
 
                     if ($column['db'] == 'invoice_type') {
                         $invoicenoStr = '';
@@ -101,16 +103,13 @@ class SSP
                         $value = strtoupper($invoice_type) . $invoicenoStr;
                     }
                     if ($column['db'] == 'project_name') {
-                      
-                       
-                            if (!empty($data[$i]['project_code'])) {
-                                $value = $data[$i]['project_name'] . ' <br><span class="text-gray-400 text-font-12">PROJECT NO : <span class="text-gray-900">' . $data[$i]['project_code'] . '</span></span>';
-                            }else
-                            {
-                                $value ='NA';   
-                            }
-                               
-                       
+
+
+                        if (!empty($data[$i]['project_code'])) {
+                            $value = $data[$i]['project_name'] . ' <br><span class="text-gray-400 text-font-12">PROJECT NO : <span class="text-gray-900">' . $data[$i]['project_code'] . '</span></span>';
+                        } else {
+                            $value = 'NA';
+                        }
                     }
 
                     if ($column['db'] == 'name') {
@@ -123,23 +122,32 @@ class SSP
 
                     if ($column['db'] == 'status') {
                         if ($status == '1') {
-                            $value = '<span class="badge badge-pill status paid_online">PAID ONLINE</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                            $value = '<span class="badge badge-pill status paid_online">'.$custom_invoice_status.'</span>';
                         } else if ($status == '2') {
-                            $value = '<span class="badge badge-pill status paid_offline">PAID OFFLINE</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID OFFLINE';
+                            $value = '<span class="badge badge-pill status paid_offline">'.$custom_invoice_status.'</span>';
                         } else if ($status == '6') {
-                            $value = '<span class="badge badge-pill status converted">CONVERTED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                            $value = '<span class="badge badge-pill status converted">'.$custom_invoice_status.'</span>';
                         } else if ($status == '7') {
-                            $value = '<span class="badge badge-pill status partial_paid">PART PAID</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PART PAID';
+                            $value = '<span class="badge badge-pill status partial_paid">'.$custom_invoice_status.'</span>';
                         } else if ($status == '11') {
-                            $value = '<span class="badge badge-pill status draft">DRAFT</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DRAFT';
+                            $value = '<span class="badge badge-pill status draft">' . $custom_invoice_status . '</span>';
                         } else if ($status == '12') {
-                            $value = '<span class="badge badge-pill status cancelled">CANCELLED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'CANCELLED';
+                            $value = '<span class="badge badge-pill status cancelled">'.$custom_invoice_status.'</span>';
                         } else if ($status == '13') {
-                            $value = '<span class="badge badge-pill status deleted">DELETED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DELETED';
+                            $value = '<span class="badge badge-pill status deleted">'.$custom_invoice_status.'</span>';
                         } else if ($status == '33') {
-                            $value = '<span class="badge badge-pill status processing">PROCESSING</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PROCESSING';
+                            $value = '<span class="badge badge-pill status processing">'.$custom_invoice_status.'</span>';
                         } else if ($status == '9') {
-                            $value = '<span class="badge badge-pill status refunded">REFUNDED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REFUNDED';
+                            $value = '<span class="badge badge-pill status refunded">'.$custom_invoice_status.'</span>';
                         } else {
                             //0 = unpaid, 4=failed ,5= initiated
                             if ($data[$i]['due_date'] < date("Y-m-d")) {
@@ -185,9 +193,9 @@ class SSP
                                 $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
                                 $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
                             }
-                        } else if($status == 2) {
+                        } else if ($status == 2) {
                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                        } else if($status == 7) {
+                        } else if ($status == 7) {
                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
                         }
                         if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
@@ -384,7 +392,7 @@ class SSP
                 $where .= " AND is_paid=" . $invoice_status;
             }
         }
-       
+
 
         if (count($columnSearch)) {
             $where = $where === '' ?

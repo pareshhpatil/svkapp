@@ -39,6 +39,9 @@ class Paymentrequest extends Controller
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
+            //find configurable invoice status
+            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
+            
             $redis_items = $this->getSearchParamRedis('invoice_estimate_list');
 
             if (isset($_POST['from_date'])) {
@@ -85,6 +88,10 @@ class Paymentrequest extends Controller
             if ($this->session->get('customer_default_column')) {
                 $columns = $this->session->get('customer_default_column');
                 $_SESSION['_customer_code_text'] = $columns['customer_code'];
+            }
+            if ($this->session->get('configure_invoice_statues')) {
+                $invoice_statues = $this->session->get('configure_invoice_statues');
+                $_SESSION['_custom_invoice_status'] = json_decode($invoice_statues,true);
             }
             $this->session->set('valid_ajax', 'payment_request_list');
             $this->smarty->assign("from_date",  $this->generic->formatDateString($from_date) );

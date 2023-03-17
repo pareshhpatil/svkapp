@@ -875,4 +875,13 @@ class Controller
         }
         return $redis_items;
     }
+
+    function setMerchantConfigurableInvoiceStatus(){
+        $key_name='CUSTOM_PAYMENT_REQUEST_STATUS';
+        $result = $this->common->getRowValue('`value`', 'merchant_config_data', 'merchant_id', $this->merchant_id, 1, " and `key`='" . $key_name . "'");
+        if ($result) {
+            $this->session->set('configure_invoice_statues', $result);
+        } 
+        return $result;
+    }
 }

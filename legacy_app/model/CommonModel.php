@@ -49,7 +49,7 @@ class CommonModel extends Model
                 $sql .= " and is_active=1 ";
             }
             $sql .= $extra;
-
+           
             $this->db->exec($sql, $params);
             $row = $this->db->single();
             $value = str_replace('`', '', $value);
