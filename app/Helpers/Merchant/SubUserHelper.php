@@ -18,19 +18,19 @@ use Illuminate\Support\Facades\Mail;
 class SubUserHelper
 {
     /**
-     * @param $userID
+     * @param $authUserID
      * @return mixed
      */
-    public function getGroupID($userID)
+    public function getGroupID($authUserID)
     {
         $groupID = DB::table(ITable::USER)
-            ->where(IColumn::USER_ID, $userID)
+            ->where(IColumn::USER_ID, $authUserID)
             ->pluck('group_id')
             ->first();
 
         if(empty($groupID)) {
             $groupID = DB::table('merchant')
-                ->where(IColumn::USER_ID, $userID)
+                ->where(IColumn::USER_ID, $authUserID)
                 ->pluck('group_id')
                 ->first();
         }
@@ -39,13 +39,13 @@ class SubUserHelper
     }
 
     /**
-     * @param $userID
+     * @param $authUserID
      * @param $request
      * @return bool[]
      */
-    public function storeUser($userID, $request)
+    public function storeUser($authUserID, $request)
     {
-        $groupID = $this->getGroupID($userID);
+        $groupID = $this->getGroupID($authUserID);
 
         $checkEmail = DB::table('user')
                         ->where('email_id', $request->get('email_id'))
@@ -76,9 +76,9 @@ class SubUserHelper
         $SubUser->franchise_id = 0;
         $SubUser->mob_country_code = $request->get('mob_country_code');
         $SubUser->mobile_no = $request->get('mobile');
-        $SubUser->created_by = $userID;
+        $SubUser->created_by = $authUserID;
         $SubUser->created_date = Carbon::now()->toDateTimeString();
-        $SubUser->last_updated_by = $userID;
+        $SubUser->last_updated_by = $authUserID;
         $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
 
         $SubUser->save();
