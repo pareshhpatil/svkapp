@@ -125,7 +125,7 @@ $validate=(array)$validate;
         <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             @csrf
             <div class="col-md-4 pull-left btn-pl-0">
-                @if(!empty($info['invoice_access']) && $info['invoice_access'] == 'full')
+                @if($invoice_access == 'full')
                     <div class="input-icon">
                         <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
                         <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
