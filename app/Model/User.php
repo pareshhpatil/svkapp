@@ -510,6 +510,8 @@ class User extends ParentModel
         $invoicePrivilegesArray = $ruleEngineInvoices["payment_request_ids"];
         $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
 
+        $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant->merchant_id);
+
         if(!empty($customerPrivilegesArray)) {
             $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant->merchant_id);
         }
@@ -529,6 +531,25 @@ class User extends ParentModel
             'invoice_privileges' => $invoicePrivilegesArray,
             'change_order_privileges' => $orderPrivilegesArray
         ];
+    }
+
+    public function customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant_id)
+    {
+        $createdByCustomers = DB::table('customer')
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->Where('created_by', $user_id)
+            ->whereNotIn('customer_id', array_keys($customerPrivilegesArray))
+            ->select(['customer_id'])
+            ->get()
+            ->toArray();
+
+        $customerIDs = [];
+        foreach ($createdByCustomers as $createdByCustomer) {
+            $customerIDs[$createdByCustomer->customer_id] = 'edit';
+        }
+
+        return $customerPrivilegesArray + $customerIDs;
     }
 
     public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant_id)

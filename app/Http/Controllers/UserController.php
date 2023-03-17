@@ -558,7 +558,7 @@ class UserController extends Controller
                 ->insert([
                     'merchant_id' => $merchant->merchant_id,
                     'name' => 'Team Member',
-                    'description' => 'Team member can only update assigned objects',
+                    'description' => 'Team member can only create/ update assigned objects',
                     'created_by' => $user->created_by,
                     'last_updated_by' => $user->created_by,
                     IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
