@@ -755,11 +755,12 @@ class Customer extends Controller
             if($user_role == 'Admin') {
                 $_SESSION['has_customer_list_access'] = true;
             } else {
-                $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
-
-                foreach ($userPrivilegesCustomers as $userPrivilegesCustomer) {
-                    $customerIDs[] = $userPrivilegesCustomer['type_id'];
-                }
+                $customerIDs = json_decode($_SESSION['customer_privileges_ids'], true);
+//                $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
+//
+//                foreach ($userPrivilegesCustomers as $userPrivilegesCustomer) {
+//                    $customerIDs[] = $userPrivilegesCustomer['type_id'];
+//                }
             }
 
             $_SESSION['db_column'] = $column_select;
