@@ -517,7 +517,7 @@ class User extends ParentModel
         }
 
         if (!empty($projectPrivilegesArray)) {
-            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $merchant->merchant_id);
+            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchant->merchant_id);
         }
 
         if(!empty($contractPrivilegesArray)) {
@@ -589,7 +589,7 @@ class User extends ParentModel
         return $projectPrivilegesArray + $tempArr + $allArr;
     }
 
-    public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $merchant_id)
+    public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchant_id)
     {
         $allArr = [];
         if (in_array('all', array_keys($projectPrivilegesArray))) {
@@ -624,7 +624,26 @@ class User extends ParentModel
             }
         }
 
-        return $contractPrivilegesArray + $tempArr + $allArr;
+        $createdByArr = [];
+        if (in_array('all', array_keys($projectPrivilegesArray))) {
+            $createdByContractIDs = DB::table('contract')
+                ->where('is_active', 1)
+                ->where('merchant_id', $merchant_id)
+                ->where('created_by', $merchant_id)
+                ->whereNotIn('project_id', array_keys($projectPrivilegesArray))
+                ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
+                ->select(['contract_id', 'project_id'])
+                ->get()
+                ->toArray();
+
+            foreach ($createdByContractIDs as $contractID) {
+                if(!isset($tempArr[$contractID->contract_id])) {
+                    $createdByArr[$contractID->contract_id] = 'edit';
+                }
+            }
+        }
+
+        return $contractPrivilegesArray + $tempArr + $allArr + $createdByArr;
     }
 
     public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $merchant_id)
