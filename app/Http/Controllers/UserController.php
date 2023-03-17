@@ -356,7 +356,6 @@ class UserController extends Controller
                 //Check if user is a sub merchant login
                 if ($user->user_status == 20) {
                     $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
-                    dd($merchant);
                     $this->setSubuserSession($user);
                 } else {
                     Session::put('group_type', 1);
