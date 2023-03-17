@@ -23,10 +23,19 @@ class SubUserHelper
      */
     public function getGroupID($userID)
     {
-        return DB::table(ITable::USER)
-                ->where(IColumn::USER_ID, $userID)
-                ->pluck('group_id')
-                ->first();
+        $groupID = DB::table('merchant')
+                    ->where(IColumn::USER_ID, $userID)
+                    ->pluck('group_id')
+                    ->first();
+
+        if(empty($groupID)) {
+            $groupID = DB::table(ITable::USER)
+                        ->where(IColumn::USER_ID, $userID)
+                        ->pluck('group_id')
+                        ->first();
+        }
+
+        return $groupID;
     }
 
     /**
