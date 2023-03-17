@@ -352,7 +352,7 @@ class MasterController extends AppController
 
     public function invoiceStatusList()
     {
-        $title =  'Invoice status list';
+        $title =  'Configure invoice statues';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $list = $this->masterModel->getConfigList('payment_request_status');
         $not_show_status = array(5,8,13,6,10,12);
@@ -364,11 +364,13 @@ class MasterController extends AppController
         }
         //find if status name changed if yes then show new updated status
         $result=  $this->masterModel->getMerchantData($this->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS');
-        $new_status = json_decode($result,true);
-       
-        foreach($invoice_statues as $i=>$status){
-            if(array_key_exists($status->config_key,$new_status)){
-                $invoice_statues[$i]->config_value = $new_status[$status->config_key];
+        $configure_status_list = json_decode($result,true);
+        
+        if($configure_status_list!=null) {
+            foreach($invoice_statues as $i=>$status){
+                if(array_key_exists($status->config_key,$configure_status_list)){
+                    $invoice_statues[$i]->config_value = $configure_status_list[$status->config_key];
+                }
             }
         }
         
@@ -389,14 +391,14 @@ class MasterController extends AppController
         } else {
             //first find custom_payment_request key is exist or not in merchant_config_data
             $exists_value = $this->masterModel->getMerchantData($this->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS');
-
+            $status_value = [];
             if($exists_value!=false) {
-                $exists_value= json_decode($exists_value,true);
-                $exists_value[$request->config_key] = $request->status;
-                $this->masterModel->updateMerchantConfigData($this->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS',json_encode($exists_value,true));
+                $status_value= json_decode($exists_value,true);
+                $status_value[$request->config_key] = $request->status;
+                $this->masterModel->updateMerchantConfigData($this->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS',json_encode($status_value,JSON_FORCE_OBJECT));
             } else {
                 $value[$request->config_key] = $request->status;
-                $value = json_encode($value);
+                $value = json_encode($value,JSON_FORCE_OBJECT);
                 $saved_status = $this->masterModel->saveCustomInvoiceStatus($this->merchant_id,$this->user_id,'CUSTOM_PAYMENT_REQUEST_STATUS',$value);
             }
             return redirect('/merchant/configure-invoice-statuses')->with('success', "Status has been updated");

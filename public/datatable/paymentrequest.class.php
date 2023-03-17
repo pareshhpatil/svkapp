@@ -81,7 +81,7 @@ class SSP
                     $request_type = $data[$i]['invoice_type'];
                     $invoice_type = ($data[$i]['invoice_type'] == 2) ? 'Estimate' : 'Invoice';
 
-                    $custom_invoice_status = (isset($_SESSION['_custom_invoice_status'])) ? $_SESSION['_custom_invoice_status'] : [];
+                    $custom_invoice_status = (isset($_SESSION['_custom_invoice_status']) && $_SESSION['_custom_invoice_status']!=null) ? $_SESSION['_custom_invoice_status'] : [];
 
                     if ($column['db'] == 'invoice_type') {
                         $invoicenoStr = '';
@@ -148,7 +148,10 @@ class SSP
                         } else if ($status == '9') {
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REFUNDED';
                             $value = '<span class="badge badge-pill status refunded">'.$custom_invoice_status.'</span>';
-                        } else {
+                        } else if($status == '14') {
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
+                            $value = '<span class="badge badge-pill status refunded">'.$custom_invoice_status.'</span>';
+                        }else {
                             //0 = unpaid, 4=failed ,5= initiated
                             if ($data[$i]['due_date'] < date("Y-m-d")) {
                                 $value = '<span class="badge badge-pill status overdue">OVERDUE</span>';

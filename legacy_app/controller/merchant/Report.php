@@ -215,7 +215,7 @@ class Report extends Controller
     function agingdetails()
     {
         try {
-           
+            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
             $redis_items = $this->getSearchParamRedis('agingdetails_report');
 
             $user_id = $this->session->get('userid');
@@ -261,8 +261,9 @@ class Report extends Controller
                 $reportlist = $this->model->get_ReportAgingDetail($user_id, $fromdate->format('Y-m-d'), $todate->format('Y-m-d'), $customer_selected, $aging_by);
                 $reportlist = $this->generic->getEncryptedList($reportlist, 'link', 'payment_request_id');
             }
-
+            
             $this->smarty->assign("reportlist", $reportlist);
+            $this->smarty->assign("custom_invoice_status", json_decode($config_invoice_status,true));
             $this->smarty->assign("title", "Unpaid invoices");
             $this->view->title = "Unpaid invoices";
 
@@ -296,7 +297,7 @@ class Report extends Controller
     {
         try {
             $user_id = $this->session->get('userid');
-
+            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
             $redis_items = $this->getSearchParamRedis('invoicedetails_report'.$type);
 
             #SwipezLogger::info(__CLASS__, "Invoice details invoked by $user_id");
@@ -324,7 +325,8 @@ class Report extends Controller
             if (empty($statuslist)) {
                 SwipezLogger::warn(__CLASS__, '[E006]Fetching empty payment request status list for merchant [' . $user_id . '] ');
             } else {
-                $this->smarty->assign("statuslist", $statuslist);
+                $updated_status_list = $this->setStatusList($statuslist);
+                $this->smarty->assign("statuslist", $updated_status_list);
             }
 
             $current_date = date("d M Y");
@@ -462,7 +464,12 @@ class Report extends Controller
             $_SESSION['_group'] = $group;
             $_SESSION['_invoice_type'] = $invoice_type;
             $_SESSION['_billing_profile_id'] = $billing_profile_id;
-
+            if ($config_invoice_status) {
+                $invoice_statues = $this->session->get('configure_invoice_statues');
+                $_SESSION['_custom_invoice_status'] = json_decode($invoice_statues,true);
+            }else{
+                $_SESSION['_custom_invoice_status'] = '';
+            }
 
             if ($this->has_error == false) {
                 if (isset($_POST['exportExcel'])) {
@@ -526,7 +533,7 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
-
+            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
             $redis_items = $this->getSearchParamRedis('tax_details_report');
 
             if (isset($_POST['from_date'])) {
@@ -561,8 +568,10 @@ class Report extends Controller
             if (empty($status_list)) {
                 SwipezLogger::warn(__CLASS__, 'Fetching empty payment transaction status list for merchant [' . $this->merchant_id . '] ');
             } else {
+                $updated_status_list = $this->setStatusList($status_list);
+                
                 $this->smarty->assign("status_selected", $status_selected);
-                $this->smarty->assign("status_list", $status_list);
+                $this->smarty->assign("status_list", $updated_status_list);
             }
 
             $sub_franchise_id = $this->session->get('sub_franchise_id');
@@ -772,6 +781,7 @@ class Report extends Controller
             //$this->view->ajaxpage = 'invoicedetail.php';
             $this->smarty->assign("title", "Tax details");
             $this->view->title = "Tax Details";
+            $this->smarty->assign("custom_invoice_status", json_decode($config_invoice_status,true));
             //Breadcumbs array start
             $breadcumbs_array = array(
                 array('title' => 'Reports', 'url' => '/merchant/report'),

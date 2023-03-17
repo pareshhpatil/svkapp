@@ -479,3 +479,9 @@ Breadcrumbs::for('merchant.user.create-token', function ($trail) {
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Create Token');
 });
+
+Breadcrumbs::for('home.configure-invoice-status', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Change Invoice Status');
+});

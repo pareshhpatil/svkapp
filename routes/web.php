@@ -460,7 +460,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('/user/create-token', 'ProjectController@createToken')->name('merchant.user.create-token');
   Route::post('/user/save-token','ProjectController@saveToken')->name('merchant.user.save-token');
 
-  Route::get('configure-invoice-statuses', 'MasterController@invoiceStatusList'); 
+  Route::get('configure-invoice-statuses', 'MasterController@invoiceStatusList')->name('merchant.configure-invoice-status'); 
   Route::any('/invoice-status/save', 'MasterController@invoiceStatusSave');
 });
 

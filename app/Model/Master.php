@@ -188,6 +188,7 @@ class Master extends ParentModel
         DB::table('merchant_config_data')
             ->where('merchant_id', $merchant_id)
             ->where('key',$key)
+            ->where('is_active',1)
             ->update([
                 'value' => $value,
                 'last_update_date' => date('Y-m-d H:i:s')

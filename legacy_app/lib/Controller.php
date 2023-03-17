@@ -884,4 +884,21 @@ class Controller
         } 
         return $result;
     }
+
+    function setStatusList($statusList) {
+        if($statusList!='') {
+            $config_status_list = $this->setMerchantConfigurableInvoiceStatus();
+            if($config_status_list) {
+                $config_status_list = json_decode($config_status_list,true);
+                foreach($statusList as $sk=>$sval) {
+                    if(array_key_exists($sval['config_key'],$config_status_list)) {
+                        $statusList[$sk]['config_value'] = $config_status_list[$sval['config_key']];
+                    }
+                }
+            }
+            return $statusList;
+        }
+        return false;
+    }
+
 }
