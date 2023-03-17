@@ -215,7 +215,6 @@ class Report extends Controller
     function agingdetails()
     {
         try {
-            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
             $redis_items = $this->getSearchParamRedis('agingdetails_report');
 
             $user_id = $this->session->get('userid');
@@ -263,7 +262,10 @@ class Report extends Controller
             }
             
             $this->smarty->assign("reportlist", $reportlist);
-            $this->smarty->assign("custom_invoice_status", json_decode($config_invoice_status,true));
+            if ($this->session->get('configure_invoice_statues')) {
+                $invoice_statues = $this->session->get('configure_invoice_statues');
+            }
+            $this->smarty->assign("custom_invoice_status", json_decode($invoice_statues,true));
             $this->smarty->assign("title", "Unpaid invoices");
             $this->view->title = "Unpaid invoices";
 
@@ -297,7 +299,6 @@ class Report extends Controller
     {
         try {
             $user_id = $this->session->get('userid');
-            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
             $redis_items = $this->getSearchParamRedis('invoicedetails_report'.$type);
 
             #SwipezLogger::info(__CLASS__, "Invoice details invoked by $user_id");
@@ -533,7 +534,7 @@ class Report extends Controller
             $current_date = date("d M Y");
             $last_date = $this->getLast_date();
             $this->view->checkedlist = '';
-            $config_invoice_status = $this->setMerchantConfigurableInvoiceStatus();
+
             $redis_items = $this->getSearchParamRedis('tax_details_report');
 
             if (isset($_POST['from_date'])) {
@@ -781,7 +782,10 @@ class Report extends Controller
             //$this->view->ajaxpage = 'invoicedetail.php';
             $this->smarty->assign("title", "Tax details");
             $this->view->title = "Tax Details";
-            $this->smarty->assign("custom_invoice_status", json_decode($config_invoice_status,true));
+            if ($this->session->get('configure_invoice_statues')) {
+                $invoice_statues = $this->session->get('configure_invoice_statues');
+            }
+            $this->smarty->assign("custom_invoice_status", json_decode($invoice_statues,true));
             //Breadcumbs array start
             $breadcumbs_array = array(
                 array('title' => 'Reports', 'url' => '/merchant/report'),

@@ -482,6 +482,12 @@ class UserController extends Controller
                         Session::forget('redirect_package_id');
                         return redirect('/merchant/package/confirm/' . $link);
                     }
+
+                    $merchant_config_data = $this->user_model->getMerchantData($merchant->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS');
+                    if ($merchant_config_data) {
+                        Session::put('configure_invoice_statues', $merchant_config_data);
+                    } 
+
                     return redirect('/merchant/dashboard');
                 } else {
                     Log::error('Merchant details does not exist for this user id :' . $user->user_id);
