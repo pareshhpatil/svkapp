@@ -513,7 +513,7 @@ class User extends ParentModel
         $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant->merchant_id);
 
         if(!empty($customerPrivilegesArray)) {
-            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant->merchant_id);
+            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchant->merchant_id);
         }
 
         if (!empty($projectPrivilegesArray)) {
@@ -552,7 +552,7 @@ class User extends ParentModel
         return $customerPrivilegesArray + $customerIDs;
     }
 
-    public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $merchant_id)
+    public function createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchant_id)
     {
         $allArr= [];
         if (in_array('all', array_keys($customerPrivilegesArray))) {
@@ -586,7 +586,26 @@ class User extends ParentModel
             }
         }
 
-        return $projectPrivilegesArray + $tempArr + $allArr;
+        $createdByArr = [];
+        $createdByProjectIDs = DB::table('project')
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('created_by', $user_id)
+            ->whereNotIn('customer_id', array_keys($customerPrivilegesArray))
+            ->whereNotIn('id', array_keys($projectPrivilegesArray))
+            ->select(['id', 'customer_id'])
+            ->get()
+            ->toArray();
+
+        foreach ($createdByProjectIDs as $createdByProjectID) {
+            if(!isset($tempArr[$createdByProjectID->id])) {
+                if(!isset($allArr[$createdByProjectID->id])) {
+                    $createdByArr[$createdByProjectID->id] = 'edit';
+                }
+            }
+        }
+
+        return $projectPrivilegesArray + $tempArr + $allArr + $createdByArr;
     }
 
     public function createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchant_id)
