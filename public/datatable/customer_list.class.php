@@ -343,7 +343,7 @@ class SSP
         $where = self::filter($request, $columns, $bindings);
         $bulk_id = $_SESSION['customer_bulk_id'];
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
-        dd($where);
+        
         if($_SESSION['user_role'] == 'Admin') {
             $privilegesArray = ['all' => 'full'];
         } else {
