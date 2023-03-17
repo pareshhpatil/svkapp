@@ -7,6 +7,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\App as App;
 use Throwable;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use App\Http\Controllers\API\APIController;
 
@@ -62,6 +63,11 @@ class Handler extends ExceptionHandler
             // pass to legacy framework - contents of index.php
             App::make("SwipezLegacyFramework");
             die();
+        }
+
+        if ($exception instanceof AuthorizationException) {
+            // redirect to no-permission page
+            return redirect('/merchant/no-permission');
         }
 
         //this is only for apis request to handle unatheticated exception

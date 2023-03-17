@@ -117,9 +117,28 @@ class Customer extends Controller
     function create($param = null)
     {
         try {
+
             if ($param == 'GettingStarted') {
                 $this->session->set('GettingStarted', true);
             }
+            $merchant_id = $this->session->get('merchant_id');
+            $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
+
+            $userPrivilegesAllCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
+
+            if($user_role != 'Admin' && !empty($userPrivilegesAllCustomers)) {
+                $privilegesArray = [];
+                foreach ($userPrivilegesAllCustomers as $userPrivilegesAllCustomer) {
+                    $privilegesArray[$userPrivilegesAllCustomer['type_id']] = $userPrivilegesAllCustomer['access'];
+                }
+
+                if (!in_array('edit', array_values($privilegesArray)) && (!in_array('all', $privilegesArray) && $privilegesArray['all'] !== 'full')) {
+                    header('Location:/merchant/no-permission');
+                    die();
+                }
+            }
+
             $this->hasRole(2, 15);
             $merchant_id = $this->session->get('merchant_id');
             $this->view->title = 'Create customer';
@@ -204,8 +223,21 @@ class Customer extends Controller
         try {
             $this->hasRole(2, 15);
             $merchant_id = $this->session->get('merchant_id');
+            $user_id = $this->session->get('userid');
+
             $customer_id = $this->encrypt->decode($link);
+            $userPrivilegesCustomer = $this->model->getUserPrivilegesCustomerID($merchant_id, $user_id, $customer_id);
+
+            if(!empty($userPrivilegesCustomer)) {
+                $access = $userPrivilegesCustomer[0]['access'];
+
+                if($access !== 'full' && $access !== 'edit') {
+                    header('Location:/merchant/no-permission');
+                }
+            }
+
             $details = $this->model->getCustomerDeatils($customer_id, $this->merchant_id);
+
             if (empty($details)) {
                 $this->setInvalidLinkError();
             }
@@ -492,12 +524,39 @@ class Customer extends Controller
     {
         try {
             $merchant_id = $this->session->get('merchant_id');
+            $user_id = $this->session->get('userid');
             $customer_id = $this->encrypt->decode($_POST['customer_id']);
             $customer_code = $_POST['customer_code'];
             $addressfull = $_POST['address'];
             $_POST['address'] = substr($addressfull, 0, 250);
             $_POST['address2'] = substr($addressfull, 250);
             $space_position = strpos($_POST['customer_name'], ' ');
+
+            $userPrivilegesCustomer = $this->model->getUserPrivilegesCustomerID($merchant_id, $user_id, $customer_id);
+            $userPrivilegesAllCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
+
+            if(!empty($userPrivilegesAllCustomers)) {
+                $privilegesArray = [];
+                foreach ($userPrivilegesAllCustomers as $userPrivilegesAllCustomer) {
+                    $privilegesArray[$userPrivilegesAllCustomer['type_id']] = $userPrivilegesAllCustomer['access'];
+                }
+
+                if (in_array('all', $privilegesArray) && !in_array($customer_id, array_keys($privilegesArray))) {
+                    if($privilegesArray['all'] !== 'full' && $privilegesArray['all'] !== 'edit') {
+                        header('Location:/merchant/no-permission');
+                        die();
+                    }
+                }
+            }
+
+            if(!empty($userPrivilegesCustomer)) {
+                $access = $userPrivilegesCustomer[0]['access'];
+                if($access !== 'full' && $access !== 'edit') {
+                    header('Location:/merchant/no-permission');
+                    die();
+                }
+            }
+
             if ($space_position > 0) {
                 $_POST['first_name'] = substr($_POST['customer_name'], 0, $space_position);
                 $_POST['last_name'] = substr($_POST['customer_name'], $space_position);
@@ -640,6 +699,8 @@ class Customer extends Controller
         try {
             $this->hasRole(1, 15);
             $merchant_id = $this->session->get('merchant_id');
+            $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
             $column_list = $this->model->getCustomerBreakup($merchant_id);
             $addcolumn[] = array('column_name' => 'City');
             $addcolumn[] = array('column_name' => 'State');
@@ -688,7 +749,20 @@ class Customer extends Controller
                 $group = $redis_items['customer_list']['search_param']['group'];
             }
             //$this->view->showLastRememberSearchCriteria = true;
-            
+            $customerIDs = [];
+            $_SESSION['has_customer_list_access'] = false;
+
+            if($user_role == 'Admin') {
+                $_SESSION['has_customer_list_access'] = true;
+            } else {
+                $userPrivilegesCustomers = json_decode($_SESSION['customer_privileges_ids'], true);
+//                $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
+//
+                foreach ($userPrivilegesCustomers as $key => $userPrivilegesCustomer) {
+                    $customerIDs[] = $key;
+                }
+            }
+
             $_SESSION['db_column'] = $column_select;
             $_SESSION['customer_status'] = $status;
             $_SESSION['payment_status'] = $payment_status;
@@ -696,6 +770,14 @@ class Customer extends Controller
             $_SESSION['group'] = $group;
             $_SESSION['language'] = 'english';
             $_SESSION['display_column'] = $column_select;
+            $_SESSION['customer_ids'] = [];
+
+            if(in_array('all', $customerIDs)) {
+                $_SESSION['has_customer_list_access'] = true;
+            } else {
+                $_SESSION['customer_ids'] = $customerIDs;
+            }
+
             if (isset($_POST['export'])) {
 
                 if ($group != '') {

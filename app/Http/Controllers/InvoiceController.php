@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\Models\IColumn;
 use App\Constants\Models\ITable;
+use App\Model\Notification;
 use Aws\S3\S3Client;
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
@@ -111,7 +112,24 @@ class InvoiceController extends AppController
 
 
         $data['contract_id'] = 0;
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $contractPrivilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -267,7 +285,24 @@ class InvoiceController extends AppController
 
 
         $data['contract_id'] = 0;
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+
+        //contracts from privileges
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+        } else {
+            $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        $whereContractIDs = [];
+        foreach ($privilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -496,7 +531,23 @@ class InvoiceController extends AppController
             }
 
             if ($info->template_type == 'construction') {
-                $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+                $userRole = Session::get('user_role');
+                if($userRole == 'Admin') {
+                    $contractPrivilegesIDs = ['all' => 'full'];
+                } else {
+                    //get privileges from redis
+                    $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+                }
+
+                //contracts from privileges
+                $whereContractIDs = [];
+                foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+                    if($contractPrivilegesID == 'full') {
+                        $whereContractIDs[] = $key;
+                    }
+                }
+
+                $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
                 $data['invoice_particular'] = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             }
 
@@ -695,8 +746,23 @@ class InvoiceController extends AppController
         }
         if ($data['type'] == 'construction') {
             // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
+            $userRole = Session::get('user_role');
 
-            $contract = $this->invoiceModel->getContractDetail($data['contract_id']);
+            if($userRole == 'Admin') {
+                $contractPrivilegesIDs = ['all' => 'full'];
+            } else {
+                //get privileges from redis
+                $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            }
+
+            //contracts from privileges
+            $whereContractIDs = [];
+            foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+                if($contractPrivilegesID == 'full') {
+                    $whereContractIDs[] = $key;
+                }
+            }
+            $contract = $this->invoiceModel->getContractDetail($data['contract_id'], $whereContractIDs, $userRole);
             $model = new Master();
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $contract->id);
 
@@ -815,6 +881,27 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
             $info = (array)$info;
             if (!isset($info['payment_request_status'])) {
                 return redirect('/error/invalidlink');
@@ -867,9 +954,10 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view_g703($link)
+    public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
@@ -877,14 +965,41 @@ class InvoiceController extends AppController
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
 
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            if(!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+
+                $Notification->markAsRead();
+            }
+
             $info = (array)$info;
             $info['gtype'] = '703';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
-
             if (!empty($offlineResponse)) {
                 $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
+
             if (!isset($info['payment_request_status'])) {
                 return redirect('/error/invalidlink');
             }
@@ -998,6 +1113,27 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
 
             $banklist = $this->parentModel->getConfigList('Bank_name');
@@ -3364,6 +3500,67 @@ class InvoiceController extends AppController
 
         $data['has_aia_license'] = $hasAIALicense;
 
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoiceAccess = '';
+
+//        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
+//            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
+//                $invoiceAccess = 'full';
+//            }
+//        }
+
+        if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
+                $invoiceAccess = 'full';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+        } elseif(in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
+                $invoiceAccess = 'full';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+
+        } elseif(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] == 'full') {
+                $invoiceAccess = 'full';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+        }
+
+        $data['invoice_access'] = $invoiceAccess;
+
         return $data;
     }
 
@@ -4002,6 +4199,67 @@ class InvoiceController extends AppController
         }
 
         $data['has_aia_license'] = $hasAIALicense;
+
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoiceAccess = '';
+
+//        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
+//            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
+//                $invoiceAccess = 'full';
+//            }
+//        }
+
+        if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
+                $invoiceAccess = 'full';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+        } elseif(in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
+                $invoiceAccess = 'full';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+
+            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+
+        } elseif(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+            if($invoicePrivilegesAccessIDs['all'] == 'full') {
+                $invoiceAccess = 'full';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                $invoiceAccess = 'edit';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'view-only') {
+                $invoiceAccess = 'view-only';
+            }
+
+            if($invoicePrivilegesAccessIDs['all'] == 'approve') {
+                $invoiceAccess = 'approve';
+            }
+        }
+
+        $data['invoice_access'] = $invoiceAccess;
 
         return $data;
     }
@@ -4761,7 +5019,6 @@ class InvoiceController extends AppController
 
     public function particularsave(Request $request, $type = null)
     {
-
         ini_set('max_execution_time', 120);
         //        dd($request);
         $request_id = Encrypt::decode($request->link);
@@ -4770,6 +5027,27 @@ class InvoiceController extends AppController
             throw new Exception('Invalid id ' . $request_id);
         }
         $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+
+        //Check Privileges
+        $userRole = Session::get('user_role');
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        
+        $hasAccess = false;
+        if($userRole == 'Admin') {
+            $hasAccess = true;
+        } else {
+            if(in_array($invoice->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($invoice->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if($contractPrivilegesAccessIDs[$invoice->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$invoice->payment_request_id] != 'view-only') {
+                    $hasAccess = true;
+                }
+            }
+        }
+
+        if(!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
+
         if ($invoice == false) {
             throw new Exception('Invalid id ' . $request_id);
         }
