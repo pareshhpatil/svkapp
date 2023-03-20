@@ -177,7 +177,11 @@
                                             {$v.due_date|date_format:"%d %b %Y"}
                                         </td>
                                         <td>
-                                            {$v.status}
+                                            {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                                {$custom_invoice_status[$v.payment_request_status]}
+                                            {else}
+                                                {$v.status}
+                                            {/if}
                                         </td>
                                         <td>
                                             {$v.basic_amount|number_format:2:".":","}

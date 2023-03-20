@@ -3525,3 +3525,59 @@ function limitMe(evt, txt) {
 function roundAmount(amt) {
     return (Math.round(amt)).toFixed(2);
 }
+
+function showUpdateStatus(id, config_key, config_value) {
+
+    document.getElementById("updatepanelWrapIdInvoiceStatus").style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
+    document.getElementById("updatepanelWrapIdInvoiceStatus").style.transform = "translateX(0%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'none');
+    $('.page-content-wrapper').css('pointer-events', 'none');
+    $("#updatepanelWrapIdInvoiceStatus").css('pointer-events', 'auto');
+    document.getElementById("config_key").value = config_key;
+    //document.getElementById("bill_id").value = ind;
+    document.getElementById("config_value").value = config_value
+}
+
+function closeSidePanelInvoiceStatus() {
+    document.getElementById("updatepanelWrapIdInvoiceStatus").style.boxShadow = "none";
+    document.getElementById("updatepanelWrapIdInvoiceStatus").style.transform = "translateX(100%)";
+    $("#invoice-status").trigger("reset");
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
+    return false;
+}
+
+function updateInvoiceStatus() {
+
+    var config_key = document.querySelector('#config_key').value;
+    var config_value = document.querySelector('#config_value').value;
+    if (config_value != '') {
+
+        $("#invoice-status").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function (data) {
+                    alert(data);
+
+                    if (data[2] > 0) {
+
+                    }
+                    closeSidePanelInvoiceStatus()
+                }
+            });
+
+        });
+    } else {
+        if (config_value == '') {
+            $('#status_error').html('Please enter status');
+        } else {
+            $('#status_error').html('');
+        }
+        return false;
+    }
+}

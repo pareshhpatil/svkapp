@@ -83,7 +83,9 @@
                     <p>
                         <a href="/merchant/cost-types/index" class="dc-link"> Cost Type</a>
                     </p>
-                    
+                    <p>
+                        <a href="/merchant/invoice-status" class="dc-link"> Invoice status</a>
+                    </p>
                     {* <p>
                         <a href="/merchant/hsn-sac-code/index" class="dc-link" > HSN/SAC codes</a>
                     </p> *}
