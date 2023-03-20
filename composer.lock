@@ -171,16 +171,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.261.12",
+            "version": "3.261.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9816402afa9ad9fe8ff7ff8131ea1dca2c6b7700"
+                "reference": "121638bb7e62ee2f71838c52e79884f4301a9400"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9816402afa9ad9fe8ff7ff8131ea1dca2c6b7700",
-                "reference": "9816402afa9ad9fe8ff7ff8131ea1dca2c6b7700",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/121638bb7e62ee2f71838c52e79884f4301a9400",
+                "reference": "121638bb7e62ee2f71838c52e79884f4301a9400",
                 "shasum": ""
             },
             "require": {
@@ -259,9 +259,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.261.12"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.261.14"
             },
-            "time": "2023-03-15T18:20:10+00:00"
+            "time": "2023-03-17T18:21:00+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1596,7 +1596,7 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.290.1",
+            "version": "v0.291.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
@@ -1634,7 +1634,7 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.290.1"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.291.0"
             },
             "time": "2023-03-13T21:05:11+00:00"
         },
@@ -7217,16 +7217,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "3.15.0",
+            "version": "3.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "c6a0e24d2f8da8d8f57cdcc87ca635248c1a91c5"
+                "reference": "5326a8786b8c7c3a51ea0c6d06e6cb6a9dfa6779"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/c6a0e24d2f8da8d8f57cdcc87ca635248c1a91c5",
-                "reference": "c6a0e24d2f8da8d8f57cdcc87ca635248c1a91c5",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/5326a8786b8c7c3a51ea0c6d06e6cb6a9dfa6779",
+                "reference": "5326a8786b8c7c3a51ea0c6d06e6cb6a9dfa6779",
                 "shasum": ""
             },
             "require": {
@@ -7305,7 +7305,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/3.15.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/3.16.0"
             },
             "funding": [
                 {
@@ -7317,7 +7317,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-03-13T11:45:26+00:00"
+            "time": "2023-03-16T10:37:16+00:00"
         },
         {
             "name": "sentry/sentry-laravel",
@@ -14566,5 +14566,5 @@
         "php": "^7.3"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
