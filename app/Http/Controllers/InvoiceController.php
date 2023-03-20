@@ -1902,7 +1902,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
         } else {
@@ -1934,6 +1934,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -2286,6 +2287,7 @@ class InvoiceController extends AppController
      */
     public function downloadFullInvoice($link)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -4625,6 +4627,7 @@ class InvoiceController extends AppController
             $sub_i = 0;
             $attach_count = 0;
             $sub_key = '';
+            $footer_sub_key = '';
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -4696,8 +4699,8 @@ class InvoiceController extends AppController
                             $grouping_data[] = $single_data;
                         }
 
-                        $current_sub_key =  $names . $key;
 
+                        $current_sub_key =  $names . $key;
                         if ($key != '' && $sub_key != $current_sub_key) {
                             $single_data = array();
                             $single_data['a'] = '';
@@ -4786,7 +4789,7 @@ class InvoiceController extends AppController
                             $sub_i += $data['retainage_amount_previously_withheld'];
                         }
 
-                        if ($key != '' && $sub_key != $current_sub_key) {
+                        if ($key != '' && ($pos1 == count($sub_result[$names][$key]) || $pos == count($result[$names]))) {
                             // if ($sub_key == count($sub_result[$names][$key])) {
                             $single_data = array();
                             $single_data['a'] = '';
@@ -4876,6 +4879,8 @@ class InvoiceController extends AppController
 
                     $sub_key =  $names . $key;
                 }
+                
+                $footer_sub_key =  $names . $key;
             }
 
             if (!empty($type)) {

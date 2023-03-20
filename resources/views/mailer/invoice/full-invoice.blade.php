@@ -47,7 +47,7 @@
     body{
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0;
-    line-height: 75%;
+    line-height: 93%;
     margin: 10px 20px 5px;
     }
 
@@ -116,11 +116,43 @@
     font-size: 16px;
     }
 
+    #header,
+#footer {
+  position: fixed;
+  left: 0;
+	right: 0;
+	color: #aaa;
+	font-size: 0.9em;
+}
+#header {
+  top: 0;
+	border-bottom: 0.1pt solid #aaa;
+}
+#footer {
+  bottom: 0;
+}
+.page-number:before {
+  content: "Page " counter(page);
+}
+
     </style>
 
 </head>
 
 <body style="margin: 0; width: 100%; padding: 0;">
+<script type="text/php">
+    if (isset($pdf)) {
+        if ($PAGE_COUNT > 0) {
+        $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+        $size = 10;
+        $font = $fontMetrics->getFont("Verdana");
+        $width = $fontMetrics->get_text_width($text, $font, $size) / 3;
+        $x = ($pdf->get_width() - $width - 12);
+        $y = $pdf->get_height() - 25;
+        $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    }
+</script>
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
 
