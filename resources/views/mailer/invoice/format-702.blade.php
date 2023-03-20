@@ -58,6 +58,26 @@ body{
 
 
 <body style="word-break: break-word; -webkit-font-smoothing: antialiased; margin: 0; width: 100%; ">
+<script type="text/php">
+    if (isset($pdf)) {
+        @if($has_watermark)
+        $w = $pdf->get_width();
+        $h = $pdf->get_height();
+        $pdf->set_opacity(.1,'Multiply');
+
+        $text = "{{$watermark_text}}";
+        $text = chunk_split($text, 10);
+        $font = $fontMetrics->getFont('times');
+        $txtHeight = $fontMetrics->getFontHeight($font, 150);
+        $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
+            
+        $x = ($w-$textWidth-150);
+        $y = ($h-$txtHeight);
+            
+        $pdf->page_text($x, $y, $text, $font, 80,$color = array(0, 0, 0, .2), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
+        @endif
+    }
+</script>
   <div role="article" aria-roledescription="email" aria-label="" lang="en" > 
     <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 0px">
                 

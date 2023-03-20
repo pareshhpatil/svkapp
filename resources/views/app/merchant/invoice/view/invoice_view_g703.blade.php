@@ -30,6 +30,30 @@ $header = 'app.patron.invoice.invoice-master';
     .border-row{
         border: solid 1px #A0ACAC;
     }
+
+    .watermark {
+    position: relative;
+    }
+
+    .watermark__inner {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        left: 0px;
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .watermark__body {
+        color: rgba(0, 0, 0, 0.2);
+        font-size: 14vh;
+        font-weight: bold;
+        text-transform: uppercase;
+        transform: rotate(-45deg);
+        user-select: none;
+    }
 </style>
 
 
@@ -108,7 +132,12 @@ $header = 'app.patron.invoice.invoice-master';
                     </ul>
                 </div>
             </div>
-            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;  color:#394242;">
+            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px;  color:#394242;">
+                @if($has_watermark)
+                    <div class="watermark__inner">
+                        <div class="watermark__body">{{$watermark_text}}</div>
+                    </div>
+                @endif
                 <div class="flex flex-row  gap-4">
                     @if($has_aia_license)
                     <div>

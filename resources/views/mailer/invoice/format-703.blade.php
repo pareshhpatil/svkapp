@@ -85,14 +85,29 @@
         $y = $pdf->get_height() - 25;
         $pdf->page_text($x, $y, $text, $font, $size);
         }
+        @if($has_watermark)
+        $w = $pdf->get_width();
+        $h = $pdf->get_height();
+        $pdf->set_opacity(.1,'Multiply');
+
+        $text = "{{$watermark_text}}";
+        $text = chunk_split($text, 10);
+        $font = $fontMetrics->getFont('times');
+        $txtHeight = $fontMetrics->getFontHeight($font, 150);
+        $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
+            
+        $x = ($w-$textWidth-150);
+        $y = ($h-$txtHeight);
+            
+        $pdf->page_text($x, $y, $text, $font, 80,$color = array(0, 0, 0, .2), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
+        @endif
     }
 </script>
 
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
-
-        
-        <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px">
+        <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px;">
+           
             <div id="tab" style="width: 100%; background-color: #fff; padding: 16px">
                 <table>
                     @if($has_aia_license)

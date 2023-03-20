@@ -948,7 +948,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
         }
@@ -2128,9 +2128,6 @@ class InvoiceController extends AppController
                     $pdf->setPaper("a4", "landscape");
                     $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
                 }
-
-
-
 
                 return $name;
             } else {
@@ -4201,6 +4198,16 @@ class InvoiceController extends AppController
         }
 
         $data['has_aia_license'] = $hasAIALicense;
+        
+        $has_watermark = false;
+        $data['watermark_text'] = '';
+        if (isset($plugins['has_watermark'])) {
+            if($plugins['has_watermark'] == 1){
+                $has_watermark = true;
+                $data['watermark_text'] =$plugins['watermark_text'];
+            }
+        }
+        $data['has_watermark'] = $has_watermark;
 
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
