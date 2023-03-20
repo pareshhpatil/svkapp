@@ -2051,6 +2051,8 @@ class InvoiceController extends AppController
 
     public function downloadV2($link, $savepdf = 0, $type = null)
     {
+        
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
