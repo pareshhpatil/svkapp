@@ -53,6 +53,38 @@ class SSP
                 } else {
                     $value = $data[$i][$columns[$j]['db']];
                     $link = $encrypt->encode($data[$i]['invoice_id']);
+                    $status = $data[$i]['payment_request_status'];
+                    $custom_invoice_status = (isset($_SESSION['_custom_invoice_status']) && $_SESSION['_custom_invoice_status']!=null) ? $_SESSION['_custom_invoice_status'] : [];
+                    if ($column['db'] == 'status') {
+                        if ($status == '1') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                        } else if ($status == '2') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID OFFLINE';
+                        } else if ($status == '6') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                        } else if ($status == '7') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PART PAID';
+                        } else if ($status == '11') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DRAFT';
+                        } else if ($status == '12') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'CANCELLED';
+                        } else if ($status == '13') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DELETED';
+                        } else if ($status == '33') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PROCESSING';
+                        } else if ($status == '9') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REFUNDED';
+                        } else if($status == '4') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'FAILED';
+                        } else if($status == '3') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REJECTED';
+                        } else if($status == '14') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
+                        } else if($status == '0') {
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
+                        }
+                    }
+
                     if ($column['dt'] == self::$action_coll) {
                         $check_box = '';
                         if ($i < 50) {

@@ -878,4 +878,23 @@ class Controller
         }
         return $redis_items;
     }
+
+    function setStatusList($statusList) {
+        if($statusList!='') {
+            if ($this->session->get('configure_invoice_statues')) {
+                $config_status_list = $this->session->get('configure_invoice_statues');
+            }
+            if($config_status_list) {
+                $config_status_list = json_decode($config_status_list,true);
+                foreach($statusList as $sk=>$sval) {
+                    if(array_key_exists($sval['config_key'],$config_status_list)) {
+                        $statusList[$sk]['config_value'] = $config_status_list[$sval['config_key']];
+                    }
+                }
+            }
+            return $statusList;
+        }
+        return false;
+    }
+
 }

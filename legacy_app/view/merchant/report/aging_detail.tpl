@@ -155,9 +155,12 @@
                                         {$v.mobile} 
                                     </td>
                                     <td>
-                                        {$v.status} 
+                                        {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                            {$custom_invoice_status[$v.payment_request_status]}
+                                        {else}
+                                            {$v.status}
+                                        {/if}
                                     </td>
-
                                     <td>
                                         {$v.age} 
                                     </td>

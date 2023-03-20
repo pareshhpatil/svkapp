@@ -101,6 +101,12 @@ class Paymentrequest extends Controller
                 $columns = $this->session->get('customer_default_column');
                 $_SESSION['_customer_code_text'] = $columns['customer_code'];
             }
+            if ($this->session->get('configure_invoice_statues')) {
+                $invoice_statues = $this->session->get('configure_invoice_statues');
+                $_SESSION['_custom_invoice_status'] = json_decode($invoice_statues,true);
+            } else {
+                $_SESSION['_custom_invoice_status'] = '';
+            }
             $_SESSION['payment_request_ids'] = [];
 
             if(in_array('all', $paymentRequestIDs)) {

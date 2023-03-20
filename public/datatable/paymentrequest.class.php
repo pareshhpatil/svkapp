@@ -27,7 +27,7 @@ class SSP
         $out = array();
         $customer_code_text = (isset($_SESSION['_customer_code_text'])) ? $_SESSION['_customer_code_text'] : 'CUSTOMER CODE';
         $hasAllPrivileges = false;
-        if(in_array('all', array_keys($privilegesArray))) {
+        if (in_array('all', array_keys($privilegesArray))) {
             $hasAllPrivileges = true;
         }
 
@@ -40,7 +40,14 @@ class SSP
                     if ($column['datatype'] == 'datetime') {
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
-                        $row[$column['dt']] = formatDateString($data[$i][$column['db']]); 
+                        // $value = formatDateString($data[$i][$column['db']]);
+                        if ($data[$i][$column['db']] < date("Y-m-d")) {
+                            $value = formatDateString($data[$i][$column['db']]);
+                            $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
+                        } else {
+                            $row[$column['dt']] = $data[$i][$column['db']];
+                        }
+                        
                     } elseif ($column['datatype'] == 'specialDate') {
                         //$row[$column['dt']] = formatTimeString($data[$i][$column['db']]);
 
@@ -59,15 +66,15 @@ class SSP
                         }
                         $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
-                        if($data[$i][$column['db']] < 0){
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '('. number_format(str_replace('-','',$data[$i][$column['db']])) .')'. '</span>';
-                        }else{
+                        if ($data[$i][$column['db']] < 0) {
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '(' . number_format(str_replace('-', '', $data[$i][$column['db']])) . ')' . '</span>';
+                        } else {
                             $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]) . '</span>';
                         }
                     } else if ($column['datatype'] == 'cost') {
-                        if($data[$i][$column['db']] < 0){
-                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '('. number_format(str_replace('-','',$data[$i][$column['db']])).')';
-                        }else{
+                        if ($data[$i][$column['db']] < 0) {
+                            $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . '(' . number_format(str_replace('-', '', $data[$i][$column['db']])) . ')';
+                        } else {
                             $row[$column['dt']] = $data[$i]['currency_icon'] . ' ' . number_format($data[$i][$column['db']]);
                         }
                     }
@@ -77,7 +84,7 @@ class SSP
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
                     $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link . '/702';
 
-                    if(!empty($data[$i]['short_url'])) {
+                    if (!empty($data[$i]['short_url'])) {
                         $copy_link = $data[$i]['short_url'];
                     }
 
@@ -85,7 +92,7 @@ class SSP
                     $request_type = $data[$i]['invoice_type'];
                     $invoice_type = ($data[$i]['invoice_type'] == 2) ? 'Estimate' : 'Invoice';
 
-
+                    $custom_invoice_status = (isset($_SESSION['_custom_invoice_status']) && $_SESSION['_custom_invoice_status'] != null) ? $_SESSION['_custom_invoice_status'] : [];
                     if ($column['db'] == 'invoice_type') {
                         $invoicenoStr = '';
                         if (!empty($data[$i]['invoice_number']) || $data[$i]['revision_no'] != '') {
@@ -106,16 +113,13 @@ class SSP
                         $value = strtoupper($invoice_type) . $invoicenoStr;
                     }
                     if ($column['db'] == 'project_name') {
-                      
-                       
-                            if (!empty($data[$i]['project_code'])) {
-                                $value = $data[$i]['project_name'] . ' <br><span class="text-gray-400 text-font-12">PROJECT NO : <span class="text-gray-900">' . $data[$i]['project_code'] . '</span></span>';
-                            }else
-                            {
-                                $value ='NA';   
-                            }
-                               
-                       
+
+
+                        if (!empty($data[$i]['project_code'])) {
+                            $value = $data[$i]['project_name'] . ' <br><span class="text-gray-400 text-font-12">PROJECT NO : <span class="text-gray-900">' . $data[$i]['project_code'] . '</span></span>';
+                        } else {
+                            $value = 'NA';
+                        }
                     }
 
                     if ($column['db'] == 'name') {
@@ -128,30 +132,44 @@ class SSP
 
                     if ($column['db'] == 'status') {
                         if ($status == '1') {
-                            $value = '<span class="badge badge-pill status paid_online">PAID ONLINE</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                            $value = '<span class="badge badge-pill status paid_online">' . $custom_invoice_status . '</span>';
                         } else if ($status == '2') {
-                            $value = '<span class="badge badge-pill status paid_offline">PAID OFFLINE</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID OFFLINE';
+                            $value = '<span class="badge badge-pill status paid_offline">' . $custom_invoice_status . '</span>';
                         } else if ($status == '6') {
-                            $value = '<span class="badge badge-pill status converted">CONVERTED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PAID ONLINE';
+                            $value = '<span class="badge badge-pill status converted">' . $custom_invoice_status . '</span>';
                         } else if ($status == '7') {
-                            $value = '<span class="badge badge-pill status partial_paid">PART PAID</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PART PAID';
+                            $value = '<span class="badge badge-pill status partial_paid">' . $custom_invoice_status . '</span>';
                         } else if ($status == '11') {
-                            $value = '<span class="badge badge-pill status draft">DRAFT</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DRAFT';
+                            $value = '<span class="badge badge-pill status draft">' . $custom_invoice_status . '</span>';
                         } else if ($status == '12') {
-                            $value = '<span class="badge badge-pill status cancelled">CANCELLED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'CANCELLED';
+                            $value = '<span class="badge badge-pill status cancelled">' . $custom_invoice_status . '</span>';
                         } else if ($status == '13') {
-                            $value = '<span class="badge badge-pill status deleted">DELETED</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'DELETED';
+                            $value = '<span class="badge badge-pill status deleted">' . $custom_invoice_status . '</span>';
                         } else if ($status == '33') {
-                            $value = '<span class="badge badge-pill status processing">PROCESSING</span>';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'PROCESSING';
+                            $value = '<span class="badge badge-pill status processing">' . $custom_invoice_status . '</span>';
                         } else if ($status == '9') {
-                            $value = '<span class="badge badge-pill status refunded">REFUNDED</span>';
-                        } else {
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REFUNDED';
+                            $value = '<span class="badge badge-pill status refunded">' . $custom_invoice_status . '</span>';
+                        } else if ($status == '14') {
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
+                            $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
+                        } else if($status == 0) {
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
+                            $value = '<span class="badge badge-pill status overdue">' . $custom_invoice_status . '</span>';
                             //0 = unpaid, 4=failed ,5= initiated
-                            if ($data[$i]['due_date'] < date("Y-m-d")) {
-                                $value = '<span class="badge badge-pill status overdue">OVERDUE</span>';
-                            } else {
-                                $value = '<span class="badge badge-pill status unpaid">UNPAID</span>';
-                            }
+                            // if ($data[$i]['due_date'] < date("Y-m-d")) {
+                            //     $value = '<span class="badge badge-pill status overdue">OVERDUE</span>';
+                            // } else {
+                            //     $value = '<span class="badge badge-pill status unpaid">UNPAID</span>';
+                            // }
                         }
                     }
                     if ($column['dt'] == self::$action_coll) {
@@ -162,8 +180,8 @@ class SSP
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">';
                         if ($data[$i]['template_type'] == 'construction') {
-                            if($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
+                            if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
+                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
@@ -181,7 +199,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
+                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
                                         if ($request_type == 1 && $status != 11) {
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
@@ -189,21 +207,21 @@ class SSP
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
                                         }
-                                    } else if($status == 2) {
+                                    } else if ($status == 2) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                                    } else if($status == 7) {
+                                    } else if ($status == 7) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
                                     }
 
-                                    if ($status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                    if (
+                                        $status == 0 ||
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
+                                    ) {
                                         $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
-
                                     }
-
                                 }
 
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'comment') {
+                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'comment') {
                                     if ($status != 11) {
                                         $row[$column['dt']] .= '<li>
                                                         <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
@@ -211,7 +229,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray['all'] == 'full') {
+                                if ($privilegesArray['all'] == 'full') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
@@ -219,9 +237,8 @@ class SSP
                                                     </li>';
                                     }
                                 }
-
                             } else {
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
@@ -239,7 +256,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
                                         if ($request_type == 1 && $status != 11) {
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
@@ -247,20 +264,21 @@ class SSP
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
                                             $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
                                         }
-                                    } else if($status == 2) {
+                                    } else if ($status == 2) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                                    } else if($status == 7) {
+                                    } else if ($status == 7) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
                                     }
 
-                                    if ($status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                    if (
+                                        $status == 0 ||
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
+                                    ) {
                                         $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
                                     }
-
                                 }
 
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'comment') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'comment') {
                                     if ($status != 11) {
                                         $row[$column['dt']] .= '<li>
                                                         <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
@@ -268,7 +286,7 @@ class SSP
                                     }
                                 }
 
-                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
                                     if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
                                         $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
@@ -278,7 +296,6 @@ class SSP
                                 }
                             }
                         }
-
                         if ($status != 11) {
                             $row[$column['dt']] .= ' <li class="divider"></li>
                                                 <li>
@@ -458,7 +475,7 @@ class SSP
                 $where .= " AND is_paid=" . $invoice_status;
             }
         }
-       
+
 
         if (count($columnSearch)) {
             $where = $where === '' ?
@@ -466,15 +483,15 @@ class SSP
                 $where . ' AND ' . implode(' AND ', $columnSearch);
         }
 
-//        if (!empty($_SESSION['payment_request_ids'])) {
-//            if ($where == '') {
-//                $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
-//            } else {
-//                $where .= ' AND payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
-//            }
-//        }
+        //        if (!empty($_SESSION['payment_request_ids'])) {
+        //            if ($where == '') {
+        //                $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+        //            } else {
+        //                $where .= ' AND payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+        //            }
+        //        }
 
-        if(!$_SESSION['has_invoice_list_access']) {
+        if (!$_SESSION['has_invoice_list_access']) {
             if ($where == '') {
                 $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
             } else {
@@ -534,20 +551,20 @@ class SSP
         $merchant_id = \App\Libraries\Encrypt::decode($_SESSION['merchant_id']);
         $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
 
-        if($_SESSION['user_role'] == 'Admin') {
+        if ($_SESSION['user_role'] == 'Admin') {
             $privilegesArray = ['all' => 'full'];
         } else {
             $privilegesArray = json_decode($_SESSION['invoice_privileges_ids'], true);
-//            $paymentRequestPrivilieges = self::sql_exec(
-//                $db,
-//                "SELECT type_id, access
-//			 FROM   `briq_privileges` WHERE type = 'invoice' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
-//            );
-//
-//            $privilegesArray = [];
-//            foreach ($paymentRequestPrivilieges as $paymentRequestPriviliege) {
-//                $privilegesArray[$paymentRequestPriviliege['type_id']] = $paymentRequestPriviliege['access'];
-//            }
+            //            $paymentRequestPrivilieges = self::sql_exec(
+            //                $db,
+            //                "SELECT type_id, access
+            //			 FROM   `briq_privileges` WHERE type = 'invoice' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
+            //            );
+            //
+            //            $privilegesArray = [];
+            //            foreach ($paymentRequestPrivilieges as $paymentRequestPriviliege) {
+            //                $privilegesArray[$paymentRequestPriviliege['type_id']] = $paymentRequestPriviliege['access'];
+            //            }
         }
 
         $data = self::sql_exec(
