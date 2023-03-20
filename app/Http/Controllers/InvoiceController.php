@@ -4211,7 +4211,6 @@ class InvoiceController extends AppController
         }
         $data['has_watermark'] = $has_watermark;
 
-        dd($this->user_id, $this->merchant_id);
 
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
