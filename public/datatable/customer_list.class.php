@@ -357,8 +357,6 @@ class SSP
             "call get_customer_list('" . $merchant_id . "','" . $column_name . "','" . $where . "','" . $order . "','" . $limit . "'," . $bulk_id . ");"
         );
 
-        var_dump($data, $where);
-
         $recordsFiltered = $data[0]['@count'];
         // Total data set length
         $resTotalLength = self::sql_exec(
