@@ -29,6 +29,13 @@ class SSP
     {
         $encrypt = new Encryption();
         $out = array();
+        
+        $privilegesArray = json_decode($_SESSION['invoice_privileges_ids'],true);
+        $hasAllPrivileges = false;
+        if (in_array('all', array_keys($privilegesArray))) {
+            $hasAllPrivileges = true;
+        }
+
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
             for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
@@ -79,7 +86,15 @@ class SSP
                         } else if($status == '3') {
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REJECTED';
                         } else if($status == '14') {
-                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
+                            $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
+                            if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
+                                    $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
+                                }
+                            } elseif($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
+                            }
                         } else if($status == '0') {
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
                         }
