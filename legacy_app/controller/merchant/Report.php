@@ -300,7 +300,8 @@ class Report extends Controller
         try {
             $user_id = $this->session->get('userid');
             $redis_items = $this->getSearchParamRedis('invoicedetails_report'.$type);
-
+            
+            
             #SwipezLogger::info(__CLASS__, "Invoice details invoked by $user_id");
             $aging_by_selected = isset($_POST['aging_by']) ? $_POST['aging_by'] : 'bill_date';
             $cycle_selected = isset($_POST['billing_cycle_name']) ? $_POST['billing_cycle_name'] : '';
