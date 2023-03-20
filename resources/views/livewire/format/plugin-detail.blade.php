@@ -479,6 +479,25 @@
                 </div>
             </div>
 
+            <div id="pgiswatermark" @isset($plugins['has_watermark']) @else style="display: none;" @endif>
+                <hr>
+                <div class="mb-2">
+                    <span class="form-section base-font">Watermark</span>
+                    <div class="pull-right">
+                        <input type="checkbox" @isset($plugins['has_watermark']) checked @endif id="iswatermark" name="has_watermark" onchange="disablePlugin(this.checked, 'plg28');
+                        " value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    </div>
+                </div>
+                <div id="min_partial_payment_div" class="row mb-2" @if(isset($plugins['has_watermark']) && $plugins['has_watermark']=='1' ) style="display: block;" @else style="display:none;" @endif>
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Watermark text</label>
+                        <div class="col-md-3">
+                            <input type="text" @isset($plugins['watermark_text']) value="{{$plugins['watermark_text']}}" @else value="DRAFT" @endif class="form-control" id="watermark_text" name="watermark_text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="pgiscovering" @isset($plugins['has_covering_note']) @else style="display: none;" @endif>
                 <hr>
                 <div class="mb-2 desk">
@@ -1198,6 +1217,19 @@
                                 @endif
 
 
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0">Watermark</p>
+                                            <p class="mb-4 default-font">Place watermark on your G702/703 invoices and PDFs.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg28" @isset($plugins['has_watermark']) checked @endif onchange="pluginChange(this.checked, 'iswatermark');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
