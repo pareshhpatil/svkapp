@@ -160,7 +160,7 @@ class SSP
                             $value = '<span class="badge badge-pill status refunded">' . $custom_invoice_status . '</span>';
                         } else if ($status == '14') {
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
-                            $value = '<span class="badge badge-pill status unpaid">Saved</span>';
+                            $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
                                 if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
                                     $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
