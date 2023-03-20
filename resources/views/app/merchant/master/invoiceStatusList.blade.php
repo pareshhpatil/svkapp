@@ -18,9 +18,9 @@
                     <table class="table table-striped table-bordered table-hover" id="table-no-export">
                         <thead>
                             <tr>
-                                <th class="td-c">
+                                {{-- <th class="td-c">
                                     ID
-                                </th>
+                                </th> --}}
                                 <th class="td-c">
                                    Status
                                 </th>
@@ -34,11 +34,11 @@
                           
                             @foreach($invoice_statues as $k=>$v)
                             <tr>
-                                <td class="td-c">
+                                {{-- <td class="td-c">
                                     {{$v->config_key}}
-                                </td>
+                                </td> --}}
                                 <td class="td-c">
-                                    {{$v->config_value}}
+                                    <a onclick="showUpdateStatus('{{$k}}','{{$v->config_key}}','{{$v->config_value}}')">{{$v->config_value}}</a>
                                 </td>
                                 <td class="td-c">
                                     <div class="btn-group dropup">

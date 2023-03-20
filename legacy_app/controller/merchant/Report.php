@@ -465,13 +465,12 @@ class Report extends Controller
             $_SESSION['_group'] = $group;
             $_SESSION['_invoice_type'] = $invoice_type;
             $_SESSION['_billing_profile_id'] = $billing_profile_id;
-            if ($config_invoice_status) {
+            if ($this->session->get('configure_invoice_statues')) {
                 $invoice_statues = $this->session->get('configure_invoice_statues');
                 $_SESSION['_custom_invoice_status'] = json_decode($invoice_statues,true);
-            }else{
+            } else {
                 $_SESSION['_custom_invoice_status'] = '';
             }
-
             if ($this->has_error == false) {
                 if (isset($_POST['exportExcel'])) {
                     $reportlist = $this->model->getReportInvoiceDetail($this->merchant_id, $fromdate->format('Y-m-d'), $todate->format('Y-m-d'), $invoice_type, $cycle_selected, $customer_selected, $status, $aging_by, $column_select, $is_settle, $franchise_id, $vendor_id, $where);

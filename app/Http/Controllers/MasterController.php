@@ -391,7 +391,7 @@ class MasterController extends AppController
 
     public function invoiceStatusList()
     {
-        $title =  'Configure invoice statues';
+        $title =  'Invoice status';
         $data = Helpers::setBladeProperties($title,  ['invoiceformat'],  []);
         $list = $this->masterModel->getConfigList('payment_request_status');
         $not_show_status = array(5,8,13,6,10,12);
@@ -405,6 +405,9 @@ class MasterController extends AppController
         $result=  $this->masterModel->getMerchantData($this->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS');
         $configure_status_list = json_decode($result,true);
         
+        if ($result) {
+            Session::put('configure_invoice_statues', $result);
+        } 
         if($configure_status_list!=null) {
             foreach($invoice_statues as $i=>$status){
                 if(array_key_exists($status->config_key,$configure_status_list)){
@@ -422,7 +425,7 @@ class MasterController extends AppController
     public function invoiceStatusSave(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required'
+            'status' => 'required|max:15'
         ]);
 
         if ($validator->fails()) {

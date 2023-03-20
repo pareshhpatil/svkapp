@@ -130,7 +130,7 @@
                                         <label class="control-label col-md-3">Status <span class="required">*
                                             </span></label>
                                         <div class="col-md-5">
-                                            <input type="text" required="true" maxlength="45" name="status" id="config_value" class="form-control" placeholder="Enter invoice status">
+                                            <input type="text" required="true" maxlength="15" name="status" id="config_value" class="form-control" placeholder="Enter invoice status">
                                         </div>
                                     </div>
                                 </div>
