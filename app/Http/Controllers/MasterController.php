@@ -443,7 +443,7 @@ class MasterController extends AppController
                 $value = json_encode($value,JSON_FORCE_OBJECT);
                 $saved_status = $this->masterModel->saveCustomInvoiceStatus($this->merchant_id,$this->user_id,'CUSTOM_PAYMENT_REQUEST_STATUS',$value);
             }
-            return redirect('/merchant/configure-invoice-statuses')->with('success', "Status has been updated");
+            return redirect('/merchant/invoice-status')->with('success', "Status has been updated");
         }
     }
     public function noPermission()
