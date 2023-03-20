@@ -684,19 +684,24 @@ class Invoice extends Controller
 
     function saveInvoicePreview($payment_request_id)
     {
+        $user_role = $this->session->get('user_role');
+
         if ($payment_request_id != '') {
             if (strlen($payment_request_id) != 10 || $payment_request_id != $_POST['payment_request_id']) {
                 $this->setInvalidLinkError();
             }
             $notify_patron = $_POST['notify_patron'];
+            $prevPaymentRequestStatus = $this->common->getRowValue('payment_request_status', 'payment_request', 'payment_request_id', $payment_request_id);
+
             //first update payment request status & notify patron into table
-            $this->common->genericupdate('payment_request', 'payment_request_status', 0, 'payment_request_id', $payment_request_id);
+            $this->common->genericupdate('payment_request', 'payment_request_status', $_POST['payment_request_status'], 'payment_request_id', $payment_request_id);
             $this->common->genericupdate('payment_request', 'notify_patron', $notify_patron, 'payment_request_id', $payment_request_id);
 
             $link = $this->encrypt->encode($payment_request_id);
             $get_payment_request_details = $this->common->getSingleValue('payment_request', 'payment_request_id', $payment_request_id);
-            $get_invoice_values = $this->common->querylist("select value from invoice_column_values where payment_request_id='$payment_request_id'");
 
+            $get_invoice_values = $this->common->querylist("select value from invoice_column_values where payment_request_id='$payment_request_id'");
+            
             $invoice_values = array();
             foreach ($get_invoice_values as $k => $val) {
                 $invoice_values[$k] = $val['value'];
@@ -705,10 +710,16 @@ class Invoice extends Controller
             $result = $this->model->saveInvoicePreview($this->merchant_id, $this->user_id, $payment_request_id, $get_payment_request_details['invoice_type'], $invoice_values, $get_payment_request_details['invoice_number'], $get_payment_request_details['payment_request_status'], $_POST['payment_request_type']);
 
             if ($result['message'] == 'success') {
-                if (isset($notify_patron) && $notify_patron == 1) {
+                if ($get_payment_request_details['payment_request_status'] == 0 && (isset($notify_patron) && $notify_patron == 1)) {
                     $notification = $this->getNotificationObj();
                     $revised = 0;
                     $notification->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
+                }
+
+                if($prevPaymentRequestStatus == 11 && $get_payment_request_details['payment_request_status'] == 14) {
+                    $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
+
+                    $InvoiceHelper->sendInvoiceForApprovalNotification($payment_request_id);
                 }
 
                 $get_payment_request_details['change_order_id'] = json_decode($get_payment_request_details['change_order_id'], 1);
@@ -734,6 +745,7 @@ class Invoice extends Controller
                     } else {
                         $success_array['mobile'] = '';
                     }
+
                     $this->session->set('success_array', $success_array);
                     header("Location:/merchant/paymentrequest/view/" . $link);
                 }

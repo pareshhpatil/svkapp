@@ -209,7 +209,8 @@ class Directpaylink extends Controller
             $extra = "/" . $id;
         }
         $directpay_link[] = $this->app_url . '/m/' . $merchant['display_url'] . '/directpay' . $extra;
-        $shortUrlWrap = new SwipezShortURLWrapper();
+        //$shortUrlWrap = new SwipezShortURLWrapper();
+        $shortUrlWrap = new Swipez\ShortUrl\ShortUrl();
         $shortUrls = $shortUrlWrap->SaveUrl($directpay_link);
         if ($id != null) {
             return $shortUrls[0];

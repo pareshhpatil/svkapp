@@ -21,11 +21,16 @@ class SSP
      *  @param  array $data    Data from the SQL get
      *  @return array          Formatted data in a row based format
      */
-    static function data_output($columns, $data)
+    static function data_output($columns, $data, $privilegesArray)
     {
         $encrypt = new Encryption();
         $out = array();
         $customer_code_text = (isset($_SESSION['_customer_code_text'])) ? $_SESSION['_customer_code_text'] : 'CUSTOMER CODE';
+        $hasAllPrivileges = false;
+        if(in_array('all', array_keys($privilegesArray))) {
+            $hasAllPrivileges = true;
+        }
+
         for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
             for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
@@ -157,7 +162,9 @@ class SSP
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">';
                         if ($data[$i]['template_type'] == 'construction') {
-                            $row[$column['dt']] .= '<li>
+                            if($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
+                                    $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
                                                 </li><li>
@@ -165,46 +172,113 @@ class SSP
                                                     <i class="fa fa-table"></i> View 703</a>
                                             </li>
                                             ';
-                        }
 
-                        // <li>
-                        //                        <a  onclick="callRevisionSidePanel(' . "'" . $link . "'" . ');">
-                        //                            <i class="fa fa-undo"></i> Revision</a>
-                        //                    </li>
+                                    if ($status == 6) {
+                                        $row[$column['dt']] .= '<li>
+                                                    <a target="_BLANK" href="/merchant/paymentrequest/view/' . $estimatelink . '">
+                                                        <i class="fa fa-table"></i> View Invoice</a>
+                                                </li>';
+                                    }
+                                }
 
-                        if ($status == 6) {
-                            $row[$column['dt']] .= '<li>
-                                                        <a target="_BLANK" href="/merchant/paymentrequest/view/' . $estimatelink . '">
-                                                            <i class="fa fa-table"></i> View Invoice</a>
-                                                    </li>';
-                        }
-                        if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
-                            if ($request_type == 1 && $status != 11) {
-                                $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
-                            } elseif ($request_type == 2 && $status != 11) {
-                                $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
-                                $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
-                            }
-                        } else if($status == 2) {
-                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                        } else if($status == 7) {
-                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
-                        }
-                        if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
-                            $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
-                        }
-                        if ($status != 11) {
-                            $row[$column['dt']] .= '<li>
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
+                                        if ($request_type == 1 && $status != 11) {
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                        } elseif ($request_type == 2 && $status != 11) {
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                        }
+                                    } else if($status == 2) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
+                                    } else if($status == 7) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                    }
+
+                                    if ($status == 0 ||
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                        $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
+
+                                    }
+
+                                }
+
+                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'comment') {
+                                    if ($status != 11) {
+                                        $row[$column['dt']] .= '<li>
                                                         <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
                                                     </li>';
+                                    }
+                                }
+
+                                if($privilegesArray['all'] == 'full') {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                        $row[$column['dt']] .= '    <li>
+                                                        <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
+                                                           data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
+                                                    </li>';
+                                    }
+                                }
+
+                            } else {
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                    $row[$column['dt']] .= '<li>
+                                                    <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
+                                                        <i class="fa fa-table"></i> View 702</a>
+                                                </li><li>
+                                                <a target="_BLANK" href="/merchant/invoice/viewg703/' . $link . '">
+                                                    <i class="fa fa-table"></i> View 703</a>
+                                            </li>
+                                            ';
+
+                                    if ($status == 6) {
+                                        $row[$column['dt']] .= '<li>
+                                                    <a target="_BLANK" href="/merchant/paymentrequest/view/' . $estimatelink . '">
+                                                        <i class="fa fa-table"></i> View Invoice</a>
+                                                </li>';
+                                    }
+                                }
+
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
+                                        if ($request_type == 1 && $status != 11) {
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                        } elseif ($request_type == 2 && $status != 11) {
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
+                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                        }
+                                    } else if($status == 2) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
+                                    } else if($status == 7) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                    }
+
+                                    if ($status == 0 ||
+                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                        $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
+                                    }
+
+                                }
+
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'comment') {
+                                    if ($status != 11) {
+                                        $row[$column['dt']] .= '<li>
+                                                        <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
+                                                    </li>';
+                                    }
+                                }
+
+                                if($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
+                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                        $row[$column['dt']] .= '    <li>
+                                                        <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
+                                                           data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
+                                                    </li>';
+                                    }
+                                }
+                            }
                         }
 
-                        if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7) {
-                            $row[$column['dt']] .= '    <li>
-                                                            <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
-                                                               data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
-                                                        </li>';
-                        }
                         if ($status != 11) {
                             $row[$column['dt']] .= ' <li class="divider"></li>
                                                 <li>
@@ -392,6 +466,22 @@ class SSP
                 $where . ' AND ' . implode(' AND ', $columnSearch);
         }
 
+//        if (!empty($_SESSION['payment_request_ids'])) {
+//            if ($where == '') {
+//                $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+//            } else {
+//                $where .= ' AND payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+//            }
+//        }
+
+        if(!$_SESSION['has_invoice_list_access']) {
+            if ($where == '') {
+                $where = ' payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+            } else {
+                $where .= ' AND payment_request_id in("' . implode('", "', $_SESSION['payment_request_ids']) . '")';
+            }
+        }
+
         $grptext = '';
         if (!empty($_SESSION['login_customer_group'])) {
             foreach ($_SESSION['login_customer_group'] as $grpname) {
@@ -410,11 +500,9 @@ class SSP
             }
         }
 
-
         if ($where !== '') {
             $where = 'WHERE ' . $where;
         }
-
 
 
         return $where;
@@ -443,6 +531,25 @@ class SSP
         $order = self::order($request, $columns);
         $where = self::filter($request, $columns, $bindings);
         // Main query to actually get the data
+        $merchant_id = \App\Libraries\Encrypt::decode($_SESSION['merchant_id']);
+        $user_id = \App\Libraries\Encrypt::decode($_SESSION['userid']);
+
+        if($_SESSION['user_role'] == 'Admin') {
+            $privilegesArray = ['all' => 'full'];
+        } else {
+            $privilegesArray = json_decode($_SESSION['invoice_privileges_ids'], true);
+//            $paymentRequestPrivilieges = self::sql_exec(
+//                $db,
+//                "SELECT type_id, access
+//			 FROM   `briq_privileges` WHERE type = 'invoice' AND is_active = 1 AND merchant_id='$merchant_id' AND user_id='$user_id'"
+//            );
+//
+//            $privilegesArray = [];
+//            foreach ($paymentRequestPrivilieges as $paymentRequestPriviliege) {
+//                $privilegesArray[$paymentRequestPriviliege['type_id']] = $paymentRequestPriviliege['access'];
+//            }
+        }
+
         $data = self::sql_exec(
             $db,
             $bindings,
@@ -465,7 +572,7 @@ class SSP
             "totalSum" => intval($totalSum),
             "recordsTotal" => intval($recordsTotal),
             "recordsFiltered" => intval($recordsFiltered),
-            "data" => self::data_output($columns, $data)
+            "data" => self::data_output($columns, $data, $privilegesArray)
         );
     }
 

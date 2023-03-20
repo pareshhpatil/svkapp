@@ -36,6 +36,8 @@ class Paymentrequest extends Controller
         try {
             $this->hasRole(1, 6);
             $merchant_id = $this->session->get('merchant_id');
+            $user_id = $this->session->get('userid');
+            $user_role = $this->session->get('user_role');
             $last_date = $this->getLast_date();
             $current_date = date('d M Y');
 
@@ -69,6 +71,19 @@ class Paymentrequest extends Controller
             #$cycle_list = $this->model->getCycleList($this->session->get('userid'), $fromdate->format('Y-m-d'), $todate->format('Y-m-d'));
 
 
+            $paymentRequestIDs = [];
+            $_SESSION['has_invoice_list_access'] = false;
+
+            if($user_role == 'Admin') {
+                $_SESSION['has_invoice_list_access'] = true;
+            } else {
+                $userPrivilegesPaymentRequests = json_decode($this->session->get('invoice_privileges', true));
+
+                foreach ($userPrivilegesPaymentRequests as $key => $userPrivilegesPaymentRequest) {
+                    $paymentRequestIDs[] = $key;
+                }
+            }
+
             $_SESSION['display_column'] = array();
             $_SESSION['_from_date'] = $fromdate->format('Y-m-d');
             $_SESSION['_to_date'] = $todate->format('Y-m-d');
@@ -86,6 +101,20 @@ class Paymentrequest extends Controller
                 $columns = $this->session->get('customer_default_column');
                 $_SESSION['_customer_code_text'] = $columns['customer_code'];
             }
+            $_SESSION['payment_request_ids'] = [];
+
+            if(in_array('all', $paymentRequestIDs)) {
+                $_SESSION['has_invoice_list_access'] = true;
+            } else {
+                $_SESSION['payment_request_ids'] = $paymentRequestIDs;
+            }
+
+//            if (!empty($paymentRequestIDs)) {
+//                if(!in_array('all', $paymentRequestIDs)) {
+//                    $_SESSION['payment_request_ids'] = $paymentRequestIDs;
+//                }
+//            }
+
             $this->session->set('valid_ajax', 'payment_request_list');
             $this->smarty->assign("from_date",  $this->generic->formatDateString($from_date) );
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));
@@ -109,6 +138,7 @@ class Paymentrequest extends Controller
                 array('title' => 'Sales', 'url' => ''),
                 array('title' => $this->view->title, 'url' => '')
             );
+
             $this->smarty->assign("links", $breadcumbs_array);
             //Breadcumbs array end
             $this->view->sum_column = 4;

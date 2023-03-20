@@ -9,6 +9,7 @@ use App\Libraries\Helpers;
 use App\Model\Master;
 use App\Project;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Validator;
@@ -67,7 +68,21 @@ class Information extends Component
             $this->customer_id = $project->customer_id;
             $this->emit('setProjectId', $this->project_id);
         }
-        $project_list = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+        $project_list = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         return view('livewire.contract.information', compact('project_list', 'project'));
     }
 

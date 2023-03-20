@@ -47,6 +47,12 @@ VALUES('Material', 'M', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, C
 INSERT INTO `cost_types`(`name`,`abbrevation`,`merchant_id`,`created_by`,`created_date`,`last_update_by`,`last_update_date`)
 VALUES('Equipment', 'E', @merchant_id, @user_id, CURRENT_TIMESTAMP(), @user_id, CURRENT_TIMESTAMP());
 
+INSERT INTO `briq_roles`(`merchant_id`, `name`, `description`, `created_by`, `last_updated_by`, `created_at`, `updated_at`, `deleted_at`)
+VALUES(@merchant_id, 'Admin', 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process', @user_id, @user_id, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), NULL);
+
+INSERT INTO `briq_roles`(`merchant_id`, `name`, `description`, `created_by`, `last_updated_by`, `created_at`, `updated_at`, `deleted_at`)
+VALUES(@merchant_id, 'Team Member', 'Team member can only create/ update assigned objects', @user_id, @user_id, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), NULL);
+
 SET @templatename = 'Invoice';
 SET @template_type = 'isp';
 SET @main_header_id = '9~10~11~12';
