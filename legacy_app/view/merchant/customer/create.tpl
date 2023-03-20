@@ -82,18 +82,17 @@
                             <strong>Success!</strong> {$success}
                         </div>
                     {/if}
-                    <div class="alert alert-danger" style="display: none;" id="errorshow">
-                        <button class="close"
-                            onclick="document.getElementById('errorshow').style.display = 'none';"></button>
-                        <p id="error_display">You have some form errors. Please check below.</p>
-                    </div>
+
                     <div class="portlet-body form">
 
                         <input type="hidden" id="customer_id_" name="customer_id" value="" />
                         <h4 class="form-section">System Fields</h4>
                         <div class="form-body">
                             <!-- Start profile details -->
-
+                            <div class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -114,10 +113,10 @@
                                         {if $v.column_datatype=='company_name'}
                                             <div class="form-group">
                                                 <label class="control-label col-md-5">{$v.column_name}<span
-                                                        class="required"></span></label>
+                                                        class="required">*</span></label>
                                                 <div class="col-md-7">
                                                     <input type="text" maxlength="100" class="form-control" value="{$v.value}"
-                                                            name="company_name">
+                                                        name="company_name" required>
                                                 </div>
                                             </div>
                                         {/if}
@@ -146,12 +145,17 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-5">{$customer_default_column.mobile|default:'Mobile'}</label>
+                                        <label
+                                            class="control-label col-md-5">{$customer_default_column.mobile|default:'Mobile'}</label>
                                         <div class="col-md-7">
                                             <div class="input-group">
-                                            <span class="input-group-addon" id="country_code_txt">+{$selected_mobile_code}</span>
-                                            {* {$validate.mobile} *}
-                                            <input type="text" pattern="([0-9]{ldelim}10{rdelim})" title="Enter your valid mobile number" name="mobile" id="defaultmobile" aria-describedby="defaultmobile-error" value="{$post.mobile}" class="form-control" maxlength="10">
+                                                <span class="input-group-addon"
+                                                    id="country_code_txt">+{$selected_mobile_code}</span>
+                                                {* {$validate.mobile} *}
+                                                <input type="text" pattern="([0-9]{ldelim}10{rdelim})"
+                                                    title="Enter your valid mobile number" name="mobile"
+                                                    id="defaultmobile" aria-describedby="defaultmobile-error"
+                                                    value="{$post.mobile}" class="form-control" maxlength="10">
                                             </div>
                                             <span id="defaultmobile-error" class="help-block help-block-error"></span>
                                         </div>
@@ -168,15 +172,29 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.country|default:'Country'}<span class="required"></span></label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.country|default:'Country'}<span
+                                                class="required"></span></label>
                                         <div class="col-md-7">
                                             <select name="country" class="form-control select2me"
                                                 data-placeholder="Select..." onchange="showStateDiv(this.value);">
                                                 <option value="">Select Country</option>
                                                 {foreach from=$country_code item=v}
-                                                    <option {if $v.config_value==$selected_country} selected {/if} value="{$v.config_value}">{$v.config_value}</option>
+                                                    <option {if $v.config_value==$selected_country} selected {/if}
+                                                        value="{$v.config_value}">{$v.config_value}</option>
                                                 {/foreach}
                                             </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.city|default:'City'}<span
+                                                class="required">
+                                            </span></label>
+                                        <div class="col-md-7">
+                                            <input type="text" {$validate.city} name="city" value="{$post.city}"
+                                                class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -184,7 +202,8 @@
                                             class="control-label col-md-4">{$customer_default_column.state|default:'State'}<span
                                                 class="required">
                                             </span></label>
-                                        <div class="col-md-7" id="state_drpdown" style="{($selected_country=='India') ? 'display:block;' : 'display:none;'}">
+                                        <div class="col-md-7" id="state_drpdown"
+                                            style="{($selected_country=='India') ? 'display:block;' : 'display:none;'}">
                                             <select name="state" class="form-control select2me"
                                                 data-placeholder="Select...">
                                                 <option value="">Select State</option>
@@ -194,19 +213,9 @@
                                                 {/foreach}
                                             </select>
                                         </div>
-                                        <div class="col-md-7" id="state_txt" style="{($selected_country!='India') ? 'display:block;' : 'display:none;'}">
-                                            <input type="text" name="state1" value="{$post.state}"
-                                                class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label
-                                            class="control-label col-md-4">{$customer_default_column.city|default:'City'}<span
-                                                class="required">
-                                            </span></label>
-                                        <div class="col-md-7">
-                                            <input type="text" {$validate.city} name="city" value="{$post.city}"
-                                                class="form-control">
+                                        <div class="col-md-7" id="state_txt"
+                                            style="{($selected_country!='India') ? 'display:block;' : 'display:none;'}">
+                                            <input type="text" name="state1" value="{$post.state}" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -232,7 +241,7 @@
                                             {if $v.column_datatype!='company_name'}
                                                 <input name="column_id[]" type="hidden" value="{$v.column_id}">
                                                 <label class="control-label col-md-5">{$v.column_name}<span
-                                                    class="required"></span></label>
+                                                        class="required"></span></label>
                                             {/if}
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
@@ -265,9 +274,9 @@
                                             {if $v.column_datatype!='company_name'}
                                                 <input name="column_id[]" type="hidden" value="{$v.column_id}">
                                                 <label class="control-label col-md-4">{$v.column_name}<span
-                                                class="required"></span></label>
+                                                        class="required"></span></label>
                                             {/if}
-                                           
+
                                             <div class="col-md-7">
                                                 {if $v.column_datatype=='textarea'}
                                                     <textarea maxlength="500" class="form-control"

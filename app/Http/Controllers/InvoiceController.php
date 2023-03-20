@@ -948,7 +948,7 @@ class InvoiceController extends AppController
                     $info["payment_gateway_info"] = true;
                 }
             }
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/view/invoice_view_g702', $data);
         } else {
         }
@@ -1902,7 +1902,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+            $data = $this->setdataV2($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
         } else {
@@ -1934,6 +1934,7 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -2128,9 +2129,6 @@ class InvoiceController extends AppController
                     $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
                 }
 
-
-
-
                 return $name;
             } else {
                 $data['viewtype'] = 'pdf';
@@ -2286,6 +2284,7 @@ class InvoiceController extends AppController
      */
     public function downloadFullInvoice($link)
     {
+        ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -4199,6 +4198,16 @@ class InvoiceController extends AppController
         }
 
         $data['has_aia_license'] = $hasAIALicense;
+        
+        $has_watermark = false;
+        $data['watermark_text'] = '';
+        if (isset($plugins['has_watermark'])) {
+            if($plugins['has_watermark'] == 1){
+                $has_watermark = true;
+                $data['watermark_text'] =$plugins['watermark_text'];
+            }
+        }
+        $data['has_watermark'] = $has_watermark;
 
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -4625,6 +4634,7 @@ class InvoiceController extends AppController
             $sub_i = 0;
             $attach_count = 0;
             $sub_key = '';
+            $footer_sub_key = '';
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -4696,8 +4706,8 @@ class InvoiceController extends AppController
                             $grouping_data[] = $single_data;
                         }
 
-                        $current_sub_key =  $names . $key;
 
+                        $current_sub_key =  $names . $key;
                         if ($key != '' && $sub_key != $current_sub_key) {
                             $single_data = array();
                             $single_data['a'] = '';
@@ -4786,7 +4796,7 @@ class InvoiceController extends AppController
                             $sub_i += $data['retainage_amount_previously_withheld'];
                         }
 
-                        if ($key != '' && $sub_key != $current_sub_key) {
+                        if ($key != '' && ($pos1 == count($sub_result[$names][$key]) || $pos == count($result[$names]))) {
                             // if ($sub_key == count($sub_result[$names][$key])) {
                             $single_data = array();
                             $single_data['a'] = '';
@@ -4876,6 +4886,8 @@ class InvoiceController extends AppController
 
                     $sub_key =  $names . $key;
                 }
+                
+                $footer_sub_key =  $names . $key;
             }
 
             if (!empty($type)) {
