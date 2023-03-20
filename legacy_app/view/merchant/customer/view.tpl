@@ -51,14 +51,25 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.customer_code|default:$lang_title.customer_code}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.customer_code|default:$lang_title.customer_code}</label>
                                         <label class="control-label col-md-6">{$detail.customer_code}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
+                                {if $detail.company_name}
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{$company_column_name}</label>
+                                            <label class="control-label col-md-6">{$detail.company_name}</label>
+                                            <div class="help-inline"></div>
+                                        </div>
+                                    </div>
+                                {/if}
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.customer_name|default:$lang_title.customer_name}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.customer_name|default:$lang_title.customer_name}</label>
                                         <label class="control-label col-md-6">{$detail.first_name}
                                             {$detail.last_name}</label>
                                         <div class="help-inline"></div>
@@ -67,14 +78,16 @@
 
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.email|default:$lang_title.email}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.email|default:$lang_title.email}</label>
                                         <label class="control-label col-md-6">{$detail.email}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.mobile|default:$lang_title.mobile}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.mobile|default:$lang_title.mobile}</label>
                                         <label class="control-label col-md-6">{$detail.mobile}</label>
                                         <div class="help-inline"></div>
                                     </div>
@@ -88,7 +101,8 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.address|default:$lang_title.address}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.address|default:$lang_title.address}</label>
                                         <label class="control-label col-md-6">{$detail.address}
                                             {$detail.address2}</label>
                                         <div class="help-inline"></div>
@@ -96,28 +110,32 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.country|default:$lang_title.country}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.country|default:$lang_title.country}</label>
                                         <label class="control-label col-md-6">{$detail.country}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}</label>
                                         <label class="control-label col-md-6">{$detail.state}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}</label>
                                         <label class="control-label col-md-6">{$detail.city}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">{$customer_default_column.zipcode|default:$lang_title.zipcode}</label>
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.zipcode|default:$lang_title.zipcode}</label>
                                         <label
                                             class="control-label col-md-6">{if $detail.zipcode!=0}{$detail.zipcode}{/if}</label>
                                         <div class="help-inline"></div>
@@ -144,15 +162,6 @@
                                     {/if}
                                 {/if}
                             {/foreach}
-                            {if $detail.company_name}
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label class="control-label col-md-4">{$company_column_name}</label>
-                                        <label class="control-label col-md-6">{$detail.company_name}</label>
-                                        <div class="help-inline"></div>
-                                    </div>
-                                </div>
-                            {/if}
                             <div class="row">
                                 <div class="form-group">
                                     <label class="control-label col-md-4">Balance</label>
@@ -231,7 +240,7 @@
                                         {/if}
                                     </td>
                                     <td class="td-c">
-                                    {$currency} {$v.amount|number_format:2:".":","}
+                                        {$currency} {$v.amount|number_format:2:".":","}
                                     </td>
                                     <td class="td-c">
                                         {if $v.type==1}

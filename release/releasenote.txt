@@ -1,13 +1,36 @@
-composer require league/iso3166
+
+
+ALTER TABLE `swipez_briq`.`personal_access_tokens` 
+ADD COLUMN `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `updated_at`; 
+
+ALTER TABLE `swipez_briq`.`personal_access_tokens` 
+CHANGE COLUMN `plain_text` `plain_text` VARCHAR(50) NULL DEFAULT NULL AFTER `token`;
+
+// CO grouping in invoice 
+ALTER TABLE `swipez`.`invoice_construction_particular`
+ADD COLUMN `sub_group` VARCHAR(45) NULL DEFAULT NULL AFTER `group`;
 
 
 
-UPDATE `swipez_briq`.`customer_mandatory_column` SET `column_name` = 'Contact person name' WHERE (`id` = '2');
-=======
-Darland setup 
-----------------------------
+CREATE TABLE `user_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` char(10) NOT NULL,
+  `eng_title` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `hindi_title` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `parent_id` int(11) NOT NULL,
+  `seq` int(11) NOT NULL DEFAULT 0,
+  `icon` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `link` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT '2013-12-31 18:30:00',
+  `last_update_by` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `last_update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `MERCHANT_IDX` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
-Add below lines in stage and Live Env files
 
-BRIQ_APP_URL=https://app.br.iq/#/home
-BRIQ_URL_REDIRECTION= true
+
+ALTER TABLE `swipez`.`user` 
+ADD COLUMN `custom_menu` TINYINT(1) NOT NULL DEFAULT 0 AFTER `registered_from`;

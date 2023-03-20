@@ -296,7 +296,8 @@ class UserController extends Controller
         Session::put('system_user_id', Encrypt::encode($user->user_id));
         Session::put('auth_id', Encrypt::encode($user->id));
         Session::put('logged_in', true);
-
+        Session::put('custom_menu', $user->custom_menu);
+        
         $preference = $this->user_model->getPreferences($user->user_id);
 
         Session::put('default_timezone', $preference->timezone ??  'America/Cancun');
@@ -418,6 +419,7 @@ class UserController extends Controller
                 Session::put('request_demo', $setting->request_demo);
                 Session::put('profile_step', $profile_step);
                 Session::put('currency', $currency);
+
                 $isBankVerified = 0;
                 if ($bankdetail != false) {
                     $isBankVerified = ($bankdetail->verification_status == 2) ? 1 : 0;

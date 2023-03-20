@@ -1,7 +1,6 @@
 <?php
 
 header('Cache-Control: max-age=604800');
-
 /*
   |--------------------------------------------------------------------------
   | Web Routes
@@ -170,6 +169,7 @@ Route::post('/merchant/registersave', 'GettingStarted@merchantRegister');
   return view('home/index');
   });
  */
+Route::get('merchant/invoice/download/full/{link}', 'InvoiceController@downloadFullInvoiceV2');
 
 Route::post('/autocollect/subscription/payment', 'AutocollectController@paymentstatus');
 
@@ -346,7 +346,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
-  Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703');
+  Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703_v2');
   Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
   Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/document/{link}', 'InvoiceController@documents');
@@ -359,10 +359,10 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoice/createNewSequence', 'InvoiceController@createNewSequence');
 
   Route::get('invoice/bulkview/{link}', 'InvoiceController@bulkview');
-  Route::get('invoice/download/{link}', 'InvoiceController@download');
-  Route::get('invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
-  Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
-  Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
+
+  Route::get('invoice/download/{link}', 'InvoiceController@downloadV2');
+  Route::get('invoice/download/{link}/{id}', 'InvoiceController@downloadV2');
+  Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@downloadV2');
 
   Route::get('invoiceformat/choose-design/{from}/{link}', 'InvoiceFormatController@chooseDesign')->name('choose.design.invoiceformat');
   Route::get('invoiceformat/choose-color/{from}/{design}/{color}/{link}', 'InvoiceFormatController@chooseColor')->name('choose.color.invoiceformat');
@@ -454,6 +454,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
   Route::get('contract/import/{contract_id?}', 'ImportController@contract')->name('merchant.import.contract');
 
+  Route::get('/user/create-token', 'ProjectController@createToken')->name('merchant.user.create-token');
+  Route::post('/user/save-token','ProjectController@saveToken')->name('merchant.user.save-token');
 });
 
 Route::group(['prefix' => 'patron'], function () {
@@ -587,4 +589,3 @@ Route::any('/merchant/transaction/booking/cancellations/denyrefund/{id}', 'Booki
 Route::any('/merchant/transaction/booking/cancellations/refund/{id}', 'BookingCalendarController@cancellationlistDenyRefund')->middleware("auth");
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
-

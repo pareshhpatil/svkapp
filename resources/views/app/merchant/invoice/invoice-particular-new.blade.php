@@ -224,7 +224,7 @@
                                                                 @if(in_array($k, $dropdown_array))
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
-                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}')@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
+                                                                <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
@@ -245,13 +245,14 @@
                                                                             </div>
                                                                         </div>
                                                                     @elseif($k=='group')
-                                                                    <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                    <input  type="hidden" :id="`grouphidden${field.pint}`" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                         <span :id="`groupspan${field.pint}`" x-show="! field.txtgroup" x-text="field.group"></span>
                                                                         <span :id="`groupdropdown${field.pint}`" x-show="field.txtgroup" >
                                                                         <div  :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
+                                                                        <input type="hidden" name="sub_group[]"  x-model="field.sub_group">
                                                                          </span>
                                                                     @elseif($k=='bill_type')
-                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
+                                                                        <select required style="width: 100%; min-width: 150px;font-size: 12px;" :id="`bill_type${field.pint}`" x-model.lazy="field.{{$k}}" name="{{$k}}[]" data-placeholder="Select.." class="form-control select2me billTypeSelect input-sm" x-on:change="changeBillType(field, index)">
                                                                             <option value="">Select..</option>
                                                                             <option value="% Complete">% Complete</option>
                                                                             <option value="Unit">Unit</option>
@@ -301,7 +302,7 @@
                                                                                 </template>
                                                                             </div>
                                                                             <span x-show="field.txt{{$k}}">
-                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                            <input :id="`{{$k}}${field.pint}`" type="hidden" x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                         </span>
                                                                         </template>
                                                                         <template x-if="field.bill_type!='Calculated'">
@@ -337,19 +338,19 @@
                                                                     @elseif($k=='current_billed_percent')
                                                                         <template x-if="field.bill_type!='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calculateCurrentBillAmount(field);calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
 
                                                                         <template x-if="field.bill_type=='Cost'">
                                         <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`"  type="hidden"   x-on:blur="field.txt{{$k}} = false;calc(field);" x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         </template>
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -628,6 +629,7 @@
                     group_show: false,
                     bill_code_name: '',
                     bill_code_description: '',
+                    sub_group: '',
                     selected_group: [],
                     panel: true,
                     billcodepanel: false,
@@ -665,7 +667,6 @@
                                 )
                                 csi_codes_array[data.billCode.id]= { value: data.billCode.id, label: label, description: data.billCode.description }
 
-                                console.log(csi_codes_array);
                                 updateBillCodeDropdowns(bill_codes, data.billCode)
                             }
                         });
@@ -745,7 +746,6 @@
                         previewv5(previewArray);
                     },
                     saveParticulars(){
-                        return true;
 
                         var particulars = this.getParticularsInfo();
                         /*Hack - need to change in future */
@@ -825,10 +825,12 @@
                                          particularray[i].project = this.fields[i].project;
                                          particularray[i].project_code = this.fields[i].project;
                                          particularray[i].cost_code = (this.fields[i].cost_code === undefined) ? '' : this.fields[i].cost_code ;
-                                         particularray[i].cost_type = (this.fields[i].cost_type === undefined) ? '' : this.fields[i].cost_type ;
+                                         particularray[i].cost_type = (particularray[i].cost_type === undefined) ? '' : particularray[i].cost_type ;
                                          particularray[i].calculated_perc = this.fields[i].calculated_perc;
                                          particularray[i].calculated_row = this.fields[i].calculated_row;
                                          particularray[i].approved_change_order_amount = this.fields[i].approved_change_order_amount;
+                                         particularray[i].sub_group = this.fields[i].sub_group;
+                                         //particularray[i].group = this.fields[i].group;
                                          particularray[i].current_billed_amount = this.fields[i].current_billed_amount;
                                          particularray[i].current_billed_percent = this.fields[i].current_billed_percent;
                                          particularray[i].current_contract_amount = this.fields[i].current_contract_amount;
@@ -843,7 +845,7 @@
                                          particularray[i].total_billed = this.fields[i].total_billed;
                                          particularray[i].total_outstanding_retainage = this.fields[i].total_outstanding_retainage;
                                          particularray[i].txtoriginal_contract_amount = this.fields[i].txtoriginal_contract_amount;
-                                         particularray[i].bill_code_detail = (this.fields[i].bill_code_detail === '' || this.fields[i].bill_code_detail === null)? 'Yes' : this.fields[i].bill_code_detail ;
+                                         particularray[i].bill_code_detail = (particularray[i].bill_code_detail === '' || particularray[i].bill_code_detail === null)? 'Yes' : particularray[i].bill_code_detail ;
                                      }
                                      return particularray
                                  },
@@ -974,6 +976,7 @@
                             }else{
                                 $('#cell_bill_type_' + pint).removeClass(' error-corner').popover('destroy')
                             }
+							document.getElementById('grouphidden'+pint).value=particularray[p].group;
 
                             if(this.fields[p].current_billed_amount !== null && this.fields[p].current_billed_amount !== undefined && this.fields[p].current_billed_amount !== '' ){
 
@@ -1037,10 +1040,11 @@
 
                     setParticulars()
                     {
-                        particularray.forEach(function(currentValue, index, arr) {
-                            document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
-                            // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
-                        });
+                       
+                       // particularray.forEach(function(currentValue, index, arr) {
+                       //     document.getElementById('bill_code'+currentValue.pint).value = currentValue.bill_code;
+                       //     // document.getElementById('attach-'+currentValue.pint).value = currentValue.attachments;
+                       // });
                         this.validateParticulars();
                     },
 
@@ -1408,8 +1412,8 @@
                         cost_code_selected=particularray[field].bill_code;
                         cost_type_selected=this.fields[field].cost_type;
                         particularray[field].cost_type=cost_type_selected;
-                        this.virtualSelectInit(field, 'cost_types');
-                        this.virtualSelectInit(field, 'cost_codes');
+                        this.virtualSelectInit(pint, 'cost_types',field);
+                        this.virtualSelectInit(pint, 'cost_codes',field);
                         
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
@@ -1623,8 +1627,8 @@
                         cost_code_selected=particularray[field.pint].bill_code;
                         particularray[field.pint].cost_type=field.cost_type;
 
-                        this.virtualSelectInit(field.pint, 'cost_types');
-                        this.virtualSelectInit(field.pint, 'cost_codes');
+                        this.virtualSelectInit(field.pint, 'cost_types',field.pint);
+                        this.virtualSelectInit(field.pint, 'cost_codes',field.pint);
 
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
@@ -1763,6 +1767,7 @@
                             const x = await this.wait(10);
                             id = this.fields.length - 1;
                             this.count = id;
+
                             //this.virtualSelect(pint, 'bill_code', bill_codes,null,'body',id)
                            // this.virtualSelect(pint, 'group', groups,null,'body',id)
                            // this.virtualSelect(pint, 'cost_type', merchant_cost_types,null,'body',id)
@@ -1770,8 +1775,8 @@
                             //this.virtualSelect(pint, 'bill_code_detail', bill_code_details,'Yes','body',id);
                             this.addbuttonactive=true;
 
-                            this.virtualSelectInit(pint, 'bill_code');
-                            this.virtualSelectInit(pint, 'cost_type');
+                            this.virtualSelectInit(pint, 'bill_code',id);
+                            this.virtualSelectInit(pint, 'cost_type',id);
 
                            // setTimeout(function () {
                                 document.getElementById('loader').style.display = 'none';
@@ -1893,23 +1898,37 @@
                         
 
                     },
-                    virtualSelectInit(id, type) {
+                    virtualSelectInit(id, type,index) {
                     allowNewOption = true;
                     search = true;
-                    index = id;
                     dropboxWrapper = 'body';
                     vs_class = 'vs-option1';
 
                     if (type == 'group') {
-                        selectedValue = particularray[id].group;
-                        id = particularray[id].pint;
+						try{
+                             selectedValue = particularray[index].group;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        
                         options = groups;
                     } else if (type == 'cost_type') {
                         options = merchant_cost_types;
-                        selectedValue = particularray[id].cost_type;
+						try{
+                             selectedValue = particularray[index].cost_type;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                     } else if (type == 'bill_code_detail') {
                         options = bill_code_details;
-                        selectedValue = particularray[id].bill_code_detail;
+						try{
+                             selectedValue = particularray[index].bill_code_detail;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                         if (selectedValue == '') {
                             selectedValue = 'Yes';
                         }
@@ -1917,7 +1936,12 @@
                     } else if (type == 'bill_code') {
                         vs_class = 'vs-option';
                         options = csi_codes;
-                        selectedValue = particularray[id].bill_code;
+                        try{
+                            selectedValue = particularray[index].bill_code;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
                     }
 
 
@@ -1936,7 +1960,6 @@
                     $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
                         $(this).addClass('form-control input-sm mw-150');
                     })
-
 
                     $('#' + type + id).change(function() {
                         if (type === 'bill_code') {
@@ -1959,12 +1982,16 @@
                             if (!groups.includes(this.value) && this.value !== '') {
                                 groups.push(this.value)
                                 for (let g = 0; g < particularray.length; g++) {
+									try{
                                     let groupSelector = document.querySelector('#group' + particularray[g].pint);
 
                                     if ('group' + id === 'group' + particularray[g].pint)
                                         groupSelector.setOptions(groups, this.value);
                                     else
                                         groupSelector.setOptions(groups, particularray[g].group);
+									
+									}catch(o)
+									{}
                                 }
                             }
                             particularray[index].group = this.value;

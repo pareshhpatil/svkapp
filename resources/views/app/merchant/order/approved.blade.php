@@ -148,6 +148,12 @@
                                         <th class="td-c">
                                             Description
                                         </th>
+                                        <th class="td-c">
+                                            Group level 1
+                                        </th>
+                                        <th class="td-c">
+                                        Group level 2
+                                        </th>
                                     </tr>
                                 </thead>
 
@@ -159,10 +165,20 @@
                                     @endphp
                                     <tr>
                                         @foreach($default_particulars as $v=>$r)
-                                        @if ($v == 'original_contract_amount' || $v == 'retainage_percent')
+                                        @if ($v == 'original_contract_amount' )
                                         <td class="td-r">
                                             <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
+                                        @elseif ($v == 'retainage_percent')
+										@if(isset($row[$v]))
+										<td class="td-r">
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                        </td>
+										@else
+										<td class="td-r">
+                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
+                                        </td>
+										@endif
                                         @elseif ($v == 'bill_code')
                                         <td class="col-id-no">
                                             <div class="text-center">
@@ -204,7 +220,7 @@
                                         </td>
                                         @else
                                         <td>
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]) {{$row[$v]}} @endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @endif
                                         @endforeach
@@ -230,6 +246,8 @@
                                         <th class="td-c">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
