@@ -181,6 +181,19 @@
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label
+                                                                class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}
+                                                                <span class="required">
+                                                                </span> </label>
+                                                            <div class="col-md-8">
+                                                                <input type="text" name="city" {$validate.name}
+                                                                    class="form-control" value="{$info.customer_city}">
+                                                                <span class="help-block"> </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <label
                                                                 class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}<span
                                                                     class="required">
                                                                 </span></label>
@@ -200,19 +213,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="form-group">
-                                                            <label
-                                                                class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}
-                                                                <span class="required">
-                                                                </span> </label>
-                                                            <div class="col-md-8">
-                                                                <input type="text" name="city" {$validate.name}
-                                                                    class="form-control" value="{$info.customer_city}">
-                                                                <span class="help-block"> </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label
