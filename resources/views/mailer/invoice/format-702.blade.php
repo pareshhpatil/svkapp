@@ -74,7 +74,8 @@ body{
         $x = ($w-$textWidth-400);
         $y = ($h-$txtHeight);
             
-        $pdf->page_text($x, $y, $text, $font, 80,$color = array(0, 0, 0, .2), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
+        $pdf->page_script('$pdf->set_opacity(.1, "Multiply");');
+        $pdf->page_text($x, $y, $text, $font, 80,$color = array(0, 0, 0), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
         @endif
     }
 </script>
