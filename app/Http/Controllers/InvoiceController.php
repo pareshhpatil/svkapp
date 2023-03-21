@@ -2289,7 +2289,7 @@ class InvoiceController extends AppController
     {
         ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
-        dd($payment_request_id);
+        
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
 
