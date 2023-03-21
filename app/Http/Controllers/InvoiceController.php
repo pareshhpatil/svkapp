@@ -3503,11 +3503,21 @@ class InvoiceController extends AppController
 
         $data['has_aia_license'] = $hasAIALicense;
 
+        $has_watermark = false;
+        $data['watermark_text'] = '';
+        if (isset($plugins['has_watermark'])) {
+            if($plugins['has_watermark'] == 1){
+                $has_watermark = true;
+                $data['watermark_text'] =$plugins['watermark_text'];
+            }
+        }
+        $data['has_watermark'] = $has_watermark;
+
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
-        
+
         if($user_type == 'patron') {
             $invoiceAccess = 'full';
         } else {
