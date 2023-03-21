@@ -26,6 +26,7 @@ $header='app.patron.invoice.invoice-master';}
 
 .watermark {
     position: relative;
+    overflow: hidden;
     }
 
     .watermark__inner {
