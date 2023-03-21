@@ -184,6 +184,12 @@
                                                     {/if}
                                                 {elseif ($privilegesArray[$v.invoice_id] == 'full' || $privilegesArray[$v.invoice_id] == 'approve')}
                                                     {'In review'}
+                                                {else}
+                                                    {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                                        {$custom_invoice_status[$v.payment_request_status]}
+                                                    {else}
+                                                        {$v.status}
+                                                    {/if}
                                                 {/if}
                                             {else}
                                                 {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
