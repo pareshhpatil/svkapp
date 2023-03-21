@@ -177,10 +177,20 @@
                                             {$v.due_date|date_format:"%d %b %Y"}
                                         </td>
                                         <td>
-                                            {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
-                                                {$custom_invoice_status[$v.payment_request_status]}
+                                            {if $v.payment_request_status==14}
+                                                {if $hasAllPrivileges && !in_array($v.invoice_id, array_keys($privilegesArray))} 
+                                                    {if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve')} 
+                                                        {'In review'}
+                                                    {/if}
+                                                {elseif ($privilegesArray[$v.invoice_id] == 'full' || $privilegesArray[$v.invoice_id] == 'approve')}
+                                                    {'In review'}
+                                                {/if}
                                             {else}
-                                                {$v.status}
+                                                {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                                    {$custom_invoice_status[$v.payment_request_status]}
+                                                {else}
+                                                    {$v.status}
+                                                {/if}
                                             {/if}
                                         </td>
                                         <td>

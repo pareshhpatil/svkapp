@@ -87,13 +87,13 @@ class SSP
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'REJECTED';
                         } else if($status == '14') {
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
-                            $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
+                            $value = $custom_invoice_status;
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
                                 if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
-                                    $value = '<span class="badge badge-pill status unpaid">In review</span>';
+                                    $value = 'In review';
                                 }
                             } elseif($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
-                                $value = '<span class="badge badge-pill status unpaid">In review</span>';
+                                $value = 'In review';
                             }
                         } else if($status == '0') {
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';

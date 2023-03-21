@@ -425,7 +425,7 @@ class MasterController extends AppController
     public function invoiceStatusSave(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|max:15|alpha'
+            'status' => 'required|max:15|regex:/^[\pL\s]+$/u'
         ]);
 
         if ($validator->fails()) {

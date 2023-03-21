@@ -786,6 +786,13 @@ class Report extends Controller
                 $invoice_statues = $this->session->get('configure_invoice_statues');
             }
             $this->smarty->assign("custom_invoice_status", json_decode($invoice_statues,true));
+            $privilegesArray = json_decode($this->session->get('invoice_privileges', true));
+            $hasAllPrivileges = false;
+            if (in_array('all', array_keys($privilegesArray))) {
+                $hasAllPrivileges = true;
+            }
+            $this->smarty->assign("hasAllPrivileges", $hasAllPrivileges);
+            $this->smarty->assign("privilegesArray", $privilegesArray);
             //Breadcumbs array start
             $breadcumbs_array = array(
                 array('title' => 'Reports', 'url' => '/merchant/report'),
