@@ -178,7 +178,7 @@
                                         </td>
                                         <td>
                                             {if $v.payment_request_status==14}
-                                                {* {if $hasAllPrivileges && !in_array($v.invoice_id, array_keys($privilegesArray))} 
+                                                {if $hasAllPrivileges && !in_array($v.invoice_id, array_keys($privilegesArray))} 
                                                     {if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve')} 
                                                         {'In review'}
                                                     {/if}
@@ -190,7 +190,7 @@
                                                     {else}
                                                         {$v.status}
                                                     {/if}
-                                                {/if} *}
+                                                {/if}
                                             {else}
                                                 {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
                                                     {$custom_invoice_status[$v.payment_request_status]}
