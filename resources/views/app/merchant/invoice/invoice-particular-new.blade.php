@@ -183,7 +183,7 @@
                                             </div>
                                         </div>
                                         <div class="table-scrollable  tableFixHead" id="table-scroll">
-                                            <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
+                                            <table class="table table-bordered table-hover sorted_table" id="particular_table" wire:ignore>
                                                 @if(!empty($particular_column))
                                                     <thead class="headFootZIndex">
                                                     <tr>
@@ -225,7 +225,9 @@
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
                                                                 <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
+
                                                                     @if($k=='bill_code')
+                                                                        <span class="handle">handle</span>
                                                                         <div style="display:flex;">
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                                     <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
@@ -2237,4 +2239,27 @@
         <!-- /.modal-dialog -->
     </div>
 
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".sorted_table tbody").sortable({
+                handle: '.handle'
+            });
+        })
+    </script>
+    <style>
+        .table-bordered {
+            border: 1px solid #dddddd;
+            border-collapse: separate;
+            *border-collapse: collapsed;
+            border-left: 0;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        .sorted_table2 tr {
+            cursor: pointer;
+        }
+    </style>
 @endsection
