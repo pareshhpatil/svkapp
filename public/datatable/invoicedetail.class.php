@@ -90,10 +90,10 @@ class SSP
                             $value = $custom_invoice_status;
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
                                 if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
-                                    $value = 'In review';
+                                    $value = 'IN REVIEW';
                                 }
                             } elseif($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
-                                $value = 'In review';
+                                $value = 'IN REVIEW';
                             }
                         } else if($status == '0') {
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
