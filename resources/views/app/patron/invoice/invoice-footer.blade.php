@@ -111,7 +111,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/patron/invoice/download/full/{{$info['Url']}}">
                                     Download Full PDF
                                 </a>
                             </li>
