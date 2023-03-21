@@ -63,7 +63,6 @@ body{
         @if($has_watermark)
         $w = $pdf->get_width();
         $h = $pdf->get_height();
-        $pdf->set_opacity(.1,'Multiply');
 
         $text = "{{$watermark_text}}";
         $text = chunk_split($text, 10);
