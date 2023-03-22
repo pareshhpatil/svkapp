@@ -94,7 +94,7 @@ class InvoiceApprovalNotification extends Notification
         return (new FirebaseMessage())
             ->withTitle($this->invoiceNumber)
             ->withBody($this->invoiceNumber . ' Invoice Pending for approval')
-            ->withPriority('low')->asMessage($this->User->fcm_token);
+            ->withPriority('low')->asNotification($this->User->fcm_token);
     }
 
     /**

@@ -182,7 +182,7 @@ class InvoiceHelper
                 ->get();
 
             foreach ($Users as $User) {
-                    ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
+                ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
             }
         }
     }
