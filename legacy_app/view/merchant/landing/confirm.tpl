@@ -243,6 +243,15 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label class="control-label col-md-4">City <span class="required">
+                                                            </span> </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" id="city" name="city" {$validate.name}
+                                                                value="{$customerdetails.city}" class="form-control">
+                                                            <span class="help-block"> </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label class="control-label col-md-4">State <span class="required">
                                                             </span></label>
                                                         {* <div class="col-md-8">
@@ -265,15 +274,7 @@
                                                                 class="form-control">
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-4">City <span class="required">
-                                                            </span> </label>
-                                                        <div class="col-md-8">
-                                                            <input type="text" id="city" name="city" {$validate.name}
-                                                                value="{$customerdetails.city}" class="form-control">
-                                                            <span class="help-block"> </span>
-                                                        </div>
-                                                    </div>
+                                                    
                                                     <div class="form-group">
                                                         <label class="control-label col-md-4">Zipcode <span
                                                                 class="required">

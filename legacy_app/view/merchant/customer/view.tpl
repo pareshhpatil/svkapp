@@ -116,19 +116,20 @@
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
+                                
                                 <div class="row">
                                     <div class="form-group">
                                         <label
-                                            class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}</label>
-                                        <label class="control-label col-md-6">{$detail.state}</label>
+                                            class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}</label>
+                                        <label class="control-label col-md-6">{$detail.city}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
                                         <label
-                                            class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}</label>
-                                        <label class="control-label col-md-6">{$detail.city}</label>
+                                            class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}</label>
+                                        <label class="control-label col-md-6">{$detail.state}</label>
                                         <div class="help-inline"></div>
                                     </div>
                                 </div>

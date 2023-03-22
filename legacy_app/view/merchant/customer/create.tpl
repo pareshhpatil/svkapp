@@ -186,6 +186,17 @@
                                             </select>
                                         </div>
                                     </div>
+                                    
+                                    <div class="form-group">
+                                        <label
+                                            class="control-label col-md-4">{$customer_default_column.city|default:'City'}<span
+                                                class="required">
+                                            </span></label>
+                                        <div class="col-md-7">
+                                            <input type="text" {$validate.city} name="city" value="{$post.city}"
+                                                class="form-control">
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label
                                             class="control-label col-md-4">{$customer_default_column.state|default:'State'}<span
@@ -205,16 +216,6 @@
                                         <div class="col-md-7" id="state_txt"
                                             style="{($selected_country!='India') ? 'display:block;' : 'display:none;'}">
                                             <input type="text" name="state1" value="{$post.state}" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label
-                                            class="control-label col-md-4">{$customer_default_column.city|default:'City'}<span
-                                                class="required">
-                                            </span></label>
-                                        <div class="col-md-7">
-                                            <input type="text" {$validate.city} name="city" value="{$post.city}"
-                                                class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">

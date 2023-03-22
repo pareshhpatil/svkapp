@@ -128,6 +128,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label
+                                            class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}<span
+                                                class="required"> </span></label>
+                                        <div class="col-md-7">
+                                            <input type="text" name="city" {$validate.city} value="{$detail.city}"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
                                             class="control-label col-md-4">{$customer_default_column.state|default:$lang_title.state}<span
                                                 class="required"> </span></label>
                                         <div class="col-md-7" id="state_drpdown"
@@ -148,15 +157,7 @@
                                                 class="form-control">
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label
-                                            class="control-label col-md-4">{$customer_default_column.city|default:$lang_title.city}<span
-                                                class="required"> </span></label>
-                                        <div class="col-md-7">
-                                            <input type="text" name="city" {$validate.city} value="{$detail.city}"
-                                                class="form-control">
-                                        </div>
-                                    </div>
+                                    
                                     <div class="form-group">
                                         <label
                                             class="control-label col-md-4">{$customer_default_column.zipcode|default:$lang_title.zipcode}<span
