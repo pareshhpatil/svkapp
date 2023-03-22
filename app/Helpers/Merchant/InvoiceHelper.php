@@ -178,6 +178,7 @@ class InvoiceHelper
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
+                ->whereIn('user_status', [20, 15, 12, 16])
                 ->get();
 
             foreach ($Users as $User) {
