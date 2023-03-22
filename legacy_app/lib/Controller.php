@@ -673,6 +673,7 @@ class Controller
         $_SESSION['user_role'] = $this->session->get('user_role', true);
         $_SESSION['invoice_privileges_ids'] = $this->session->get('invoice_privileges', true);
         $_SESSION['customer_privileges_ids'] = $this->session->get('customer_privileges', true);
+        dd($_SESSION['invoice_privileges_ids'], $this->session->get('invoice_privileges', true));
     }
 
     public function apisrequest($api_url, $post_string, $header = array())
