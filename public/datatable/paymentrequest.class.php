@@ -45,7 +45,7 @@ class SSP
                             $value = formatDateString($data[$i][$column['db']]);
                             $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
                         } else {
-                            $row[$column['dt']] = $data[$i][$column['db']];
+                            $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
                         }
                         
                     } elseif ($column['datatype'] == 'specialDate') {
