@@ -32,17 +32,15 @@ $header = 'app.patron.invoice.invoice-master';
     }
 
     .watermark {
-    position: relative;
+        position: relative;
+        overflow: hidden;
     }
 
     .watermark__inner {
         align-items: center;
         display: flex;
         justify-content: center;
-        left: 0px;
         position: absolute;
-        top: 0px;
-        height: 100%;
         width: 100%;
     }
 
@@ -55,7 +53,6 @@ $header = 'app.patron.invoice.invoice-master';
         user-select: none;
     }
 </style>
-
 
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
@@ -132,11 +129,14 @@ $header = 'app.patron.invoice.invoice-master';
                     </ul>
                 </div>
             </div>
-            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px;  color:#394242;">
+            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px;  color:#394242;" id="main_div">
                 @if($has_watermark)
-                    <div class="watermark__inner">
-                        <div class="watermark__body">{{$watermark_text}}</div>
+                    <div id="watermark_parent">
+                        <div class="watermark__inner" id="watermark_div">
+                            <div class="watermark__body">{{$watermark_text}}</div>
+                        </div>
                     </div>
+                    
                 @endif
                 <div class="flex flex-row  gap-4">
                     @if($has_aia_license)

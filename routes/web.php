@@ -517,6 +517,7 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');
   Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
   Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
+  Route::get('invoice/download/full/{link}', 'InvoiceController@downloadFullPatron');
   Route::get('invoice/download/{link}', 'InvoiceController@downloadPatron');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@downloadPatron');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@downloadPatron');

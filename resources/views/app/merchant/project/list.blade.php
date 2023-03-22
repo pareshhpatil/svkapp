@@ -75,11 +75,9 @@
                                         @if(!empty($privileges))
                                             @if(in_array('all', array_keys($privileges)) && !in_array($v->id, array_keys($privileges)))
                                                 <ul class="dropdown-menu" role="menu">
-                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'edit' || $privileges['all'] == 'approve')
+                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'view-only' || $privileges['all'] == 'approve' || $privileges['all'] == 'edit')
                                                         <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
                                                         </li>
-                                                    @endif
-                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'view-only' || $privileges['all'] == 'approve')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                                         </li>
                                                         <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
@@ -95,11 +93,10 @@
                                                 </ul>
                                             @else
                                                 <ul class="dropdown-menu" role="menu">
-                                                    @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'edit' || $privileges[$v->id] == 'approve')
+                                                    
+                                                    @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'view-only' || $privileges[$v->id] == 'approve' || $privileges[$v->id] == 'edit')
                                                         <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
                                                         </li>
-                                                    @endif
-                                                    @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'view-only' || $privileges[$v->id] == 'approve')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                                         </li>
                                                         <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>

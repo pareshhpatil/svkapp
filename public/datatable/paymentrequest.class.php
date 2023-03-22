@@ -245,7 +245,7 @@ class SSP
                                     }
                                 }
                             } else {
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
