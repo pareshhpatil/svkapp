@@ -19,7 +19,7 @@ class InvoiceHelper
     public function sendInvoiceForApprovalNotification($paymentRequestID)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
-        $authUserID = Encrypt::decode(Session::get('user_id'));
+        $authUserID = Encrypt::decode(Session::get('userid'));
 
         $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $merchantID);
 
@@ -35,8 +35,6 @@ class InvoiceHelper
             $privilegesInvoiceIDs[$paymentRequestID] = 'edit';
 
             Redis::set('invoice_privileges_' . $authUserID, json_encode($privilegesInvoiceIDs));
-
-            //Session::remove('invoice_privileges');
 
             Session::put('invoice_privileges', json_encode($privilegesInvoiceIDs));
 
