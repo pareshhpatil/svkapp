@@ -483,7 +483,7 @@ class MasterController extends AppController
 
         // Get Notifications
         $Notifications = $authUser->notifications()
-            ->paginate(2);
+            ->paginate(10);
         
         $notificationMap = $Notifications
             ->map(function ($Notification) {
