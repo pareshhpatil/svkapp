@@ -138,6 +138,7 @@ $validate=(array)$validate;
             <input type="hidden" name="payment_request_status" value="{{$info['payment_request_status']}}" />
 
             <div class="view-footer-btn-rht-align">
+                {{$invoice_access}}
                 @if(!empty($invoice_access))
                 @if($info['payment_request_status'] == 14 && $invoice_access == 'full')
                 <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
