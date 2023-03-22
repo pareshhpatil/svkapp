@@ -504,6 +504,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('/invoice-status/save', 'MasterController@invoiceStatusSave');
 
   Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
+  Route::post('import/change-order/upload',  'ImportController@uploadChangeOrder')->name("merchant.import.change-order.upload");
 });
 
 Route::group(['prefix' => 'patron'], function () {

@@ -315,7 +315,7 @@ class ImportController extends Controller
                 }
                 $cnt++;
             }
-            $title = 'Change Order';
+            $title = 'ChangeOrder';
         }
 
         $objPHPExcel = new PHPExcel();
@@ -397,7 +397,7 @@ class ImportController extends Controller
     public function changeOrder($order_id=null) {
         $data = Helpers::setBladeProperties('Import Change Order', [], [14]);
         $data['list'] = $this->importModel->getChangeOrderList($this->merchant_id);
-        //dd($data['list']);
+        
         foreach ($data['list'] as $k => $v) {
             $data['list']{
                 $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
@@ -409,6 +409,30 @@ class ImportController extends Controller
         $data['datatablejs'] = 'table-no-export';
         $data['hide_first_col'] = 1;
         return view('app/merchant/import/changeOrder', $data);
+    }
+
+    public function uploadChangeOrder(Request $request)
+    {
+        $file = $request->file('fileupload');
+        $request->validate([
+            'order_id' => 'required',
+            'fileupload' => ['required', new ExcelRule($file)],
+        ]);
+        //Validate uploaded excel file data
+        $response = $this->validateSheet($file->getPathName(), 'ChangeOrder');
+        if (!is_numeric($response)) {
+            return redirect()->back()->withErrors([$response]);
+        }
+        $merchant_filename = $file->getClientOriginalName();
+        $id = $this->importModel->saveBulkuploadRecord($this->merchant_id, 13, $request->order_id, $merchant_filename, $merchant_filename, 0, $response - 1, $this->user_id);
+        $encryptedFileName = $id * env('IMPORT_ENC_NUMBER');
+        $fileExtension = $file->getClientOriginalExtension();
+        $encryptedFileNameExt = $encryptedFileName . '.' . $fileExtension;
+
+        $this->importModel->updateBulkuploadStatus($id, $encryptedFileNameExt, 2);
+        Storage::disk('s3_bulkupload')->put($encryptedFileNameExt, file_get_contents($file));
+
+        return redirect()->back()->with('success', "File uploaded. You will be notified via email once the upload is completed.");
     }
 
 }

@@ -104,7 +104,7 @@
                                 </th>
                                
                                 <th class="td-c">
-                                    Project name
+                                    Change Order No
                                 </th>
                                 <th class="td-c">
                                     Excel file name
@@ -125,7 +125,116 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
+                            @if(!empty($list))
+                            @foreach($list as $v)
+                            <tr>
+                                <td class="td-c">
+                                    {{$v->created_date}}
+                                </td>
+                               
+                                <td class="td-c">
+                                    {{$v->order_no}}
+                                </td>
+                                <td class="td-c">
+                                    @php
+                                    if(in_array($v->status,[3,4,5,9]))
+                                    {
+                                    $link='/merchant/contract/create/2/'.$v->order_id.'/';
+                                    }elseif($v->status==1)
+                                    {
+                                    $link='/merchant/import/error/';
+                                    }
+                                    else{
+                                    $link='';
+                                    }
+                                    @endphp
+
+                                    @if($link!='')
+                                    <a @if($v->status=='1') target="_blank" @endif href="{{$link}}{{$v->bulk_id}}">{{$v->merchant_filename}}</a>
+                                    @else
+                                    {{$v->merchant_filename}}
+                                    @endif
+                                </td>
+                                <td class="td-c">
+                                <x-localize :date="$v->created_date" type="datetime" />
+                                </td>
+                                <td class="td-c">
+                                    {{$v->total_rows}}
+                                </td>
+
+                                <td class="td-c">
+                                    @if($v->status=='1')
+                                    <span class="label label-sm label-danger">
+                                        {{$v->config_value}}
+                                    </span>
+                                    @elseif($v->status=='2')
+                                    <span class="label label-sm label-default">
+                                        {{$v->config_value}}
+                                    </span>
+                                    @elseif($v->status=='3' || $v->status=='9')
+                                    <span class="label label-sm label-warning">
+                                        {{$v->config_value}}
+                                    </span>
+                                    @elseif($v->status=='4')
+                                    <span class="label label-sm label-default">
+                                        Saving
+                                    </span>
+                                    @elseif($v->status=='5')
+                                    <span class="label label-sm label-success">
+                                        Saved
+                                    </span>
+                                    @elseif($v->status=='8')
+                                    <span class="label label-sm label-default">
+                                        {{$v->config_value}}
+                                    </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($v->status!='8')
+                                    <div class="btn-group dropup">
+                                        <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                            &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a href="/merchant/import/download/{{$v->bulk_id}}"><i class="fa fa-download"></i> Download sheet</a></span>
+                                            </li>
+                                            @if($v->status==3 || $v->status=='9')
+                                            <li>
+                                                <a href="{{$link}}{{$v->bulk_id}}"><i class="fa fa-table"></i> View Change Order</a>
+                                            </li>
+                                            
+                                            @endif
+                                            @if($v->status==5)
+                                            <li><a href="/merchant/contract/update/2/{{$v->order_id}}"><i class="fa fa-table"></i> View Change Order</a>
+                                            </li>
+                                            @endif
+                                            @if(in_array($v->status, [1,2,3]))
+                                           <!-- <li>
+                                                <a href="/merchant/customer/reupload/{$v->bulk_id}"><i class="fa fa-undo"></i> Re-upload sheet</a>
+                                            </li>-->
+                                            @endif
+
+                                            @if(in_array($v->status, [1,2,3,5]))
+                                            <li>
+                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/import/delete/{{$v->bulk_id}}';" data-toggle="modal"><i class="fa fa-times"></i> Delete sheet</a>
+                                            </li>
+                                            @endif
+
+                                            @if($v->status=='1' || $v->status=='9')
+                                            <li>
+                                                <a href="/merchant/import/error/{{$v->bulk_id}}" target="_blank" ><i class="fa fa-exclamation-triangle"></i> View errors</a>
+                                            </li>
+                                            @endif
+
+
+                                        </ul>
+                                    </div>
+                                </td>
+                                @endif
+                            </tr>
+                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                     <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
