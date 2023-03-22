@@ -36,7 +36,7 @@ class InvoiceHelper
 
             Redis::set('invoice_privileges_' . $authUserID, json_encode($privilegesInvoiceIDs));
 
-            Session::remove('invoice_privileges');
+            //Session::remove('invoice_privileges');
 
             Session::put('invoice_privileges', json_encode($privilegesInvoiceIDs));
 
