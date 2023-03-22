@@ -227,8 +227,11 @@
                                                                 <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
 
                                                                     @if($k=='bill_code')
-                                                                        <span class="handle">handle</span>
+
                                                                         <div style="display:flex;">
+                                                                            <span class="handle">
+                                                                                <i class="fa fa-arrows"></i>
+                                                                            </span>
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                                     <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
                                                                             <span style="width:100%;" x-show="field.txt{{$k}}">
@@ -2243,8 +2246,16 @@
     <script>
         $(function() {
             $(".sorted_table tbody").sortable({
-                handle: '.handle'
-            });
+                handle: '.handle',
+                helper: fixWidthHelper
+            })
+
+            function fixWidthHelper(e, ui) {
+                ui.children().each(function() {
+                    $(this).width($(this).width());
+                });
+                return ui;
+            }
         })
     </script>
     <style>
@@ -2260,6 +2271,11 @@
 
         .sorted_table2 tr {
             cursor: pointer;
+        }
+
+        .ui-sortable-helper {
+            width: 100% !important;
+            background-color: #fff !important;
         }
     </style>
 @endsection
