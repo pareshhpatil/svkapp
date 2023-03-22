@@ -35,7 +35,6 @@ class OrderController extends Controller
         $this->invoiceModel = new Invoice();
         $this->orderModel = new Order();
         $this->apiController = new APIController();
-
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
@@ -184,6 +183,9 @@ class OrderController extends Controller
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+            if(isset($request->import) && $request->import=='Import') {
+                return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+            }
 
             $InvoiceHelper = new ChangeOrderHelper();
 
