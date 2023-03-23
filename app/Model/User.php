@@ -511,10 +511,9 @@ class User extends ParentModel
             ->first();
     }
 
-    public function getUserPrivileges($user_id, $group_id, $user_role)
+    public function getUserPrivileges($user_id, $user_role)
     {
         $merchantID = $this->getMerchantID($user_id);
-        //$merchant = $this->getTableRow('merchant', 'group_id', $group_id);
 
         $privilegesCollect = DB::table('briq_privileges')
             ->where('user_id', $user_id)
