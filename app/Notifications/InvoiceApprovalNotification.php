@@ -40,14 +40,14 @@ class InvoiceApprovalNotification extends Notification
      */
     public function via($notifiable)
     {
-        $channels = [];
+        $channels = ['database'];
 
         $preferences = DB::table('preferences')
                         ->where('user_id', $notifiable->user_id)
                         ->first();
 
         if (empty($preferences)) {
-            return ['database'];
+            return $channels;
         }
 
         if($preferences->send_push == 1) {
@@ -59,8 +59,6 @@ class InvoiceApprovalNotification extends Notification
         if($preferences->send_email == 1) {
             $channels[] = 'mail';
         }
-
-        $channels[] = 'database';
 
         return $channels;
     }
