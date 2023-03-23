@@ -92,10 +92,13 @@ class ChangeOrderNotification extends Notification
      */
     public function toFirebase($notifiable)
     {
-        return (new FirebaseMessage())
-            ->withTitle($this->orderNumber)
-            ->withBody($this->orderNumber . ' Change Order Pending for approval')
-            ->withPriority('low')->asMessage($this->User->fcm_token);
+        try {
+            return (new FirebaseMessage())
+                ->withTitle($this->orderNumber)
+                ->withBody($this->orderNumber . ' Change Order Pending for approval')
+                ->withPriority('low')->asMessage($this->User->fcm_token);
+        } catch (\Exception $exception) {
+        }
     }
 
     /**
