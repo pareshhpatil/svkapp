@@ -74,6 +74,7 @@ class PrivilegesAccess
                             $result = true;
                         }
                     } else {
+                        dd($pathArray, $orderPrivilegesAccessIDs);
                         if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
@@ -96,28 +97,10 @@ class PrivilegesAccess
                     if($pathArray[2] == 'create' || $pathArray[2] == 'viewg703' || $pathArray[2] == 'viewg702' || $pathArray[2] == 'document') {
                         $result = true;
                     }
-//                    if($pathArray[2] == 'viewg703' || $pathArray[2] == 'viewg702' || $pathArray[2] == 'document') {
-//                        if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve' || $invoicePrivilegesAccessIDs[$modelID] == 'view-only')) {
-//                            $result = true;
-//                        }
-//                    }
 
                     if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
                         $result = true;
                     }
-//                    else {
-//                        if(in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs))) {
-//                            $result = true;
-//                        }
-//                    }
-
-//                    if($pathArray[2] == 'create' && (in_array('full', array_values($invoicePrivilegesAccessIDs)) || in_array('edit', array_values($invoicePrivilegesAccessIDs)) || in_array('approve', array_values($invoicePrivilegesAccessIDs)))) {
-//                        $result = true;
-//                    } else {
-//                        if(!empty($modelID) && (isset($invoicePrivilegesAccessIDs[$modelID])) && ($invoicePrivilegesAccessIDs[$modelID] == 'full' || $invoicePrivilegesAccessIDs[$modelID] == 'edit' || $invoicePrivilegesAccessIDs[$modelID] == 'approve')) {
-//                            $result = true;
-//                        }
-//                    }
                 }
 
                 break;
@@ -132,11 +115,7 @@ class PrivilegesAccess
                     if(($pathArray[2] == 'create' || $pathArray[2] == 'store' || $pathArray[2] == 'edit' || $pathArray[2] == 'updatestore') && (in_array('full', array_values($projectPrivilegesAccessIDs)) || in_array('edit', array_values($projectPrivilegesAccessIDs)) || in_array('approve', array_values($projectPrivilegesAccessIDs)))) {
                         $result = true;
                     }
-//                    else {
-//                        if(!empty($modelID) && ($projectPrivilegesAccessIDs[$modelID] == 'full' || $projectPrivilegesAccessIDs[$modelID] == 'edit' || $projectPrivilegesAccessIDs[$modelID] == 'approve')) {
-//                            $result = true;
-//                        }
-//                    }
+
                 }
                 break;
         }
