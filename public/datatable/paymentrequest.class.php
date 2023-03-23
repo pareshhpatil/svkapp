@@ -41,7 +41,7 @@ class SSP
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
                         // $value = formatDateString($data[$i][$column['db']]);
-                        if ($data[$i][$column['db']] < date("Y-m-d") && !in_array($data[$i]['payment_request_status'],array(1,2,11,14))) {
+                        if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status']==0) {
                             $value = formatDateString($data[$i][$column['db']]);
                             $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
                         } else {
