@@ -4,7 +4,9 @@ namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Jobs\ProcessChangeOrderForApproveJob;
+use App\Jobs\ProcessChangeOrderMailForApproveJob;
 use App\Libraries\Encrypt;
+use App\Notifications\ChangeOrderNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -95,7 +97,9 @@ class ChangeOrderHelper
                 ->get();
 
             foreach ($Users as $User) {
-                ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
+                $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
+                //Different queue for mail bcz mails fails sometimes if email not verified
+                ProcessChangeOrderMailForApproveJob::dispatch($orderDetail, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
         }
     }

@@ -197,8 +197,7 @@ class InvoiceHelper
 
             foreach ($Users as $User) {
                 $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
-                //ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
-                //Different queue for mail bcz mails fails sometimes
+                //Different queue for mail bcz mails fails sometimes if email not verified
                 ProcessInvoiceMailForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
         }
