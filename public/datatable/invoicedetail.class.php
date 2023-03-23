@@ -109,6 +109,9 @@ class SSP
                             }
                         } else if($status == '0') {
                             $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
+                        } else if($status == '5') {
+                            $status = '0';
+                            $value = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
                         }
                     }
 
