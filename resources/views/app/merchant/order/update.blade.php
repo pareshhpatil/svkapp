@@ -150,6 +150,7 @@
                         </div>
                         <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
+                            <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
                         </h3>
                         <div class="table-scrollable tableFixHead">
                             <table class="table table-bordered table-hover" id="particular_table">
@@ -358,6 +359,7 @@
                                         <input type="hidden" value="{{$detail->total_original_contract_amount}}" id="contract_amount" name="contract_amount">
                                         <input type="hidden" value="{{$detail->contract_id}}" name="contract_id">
                                         <input type="hidden" value="{{$link}}" name="link">
+                                        <input type="hidden" value="{{$bulk_id}}" name="bulk_id">                                        
                                         <a href="/merchant/order/list" class="btn default">Cancel</a>
                                         <input type="submit" value="Update" class="btn blue" data-cy="order_save" />
                                     </div>
