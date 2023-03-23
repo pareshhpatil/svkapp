@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Libraries\Helpers;
 use App\Jobs\SubDomainManagement;
@@ -490,13 +492,33 @@ class User extends ParentModel
         $payment_gateway = DB::table('merchant_fee_detail')->where('merchant_id', $merchant_id)->get();
     }
 
+    public function getMerchantID($authUserID)
+    {
+        $authUser = DB::table(ITable::USER)
+            ->where(IColumn::USER_ID, $authUserID)
+            ->first();
+
+        if($authUser->user_group_type == 1) {
+            return DB::table('merchant')
+                ->where(IColumn::USER_ID, $authUserID)
+                ->pluck('merchant_id')
+                ->first();
+        }
+
+        return DB::table('merchant')
+            ->where('group_id', $authUser->group_id)
+            ->pluck('merchant_id')
+            ->first();
+    }
+
     public function getUserPrivileges($user_id, $group_id, $user_role)
     {
-        $merchant = $this->getTableRow('merchant', 'group_id', $group_id);
+        $merchantID = $this->getMerchantID($user_id);
+        //$merchant = $this->getTableRow('merchant', 'group_id', $group_id);
 
         $privilegesCollect = DB::table('briq_privileges')
             ->where('user_id', $user_id)
-            ->where('merchant_id', $merchant->merchant_id)
+            ->where('merchant_id', $merchantID)
             ->where('is_active', 1)
             ->select(['type', 'type_id', 'access', 'rule_engine_query'])
             ->get()
@@ -510,24 +532,24 @@ class User extends ParentModel
         $invoicePrivilegesArray = $ruleEngineInvoices["payment_request_ids"];
         $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
 
-        $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant->merchant_id);
+        $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchantID);
         if($user_id == 'U000005237') {
             dd($customerPrivilegesArray, $ruleEngineInvoices, $privilegesCollect);
         }
         if(!empty($customerPrivilegesArray)) {
-            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchant->merchant_id);
+            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchantID);
         }
 
         if (!empty($projectPrivilegesArray)) {
-            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchant->merchant_id);
+            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchantID);
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $user_id, $merchant->merchant_id, $user_role);
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $user_id, $merchantID, $user_role);
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineInvoices["change_order_ids"], $user_id, $merchant->merchant_id);
+            $invoicePrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineInvoices["change_order_ids"], $user_id, $merchantID);
         }
 
         return [
