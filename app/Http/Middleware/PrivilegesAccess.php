@@ -101,7 +101,7 @@ class PrivilegesAccess
                         $result = true;
                     }
                 }
-
+                dd($result);
                 break;
             case 'project':
                 $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $userID), true);
