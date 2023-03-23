@@ -115,12 +115,6 @@ class Paymentrequest extends Controller
                 $_SESSION['payment_request_ids'] = $paymentRequestIDs;
             }
 
-//            if (!empty($paymentRequestIDs)) {
-//                if(!in_array('all', $paymentRequestIDs)) {
-//                    $_SESSION['payment_request_ids'] = $paymentRequestIDs;
-//                }
-//            }
-
             $this->session->set('valid_ajax', 'payment_request_list');
             $this->smarty->assign("from_date",  $this->generic->formatDateString($from_date) );
             $this->smarty->assign("to_date", $this->generic->formatDateString($to_date));

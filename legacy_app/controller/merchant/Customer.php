@@ -756,8 +756,7 @@ class Customer extends Controller
                 $_SESSION['has_customer_list_access'] = true;
             } else {
                 $userPrivilegesCustomers = json_decode($_SESSION['customer_privileges_ids'], true);
-//                $userPrivilegesCustomers = $this->model->getUserPrivilegesCustomerIDs($merchant_id, $user_id);
-//
+
                 foreach ($userPrivilegesCustomers as $key => $userPrivilegesCustomer) {
                     $customerIDs[] = $key;
                 }
