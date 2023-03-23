@@ -133,10 +133,7 @@ class SubUserHelper
      */
     public function indexTableData($userID)
     {
-        $groupID = DB::table(ITable::USER)
-            ->where('user_id', $userID)
-            ->pluck('group_id')
-            ->first();
+        $groupID = $this->getGroupID($userID);
 
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
