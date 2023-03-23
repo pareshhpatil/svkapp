@@ -511,7 +511,9 @@ class User extends ParentModel
         $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
 
         $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant->merchant_id);
-
+        if($user_id == 'U000005237') {
+            dd($customerPrivilegesArray, $ruleEngineInvoices, $privilegesCollect);
+        }
         if(!empty($customerPrivilegesArray)) {
             $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchant->merchant_id);
         }
