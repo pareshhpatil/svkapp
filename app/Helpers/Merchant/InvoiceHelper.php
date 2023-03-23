@@ -7,6 +7,7 @@ use App\Jobs\ProcessInvoiceForApprove;
 use App\Jobs\ProcessInvoiceMailForApprove;
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
+use App\Notifications\InvoiceApprovalNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -195,7 +196,8 @@ class InvoiceHelper
                 ->get();
 
             foreach ($Users as $User) {
-                ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
+                $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                //ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
                 //Different queue for mail bcz mails fails sometimes
                 ProcessInvoiceMailForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
