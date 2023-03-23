@@ -202,8 +202,8 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
-                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials','retainage_amount_for_this_draw','net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
                                                 $dropdown_array=array('group','bill_code','bill_code_detail','cost_type');
                                                @endphp
 
@@ -350,7 +350,7 @@
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false;calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false; @if($k=='retainage_amount_for_this_draw') calculateRetainagePercent(field); @endif calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -1106,6 +1106,10 @@
                     calculateCurrentBillAmount(field){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
                             field.current_billed_amount = updateTextView1 ( getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100 );
+                    },
+                    calculateRetainagePercent(field){
+                        if(field.retainage_amount_for_this_draw !== null && field.retainage_amount_for_this_draw !== undefined)
+                            field.retainage_percent =  getamt(field.retainage_amount_for_this_draw)  * 100 / getamt(field.original_contract_amount) ;
                     },
                     checkCurrentBillAmount(field, index){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
