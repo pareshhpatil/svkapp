@@ -8,6 +8,7 @@ use App\Libraries\Encrypt;
 use App\Model\Invoice;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -18,6 +19,8 @@ class InvoiceHelper
     public function sendInvoiceForApprovalNotification($paymentRequestID)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
+        $authUserID = Encrypt::decode(Session::get('userid'));
+
         $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $merchantID);
 
         if (!empty($paymentRequestDetail)) {
@@ -25,6 +28,15 @@ class InvoiceHelper
             if (substr($paymentRequestDetail->invoice_number, 0, 16) == 'System generated') {
                 $invoiceNumber = (new Invoice())->getAutoInvoiceNo((substr($paymentRequestDetail->invoice_number, 16)));
             }
+
+            //Update User Privileges array
+            $privilegesInvoiceIDs = json_decode(Redis::get('invoice_privileges_' . $authUserID), true);
+
+            $privilegesInvoiceIDs[$paymentRequestID] = 'edit';
+
+            Redis::set('invoice_privileges_' . $authUserID, json_encode($privilegesInvoiceIDs));
+
+            Session::put('invoice_privileges', json_encode($privilegesInvoiceIDs));
 
             $Contract = DB::table('contract')
                 ->where('is_active', 1)
@@ -182,7 +194,7 @@ class InvoiceHelper
                 ->get();
 
             foreach ($Users as $User) {
-                    ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
+                ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
             }
         }
     }

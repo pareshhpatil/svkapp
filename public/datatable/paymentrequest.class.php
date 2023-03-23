@@ -41,11 +41,11 @@ class SSP
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
                         // $value = formatDateString($data[$i][$column['db']]);
-                        if ($data[$i][$column['db']] < date("Y-m-d") && !in_array($data[$i]['payment_request_status'],array(1,2))) {
+                        if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status']==0) {
                             $value = formatDateString($data[$i][$column['db']]);
                             $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
                         } else {
-                            $row[$column['dt']] = $data[$i][$column['db']];
+                            $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
                         }
                         
                     } elseif ($column['datatype'] == 'specialDate') {
@@ -245,7 +245,7 @@ class SSP
                                     }
                                 }
                             } else {
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>

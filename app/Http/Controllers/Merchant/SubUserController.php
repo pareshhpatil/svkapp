@@ -78,11 +78,7 @@ class SubUserController extends AppController
             return back()->with('error', "User email already exists");
         }
 
-        if(!$status['send_email_success']) {
-            return redirect()->to('merchant/subusers')->with('error', "User created but error in email sending. Bcz email is not white listed");
-        }
-
-        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been created");
+        return redirect()->to('merchant/subusers')->with('success', "Sub merchant has been created");
     }
 
     /**
@@ -529,7 +525,7 @@ class SubUserController extends AppController
                     ]);
             }
 
-            return redirect()->back()->with('success', 'Privileges Set for User Successfully!');
+            return redirect()->back()->with('success', 'Privileges set for user successfully!');
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', 'Something went wrong!');
         }

@@ -7,6 +7,11 @@
         font-size: 3em;
         margin-top: 80px;
     }
+
+    .no-permission-img {
+        width: 100%;
+        height: 83%;
+    }
 </style>
 @section('content')
 
@@ -19,7 +24,7 @@
                     <p class="lead mb-5">Contact your admin for access.</p>
                 </div>
                 <div class="col-6 col-md-6 m-auto ml-lg-auto mr-lg-0 col-lg-6 pt-5 pt-lg-0 d-none d-lg-block">
-                    <img width="800" alt="Partner program to earn recurring revenue" class="img-fluid" src="{!! asset('static/images/404.svg') !!}" />
+                    <img alt="Partner program to earn recurring revenue" class="img-fluid no-permission-img" src="{!! asset('static/images/404.svg') !!}" />
                 </div>
             </div>
         </div>

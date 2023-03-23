@@ -45,7 +45,19 @@ class SSP
                     if ($column['datatype'] == 'datetime') {
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
-                        $row[$column['dt']] = formatDateString($data[$i][$column['db']]); 
+                        
+                        if($column['db']=='due_date') {
+                            if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status']==0) {
+                                $value = formatDateString($data[$i][$column['db']]);
+                                $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
+                            } else {
+                                $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
+                            }
+                        } else {
+                            $row[$column['dt']] = formatDateString($data[$i][$column['db']]); 
+                        }
+
+
                     } elseif ($column['datatype'] == 'specialDate') {
                         $row[$column['dt']] = formatTimeString2($data[$i][$column['db']]);
                     } elseif ($column['datatype'] == 'money') {
