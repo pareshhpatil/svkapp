@@ -386,7 +386,7 @@ class InvoiceController extends AppController
                 $data['properties'] = json_decode($data['template_info']->properties, 1);
                 $data['setting'] = json_decode($data['template_info']->setting, 1);
             }
-            dd($data);
+
             if (isset($plugin['has_covering_note'])) {
                 $data['covering_list'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'covering_note');
                 $logo = $this->invoiceModel->getColumnValue('merchant_landing', 'merchant_id', $this->merchant_id, 'logo');
@@ -422,7 +422,7 @@ class InvoiceController extends AppController
 
             $data['plugin'] = $plugin;
             $data['narrative'] = $narrative;
-
+            dd($template_type, $data);
             if ($template_type == 'construction') {
                 return view('app/merchant/invoice/constructionv2', $data);
             }
