@@ -74,7 +74,6 @@ class PrivilegesAccess
                             $result = true;
                         }
                     } else {
-                        dd($pathArray, $orderPrivilegesAccessIDs);
                         if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
