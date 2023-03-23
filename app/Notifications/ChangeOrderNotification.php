@@ -72,13 +72,16 @@ class ChangeOrderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject($this->orderNumber . 'Requested for approval')
-            ->markdown('emails.order.approve', [
-                'user_id' => $notifiable->user_id,
-                'order_id' => Encrypt::encode($this->orderID),
-                'order_number' => $this->orderNumber
-            ]);
+        try {
+            return (new MailMessage)
+                ->subject($this->orderNumber . 'Requested for approval')
+                ->markdown('emails.order.approve', [
+                    'user_id' => $notifiable->user_id,
+                    'order_id' => Encrypt::encode($this->orderID),
+                    'order_number' => $this->orderNumber
+                ]);
+        } catch (\Exception $exception) {
+        }
     }
 
     /**

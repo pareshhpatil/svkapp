@@ -1043,15 +1043,43 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view_g703_v2($link)
+    public function view_g703_v2($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            if(!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+
+                $Notification->markAsRead();
+            }
 
             $info = (array)$info;
             $info['gtype'] = '703';
