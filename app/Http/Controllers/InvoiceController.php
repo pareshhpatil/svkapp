@@ -198,233 +198,237 @@ class InvoiceController extends AppController
 
     public function create(Request $request, $link = null, $update = null)
     {
-        $cycleName = date('M-Y') . ' Bill';
-        $invoice_number = '';
-        $bill_date = '';
-        $due_date = '';
-        $narrative = '';
-        $plugin = [];
-        if ($link != null) {
-            $request_id = Encrypt::decode($link);
-            if (strlen($request_id) != 10) {
-                return redirect('/error/invalidlink');
-            }
+        try {
+            $cycleName = date('M-Y') . ' Bill';
+            $invoice_number = '';
+            $bill_date = '';
+            $due_date = '';
+            $narrative = '';
+            $plugin = [];
+            if ($link != null) {
+                $request_id = Encrypt::decode($link);
+                if (strlen($request_id) != 10) {
+                    return redirect('/error/invalidlink');
+                }
 
-            $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-            if ($update == 1 && $invoice->payment_request_status != 11) {
-                $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
-                if ($req_id != false) {
-                    if ($request_id != $req_id) {
-                        $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
-                        $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
-                        Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
+                $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+                if ($update == 1 && $invoice->payment_request_status != 11) {
+                    $req_id = $this->invoiceModel->validateUpdateConstructionInvoice($invoice->contract_id, $this->merchant_id);
+                    if ($req_id != false) {
+                        if ($request_id != $req_id) {
+                            $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
+                            $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
+                            Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
                         The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
-                        return redirect('/merchant/paymentrequest/viewlist');
-                    }
-                }
-            }
-
-            $request->template_id = $invoice->template_id;
-            $request->contract_id = $invoice->contract_id;
-            $request->currency = $invoice->currency;
-            $request->billing_profile_id = $invoice->billing_profile_id;
-            $_POST['template_id'] = $invoice->template_id;
-            $_POST['contract_id'] = $invoice->contract_id;
-            $_POST['currency'] = $invoice->currency;
-            $_POST['billing_profile_id'] = $invoice->billing_profile_id;
-            $cycleName = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $invoice->billing_cycle_id, 'cycle_name');
-            if ($invoice->payment_request_status != 11) {
-                $invoice_number = $invoice->invoice_number;
-            }
-
-            $bill_date = Helpers::htmlDate($invoice->bill_date);
-            $due_date = Helpers::htmlDate($invoice->due_date);
-            $narrative = $invoice->narrative;
-        }
-        $type = 'invoice';
-        $invoice_type = 1;
-        if (isset($request->invoice_type)) {
-            $invoice_type = $request->invoice_type;
-        }
-        $req_types = array('invoice' => 1, 'estimate' => 2, 'subscription' => 4, 'construction' => 1);
-        $menus = array('invoice' => 19, 'estimate' => 122, 'subscription' => 21, 'construction' => 19);
-        if (!isset($req_types[$type])) {
-            throw new Exception('Invalid invoice type ' . $type);
-        }
-        $template_type = '';
-        $menu = $menus[$type];
-        $title = ($update == null) ? 'Create ' . $type : 'Update ' . $type;
-        $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
-        #get merchant invoice format list
-        $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
-        if (count($data['format_list']) == 1) {
-            $request->template_id = $data['format_list']->first()->template_id;
-        }
-
-        $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
-        $data['billing_profile_id'] = '';
-        if (count($data['billing_profile']) == 1) {
-            $request->billing_profile_id = $data['billing_profile']->first()->id;
-            $data['billing_profile_id'] = $request->billing_profile_id;
-        }
-        $data['currency'] = '';
-        $data['template_id'] = '';
-        $data['currency_list'] = Session::get('currency');
-        $data['multi_currency'] = env('ENABLE_MULTI_CURRENCY');
-        $data['subscription'] = 0;
-        $data['type'] = ucfirst($type);
-        $data['invoice_product_taxation'] = 1;
-        $data['richtext'] = true;
-        if ($invoice_type == 2 || $type == 'estimate') {
-            $data['invoice_type'] = 2;
-        } else {
-            $data['invoice_type'] = 1;
-        }
-
-        $data['request_type'] = $req_types[$type];
-
-
-        $data['contract_id'] = 0;
-
-        //contracts from privileges
-        $userRole = Session::get('user_role');
-
-        if($userRole == 'Admin') {
-            $privilegesIDs = ['all' => 'full'];
-        } else {
-            $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-        }
-
-        $whereContractIDs = [];
-        foreach ($privilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
-                $whereContractIDs[] = $key;
-            }
-        }
-
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
-        $breadcrumbs['menu'] = 'collect_payments';
-        $breadcrumbs['title'] = $data['title'];
-        $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
-
-        if (env('APP_ENV') != 'LOCAL') {
-            //menu list
-            $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
-            $item_list = json_decode($mn1, 1);
-            $row_array['name'] = $data['title'];
-            $row_array['link'] = '/merchant/invoice/create/' . $type;
-            $item_list[] = $row_array;
-            Redis::set('merchantMenuList' . $this->merchant_id, json_encode($item_list));
-        }
-
-        Session::put('breadcrumbs', $breadcrumbs);
-        if (isset($request->template_id)) {
-            $formatModel = new InvoiceFormat();
-            $template_id = $request->template_id;
-            $data['template_link'] = Encrypt::encode($template_id);
-            $data['template_id'] = $template_id;
-            $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : 0;
-            $data['type'] = ($data['contract_id'] > 0) ? 'construction' : '';
-            $data = $this->setInvoiceData($data, $template_id, $request->billing_profile_id, $request->currency);
-
-            #get pre define system column metadata
-            $metarows = $formatModel->getFormatMetadata($template_id);
-            $metadata = $this->setMetadata($metarows);
-
-            $invoice_seq_id = 0;
-            if (isset($data['contract_detail']->sequence_number)) {
-                $invoice_seq_id = $data['contract_detail']->sequence_number;
-            }
-
-            if (isset($metadata['H'])) {
-                $metadata['H'] = $this->setCreateFunction($metadata['H']);
-                foreach ($metadata['H'] as $k => $row) {
-                    if (isset($row->script)) {
-                        $data['script'] .= $row->script;
-                    }
-                    if ($bill_date != '') {
-                        if ($row->column_position == 5) {
-                            $metadata['H'][$k]->value = $bill_date;
-                        }
-                        if ($row->column_position == 6) {
-                            $metadata['H'][$k]->value = $due_date;
-                        }
-                        if ($row->column_position == 4) {
-                            $metadata['H'][$k]->value = $cycleName;
-                        }
-                    }
-
-                    if ($row->function_id == 9 && $row->param == 'system_generated') {
-                        if ($invoice_number == '') {
-                            if ($invoice_seq_id > 0) {
-                                $metadata['H'][$k]->value = "System generated" . $invoice_seq_id;
-                                $metadata['H'][$k]->param_value = $invoice_seq_id;
-                            }
-                            if ($metadata['H'][$k]->param_value > 0) {
-                                $metadata['H'][$k]->display_value = $this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
-                            }
-                        } else {
-                            $metadata['H'][$k]->value =  $invoice_number;
-                            $metadata['H'][$k]->display_value =  $invoice_number;
+                            return redirect('/merchant/paymentrequest/viewlist');
                         }
                     }
                 }
-            }
-            $template_type = $data['template_info']->template_type;
-            $data['metadata'] = $metadata;
-            $data['link'] = $link;
 
-            $data['mode'] = 'create';
-            $data['cycleName'] = $cycleName;
-            if ($link == null) {
-                $plugin = json_decode($data['template_info']->plugin, 1);
+                $request->template_id = $invoice->template_id;
+                $request->contract_id = $invoice->contract_id;
+                $request->currency = $invoice->currency;
+                $request->billing_profile_id = $invoice->billing_profile_id;
+                $_POST['template_id'] = $invoice->template_id;
+                $_POST['contract_id'] = $invoice->contract_id;
+                $_POST['currency'] = $invoice->currency;
+                $_POST['billing_profile_id'] = $invoice->billing_profile_id;
+                $cycleName = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $invoice->billing_cycle_id, 'cycle_name');
+                if ($invoice->payment_request_status != 11) {
+                    $invoice_number = $invoice->invoice_number;
+                }
+
+                $bill_date = Helpers::htmlDate($invoice->bill_date);
+                $due_date = Helpers::htmlDate($invoice->due_date);
+                $narrative = $invoice->narrative;
+            }
+            $type = 'invoice';
+            $invoice_type = 1;
+            if (isset($request->invoice_type)) {
+                $invoice_type = $request->invoice_type;
+            }
+            $req_types = array('invoice' => 1, 'estimate' => 2, 'subscription' => 4, 'construction' => 1);
+            $menus = array('invoice' => 19, 'estimate' => 122, 'subscription' => 21, 'construction' => 19);
+            if (!isset($req_types[$type])) {
+                throw new Exception('Invalid invoice type ' . $type);
+            }
+            $template_type = '';
+            $menu = $menus[$type];
+            $title = ($update == null) ? 'Create ' . $type : 'Update ' . $type;
+            $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
+            #get merchant invoice format list
+            $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
+            if (count($data['format_list']) == 1) {
+                $request->template_id = $data['format_list']->first()->template_id;
+            }
+
+            $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
+            $data['billing_profile_id'] = '';
+            if (count($data['billing_profile']) == 1) {
+                $request->billing_profile_id = $data['billing_profile']->first()->id;
+                $data['billing_profile_id'] = $request->billing_profile_id;
+            }
+            $data['currency'] = '';
+            $data['template_id'] = '';
+            $data['currency_list'] = Session::get('currency');
+            $data['multi_currency'] = env('ENABLE_MULTI_CURRENCY');
+            $data['subscription'] = 0;
+            $data['type'] = ucfirst($type);
+            $data['invoice_product_taxation'] = 1;
+            $data['richtext'] = true;
+            if ($invoice_type == 2 || $type == 'estimate') {
+                $data['invoice_type'] = 2;
             } else {
-                $plugin = json_decode($invoice->plugin_value, 1);
+                $data['invoice_type'] = 1;
             }
-            $data['properties'] = json_decode($data['template_info']->properties, 1);
-            $data['setting'] = json_decode($data['template_info']->setting, 1);
-        }
 
-        if (isset($plugin['has_covering_note'])) {
-            $data['covering_list'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'covering_note');
-            $logo = $this->invoiceModel->getColumnValue('merchant_landing', 'merchant_id', $this->merchant_id, 'logo');
-            if ($logo != '') {
-                $logo = env('APP_URL') . '/uploads/images/landing/' . $logo;
+            $data['request_type'] = $req_types[$type];
+
+
+            $data['contract_id'] = 0;
+
+            //contracts from privileges
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $privilegesIDs = ['all' => 'full'];
             } else {
-                $logo = env('APP_URL') . '/assets/frontend/onepage2/img/logo_scroll.png';
+                $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             }
-            $data['logo'] = $logo;
-        }
 
-        if ($link != null) {
-            $request_id = Encrypt::decode($link);
-            if (strlen($request_id) != 10) {
-                return redirect('/error/invalidlink');
+            $whereContractIDs = [];
+            foreach ($privilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+                    $whereContractIDs[] = $key;
+                }
             }
-            $data['mandatory_files'] = [];
-            if (isset($plugin['has_mandatory_upload'])) {
-                if ($plugin['has_mandatory_upload'] == 1) {
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $data['mandatory_files' . $key] = [];
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
-                        foreach ($mandatory_files as $files) {
-                            $file_url =  $files->file_url;
-                            array_push($data['mandatory_files' . $key], $file_url);
+
+            $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+            $breadcrumbs['menu'] = 'collect_payments';
+            $breadcrumbs['title'] = $data['title'];
+            $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
+
+            if (env('APP_ENV') != 'LOCAL') {
+                //menu list
+                $mn1 = Redis::get('merchantMenuList' . $this->merchant_id);
+                $item_list = json_decode($mn1, 1);
+                $row_array['name'] = $data['title'];
+                $row_array['link'] = '/merchant/invoice/create/' . $type;
+                $item_list[] = $row_array;
+                Redis::set('merchantMenuList' . $this->merchant_id, json_encode($item_list));
+            }
+
+            Session::put('breadcrumbs', $breadcrumbs);
+            if (isset($request->template_id)) {
+                $formatModel = new InvoiceFormat();
+                $template_id = $request->template_id;
+                $data['template_link'] = Encrypt::encode($template_id);
+                $data['template_id'] = $template_id;
+                $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : 0;
+                $data['type'] = ($data['contract_id'] > 0) ? 'construction' : '';
+                $data = $this->setInvoiceData($data, $template_id, $request->billing_profile_id, $request->currency);
+
+                #get pre define system column metadata
+                $metarows = $formatModel->getFormatMetadata($template_id);
+                $metadata = $this->setMetadata($metarows);
+
+                $invoice_seq_id = 0;
+                if (isset($data['contract_detail']->sequence_number)) {
+                    $invoice_seq_id = $data['contract_detail']->sequence_number;
+                }
+
+                if (isset($metadata['H'])) {
+                    $metadata['H'] = $this->setCreateFunction($metadata['H']);
+                    foreach ($metadata['H'] as $k => $row) {
+                        if (isset($row->script)) {
+                            $data['script'] .= $row->script;
                         }
-                        array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
+                        if ($bill_date != '') {
+                            if ($row->column_position == 5) {
+                                $metadata['H'][$k]->value = $bill_date;
+                            }
+                            if ($row->column_position == 6) {
+                                $metadata['H'][$k]->value = $due_date;
+                            }
+                            if ($row->column_position == 4) {
+                                $metadata['H'][$k]->value = $cycleName;
+                            }
+                        }
+
+                        if ($row->function_id == 9 && $row->param == 'system_generated') {
+                            if ($invoice_number == '') {
+                                if ($invoice_seq_id > 0) {
+                                    $metadata['H'][$k]->value = "System generated" . $invoice_seq_id;
+                                    $metadata['H'][$k]->param_value = $invoice_seq_id;
+                                }
+                                if ($metadata['H'][$k]->param_value > 0) {
+                                    $metadata['H'][$k]->display_value = $this->invoiceModel->getAutoInvoiceNo($metadata['H'][$k]->param_value);
+                                }
+                            } else {
+                                $metadata['H'][$k]->value =  $invoice_number;
+                                $metadata['H'][$k]->display_value =  $invoice_number;
+                            }
+                        }
+                    }
+                }
+                $template_type = $data['template_info']->template_type;
+                $data['metadata'] = $metadata;
+                $data['link'] = $link;
+
+                $data['mode'] = 'create';
+                $data['cycleName'] = $cycleName;
+                if ($link == null) {
+                    $plugin = json_decode($data['template_info']->plugin, 1);
+                } else {
+                    $plugin = json_decode($invoice->plugin_value, 1);
+                }
+                $data['properties'] = json_decode($data['template_info']->properties, 1);
+                $data['setting'] = json_decode($data['template_info']->setting, 1);
+            }
+
+            if (isset($plugin['has_covering_note'])) {
+                $data['covering_list'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'covering_note');
+                $logo = $this->invoiceModel->getColumnValue('merchant_landing', 'merchant_id', $this->merchant_id, 'logo');
+                if ($logo != '') {
+                    $logo = env('APP_URL') . '/uploads/images/landing/' . $logo;
+                } else {
+                    $logo = env('APP_URL') . '/assets/frontend/onepage2/img/logo_scroll.png';
+                }
+                $data['logo'] = $logo;
+            }
+
+            if ($link != null) {
+                $request_id = Encrypt::decode($link);
+                if (strlen($request_id) != 10) {
+                    return redirect('/error/invalidlink');
+                }
+                $data['mandatory_files'] = [];
+                if (isset($plugin['has_mandatory_upload'])) {
+                    if ($plugin['has_mandatory_upload'] == 1) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $data['mandatory_files' . $key] = [];
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
+                            foreach ($mandatory_files as $files) {
+                                $file_url =  $files->file_url;
+                                array_push($data['mandatory_files' . $key], $file_url);
+                            }
+                            array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
+                        }
                     }
                 }
             }
+
+
+            $data['plugin'] = $plugin;
+            $data['narrative'] = $narrative;
+
+            if ($template_type == 'construction') {
+                return view('app/merchant/invoice/constructionv2', $data);
+            }
+            return view('app/merchant/invoice/create', $data);
+        } catch (Exception $exception) {
+            dd($exception);
         }
-
-
-        $data['plugin'] = $plugin;
-        $data['narrative'] = $narrative;
-
-        if ($template_type == 'construction') {
-            return view('app/merchant/invoice/constructionv2', $data);
-        }
-        return view('app/merchant/invoice/create', $data);
     }
 
     /**
