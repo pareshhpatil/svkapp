@@ -39,14 +39,14 @@ class ChangeOrderNotification extends Notification
      */
     public function via($notifiable)
     {
-        $channels = [];
+        $channels = ['database'];
 
         $preferences = DB::table('preferences')
             ->where('user_id', $notifiable->user_id)
             ->first();
 
         if (empty($preferences)) {
-            return ['database'];
+            return $channels;
         }
 
         if($preferences->send_email == 1) {
@@ -58,8 +58,6 @@ class ChangeOrderNotification extends Notification
                 $channels[] = 'firebase';
             }
         }
-
-        $channels[] = 'database';
 
         return $channels;
     }
