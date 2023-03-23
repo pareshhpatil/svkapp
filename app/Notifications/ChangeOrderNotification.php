@@ -49,10 +49,6 @@ class ChangeOrderNotification extends Notification
             return $channels;
         }
 
-        if($preferences->send_email == 1) {
-            $channels[] = 'mail';
-        }
-
         if($preferences->send_push == 1) {
             if (!empty($this->User->fcm_token)) {
                 $channels[] = 'firebase';
@@ -63,26 +59,6 @@ class ChangeOrderNotification extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
-     *
-     * @param  User  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        try {
-            return (new MailMessage)
-                ->subject($this->orderNumber . 'Requested for approval')
-                ->markdown('emails.order.approve', [
-                    'user_id' => $notifiable->user_id,
-                    'order_id' => Encrypt::encode($this->orderID),
-                    'order_number' => $this->orderNumber
-                ]);
-        } catch (\Exception $exception) {
-        }
-    }
-
-    /**
      * Get the firebase representation of the notification.
      *
      * @param  mixed  $notifiable
@@ -90,13 +66,10 @@ class ChangeOrderNotification extends Notification
      */
     public function toFirebase($notifiable)
     {
-        try {
-            return (new FirebaseMessage())
-                ->withTitle($this->orderNumber)
-                ->withBody($this->orderNumber . ' Change Order Pending for approval')
-                ->withPriority('low')->asMessage($this->User->fcm_token);
-        } catch (\Exception $exception) {
-        }
+        return (new FirebaseMessage())
+            ->withTitle($this->orderNumber)
+            ->withBody($this->orderNumber . ' Change Order Pending for approval')
+            ->withPriority('low')->asMessage($this->User->fcm_token);
     }
 
     /**

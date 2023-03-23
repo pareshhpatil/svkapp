@@ -7,16 +7,15 @@ use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 
-class InvoiceApprovalMailNotification extends Notification
+class ChangeOrderMailNotification extends Notification
 {
     use Queueable;
 
-    protected $invoiceNumber;
-    protected $paymentRequestID;
+    protected $orderID;
+    protected $orderNumber;
     protected $User;
 
     /**
@@ -24,10 +23,10 @@ class InvoiceApprovalMailNotification extends Notification
      *
      * @return void
      */
-    public function __construct($invoiceNumber, $paymentRequestID, $User)
+    public function __construct($orderID, $orderNumber, $User)
     {
-        $this->invoiceNumber = $invoiceNumber;
-        $this->paymentRequestID = $paymentRequestID;
+        $this->orderID = $orderID;
+        $this->orderNumber = $orderNumber;
         $this->User = $User;
     }
 
@@ -40,9 +39,10 @@ class InvoiceApprovalMailNotification extends Notification
     public function via($notifiable)
     {
         $channels = [];
+
         $preferences = DB::table('preferences')
-                        ->where('user_id', $notifiable->user_id)
-                        ->first();
+            ->where('user_id', $notifiable->user_id)
+            ->first();
 
         if (empty($preferences)) {
             return $channels;
@@ -64,11 +64,11 @@ class InvoiceApprovalMailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject($this->invoiceNumber . ' Requested for approval')
-            ->markdown('emails.invoice.approve', [
+            ->subject($this->orderNumber . 'Requested for approval')
+            ->markdown('emails.order.approve', [
                 'user_id' => $notifiable->user_id,
-                'payment_request_id' => Encrypt::encode($this->paymentRequestID),
-                'invoice_number' => $this->invoiceNumber
+                'order_id' => Encrypt::encode($this->orderID),
+                'order_number' => $this->orderNumber
             ]);
     }
 }
