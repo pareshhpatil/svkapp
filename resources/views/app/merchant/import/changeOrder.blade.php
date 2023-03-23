@@ -139,7 +139,7 @@
                                     @php
                                     if(in_array($v->status,[3,4,5,9]))
                                     {
-                                    $link='/merchant/contract/create/2/'.$v->order_id.'/';
+                                    $link='/merchant/order/update/'.$v->order_id.'/';
                                     }elseif($v->status==1)
                                     {
                                     $link='/merchant/import/error/';
@@ -206,7 +206,7 @@
                                             
                                             @endif
                                             @if($v->status==5)
-                                            <li><a href="/merchant/contract/update/2/{{$v->order_id}}"><i class="fa fa-table"></i> View Change Order</a>
+                                            <li><a href="/merchant/order/update/{{$v->order_id}}"><i class="fa fa-table"></i> View Change Order</a>
                                             </li>
                                             @endif
                                             @if(in_array($v->status, [1,2,3]))

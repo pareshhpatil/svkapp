@@ -303,7 +303,7 @@ class OrderController extends Controller
         }
     }
 
-    public function update($link)
+    public function update($link,$bulk_id=null)
     {
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
@@ -379,6 +379,14 @@ class OrderController extends Controller
             $data['detail2'] = $row2;
             $data['link'] = $link;
             $data['mode'] = 'update';
+            $data['bulk_id'] = 0;
+           
+            if ($bulk_id != null) {
+                $bulk_id = Encrypt::decode($bulk_id);
+                $particulars = $this->orderModel->getColumnValue('staging_change_order', 'bulk_id', $bulk_id, 'particulars');
+                $data['detail']->json_particulars = json_decode($particulars, 1);
+                $data['bulk_id'] = $bulk_id;
+            }
             return view('app/merchant/order/update', $data);
         } else {
             return redirect('/404');
@@ -477,6 +485,15 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
+        
+        if(isset($request->import) && $request->import=='Import') {
+            return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+        }
+
+        if ($request->bulk_id > 0) {
+            $this->orderModel->updateTable('bulk_upload', 'bulk_upload_id', $request->bulk_id, 'status', 5);
+            $this->orderModel->updateTable('order', 'order_id', $id, 'bulk_id', $request->bulk_id);
+        }
         return redirect('merchant/order/list')->with('success', "Change Order has been updated");
     }
 

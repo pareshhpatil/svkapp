@@ -1,4 +1,4 @@
-CREATE TABLE `staging_order` (
+CREATE TABLE `staging_change_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `particulars` longtext NOT NULL,
   `bulk_id` int(11) NOT NULL DEFAULT 0,
@@ -10,3 +10,8 @@ CREATE TABLE `staging_order` (
   PRIMARY KEY (`id`),
   KEY `IDX_bulk_id` (`bulk_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--------------------------------------------------------------------------------------------
+
+ALTER TABLE `swipez`.`order` 
+ADD COLUMN `bulk_id` INT(11) NOT NULL DEFAULT 0 AFTER `invoice_status`;

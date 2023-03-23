@@ -423,7 +423,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');
-  Route::any('order/update/{link}', 'OrderController@update')
+  Route::any('order/update/{link}/{bulk_id?}', 'OrderController@update')
       ->name('update.order')
       ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
