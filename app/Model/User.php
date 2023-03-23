@@ -547,7 +547,7 @@ class User extends ParentModel
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineInvoices["change_order_ids"], $user_id, $merchantID);
+            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineInvoices["change_order_ids"], $user_id, $merchantID);
         }
 
         return [
