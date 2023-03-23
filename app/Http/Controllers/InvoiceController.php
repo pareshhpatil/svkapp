@@ -304,6 +304,7 @@ class InvoiceController extends AppController
             }
 
             $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+            dd($data['contract']);
             $breadcrumbs['menu'] = 'collect_payments';
             $breadcrumbs['title'] = $data['title'];
             $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
