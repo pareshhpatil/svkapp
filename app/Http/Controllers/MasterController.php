@@ -170,7 +170,6 @@ class MasterController extends AppController
         $data['list'] = $list ?? [];
         $data['datatablejs'] = 'table-no-export';
         $data['privileges'] = $privilegesIDs;
-        $data['merchantid'] = $this->merchant_id;
         return view('app/merchant/project/list', $data);
     }
 
