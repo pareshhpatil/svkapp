@@ -95,7 +95,7 @@ class ChangeOrderHelper
                 ->get();
 
             foreach ($Users as $User) {
-                ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue('promotion-sms-dev');
+                ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
         }
     }
