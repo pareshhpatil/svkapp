@@ -174,7 +174,12 @@
                                             {$v.company_name}
                                         </td>
                                         <td>
-                                            {$v.due_date|date_format:"%d %b %Y"}
+                                            {if ({$v.due_date}|date_format:"%Y-%m-%d") < date("Y-m-d") && $v.payment_request_status==0}
+                                                <span style="color:#B82020;">{$v.due_date|date_format:"%d %b %Y"}</span>
+                                            {else}
+                                                {$v.due_date|date_format:"%d %b %Y"}
+                                            {/if}
+                                            
                                         </td>
                                         <td>
                                             {if $v.payment_request_status==14}

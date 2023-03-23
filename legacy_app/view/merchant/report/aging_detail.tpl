@@ -130,7 +130,15 @@
                                         {$v.payment_request_id} 
                                     </td> -->
                                     <td>
-                                        {{$v.date}|date_format:"%d/%b/%y"}
+                                        {if $aging_by_selected=='due_date'}
+                                            {if ({$v.date}|date_format:"%Y-%m-%d") < date("Y-m-d") && $v.payment_request_status==0}
+                                                <span style="color:#B82020;">{{$v.date}|date_format:"%d/%b/%y"}</span>
+                                            {else}
+                                                {{$v.date}|date_format:"%d/%b/%y"}
+                                            {/if}
+                                        {else}
+                                            {{$v.date}|date_format:"%d/%b/%y"}
+                                        {/if}
                                     </td>
                                     {if $reportlist.0.display_invoice_no==1}
                                         <td>
