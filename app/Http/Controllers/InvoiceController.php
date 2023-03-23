@@ -422,7 +422,6 @@ class InvoiceController extends AppController
 
             $data['plugin'] = $plugin;
             $data['narrative'] = $narrative;
-            dd($template_type, $data);
             if ($template_type == 'construction') {
                 return view('app/merchant/invoice/constructionv2', $data);
             }
