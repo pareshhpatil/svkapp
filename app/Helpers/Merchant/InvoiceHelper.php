@@ -4,6 +4,7 @@ namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Jobs\ProcessInvoiceForApprove;
+use App\Jobs\ProcessInvoiceMailForApprove;
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
 use App\User;
@@ -195,6 +196,8 @@ class InvoiceHelper
 
             foreach ($Users as $User) {
                 ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
+                //Different queue for mail bcz mails fails sometimes
+                ProcessInvoiceMailForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
         }
     }
