@@ -87,7 +87,7 @@ class OrderController extends Controller
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-            if($contractPrivilegesID == 'full') {
+            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'approve') {
                 $whereContractIDs[] = $key;
             }
         }
