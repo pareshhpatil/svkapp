@@ -304,7 +304,7 @@ class InvoiceController extends AppController
             }
 
             $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
-            dd($data['contract']);
+            
             $breadcrumbs['menu'] = 'collect_payments';
             $breadcrumbs['title'] = $data['title'];
             $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -386,7 +386,7 @@ class InvoiceController extends AppController
                 $data['properties'] = json_decode($data['template_info']->properties, 1);
                 $data['setting'] = json_decode($data['template_info']->setting, 1);
             }
-
+            dd($data);
             if (isset($plugin['has_covering_note'])) {
                 $data['covering_list'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'covering_note');
                 $logo = $this->invoiceModel->getColumnValue('merchant_landing', 'merchant_id', $this->merchant_id, 'logo');
