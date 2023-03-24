@@ -123,9 +123,11 @@
                     {* <p>
                         <a href="/merchant/profile/accesskey" class="dc-link"> API keys</a>
                     </p> *}
-                    <p>
-                        <a href="/merchant/user/create-token" class="dc-link"> API token</a>
-                    </p>
+                    {if $user_role == 'Admin'}
+                        <p>
+                            <a href="/merchant/user/create-token" class="dc-link"> API token</a>
+                        </p>
+                    {/if}
                     <p>
                         <a href="/merchant/integrations" class="dc-link"> Integrations</a>
                     </p>
