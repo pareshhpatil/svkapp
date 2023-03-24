@@ -257,9 +257,9 @@ class InvoiceController extends AppController
         $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
         #get merchant invoice format list
         $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
-        if (count($data['format_list']) == 1) {
-            $request->template_id = $data['format_list']->first()->template_id;
-        }
+//        if (count($data['format_list']) == 1) {
+//            $request->template_id = $data['format_list']->first()->template_id;
+//        }
 
         $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
         $data['billing_profile_id'] = '';
