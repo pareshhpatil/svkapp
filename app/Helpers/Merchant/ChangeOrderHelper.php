@@ -21,6 +21,7 @@ class ChangeOrderHelper
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
         $authUserID = Encrypt::decode(Session::get('userid'));
+        $authUserRole = Session::get('user_role');
 
         $orderDetail = DB::table('order')
             ->where('order_id', $orderId)
@@ -31,7 +32,12 @@ class ChangeOrderHelper
             //Update Change Order Privileges array
             $privilegesChangeOrderIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
 
-            $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
+            if($authUserRole == 'Admin') {
+                $privilegesChangeOrderIDs[$orderDetail->order_id] = 'full';
+            } else {
+                $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
+            }
+
 
             Redis::set('change_order_privileges_' . $authUserID, json_encode($privilegesChangeOrderIDs));
 
