@@ -59,15 +59,8 @@ class PrivilegesAccess
                 $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $userID), true);
 
                 if($pathArray[2] == 'approve' || $pathArray[2] == 'unapprove') {
-                    if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($modelID, array_keys($orderPrivilegesAccessIDs))) {
-                        if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
-                            $result = true;
-                        }
-                    } else {
-                        if ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'approve') {
-                            $result = true;
-                        }
-                    }
+                    $result = true;
+
                 } else {
                     if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($modelID, array_keys($orderPrivilegesAccessIDs))) {
                         if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'edit' || $orderPrivilegesAccessIDs['all'] == 'approve') {
