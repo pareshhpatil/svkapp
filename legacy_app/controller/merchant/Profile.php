@@ -335,6 +335,9 @@ class Profile extends Controller
                 $this->smarty->assign("non_brand_food_franchise", true);
             }
 
+            $user_role = $this->session->get('user_role');
+
+            $this->smarty->assign('user_role',$user_role);
             $this->view->header_file = ['profile'];
             $this->view->render('header/app');
             $this->smarty->display(VIEW . 'merchant/profile/landing.tpl');
