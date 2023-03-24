@@ -301,25 +301,24 @@ class Invoice extends ParentModel
 
     public function getInvoiceConstructionParticularsSum($payment_request_id)
     {
-        $retObj = DB::table('invoice_construction_particular')
-            ->select(DB::raw('SUM(invoice_construction_particular.approved_change_order_amount) as approved_change_order_amount, 
-            SUM(invoice_construction_particular.original_contract_amount) as original_contract_amount, 
-            SUM(invoice_construction_particular.current_contract_amount ) as current_contract_amount, 
-            SUM(invoice_construction_particular.previously_billed_amount ) as previously_billed_amount, 
-            SUM(invoice_construction_particular.current_billed_amount)  as current_billed_amount, 
-            SUM(invoice_construction_particular.stored_materials) as stored_materials, 
-            SUM(invoice_construction_particular.retainage_amount_stored_materials) as retainage_amount_stored_materials, 
-            SUM(invoice_construction_particular.retainage_amount_for_this_draw) as retainage_amount_for_this_draw, 
-            SUM(invoice_construction_particular.retainage_release_amount) as retainage_release_amount, 
-            SUM(invoice_construction_particular.retainage_stored_materials_release_amount) as retainage_stored_materials_release_amount, 
-            SUM(invoice_construction_particular.total_outstanding_retainage) as total_outstanding_retainage, 
-            SUM(invoice_construction_particular.retainage_amount_previously_stored_materials) as retainage_amount_previously_stored_materials,
-            SUM(invoice_construction_particular.retainage_amount_previously_withheld) as retainage_amount_previously_withheld, 
-            
+        $retObj = DB::table('invoice_construction_particular as icp')
+            ->select(DB::raw('SUM(icp.approved_change_order_amount) as approved_change_order_amount, 
+            SUM(icp.original_contract_amount) as original_contract_amount, 
+            SUM(icp.current_contract_amount ) as current_contract_amount, 
+            SUM(icp.previously_billed_amount ) as previously_billed_amount, 
+            SUM(icp.current_billed_amount)  as current_billed_amount, 
+            SUM(icp.stored_materials) as stored_materials, 
+            SUM(icp.retainage_amount_stored_materials) as retainage_amount_stored_materials, 
+            SUM(icp.retainage_amount_for_this_draw) as retainage_amount_for_this_draw, 
+            SUM(icp.retainage_release_amount) as retainage_release_amount, 
+            SUM(icp.retainage_stored_materials_release_amount) as retainage_stored_materials_release_amount, 
+            SUM(icp.total_outstanding_retainage) as total_outstanding_retainage, 
+            SUM(icp.retainage_amount_previously_stored_materials) as retainage_amount_previously_stored_materials,
+            SUM(icp.retainage_amount_previously_withheld) as retainage_amount_previously_withheld, 
             csi_code.code'))
-            ->join('csi_code', 'csi_code.id', '=', 'invoice_construction_particular.bill_code')
+            ->join('csi_code', 'csi_code.id', '=', 'icp.bill_code')
             ->where('payment_request_id', $payment_request_id)
-            ->where('invoice_construction_particular.is_active', 1)
+            ->where('icp.is_active', 1)
             ->get();
         return $retObj;
     }

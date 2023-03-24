@@ -807,6 +807,7 @@ class InvoiceController extends AppController
         return $this->create($request, 'subscription', 2);
     }
 
+    //TODO : @a - remvoed the underscore in the functiom name 
     public function view_702($link, $version =  null)
     {
         $payment_request_id = Encrypt::decode($link);
@@ -836,7 +837,8 @@ class InvoiceController extends AppController
 
             //set bank values 
             $info = $this->setBankValues($info, $payment_request_id);
-            //set first invoice values
+            //set first invoice values 
+            //TODO: @a -REMOVE THIS 
             $data['isFirstInvoice'] = $this->setFirstInvoiceValues($payment_request_id);
             
             $plugins = json_decode($info['plugin_value'], 1);
@@ -848,18 +850,22 @@ class InvoiceController extends AppController
             }
 
             $data['has_aia_license'] = $hasAIALicense;
+            
             $info['its_from'] = 'real';
+            ////TODO: @a - remove the staging thing 
             $info['staging'] = 0;
+            //remvoe this also 
             $info["surcharge_amount"] = 0;
+            //check this and remove
             $info['user_name'] = Session::get('user_name');
 
             $construction_details = $this->invoiceModel->getInvoiceConstructionParticularsSum($payment_request_id);
             $construction_details = json_decode($construction_details, 1)[0];
 
-            $info['project_details'] =  $this->invoiceModel->getProjectDeatils($payment_request_id);
+            $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
 
             //set CO Data
-            $changOrderData = $this->setChangeOrderValues($info['change_order_id'], $info['created_date'], $info['project_details']->contract_id);
+            $changOrderData = $this->setChangeOrderValues($info['change_order_id'], $info['created_date'], $project_details->contract_id);
             $data['last_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive']);
             $data['last_month_co_amount_negative'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative']);
             $data['this_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive']);
@@ -870,7 +876,7 @@ class InvoiceController extends AppController
 
             $data["total_complete_stored"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials']);
             $data["original_contract_amount"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['original_contract_amount']);
-             $data["contract_sum_to_date"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']);
+            $data["contract_sum_to_date"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']);
 
 
             if (!empty($construction_details['total_outstanding_retainage'])) {
@@ -878,7 +884,7 @@ class InvoiceController extends AppController
             } else {
                 $sumOfi = $construction_details['retainage_amount_previously_withheld'];
             }
-            
+
             $totalBilledAmount = $this->getTotalBilledAmount($construction_details);
             $sum_stored_materials = $this->getStoredMaterialsSum($construction_details);
             $total_retainage_amount = $this->getTotalRetinageAmount($construction_details);
