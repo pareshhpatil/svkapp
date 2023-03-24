@@ -52,17 +52,7 @@
     <!-- BEGIN SEARCH CONTENT-->
     <div class="row">
         <div class="col-md-12">
-            @if(empty($format_list))
-            <div class="alert alert-info">
-                <button type="button" class="close" data-dismiss="alert"></button>
-                <strong>Info!</strong>
-                <div class="media">
-                    <p class="media-heading">You need to create a template before sending invoices. Please create a bill template using the Create template button below</p>
-                    <p><a href="/merchant/template/newtemplate" class="btn blue">Create Template</a></p>
-                </div>
-
-            </div>
-            @else
+            
 
             <div class="row">
                 <div class="col-md-12">
@@ -75,7 +65,7 @@
                                     <div class="form-group mb-0">
                                         <div class="col-md-12">
 
-                                            <div class="col-md-3 pl-1" style="padding-right: 0px;">
+                                            <!--<div class="col-md-3 pl-1" style="padding-right: 0px;">
                                                 {{-- @if($template_id=='' )onchange="invoicePreview(this.value);" @endif --}}
                                                 <select data-cy="template_id" name="template_id" id="template_id" required title="Pick an invoice format" class="form-control select2me" data-placeholder="Select format">
                                                     <option value=""></option>
@@ -93,7 +83,7 @@
                                                 </select>
                                                 <small class="form-text text-muted">Invoice format</small>
                                                 <div class="help-block"></div>
-                                            </div>
+                                            </div>-->
                                             <!--
                                             <div class="col-md-3 pl-1 pr-0">
                                                 <select data-placeholder="Select billing profile" onchange="setCurrency(this.value);" class="form-control select2me" id="billing_profile_id" data-cy="billing_profile_id" name="billing_profile_id">
@@ -149,7 +139,6 @@
                     </div>
                     @endif
                 </div>
-                @endif
             </div>
 
         </div>

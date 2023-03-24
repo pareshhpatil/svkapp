@@ -256,10 +256,10 @@ class InvoiceController extends AppController
         $title = ($update == null) ? 'Create ' . $type : 'Update ' . $type;
         $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
         #get merchant invoice format list
-        $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
-//        if (count($data['format_list']) == 1) {
-//            $request->template_id = $data['format_list']->first()->template_id;
-//        }
+        //$data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
+        //        if (count($data['format_list']) == 1) {
+        //            $request->template_id = $data['format_list']->first()->template_id;
+        //        }
 
         $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
         $data['billing_profile_id'] = '';
@@ -303,7 +303,7 @@ class InvoiceController extends AppController
         }
 
         $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
-        
+
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -319,9 +319,9 @@ class InvoiceController extends AppController
         }
 
         Session::put('breadcrumbs', $breadcrumbs);
-        if (isset($request->template_id)) {
+        if (isset($request->contract_id)) {
+            $template_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $request->contract_id, 'template_id');
             $formatModel = new InvoiceFormat();
-            $template_id = $request->template_id;
             $data['template_link'] = Encrypt::encode($template_id);
             $data['template_id'] = $template_id;
             $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : 0;
@@ -1059,22 +1059,22 @@ class InvoiceController extends AppController
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
 
-            if(!empty($notificationID)) {
+            if (!empty($notificationID)) {
                 /** @var Notification $Notification */
                 $Notification = Notification::findOrFail($notificationID);
 
