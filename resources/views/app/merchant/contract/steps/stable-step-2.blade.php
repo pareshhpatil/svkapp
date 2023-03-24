@@ -260,7 +260,7 @@
                 <div class="col-md-12">
                     <div class="pull-right">
                         <a class="btn green" @click="back()">Back</a>
-                        <button class="btn blue" type="submit" @click="next()">Preview contract</button>
+                        <button class="btn blue" type="submit" @click="next()">Save particulars</button>
                     </div>
                 </div>
             </div>

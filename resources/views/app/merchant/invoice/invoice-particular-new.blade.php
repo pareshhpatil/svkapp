@@ -202,8 +202,8 @@
                                                 @endif
 
                                                 @php
-                                                $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
-                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage','retainage_amount_stored_materials');
+                                                $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage',/*'retainage_amount_stored_materials'*/);
+                                                $disable_array=array('stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage',/*'retainage_amount_stored_materials'*/);
                                                 $dropdown_array=array('group','bill_code','bill_code_detail','cost_type');
                                                @endphp
 
@@ -350,7 +350,7 @@
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false; @if($k=='retainage_amount_for_this_draw') calculateRetainagePercent(field); @endif calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false; @if($k=='retainage_percent') calculateRetainageAmount(field); @endif @if($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount(field); @endif  calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -1107,9 +1107,27 @@
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
                             field.current_billed_amount = updateTextView1 ( getamt(field.current_contract_amount)  * getamt(field.current_billed_percent) / 100 );
                     },
-                    calculateRetainagePercent(field){
-                        if(field.retainage_amount_for_this_draw !== null && field.retainage_amount_for_this_draw !== undefined)
-                            field.retainage_percent =  getamt(field.retainage_amount_for_this_draw)  * 100 / getamt(field.original_contract_amount) ;
+                    calculateRetainageAmount(field){
+                            try {
+                            if(field.retainage_percent==null)
+                            {
+                                field.retainage_percent='';
+                            }
+                            field.retainage_amount_for_this_draw = updateTextView1(getamt(field.current_billed_amount)  * getamt(field.retainage_percent) / 100);
+                        } catch (o) {}
+
+                        
+                    },
+                    calculateRetainageStoreMaterialAmount(field){
+                            try {
+                            if(field.retainage_percent_stored_materials==null)
+                            {
+                                field.retainage_percent_stored_materials='';
+                            }
+                            field.retainage_amount_stored_materials = updateTextView1(getamt(field.current_stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
+                        } catch (o) {}
+
+                        
                     },
                     checkCurrentBillAmount(field, index){
                         if(field.current_billed_percent !== null && field.current_billed_percent !== undefined)
@@ -1188,13 +1206,17 @@
                                             field.current_stored_materials = updateTextView1(getamt(field.current_stored_materials));
                                         } catch (o) {}
 
-                                        try {
-                                            if(field.retainage_percent==null)
-                                            {
-                                                field.retainage_percent='';
-                                            }
-                                            field.retainage_amount_for_this_draw = updateTextView1(getamt(field.current_billed_amount)  * getamt(field.retainage_percent) / 100);
+                                        if(getamt(field.current_billed_amount)>0)
+                                        {
+                                            try {
+                                            field.retainage_percent =  getamt(field.retainage_amount_for_this_draw)  * 100 / getamt(field.current_billed_amount) ;
                                         } catch (o) {}
+                                        }else{
+                                            field.retainage_amount_for_this_draw='';
+                                            field.retainage_percent='';
+                                        }
+
+                                        
 
                                 try {
                                 if(field.retainage_amount_previously_stored_materials === undefined || field.retainage_amount_previously_stored_materials === null)
@@ -1203,13 +1225,25 @@
                                 if(field.retainage_stored_materials_release_amount === undefined || field.retainage_stored_materials_release_amount === null)
                                     field.retainage_stored_materials_release_amount = 0;
 
-                                if(field.retainage_percent_stored_materials === undefined || field.retainage_percent_stored_materials === null)
-                                    field.retainage_percent_stored_materials = 0;
+                                //if(field.retainage_percent_stored_materials === undefined || field.retainage_percent_stored_materials === null)
+                                 //   field.retainage_percent_stored_materials = 0;
 
-                                if(field.retainage_amount_stored_materials === undefined || field.retainage_amount_stored_materials === null)
-                                    field.retainage_amount_stored_materials = 0;
+                               // if(field.retainage_amount_stored_materials === undefined || field.retainage_amount_stored_materials === null)
+                                //    field.retainage_amount_stored_materials = 0;
 
-                                field.retainage_amount_stored_materials = updateTextView1(getamt(field.current_stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
+                               // field.retainage_amount_stored_materials = updateTextView1(getamt(field.current_stored_materials)  * getamt(field.retainage_percent_stored_materials) / 100);
+
+
+                                if(getamt(field.current_stored_materials)>0)
+                                {
+                                    try {
+                                    field.retainage_percent_stored_materials =  getamt(field.retainage_amount_stored_materials)  * 100 / getamt(field.current_stored_materials) ;
+                                } catch (o) {}
+                                }else{
+                                    field.retainage_amount_stored_materials='';
+                                    field.retainage_percent_stored_materials='';
+                                }
+
                             } catch (o) {}
 
                             try {

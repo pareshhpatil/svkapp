@@ -179,6 +179,7 @@ SwipezLogger::error(__CLASS__, '[E292]Error while updating supplier Error: ' . $
     function save($ajax = 0) {
         try {
             if (empty($_POST)) {
+                dd('hii');
                 header("Location:/merchant/coveringnote/create");
             }
             require CONTROLLER . 'merchant/Suppliervalidator.php';
