@@ -95,8 +95,8 @@
         $txtHeight = $fontMetrics->getFontHeight($font, 150);
         $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
             
-        $x = ($w-$textWidth-400);
-        $y = ($h-$txtHeight);
+        $x = (($w-$textWidth)/2);
+        $y = (($h-$txtHeight)/1.5);
         $pdf->page_script('$pdf->set_opacity(.1, "Multiply");');
         $pdf->page_text($x, $y, $text, $font, 80,$color =array(0,0,0), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
         @endif
