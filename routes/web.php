@@ -423,7 +423,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');
-  Route::any('order/update/{link}', 'OrderController@update')
+  Route::any('order/update/{link}/{bulk_id?}', 'OrderController@update')
       ->name('update.order')
       ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
@@ -479,7 +479,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('invoice/list/data',  'InvoiceController@list')->name("invoicelist");
 
   Route::get('imports',  'CompanyProfileController@imports')->name("merchant.imports");
-  Route::get('import/format/{type}',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
+  Route::get('import/format/{type}/{id}',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
   Route::get('import/billcodes/approve/{bulk_id}',  'ImportController@approveBillCodes')->name("merchant.imports.billCode.approve");
   Route::get('import/error/{bulk_id}',  'ImportController@errorImports')->name("merchant.imports.billCode.approve");
   Route::get('import/download/{bulk_id}',  'ImportController@downloadImportFile')->name("merchant.imports.billCode.download");
@@ -502,6 +502,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('invoice-status', 'MasterController@invoiceStatusList')->name('merchant.invoice-status'); 
   Route::any('/invoice-status/save', 'MasterController@invoiceStatusSave');
+
+  Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
+  Route::post('import/change-order/upload',  'ImportController@uploadChangeOrder')->name("merchant.import.change-order.upload");
 });
 
 Route::group(['prefix' => 'patron'], function () {

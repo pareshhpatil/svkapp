@@ -35,7 +35,6 @@ class OrderController extends Controller
         $this->invoiceModel = new Invoice();
         $this->orderModel = new Order();
         $this->apiController = new APIController();
-
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
@@ -88,7 +87,7 @@ class OrderController extends Controller
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-            if($contractPrivilegesID == 'full') {
+            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'approve') {
                 $whereContractIDs[] = $key;
             }
         }
@@ -184,6 +183,9 @@ class OrderController extends Controller
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+            if(isset($request->import) && $request->import=='Import') {
+                return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+            }
 
             $InvoiceHelper = new ChangeOrderHelper();
 
@@ -282,6 +284,30 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+
             $request->approved_date = Helpers::sqlDate($request->approved_date);
             $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
             return redirect('merchant/order/list')->with('success', "Change order has been Approved");
@@ -294,6 +320,29 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+            
             $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
             return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
         } else {
@@ -301,7 +350,7 @@ class OrderController extends Controller
         }
     }
 
-    public function update($link)
+    public function update($link,$bulk_id=null)
     {
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
@@ -377,6 +426,14 @@ class OrderController extends Controller
             $data['detail2'] = $row2;
             $data['link'] = $link;
             $data['mode'] = 'update';
+            $data['bulk_id'] = 0;
+           
+            if ($bulk_id != null) {
+                $bulk_id = Encrypt::decode($bulk_id);
+                $particulars = $this->orderModel->getColumnValue('staging_change_order', 'bulk_id', $bulk_id, 'particulars');
+                $data['detail']->json_particulars = json_decode($particulars, 1);
+                $data['bulk_id'] = $bulk_id;
+            }
             return view('app/merchant/order/update', $data);
         } else {
             return redirect('/404');
@@ -475,6 +532,15 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
+        
+        if(isset($request->import) && $request->import=='Import') {
+            return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+        }
+
+        if ($request->bulk_id > 0) {
+            $this->orderModel->updateTable('bulk_upload', 'bulk_upload_id', $request->bulk_id, 'status', 5);
+            $this->orderModel->updateTable('order', 'order_id', $id, 'bulk_id', $request->bulk_id);
+        }
         return redirect('merchant/order/list')->with('success', "Change Order has been updated");
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
 use App\Libraries\Encrypt;
 use App\Model\ParentModel;
 use Illuminate\Support\Facades\DB;
@@ -12,22 +14,11 @@ class SelectController extends AppController
     {
         $search = request()->input('query');
         $userID = request()->input('user_id');
+        $merchantID = $this->merchant_id;
 
-        $User = DB::table('user')
-                    ->where('user_id', Encrypt::decode($userID))
-                    ->first();
-
-//        if ($User->user_status == 20) {
-        $merchant = (new ParentModel())->getTableRow('merchant', 'group_id', $User->group_id);
-//        } else {
-//            $merchant = (new ParentModel())->getTableRow('merchant', 'user_id', $User->user_id);
-//        }
-
-        if (empty($merchant)) {
+        if (empty($merchantID)) {
             return [];
         }
-        
-        $merchantID = $merchant->merchant_id;
 
         $data = [];
         switch ($type) {

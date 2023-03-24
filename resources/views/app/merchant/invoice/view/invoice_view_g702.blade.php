@@ -29,25 +29,25 @@ $header='app.patron.invoice.invoice-master';}
     overflow: hidden;
     }
 
-    .watermark__inner {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        left: 0px;
-        position: absolute;
-        top: 22px;
-        height: 70%;
-        width: 100%;
-    }
+.watermark__inner {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    left: 0px;
+    position: absolute;
+    top: 120px;
+    height: 70%;
+    width: 100%;
+}
 
-    .watermark__body {
-        color: rgba(0, 0, 0, 0.2);
-        font-size: 14vh;
-        font-weight: bold;
-        text-transform: uppercase;
-        transform: rotate(-45deg);
-        user-select: none;
-    }
+.watermark__body {
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 14vh;
+    font-weight: bold;
+    text-transform: uppercase;
+    transform: rotate(-45deg);
+    user-select: none;
+}
 </style>
 
 @extends($header)

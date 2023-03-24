@@ -23,19 +23,21 @@ class SubUserHelper
      */
     public function getGroupID($authUserID)
     {
-        $groupID = DB::table(ITable::USER)
+        $authUser = DB::table(ITable::USER)
             ->where(IColumn::USER_ID, $authUserID)
-            ->pluck('group_id')
             ->first();
 
-        if(empty($groupID)) {
-            $groupID = DB::table('merchant')
+        if($authUser->user_group_type == 1) {
+            return DB::table('merchant')
                 ->where(IColumn::USER_ID, $authUserID)
                 ->pluck('group_id')
                 ->first();
         }
 
-        return $groupID;
+        return DB::table('merchant')
+            ->where('group_id', $authUser->group_id)
+            ->pluck('group_id')
+            ->first();
     }
 
     /**
@@ -48,9 +50,9 @@ class SubUserHelper
         $groupID = $this->getGroupID($authUserID);
 
         $checkEmail = DB::table('user')
-                        ->where('email_id', $request->get('email_id'))
-                        ->where('group_id', $groupID)
-                        ->exists();
+            ->where('email_id', $request->get('email_id'))
+            ->where('group_id', $groupID)
+            ->exists();
 
         if($checkEmail) {
             return [
@@ -131,10 +133,7 @@ class SubUserHelper
      */
     public function indexTableData($userID)
     {
-        $groupID = DB::table(ITable::USER)
-            ->where('user_id', $userID)
-            ->pluck('group_id')
-            ->first();
+        $groupID = $this->getGroupID($userID);
 
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
@@ -210,7 +209,7 @@ class SubUserHelper
                     'updated_by' => $SubUser->created_by,
                     IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
                     IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-            ]);
+                ]);
     }
 
     /**
@@ -255,8 +254,8 @@ class SubUserHelper
     public function getRoles($merchantID)
     {
         return DB::table(ITable::BRIQ_ROLES)
-                    ->where('merchant_id', $merchantID)
-                    ->get()
-                    ->toArray();
+            ->where('merchant_id', $merchantID)
+            ->get()
+            ->toArray();
     }
 }

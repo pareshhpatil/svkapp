@@ -4,9 +4,12 @@ namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Jobs\ProcessChangeOrderForApproveJob;
+use App\Jobs\ProcessChangeOrderMailForApproveJob;
 use App\Libraries\Encrypt;
+use App\Notifications\ChangeOrderNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -17,6 +20,8 @@ class ChangeOrderHelper
     public function sendChangeOrderForApprovalNotification($orderId)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
+        $authUserID = Encrypt::decode(Session::get('userid'));
+        $authUserRole = Session::get('user_role');
 
         $orderDetail = DB::table('order')
             ->where('order_id', $orderId)
@@ -31,6 +36,35 @@ class ChangeOrderHelper
             $contractID = $Contract->contract_id;
             $customerID = $Contract->customer_id;
             $projectID = $Contract->project_id;
+
+
+            //Update Change Order Privileges array
+            $privilegesContractIDs = json_decode(Redis::get('contract_privileges_' . $authUserID), true);
+            $privilegesChangeOrderIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            if($authUserRole == 'Admin') {
+                $privilegesChangeOrderIDs[$orderDetail->order_id] = 'full';
+            } else {
+                if(isset($privilegesContractIDs[$contractID])) {
+                    if($privilegesContractIDs[$contractID] == 'full') {
+                        $privilegesChangeOrderIDs[$orderDetail->order_id] = 'full';
+                    }
+
+                    if($privilegesContractIDs[$contractID] == 'approve') {
+                        $privilegesChangeOrderIDs[$orderDetail->order_id] = 'approve';
+                    }
+
+                    if($privilegesContractIDs[$contractID] == 'edit') {
+                        $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
+                    }
+                } else {
+                    $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
+                }
+
+            }
+
+            Redis::set('change_order_privileges_' . $authUserID, json_encode($privilegesChangeOrderIDs));
+
 
             $data = DB::table('briq_privileges')
                 ->where('merchant_id', $merchantID)
@@ -95,7 +129,9 @@ class ChangeOrderHelper
                 ->get();
 
             foreach ($Users as $User) {
-                ProcessChangeOrderForApproveJob::dispatch($orderDetail, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
+                $User->notify(new ChangeOrderNotification($orderDetail->order_id, $orderDetail->order_no, $User));
+                //Different queue for mail bcz mails fails sometimes if email not verified
+                ProcessChangeOrderMailForApproveJob::dispatch($orderDetail, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
         }
     }

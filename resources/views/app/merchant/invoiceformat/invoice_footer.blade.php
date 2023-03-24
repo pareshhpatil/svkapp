@@ -1027,7 +1027,7 @@ Print<i class="fa fa-print"></i>
         clone.setAttribute('id', 'watermark_div' + divID);
         document.querySelector('#watermark_parent').appendChild(clone);
         newElement  = document.getElementById('watermark_div'+divID)
-        pixels  = 500*i;
+        pixels  = 1000*i;
         newElement.style.paddingTop = pixels+"px";
     }    
 </script>

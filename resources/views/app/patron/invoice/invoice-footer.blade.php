@@ -231,7 +231,21 @@
 
 </div>
 @endif
-
+@if($has_watermark)
+<script>
+    var offsetHeight = document.getElementById('main_div').offsetHeight;
+    intervalHeight = Math.round(offsetHeight/500);
+    for(let i=1;i<=intervalHeight;i++){
+        divID= Math.random();
+        let clone = document.querySelector('#watermark_div').cloneNode(true);
+        clone.setAttribute('id', 'watermark_div' + divID);
+        document.querySelector('#watermark_parent').appendChild(clone);
+        newElement  = document.getElementById('watermark_div'+divID)
+        pixels  = 1000*i;
+        newElement.style.paddingTop = pixels+"px";
+    }    
+</script>
+@endif
 <!-- END PAGE CONTENT-->
 <div class="row" style="max-width: 909px;margin-top: 5px;padding-left: 25px;">
 

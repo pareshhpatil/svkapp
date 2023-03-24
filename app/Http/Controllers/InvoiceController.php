@@ -218,7 +218,7 @@ class InvoiceController extends AppController
                         $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
-                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                    The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
                         return redirect('/merchant/paymentrequest/viewlist');
                     }
                 }
@@ -257,9 +257,9 @@ class InvoiceController extends AppController
         $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
         #get merchant invoice format list
         $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
-        if (count($data['format_list']) == 1) {
-            $request->template_id = $data['format_list']->first()->template_id;
-        }
+//        if (count($data['format_list']) == 1) {
+//            $request->template_id = $data['format_list']->first()->template_id;
+//        }
 
         $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
         $data['billing_profile_id'] = '';
@@ -303,6 +303,7 @@ class InvoiceController extends AppController
         }
 
         $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -420,7 +421,6 @@ class InvoiceController extends AppController
 
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
-
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }
@@ -1043,15 +1043,43 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view_g703_v2($link)
+    public function view_g703_v2($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            if(!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+
+                $Notification->markAsRead();
+            }
 
             $info = (array)$info;
             $info['gtype'] = '703';

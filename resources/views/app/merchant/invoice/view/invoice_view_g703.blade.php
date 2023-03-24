@@ -41,6 +41,8 @@ $header = 'app.patron.invoice.invoice-master';
         display: flex;
         justify-content: center;
         position: absolute;
+        position: absolute;
+        height: 50%;
         width: 100%;
     }
 

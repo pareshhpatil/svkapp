@@ -23,7 +23,7 @@
   <![endif]-->
     <style>
         body {
-            font-family: Roboto;
+    font-family: 'Roboto', sans-serif;
             letter-spacing: 0;
             line-height: 75%;
         }
@@ -79,7 +79,7 @@
         if ($PAGE_COUNT > 0) {
         $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
         $size = 10;
-        $font = $fontMetrics->getFont("Verdana");
+        $font = $fontMetrics->getFont("Roboto");
         $width = $fontMetrics->get_text_width($text, $font, $size) / 3;
         $x = ($pdf->get_width() - $width - 12);
         $y = $pdf->get_height() - 25;
@@ -91,12 +91,12 @@
 
         $text = "{{$watermark_text}}";
         $text = chunk_split($text, 10);
-        $font = $fontMetrics->getFont('times');
+        $font = $fontMetrics->getFont('Roboto');
         $txtHeight = $fontMetrics->getFontHeight($font, 150);
         $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
             
-        $x = ($w-$textWidth-400);
-        $y = ($h-$txtHeight);
+        $x = (($w-$textWidth)/2);
+        $y = (($h-$txtHeight)/1.5);
         $pdf->page_script('$pdf->set_opacity(.1, "Multiply");');
         $pdf->page_text($x, $y, $text, $font, 80,$color =array(0,0,0), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
         @endif
