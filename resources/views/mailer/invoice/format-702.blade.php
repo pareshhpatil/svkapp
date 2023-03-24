@@ -48,7 +48,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
      font-weight:700;
 }
 body{
-    font-family: Roboto;
+    font-family: 'Roboto', sans-serif;
     letter-spacing: 0px;
     line-height: 93%;
 }
