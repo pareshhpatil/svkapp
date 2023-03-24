@@ -9,6 +9,7 @@ use App\Libraries\Encrypt;
 use App\Notifications\ChangeOrderNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -19,12 +20,22 @@ class ChangeOrderHelper
     public function sendChangeOrderForApprovalNotification($orderId)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
+        $authUserID = Encrypt::decode(Session::get('userid'));
 
         $orderDetail = DB::table('order')
             ->where('order_id', $orderId)
             ->first();
 
         if (!empty($orderDetail)) {
+
+            //Update Change Order Privileges array
+            $privilegesChangeOrderIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
+
+            Redis::set('change_order_privileges_' . $authUserID, json_encode($privilegesChangeOrderIDs));
+
+
             $Contract = DB::table('contract')
                         ->where('is_active', 1)
                         ->where('contract_id', $orderDetail->contract_id)
