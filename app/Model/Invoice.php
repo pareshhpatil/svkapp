@@ -299,6 +299,31 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+    public function getInvoiceConstructionParticularsSum($payment_request_id)
+    {
+        $retObj = DB::table('invoice_construction_particular')
+            ->select(DB::raw('SUM(invoice_construction_particular.approved_change_order_amount) as approved_change_order_amount, 
+            SUM(invoice_construction_particular.original_contract_amount) as original_contract_amount, 
+            SUM(invoice_construction_particular.current_contract_amount ) as current_contract_amount, 
+            SUM(invoice_construction_particular.previously_billed_amount ) as previously_billed_amount, 
+            SUM(invoice_construction_particular.current_billed_amount)  as current_billed_amount, 
+            SUM(invoice_construction_particular.stored_materials) as stored_materials, 
+            SUM(invoice_construction_particular.retainage_amount_stored_materials) as retainage_amount_stored_materials, 
+            SUM(invoice_construction_particular.retainage_amount_for_this_draw) as retainage_amount_for_this_draw, 
+            SUM(invoice_construction_particular.retainage_release_amount) as retainage_release_amount, 
+            SUM(invoice_construction_particular.retainage_stored_materials_release_amount) as retainage_stored_materials_release_amount, 
+            SUM(invoice_construction_particular.total_outstanding_retainage) as total_outstanding_retainage, 
+            SUM(invoice_construction_particular.retainage_amount_previously_stored_materials) as retainage_amount_previously_stored_materials,
+            SUM(invoice_construction_particular.retainage_amount_previously_withheld) as retainage_amount_previously_withheld, 
+            
+            csi_code.code'))
+            ->join('csi_code', 'csi_code.id', '=', 'invoice_construction_particular.bill_code')
+            ->where('payment_request_id', $payment_request_id)
+            ->where('invoice_construction_particular.is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
 
     public function getTravelInvoiceParticular($payment_request_id)
     {

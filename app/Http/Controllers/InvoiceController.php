@@ -811,10 +811,8 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
 
-        $payment_request_id = Encrypt::decode($link);
-
         if (strlen($payment_request_id) == 10) {
-            $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
+            $data = Helpers::setBladeProperties('Invoice', ['transaction', 'invoice'], [5, 28]);
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
             $info = (array)$info;
@@ -833,39 +831,278 @@ class InvoiceController extends AppController
                 $info['offline_success_transaction'] = $offlineResponse;
             }
 
+            $info['user_type'] = 'merchant';
+            $info["Url"] =  Encrypt::encode($payment_request_id);
 
-            //end code for new design
-            $banklist = $this->parentModel->getConfigList('Bank_name');
-            $banklist = json_decode($banklist, 1);
-
-            $imgpath = '';
-            if (isset($info['image_path'])) {
-                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
-                if ($info['image_path'] != '') {
-                    $info['image_path'] =  $imgpath;
+            //set bank values 
+            $info = $this->setBankValues($info, $payment_request_id);
+            //set first invoice values
+            $data['isFirstInvoice'] = $this->setFirstInvoiceValues($payment_request_id);
+            
+            $plugins = json_decode($info['plugin_value'], 1);
+            $hasAIALicense = false;
+            if (isset($plugins['invoice_output'])) {
+                if (isset($plugins['has_aia_license'])) {
+                    $hasAIALicense = true;
                 }
             }
-            if (Session::get('success_array')) {
-                $whatsapp_share = $this->getWhatsapptext($info);
-                $success_array = Session::get('success_array');
-                $active_payment = Session::get('has_payment_active');
-                Session::remove('success_array');
-                $info["invoice_success"] = true;
 
-                $info["whatsapp_share"] = $whatsapp_share;
-                foreach ($success_array as $key => $val) {
-                    $info[$key] = $val;
-                }
-                if (Session::get('has_payment_active') == false) {
-                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
-                }
-                if ($success_array['type'] == 'insert' && $active_payment == false) {
-                    $info["payment_gateway_info"] = true;
-                }
+            $data['has_aia_license'] = $hasAIALicense;
+            $info['its_from'] = 'real';
+            $info['staging'] = 0;
+            $info["surcharge_amount"] = 0;
+            $info['user_name'] = Session::get('user_name');
+
+            $construction_details = $this->invoiceModel->getInvoiceConstructionParticularsSum($payment_request_id);
+            $construction_details = json_decode($construction_details, 1)[0];
+
+            $info['project_details'] =  $this->invoiceModel->getProjectDeatils($payment_request_id);
+
+            //set CO Data
+            $changOrderData = $this->setChangeOrderValues($info['change_order_id'], $info['created_date'], $info['project_details']->contract_id);
+            $data['last_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive']);
+            $data['last_month_co_amount_negative'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative']);
+            $data['this_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive']);
+            $data['this_month_co_amount_negative'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['this_month_co_amount_negative']);
+            $data['total_co'] = $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount'];
+            $data['total_co_amount_positive'] = $changOrderData['total_co_amount_positive'];
+            $data['total_co_amount_negative'] = $changOrderData['total_co_amount_negative'];
+
+            $data["total_complete_stored"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials']);
+            $data["original_contract_amount"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['original_contract_amount']);
+             $data["contract_sum_to_date"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']);
+
+
+            if (!empty($construction_details['total_outstanding_retainage'])) {
+                $sumOfi = $construction_details['total_outstanding_retainage'];
+            } else {
+                $sumOfi = $construction_details['retainage_amount_previously_withheld'];
             }
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            
+            $totalBilledAmount = $this->getTotalBilledAmount($construction_details);
+            $sum_stored_materials = $this->getStoredMaterialsSum($construction_details);
+            $total_retainage_amount = $this->getTotalRetinageAmount($construction_details);
+            $data['work_complete_perc'] = $this->getWorkCompletePerc($totalBilledAmount, $total_retainage_amount);
+            $data['stored_material_perc'] = $this->getWorkCompletePerc($construction_details['stored_materials'], $sum_stored_materials);
+
+            $info['total_retainage'] = $total_retainage_amount + $sum_stored_materials;
+            $data['total_retainage_amount']  = $info['currency_icon'] . $this->formatInvoiceValues($total_retainage_amount);
+            $data['total_stored_materials'] = $info['currency_icon'] . $this->formatInvoiceValues($sum_stored_materials);
+
+            if ($info['total_retainage'] == 0) {
+                $info['total_retainage'] = $sumOfi;
+            } else {
+                $info['total_retainage'] = $info['total_retainage'];
+            }
+
+            $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
+            $data['total_earned_less_retain'] = $info['currency_icon'] . $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $info['total_retainage']));
+            $data['total_previously_billed_amount'] =  $info['currency_icon'] . $this->formatInvoiceValues($construction_details['previously_billed_amount']);
+
+            //get grand total
+            $data['grand_total'] =  $this->getGrandTotal($info, $info['currency_icon']);
+            $data['balance_to_finish'] =$this->getBalanceToFinish($construction_details, $changOrderData, $info['total_retainage'], $info['currency_icon']);
+            $info['total_retainage'] = $info['currency_icon'] . $this->formatInvoiceValues($info['total_retainage']);
+
+            $data['info'] = $info;
             return view('app/merchant/invoice/G702/index', $data);
         }
+    }
+    
+    public function getTotalBilledAmount($construction_details)
+    {         
+        $totalBilledAmount = $construction_details['previously_billed_amount'] +  $construction_details['current_billed_amount'];
+
+        return $totalBilledAmount;
+    }
+
+    public function getStoredMaterialsSum($construction_details)
+    {         
+        $sum_stored_materials =  $construction_details['retainage_amount_stored_materials'] + 
+        $construction_details['retainage_amount_previously_stored_materials'] - $construction_details['retainage_stored_materials_release_amount'];
+
+        return $sum_stored_materials;
+    }
+
+    public function getTotalRetinageAmount($construction_details)
+    {         
+        $total_retainage_amount = $construction_details['retainage_amount_for_this_draw'] + 
+        $construction_details['retainage_amount_previously_withheld'] - $construction_details['retainage_release_amount'];
+
+        return $total_retainage_amount;
+    }
+
+    public function getBalanceToFinish($construction_details, $changOrderData, $total_retainage, $currency_icon)
+    {
+        $balance_to_finish = $construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] 
+        + $changOrderData['this_month_co_amount'] - (($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + 
+        $construction_details['stored_materials']) - (( $construction_details['retainage_amount_stored_materials'] + 
+        $construction_details['retainage_amount_previously_stored_materials'] - $construction_details['retainage_stored_materials_release_amount']) 
+        + $total_retainage));
+
+        $balance_to_finish = $currency_icon . $this->formatInvoiceValues($balance_to_finish);
+        return $balance_to_finish;
+
+    }
+
+    public function getWorkCompletePerc($totalBilledAmount, $total_retainage_amount)
+    {
+        $work_complete_perc =0;
+        if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
+            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount);
+        }
+
+        return $work_complete_perc;
+    }
+
+    public function getStoredMaterialPerc($stored_materials_sum,$sumOfrasm )
+    {
+        $stored_material_perc = 0;
+        if ($stored_materials_sum > 0 && $sumOfrasm > 0) {
+            $stored_material_perc = $this->formatInvoiceValues($sumOfrasm * 100 / $stored_materials_sum);
+        }
+
+        return $stored_material_perc;
+
+    }
+
+    public function getGrandTotal($info, $currency_icon)
+    {
+        $info['grand_total'] = $info['grand_total'] - $info['paid_amount'];
+        $grand_total = $info['grand_total'];
+        $date = date("m/d/Y");
+        $refDate = date("m/d/Y", strtotime($info['due_date']));
+        if ($date > $refDate) {
+            $info["invoice_total"] = $info['invoice_total'];
+            if ($info['grand_total'] > 0) {
+                $grand_total = $info['grand_total'] + $info['late_fee'];
+            }
+        }
+        $grand_total = $currency_icon . $this->formatInvoiceValues($grand_total );
+        return $grand_total;
+    }
+
+    public function setBankValues($info, $payment_request_id)
+    {
+        $staging = 0;
+        $banklist = $this->parentModel->getConfigList('Bank_name');
+        $banklist = json_decode($banklist, 1);
+        if ($staging == 0) {
+            foreach ($banklist as $value) {
+                $bank_ids[] = $value['config_key'];
+                $bank_values[] = $value['config_value'];
+            }
+            $info["bank_id"] = $bank_ids;
+            $info["bank_value"] = $bank_values;
+            $bankselect = isset($_POST['bank_name']) ? $_POST['bank_name'] : '';
+            $info["bank_selected"] = $bankselect;
+
+
+            $commentlist = $this->parentModel->getTableList('comments', 'parent_id', $payment_request_id);
+            $commentlist = json_decode($commentlist, 1);
+            $int = 0;
+            foreach ($commentlist as $list) {
+                $commentlist[$int]['link'] =  Encrypt::encode($list['id']);
+                $int++;
+            }
+            $info["commentlist"] = $commentlist;
+        }
+
+        return $info;
+    }
+
+    public function setFirstInvoiceValues($payment_request_id)
+    {
+
+        $paymentRequestData = PaymentRequest::find($payment_request_id);
+        $firstpaymentRequest =  $this->invoiceModel->getPaymentRequest($paymentRequestData->contract_id);
+        $isFirstInvoice = false;
+        $prevDPlusE = [];
+        if (!empty($firstpaymentRequest)) {
+            if ($firstpaymentRequest->payment_request_id == $payment_request_id) {
+                $isFirstInvoice = true;
+            }
+        } else {
+            $isFirstInvoice = true;
+        }
+
+        if ($isFirstInvoice == false) {
+            $previousInvoiceParticulars = [];
+            $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequestData->contract_id, $paymentRequestData->created_date);
+            if ($previousInvoice) {
+                $previousInvoiceParticulars =  $this->invoiceModel->getPreviousInvoiceParticular($previousInvoice->payment_request_id);
+            }
+            $prevDPlusE = [];
+            foreach ($previousInvoiceParticulars as $k => $val) {
+                $prevDPlusE[$val->pint] = $val->current_billed_amount + $val->previously_billed_amount;
+            }
+        }
+
+        return $isFirstInvoice;
+    }
+
+    public function setChangeOrderValues($change_order_id, $created_date, $contract_id)
+    {
+
+        $change_order_ids = json_decode($change_order_id, 1);
+        if (!empty($change_order_ids)) {
+            $co_data['last_month_co_amount_positive'] = 0;
+            $co_data['last_month_co_amount_negative'] = 0;
+            $co_data['this_month_co_amount_positive'] = 0;
+            $co_data['this_month_co_amount_negative'] = 0;
+
+            $start_date = '1990-01-01';
+            $end_date = date("Y-m-01");
+            $co_data['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
+            $co_data['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
+
+            $start_date = date("Y-m-01");
+            $end_date = date("Y-m-d", strtotime("first day of next month"));
+            $co_data['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
+            $co_data['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
+
+            $co_data['last_month_co_amount'] = $co_data['last_month_co_amount_positive'] +  $co_data['last_month_co_amount_negative'];
+            $co_data['this_month_co_amount'] = $co_data['this_month_co_amount_positive'] +  $co_data['this_month_co_amount_negative'];
+
+            $co_data['total_co_amount_positive'] = $co_data['last_month_co_amount_positive'] +  $co_data['this_month_co_amount_positive'];
+            $co_data['total_co_amount_negative'] = $co_data['last_month_co_amount_negative'] +  $co_data['this_month_co_amount_negative'];
+        } else {
+            $co_data['last_month_co_amount_positive'] = 0;
+            $co_data['last_month_co_amount_negative'] = 0;
+            $co_data['this_month_co_amount_positive'] = 0;
+            $co_data['this_month_co_amount_negative'] = 0;
+
+            $co_data['total_co_amount_positive'] = 0;
+            $co_data['total_co_amount_negative'] = 0;
+
+            $pre_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+            where EXTRACT(YEAR_MONTH FROM approved_date)= EXTRACT(YEAR_MONTH FROM '" . $created_date . "'-INTERVAL 1 MONTH) AND last_update_date<'" . $created_date  . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $contract_id . "'");
+            if ($pre_month_change_order_amount[0]->change_order_amount != null) {
+                $co_data['last_month_co_amount'] = $pre_month_change_order_amount[0]->change_order_amount;
+            } else {
+                $co_data['last_month_co_amount'] = 0;
+            }
+            $current_month_change_order_amount =  $this->invoiceModel->querylist("select sum(`total_change_order_amount`) as change_order_amount from `order`
+          where EXTRACT(YEAR_MONTH FROM approved_date)=EXTRACT(YEAR_MONTH FROM '" . $created_date  . "') AND last_update_date<'" . $created_date  . "' AND `status`=1 AND `is_active`=1 AND `contract_id`='" . $contract_id . "'");
+            if ($current_month_change_order_amount[0]->change_order_amount != null) {
+                $co_data['this_month_co_amount'] = $current_month_change_order_amount[0]->change_order_amount;
+            } else {
+                $co_data['this_month_co_amount'] = 0;
+            }
+        }
+
+        return $co_data;
+    }
+
+    public function formatInvoiceValues($value)
+    {
+        if ($value < 0) {
+            $value = '(' . str_replace('-', '', number_format($value, 2)) . ')';
+        } else {
+            $value = number_format($value, 2);
+        }
+
+        return $value;
     }
 
     public function view_g702($link)
@@ -4682,7 +4919,7 @@ class InvoiceController extends AppController
 
                     $sub_key =  $names . $key;
                 }
-                
+
                 $footer_sub_key =  $names . $key;
             }
 
