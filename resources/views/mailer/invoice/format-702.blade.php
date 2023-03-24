@@ -66,7 +66,7 @@ body{
 
         $text = "{{$watermark_text}}";
         $text = chunk_split($text, 10);
-        $font = $fontMetrics->getFont('times');
+        $font = $fontMetrics->getFont('Roboto');
         $txtHeight = $fontMetrics->getFontHeight($font, 150);
         $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
             
