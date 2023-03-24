@@ -284,6 +284,30 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+
             $request->approved_date = Helpers::sqlDate($request->approved_date);
             $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
             return redirect('merchant/order/list')->with('success', "Change order has been Approved");
@@ -296,6 +320,29 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+            
             $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
             return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
         } else {
