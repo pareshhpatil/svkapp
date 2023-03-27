@@ -808,7 +808,17 @@
                             //     }
                             // }
                             // this.fields[p].group = particularsArray[p].group
+                            
+                            if(this.fields[p].retainage_percent > 100) {
+                                $('#cell_retainage_percent_' + introw).addClass(' error-corner');
+                                addPopover('cell_retainage_percent_' + introw, "Retainage percentage should not be greater than 100");
+                                valid = false
+                            }else{
+                                $('#cell_retainage_percent_' + introw).removeClass(' error-corner').popover('destroy')
                             }
+
+                            }
+                            
                     }
                     return valid;
                 },
