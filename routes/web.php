@@ -374,7 +374,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //project screen CRUD routes
   Route::get('project/list', 'MasterController@projectlist'); 
   Route::get('project/delete/{link}', 'MasterController@projectdelete');
-  Route::get('project/create', 'MasterController@projectcreate');
+  Route::get('project/create', 'MasterController@projectcreate')->middleware('PrivilegesAccess');
   Route::post('project/store', 'MasterController@projectsave')->middleware('PrivilegesAccess');
   Route::get('project/edit/{link}', 'MasterController@projectupdate')->middleware('PrivilegesAccess');
   Route::post('project/updatestore', 'MasterController@projectupdatestore')->middleware('PrivilegesAccess');
@@ -479,7 +479,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('invoice/list/data',  'InvoiceController@list')->name("invoicelist");
 
   Route::get('imports',  'CompanyProfileController@imports')->name("merchant.imports");
-  Route::get('import/format/{type}/{id}',  'ImportController@formatBillCode')->name("merchant.imports.billCode.format");
+  Route::get('import/format/{type}/{id}',  'ImportController@downloadFormatSheet')->name("merchant.imports.billCode.format");
   Route::get('import/billcodes/approve/{bulk_id}',  'ImportController@approveBillCodes')->name("merchant.imports.billCode.approve");
   Route::get('import/error/{bulk_id}',  'ImportController@errorImports')->name("merchant.imports.billCode.approve");
   Route::get('import/download/{bulk_id}',  'ImportController@downloadImportFile')->name("merchant.imports.billCode.download");

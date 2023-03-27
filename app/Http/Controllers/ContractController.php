@@ -204,7 +204,6 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
-
         $step = $request->step;
         $contract = null;
         if ($request->contract_id) {
@@ -214,9 +213,22 @@ class ContractController extends Controller
         switch ($step) {
             case 1:
                 $response = $this->step1Store($request, $contract);
-                if ($response instanceof ContractParticular)
+
+                if ($response instanceof ContractParticular) {
+                    $contractPrivilegesAccess = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+                    $projectPrivilegesAccess = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+
+                    if(isset($projectPrivilegesAccess[$response->project_id])) {
+                        $contractPrivilegesAccess[$response->contract_id] = $projectPrivilegesAccess[$response->project_id];
+                    } else {
+                        $contractPrivilegesAccess[$response->contract_id] = 'edit';
+                    }
+
+                    Redis::set('contract_privileges_' . $this->user_id, json_encode($contractPrivilegesAccess));
                     $contract = $response;
-                else return $response;
+                } else {
+                    return $response;
+                }
 
                 $step++;
                 break;

@@ -5,7 +5,7 @@
 <div class="page-content">
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('merchant.import.contract') }}
+        {{ Breadcrumbs::render('merchant.import.change-order') }}
     </div>
     <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
     <!-- BEGIN PAGE CONTENT-->
@@ -87,7 +87,7 @@
                 </div>
             </form>
             @else
-            <a href="/merchant/order/create" data-toggle="modal" class="btn green pull-right"> Create Contract </a>
+            <a href="/merchant/order/create" data-toggle="modal" class="btn green pull-right"> Create Change order </a>
             @endif
             <!-- END UPLOAD EXCEL BOX -->
             <!-- BEGIN CREATED TEMPLATES LISTING BOX -->
