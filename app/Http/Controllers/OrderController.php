@@ -493,6 +493,8 @@ class OrderController extends Controller
         if ($request->bulk_id > 0) {
             $this->orderModel->updateTable('bulk_upload', 'bulk_upload_id', $request->bulk_id, 'status', 5);
             $this->orderModel->updateTable('order', 'order_id', $id, 'bulk_id', $request->bulk_id);
+            $InvoiceHelper = new ChangeOrderHelper();
+            $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
         }
         return redirect('merchant/order/list')->with('success', "Change Order has been updated");
     }
