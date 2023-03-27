@@ -76,4 +76,17 @@ class Import extends ParentModel
             ->get();
         return $retObj;
     }
+
+    public function getChangeOrderList($merchant_id) {
+        $retObj = DB::table('bulk_upload as b')
+            ->select(DB::raw('b.*,co.order_no,c.config_value'))
+            ->join('order as co', 'b.parent_id', '=', 'co.order_id')
+            ->join('config as c', 'b.status', '=', 'c.config_key')
+            ->where('b.status', '<>', 6)
+            ->where('b.type', 13)
+            ->where('c.config_type', 'bulk_upload_status')
+            ->where('b.merchant_id', $merchant_id)
+            ->get();
+        return $retObj;
+    }
 }

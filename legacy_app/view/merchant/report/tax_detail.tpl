@@ -174,10 +174,35 @@
                                             {$v.company_name}
                                         </td>
                                         <td>
-                                            {$v.due_date|date_format:"%d %b %Y"}
+                                            {if ({$v.due_date}|date_format:"%Y-%m-%d") < date("Y-m-d") && $v.payment_request_status==0}
+                                                <span style="color:#B82020;">{$v.due_date|date_format:"%d %b %Y"}</span>
+                                            {else}
+                                                {$v.due_date|date_format:"%d %b %Y"}
+                                            {/if}
+                                            
                                         </td>
                                         <td>
-                                            {$v.status}
+                                            {if $v.payment_request_status==14}
+                                                {if $hasAllPrivileges && !in_array($v.invoice_id, array_keys($privilegesArray))} 
+                                                    {if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve')} 
+                                                        {'In review'}
+                                                    {/if}
+                                                {elseif ($privilegesArray[$v.invoice_id] == 'full' || $privilegesArray[$v.invoice_id] == 'approve')}
+                                                    {'In review'}
+                                                {else}
+                                                    {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                                        {$custom_invoice_status[$v.payment_request_status]}
+                                                    {else}
+                                                        {$v.status}
+                                                    {/if}
+                                                {/if}
+                                            {else}
+                                                {if array_key_exists($v.payment_request_status, $custom_invoice_status)} 
+                                                    {$custom_invoice_status[$v.payment_request_status]}
+                                                {else}
+                                                    {$v.status}
+                                                {/if}
+                                            {/if}
                                         </td>
                                         <td>
                                             {$v.basic_amount|number_format:2:".":","}

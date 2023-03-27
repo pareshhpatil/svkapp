@@ -23,6 +23,31 @@ $header='app.patron.invoice.invoice-master';}
 .tabbable-line>.nav-tabs>li.open, .tabbable-line>.nav-tabs>li:hover {
     border-bottom: 4px solid #3E4AA3 !important;
 }
+
+.watermark {
+    position: relative;
+    overflow: hidden;
+    }
+
+.watermark__inner {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    left: 0px;
+    position: absolute;
+    top: 120px;
+    height: 70%;
+    width: 100%;
+}
+
+.watermark__body {
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 14vh;
+    font-weight: bold;
+    text-transform: uppercase;
+    transform: rotate(-45deg);
+    user-select: none;
+}
 </style>
 
 @extends($header)
@@ -98,9 +123,13 @@ $header='app.patron.invoice.invoice-master';}
         </ul>
     </div>
     </div>
-    <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10"
+    <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10 watermark"
        style="max-width: 1400px; color:#394242;">
-
+            @if($has_watermark)
+                <div class="watermark__inner">
+                    <div class="watermark__body">{{$watermark_text}}</div>
+                </div>
+            @endif
             <div class="flex flex-row  gap-4">
                 @if($has_aia_license)
                     <div>
@@ -109,15 +138,11 @@ $header='app.patron.invoice.invoice-master';}
                     <div>
                         <h1 class="text-3xl text-left mt-8 font-bold">Document G702® – 1992</h1>
                     </div>
-                @else
-                    <div>
-                        <h1 class="text-3xl text-left font-bold">Document G702 – 1992</h1>
-                    </div>
                 @endif
 
             </div>
-            <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
-            <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
+            <h1 class="text-2xl text-left mt-4 font-bold">APPLICATION AND CERTIFICATE FOR PAYMENT </h1>
+            <div class="w-full h-0.5 bg-gray-900 mb-2 mt-1"></div>
 
             <div>
                 <table width="100%" >
@@ -213,9 +238,7 @@ $header='app.patron.invoice.invoice-master';}
                     @if($has_aia_license)
                         <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
                             AIA Document G703®, Continuation Sheet, is attached.</p>
-                    @else
-                        <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
-                            Document G703, Continuation Sheet, is attached.</p>
+                   
                     @endif
 
                         <div class="grid grid-cols-3 gap-2 mt-1">

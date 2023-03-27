@@ -21,8 +21,7 @@ class Subdomain
     {
         #Take request URL from laravel function
         $request_url = $request->getHost();
-
-        #compair with APP_URL from .env if url is diffrent then check partner config file to set partner properties
+        #compair with APP_URL from .env if url is different than check partner config file to set partner properties
         if ($request_url != $this->host(env('APP_URL'))) {
             $subdomain = current(explode('.', $request->getHost()));
             $exclude = ['api', 'swipez','www'];

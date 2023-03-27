@@ -260,7 +260,7 @@
                 <div class="col-md-12">
                     <div class="pull-right">
                         <a class="btn green" @click="back()">Back</a>
-                        <button class="btn blue" type="submit" @click="next()">Preview contract</button>
+                        <button class="btn blue" type="submit" @click="next()">Save particulars</button>
                     </div>
                 </div>
             </div>
@@ -793,9 +793,9 @@
                             }
 
                             if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
-                                $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
-                                addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
-                                valid = false
+                               // $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
+                                //addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
+                                //valid = false
                             }else
                                 $('#cell_original_contract_amount_' + introw).removeClass(' error-corner').popover('destroy')
                             // else {
@@ -808,7 +808,17 @@
                             //     }
                             // }
                             // this.fields[p].group = particularsArray[p].group
+                            
+                            if(this.fields[p].retainage_percent > 100) {
+                                $('#cell_retainage_percent_' + introw).addClass(' error-corner');
+                                addPopover('cell_retainage_percent_' + introw, "Retainage percentage should not be greater than 100");
+                                valid = false
+                            }else{
+                                $('#cell_retainage_percent_' + introw).removeClass(' error-corner').popover('destroy')
                             }
+
+                            }
+                            
                     }
                     return valid;
                 },

@@ -419,7 +419,10 @@
                                     <th class="td-c  default-font">
                                         Document description
                                     </th>
-                                    
+                                    <th class="td-c  default-font">
+                                        Required action
+                                    </th>
+
                                     <th class="td-c" style="width: 80px;">
                                     </th>
                                 </tr>
@@ -434,6 +437,7 @@
                                         <input type="hidden" name="mandatory_document_action[]" value="{{$v['required']}}">
                                     </td>
                                     <td class="td-c  default-font">{{$v['description']}}</td>
+                                    <td class="td-c  default-font">{{$v['required']}}</td>
                                     <td class="td-c"><a href="javascript:;" onclick="$(this).closest('tr').remove();" class="btn btn-xs red"> <i class="fa fa-times"> </i> </a></td>
                                 </tr>
                                 @endforeach
@@ -474,6 +478,25 @@
                         <label class="control-label col-md-3 w-auto">Minimum partial amount</label>
                         <div class="col-md-3">
                             <input type="number" step="0.01" min="50" @isset($plugins['partial_min_amount']) value="{{$plugins['partial_min_amount']}}" @else value="50" @endif class="form-control" id="pma" name="partial_min_amount">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pgiswatermark" @isset($plugins['has_watermark']) @else style="display: none;" @endif>
+                <hr>
+                <div class="mb-2">
+                    <span class="form-section base-font">Watermark</span>
+                    <div class="pull-right">
+                        <input type="checkbox" @isset($plugins['has_watermark']) checked @endif id="iswatermark" name="has_watermark" onchange="disablePlugin(this.checked, 'plg28');
+                        " value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                    </div>
+                </div>
+                <div id="watermark_div" class="row mb-2">
+                    <div class="form-group form-horizontal">
+                        <label class="control-label col-md-3 w-auto">Watermark text</label>
+                        <div class="col-md-3">
+                            <input type="text" maxlength="25" @isset($plugins['watermark_text']) value="{{$plugins['watermark_text']}}" @else value="DRAFT" @endif class="form-control" id="watermark_text" name="watermark_text">
                         </div>
                     </div>
                 </div>
@@ -770,7 +793,7 @@
                 <div class="mb-2">
                     <span class="form-section base-font"> Invoice Output&nbsp; </span>
                     <div class="pull-right ml-1">
-                        <input type="checkbox" @isset($plugins['invoice_output']) checked @endif  onchange="disablePlugin(this.checked, 'plg23');" id="invoiceoutput" name="invoice_output" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                        <input type="checkbox" @isset($plugins['invoice_output']) checked @endif onchange="disablePlugin(this.checked, 'plg23');" id="invoiceoutput" name="invoice_output" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                     </div>
                     <a href="#" class="btn btn-sm green pull-right ml-1 customize-output-btn">Customize output </a>
                 </div>
@@ -924,6 +947,18 @@
                                             <div class="plugin-button">
                                                 <input type="checkbox" id="plg23" @isset($plugins['invoice_output']) checked @endif onchange="pluginChange(this.checked, 'invoiceoutput');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4  flex-item">
+                                    <div class="panel  box-plugin">
+                                        <div class="panel-body">
+                                            <p class="form-section mt-0">Watermark</p>
+                                            <p class="mb-4 default-font">Add a custom text as a watermark to your PDF documents and web links.
+                                            </p>
+                                            <div class="plugin-button">
+                                                <input type="checkbox" id="plg28" @isset($plugins['has_watermark']) checked @endif onchange="pluginChange(this.checked, 'iswatermark');" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                             </div>
                                         </div>
                                     </div>
@@ -1196,9 +1231,6 @@
                                     </div>
                                 </div>
                                 @endif
-
-
-
                             </div>
                         </div>
                     </div>
@@ -1303,7 +1335,7 @@
                                 <br>
                                 <div id="covering_error" class="alert alert-danger" style="display: none;">
                                 </div>
-                                
+
                                 <div id="mandatory_docs" class="alert alert-danger" style="display: none;">
                                 </div>
                                 <div class="form-group">
@@ -1318,10 +1350,10 @@
                                         </span></label>
                                     <div class="col-md-4">
                                         <input type="text" required id="document_description" maxlength="250" class="form-control" value="">
-                                        <input type="hidden" id="document_action"  value="Non-mandatory">
+                                        <!-- <input type="hidden" id="document_action" value="Non-mandatory"> -->
                                     </div>
                                 </div>
-                                <!--<div class="form-group">
+                                <div class="form-group">
                                     <label class="control-label col-md-4">Required for action <span class="required">*
                                         </span></label>
                                     <div class="col-md-4">
@@ -1331,7 +1363,7 @@
                                             <option value="Mandatory on submission">Mandatory on submission</option>
                                         </select>
                                     </div>
-                                </div>-->
+                                </div>
                             </div>
 
 
@@ -1367,7 +1399,7 @@
 
             <div style="position: relative;margin-top: 30px;">
                 <h4>AIA format </h4>
-                <hr/>
+                <hr />
                 <div class="mb-2" style="display: flex;justify-content: space-between;">
                     <span class="form-section base-font">License available&nbsp;</span>
                     <div>
@@ -1397,8 +1429,8 @@
         }
 
         $(document).ready(function() {
-            $(document).on("click", ".customize-output-btn",function() {
-                let panelWrap =  document.getElementById("panelWrapInvoiceOutput");
+            $(document).on("click", ".customize-output-btn", function() {
+                let panelWrap = document.getElementById("panelWrapInvoiceOutput");
                 panelWrap.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.5)";
                 panelWrap.style.transform = "translateX(0%)";
             })

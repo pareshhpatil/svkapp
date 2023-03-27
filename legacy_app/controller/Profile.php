@@ -45,7 +45,8 @@ class Profile extends Controller
             $user_id = $this->user_id;
             $sms = isset($_POST['sms']) ? 1 : 0;
             $email = isset($_POST['email']) ? 1 : 0;
-            $result = $this->model->updatepreferences($this->user_id, $sms, $email);
+            $push = isset($_POST['push']) ? 1 : 0;
+            $result = $this->model->updatepreferences($this->user_id, $sms, $email, $push);
             header('Location: /profile/preferencesaved');
         } catch (Exception $e) {
             Sentry\captureException($e);
@@ -60,12 +61,14 @@ class Profile extends Controller
         try {
             $user_id = $this->user_id;
             $result = $this->model->getpreferences($user_id);
+
             if (empty($result)) {
                 SwipezLogger::error(__CLASS__, '[E085]Error while fetching user preferences. user id  ' . $user_id);
                 $this->setGenericError();
             } else {
                 $smschecked = '';
                 $emailchecked = '';
+                $pushchecked = '';
                 if ($result['send_sms'] == '1') {
                     $smschecked = 'checked';
                 }
@@ -73,9 +76,14 @@ class Profile extends Controller
                     $emailchecked = 'checked';
                 }
 
+                if ($result['send_push'] == '1') {
+                    $pushchecked = 'checked';
+                }
+
                 $this->validateSession('merchant');
                 $this->smarty->assign("sms", $smschecked);
                 $this->smarty->assign("email", $emailchecked);
+                $this->smarty->assign("push", $pushchecked);
 
                 $this->smarty->assign("user_type", $this->view->usertype);
                 //$this->view->title = ucfirst($this->view->usertype) . ' preferences';

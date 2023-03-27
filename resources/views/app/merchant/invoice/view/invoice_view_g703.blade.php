@@ -30,8 +30,31 @@ $header = 'app.patron.invoice.invoice-master';
     .border-row{
         border: solid 1px #A0ACAC;
     }
-</style>
 
+    .watermark {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .watermark__inner {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        position: absolute;
+        position: absolute;
+        height: 50%;
+        width: 100%;
+    }
+
+    .watermark__body {
+        color: rgba(0, 0, 0, 0.2);
+        font-size: 14vh;
+        font-weight: bold;
+        text-transform: uppercase;
+        transform: rotate(-45deg);
+        user-select: none;
+    }
+</style>
 
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
@@ -108,7 +131,15 @@ $header = 'app.patron.invoice.invoice-master';
                     </ul>
                 </div>
             </div>
-            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px;  color:#394242;">
+            <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px;  color:#394242;" id="main_div">
+                @if($has_watermark)
+                    <div id="watermark_parent">
+                        <div class="watermark__inner" id="watermark_div">
+                            <div class="watermark__body">{{$watermark_text}}</div>
+                        </div>
+                    </div>
+                    
+                @endif
                 <div class="flex flex-row  gap-4">
                     @if($has_aia_license)
                     <div>
@@ -122,26 +153,16 @@ $header = 'app.patron.invoice.invoice-master';
                     <div>
                         <h1 class="text-3xl text-left mt-8 font-bold">Document G703® – 1992</h1>
                     </div>
-                    @else
-                    <div>
-                        <h1 class="text-3xl text-left font-bold">Document G703 – 1992</h1>
-                    </div>
                     @endif
 
                 </div>
-                <h1 class="text-2xl text-left mt-4 font-bold">Continuation Sheet</h1>
+                <h1 class="text-2xl text-left mt-4 font-bold">CONTINUATION SHEET</h1>
                 <div class="w-full h-0.5 bg-gray-900 mt-1 mb-1"></div>
 
                 <div class="grid grid-cols-3  gap-4">
                     <div class="col-span-2">
                         @if($has_aia_license)
                         <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                            Application and Certificate for
-                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                            is attached.
-                            Use Column I on Contracts where variable retainage for line items may apply. </p>
-                        @else
-                        <p class="text-xs">Document G702, Application and Certificate for Payment, or G732™,
                             Application and Certificate for
                             Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
                             is attached.

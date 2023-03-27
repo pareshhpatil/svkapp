@@ -1,0 +1,9 @@
+
+php artisan assign:admin:roles
+
+composer update
+
+
+.env 
+
+FIREBASE_SERVER_KEY=AAAAVDaJ2xA:APA91bFdl4ZX7CyG6g7WBsGmXm7S_mqEwdo7j99YkSnNek_Yzwfm_NUJYOTJUFIK7XOVBViK1-RUvV_C3o8ObqllijXhRskQN54ufGnDgrF6dqI6hziiK3peWUiEon-dv_CQp1HT4nRA

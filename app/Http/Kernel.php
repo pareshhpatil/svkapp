@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
         'APIAccess' => \App\Http\Middleware\APIAccess::class,
         'Captcha' => \App\Http\Middleware\Captcha::class,
         'FrameGuard' => \App\Http\Middleware\FrameGuard::class,
+        'PrivilegesAccess' => \App\Http\Middleware\PrivilegesAccess::class,
         'merchantdata' => \App\Http\Middleware\MerchantData::class,
         
     ];

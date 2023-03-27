@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Merchant\ChangeOrderHelper;
 use App\Libraries\Helpers;
 use App\Model\Contract;
 use App\Model\Invoice;
 use App\Model\Master;
 use App\Model\Order;
 use App\Libraries\Encrypt;
+use Illuminate\Support\Facades\Redis;
 use Validator;
 use Illuminate\Support\Facades\Session;
 use Log;
@@ -33,7 +35,6 @@ class OrderController extends Controller
         $this->invoiceModel = new Invoice();
         $this->orderModel = new Order();
         $this->apiController = new APIController();
-
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
@@ -46,6 +47,8 @@ class OrderController extends Controller
         $particulars = null;
 
         Session::put('valid_ajax', 'expense');
+        $userRole = Session::get('user_role');
+
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3, 180]);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
@@ -56,9 +59,40 @@ class OrderController extends Controller
             $cust_data->customer_code =  $cust_data->company_name ?? null . ' | ' . $cust_data->customer_code ?? null;
         }
         $data["cust_list"] = $cust_list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
+
+        if($userRole == 'Admin') {
+            $contractPrivilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'approve') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
 
         $data['project_id'] = 0;
         if (isset($request->contract_id)) {
@@ -149,6 +183,14 @@ class OrderController extends Controller
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+            if(isset($request->import) && $request->import=='Import') {
+                return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+            }
+
+            $ChangeOrderHelper = new ChangeOrderHelper();
+
+            $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id);
+
             return redirect('merchant/order/list')->with('success', "Change Order has been created");
         }
     }
@@ -160,8 +202,9 @@ class OrderController extends Controller
         $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
+        $userRole = Session::get('user_role');
 
-        //find last search criteria into Redis 
+        //find last search criteria into Redis
         $redis_items = $this->getSearchParamRedis('change_order_list', $this->merchant_id);
 
         if (isset($redis_items['change_order_list']['search_param']) && $redis_items['change_order_list']['search_param'] != null) {
@@ -170,19 +213,52 @@ class OrderController extends Controller
             $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
         }
 
-        $list = $this->orderModel->getOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id']);
+        if($userRole == 'Admin') {
+            $privilegesIDs = ['all' => 'full'];
+            $contractPrivilegesIDs = ['all' => 'full'];
+        } else {
+            //get privileges from redis
+            $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
+            $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        }
+
+        $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
         }
         $data['list'] = $list;
-        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+        $userRole = Session::get('user_role');
+
+        if($userRole == 'Admin') {
+            $projectPrivilegesIDs = ['all' => 'full'];
+        } else {
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        }
+
+        $whereProjectIDs = [];
+        foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+            if($privilegesID == 'full') {
+                $whereProjectIDs[] = $key;
+            }
+        }
+
+        $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
         $data['datatablejs'] = 'table-no-export-tablestatesave';  //table-no-export old value
         $data['hide_first_col'] = 1;
         $data['list_name'] = 'change_order_list';
         $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
+        $data['privileges'] = $privilegesIDs;
 
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id);
+        //contracts from privileges
+        $whereContractIDs = [];
+        foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
+            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'view-only' || $contractPrivilegesID == 'approve') {
+                $whereContractIDs[] = $key;
+            }
+        }
+
+        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
@@ -208,6 +284,30 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+
             $request->approved_date = Helpers::sqlDate($request->approved_date);
             $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
             return redirect('merchant/order/list')->with('success', "Change order has been Approved");
@@ -220,6 +320,29 @@ class OrderController extends Controller
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
+            $authUserID = $this->user_id;
+            $userRole = Session::get('user_role');
+            $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
+
+            $hasAccess = false;
+            if($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                    if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
+                        $hasAccess = true;
+                    }
+                } else {
+                    if ($orderPrivilegesAccessIDs[$id] == 'full' || $orderPrivilegesAccessIDs[$id] == 'approve') {
+                        $hasAccess = true;
+                    }
+                }
+            }
+
+            if(!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+            
             $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
             return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
         } else {
@@ -227,7 +350,7 @@ class OrderController extends Controller
         }
     }
 
-    public function update($link)
+    public function update($link,$bulk_id=null)
     {
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
@@ -260,7 +383,22 @@ class OrderController extends Controller
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
             }
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
@@ -288,6 +426,14 @@ class OrderController extends Controller
             $data['detail2'] = $row2;
             $data['link'] = $link;
             $data['mode'] = 'update';
+            $data['bulk_id'] = 0;
+           
+            if ($bulk_id != null) {
+                $bulk_id = Encrypt::decode($bulk_id);
+                $particulars = $this->orderModel->getColumnValue('staging_change_order', 'bulk_id', $bulk_id, 'particulars');
+                $data['detail']->json_particulars = json_decode($particulars, 1);
+                $data['bulk_id'] = $bulk_id;
+            }
             return view('app/merchant/order/update', $data);
         } else {
             return redirect('/404');
@@ -308,7 +454,21 @@ class OrderController extends Controller
                 $cust_data->customer_code =  $cust_data->company_name == null ? $cust_data->customer_code :  $cust_data->company_name . ' | ' . $cust_data->customer_code;
             }
             $data["cust_list"] = $cust_list;
-            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id);
+            $userRole = Session::get('user_role');
+
+            if($userRole == 'Admin') {
+                $projectPrivilegesIDs = ['all' => 'full'];
+            } else {
+                $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            }
+
+            $whereProjectIDs = [];
+            foreach ($projectPrivilegesIDs as $key => $privilegesID) {
+                if($privilegesID == 'full') {
+                    $whereProjectIDs[] = $key;
+                }
+            }
+            $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
             $data["default_particulars"] = [];
             $data["default_particulars"]["bill_code"] = 'Bill Code';
@@ -372,6 +532,17 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
+        
+        if(isset($request->import) && $request->import=='Import') {
+            return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+        }
+
+        if ($request->bulk_id > 0) {
+            $this->orderModel->updateTable('bulk_upload', 'bulk_upload_id', $request->bulk_id, 'status', 5);
+            $this->orderModel->updateTable('order', 'order_id', $id, 'bulk_id', $request->bulk_id);
+            $InvoiceHelper = new ChangeOrderHelper();
+            $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
+        }
         return redirect('merchant/order/list')->with('success', "Change Order has been updated");
     }
 

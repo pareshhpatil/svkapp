@@ -17,9 +17,10 @@
                             <div class="row">
                                 <div class="col-md-9">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label><input type="checkbox" name="sms" value="yes" {$sms}></span> SMS</label>
                                     <label><input type="checkbox" name="email" value="yes" {$email}></span> E-mail</label>
+                                    <label><input type="checkbox" name="push" value="yes" {$push}></span> Push</label>
                                 </div>
                             </div>
                             <div class="form-actions">

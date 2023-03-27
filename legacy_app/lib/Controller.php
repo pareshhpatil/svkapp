@@ -670,6 +670,9 @@ class Controller
         $_SESSION['userid'] = $this->session->get('userid', true);
         $_SESSION['login_customer_group'] = $this->session->get('login_customer_group');
         $_SESSION['sub_franchise_id'] = $this->session->get('sub_franchise_id');
+        $_SESSION['user_role'] = $this->session->get('user_role', true);
+        $_SESSION['invoice_privileges_ids'] = $this->session->get('invoice_privileges', true);
+        $_SESSION['customer_privileges_ids'] = $this->session->get('customer_privileges', true);
     }
 
     public function apisrequest($api_url, $post_string, $header = array())
@@ -875,4 +878,23 @@ class Controller
         }
         return $redis_items;
     }
+
+    function setStatusList($statusList) {
+        if($statusList!='') {
+            if ($this->session->get('configure_invoice_statues')) {
+                $config_status_list = $this->session->get('configure_invoice_statues');
+            }
+            if($config_status_list) {
+                $config_status_list = json_decode($config_status_list,true);
+                foreach($statusList as $sk=>$sval) {
+                    if(array_key_exists($sval['config_key'],$config_status_list)) {
+                        $statusList[$sk]['config_value'] = $config_status_list[$sval['config_key']];
+                    }
+                }
+            }
+            return $statusList;
+        }
+        return false;
+    }
+
 }

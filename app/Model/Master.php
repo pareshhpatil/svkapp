@@ -63,15 +63,30 @@ class Master extends ParentModel
 
     }
 
-    public function getProjectList($merchant_id)
+    public function getProjectList($merchant_id, $privilegesIDs = [], $userRole)
     {
-
-        $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+        $ids = implode(",", $privilegesIDs);
+        if ($userRole != 'Admin' && !in_array('all', $privilegesIDs)) {
+            
+            if(empty($ids)) {
+                $retObj = [];
+            } else {
+                $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
                             FROM project a
                             join customer b on a.customer_id = b.customer_id
-                            WHERE a.merchant_id = '$merchant_id' 
+                            WHERE a.id in($ids)
+                            and a.merchant_id = '$merchant_id' 
                             and a.is_active ='1'
                             ORDER by 1 DESC");
+            }
+        } else {
+            $retObj =  DB::select("SELECT a.*, ifnull(b.company_name, concat(b.first_name,' ' ,  b.last_name)) company_name
+                            FROM project a
+                            join customer b on a.customer_id = b.customer_id
+                            and a.merchant_id = '$merchant_id' 
+                            and a.is_active ='1'
+                            ORDER by 1 DESC");
+        }
 
         return $retObj;
     }
@@ -167,5 +182,36 @@ class Master extends ParentModel
         return CostType::where('merchant_id', $merchant_id)->where('is_active', 1)
                 ->select(['id as value', DB::raw('CONCAT(abbrevation, " - ", name) as label') ])
                 ->get()->toArray();
+    }
+
+    public function saveCustomInvoiceStatus($merchant_id,$user_id,$key,$value){
+        $id = DB::table('merchant_config_data')->insertGetId(
+            [
+                'merchant_id' => $merchant_id,
+                'user_id'=> $user_id,
+                'key'=>$key,
+                'value'=>$value,
+                'is_active'=>1,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
+    public function updateMerchantConfigData($merchant_id,$key,$value) {
+        DB::table('merchant_config_data')
+            ->where('merchant_id', $merchant_id)
+            ->where('key',$key)
+            ->where('is_active',1)
+            ->update([
+                'value' => $value,
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]);
+    }
+    public function getUsersListByMerchant($user_id)
+    {       
+        $retObj = DB::select("call `get_sub_userlist`('$user_id')");
+        return $retObj;
     }
 }
