@@ -75,7 +75,7 @@ class SubUserController extends AppController
         $status = $this->subUserHelper->storeUser($this->user_id, $request);
 
         if(isset($status['email_exist']) && $status['email_exist'] === true) {
-            return back()->with('error', "User email already exists");
+            return back()->with('error', "User email already exists")->withInput();
         }
 
         return redirect()->to('merchant/subusers')->with('success', "Sub merchant has been created");
