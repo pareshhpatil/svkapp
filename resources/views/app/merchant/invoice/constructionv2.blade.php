@@ -408,9 +408,11 @@
                 <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2">Watermark text
-                        <!-- <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" type="button">
+                        <span class="popovers" data-container="body" data-placement="top" 
+                        data-content="Add a watermark to your G702 & G703 for web and PDF. Keep this empty if you do not want any watermark."
+                        data-trigger="hover" type="button">
                                 <i class="fa fa-info-circle"></i>
-                            </span> -->
+                            </span>
                         </label>
                         <div class="col-md-2">
                        <input type="text" class="form-control input-sm" name="watermark_text" value="{{$plugin['watermark_text']}}">
@@ -481,19 +483,10 @@
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <div class="row">
-                <div class="col-md-12">
-                <input type="hidden"  name="narrative" value="" >
-               <!-- <div class="col-md-2">
-                        <div class="form-group">
-                            <p>Narrative</p>
-                            <input type="text"  name="narrative" @isset($narrative) value="{{$narrative}}" @endisset class="form-control">
-                        </div>
-                    </div>-->
-                    
                     <div class="col-md-7">
                     @isset($plugin['has_covering_note'])
+                    <h3 class="form-section">Covering note</h3>
                         <div class="form-group">
-                            <p><label class="control-label col-md-3 w-auto">Select covering note</label><br></p>
                             <div class="col-md-5">
                                 <select name="covering_id" onchange="showEditNote();" data-cy="plugin_covering_id" id="covering_select" class="form-control" data-placeholder="Select...">
                                     <option value="0">Select covering note</option>
@@ -524,6 +517,7 @@
                     <div class="col-md-5">
                         <div class="pull-right">
                             <p>&nbsp;</p>
+                            <input type="hidden"  name="narrative" value="" >
                             <input type="hidden" name="link" value="{{$link}}">
                             <input type="hidden" name="contract_id" value="{{$contract_id}}">
                             <input type="hidden" name="template_id" value="{{$template_id}}">
@@ -531,7 +525,6 @@
                             <button type="submit" onclick="return validateDates();" class="btn blue">Add particulars</button>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
