@@ -142,7 +142,7 @@ return [
         'client' => 'predis',
 
         'default' => [
-           'scheme' => 'tls',   //comment scheme for local
+            'scheme' => 'tls',   //comment scheme for local
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),

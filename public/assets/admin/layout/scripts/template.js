@@ -1741,6 +1741,11 @@ function disablePlugin(val, id) {
     } else if (val == true && id == "plg13") {
         document.getElementById("pma").min = 50;
         $("#min_partial_payment_div").show();
+    } else if (val == true && id == "plg28") {
+        $("#watermark_div").show();
+    }
+    else if (val == false && id == "plg28") {
+        $("#watermark_div").hide();
     }
 
 }

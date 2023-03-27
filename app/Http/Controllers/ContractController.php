@@ -27,6 +27,7 @@ use PHPExcel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\APIController;
 use Illuminate\Support\Str;
+use App\Http\Controllers\InvoiceFormatController;
 
 class ContractController extends Controller
 {
@@ -81,7 +82,7 @@ class ContractController extends Controller
 
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $projectPrivilegesIDs = ['all' => 'full'];
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -89,7 +90,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+            if ($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
                 $whereProjectIDs[] = $key;
             }
         }
@@ -128,7 +129,7 @@ class ContractController extends Controller
     {
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $privilegesIDs = ['all' => 'full'];
         } else {
             $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -136,7 +137,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($privilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+            if ($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
                 $whereProjectIDs[] = $key;
             }
         }
@@ -174,8 +175,14 @@ class ContractController extends Controller
         $data['merchant_id'] = $this->merchant_id;
         $data['needValidationOnStep2'] = $needValidationOnStep2;
         $data['bulk_id'] = 0;
-        if ($step == 2 || $step == 3) {
+        if ($step == 2 || $step == 4) {
             $data = $this->step2Data($data, $contract, $project->project_id ?? '', $step);
+        }
+        if ($step == 3) {
+            $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
+            $data['template_id'] = $contract->template_id;
+            $data['plugins'] = json_decode($plugins, 1);
+            //$data['plugins'] = json_decode('{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"save_revision_history":"1","invoice_output":"1","has_aia_license":"1","has_watermark":"1","watermark_text":"DRAFT"}', 1);
         }
 
         if ($bulk_id != null) {
@@ -230,6 +237,13 @@ class ContractController extends Controller
                 $step++;
                 break;
             case 3:
+                $invoice_format = new InvoiceFormatController();
+                $_POST = json_decode(json_encode($request->all()), 1);
+                $plugins = $invoice_format->getPlugins();
+                $this->contract_model->updateTable('invoice_template', 'template_id', $request->template_id, 'plugin', $plugins);
+                $step++;
+                break;
+            case 4:
                 $contract->update(['status' => 1]);
                 if ($bulk_id > 0) {
                     $this->contract_model->updateTable('bulk_upload', 'bulk_upload_id', $bulk_id, 'status', 5);
@@ -255,10 +269,18 @@ class ContractController extends Controller
         $data['created_by'] = $this->user_id;
         $data['last_update_by'] = $this->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-        
-        if (is_null($contract))
+
+        if (is_null($contract)) {
+            $invoice_format_json = '{"design_name":null,"design_color":null,"template_name":"' . $data['contract_code'] . '","billingProfile_id":"0","main_header_id":["5","6","7","8"],"main_header_datatype":["text","number","email","textarea"],"main_header_column_id":["0","0","0","0"],"main_header_name":["Company name","Merchant contact","Merchant email","Merchant address"],"hcheck":["0","1","2","3"],"cust_column_id":["0","0","0","0"],"customer_column_id":["1","2","3","4"],"customer_column_type":["customer","customer","customer","customer"],"customer_column_name":["Customer code","Contact person name","Email ID","Mobile no"],"customer_datatype":["primary","text","email","mobile"],"ccheck":["0","1","2","3"],"column_config":["{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"metadata\",\"headermandatory\":0,\"headercolumnposition\":1,\"function_id\":9,\"function_param\":\"system_generated\",\"function_val\":\"\",\"headerisdelete\":1,\"headerdatatype\":\"text\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":4,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"text\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":5,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"date\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":6,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"date\"}"],"column_id":["0","0","0","0"],"headercolumn":["Invoice Number","Billing cycle name","Bill date","Due date"],"pc_sr_no":"#","particular_col":["item","description","total_amount"],"pc_item":"Item","pc_annual_recurring_charges":"Annual recurring charges","pc_sac_code":"Sac Code","pc_description":"Desc","pc_product_number":"Product number","pc_product_expiry_date":"Product Expiry date","pc_qty":"Quantity","pc_unit_type":"Unit type","pc_mrp":"MRP","pc_rate":"Rate","pc_gst":"GST","pc_tax_amount":"Tax amount","pc_discount_perc":"Discount %","pc_discount":"Discount","pc_total_amount":"Amount","pc_narrative":"Narrative","tax_total":"Tax total","tnc":null,"upload_file_label":"View document","has_upload":"1","partial_min_amount":"50","has_watermark":"1","watermark_text":"DRAFT","is_covering":"1","default_covering":"0","custom_subject":"Payment request from %COMPANY_NAME%","custom_sms":"You have received a payment request from %COMPANY_NAME% for amount %TOTAL_AMOUNT%. To make an online payment, access your bill via %SHORT_URL%","reminder":["3","1","0"],"reminder_subject":[null,null,null],"reminder_sms":[null,null,null],"has_online_payments":"0","enable_payments":"0","is_revision":"1","template_type":"construction","template_id":null,"custmized_receipt_fields":null}';
+            $format_request = json_decode($invoice_format_json);
+            $_POST = json_decode($invoice_format_json, 1);
+            $invoice_format = new InvoiceFormatController();
+
+            $template_id = $invoice_format->saveInvoiceFormat($format_request, '');
+            $invoice_format->saveMetadata($format_request, $template_id);
+            $data['template_id'] = $template_id;
             $contract = ContractParticular::create($data);
-        else {
+        } else {
             $data = $this->checkIfProjectIsChanged($data, $contract);
             $contract->update($data);
         }
@@ -489,7 +511,7 @@ class ContractController extends Controller
         $data['list'] = $list;
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $projectPrivilegesIDs = ['all' => 'full'];
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -497,7 +519,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if ($privilegesID == 'full') {
                 $whereProjectIDs[] = $key;
             }
         }
@@ -537,7 +559,7 @@ class ContractController extends Controller
         }
         //$data['showLastRememberSearchCriteria'] = true;
         //get contract privileges from redis
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $privilegesIDs = ['all' => 'full'];
         } else {
             $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
@@ -550,7 +572,7 @@ class ContractController extends Controller
         $data['list'] = $list;
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $projectPrivilegesIDs = ['all' => 'full'];
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -558,7 +580,7 @@ class ContractController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve' || $privilegesID == 'view-only') {
+            if ($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve' || $privilegesID == 'view-only') {
                 $whereProjectIDs[] = $key;
             }
         }
@@ -612,7 +634,7 @@ class ContractController extends Controller
             $data["cust_list"] = $cust_list;
             $userRole = Session::get('user_role');
 
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $projectPrivilegesIDs = ['all' => 'full'];
             } else {
                 $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -620,7 +642,7 @@ class ContractController extends Controller
 
             $whereProjectIDs = [];
             foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-                if($privilegesID == 'full') {
+                if ($privilegesID == 'full') {
                     $whereProjectIDs[] = $key;
                 }
             }
@@ -743,18 +765,16 @@ class ContractController extends Controller
         $id = Encrypt::decode($request->link);
         $formData = $request->form_data;
         $contract = ContractParticular::find($id);
-       
+
         $particulars = json_decode($formData, true);
         $particulars = json_decode($particulars, true);
         $array = ['bill_code', 'bill_type', 'original_contract_amount', 'retainage_percent', 'retainage_amount', 'project', 'project_code', 'cost_code', 'cost_type', 'group', 'bill_code_detail'];
         foreach ($particulars as $k => $v) {
-            foreach($array as $a)
-            {
-                if (isset($v['show'.$a])) {
-                    unset($particulars[$k]['show'.$a]);
+            foreach ($array as $a) {
+                if (isset($v['show' . $a])) {
+                    unset($particulars[$k]['show' . $a]);
                 }
             }
-           
         }
         $contract->update(['particulars' => json_encode($particulars), 'contract_amount' => $request->contract_amount, 'bulk_id' => $request->bulk_id]);
 
@@ -815,52 +835,56 @@ class ContractController extends Controller
 
     /*api function - delete contract  */
 
-    public function deleteContract(Request $request) {
+    public function deleteContract(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'contract_id' => 'required|numeric'
             ]);
             if ($validator->fails()) {
-                return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+                return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
             }
             $this->masterModel->deleteTableRow('contract', 'contract_id', $request->contract_id, $request->merchant_id, $request->user_id);
             $response['contract_id'] = $request->contract_id;
-            return response()->json($this->apiController->APIResponse('',$response), 200);
+            return response()->json($this->apiController->APIResponse('', $response), 200);
         } catch (Exception $e) {
             Log::error('Error while deleting contract :' . $e->getMessage());
         }
     }
 
-    public function getContractList(Request $request) {
-       
+    public function getContractList(Request $request)
+    {
+
         $validator = Validator::make($request->all(), [
             'start' => 'numeric',
             'limit' => 'numeric',
             'project_id' => 'numeric'
         ]);
         if ($validator->fails()) {
-            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+            return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
         }
         $start = ($request->start > 0) ? $request->start : -1;
         $limit = ($request->limit > 0) ? $request->limit : 15;
         $from_date = isset($request->from_date) ? Helpers::sqlDate($request->from_date) : date('Y-m-d', strtotime(date('01 M Y')));
-        $to_date= isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
+        $to_date = isset($request->to_date) ? Helpers::sqlDate($request->to_date) : date('Y-m-d', strtotime(date('d M Y')));
 
-        $list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id,$start,$limit);
+        $list = $this->contract_model->getContractList($request->merchant_id, $from_date,  $to_date,  $request->project_id, $start, $limit);
         $response['lastno'] = count($list) + $start;
         $response['list'] = $list;
-        return response()->json($this->apiController->APIResponse('',$response), 200);
+        return response()->json($this->apiController->APIResponse('', $response), 200);
     }
 
-    public function getContractDetails($contract_id) {
-        if($contract_id!=null) {
+    public function getContractDetails($contract_id)
+    {
+        if ($contract_id != null) {
             $contractDetails = $this->contract_model->getContractData($contract_id);
-            $contractDetails->particulars = json_decode($contractDetails->particulars,true);
-            return response()->json($this->apiController->APIResponse('',$contractDetails), 200);
+            $contractDetails->particulars = json_decode($contractDetails->particulars, true);
+            return response()->json($this->apiController->APIResponse('', $contractDetails), 200);
         }
     }
-    
-    public function createContract(Request $request) {
+
+    public function createContract(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'contract_code' => 'required',
             'project_id' => 'required',
@@ -874,11 +898,11 @@ class ContractController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+            return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
         }
 
         $data = $validator->validated();
-        
+
         $project = $this->getProject($request->project_id);
 
         $data['customer_id'] = $project->customer_id;
@@ -887,17 +911,16 @@ class ContractController extends Controller
         $data['created_by'] = $request->user_id;
         $data['last_update_by'] = $request->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-        $data['merchant_id']= $request->merchant_id;
+        $data['merchant_id'] = $request->merchant_id;
         $data['particulars'] = $request->particulars;
 
-        $contract_amt=0;
-        if(!empty($data['particulars'])) {
-            foreach($data['particulars'] as $p=>$particular)
-            {
+        $contract_amt = 0;
+        if (!empty($data['particulars'])) {
+            foreach ($data['particulars'] as $p => $particular) {
                 //dd($particular);
-                if($particular['bill_code']==null || $particular['cost_type']==null || $particular['original_contract_amount']==null || $particular['bill_type']==null) {
+                if ($particular['bill_code'] == null || $particular['cost_type'] == null || $particular['original_contract_amount'] == null || $particular['bill_type'] == null) {
                     return response()->json($this->apiController->APIResponse('ER02061'), 422);
-                } else if(!in_array($particular['bill_type'],array('% Complete','Unit','Calculated','Cost'))) {
+                } else if (!in_array($particular['bill_type'], array('% Complete', 'Unit', 'Calculated', 'Cost'))) {
                     return response()->json($this->apiController->APIResponse('ER02062'), 422);
                 } else {
                     $billCode =  $this->contract_model->getTableRow('csi_code', 'id', $particular['bill_code']);
@@ -905,20 +928,19 @@ class ContractController extends Controller
                     $data['particulars'][$p]['introw'] = $p;
                     $data['particulars'][$p]['pint'] = $p;
                     $data['particulars'][$p]['project'] = $project->project_id;
-                    
-                    //find cost type and fetch id or save as new cost type
-                    $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'],$request->merchant_id,$request->user_id);
-                    
-                    if($particular['bill_type']!='Calculated') {
-                        $data['particulars'][$p]['calculated_perc']=null;
-                        $data['particulars'][$p]['calculated_row']=null;
-                    } else {
 
-                    }
-                    if($particular['retainage_percent'] > 0) {
-                        $data['particulars'][$p]['retainage_amount']=$particular['original_contract_amount']*$particular['retainage_percent']/100;
+                    //find cost type and fetch id or save as new cost type
+                    $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'], $request->merchant_id, $request->user_id);
+
+                    if ($particular['bill_type'] != 'Calculated') {
+                        $data['particulars'][$p]['calculated_perc'] = null;
+                        $data['particulars'][$p]['calculated_row'] = null;
                     } else {
-                        $data['particulars'][$p]['retainage_amount']=0;
+                    }
+                    if ($particular['retainage_percent'] > 0) {
+                        $data['particulars'][$p]['retainage_amount'] = $particular['original_contract_amount'] * $particular['retainage_percent'] / 100;
+                    } else {
+                        $data['particulars'][$p]['retainage_amount'] = 0;
                     }
                     $data['particulars'][$p]['show'] = false;
                     $contract_amt = $contract_amt + $particular['original_contract_amount'];
@@ -931,14 +953,15 @@ class ContractController extends Controller
         $data['status'] = 1;
         $data['version'] = "v1";
         $contract = ContractParticular::create($data);
-        if($contract!=null) {
-            return response()->json($this->apiController->APIResponse('',$contract), 200);
+        if ($contract != null) {
+            return response()->json($this->apiController->APIResponse('', $contract), 200);
         } else {
             return response()->json($this->apiController->APIResponse('ER02057'), 422);
         }
     }
 
-    public function updateContract(Request $request) {
+    public function updateContract(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'contract_id' => 'required',
             'contract_code' => 'required',
@@ -953,7 +976,7 @@ class ContractController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($this->apiController->APIResponse(0,'',$validator->errors()), 422);
+            return response()->json($this->apiController->APIResponse(0, '', $validator->errors()), 422);
         }
 
         $data = $validator->validated();
@@ -964,49 +987,47 @@ class ContractController extends Controller
         $data['created_by'] = $request->user_id;
         $data['last_update_by'] = $request->user_id;
         $data['created_date'] = date('Y-m-d H:i:s');
-        $data['merchant_id']= $request->merchant_id;
+        $data['merchant_id'] = $request->merchant_id;
         $data['particulars'] = $request->particulars;
 
         if ($request->contract_id) {
             $contract = ContractParticular::find($request->contract_id);
 
-            $contract_amt=0;
-            if(!empty($data['particulars'])) {
-                foreach($data['particulars'] as $p=>$particular)
-                {
+            $contract_amt = 0;
+            if (!empty($data['particulars'])) {
+                foreach ($data['particulars'] as $p => $particular) {
                     //dd($particular);
-                    if($particular['bill_code']==null || $particular['cost_type']==null || $particular['original_contract_amount']==null || $particular['bill_type']==null) {
+                    if ($particular['bill_code'] == null || $particular['cost_type'] == null || $particular['original_contract_amount'] == null || $particular['bill_type'] == null) {
                         return response()->json($this->apiController->APIResponse('ER02061'), 422);
-                    } else if(!in_array($particular['bill_type'],array('% Complete','Unit','Calculated','Cost'))) {
+                    } else if (!in_array($particular['bill_type'], array('% Complete', 'Unit', 'Calculated', 'Cost'))) {
                         return response()->json($this->apiController->APIResponse('ER02062'), 422);
                     } else {
                         $billCode =  $this->contract_model->getTableRow('csi_code', 'id', $particular['bill_code']);
-                        if($billCode->project_id==$request->project_id) {
+                        if ($billCode->project_id == $request->project_id) {
                             $data['particulars'][$p]['description'] = $billCode->description;
                             $data['particulars'][$p]['introw'] = $p;
                             $data['particulars'][$p]['pint'] = $p;
                             $data['particulars'][$p]['project'] = $project->project_id;
-                            
-                            //find cost type and fetch id or save as new cost type
-                            $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'],$request->merchant_id,$request->user_id);
-                            
-                            if($particular['bill_type']!='Calculated') {
-                                $data['particulars'][$p]['calculated_perc']=null;
-                                $data['particulars'][$p]['calculated_row']=null;
-                            } else {
 
+                            //find cost type and fetch id or save as new cost type
+                            $data['particulars'][$p]['cost_type'] = $this->costTypeModel->createCostType($particular['cost_type'], $request->merchant_id, $request->user_id);
+
+                            if ($particular['bill_type'] != 'Calculated') {
+                                $data['particulars'][$p]['calculated_perc'] = null;
+                                $data['particulars'][$p]['calculated_row'] = null;
+                            } else {
                             }
-                            if($particular['retainage_percent'] > 0) {
-                                $data['particulars'][$p]['retainage_amount']=$particular['original_contract_amount']*$particular['retainage_percent']/100;
-                            }else {
-                                $data['particulars'][$p]['retainage_amount']=0;
+                            if ($particular['retainage_percent'] > 0) {
+                                $data['particulars'][$p]['retainage_amount'] = $particular['original_contract_amount'] * $particular['retainage_percent'] / 100;
+                            } else {
+                                $data['particulars'][$p]['retainage_amount'] = 0;
                             }
                             $data['particulars'][$p]['show'] = false;
                             $contract_amt = $contract_amt + $particular['original_contract_amount'];
                         } else {
-                            $p=$p+1;
+                            $p = $p + 1;
                             $res = $this->apiController->APIResponse('ER02063');
-                            $res['errmsg'] = $res['errmsg'] . ' for '.$p.' particulars row';
+                            $res['errmsg'] = $res['errmsg'] . ' for ' . $p . ' particulars row';
                             return response()->json($res, 422);
                         }
                     }
@@ -1016,8 +1037,8 @@ class ContractController extends Controller
             $data['contract_amount'] = $contract_amt;
             $data['particulars'] = json_encode($data['particulars']);
             $contract->update($data);
-            if($contract!=null) {
-                return response()->json($this->apiController->APIResponse('',$contract), 200);
+            if ($contract != null) {
+                return response()->json($this->apiController->APIResponse('', $contract), 200);
             } else {
                 return response()->json($this->apiController->APIResponse('ER02057'), 422);
             }
