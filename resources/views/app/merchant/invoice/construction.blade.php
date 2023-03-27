@@ -30,8 +30,6 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('create.invoice','Invoice') }}
-        <a href="/merchant/template/viewlist" class="btn green pull-right"> Invoice formats </a>
-        <a href="/merchant/template/newtemplate" class="btn green pull-right mr-1"> Add new format</a>
     </div>
 
 
