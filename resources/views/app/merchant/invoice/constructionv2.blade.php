@@ -407,6 +407,7 @@
     <div class="portlet light bordered">
         <div class="portlet-body form">
             <h3 class="form-section">Required documents</h3>
+                @if(!empty($plugin['mandatory_data']))
                 @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
                 <div class="row">
                     <div class="form-group">
@@ -453,6 +454,7 @@
             </div>
             <hr>
                 @endforeach
+                @endif
         </div>
     </div>
     @endif
@@ -719,7 +721,7 @@
             //console.error(error.stack);
         });
 </script>
-@if(isset($plugin['has_mandatory_upload']))
+@if(!empty($plugin['mandatory_data']))
 @foreach ($plugin['mandatory_data'] as $key=>$mandatory_data)
 @php
 $keyname = 'uppy'.$key;

@@ -321,6 +321,9 @@ class InvoiceController extends AppController
         Session::put('breadcrumbs', $breadcrumbs);
         if (isset($request->contract_id)) {
             $template_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $request->contract_id, 'template_id');
+            if ($template_id == '') {
+                return redirect('/merchant/contract/update/3/' . Encrypt::encode($request->contract_id));
+            }
             $formatModel = new InvoiceFormat();
             $data['template_link'] = Encrypt::encode($template_id);
             $data['template_id'] = $template_id;
