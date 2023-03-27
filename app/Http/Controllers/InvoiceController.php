@@ -408,14 +408,16 @@ class InvoiceController extends AppController
             $data['mandatory_files'] = [];
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $data['mandatory_files' . $key] = [];
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
-                        foreach ($mandatory_files as $files) {
-                            $file_url =  $files->file_url;
-                            array_push($data['mandatory_files' . $key], $file_url);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $data['mandatory_files' . $key] = [];
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
+                            foreach ($mandatory_files as $files) {
+                                $file_url =  $files->file_url;
+                                array_push($data['mandatory_files' . $key], $file_url);
+                            }
+                            array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
                         }
-                        array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
                     }
                 }
             }
@@ -5278,11 +5280,13 @@ class InvoiceController extends AppController
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
                     $this->invoiceModel->deleteMandatoryFiles($request_id);
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
-                        $mandatory_files_insert_array = explode(',', $mandatory_files);
-                        foreach ($mandatory_files_insert_array as $file_url) {
-                            $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                            $mandatory_files_insert_array = explode(',', $mandatory_files);
+                            foreach ($mandatory_files_insert_array as $file_url) {
+                                $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                            }
                         }
                     }
                 }
