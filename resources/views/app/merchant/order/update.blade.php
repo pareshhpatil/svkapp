@@ -150,6 +150,7 @@
                         </div>
                         <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
+                            
                             <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
                         </h3>
                         <div class="table-scrollable tableFixHead">
