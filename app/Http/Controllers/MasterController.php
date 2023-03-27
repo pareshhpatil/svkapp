@@ -293,7 +293,6 @@ class MasterController extends AppController
             }
         }
 
-
         Redis::set('project_privileges_' . $this->user_id, json_encode($projectPrivilegesAccessIDs));
 
         return redirect('merchant/project/list')->with('success', "Project has been created");

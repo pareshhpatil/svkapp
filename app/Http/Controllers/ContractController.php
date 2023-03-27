@@ -225,6 +225,7 @@ class ContractController extends Controller
                     }
 
                     Redis::set('contract_privileges_' . $this->user_id, json_encode($contractPrivilegesAccess));
+
                     $contract = $response;
                 } else {
                     return $response;
