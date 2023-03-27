@@ -2933,53 +2933,55 @@ class InvoiceController extends AppController
             if (isset($pluginValue->has_mandatory_upload)) {
                 $oMerger = PDFMerger::init();
                 if ($pluginValue->has_mandatory_upload == 1) {
-                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+                    if (!empty($pluginValue->mandatory_data)) {
+                        foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
 
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
 
-                        foreach ($mandatory_files as $file) {
-                            if (!empty($file->file_url)) {
-                                $fileUrlExplode = explode('/', $file->file_url);
-                                $fileLastFromURL = end($fileUrlExplode);
-                                $fileExplode = explode('.', $fileLastFromURL);
+                            foreach ($mandatory_files as $file) {
+                                if (!empty($file->file_url)) {
+                                    $fileUrlExplode = explode('/', $file->file_url);
+                                    $fileLastFromURL = end($fileUrlExplode);
+                                    $fileExplode = explode('.', $fileLastFromURL);
 
-                                $fileName = Arr::first($fileExplode);
-                                $fileType = Arr::last($fileExplode);
-                                $fileContent = '';
+                                    $fileName = Arr::first($fileExplode);
+                                    $fileType = Arr::last($fileExplode);
+                                    $fileContent = '';
 
-                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
-                                    $filePath = 'invoices/' . $fileLastFromURL;
-                                    $bucketName = 'uat.expense';
+                                    if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 'uat.expense';
 
-                                    $result = $s3->getObject(array(
-                                        'Bucket' => $bucketName,
-                                        'Key'    => $filePath
-                                    ));
+                                        $result = $s3->getObject(array(
+                                            'Bucket' => $bucketName,
+                                            'Key'    => $filePath
+                                        ));
 
-                                    $body = $result->get('Body');
-                                    $fileContent = base64_encode($body->getContents());
+                                        $body = $result->get('Body');
+                                        $fileContent = base64_encode($body->getContents());
+                                    }
+
+                                    if ($fileType == 'pdf') {
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 's3_expense';
+
+                                        $source_path = 'invoices/' . basename($file->file_url);
+                                        $file_content = Storage::disk($bucketName)->get($source_path);
+                                        Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                        $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                        array_push($pdf_link_array, $path);
+                                    }
+
+                                    $mandatoryDocumentAttachments[] = [
+                                        'fileName' => $fileName,
+                                        'name' => $mandatory_data->name,
+                                        'fileNameSlug' => Str::slug($fileName, '-'),
+                                        'fileType' => $fileType,
+                                        'fileContent' => $fileContent,
+                                        'url' => $file->file_url
+                                    ];
                                 }
-
-                                if ($fileType == 'pdf') {
-                                    $filePath = 'invoices/' . $fileLastFromURL;
-                                    $bucketName = 's3_expense';
-
-                                    $source_path = 'invoices/' . basename($file->file_url);
-                                    $file_content = Storage::disk($bucketName)->get($source_path);
-                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
-
-                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
-                                    array_push($pdf_link_array, $path);
-                                }
-
-                                $mandatoryDocumentAttachments[] = [
-                                    'fileName' => $fileName,
-                                    'name' => $mandatory_data->name,
-                                    'fileNameSlug' => Str::slug($fileName, '-'),
-                                    'fileType' => $fileType,
-                                    'fileContent' => $fileContent,
-                                    'url' => $file->file_url
-                                ];
                             }
                         }
                     }
