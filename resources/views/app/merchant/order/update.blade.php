@@ -235,7 +235,7 @@
                                         </td>
                                         @elseif ($v == 'retainage_percent')
                                         <td class="col-id-no">
-                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]){{$row[$v]}}@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
+                                            <input step=".00000000001" max='100' type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]){{$row[$v]}}@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
                                         </td>
                                         @elseif ($v == 'order_description')
                                         <td class="col-id-no">
