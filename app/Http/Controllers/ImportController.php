@@ -275,7 +275,7 @@ class ImportController extends Controller
     }
 
 
-    public function formatBillCode($type,$id=null)
+    public function downloadFormatSheet($type,$id=null)
     {
         if ($type == 'billCode') {
             $column_name[] = 'Bill Code';
@@ -344,17 +344,19 @@ class ImportController extends Controller
         //for change order only
         if($type=='changeOrder') {
             $rint = 2;
-            foreach ($values as $val) {
-                $vint = 0;
-                foreach ($val as $vall) {
-                    if (strlen($vall) > 10 && is_numeric($vall)) {
-                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($column[$vint] . $rint, $vall, PHPExcel_Cell_DataType::TYPE_STRING);
-                    } else {
-                        $objPHPExcel->getActiveSheet()->setCellValue($column[$vint] . $rint, $vall);
+            if(!empty($values)) {
+                foreach ($values as $val) {
+                    $vint = 0;
+                    foreach ($val as $vall) {
+                        if (strlen($vall) > 10 && is_numeric($vall)) {
+                            $objPHPExcel->getActiveSheet()->setCellValueExplicit($column[$vint] . $rint, $vall, PHPExcel_Cell_DataType::TYPE_STRING);
+                        } else {
+                            $objPHPExcel->getActiveSheet()->setCellValue($column[$vint] . $rint, $vall);
+                        }
+                        $vint = $vint + 1;
                     }
-                    $vint = $vint + 1;
+                    $rint++;
                 }
-                $rint++;
             }
         }
 
