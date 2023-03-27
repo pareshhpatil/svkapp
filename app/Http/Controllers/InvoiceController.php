@@ -5256,6 +5256,7 @@ class InvoiceController extends AppController
                 $duedate = Helpers::sqlDate($request->requestvalue[$k]);
             }
         }
+        
         if ($request->link != '') {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
@@ -5323,6 +5324,13 @@ class InvoiceController extends AppController
                 $plugin['default_covering_note'] = (isset($request->covering_id)) ? $request->covering_id : 0;
             }
         }
+        if (isset($plugin['has_watermark'])) {
+            if ($plugin['has_watermark'] == 1) {
+                $plugin['watermark_text'] = (isset($request->watermark_text)) ? $request->watermark_text : '';
+            }
+        }
+
+
         return $plugin;
     }
 

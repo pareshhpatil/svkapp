@@ -403,6 +403,28 @@
             </div>
         </div>
     </div>
+
+    @if(isset($plugin['has_watermark']))
+    <div class="portlet light bordered">
+        <div class="portlet-body form">
+            <h3 class="form-section">Watermark</h3>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Watermark text
+                        <!-- <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" type="button">
+                                <i class="fa fa-info-circle"></i>
+                            </span> -->
+                        </label>
+                        <div class="col-md-2">
+                       <input type="text" class="form-control input-sm" name="watermark_text" value="{{$plugin['watermark_text']}}">
+                        </div>
+                    </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+    @endif
+    
     @if(isset($plugin['has_mandatory_upload']))
     <div class="portlet light bordered">
         <div class="portlet-body form">
