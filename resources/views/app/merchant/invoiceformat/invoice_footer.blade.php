@@ -163,14 +163,14 @@ $validate=(array)$validate;
         @if($info['payment_request_status']!=6 && $info['payment_request_status']!=7)
         <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
 
-            <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$info['Url']}}">
+            <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$url}}">
                 Update @if($info['invoice_type']==1) invoice @else estimate @endif
             </a>
         </div>
         @endif
         @if($info['payment_request_status']!=11)
         @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file'] ==1)
-{{--        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
+{{--        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
 {{--            Save as PDF--}}
 {{--        </a>--}}
         <div class="btn-group pull-right">
@@ -180,25 +180,25 @@ $validate=(array)$validate;
             <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                 @if($info['gtype'] != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                             Download {{$info['gtype']}}
                         </a>
                     </li>
                 @endif
                 <li>
-                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                         Download Full PDF
                     </a>
                 </li>
 
             </ul>
         </div>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}} @endif">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}/2 @if(isset($info['gtype']))/{{$info['gtype']}} @endif">
             Print
         </a>
         @else
 
-{{--        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
+{{--        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
 {{--            Save as PDF--}}
 {{--        </a>--}}
         <div class="btn-group pull-right">
@@ -208,27 +208,27 @@ $validate=(array)$validate;
             <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                 @if($info['gtype'] != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                             Download {{$info['gtype']}}
                         </a>
                     </li>
                 @endif
                 <li>
-                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                    <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                         Download Full PDF
                     </a>
                 </li>
 
             </ul>
         </div>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print
         </a>
         @endif
         @else
         <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
 
-{{--            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
+{{--            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
 {{--                Save as PDF--}}
 {{--            </a>--}}
             <div class="btn-group pull-right">
@@ -238,13 +238,13 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($info['gtype'] != 'attachment')
                         <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                                 Download {{$info['gtype']}}
                             </a>
                         </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
@@ -274,13 +274,13 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($info['gtype'] != 'attachment')
                         <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                                 Download {{$info['gtype']}}
                             </a>
                         </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
@@ -288,10 +288,10 @@ $validate=(array)$validate;
                 </ul>
             </div>
 
-{{--            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
+{{--            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
 {{--            Save as PDF--}}
 {{--        </a>--}}
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/2/{{$info['gtype']}}@endif">
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/2/{{$info['gtype']}}@endif">
             Print
         </a>
         @else
@@ -307,20 +307,20 @@ $validate=(array)$validate;
                     <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                         @if($info['gtype'] != 'attachment')
                             <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                                     Download {{$info['gtype']}}
                                 </a>
                             </li>
                         @endif
                         <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$info['Url']}}">
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                                 Download Full PDF
                             </a>
                         </li>
 
                     </ul>
                 </div>
-            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
                 Print
             </a>
         @endif
@@ -337,7 +337,7 @@ $validate=(array)$validate;
     <div class="col-md-12">
 
             <a target="_BLANK" class="btn blue hidden-print  pull-right" style="margin-right: 10px;"
-                href="/merchant/invoice/download/{{$info['Url']}}/2">
+                href="/merchant/invoice/download/{{$url}}/2">
 Print<i class="fa fa-print"></i>
 </a>
 
@@ -400,7 +400,7 @@ Print<i class="fa fa-print"></i>
 <div class="row no-margin" style="">
 <br>
 <div class="col-md-12 portlet light bordered" style="text-align: left;">
-<a href="/merchant/comments/view/{{$info['Url']}}" title="Comments" class="btn btn-xs blue iframe pull-right"><i class="fa fa-comment"></i> </a>
+<a href="/merchant/comments/view/{{$url}}" title="Comments" class="btn btn-xs blue iframe pull-right"><i class="fa fa-comment"></i> </a>
 @foreach ($info['commentlist'] as $key=>$item)
 <div class="media">
     <div class="media-body">
@@ -634,7 +634,7 @@ Print<i class="fa fa-print"></i>
                                         <input type="hidden" class="displayonly" id="c_percent" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['percent']}}@endif" />
                                         <input type="hidden" class="displayonly" id="grand_total" value="{{$info['grand_total']}}" />
                                         <input type="hidden" class="displayonly" id="c_fixed_amount" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['fixed_amount']}}@endif" />
-                                        <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$info['Url']}}" />
+                                        <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$url}}" />
                                         <input type="hidden" class="displayonly" id="is_partial_field" name="is_partial" value="0" />
                                         @if(!empty($info['offline_response_id']))
                                             <input type="hidden" class="displayonly" id="offline_response_id" name="offline_response_id" value="{{$info['offline_response_id']}}" />
@@ -866,17 +866,7 @@ Print<i class="fa fa-print"></i>
                                     <label for="inputPassword12" class="col-md-5 control-label">Bank
                                         name</label>
                                     <div class="col-md-5">
-                                        <select class="form-control input-sm select2me" name="bank_name" data-placeholder="Select bank name">
-                                            <option value=""></option>
-                                            @foreach ($info['bank_value'] as $key=>$item)
-                                            <option value="{{$item}}">{{$item}}</option>
-
-                                            @endforeach
-
-
-
-
-                                        </select>
+                                        <input type="text" name="bank_name" class="form-control input-sm" data-placeholder="Enter bank name">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -907,7 +897,7 @@ Print<i class="fa fa-print"></i>
                                         <input type="hidden" class="displayonly" id="c_percent" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['percent']}}@endif" />
                                         <input type="hidden" class="displayonly" id="grand_total" value="{{$info['grand_total']}}" />
                                         <input type="hidden" class="displayonly" id="c_fixed_amount" value="@if(!empty($info['coupon_details'])){{$info['coupon_details']['fixed_amount']}}@endif" />
-                                        <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$info['Url']}}" />
+                                        <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$url}}" />
                                         <input name="deduct_amount" id="deduct_amount" type="hidden" class="displayonly" value="0" />
                                         <input name="deduct_text" id="deduct_text" type="hidden" class="displayonly" value="" />
                                         <button type="submit" class="btn blue">Save</button>

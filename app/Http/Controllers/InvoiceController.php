@@ -807,8 +807,7 @@ class InvoiceController extends AppController
         return $this->create($request, 'subscription', 2);
     }
 
-    //TODO : @a - remvoed the underscore in the functiom name 
-    public function view_702($link, $version =  null)
+    public function view702($link, $version =  null)
     {
         $payment_request_id = Encrypt::decode($link);
 
@@ -832,14 +831,8 @@ class InvoiceController extends AppController
                 $info['offline_success_transaction'] = $offlineResponse;
             }
 
-            $info['user_type'] = 'merchant';
-            $info["Url"] =  Encrypt::encode($payment_request_id);
-
-            //set bank values 
-            $info = $this->setBankValues($info, $payment_request_id);
-            //set first invoice values 
-            //TODO: @a -REMOVE THIS 
-            $data['isFirstInvoice'] = $this->setFirstInvoiceValues($payment_request_id);
+            $data['user_type'] = 'merchant';
+            $data["url"] =  Encrypt::encode($payment_request_id);
             
             $plugins = json_decode($info['plugin_value'], 1);
             $hasAIALicense = false;

@@ -4,30 +4,30 @@
         <p>@if($info['invoice_type']==1) Invoice @else estimate @endif preview</p>
     </div>
     @endif
-    <div class="tabbable-line" @if($info['user_type']!='merchant' ) style="padding-left: 0px;" @endif>
+    <div class="tabbable-line" @if($user_type!='merchant' ) style="padding-left: 0px;" @endif>
         <ul class="nav nav-tabs">
-            @if($info['user_type']!='merchant')
+            @if($user_type!='merchant')
             <li class="active">
-                <a href="/patron/invoice/view/{{$info['Url']}}/702">702</a>
+                <a href="/patron/invoice/view/{{$url}}/702">702</a>
             </li>
             <li>
-                <a href="/patron/invoice/view/{{$info['Url']}}/703">703</a>
+                <a href="/patron/invoice/view/{{$url}}/703">703</a>
             </li>
 
             <li>
-                <a href="/patron/invoice/document/{{$info['Url']}}">Attached files</a>
+                <a href="/patron/invoice/document/{{$url}}">Attached files</a>
             </li>
 
             @else
             <li class="active">
-                <a href="/merchant/invoice/viewg702/{{$info['Url']}}">702</a>
+                <a href="/merchant/invoice/viewg702/{{$url}}">702</a>
             </li>
             <li>
-                <a href="/merchant/invoice/viewg703/{{$info['Url']}}">703</a>
+                <a href="/merchant/invoice/viewg703/{{$url}}">703</a>
             </li>
 
             <li>
-                <a href="/merchant/invoice/document/{{$info['Url']}}">Attached files</a>
+                <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
             </li>
 
             @endif

@@ -1,6 +1,6 @@
 @php
 $header='app.master';
-if($info['user_type']=='merchant'){
+if($user_type=='merchant'){
 $header='app.master';
 }else{
 $header='app.patron.invoice.invoice-master';
@@ -35,13 +35,13 @@ $header='app.patron.invoice.invoice-master';
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
 @section('content')
-@if($info['user_type']=='merchant')
+@if($user_type=='merchant')
 <div class="page-content" style="text-align: -webkit-center !important;">
     @else
     <div class="w-full flex flex-col  justify-center" style="background-color: #F7F8F8;min-height: 344px;    padding: 20px 10px 20px 10px;">
         @endif
 
-        @if($info['user_type']=='merchant')
+        @if($user_type=='merchant')
         <div class="page-bar">
 
             <span class="page-title" style="float: left;">{{$title}}</span>
@@ -65,7 +65,7 @@ $header='app.patron.invoice.invoice-master';
 
             @php
             $footers='app.merchant.invoiceformat.invoice_footer';
-            if($info['user_type']=='merchant')
+            if($user_type=='merchant')
             {
             $footers='app.merchant.invoiceformat.invoice_footer';}
             else{
