@@ -793,9 +793,9 @@
                             }
 
                             if(this.fields[p].original_contract_amount === null || this.fields[p].original_contract_amount === '' || this.fields[p].original_contract_amount === 0) {
-                                $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
-                                addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
-                                valid = false
+                               // $('#cell_original_contract_amount_' + introw).addClass(' error-corner');
+                                //addPopover('cell_original_contract_amount_' + introw, "Please enter original contract amount");
+                                //valid = false
                             }else
                                 $('#cell_original_contract_amount_' + introw).removeClass(' error-corner').popover('destroy')
                             // else {

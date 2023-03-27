@@ -37,10 +37,7 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('create.invoice','Invoice') }}
-        @if($link=='')
-        <a href="/merchant/template/viewlist" class="btn green pull-right"> Invoice formats </a>
-        <a href="/merchant/template/newtemplate" class="btn green pull-right mr-1"> Add new format</a>
-        @else
+        @if($link!='')
         <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;margin-bottom: 15px">Step <span x-text="step">1</span> of 3</span>
 
         @endif
