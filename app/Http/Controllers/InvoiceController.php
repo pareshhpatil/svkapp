@@ -5256,7 +5256,7 @@ class InvoiceController extends AppController
                 $duedate = Helpers::sqlDate($request->requestvalue[$k]);
             }
         }
-        
+
         if ($request->link != '') {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
@@ -5296,11 +5296,13 @@ class InvoiceController extends AppController
 
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
-                        $mandatory_files_insert_array = explode(',', $mandatory_files);
-                        foreach ($mandatory_files_insert_array as $file_url) {
-                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                            $mandatory_files_insert_array = explode(',', $mandatory_files);
+                            foreach ($mandatory_files_insert_array as $file_url) {
+                                $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                            }
                         }
                     }
                 }
