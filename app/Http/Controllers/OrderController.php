@@ -187,9 +187,9 @@ class OrderController extends Controller
                 return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
             }
 
-            $InvoiceHelper = new ChangeOrderHelper();
+            $ChangeOrderHelper = new ChangeOrderHelper();
 
-            $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
+            $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id);
 
             return redirect('merchant/order/list')->with('success', "Change Order has been created");
         }
