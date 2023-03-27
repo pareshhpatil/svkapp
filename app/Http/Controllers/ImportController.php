@@ -275,7 +275,7 @@ class ImportController extends Controller
     }
 
 
-    public function downloadFormatSheet($type,$id=null)
+    public function downloadFormatSheet($type=null,$id=null)
     {
         if ($type == 'billCode') {
             $column_name[] = 'Bill Code';
