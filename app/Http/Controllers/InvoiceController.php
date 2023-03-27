@@ -3553,11 +3553,11 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount_negative'] = 0;
 
                 $start_date = '1990-01-01';
-                $end_date = date("Y-m-01");
+                $end_date = date("Y-m-01", strtotime($info['bill_date']));
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
                 $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
-                $start_date = date("Y-m-01");
+                $start_date = date("Y-m-01", strtotime($info['bill_date']));
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
                 $info['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
                 $info['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
