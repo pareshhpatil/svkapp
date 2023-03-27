@@ -5,8 +5,14 @@
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.projectlist') }}
-        @if(in_array('full', array_values($privileges)) || in_array('edit', array_values($privileges)) || (in_array('all', array_keys($privileges)) && $privileges['all'] == 'full'))
-            <a href="/merchant/project/create" class="btn blue pull-right"> Create project </a>
+        @if(!empty($project_privileges))
+            @if(in_array('full', array_values($project_privileges)) || in_array('edit', array_values($project_privileges)) || (in_array('all', array_keys($project_privileges)) && $project_privileges['all'] == 'full'))
+                <a href="/merchant/project/create" class="btn blue pull-right"> Create project </a>
+            @endif
+        @else
+            @if(in_array('full', $customer_privileges) || in_array('edit', $customer_privileges) || in_array('approve', $customer_privileges))
+                <a href="/merchant/project/create" class="btn blue pull-right"> Create project </a>
+            @endif
         @endif
     </div>
     <!-- BEGIN SEARCH CONTENT-->
@@ -72,14 +78,14 @@
                                         <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
                                             &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                         </button>
-                                        @if(!empty($privileges))
-                                            @if(in_array('all', array_keys($privileges)) && !in_array($v->id, array_keys($privileges)))
+                                        @if(!empty($project_privileges))
+                                            @if(in_array('all', array_keys($project_privileges)) && !in_array($v->id, array_keys($project_privileges)))
                                                 <ul class="dropdown-menu" role="menu">
-                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
+                                                    @if($project_privileges['all'] == 'full' || $project_privileges['all'] == 'edit')
                                                         <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
                                                         </li>
                                                     @endif
-                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'view-only' || $privileges['all'] == 'approve' || $privileges['all'] == 'edit')
+                                                    @if($project_privileges['all'] == 'full' || $project_privileges['all'] == 'view-only' || $project_privileges['all'] == 'approve' || $project_privileges['all'] == 'edit')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                                         </li>
                                                         <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
@@ -87,7 +93,7 @@
                                                         <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
                                                         </li>
                                                     @endif
-                                                    @if($privileges['all'] == 'full')
+                                                    @if($project_privileges['all'] == 'full')
                                                         <li>
                                                             <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/project/delete/{{$v->encrypted_id}}'"  data-toggle="modal" ><i class="fa fa-times"></i> Delete</a>
                                                         </li>
@@ -95,11 +101,11 @@
                                                 </ul>
                                             @else
                                                 <ul class="dropdown-menu" role="menu">
-                                                    @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'edit')
+                                                    @if($project_privileges[$v->id] == 'full' || $project_privileges[$v->id] == 'edit')
                                                         <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
                                                         </li>
                                                     @endif
-                                                    @if($privileges[$v->id] == 'full' || $privileges[$v->id] == 'view-only' || $privileges[$v->id] == 'approve' || $privileges[$v->id] == 'edit')
+                                                    @if($project_privileges[$v->id] == 'full' || $project_privileges[$v->id] == 'view-only' || $project_privileges[$v->id] == 'approve' || $project_privileges[$v->id] == 'edit')
                                                         <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>
                                                         </li>
                                                         <li><a href="/merchant/code/import/{{$v->encrypted_id}}"><i class="fa fa-upload"></i> Upload bill codes</a>
@@ -107,7 +113,7 @@
                                                         <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>
                                                         </li>
                                                     @endif
-                                                    @if($privileges[$v->id] == 'full')
+                                                    @if($project_privileges[$v->id] == 'full')
                                                         <li>
                                                             <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/project/delete/{{$v->encrypted_id}}'"  data-toggle="modal" ><i class="fa fa-times"></i> Delete</a>
                                                         </li>
@@ -115,17 +121,6 @@
                                                 </ul>
                                             @endif
                                         @endif
-{{--                                        <ul class="dropdown-menu" role="menu">--}}
-{{--                                            <li><a href="/merchant/project/edit/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>--}}
-{{--                                            </li>--}}
-{{--                                            <li><a href="/merchant/code/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View bill code</a>--}}
-{{--                                            </li>--}}
-{{--                                            <li><a href="/merchant/billedtransaction/list/{{$v->encrypted_id}}"><i class="fa fa-list"></i> View billed transaction</a>--}}
-{{--                                            </li>--}}
-{{--                                            <li>--}}
-{{--                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/project/delete/{{$v->encrypted_id}}'"  data-toggle="modal" ><i class="fa fa-times"></i> Delete</a>--}}
-{{--                                            </li>--}}
-{{--                                        </ul>--}}
                                     </div>
                                 </td>
                             </tr>

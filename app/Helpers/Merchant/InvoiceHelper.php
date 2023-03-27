@@ -31,15 +31,6 @@ class InvoiceHelper
                 $invoiceNumber = (new Invoice())->getAutoInvoiceNo((substr($paymentRequestDetail->invoice_number, 16)));
             }
 
-            //Update User Privileges array
-            $privilegesInvoiceIDs = json_decode(Redis::get('invoice_privileges_' . $authUserID), true);
-
-            $privilegesInvoiceIDs[$paymentRequestID] = 'edit';
-
-            Redis::set('invoice_privileges_' . $authUserID, json_encode($privilegesInvoiceIDs));
-
-            Session::put('invoice_privileges', json_encode($privilegesInvoiceIDs));
-
             $Contract = DB::table('contract')
                 ->where('is_active', 1)
                 ->where('contract_id', $paymentRequestDetail->contract_id)
@@ -48,6 +39,9 @@ class InvoiceHelper
             $contractID = $Contract->contract_id;
             $customerID = $Contract->customer_id;
             $projectID = $Contract->project_id;
+
+            //Update User Privileges array
+            $this->updateInvoicePrivileges($paymentRequestID, $contractID);
 
             $data = DB::table('briq_privileges')
                 ->where('merchant_id', $merchantID)
@@ -200,6 +194,40 @@ class InvoiceHelper
                 //Different queue for mail bcz mails fails sometimes if email not verified
                 ProcessInvoiceMailForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
+        }
+    }
+
+    public function updateInvoicePrivileges($paymentRequestID, $contractID)
+    {
+        $authUserID = Encrypt::decode(Session::get('userid'));
+        $authUserRole = Session::get('user_role');
+
+        $invoicePrivileges = json_decode(Redis::get('invoice_privileges_' . $authUserID), true);
+        $contractPrivileges = json_decode(Redis::get('contract_privileges_' . $authUserID), true);
+
+        if ($authUserRole == 'Admin') {
+            $invoicePrivileges[$paymentRequestID] = 'full';
+        } else {
+            if (isset($contractPrivileges[$contractID])) {
+                if ($contractPrivileges[$contractID] == 'full') {
+                    $invoicePrivileges[$paymentRequestID] = 'full';
+                }
+
+                if ($contractPrivileges[$contractID] == 'approve') {
+                    $invoicePrivileges[$paymentRequestID] = 'approve';
+                }
+
+                if ($contractPrivileges[$contractID] == 'edit') {
+                    $invoicePrivileges[$paymentRequestID] = 'edit';
+                }
+            } else {
+                $invoicePrivileges[$paymentRequestID] = 'edit';
+            }
+
+
+            Redis::set('invoice_privileges_' . $authUserID, json_encode($invoicePrivileges));
+
+            Session::put('invoice_privileges', json_encode($invoicePrivileges));
         }
     }
 }

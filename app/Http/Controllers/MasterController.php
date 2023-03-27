@@ -155,13 +155,15 @@ class MasterController extends AppController
         $userRole = Session::get('user_role');
 
         if($userRole == 'Admin') {
-            $privilegesIDs = ['all' => 'full'];
+            $projectPrivilegesIDs = ['all' => 'full'];
         } else {
-            $privilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+            $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         }
 
-        if(!empty($privilegesIDs)) {
-            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($privilegesIDs), $userRole);
+        $customerPrivileges = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
+
+        if(!empty($projectPrivilegesIDs)) {
+            $list = $this->masterModel->getProjectList($this->merchant_id, array_keys($projectPrivilegesIDs), $userRole);
             foreach ($list as $ck => $row) {
                 $list[$ck]->encrypted_id = Encrypt::encode($row->id);
             }
@@ -169,7 +171,8 @@ class MasterController extends AppController
 
         $data['list'] = $list ?? [];
         $data['datatablejs'] = 'table-no-export';
-        $data['privileges'] = $privilegesIDs;
+        $data['project_privileges'] = $projectPrivilegesIDs;
+        $data['customer_privileges'] = $customerPrivileges;
         return view('app/merchant/project/list', $data);
     }
 
@@ -247,7 +250,51 @@ class MasterController extends AppController
     
         $request->start_date = Helpers::sqlDate($request->start_date);
         $request->end_date = Helpers::sqlDate($request->end_date);
-        $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
+        $id = $this->masterModel->saveNewProject($request, $this->merchant_id, $this->user_id);
+        $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
+        $customerPrivilegesAccessIDs = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
+
+        if(isset($customerPrivilegesAccessIDs[$request->customer_id])) {
+            $projectPrivilegesAccessIDs[$id] = $customerPrivilegesAccessIDs[$request->customer_id];
+        } else {
+            if(in_array('all', array_keys($customerPrivilegesAccessIDs))) {
+                if($customerPrivilegesAccessIDs['all'] == 'full') {
+                    $projectPrivilegesAccessIDs[$id] = 'full';
+                }
+
+                if($customerPrivilegesAccessIDs['all'] == 'approve') {
+                    $projectPrivilegesAccessIDs[$id] = 'approve';
+                }
+
+                if($customerPrivilegesAccessIDs['all'] == 'edit') {
+                    $projectPrivilegesAccessIDs[$id] = 'edit';
+                }
+
+                if($customerPrivilegesAccessIDs['all'] == 'view-only') {
+                    $projectPrivilegesAccessIDs[$id] = 'view-only';
+                }
+            } elseif (in_array('all', array_keys($projectPrivilegesAccessIDs))) {
+                if($projectPrivilegesAccessIDs['all'] == 'full') {
+                    $projectPrivilegesAccessIDs[$id] = 'full';
+                }
+
+                if($projectPrivilegesAccessIDs['all'] == 'approve') {
+                    $projectPrivilegesAccessIDs[$id] = 'approve';
+                }
+
+                if($projectPrivilegesAccessIDs['all'] == 'edit') {
+                    $projectPrivilegesAccessIDs[$id] = 'edit';
+                }
+
+                if($projectPrivilegesAccessIDs['all'] == 'view-only') {
+                    $projectPrivilegesAccessIDs[$id] = 'view-only';
+                }
+            } else {
+                $projectPrivilegesAccessIDs[$id] = 'edit';
+            }
+        }
+
+        Redis::set('project_privileges_' . $this->user_id, json_encode($projectPrivilegesAccessIDs));
 
         return redirect('merchant/project/list')->with('success', "Project has been created");
     }

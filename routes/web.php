@@ -374,7 +374,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   //project screen CRUD routes
   Route::get('project/list', 'MasterController@projectlist'); 
   Route::get('project/delete/{link}', 'MasterController@projectdelete');
-  Route::get('project/create', 'MasterController@projectcreate');
+  Route::get('project/create', 'MasterController@projectcreate')->middleware('PrivilegesAccess');
   Route::post('project/store', 'MasterController@projectsave')->middleware('PrivilegesAccess');
   Route::get('project/edit/{link}', 'MasterController@projectupdate')->middleware('PrivilegesAccess');
   Route::post('project/updatestore', 'MasterController@projectupdatestore')->middleware('PrivilegesAccess');
