@@ -27,7 +27,7 @@
                         <p class="text-xs font-bold">PROJECT: </p>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">APPLICATION NO: INV--13</p>
+                        <p class="text-xs font-bold">APPLICATION NO: {{$invoice_number}}</p>
                     </td>
                     <td width="25%" class="text-right">
                         <p class="text-xs font-bold">Distribution to:</p>
@@ -35,15 +35,15 @@
                 </tr>
                 <tr>
                     <td width="25%" rowspan="2" style="vertical-align: baseline;">
-                        <p class="text-xs  mt-1">Abhijeet Choubey</p>
-                        <span class="text-xs">a1, first light homes, Boon Infrastructure, gorakhpur main road, jabalpur</span>
+                        <p class="text-xs  mt-1">{{$customer_name}}</p>
+                        <span class="text-xs">{{$project_details->owner_address}}</span>
                     </td>
                     <td width="25%" rowspan="2" style="vertical-align: baseline;">
-                        <p class="text-xs">One Seaport Tower </p>
-                        <span class="text-xs">a1, first light homes, Boon Infrastructure, gorakhpur main road, jabalpur</span>
+                        <p class="text-xs">{{$project_details->project_name}} </p>
+                        <span class="text-xs">{{$project_details->project_address}}</span>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">PERIOD TO: Mar-2023 Bill</p>
+                        <p class="text-xs font-bold">PERIOD TO: {{$cycle_name}} Bill</p>
                     </td>
                     <td width="25%" class="text-right">
                         <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">OWNER</label> <input class="" type="checkbox" value=""></p>
@@ -65,7 +65,7 @@
                         <p class="text-xs font-bold">VIA ARCHITECT:</p>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">CONTRACT DATE: Feb 28 2023 </p>
+                        <p class="text-xs font-bold">CONTRACT DATE: <x-localize :date="$project_details->contract_date" type="date" /> </p>
                     </td>
                     <td width="25%" class="text-right">
                         <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">CONTRACTOR</label> <input class="" type="checkbox" value=""></p>
@@ -73,14 +73,14 @@
                 </tr>
                 <tr>
                     <td width="25%" rowspan="2" style="vertical-align: baseline;">
-                        <p class="text-xs">JUMBOKING FOODS PRIVATE LIMITED</p>
-                        <span class="text-xs">a1, first light homes, Boon Infrastructure, gorakhpur main road, jabalpur</span>
+                        <p class="text-xs">{{$company_name}}</p>
+                        <span class="text-xs">{{$project_details->contractor_address}}</span>
                     </td>
                     <td width="25%" rowspan="2" style="vertical-align: baseline;">
-                        <span class="text-xs">a1, first light homes, Boon Infrastructure, gorakhpur main road, jabalpur</span>
+                        <span class="text-xs">{{$project_details->architect_address}}</span>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">PROJECT NOS: 2022-003</p>
+                        <p class="text-xs font-bold">PROJECT NOS: {{$project_details->project_code}}</p>
                     </td>
                     <td width="25%" class="text-right">
                         <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">FIELD</label> <input class="" type="checkbox" value=""></p>

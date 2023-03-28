@@ -838,6 +838,26 @@ class Invoice extends ParentModel
         return $row;
     }
 
+    public function getCustomerNameFromID($customer_id)
+    {
+        $row = DB::table('customer')
+            ->where('customer_id', $customer_id)
+            ->first();
+
+        $customer_name = $row->first_name . ' '.  $row->last_name;
+        return $customer_name;
+    }
+
+    public function getCompanyNameFromBillingID($merchant_id)
+    {
+        $row = DB::table('merchant_billing_profile')
+            ->where('merchant_id', $merchant_id)
+            ->first();
+
+        return $row->company_name;
+    }
+    
+
     public function getPaymentRequest($contract_id)
     {
         $retObj = DB::table('payment_request as p')

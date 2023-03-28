@@ -910,9 +910,15 @@ class InvoiceController extends AppController
             $data['invoice_type'] = $payment_request_data->invoice_type;
             $data['absolute_cost'] = $payment_request_data->absolute_cost;
             $data['payment_request_id'] = $payment_request_data->payment_request_id;
-            $data['invoice_total'] = $payment_request_data->invoice_total;
+            $data['invoice_total'] = $payment_request_data->invoice_total; 
+            $data['invoice_number'] = $payment_request_data->invoice_number;
              
+            //get customer name from id 
+            $data['customer_name']  = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
             
+            //get merchsnt company name from billing id 
+            $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($payment_request_data->merchant_id);
+
             $data['user_type'] = 'merchant';
             $data["url"] =  Encrypt::encode($payment_request_id);
             
@@ -923,7 +929,8 @@ class InvoiceController extends AppController
                     $hasAIALicense = true;
                 }
             }
-
+            $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
+           
             $data['has_aia_license'] = $hasAIALicense;
             
             $data['its_from'] = 'real';
@@ -938,7 +945,7 @@ class InvoiceController extends AppController
             $construction_details = json_decode($construction_details, 1)[0];
 
             $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
-
+            $data['project_details'] =  $project_details;
             //set CO Data
             $changOrderData = $this->setChangeOrderValues($payment_request_data->change_order_id, $payment_request_data->created_date, $project_details->contract_id);
             $data['last_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive'],$currency_icon);
