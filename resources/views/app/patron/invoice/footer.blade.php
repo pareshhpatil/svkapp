@@ -20,69 +20,6 @@
         @endif
 
         <form action="/patron/paymentrequest/pay/{{$url}}" method="post">
-            @isset($is_online_payment)
-
-            @if( $is_online_payment==TRUE && $grand_total>0)
-            @if(isset($info['coupon_details']) && !empty($info['coupon_details']))
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table" style="background-color: #fcf8e3;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <input type="hidden" class="displayonly" id="coupon_used" readonly name="coupon_used" value="0" />
-                                    <input type="hidden" class="displayonly" name="coupon_id" value="{{$info['coupon_details']['coupon_id']}}" />
-                                    <input type="hidden" class="displayonly" name="discount" id="discount_amt" value="" />
-                                    <input type="hidden" class="displayonly" id="c_percent" value="{{$info['coupon_details']['percent']}}" />
-                                    <input type="hidden" class="displayonly" id="bill_total" value="{{$info['invoice_total']}}" />
-                                    <input type="hidden" class="displayonly" id="surcharge_amount" value="{{$info['surcharge_amount']}}" />
-                                    <input type="hidden" class="displayonly" id="fee_id" value="{{$info['fee_id']}}" />
-                                    <input type="hidden" class="displayonly" id="grand_total" value="{{$grand_total}}" />
-                                    <input type="hidden" class="displayonly" id="c_fixed_amount" value="{{$info['coupon_details']['fixed_amount']}}" />
-                                    <input type="hidden" class="displayonly" id="paymenturl" value="/patron/paymentrequest/pay/{{$url}}" />
-                                    Coupon discount : <b>@if($info['coupon_details']['type']==1)
-                                        Rs.{{$info['coupon_details']['fixed_amount']}}/- @else{{$info['coupon_details']['percent']}}%
-                                        @endif</b>
-                                    <p class="small">{{$info['coupon_details']['descreption']}}</p>
-                                </td>
-                                <td>
-                                    <a class="btn blue pull-right" href="javascript:" id="btn_apply_coupun" style="display: block;" onclick="handleCoupon(1,{{$info['coupon_details']['type']}});">Apply
-                                        Coupon <i class="fa fa-check"></i></a>
-                                    <a class="btn red pull-right" href="javascript:" id="btn_remove_coupon" style="display: none;" onclick="handleCoupon(2,{{$info['coupon_details']['type']}});">Remove
-                                        Coupon <i class="fa fa-remove"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-            @else
-            @if(isset( $metadata['plugin']['has_coupon']) && isset($info['coupon_details']['coupon_id']))
-            <div class="row no-margin">
-                <br>
-
-                <div class="col-md-3">
-
-                    <input type="text" id="coupon_code" placeholder="Enter coupon code" class="form-control" value="" />
-                    <input type="hidden" class="displayonly" id="coupon_id" name="coupon_id" value="{{$info['coupon_details']['coupon_id']}}" />
-                    <br>
-                </div>
-                <div class="col-md-2">
-                    <label class="font-red">&nbsp;</label>
-                    <button onclick="return validateCoupon('{{$info['merchant_user_id']}}', '{{$grand_total}}');" class="btn green">Apply</button>
-                </div>
-                <div class="col-md-5">
-                    <label class="font-blue" id="coupon_status">&nbsp;</label>
-
-                </div>
-
-            </div>
-            @endif
-            @endif
-            @endif
-
-            @endisset
             <div class="row no-margin">
                 <div class="col-md-12 invoice-block">
                     @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file']==1)
@@ -148,19 +85,7 @@
                         View Invoice
                     </a>
                     @else
-                    @if(isset($metadata['plugin']['has_partial']) && $metadata['plugin']['has_partial']==1)
-                    <button type="submit" name="partial" class="btn green hidden-print margin-bottom-5">
-                        Pay Partial Amount
-                    </button>
-                    @endif
-                    @if(isset($metadata['plugin']['autocollect_plan_id']) && $metadata['plugin']['autocollect_plan_id']>0)
-                    <button type="submit" name="autopay" class="btn green hidden-print margin-bottom-5">
-                        Enable auto payment
-                    </button>
-                    @endif
-
                     @if(isset($metadata['plugin']['has_online_payments']) && $metadata['plugin']['has_online_payments']==1 && isset($metadata['plugin']['enable_payments']) && $metadata['plugin']['enable_payments']==0)
-
                     @else
                     <button type="submit" name="paynow" class="btn blue hidden-print margin-bottom-5">
                         Pay Now
@@ -173,50 +98,6 @@
         </form>
 
     </div>
-
-    @if( !empty($info['partial_payments']))
-
-    <div class="portlet-body">
-        <h4><b>Payment details</b></h4>
-        <div class="table-scrollable">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th class="td-c">
-                            Transaction ID
-                        </th>
-                        <th class="td-c">
-                            Payment date
-                        </th>
-                        <th class="td-c">
-                            Payment mode
-                        </th>
-                        <th class="td-c">
-                            Amount
-                        </th>
-                    </tr>
-                    @foreach ($info['partial_payments'] as $item)
-                    <tr>
-                        <td class="td-c">
-                            {{$item->transaction_id ?? ''}}
-                        </td>
-                        <td class="td-c">
-                            {{$item->payment_date ?? ''}}
-                        </td>
-                        <td class="td-c">
-                            {{$item->payment_mode ?? ''}}
-                        </td>
-                        <td class="td-c">
-                            {{$item->amount ?? ''}}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif
-
 
 </div>
 @endif

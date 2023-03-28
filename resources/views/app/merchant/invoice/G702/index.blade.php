@@ -28,7 +28,6 @@ $header='app.patron.invoice.invoice-master';
 
 @extends($header)
 
-
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
@@ -72,24 +71,9 @@ $header='app.patron.invoice.invoice-master';
             $footers='app.patron.invoice.footer';}
 
             @endphp
-
-            @if($its_from !='preview')
-
-            @if($staging==0)
             <div class="w-full mt-1" style="max-width: 1400px">
-
                 @include($footers)
-
             </div>
-            @endif
-
-            @endif
 
         </div>
-
-
-
-        <!-- END GROOVE WIDGET CODE -->
-
-
         @endsection

@@ -950,11 +950,6 @@ class InvoiceController extends AppController
             $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
            
             $data['has_aia_license'] = $hasAIALicense;
-            
-            $data['its_from'] = 'real';
-            ////TODO: @a - remove the staging thing 
-            $data['staging'] = 0;
-            //remvoe this also 
             $data["surcharge_amount"] = 0;
             //check this and remove
             $data['user_name'] = Session::get('user_name');
