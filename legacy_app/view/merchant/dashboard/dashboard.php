@@ -2,6 +2,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="/css/toastr.css" >
 <script src="//cdn.headwayapp.co/widget.js"></script>
 <style>
     #notification-dropdown {
@@ -1192,6 +1193,7 @@ if ($this->document_upload == true) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js"></script>
+<script src="/js/toastr.js"></script>
 <script>
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -1233,9 +1235,13 @@ if ($this->document_upload == true) {
     messaging.onMessage(function({data:{body,title}}) {
         //alert(title);
         console.log(title, {body});
+        // let msg = body;
+        // toastr.info(msg, {
+        //     postionClass:'toast-top-right',
+        // });
         //if receive notification fetch from db latest notifications for login user
         fetchNewNotifications();
-
+        
         //new Notification(title, {body});
     });
 

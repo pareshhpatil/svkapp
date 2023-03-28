@@ -83,6 +83,8 @@
 
     <!-- Uppy file upload css -->
     <link href="/assets/admin/layout/css/uppy.min.css" rel="stylesheet" type="text/css" />
+    <!-- Toastr css -->
+    <link href="{{asset('css/toastr.css')}}" rel="stylesheet">
 
     <link rel="shortcut icon" href="/favicon.ico" />
     <style>
@@ -470,8 +472,6 @@
 
             <!-- DataTables -->
             <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-
-
 
 </body>
 <!-- END BODY -->
