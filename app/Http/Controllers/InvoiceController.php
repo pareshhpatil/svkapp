@@ -5986,11 +5986,12 @@ class InvoiceController extends AppController
                     if ($plugin_array['include_store_materials'] == 1) {
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount + $particulars[$key]->previously_stored_materials;
                         $particulars[$key]->previously_stored_materials = '';
+                        $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_amount * 100 / $particulars[$key]->current_contract_amount;
                     } else {
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                        $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
                     }
                     $particulars[$key]->current_billed_amount = '';
-                    $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
                     $particulars[$key]->current_billed_percent = '';
                     $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
                     $particulars[$key]->retainage_amount_for_this_draw = '';

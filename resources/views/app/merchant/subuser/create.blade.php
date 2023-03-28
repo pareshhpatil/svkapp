@@ -33,20 +33,6 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-4">Password <span class="required">*
-                                                </span></label>
-                                            <div class="col-md-4">
-                                                <input type="password" required AUTOCOMPLETE='OFF' id="submit_form_password" name="password" class="form-control" >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-4">Confirm Password <span class="required">*
-                                                </span></label>
-                                            <div class="col-md-4">
-                                                <input type="password" required AUTOCOMPLETE='OFF' name="password_confirmation" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
                                             <label class="control-label col-md-4">First name <span class="required">*
                                                 </span></label>
                                             <div class="col-md-4">
@@ -61,16 +47,7 @@
                                                 <input type="text" required name="last_name" class="form-control" value="{{ old('last_name') }}">
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-4">Mobile <span class="required">*
-                                                </span></label>
-                                            <div class="col-md-1">
-                                                <input type="text" name="mob_country_code" class="form-control" value="+91">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" required name="mobile" class="form-control" value="{{ old('mobile') }}">
-                                            </div>
-                                        </div>
+
                                         <div class="form-group">
                                             <label class="control-label col-md-4">Role<span class="required">*
                                                 </span></label>
