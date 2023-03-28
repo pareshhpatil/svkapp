@@ -350,7 +350,7 @@ class UserController extends Controller
                             return redirect('/cable/settopbox');
                         }
                     }
-                };
+                }
                 return redirect('/patron/dashboard');
             } else {
                 //Check if user is a sub merchant login

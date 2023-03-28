@@ -39,6 +39,9 @@ class PrivilegesAccess
         $customerPrivilegesAccessIDs = json_decode(Redis::get('customer_privileges_' . $userID), true);
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $userID), true);
 
+        $projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $userID), true);
+        $customerPrivilegesAccessIDs = json_decode(Redis::get('customer_privileges_' . $userID), true);
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $userID), true);
         switch ($pathArray[1]) {
             case 'contract':
                 if (!empty($contractPrivilegesAccessIDs)) {

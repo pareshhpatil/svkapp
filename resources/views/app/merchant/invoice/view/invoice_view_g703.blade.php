@@ -153,26 +153,16 @@ $header = 'app.patron.invoice.invoice-master';
                     <div>
                         <h1 class="text-3xl text-left mt-8 font-bold">Document G703® – 1992</h1>
                     </div>
-                    @else
-                    <div>
-                        <h1 class="text-3xl text-left font-bold">Document G703 – 1992</h1>
-                    </div>
                     @endif
 
                 </div>
-                <h1 class="text-2xl text-left mt-4 font-bold">Continuation Sheet</h1>
+                <h1 class="text-2xl text-left mt-4 font-bold">CONTINUATION SHEET</h1>
                 <div class="w-full h-0.5 bg-gray-900 mt-1 mb-1"></div>
 
                 <div class="grid grid-cols-3  gap-4">
                     <div class="col-span-2">
                         @if($has_aia_license)
                         <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                            Application and Certificate for
-                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                            is attached.
-                            Use Column I on Contracts where variable retainage for line items may apply. </p>
-                        @else
-                        <p class="text-xs">Document G702, Application and Certificate for Payment, or G732™,
                             Application and Certificate for
                             Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
                             is attached.

@@ -50,7 +50,7 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
 body{
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0px;
-    line-height: 93%;
+    line-height: 100%;
 }
     </style>
 
@@ -94,17 +94,11 @@ body{
                             <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;font-size:24px;">Document G702® – 1992</div>
                         </td>
                     </tr>
-                @else
-                    <tr>
-                        <td>
-                            <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 700; color: #000;font-size:24px;">Document G702 – 1992</div>
-                        </td>
-                    </tr>
                 @endif
 
             </table>
-            <div style="font-size:20px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Application and Certificate for Payment </div>
-            <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827"></div>     
+            <div style="font-size:15px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">APPLICATION AND CERTIFICATE FOR PAYMENT</div>
+            <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827;margin-bottom: 10px;"></div>     
                    <div>
                 <table width="100%" >
                     <tr>
@@ -206,13 +200,10 @@ body{
                        <table style="width:100%">
                <tr>
                         <td style="width:50%; padding-right: 10px;">
-                    <div style="font-size: 16px;font-weight: 600;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</div>
+                    <div style="font-size: 15px;font-weight: 600;margin-top: 3px;margin-bottom: 3px;">CONTRACTOR’S APPLICATION FOR PAYMENT</div>
                             @if($has_aia_license)
                                 <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
                                     AIA Document G703®, Continuation Sheet, is attached.</div>
-                            @else
-                                <div style="font-size: 12px">Application is made for payment, as shown below, in connection with the Contract.
-                                    Document G703, Continuation Sheet, is attached.</div>
                             @endif
 
                         @php $contract_sum_to_date = $info['total_original_contract']+$info['last_month_co_amount']+$info['this_month_co_amount'] @endphp

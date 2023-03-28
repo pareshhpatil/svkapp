@@ -32,7 +32,8 @@ class ContractParticular extends Model
         'owner_address',
         'contractor_address',
         'bulk_id',
-        'architect_address'
+        'architect_address',
+        'template_id'
     ];
 
     protected $rules = [

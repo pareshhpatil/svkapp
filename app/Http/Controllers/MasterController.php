@@ -159,7 +159,6 @@ class MasterController extends AppController
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         }
-
         $customerPrivileges = json_decode(Redis::get('customer_privileges_' . $this->user_id), true);
 
         if(!empty($projectPrivilegesIDs)) {

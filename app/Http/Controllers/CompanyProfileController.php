@@ -360,7 +360,13 @@ class CompanyProfileController extends AppController
                             "title": "Bulk upload Contracts",
                             "desc": "Bulk upload contract for a project with an excel upload. Prepare contract information in excel and associate with a project with a simple upload.",
                             "link": "/merchant/contract/import"
+                        },
+                        {
+                            "title": "Bulk upload Change order",
+                            "desc": "Bulk upload change order for a contract with an excel upload. Prepare order information in excel and associate with a contract with a simple upload.",
+                            "link": "/merchant/change-order/import"
                         }
+
                     ]
                 }
             ]';

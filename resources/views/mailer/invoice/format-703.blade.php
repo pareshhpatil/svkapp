@@ -118,26 +118,14 @@
                             <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
                         </td>
                     </tr>
-                    @else
-                    <tr>
-                        <td>
-                            <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703 – 1992</div>
-                        </td>
-                    </tr>
                     @endif
                 </table>
-                <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Continuation Sheet</div>
+                <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">CONTINUATION SHEET</div>
                 <div style="margin-top: 5px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
                 <table style="width:100%">
                     <td>
                         @if($has_aia_license)
                         <div style="font-size: 12px">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                            Application and Certificate for
-                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                            is attached.
-                            Use Column I on Contracts where variable retainage for line items may apply. </div>
-                        @else
-                        <div style="font-size: 12px">Document G702, Application and Certificate for Payment, or G732™,
                             Application and Certificate for
                             Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
                             is attached.
