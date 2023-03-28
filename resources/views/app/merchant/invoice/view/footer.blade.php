@@ -30,20 +30,20 @@ $validate=(array)$validate;
             <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$payment_request_id}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
                 <div class="col-md-4 pull-left btn-pl-0">
                     <div class="input-icon">
-                        <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
-                        <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
+                        <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($notify_patron==1) checked @endif class="make-switch" data-size="small">
+                        <input type="hidden" id="is_notify_" name="notify_patron" value="{{($notify_patron==1) ? 1 : 0}}" />
                     </div>
 
                 </div>
                 <input type="hidden" name="payment_request_id" value="{{$payment_request_id}}" />
-                <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
+                <input type="hidden" name="payment_request_type" value="{{$payment_request_type}}" />
 
                 <div class="view-footer-btn-rht-align">
 
-                    @if($info['notify_patron']==1)
-                    <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$payment_request_id}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
+                    @if($notify_patron==1)
+                    <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$payment_request_id}}',document.getElementById('is_notify_').value,'{{$invoice_number}}','{{$payment_request_type}}');" />
                     @else
-                    <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$payment_request_id}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
+                    <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$payment_request_id}}',document.getElementById('is_notify_').value,'{{$invoice_number}}','{{$payment_request_type}}');" />
                     @endif
                 </div>
             </form>

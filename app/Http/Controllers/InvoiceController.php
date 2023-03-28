@@ -913,6 +913,9 @@ class InvoiceController extends AppController
             $data['invoice_total'] = $payment_request_data->invoice_total; 
             $data['invoice_number'] = $payment_request_data->invoice_number;
             $data['document_url'] = $payment_request_data->document_url;
+            $data['notify_patron'] = $payment_request_data->notify_patron;
+            $data['payment_request_type'] = $payment_request_data->payment_request_type;
+            
 
             //merchant data 
             $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($payment_request_data->merchant_id); 
