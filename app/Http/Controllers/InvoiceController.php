@@ -5653,15 +5653,19 @@ class InvoiceController extends AppController
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount + $particulars[$key]->previously_stored_materials;
                         $particulars[$key]->previously_stored_materials = '';
                         $particulars[$key]->previously_billed_percent = number_format($particulars[$key]->previously_billed_amount * 100 / $particulars[$key]->current_contract_amount,2);
+                        $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
+                        $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw + $particulars[$key]->retainage_amount_previously_stored_materials;
+                        $particulars[$key]->retainage_amount_previously_stored_materials='';
                     } else {
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
                         $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
+                        $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
+                        $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
                     }
                     $particulars[$key]->current_billed_amount = '';
                     $particulars[$key]->current_billed_percent = '';
-                    $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
+
                     $particulars[$key]->retainage_amount_for_this_draw = '';
-                    $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
                     $particulars[$key]->retainage_amount_stored_materials = '';
                     $particulars[$key]->current_stored_materials = '';
                     $particulars[$key]->id = '';
