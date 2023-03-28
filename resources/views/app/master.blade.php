@@ -482,51 +482,48 @@
             <script>
                 // Your web app's Firebase configuration
                 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-                const firebaseConfig = {
-                    apiKey: "AIzaSyC-SjmTAA8a263sh83pqBwuDTj5l7UJQRg",
-                    authDomain: "push-notifications-ea922.firebaseapp.com",
-                    projectId: "push-notifications-ea922",
-                    storageBucket: "push-notifications-ea922.appspot.com",
-                    messagingSenderId: "361692257040",
-                    appId: "1:361692257040:web:fe2910d1d2a72d3054e395",
-                    measurementId: "G-Z94TJHFS72"
-                };
+                // const firebaseConfig = {
+                //     apiKey: "AIzaSyC-SjmTAA8a263sh83pqBwuDTj5l7UJQRg",
+                //     authDomain: "push-notifications-ea922.firebaseapp.com",
+                //     projectId: "push-notifications-ea922",
+                //     storageBucket: "push-notifications-ea922.appspot.com",
+                //     messagingSenderId: "361692257040",
+                //     appId: "1:361692257040:web:fe2910d1d2a72d3054e395",
+                //     measurementId: "G-Z94TJHFS72"
+                // };
 
-                firebase.initializeApp(firebaseConfig);
+                // firebase.initializeApp(firebaseConfig);
 
-                const messaging = firebase.messaging();
+                // const messaging = firebase.messaging();
 
-                function initFirebaseMessagingRegistration() {
-                    messaging.requestPermission ().then(function () {
-                        return messaging.getToken()
-                    }).then(function(token) {
-                        axios.post('/fcm-token', {
-                            _method:"POST",
-                            token
-                        }).then(({data}) => {
-                            console.log(data);
-                            // fetchNewNotifications();
-                        }).catch(({response:{data}}) => {
-                            console.error(data)
-                        })
+                // function initFirebaseMessagingRegistration() {
+                //     messaging.requestPermission ().then(function () {
+                //         return messaging.getToken()
+                //     }).then(function(token) {
+                //         axios.post('/fcm-token', {
+                //             _method:"POST",
+                //             token
+                //         }).then(({data}) => {
+                //             console.log(data);
+                //             // fetchNewNotifications();
+                //         }).catch(({response:{data}}) => {
+                //             console.error(data)
+                //         })
 
-                    }).catch(function (err) {
-                        console.log(`Token Error :: ${err}`);
-                    });
-                }
+                //     }).catch(function (err) {
+                //         console.log(`Token Error :: ${err}`);
+                //     });
+                // }
 
-                initFirebaseMessagingRegistration();
+                // initFirebaseMessagingRegistration();
 
-                messaging.onMessage(function({data:{body,title}}) {
-                    // alert(title);
+                // messaging.onMessage(function({data:{body,title}}) {
                     
-                    let msg = body;
-                    toastr.info(msg, {
-                        postionClass:'toast-top-right',
-                    });
-                    
-                    //new Notification(title, {body});
-                });
+                //     let msg = body;
+                //     toastr.info(msg, {
+                //         postionClass:'toast-top-right',
+                //     });
+                // });
 
             </script>
 
