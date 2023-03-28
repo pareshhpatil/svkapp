@@ -917,10 +917,7 @@ class InvoiceController extends AppController
             //merchant data 
             $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($payment_request_data->merchant_id); 
            
-            $is_online_payment = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
-            $data["is_online_payment"] = $is_online_payment;
-            $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
-            Session::put('paidMerchant_request', $paidMerchant_request);
+            $data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
              
             //get customer name from id 
             $data['customer_name']  = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
@@ -951,7 +948,6 @@ class InvoiceController extends AppController
            
             $data['has_aia_license'] = $hasAIALicense;
             $data["surcharge_amount"] = 0;
-            //check this and remove
             $data['user_name'] = Session::get('user_name');
 
             $construction_details = $this->invoiceModel->getInvoiceConstructionParticularsSum($payment_request_id);
