@@ -887,13 +887,13 @@ class InvoiceController extends AppController
 
             //get payment request status 
             $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id); 
-           
-            //get currecy icon
-            $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon; 
-           
             if (!isset($payment_request_data->payment_request_status)) {
                 return redirect('/error/invalidlink');
             }
+
+            //get currecy icon
+            $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon; 
+           
             $data['gtype'] = '702';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
@@ -924,8 +924,7 @@ class InvoiceController extends AppController
              
             //get customer name from id 
             $data['customer_name']  = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
-            
-            //get merchsnt company name from billing id 
+            //get merchsnt company name from billing profile id 
             $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($payment_request_data->merchant_id);
 
             $data['user_type'] = $user_type;
@@ -966,7 +965,7 @@ class InvoiceController extends AppController
             $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
             $data['project_details'] =  $project_details;
             //set CO Data
-            $changOrderData = $this->setChangeOrderValues($payment_request_data->change_order_id, $payment_request_data->created_date, $project_details->contract_id);
+            $changOrderData = $this->setChangeOrderValues($payment_request_data->change_order_id, $payment_request_data->created_date, $project_details->contract_id, $payment_request_data->bill_date);
             $data['last_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive'],$currency_icon);
             $data['last_month_co_amount_negative'] =  $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative'], $currency_icon);
             $data['this_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive'], $currency_icon);
@@ -1148,7 +1147,7 @@ class InvoiceController extends AppController
         return $isFirstInvoice;
     }
 
-    public function setChangeOrderValues($change_order_id, $created_date, $contract_id)
+    public function setChangeOrderValues($change_order_id, $created_date, $contract_id, $bill_date)
     {
 
         $change_order_ids = json_decode($change_order_id, 1);
@@ -1159,11 +1158,11 @@ class InvoiceController extends AppController
             $co_data['this_month_co_amount_negative'] = 0;
 
             $start_date = '1990-01-01';
-            $end_date = date("Y-m-01");
+            $end_date = date("Y-m-01", strtotime($bill_date));
             $co_data['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
             $co_data['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
-            $start_date = date("Y-m-01");
+            $start_date = date("Y-m-01", strtotime($bill_date));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
             $co_data['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
             $co_data['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');

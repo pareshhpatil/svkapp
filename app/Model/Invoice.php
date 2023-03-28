@@ -863,6 +863,7 @@ class Invoice extends ParentModel
     {
         $row = DB::table('merchant_billing_profile')
             ->where('merchant_id', $merchant_id)
+            ->where('is_default', '1')
             ->first();
 
         return $row->company_name;
@@ -896,7 +897,7 @@ class Invoice extends ParentModel
     public function getPaymentRequestData($payment_request_id, $merchant_id = 'customer')
     {
         $retObj = DB::table('payment_request')
-            ->select(DB::raw('*'))
+            ->select(DB::raw('*,  DATE_FORMAT(bill_date, "%d %b %Y") as bill_date'))
             ->where('payment_request_id', '=', $payment_request_id)
             ->where('merchant_id', '=', $merchant_id)
             ->orderBy('created_date', 'desc')->first();
