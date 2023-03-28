@@ -1235,10 +1235,10 @@ if ($this->document_upload == true) {
     messaging.onMessage(function({data:{body,title}}) {
         //alert(title);
         console.log(title, {body});
-        let msg = body;
-        toastr.info(msg, {
-            postionClass:'toast-top-right',
-        });
+        // let msg = body;
+        // toastr.info(msg, {
+        //     postionClass:'toast-top-right',
+        // });
         //if receive notification fetch from db latest notifications for login user
         fetchNewNotifications();
         
