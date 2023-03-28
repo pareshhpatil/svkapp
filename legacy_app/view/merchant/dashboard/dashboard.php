@@ -1234,7 +1234,7 @@ if ($this->document_upload == true) {
 
     messaging.onMessage(function({data:{body,title}}) {
         //alert(title);
-        
+        console.log(title, {body});
         let msg = body;
         toastr.info(msg, {
             postionClass:'toast-top-right',
