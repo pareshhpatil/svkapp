@@ -113,8 +113,6 @@ class SubUserHelper
         $SubUser->name = $request->get('first_name')." ".$request->get('last_name');
         $SubUser->first_name = $request->get('first_name');
         $SubUser->last_name = $request->get('last_name');
-        $SubUser->mob_country_code = $request->get('mob_country_code');
-        $SubUser->mobile_no = $request->get('mobile');
         $SubUser->last_updated_by = $authUserID;
         $SubUser->last_updated_date = Carbon::now()->toDateTimeString();
 
