@@ -82,8 +82,10 @@ class PrivilegesAccess
                             if(($pathArray[2] == 'create' || $pathArray[2] == 'save' || $pathArray[2] == 'store' || $pathArray[2] == 'updatesave') && (in_array('full', array_values($orderPrivilegesAccessIDs)) || in_array('edit', array_values($orderPrivilegesAccessIDs)) || in_array('approve', array_values($orderPrivilegesAccessIDs)))) {
                                 $result = true;
                             } else {
-                                if(!empty($modelID) && ($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit' || $orderPrivilegesAccessIDs[$modelID] == 'approve')) {
-                                    $result = true;
+                                if(!empty($modelID) && isset($orderPrivilegesAccessIDs[$modelID])) {
+                                    if($orderPrivilegesAccessIDs[$modelID] == 'full' || $orderPrivilegesAccessIDs[$modelID] == 'edit' || $orderPrivilegesAccessIDs[$modelID] == 'approve') {
+                                        $result = true;
+                                    }
                                 }
                             }
                         }
