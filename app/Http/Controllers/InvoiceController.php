@@ -878,7 +878,7 @@ class InvoiceController extends AppController
         return $this->create($request, 'subscription', 2);
     }
 
-    public function view702($link, $user_type =  'merchant')
+    public function view702($link, $user_type =  'merchant', $is_data = 0)
     {
         $payment_request_id = Encrypt::decode($link);
 
@@ -1000,8 +1000,12 @@ class InvoiceController extends AppController
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon );
             $data['balance_to_finish'] =$this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
             $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $currency_icon);
-
-            return view('app/merchant/invoice/G702/index', $data);
+          
+            if($is_data){
+                return $data;
+            }else{
+                return view('app/merchant/invoice/G702/index', $data);
+            }
         }
     }
     
@@ -2252,6 +2256,10 @@ class InvoiceController extends AppController
             }
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            //uncommment this for new refactor code 
+            //$data = $this->view702($link,'merchant', 1);
+            
+            
             // if ($savepdf == 2) {
             //     $data['viewtype'] = 'print';
             //     if ($info['template_type'] == 'construction') {
