@@ -69,7 +69,7 @@ class SubUserHelper
         $SubUser->first_name = $request->get('first_name');
         $SubUser->last_name = $request->get('last_name');
         $SubUser->email_id = $request->get('email_id');
-        $SubUser->user_status = 19;
+        $SubUser->user_status = 20;
         $SubUser->group_id = $groupID;
         $SubUser->user_group_type = 2;
         $SubUser->user_type = 0;

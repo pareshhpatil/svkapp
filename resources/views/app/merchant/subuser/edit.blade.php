@@ -40,16 +40,6 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-4">Mobile <span class="required">*
-                                                </span></label>
-                                            <div class="col-md-1">
-                                                <input type="text" name="mob_country_code" class="form-control" value="{{ $user->mob_country_code }}">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" required name="mobile" class="form-control" value="{{ $user->mobile_no }}">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
                                             <label class="control-label col-md-4">Role<span class="required">*
                                                 </span></label>
                                             <div class="col-md-4">
