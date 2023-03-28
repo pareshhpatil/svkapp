@@ -314,6 +314,9 @@ class ImportController extends Controller
                         if($key=='cost_type') {
                             $cost_type_name = $this->importModel->getColumnValue('cost_types','id',$val2,'name');
                             $values[$cnt][] = $cost_type_name;
+                        } else if($key=='bill_code') {
+                            $bill_code = $this->importModel->getColumnValue('csi_code','id',$val2,'code');
+                            $values[$cnt][] = $bill_code;
                         } else {
                             $values[$cnt][] = $val2;
                         }
