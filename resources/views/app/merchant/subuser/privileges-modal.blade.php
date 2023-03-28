@@ -139,9 +139,18 @@
     }
 
     .rule-engine-value {
-        width: 120px  !important;
+        width: 140px  !important;
         margin: 0;
-        min-width: 120px !important;
+        min-width: 140px !important;
+        font-size: 14px;
+        font-weight: 400;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        box-shadow: none;
+        padding: 6px 12px;
+        height: 34px;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     }
 
     .custom-show {
@@ -154,6 +163,12 @@
 
     .select2-selection__rendered {
         min-height: 32px;
+    }
+
+    .rule-engine-value-format {
+        padding: 5px 5px 0 5px;
+        color: #333;
+        margin-bottom: 5px;
     }
 
     @media (max-width: 767px) {
@@ -1338,6 +1353,29 @@
 
             });
 
+            $(document).on("blur", ".rule-engine-value", function() {
+                
+                let val = $(this).val();
+                let privilegesID = $(this).attr('data-id');
+                let type = $(this).attr('data-type');
+                
+                $(this).addClass('hide');
+                $(this).removeClass('show');
+                
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('hide');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').addClass('show');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').text(updateTextView1(val));
+            })
+
+            $(document).on("click", ".rule-engine-value-format", function() {
+                $(this).addClass('hide');
+                $(this).removeClass('show');
+                let privilegesID = $(this).attr('data-id');
+                let type = $(this).attr('data-type');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').addClass('show');
+            })
+
             function accessHTML(label, privileges = '', index, type, hasRuleEngine, rule_engine = []) {
                 return `<div id="${type}-access-item-${index}" class="privileges-access-row">
 <div class="privileges-access-item">
@@ -1423,15 +1461,15 @@ ${ruleEngineValue(rule_engine?.query_value, index, type)}
                 if(queryValue) {
                     html = `<div class="form-group form-group-rule-engine-value">
                         <div class="input-group">
-                            <div class="input-group-addon">$</div>
-                            <input type="number" name="rule-engine-value" value="${queryValue}" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">
+                            <p class="rule-engine-value-format show" data-id="${index}" data-type="${type}">${updateTextView1(queryValue)}</p>
+                            <input type="number" name="rule-engine-value" value="${queryValue}" class="rule-engine-value hide" data-id="${index}" data-type="${type}">
                         </div>
                     </div>`;
                 } else {
                     html = `<div class="form-group form-group-rule-engine-value">
                         <div class="input-group">
-                            <div class="input-group-addon">$</div>
-                            <input type="number" name="rule-engine-value" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">
+                            <p class="rule-engine-value-format hide" data-id="${index}" data-type="${type}">${queryValue}</p>
+                            <input type="number" name="rule-engine-value" class="rule-engine-value show" data-id="${index}" data-type="${type}">
                         </div>
                     </div>`;
                 }
