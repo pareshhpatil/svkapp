@@ -69,7 +69,7 @@ $header='app.patron.invoice.invoice-master';
             {
             $footers='app.merchant.invoice.view.footer';}
             else{
-            $footers='app.patron.invoice.invoice-footer';}
+            $footers='app.patron.invoice.footer';}
 
             @endphp
 

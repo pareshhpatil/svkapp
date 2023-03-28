@@ -878,7 +878,7 @@ class InvoiceController extends AppController
         return $this->create($request, 'subscription', 2);
     }
 
-    public function view702($link, $version =  null)
+    public function view702($link, $user_type =  'merchant')
     {
         $payment_request_id = Encrypt::decode($link);
 
@@ -912,6 +912,15 @@ class InvoiceController extends AppController
             $data['payment_request_id'] = $payment_request_data->payment_request_id;
             $data['invoice_total'] = $payment_request_data->invoice_total; 
             $data['invoice_number'] = $payment_request_data->invoice_number;
+            $data['document_url'] = $payment_request_data->document_url;
+
+            //merchant data 
+            $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($payment_request_data->merchant_id); 
+           
+            $is_online_payment = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
+            $data["is_online_payment"] = $is_online_payment;
+            $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
+            Session::put('paidMerchant_request', $paidMerchant_request);
              
             //get customer name from id 
             $data['customer_name']  = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
@@ -919,7 +928,7 @@ class InvoiceController extends AppController
             //get merchsnt company name from billing id 
             $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($payment_request_data->merchant_id);
 
-            $data['user_type'] = 'merchant';
+            $data['user_type'] = $user_type;
             $data["url"] =  Encrypt::encode($payment_request_id);
             
             $plugins = json_decode($payment_request_data->plugin_value, 1);
@@ -929,6 +938,16 @@ class InvoiceController extends AppController
                     $hasAIALicense = true;
                 }
             }
+            $has_watermark = false;
+            $data['watermark_text'] = '';
+            if (isset($plugins['has_watermark'])) {
+                if ($plugins['has_watermark'] == 1) {
+                    $has_watermark = true;
+                    $data['watermark_text'] = $plugins['watermark_text'];
+                }
+            }
+            $data['has_watermark'] = $has_watermark;
+            
             $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
            
             $data['has_aia_license'] = $hasAIALicense;
@@ -995,6 +1014,7 @@ class InvoiceController extends AppController
             return view('app/merchant/invoice/G702/index', $data);
         }
     }
+    
     
     public function getTotalBilledAmount($construction_details)
     {         

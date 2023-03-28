@@ -520,6 +520,8 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/reportlink/{payment_request_id}', 'PaymentLinkController@reportLink');
   Route::post('paymentlink/reportthankyou', 'PaymentLinkController@reportUnsubscribe');
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
+  //code refactor 
+  Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');

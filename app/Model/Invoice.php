@@ -848,6 +848,17 @@ class Invoice extends ParentModel
         return $customer_name;
     }
 
+    public function getMerchantDataByID($merchant_id)
+    {
+        $row = DB::table('merchant')
+            ->where('merchant_id', $merchant_id)
+            ->first();
+
+        return $row;
+    }
+
+    
+
     public function getCompanyNameFromBillingID($merchant_id)
     {
         $row = DB::table('merchant_billing_profile')
