@@ -1209,10 +1209,14 @@
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
 
-                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
-                $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show');
-                $('#'+type+'-rule-engine-'+privilegesID).addClass('custom-hide');
+                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide').addClass('custom-show');
+                // $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn');
+                $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show').addClass('custom-hide');
+                // $('#'+type+'-rule-engine-'+privilegesID);
+
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide').addClass('show');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').val('');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('show').addClass('hide');
 
                 switch(type) {
                     case 'customer':
@@ -1354,17 +1358,17 @@
             });
 
             $(document).on("blur", ".rule-engine-value", function() {
-                
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-                
-                $(this).addClass('hide');
-                $(this).removeClass('show');
-                
-                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('hide');
-                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').addClass('show');
-                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').text(updateTextView1(val));
+
+                if(val > 0) {
+                    $(this).addClass('hide');
+                    $(this).removeClass('show');
+                    
+                    $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('hide').addClass('show');
+                    $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').text(updateTextView1(val));
+                }
             })
 
             $(document).on("click", ".rule-engine-value-format", function() {
@@ -1372,8 +1376,7 @@
                 $(this).removeClass('show');
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide');
-                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').addClass('show');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide').addClass('show');
             })
 
             function accessHTML(label, privileges = '', index, type, hasRuleEngine, rule_engine = []) {
