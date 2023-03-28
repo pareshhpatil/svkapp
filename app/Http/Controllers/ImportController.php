@@ -300,11 +300,17 @@ class ImportController extends Controller
             $hide = array('change_order_amount','pint');
             $cnt = 0;
             foreach ($particulars as $val) {
+                
                 foreach ($val as $key => $val2) {
                     if (!in_array($key, $hide)) {
                         if ($cnt == 0) {
-                            $column_name[] = ucfirst(str_replace('_', ' ', $key));
+                            if($key=='retainage_percent') {
+                                $column_name[] = ucfirst(str_replace('_', ' ', $key)) . ' %';
+                            } else {
+                                $column_name[] = ucfirst(str_replace('_', ' ', $key));
+                            }
                         }
+                        
                         if($key=='cost_type') {
                             $cost_type_name = $this->importModel->getColumnValue('cost_types','id',$val2,'name');
                             $values[$cnt][] = $cost_type_name;
@@ -345,6 +351,7 @@ class ImportController extends Controller
         if($type=='changeOrder') {
             $rint = 2;
             if(!empty($values)) {
+                //$hide = array(3,4,7);
                 foreach ($values as $val) {
                     $vint = 0;
                     foreach ($val as $vall) {
