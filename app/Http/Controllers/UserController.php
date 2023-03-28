@@ -502,10 +502,28 @@ class UserController extends Controller
 
     public function checkUserRole($user)
     {
-        if ($user->user_status == 20) {
+        if ($user->user_group_type == 2) {
             $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
         } else {
             $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
+        }
+
+        $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
+                ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                ->where(IColumn::NAME, "Admin")
+                ->exists();
+
+        if (empty($hasAdminRoleExists)) { 
+            DB::table(ITable::BRIQ_ROLES)
+                ->insert([
+                    'merchant_id' => $merchant->merchant_id,
+                    'name' => 'Admin',
+                    'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
+                    'created_by' => $user->created_by,
+                    'last_updated_by' => $user->created_by,
+                    IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                    IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                ]);
         }
 
         $hasUserRoleExists = DB::table(ITable::BRIQ_USER_ROLES)
@@ -513,28 +531,9 @@ class UserController extends Controller
             ->exists();
 
         if (empty($hasUserRoleExists)) {
-            //check if role exists
-            $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
-                ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                ->where(IColumn::NAME, "Admin")
-                ->exists();
-
-            if (empty($hasAdminRoleExists)) {
-                DB::table(ITable::BRIQ_ROLES)
-                    ->insert([
-                        'merchant_id' => $merchant->merchant_id,
-                        'name' => 'Admin',
-                        'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
-                        'created_by' => $user->created_by,
-                        'last_updated_by' => $user->created_by,
-                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                    ]);
-            }
-
             $AdminRole = DB::table(ITable::BRIQ_ROLES)
                 ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                ->where(IColumn::NAME, 'Admin')
+                ->where(IColumn::NAME, "Admin")
                 ->first();
 
             if (!empty($AdminRole)) {
