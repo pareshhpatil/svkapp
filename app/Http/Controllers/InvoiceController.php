@@ -4254,7 +4254,7 @@ class InvoiceController extends AppController
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
-            $data['isFirstInvoice']=true;
+            $data['isFirstInvoice'] = true;
             $info['constriuction_details'] = $this->getData703V2($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
@@ -5652,10 +5652,14 @@ class InvoiceController extends AppController
                     if ($plugin_array['include_store_materials'] == 1) {
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount + $particulars[$key]->previously_stored_materials;
                         $particulars[$key]->previously_stored_materials = '';
-                        $particulars[$key]->previously_billed_percent = number_format($particulars[$key]->previously_billed_amount * 100 / $particulars[$key]->current_contract_amount,2);
+                        if ($particulars[$key]->current_contract_amount > 0) {
+                            $particulars[$key]->previously_billed_percent = number_format($particulars[$key]->previously_billed_amount * 100 / $particulars[$key]->current_contract_amount, 2);
+                        } else {
+                            $particulars[$key]->previously_billed_percent = 0;
+                        }
                         $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
                         $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw + $particulars[$key]->retainage_amount_previously_stored_materials;
-                        $particulars[$key]->retainage_amount_previously_stored_materials='';
+                        $particulars[$key]->retainage_amount_previously_stored_materials = '';
                     } else {
                         $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
                         $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
