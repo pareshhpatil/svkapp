@@ -862,6 +862,28 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
+    public function getPaymentRequestData($payment_request_id, $merchant_id = 'customer')
+    {
+        $retObj = DB::table('payment_request')
+            ->select(DB::raw('*'))
+            ->where('payment_request_id', '=', $payment_request_id)
+            ->where('merchant_id', '=', $merchant_id)
+            ->orderBy('created_date', 'desc')->first();
+
+        return $retObj;
+    }
+
+    public function getCurrencyIcon($currency)
+    {
+        $retObj = DB::table('currency')
+            ->select(DB::raw('icon'))
+            ->where('code', '=', $currency)
+            ->first();
+
+        return $retObj;
+    }
+
+
     public function getPreviousInvoiceParticular($payment_request_id)
     {
         $retObj = DB::table('invoice_construction_particular as d')

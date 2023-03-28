@@ -134,7 +134,7 @@
                     <p class="font-bold text-xs mt-5"></p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-2"> {{$total_retainage_amount}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_stored_materials}}</p>
-                    <p class="font-bold text-xs border-b border-gray-600 mt-2"> {{$info['total_retainage']}}</p>
+                    <p class="font-bold text-xs border-b border-gray-600 mt-2"> {{$total_retainage}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_earned_less_retain}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_previously_billed_amount}}</p>
                     <p class="font-bold text-xs border   border-gray-600 mt-0 py-1"> {{$grand_total}}</p>

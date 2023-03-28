@@ -47,7 +47,7 @@ $header='app.patron.invoice.invoice-master';
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render('home.invoice.view','Invoice') }}
 
-            @if ($info['payment_request_status']==11)
+            @if ($payment_request_status==11)
             <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
             @endif
 
@@ -64,18 +64,18 @@ $header='app.patron.invoice.invoice-master';
             @include('app.merchant.invoice.G702.content');
 
             @php
-            $footers='app.merchant.invoiceformat.invoice_footer';
+            $footers='app.merchant.invoice.view.footer';
             if($user_type=='merchant')
             {
-            $footers='app.merchant.invoiceformat.invoice_footer';}
+            $footers='app.merchant.invoice.view.footer';}
             else{
             $footers='app.patron.invoice.invoice-footer';}
 
             @endphp
 
-            @if($info['its_from']!='preview')
+            @if($its_from !='preview')
 
-            @if($info['staging']==0)
+            @if($staging==0)
             <div class="w-full mt-1" style="max-width: 1400px">
 
                 @include($footers)

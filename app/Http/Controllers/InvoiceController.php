@@ -885,27 +885,38 @@ class InvoiceController extends AppController
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['transaction', 'invoice'], [5, 28]);
 
-            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-            $info = (array)$info;
-            if (!isset($info['payment_request_status'])) {
+            //get payment request status 
+            $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id); 
+           
+            //get currecy icon
+            $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon; 
+           
+            if (!isset($payment_request_data->payment_request_status)) {
                 return redirect('/error/invalidlink');
             }
-            $info['gtype'] = '702';
+            $data['gtype'] = '702';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
             if (!empty($offlineResponse)) {
-                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+                $data['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
 
-            if ($info['payment_request_status'] == '2') {
-                $info['offline_success_transaction'] = $offlineResponse;
+            if ($payment_request_data->payment_request_status == '2') {
+                $data['offline_success_transaction'] = $offlineResponse;
             }
 
+            $data['payment_request_status'] = $payment_request_data->payment_request_status;
+            $data['invoice_type'] = $payment_request_data->invoice_type;
+            $data['absolute_cost'] = $payment_request_data->absolute_cost;
+            $data['payment_request_id'] = $payment_request_data->payment_request_id;
+            $data['invoice_total'] = $payment_request_data->invoice_total;
+             
+            
             $data['user_type'] = 'merchant';
             $data["url"] =  Encrypt::encode($payment_request_id);
             
-            $plugins = json_decode($info['plugin_value'], 1);
+            $plugins = json_decode($payment_request_data->plugin_value, 1);
             $hasAIALicense = false;
             if (isset($plugins['invoice_output'])) {
                 if (isset($plugins['has_aia_license'])) {
@@ -915,13 +926,13 @@ class InvoiceController extends AppController
 
             $data['has_aia_license'] = $hasAIALicense;
             
-            $info['its_from'] = 'real';
+            $data['its_from'] = 'real';
             ////TODO: @a - remove the staging thing 
-            $info['staging'] = 0;
+            $data['staging'] = 0;
             //remvoe this also 
-            $info["surcharge_amount"] = 0;
+            $data["surcharge_amount"] = 0;
             //check this and remove
-            $info['user_name'] = Session::get('user_name');
+            $data['user_name'] = Session::get('user_name');
 
             $construction_details = $this->invoiceModel->getInvoiceConstructionParticularsSum($payment_request_id);
             $construction_details = json_decode($construction_details, 1)[0];
@@ -929,18 +940,18 @@ class InvoiceController extends AppController
             $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
 
             //set CO Data
-            $changOrderData = $this->setChangeOrderValues($info['change_order_id'], $info['created_date'], $project_details->contract_id);
-            $data['last_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive']);
-            $data['last_month_co_amount_negative'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative']);
-            $data['this_month_co_amount_positive'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive']);
-            $data['this_month_co_amount_negative'] = $info['currency_icon'] . $this->formatInvoiceValues($changOrderData['this_month_co_amount_negative']);
+            $changOrderData = $this->setChangeOrderValues($payment_request_data->change_order_id, $payment_request_data->created_date, $project_details->contract_id);
+            $data['last_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['last_month_co_amount_positive'],$currency_icon);
+            $data['last_month_co_amount_negative'] =  $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative'], $currency_icon);
+            $data['this_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive'], $currency_icon);
+            $data['this_month_co_amount_negative'] =  $this->formatInvoiceValues($changOrderData['this_month_co_amount_negative'], $currency_icon);
             $data['total_co'] = $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount'];
             $data['total_co_amount_positive'] = $changOrderData['total_co_amount_positive'];
             $data['total_co_amount_negative'] = $changOrderData['total_co_amount_negative'];
 
-            $data["total_complete_stored"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials']);
-            $data["original_contract_amount"] = $info['currency_icon'] . $this->formatInvoiceValues($construction_details['original_contract_amount']);
-            $data["contract_sum_to_date"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']);
+            $data["total_complete_stored"] =   $this->formatInvoiceValues($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'], $currency_icon);
+            $data["original_contract_amount"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'], $currency_icon);
+            $data["contract_sum_to_date"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount'], $currency_icon);
 
 
             if (!empty($construction_details['total_outstanding_retainage'])) {
@@ -952,29 +963,28 @@ class InvoiceController extends AppController
             $totalBilledAmount = $this->getTotalBilledAmount($construction_details);
             $sum_stored_materials = $this->getStoredMaterialsSum($construction_details);
             $total_retainage_amount = $this->getTotalRetinageAmount($construction_details);
-            $data['work_complete_perc'] = $this->getWorkCompletePerc($totalBilledAmount, $total_retainage_amount);
-            $data['stored_material_perc'] = $this->getWorkCompletePerc($construction_details['stored_materials'], $sum_stored_materials);
+            $data['work_complete_perc'] = $this->getWorkCompletePerc($totalBilledAmount, $total_retainage_amount, $currency_icon );
+            $data['stored_material_perc'] = $this->getStoredMaterialPerc($construction_details['stored_materials'], $sum_stored_materials,  $currency_icon);
 
-            $info['total_retainage'] = $total_retainage_amount + $sum_stored_materials;
-            $data['total_retainage_amount']  = $info['currency_icon'] . $this->formatInvoiceValues($total_retainage_amount);
-            $data['total_stored_materials'] = $info['currency_icon'] . $this->formatInvoiceValues($sum_stored_materials);
+            $data['total_retainage'] = $total_retainage_amount + $sum_stored_materials;
+            $data['total_retainage_amount']  = $this->formatInvoiceValues($total_retainage_amount, $currency_icon);
+            $data['total_stored_materials'] =  $this->formatInvoiceValues($sum_stored_materials, $currency_icon);
 
-            if ($info['total_retainage'] == 0) {
-                $info['total_retainage'] = $sumOfi;
+            if ($data['total_retainage'] == 0) {
+                $data['total_retainage'] = $sumOfi;
             } else {
-                $info['total_retainage'] = $info['total_retainage'];
+                $data['total_retainage'] = $data['total_retainage'];
             }
 
             $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
-            $data['total_earned_less_retain'] = $info['currency_icon'] . $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $info['total_retainage']));
-            $data['total_previously_billed_amount'] =  $info['currency_icon'] . $this->formatInvoiceValues($construction_details['previously_billed_amount']);
+            $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $data['total_retainage']), $currency_icon);
+            $data['total_previously_billed_amount'] =    $this->formatInvoiceValues($construction_details['previously_billed_amount'], $currency_icon);
 
             //get grand total
-            $data['grand_total'] =  $this->getGrandTotal($info, $info['currency_icon']);
-            $data['balance_to_finish'] =$this->getBalanceToFinish($construction_details, $changOrderData, $info['total_retainage'], $info['currency_icon']);
-            $info['total_retainage'] = $info['currency_icon'] . $this->formatInvoiceValues($info['total_retainage']);
+            $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon );
+            $data['balance_to_finish'] =$this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
+            $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $currency_icon);
 
-            $data['info'] = $info;
             return view('app/merchant/invoice/G702/index', $data);
         }
     }
@@ -1010,26 +1020,26 @@ class InvoiceController extends AppController
         $construction_details['retainage_amount_previously_stored_materials'] - $construction_details['retainage_stored_materials_release_amount']) 
         + $total_retainage));
 
-        $balance_to_finish = $currency_icon . $this->formatInvoiceValues($balance_to_finish);
+        $balance_to_finish = $this->formatInvoiceValues($balance_to_finish, $currency_icon);
         return $balance_to_finish;
 
     }
 
-    public function getWorkCompletePerc($totalBilledAmount, $total_retainage_amount)
+    public function getWorkCompletePerc($totalBilledAmount, $total_retainage_amount, $currency_icon)
     {
         $work_complete_perc =0;
         if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
-            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount);
+            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount,  $currency_icon);
         }
 
         return $work_complete_perc;
     }
 
-    public function getStoredMaterialPerc($stored_materials_sum,$sumOfrasm )
+    public function getStoredMaterialPerc($stored_materials_sum,$sumOfrasm, $currency_icon )
     {
         $stored_material_perc = 0;
         if ($stored_materials_sum > 0 && $sumOfrasm > 0) {
-            $stored_material_perc = $this->formatInvoiceValues($sumOfrasm * 100 / $stored_materials_sum);
+            $stored_material_perc = $this->formatInvoiceValues((($sumOfrasm * 100) / $stored_materials_sum), $currency_icon);
         }
 
         return $stored_material_perc;
@@ -1045,10 +1055,10 @@ class InvoiceController extends AppController
         if ($date > $refDate) {
             $info["invoice_total"] = $info['invoice_total'];
             if ($info['grand_total'] > 0) {
-                $grand_total = $info['grand_total'] + $info['late_fee'];
+                $grand_total = $info['grand_total'] + $info['late_payment_fee'];
             }
         }
-        $grand_total = $currency_icon . $this->formatInvoiceValues($grand_total );
+        $grand_total = $this->formatInvoiceValues($grand_total ,$currency_icon);
         return $grand_total;
     }
 
@@ -1164,7 +1174,7 @@ class InvoiceController extends AppController
         return $co_data;
     }
 
-    public function formatInvoiceValues($value)
+    public function formatInvoiceValues($value, $currency_icon)
     {
         if ($value < 0) {
             $value = '(' . str_replace('-', '', number_format($value, 2)) . ')';
@@ -1172,7 +1182,7 @@ class InvoiceController extends AppController
             $value = number_format($value, 2);
         }
 
-        return $value;
+        return $currency_icon.$value;
     }
 
     public function view_g702($link)

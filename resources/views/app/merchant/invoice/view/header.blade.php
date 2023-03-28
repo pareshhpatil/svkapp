@@ -1,5 +1,5 @@
 <div class="w-full mb-2" style="max-width: 1400px;">
-    @if ($info['payment_request_status']==11)
+    @if ($payment_request_status==11)
     <div class="alert alert-block alert-success fade in">
         <p>@if($info['invoice_type']==1) Invoice @else estimate @endif preview</p>
     </div>
