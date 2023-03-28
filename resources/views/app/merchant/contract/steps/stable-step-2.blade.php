@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="table-scrollable tableFixHead">
-                <table class="table table-bordered table-hover" id="particular_table">
+                <table class="table table-bordered table-hover sorted_table" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
 
@@ -120,23 +120,27 @@
                                         @if(in_array($column, $number_array))
                                             @php $number='type=number step=0.00'; @endphp
                                         @endif
-                                    <td style="max-width: 100px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`" 
+                                    <td style="max-width: 120px;vertical-align: middle; @if($column=='retainage_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`" 
                                     @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$column}}',`${index}`)@endif" x-on:blur="field.show{{$column}} = false" @endif 
                                      class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
-
-                                                <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
-                                                                                    <span x-show="! field.show{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
-                                                                            <span style="width:100%;" x-show="field.show{{$k}}">
-                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
-                                                                            </span>
-
-                                                <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
-                                                <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
-                                                <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
-                                                <div class="text-center" style="display: none;">
-                                                    <p :id="`description-hidden${field.introw}`" x-text="field.description"></p>
+                                                <div style="display: flex">
+                                                    <span class="handle">
+                                                        <i class="fa fa-arrows"></i>
+                                                    </span>
+                                                    <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                        <span x-show="! field.show{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                                <span style="width:86%;" x-show="field.show{{$k}}">
+                                                                                    <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                                </span>
+    
+                                                    <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
+                                                    <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
+                                                    <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
+                                                    <div class="text-center" style="display: none;">
+                                                        <p :id="`description-hidden${field.introw}`" x-text="field.description"></p>
+                                                    </div>
                                                 </div>
                                             @break
 
@@ -1293,4 +1297,20 @@
         }
     </script>
 </div>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".sorted_table tbody").sortable({
+                handle: '.handle',
+                helper: fixWidthHelper
+            })
+
+            function fixWidthHelper(e, ui) {
+                ui.children().each(function() {
+                    $(this).width($(this).width());
+                });
+                return ui;
+            }
+        })
+    </script>
 
