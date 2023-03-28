@@ -51,7 +51,6 @@ class SubUserHelper
 
         $checkEmail = DB::table('user')
             ->where('email_id', $request->get('email_id'))
-            ->where('group_id', $groupID)
             ->exists();
 
         if($checkEmail) {
@@ -70,14 +69,11 @@ class SubUserHelper
         $SubUser->first_name = $request->get('first_name');
         $SubUser->last_name = $request->get('last_name');
         $SubUser->email_id = $request->get('email_id');
-        $SubUser->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
         $SubUser->user_status = 19;
         $SubUser->group_id = $groupID;
         $SubUser->user_group_type = 2;
         $SubUser->user_type = 0;
         $SubUser->franchise_id = 0;
-        $SubUser->mob_country_code = $request->get('mob_country_code');
-        $SubUser->mobile_no = $request->get('mobile');
         $SubUser->created_by = $authUserID;
         $SubUser->created_date = Carbon::now()->toDateTimeString();
         $SubUser->last_updated_by = $authUserID;
@@ -87,17 +83,17 @@ class SubUserHelper
 
         $this->addUserRole($SubUser, $request->get('role'));
 
-        $emailSuccess = false;
-        try {
-            $this->sendVerifyMail($SubUser);
-            $emailSuccess = true;
-        } catch(\Exception $exception) {
-        }
+//        $emailSuccess = false;
+//        try {
+//            $this->sendVerifyMail($SubUser);
+//            $emailSuccess = true;
+//        } catch(\Exception $exception) {
+//        }
 
         $this->addUserPrefrences($SubUser);
 
         return [
-            'send_email_success' => $emailSuccess
+            'user_create' => true
         ];
     }
 
