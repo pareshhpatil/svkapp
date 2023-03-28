@@ -95,8 +95,8 @@ class ImportBriqData extends Command
 
     function insertMandatoryData($merchant_id,  $user_id)
     {
-        Excel::import(new BriqPermissionsImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_PERMISSIONS_FILE'));
-        Excel::import(new BriqRolesImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_ROLES_FILE'));
+        //Excel::import(new BriqPermissionsImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_PERMISSIONS_FILE'));
+        //Excel::import(new BriqRolesImport($merchant_id, $user_id), env('BRIQ_TEST_DATA_ROLES_FILE'));
         $this->insertInvoiceTemplate($merchant_id, $user_id);
         echo $merchant_id;
         return true;
