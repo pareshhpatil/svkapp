@@ -114,7 +114,7 @@ class InvoiceController extends AppController
         $data['contract_id'] = 0;
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $contractPrivilegesIDs = ['all' => 'full'];
         } else {
             //get privileges from redis
@@ -124,7 +124,7 @@ class InvoiceController extends AppController
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-            if($contractPrivilegesID == 'full') {
+            if ($contractPrivilegesID == 'full') {
                 $whereContractIDs[] = $key;
             }
         }
@@ -218,7 +218,7 @@ class InvoiceController extends AppController
                         $invoice_number = $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $req_id, 'invoice_number');
                         $invoice_number = ($invoice_number == '') ? 'Invoice' : $invoice_number;
                         Session::put('errorMessage', 'You can only edit the last raised invoice for this project. 
-                        The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
+                    The last raised raised invoice contains previously billed amounts for the project. Update last raised invoice - <a href="/merchant/invoice/update/' . Encrypt::encode($req_id) . '">' . $invoice_number . "</a>");
                         return redirect('/merchant/paymentrequest/viewlist');
                     }
                 }
@@ -256,10 +256,10 @@ class InvoiceController extends AppController
         $title = ($update == null) ? 'Create ' . $type : 'Update ' . $type;
         $data = $this->setBladeProperties($title, ['invoiceformat', 'template', 'coveringnote', 'product', 'subscription'], [3, $menu]);
         #get merchant invoice format list
-        $data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
-        if (count($data['format_list']) == 1) {
-            $request->template_id = $data['format_list']->first()->template_id;
-        }
+        //$data['format_list'] = $this->invoiceModel->getMerchantFormatList($this->merchant_id, $type);
+        //        if (count($data['format_list']) == 1) {
+        //            $request->template_id = $data['format_list']->first()->template_id;
+        //        }
 
         $data['billing_profile'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'merchant_billing_profile');
         $data['billing_profile_id'] = '';
@@ -289,7 +289,7 @@ class InvoiceController extends AppController
         //contracts from privileges
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $privilegesIDs = ['all' => 'full'];
         } else {
             $privilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
@@ -297,12 +297,13 @@ class InvoiceController extends AppController
 
         $whereContractIDs = [];
         foreach ($privilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
+            if ($privilegesID == 'full' || $privilegesID == 'edit' || $privilegesID == 'approve') {
                 $whereContractIDs[] = $key;
             }
         }
 
         $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+
         $breadcrumbs['menu'] = 'collect_payments';
         $breadcrumbs['title'] = $data['title'];
         $breadcrumbs['url'] = '/merchant/invoice/create/' . $type;
@@ -318,9 +319,12 @@ class InvoiceController extends AppController
         }
 
         Session::put('breadcrumbs', $breadcrumbs);
-        if (isset($request->template_id)) {
+        if (isset($request->contract_id)) {
+            $template_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $request->contract_id, 'template_id');
+            if ($template_id == '') {
+                return redirect('/merchant/contract/update/3/' . Encrypt::encode($request->contract_id));
+            }
             $formatModel = new InvoiceFormat();
-            $template_id = $request->template_id;
             $data['template_link'] = Encrypt::encode($template_id);
             $data['template_id'] = $template_id;
             $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : 0;
@@ -404,14 +408,16 @@ class InvoiceController extends AppController
             $data['mandatory_files'] = [];
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $data['mandatory_files' . $key] = [];
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
-                        foreach ($mandatory_files as $files) {
-                            $file_url =  $files->file_url;
-                            array_push($data['mandatory_files' . $key], $file_url);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $data['mandatory_files' . $key] = [];
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($request_id, $mandatory_data['name']);
+                            foreach ($mandatory_files as $files) {
+                                $file_url =  $files->file_url;
+                                array_push($data['mandatory_files' . $key], $file_url);
+                            }
+                            array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
                         }
-                        array_push($data['mandatory_files'], $data['mandatory_files' . $key]);
                     }
                 }
             }
@@ -420,7 +426,6 @@ class InvoiceController extends AppController
 
         $data['plugin'] = $plugin;
         $data['narrative'] = $narrative;
-
         if ($template_type == 'construction') {
             return view('app/merchant/invoice/constructionv2', $data);
         }
@@ -532,7 +537,7 @@ class InvoiceController extends AppController
 
             if ($info->template_type == 'construction') {
                 $userRole = Session::get('user_role');
-                if($userRole == 'Admin') {
+                if ($userRole == 'Admin') {
                     $contractPrivilegesIDs = ['all' => 'full'];
                 } else {
                     //get privileges from redis
@@ -542,7 +547,7 @@ class InvoiceController extends AppController
                 //contracts from privileges
                 $whereContractIDs = [];
                 foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-                    if($contractPrivilegesID == 'full') {
+                    if ($contractPrivilegesID == 'full') {
                         $whereContractIDs[] = $key;
                     }
                 }
@@ -748,7 +753,7 @@ class InvoiceController extends AppController
             // $data['csi_code'] = $this->invoiceModel->getMerchantValues($this->merchant_id, 'csi_code');
             $userRole = Session::get('user_role');
 
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $contractPrivilegesIDs = ['all' => 'full'];
             } else {
                 //get privileges from redis
@@ -758,7 +763,7 @@ class InvoiceController extends AppController
             //contracts from privileges
             $whereContractIDs = [];
             foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-                if($contractPrivilegesID == 'full') {
+                if ($contractPrivilegesID == 'full') {
                     $whereContractIDs[] = $key;
                 }
             }
@@ -887,18 +892,18 @@ class InvoiceController extends AppController
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
 
@@ -970,22 +975,22 @@ class InvoiceController extends AppController
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
 
-            if(!empty($notificationID)) {
+            if (!empty($notificationID)) {
                 /** @var Notification $Notification */
                 $Notification = Notification::findOrFail($notificationID);
 
@@ -1043,15 +1048,43 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view_g703_v2($link)
+    public function view_g703_v2($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if ($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            if (!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+
+                $Notification->markAsRead();
+            }
 
             $info = (array)$info;
             $info['gtype'] = '703';
@@ -1119,18 +1152,18 @@ class InvoiceController extends AppController
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-                if(in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
 
@@ -2051,7 +2084,7 @@ class InvoiceController extends AppController
 
     public function downloadV2($link, $savepdf = 0, $type = null)
     {
-        
+
         ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
@@ -2140,6 +2173,7 @@ class InvoiceController extends AppController
                 define("DOMPDF_DPI", 120);
                 define("DOMPDF_ENABLE_REMOTE", true);
                 if ($info['template_type'] == 'construction') {
+                    // return view('mailer.invoice.format-' . $type, $data);
                     $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
                     $pdf->setPaper("a4", "landscape");
                 } else {
@@ -2278,6 +2312,263 @@ class InvoiceController extends AppController
             }
         } else {
         }
+    }
+
+    /**
+     * @param $link
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function downloadFullPatron($link)
+    {
+        ini_set('max_execution_time', 120);
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+            $info = (array)$info;
+
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            $logoPath = env('APP_URL') . '/images/logo-703.PNG';
+            try {
+                $arrContextOptions = [
+                    "ssl" => [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false,
+                        "allow_self_signed" => true,
+                    ]
+                ];
+
+                $info['logo'] = base64_encode(file_get_contents($logoPath, false, stream_context_create($arrContextOptions)));
+            } catch (Exception $o) {
+            }
+
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            $IAM_KEY = config('filesystems.disks.s3_expense.key');
+            $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
+            $region = config('filesystems.disks.s3_expense.region');
+
+            $s3 = S3Client::factory(
+                array(
+                    'credentials' => array(
+                        'key' => $IAM_KEY,
+                        'secret' => $IAM_SECRET
+                    ),
+                    'version' => 'latest',
+                    'region'  => $region
+                )
+            );
+
+            $invoicePaymentRequest = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+            $invoiceAttachments = [];
+            if (!empty($invoicePaymentRequest->plugin_value)) {
+                $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
+                if (isset($pluginValue->has_upload)) {
+                    //uat.expense/invoices/download 190637995.jpeg
+                    $files = $pluginValue->files;
+                    foreach ($files as $file) {
+                        if (!empty($file)) {
+                            $fileUrlExplode = explode('/', $file);
+                            $fileLastFromURL = end($fileUrlExplode);
+                            $fileExplode = explode('.', $fileLastFromURL);
+
+                            $fileName = Arr::first($fileExplode);
+                            $fileType = Arr::last($fileExplode);
+                            $fileContent = '';
+
+                            if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                $filePath = 'invoices/' . $fileLastFromURL;
+                                $bucketName = 'uat.expense';
+
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $bucketName,
+                                    'Key'    => $filePath
+                                ));
+
+                                $body = $result->get('Body');
+                                $fileContent = base64_encode($body->getContents());
+                            }
+
+                            $invoiceAttachments[] = [
+                                'fileName' => $fileName,
+                                'fileNameSlug' => Str::slug($fileName, '-'),
+                                'fileType' => $fileType,
+                                'fileContent' => $fileContent,
+                                'url' => $file
+                            ];
+                        }
+                    }
+                }
+            }
+
+
+            $info['invoice_attachments'] = $invoiceAttachments;
+
+
+            $mandatoryDocumentAttachments = [];
+            $pdf_link_array = [];
+            if (isset($pluginValue->has_mandatory_upload)) {
+                $oMerger = PDFMerger::init();
+                if ($pluginValue->has_mandatory_upload == 1) {
+                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+
+                        foreach ($mandatory_files as $file) {
+                            if (!empty($file->file_url)) {
+                                $fileUrlExplode = explode('/', $file->file_url);
+                                $fileLastFromURL = end($fileUrlExplode);
+                                $fileExplode = explode('.', $fileLastFromURL);
+
+                                $fileName = Arr::first($fileExplode);
+                                $fileType = Arr::last($fileExplode);
+                                $fileContent = '';
+
+                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 'uat.expense';
+
+                                    $result = $s3->getObject(array(
+                                        'Bucket' => $bucketName,
+                                        'Key'    => $filePath
+                                    ));
+
+                                    $body = $result->get('Body');
+                                    $fileContent = base64_encode($body->getContents());
+                                }
+
+                                if ($fileType == 'pdf') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 's3_expense';
+
+                                    $source_path = 'invoices/' . basename($file->file_url);
+                                    $file_content = Storage::disk($bucketName)->get($source_path);
+                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                    array_push($pdf_link_array, $path);
+                                }
+
+                                $mandatoryDocumentAttachments[] = [
+                                    'fileName' => $fileName,
+                                    'name' => $mandatory_data->name,
+                                    'fileNameSlug' => Str::slug($fileName, '-'),
+                                    'fileType' => $fileType,
+                                    'fileContent' => $fileContent,
+                                    'url' => $file->file_url
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            $info['mandatory_document_attachments'] = $mandatoryDocumentAttachments;
+
+            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+
+            $billCodeAttachments = [];
+            foreach ($constructionParticulars as $constructionParticular) {
+                $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
+                $particularAttachments = json_decode($constructionParticular->attachments);
+
+                $billCodeAttachments[$billCode->id] = [
+                    'billCodeId' => $billCode->id,
+                    'billCode' => $billCode->code,
+                    'billName' => $billCode->title,
+                    'attachments' => []
+                ];
+
+                if (!empty($particularAttachments)) {
+                    foreach ($particularAttachments as $particularAttachment) {
+                        $urlExplode = explode('/', $particularAttachment);
+                        $file = end($urlExplode);
+                        $fileExplode = explode('.', $file);
+
+                        $fileName = Arr::first($fileExplode);
+                        $fileType = Arr::last($fileExplode);
+                        $fileContent = '';
+
+                        if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                            $filePath = 'invoices/' . $billCode->id . '/' . $file;
+                            $bucketName = 'uat.expense';
+
+                            $result = $s3->getObject(array(
+                                'Bucket' => $bucketName,
+                                'Key'    => $filePath
+                            ));
+
+                            $body = $result->get('Body');
+                            $fileContent = base64_encode($body->getContents());
+                        }
+
+
+                        $billCodeAttachments[$billCode->id]['attachments'][] = [
+                            'fileName' => $fileName,
+                            'fileNameSlug' => Str::slug($fileName, '-'),
+                            'fileType' => $fileType,
+                            'fileContent' => $fileContent,
+                            'url' => $particularAttachment
+                        ];
+                    }
+                }
+            }
+
+            $info['bill_code_attachments'] = $billCodeAttachments;
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+
+            $data['viewtype'] = 'pdf';
+            define("DOMPDF_ENABLE_HTML5PARSER", true);
+            define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+            define("DOMPDF_UNICODE_ENABLED", true);
+            define("DOMPDF_DPI", 120);
+            define("DOMPDF_ENABLE_REMOTE", true);
+
+            if ($info['template_type'] == 'construction') {
+                $pdf = App::make('dompdf.wrapper');
+                $data['pdf'] = $pdf;
+                $pdf->loadView('mailer.invoice.full-invoice', $data);
+                $pdf->setPaper("a4", "landscape");
+            }
+
+            $name = str_replace(" ", "_", $info['customer_name']) . '_' . time() . '.pdf';
+
+            if (count($pdf_link_array) > 0) {
+                Storage::disk('local')->put($name, $pdf->output());
+                $DOMpath = Storage::disk('local')->path($name);
+                $oMerger->addPDF($DOMpath, 'all', 'L');
+
+                foreach ($pdf_link_array as $path) {
+                    $oMerger->addPDF($path, 'all');
+                }
+
+                $oMerger->merge();
+                $oMerger->setFileName($name);
+                $oMerger->save();
+                return $oMerger->download();
+            } else {
+                return $pdf->download($name);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Payment request ID'
+        ]);
     }
 
     /**
@@ -2642,53 +2933,55 @@ class InvoiceController extends AppController
             if (isset($pluginValue->has_mandatory_upload)) {
                 $oMerger = PDFMerger::init();
                 if ($pluginValue->has_mandatory_upload == 1) {
-                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+                    if (!empty($pluginValue->mandatory_data)) {
+                        foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
 
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
 
-                        foreach ($mandatory_files as $file) {
-                            if (!empty($file->file_url)) {
-                                $fileUrlExplode = explode('/', $file->file_url);
-                                $fileLastFromURL = end($fileUrlExplode);
-                                $fileExplode = explode('.', $fileLastFromURL);
+                            foreach ($mandatory_files as $file) {
+                                if (!empty($file->file_url)) {
+                                    $fileUrlExplode = explode('/', $file->file_url);
+                                    $fileLastFromURL = end($fileUrlExplode);
+                                    $fileExplode = explode('.', $fileLastFromURL);
 
-                                $fileName = Arr::first($fileExplode);
-                                $fileType = Arr::last($fileExplode);
-                                $fileContent = '';
+                                    $fileName = Arr::first($fileExplode);
+                                    $fileType = Arr::last($fileExplode);
+                                    $fileContent = '';
 
-                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
-                                    $filePath = 'invoices/' . $fileLastFromURL;
-                                    $bucketName = 'uat.expense';
+                                    if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 'uat.expense';
 
-                                    $result = $s3->getObject(array(
-                                        'Bucket' => $bucketName,
-                                        'Key'    => $filePath
-                                    ));
+                                        $result = $s3->getObject(array(
+                                            'Bucket' => $bucketName,
+                                            'Key'    => $filePath
+                                        ));
 
-                                    $body = $result->get('Body');
-                                    $fileContent = base64_encode($body->getContents());
+                                        $body = $result->get('Body');
+                                        $fileContent = base64_encode($body->getContents());
+                                    }
+
+                                    if ($fileType == 'pdf') {
+                                        $filePath = 'invoices/' . $fileLastFromURL;
+                                        $bucketName = 's3_expense';
+
+                                        $source_path = 'invoices/' . basename($file->file_url);
+                                        $file_content = Storage::disk($bucketName)->get($source_path);
+                                        Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                        $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                        array_push($pdf_link_array, $path);
+                                    }
+
+                                    $mandatoryDocumentAttachments[] = [
+                                        'fileName' => $fileName,
+                                        'name' => $mandatory_data->name,
+                                        'fileNameSlug' => Str::slug($fileName, '-'),
+                                        'fileType' => $fileType,
+                                        'fileContent' => $fileContent,
+                                        'url' => $file->file_url
+                                    ];
                                 }
-
-                                if ($fileType == 'pdf') {
-                                    $filePath = 'invoices/' . $fileLastFromURL;
-                                    $bucketName = 's3_expense';
-
-                                    $source_path = 'invoices/' . basename($file->file_url);
-                                    $file_content = Storage::disk($bucketName)->get($source_path);
-                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
-
-                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
-                                    array_push($pdf_link_array, $path);
-                                }
-
-                                $mandatoryDocumentAttachments[] = [
-                                    'fileName' => $fileName,
-                                    'name' => $mandatory_data->name,
-                                    'fileNameSlug' => Str::slug($fileName, '-'),
-                                    'fileType' => $fileType,
-                                    'fileContent' => $fileContent,
-                                    'url' => $file->file_url
-                                ];
                             }
                         }
                     }
@@ -3267,11 +3560,11 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount_negative'] = 0;
 
                 $start_date = '1990-01-01';
-                $end_date = date("Y-m-01");
+                $end_date = date("Y-m-01", strtotime($info['bill_date']));
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
                 $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
-                $start_date = date("Y-m-01");
+                $start_date = date("Y-m-01", strtotime($info['bill_date']));
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
                 $info['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
                 $info['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
@@ -3502,62 +3795,69 @@ class InvoiceController extends AppController
 
         $data['has_aia_license'] = $hasAIALicense;
 
+        $has_watermark = false;
+        $data['watermark_text'] = '';
+        if (isset($plugins['has_watermark'])) {
+            if ($plugins['has_watermark'] == 1) {
+                $has_watermark = true;
+                $data['watermark_text'] = $plugins['watermark_text'];
+            }
+        }
+        $data['has_watermark'] = $has_watermark;
+
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
 
-//        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
-//            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
-//                $invoiceAccess = 'full';
-//            }
-//        }
+        if ($user_type == 'patron') {
+            $invoiceAccess = 'full';
+        } else {
+            if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
+                    $invoiceAccess = 'full';
+                }
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
+                    $invoiceAccess = 'edit';
+                }
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
+                    $invoiceAccess = 'view-only';
+                }
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
+                    $invoiceAccess = 'approve';
+                }
+            } elseif (in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
+                    $invoiceAccess = 'full';
+                }
 
-        if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
-            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
-                $invoiceAccess = 'full';
-            }
-            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
-                $invoiceAccess = 'edit';
-            }
-            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
-                $invoiceAccess = 'view-only';
-            }
-            if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
-                $invoiceAccess = 'approve';
-            }
-        } elseif(in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
-            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
-                $invoiceAccess = 'full';
-            }
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
+                    $invoiceAccess = 'edit';
+                }
 
-            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
-                $invoiceAccess = 'edit';
-            }
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
+                    $invoiceAccess = 'approve';
+                }
 
-            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
-                $invoiceAccess = 'approve';
-            }
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
+                    $invoiceAccess = 'view-only';
+                }
+            } elseif (in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+                if ($invoicePrivilegesAccessIDs['all'] == 'full') {
+                    $invoiceAccess = 'full';
+                }
 
-            if($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
-                $invoiceAccess = 'view-only';
-            }
+                if ($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                    $invoiceAccess = 'edit';
+                }
 
-        } elseif(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
-            if($invoicePrivilegesAccessIDs['all'] == 'full') {
-                $invoiceAccess = 'full';
-            }
+                if ($invoicePrivilegesAccessIDs['all'] == 'view-only') {
+                    $invoiceAccess = 'view-only';
+                }
 
-            if($invoicePrivilegesAccessIDs['all'] == 'edit') {
-                $invoiceAccess = 'edit';
-            }
-
-            if($invoicePrivilegesAccessIDs['all'] == 'view-only') {
-                $invoiceAccess = 'view-only';
-            }
-
-            if($invoicePrivilegesAccessIDs['all'] == 'approve') {
-                $invoiceAccess = 'approve';
+                if ($invoicePrivilegesAccessIDs['all'] == 'approve') {
+                    $invoiceAccess = 'approve';
+                }
             }
         }
 
@@ -3967,11 +4267,11 @@ class InvoiceController extends AppController
                 $info['this_month_co_amount_negative'] = 0;
 
                 $start_date = '1990-01-01';
-                $end_date = date("Y-m-01");
+                $end_date = date("Y-m-01", strtotime($info['bill_date']));
                 $info['last_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '>');
                 $info['last_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
 
-                $start_date = date("Y-m-01");
+                $start_date = date("Y-m-01", strtotime($info['bill_date']));
                 $end_date = date("Y-m-d", strtotime("first day of next month"));
                 $info['this_month_co_amount_positive'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date,  '>');
                 $info['this_month_co_amount_negative'] = $this->invoiceModel->getChangeOrderAmount($change_order_ids, $start_date, $end_date, '<');
@@ -4201,13 +4501,13 @@ class InvoiceController extends AppController
         }
 
         $data['has_aia_license'] = $hasAIALicense;
-        
+
         $has_watermark = false;
         $data['watermark_text'] = '';
         if (isset($plugins['has_watermark'])) {
-            if($plugins['has_watermark'] == 1){
+            if ($plugins['has_watermark'] == 1) {
                 $has_watermark = true;
-                $data['watermark_text'] =$plugins['watermark_text'];
+                $data['watermark_text'] = $plugins['watermark_text'];
             }
         }
         $data['has_watermark'] = $has_watermark;
@@ -4218,58 +4518,52 @@ class InvoiceController extends AppController
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
 
-//        if(!empty($projectPrivilegesAccessIDs) && in_array($info['project_id'], array_keys($projectPrivilegesAccessIDs))) {
-//            if($projectPrivilegesAccessIDs[$info['project_id']] == 'full') {
-//                $invoiceAccess = 'full';
-//            }
-//        }
-        if($user_type == 'patron') {
+        if ($user_type == 'patron') {
             $invoiceAccess = 'full';
         } else {
             if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
-                if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
                     $invoiceAccess = 'full';
                 }
-                if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
                     $invoiceAccess = 'edit';
                 }
-                if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
                     $invoiceAccess = 'view-only';
                 }
-                if($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
+                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
                     $invoiceAccess = 'approve';
                 }
-            } elseif(in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
-                if($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
+            } elseif (in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
                     $invoiceAccess = 'full';
                 }
 
-                if($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
                     $invoiceAccess = 'edit';
                 }
 
-                if($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
                     $invoiceAccess = 'approve';
                 }
 
-                if($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
+                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
                     $invoiceAccess = 'view-only';
                 }
-
-            } elseif(in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
-                if($invoicePrivilegesAccessIDs['all'] == 'full') {
+            } elseif (in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+                if ($invoicePrivilegesAccessIDs['all'] == 'full') {
                     $invoiceAccess = 'full';
                 }
 
-                if($invoicePrivilegesAccessIDs['all'] == 'edit') {
+                if ($invoicePrivilegesAccessIDs['all'] == 'edit') {
                     $invoiceAccess = 'edit';
                 }
 
-                if($invoicePrivilegesAccessIDs['all'] == 'view-only') {
+                if ($invoicePrivilegesAccessIDs['all'] == 'view-only') {
                     $invoiceAccess = 'view-only';
                 }
 
-                if($invoicePrivilegesAccessIDs['all'] == 'approve') {
+                if ($invoicePrivilegesAccessIDs['all'] == 'approve') {
                     $invoiceAccess = 'approve';
                 }
             }
@@ -4893,7 +5187,7 @@ class InvoiceController extends AppController
 
                     $sub_key =  $names . $key;
                 }
-                
+
                 $footer_sub_key =  $names . $key;
             }
 
@@ -4966,6 +5260,7 @@ class InvoiceController extends AppController
                 $duedate = Helpers::sqlDate($request->requestvalue[$k]);
             }
         }
+
         if ($request->link != '') {
             $request_id = Encrypt::decode($request->link);
             $invoice = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
@@ -4987,11 +5282,13 @@ class InvoiceController extends AppController
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
                     $this->invoiceModel->deleteMandatoryFiles($request_id);
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
-                        $mandatory_files_insert_array = explode(',', $mandatory_files);
-                        foreach ($mandatory_files_insert_array as $file_url) {
-                            $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                            $mandatory_files_insert_array = explode(',', $mandatory_files);
+                            foreach ($mandatory_files_insert_array as $file_url) {
+                                $insert_id = $this->invoiceModel->saveMandatoryFiles($request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                            }
                         }
                     }
                 }
@@ -5005,11 +5302,13 @@ class InvoiceController extends AppController
 
             if (isset($plugin['has_mandatory_upload'])) {
                 if ($plugin['has_mandatory_upload'] == 1) {
-                    foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
-                        $mandatory_files = $_POST['file_upload_mandatory' . $key];
-                        $mandatory_files_insert_array = explode(',', $mandatory_files);
-                        foreach ($mandatory_files_insert_array as $file_url) {
-                            $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                    if (!empty($plugin['mandatory_data'])) {
+                        foreach ($plugin['mandatory_data'] as $key => $mandatory_data) {
+                            $mandatory_files = $_POST['file_upload_mandatory' . $key];
+                            $mandatory_files_insert_array = explode(',', $mandatory_files);
+                            foreach ($mandatory_files_insert_array as $file_url) {
+                                $insert_id = $this->invoiceModel->saveMandatoryFiles($response->request_id, $file_url, $mandatory_data['name'], $mandatory_data['description'], $mandatory_data['required']);
+                            }
                         }
                     }
                 }
@@ -5033,6 +5332,13 @@ class InvoiceController extends AppController
                 $plugin['default_covering_note'] = (isset($request->covering_id)) ? $request->covering_id : 0;
             }
         }
+        if (isset($plugin['has_watermark'])) {
+            if ($plugin['has_watermark'] == 1) {
+                $plugin['watermark_text'] = (isset($request->watermark_text)) ? $request->watermark_text : '';
+            }
+        }
+
+
         return $plugin;
     }
 
@@ -5051,19 +5357,19 @@ class InvoiceController extends AppController
         $userRole = Session::get('user_role');
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-        
+
         $hasAccess = false;
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $hasAccess = true;
         } else {
-            if(in_array($invoice->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($invoice->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                if($contractPrivilegesAccessIDs[$invoice->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$invoice->payment_request_id] != 'view-only') {
+            if (in_array($invoice->contract_id, array_keys($contractPrivilegesAccessIDs)) || in_array($invoice->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                if ($contractPrivilegesAccessIDs[$invoice->contract_id] != 'view-only' || $invoicePrivilegesAccessIDs[$invoice->payment_request_id] != 'view-only') {
                     $hasAccess = true;
                 }
             }
         }
 
-        if(!$hasAccess) {
+        if (!$hasAccess) {
             return redirect('/merchant/no-permission');
         }
 
@@ -5313,6 +5619,8 @@ class InvoiceController extends AppController
         $project = $this->invoiceModel->getTableRow('project', 'id', $contract->project_id);
         $csi_codes = $this->invoiceModel->getBillCodes($contract->project_id);
 
+        $plugin_array = json_decode($template->plugin, 1);
+
 
         $billed_transactions = $this->invoiceModel->getBilledTransactions($project->id, $invoice->bill_date, $request_id);
         $cost_codes = [];
@@ -5330,7 +5638,9 @@ class InvoiceController extends AppController
         $groups = [];
         $total = 0;
 
-
+        if (!isset($plugin_array['include_store_materials'])) {
+            $plugin_array['include_store_materials'] = 0;
+        }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
             $particulars = json_decode($contract->particulars);
@@ -5338,9 +5648,16 @@ class InvoiceController extends AppController
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
                 foreach ($particulars as $key => $row) {
-                    $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                    $particulars[$key]->previously_stored_materials = $particulars[$key]->previously_stored_materials + $particulars[$key]->current_stored_materials;
+                    if ($plugin_array['include_store_materials'] == 1) {
+                        $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount + $particulars[$key]->previously_stored_materials;
+                        $particulars[$key]->previously_stored_materials = '';
+                        $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_amount * 100 / $particulars[$key]->current_contract_amount;
+                    } else {
+                        $particulars[$key]->previously_billed_amount = $particulars[$key]->previously_billed_amount + $particulars[$key]->current_billed_amount;
+                        $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
+                    }
                     $particulars[$key]->current_billed_amount = '';
-                    $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
                     $particulars[$key]->current_billed_percent = '';
                     $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
                     $particulars[$key]->retainage_amount_for_this_draw = '';
@@ -5393,10 +5710,11 @@ class InvoiceController extends AppController
                 foreach ($contract_particulars as $row) {
                     $cp[$row->bill_code] = $row;
                 }
-
-                foreach ($particulars as $k => $v) {
-                    if (isset($cp[$v->bill_code])) {
-                        $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
+                if ($plugin_array['include_store_materials'] == 0) {
+                    foreach ($particulars as $k => $v) {
+                        if (isset($cp[$v->bill_code])) {
+                            $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
+                        }
                     }
                 }
             }

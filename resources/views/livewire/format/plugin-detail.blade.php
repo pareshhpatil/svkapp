@@ -492,7 +492,7 @@
                         " value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                     </div>
                 </div>
-                <div id="min_partial_payment_div" class="row mb-2" @if(isset($plugins['has_watermark']) && $plugins['has_watermark']=='1' ) style="display: block;" @else style="display:none;" @endif>
+                <div id="watermark_div" class="row mb-2">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">Watermark text</label>
                         <div class="col-md-3">

@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Constants\Models\IColumn;
+use App\Constants\Models\ITable;
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Libraries\Helpers;
 use App\Jobs\SubDomainManagement;
@@ -490,13 +492,32 @@ class User extends ParentModel
         $payment_gateway = DB::table('merchant_fee_detail')->where('merchant_id', $merchant_id)->get();
     }
 
-    public function getUserPrivileges($user_id, $group_id, $user_role)
+    public function getMerchantID($authUserID)
     {
-        $merchant = $this->getTableRow('merchant', 'group_id', $group_id);
+        $authUser = DB::table(ITable::USER)
+            ->where(IColumn::USER_ID, $authUserID)
+            ->first();
+
+        if($authUser->user_group_type == 1) {
+            return DB::table('merchant')
+                ->where(IColumn::USER_ID, $authUserID)
+                ->pluck('merchant_id')
+                ->first();
+        }
+
+        return DB::table('merchant')
+            ->where('group_id', $authUser->group_id)
+            ->pluck('merchant_id')
+            ->first();
+    }
+
+    public function getUserPrivileges($user_id, $user_role)
+    {
+        $merchantID = $this->getMerchantID($user_id);
 
         $privilegesCollect = DB::table('briq_privileges')
             ->where('user_id', $user_id)
-            ->where('merchant_id', $merchant->merchant_id)
+            ->where('merchant_id', $merchantID)
             ->where('is_active', 1)
             ->select(['type', 'type_id', 'access', 'rule_engine_query'])
             ->get()
@@ -510,18 +531,22 @@ class User extends ParentModel
         $invoicePrivilegesArray = $ruleEngineInvoices["payment_request_ids"];
         $orderPrivilegesArray = $ruleEngineInvoices["change_order_ids"];
 
-        $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchant->merchant_id);
-
+        $customerPrivilegesArray = $this->customersCreatedByUser($customerPrivilegesArray, $user_id, $merchantID);
+        
         if(!empty($customerPrivilegesArray)) {
-            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchant->merchant_id);
+            $projectPrivilegesArray = $this->createProjectPrivilegesAccess($customerPrivilegesArray, $projectPrivilegesArray, $user_id, $merchantID);
         }
 
         if (!empty($projectPrivilegesArray)) {
-            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchant->merchant_id);
+            $contractPrivilegesArray = $this->createContractPrivilegesAccess($projectPrivilegesArray, $contractPrivilegesArray, $user_id, $merchantID);
         }
 
         if(!empty($contractPrivilegesArray)) {
-            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $merchant->merchant_id, $user_role);
+            $invoicePrivilegesArray = $this->createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices["payment_request_ids"], $user_id, $merchantID, $user_role);
+        }
+
+        if(!empty($contractPrivilegesArray)) {
+            $orderPrivilegesArray = $this->createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineInvoices["change_order_ids"], $user_id, $merchantID);
         }
 
         return [
@@ -644,19 +669,19 @@ class User extends ParentModel
         }
 
         $createdByArr = [];
-        if (in_array('all', array_keys($projectPrivilegesArray))) {
-            $createdByContractIDs = DB::table('contract')
-                ->where('is_active', 1)
-                ->where('merchant_id', $merchant_id)
-                ->where('created_by', $merchant_id)
-                ->whereNotIn('project_id', array_keys($projectPrivilegesArray))
-                ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
-                ->select(['contract_id', 'project_id'])
-                ->get()
-                ->toArray();
+        $createdByContractIDs = DB::table('contract')
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('created_by', $user_id)
+            ->whereNotIn('project_id', array_keys($projectPrivilegesArray))
+            ->whereNotIn('contract_id', array_keys($contractPrivilegesArray))
+            ->select(['contract_id', 'project_id'])
+            ->get()
+            ->toArray();
 
-            foreach ($createdByContractIDs as $contractID) {
-                if(!isset($tempArr[$contractID->contract_id])) {
+        foreach ($createdByContractIDs as $contractID) {
+            if(!isset($tempArr[$contractID->contract_id])) {
+                if(!isset($allArr[$contractID->contract_id])) {
                     $createdByArr[$contractID->contract_id] = 'edit';
                 }
             }
@@ -665,7 +690,7 @@ class User extends ParentModel
         return $contractPrivilegesArray + $tempArr + $allArr + $createdByArr;
     }
 
-    public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $merchant_id)
+    public function createOrderPrivilegesAccess($contractPrivilegesArray, $orderPrivilegesArray, $ruleEngineOrderIds, $user_id, $merchant_id)
     {
         $allArr = [];
         if (in_array('all', array_keys($contractPrivilegesArray))) {
@@ -678,7 +703,9 @@ class User extends ParentModel
                 ->toArray();
 
             foreach ($allOrderIDs as $orderID) {
-                $allArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+                if(!isset($ruleEngineOrderIds[$orderID->order_id])) {
+                    $allArr[$orderID->order_id] = $contractPrivilegesArray['all'];
+                }
             }
 
         }
@@ -694,12 +721,33 @@ class User extends ParentModel
 
         $tempArr= [];
         foreach ($orderIDs as $orderID) {
-            if(!isset($allArr[$orderID->order_id])) {
-                $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+            if(!isset($ruleEngineOrderIds[$orderID->order_id])) {
+                if(!isset($allArr[$orderID->order_id])) {
+                    $tempArr[$orderID->order_id] = $contractPrivilegesArray[$orderID->contract_id];
+                }
+            }
+
+        }
+
+        $createdByArr = [];
+        $createdByOrderIDs = DB::table('order')
+            ->where('is_active', 1)
+            ->where('merchant_id', $merchant_id)
+            ->where('created_by', $user_id)
+            ->whereNotIn('order_id', array_keys($orderPrivilegesArray))
+            ->select(['order_id', 'contract_id'])
+            ->get()
+            ->toArray();
+
+        foreach ($createdByOrderIDs as $orderID) {
+            if(!isset($tempArr[$orderID->order_id])) {
+                if(!isset($allArr[$orderID->order_id])) {
+                    $createdByArr[$orderID->order_id] = 'edit';
+                }
             }
         }
 
-        return $orderPrivilegesArray + $tempArr + $allArr;
+        return $orderPrivilegesArray + $tempArr + $allArr + $createdByArr;
     }
 
     /**
@@ -708,7 +756,7 @@ class User extends ParentModel
      * @param $invoicePrivilegesArray
      * @return array
      */
-    public function createInvoicePrivilegesAccess($user_id, $contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices, $merchant_id, $user_role): array
+    public function createInvoicePrivilegesAccess($contractPrivilegesArray, $invoicePrivilegesArray, $ruleEngineInvoices, $user_id, $merchant_id, $user_role): array
     {
         $invoiceIDs = DB::table('payment_request')
             ->where('is_active', 1)
@@ -747,7 +795,9 @@ class User extends ParentModel
 
             foreach ($createdByInvoiceIDs as $createdByInvoiceID) {
                 if(!isset($tempArr[$createdByInvoiceID->payment_request_id])) {
-                    $createdByArr[$createdByInvoiceID->payment_request_id] = 'edit';
+                    if(!isset($ruleEngineInvoices[$createdByInvoiceID->payment_request_id])) {
+                        $createdByArr[$createdByInvoiceID->payment_request_id] = 'edit';
+                    }
                 }
             }
         }

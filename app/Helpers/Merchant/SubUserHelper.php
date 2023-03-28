@@ -23,19 +23,21 @@ class SubUserHelper
      */
     public function getGroupID($authUserID)
     {
-        $groupID = DB::table(ITable::USER)
+        $authUser = DB::table(ITable::USER)
             ->where(IColumn::USER_ID, $authUserID)
-            ->pluck('group_id')
             ->first();
 
-        if(empty($groupID)) {
-            $groupID = DB::table('merchant')
+        if($authUser->user_group_type == 1) {
+            return DB::table('merchant')
                 ->where(IColumn::USER_ID, $authUserID)
                 ->pluck('group_id')
                 ->first();
         }
 
-        return $groupID;
+        return DB::table('merchant')
+            ->where('group_id', $authUser->group_id)
+            ->pluck('group_id')
+            ->first();
     }
 
     /**
@@ -48,9 +50,8 @@ class SubUserHelper
         $groupID = $this->getGroupID($authUserID);
 
         $checkEmail = DB::table('user')
-                        ->where('email_id', $request->get('email_id'))
-                        ->where('group_id', $groupID)
-                        ->exists();
+            ->where('email_id', $request->get('email_id'))
+            ->exists();
 
         if($checkEmail) {
             return [
@@ -68,14 +69,11 @@ class SubUserHelper
         $SubUser->first_name = $request->get('first_name');
         $SubUser->last_name = $request->get('last_name');
         $SubUser->email_id = $request->get('email_id');
-        $SubUser->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
         $SubUser->user_status = 19;
         $SubUser->group_id = $groupID;
         $SubUser->user_group_type = 2;
         $SubUser->user_type = 0;
         $SubUser->franchise_id = 0;
-        $SubUser->mob_country_code = $request->get('mob_country_code');
-        $SubUser->mobile_no = $request->get('mobile');
         $SubUser->created_by = $authUserID;
         $SubUser->created_date = Carbon::now()->toDateTimeString();
         $SubUser->last_updated_by = $authUserID;
@@ -85,17 +83,17 @@ class SubUserHelper
 
         $this->addUserRole($SubUser, $request->get('role'));
 
-        $emailSuccess = false;
-        try {
-            $this->sendVerifyMail($SubUser);
-            $emailSuccess = true;
-        } catch(\Exception $exception) {
-        }
+//        $emailSuccess = false;
+//        try {
+//            $this->sendVerifyMail($SubUser);
+//            $emailSuccess = true;
+//        } catch(\Exception $exception) {
+//        }
 
         $this->addUserPrefrences($SubUser);
 
         return [
-            'send_email_success' => $emailSuccess
+            'user_create' => true
         ];
     }
 
@@ -131,10 +129,7 @@ class SubUserHelper
      */
     public function indexTableData($userID)
     {
-        $groupID = DB::table(ITable::USER)
-            ->where('user_id', $userID)
-            ->pluck('group_id')
-            ->first();
+        $groupID = $this->getGroupID($userID);
 
         $subUsers = DB::table(ITable::USER)
             ->where('group_id', $groupID)
@@ -210,7 +205,7 @@ class SubUserHelper
                     'updated_by' => $SubUser->created_by,
                     IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
                     IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-            ]);
+                ]);
     }
 
     /**
@@ -255,8 +250,8 @@ class SubUserHelper
     public function getRoles($merchantID)
     {
         return DB::table(ITable::BRIQ_ROLES)
-                    ->where('merchant_id', $merchantID)
-                    ->get()
-                    ->toArray();
+            ->where('merchant_id', $merchantID)
+            ->get()
+            ->toArray();
     }
 }

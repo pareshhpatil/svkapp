@@ -4,10 +4,13 @@ namespace App\Helpers\Merchant;
 
 use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Jobs\ProcessInvoiceForApprove;
+use App\Jobs\ProcessInvoiceMailForApprove;
 use App\Libraries\Encrypt;
 use App\Model\Invoice;
+use App\Notifications\InvoiceApprovalNotification;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -18,6 +21,8 @@ class InvoiceHelper
     public function sendInvoiceForApprovalNotification($paymentRequestID)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
+        $authUserID = Encrypt::decode(Session::get('userid'));
+
         $paymentRequestDetail =  (new Invoice())->getInvoiceInfo($paymentRequestID, $merchantID);
 
         if (!empty($paymentRequestDetail)) {
@@ -34,6 +39,9 @@ class InvoiceHelper
             $contractID = $Contract->contract_id;
             $customerID = $Contract->customer_id;
             $projectID = $Contract->project_id;
+
+            //Update User Privileges array
+            $this->updateInvoicePrivileges($paymentRequestID, $contractID);
 
             $data = DB::table('briq_privileges')
                 ->where('merchant_id', $merchantID)
@@ -178,11 +186,48 @@ class InvoiceHelper
 
             $Users = User::query()
                 ->whereIn('user_id', $uniqueUserIDs)
+                ->whereIn('user_status', [20, 15, 12, 16])
                 ->get();
 
             foreach ($Users as $User) {
-                    ProcessInvoiceForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue('promotion-sms-dev');
+                $User->notify(new InvoiceApprovalNotification($invoiceNumber, $paymentRequestID, $User));
+                //Different queue for mail bcz mails fails sometimes if email not verified
+                ProcessInvoiceMailForApprove::dispatch($invoiceNumber, $paymentRequestID, $User)->onQueue(env('SQS_USER_NOTIFICATION'));
             }
+        }
+    }
+
+    public function updateInvoicePrivileges($paymentRequestID, $contractID)
+    {
+        $authUserID = Encrypt::decode(Session::get('userid'));
+        $authUserRole = Session::get('user_role');
+
+        $invoicePrivileges = json_decode(Redis::get('invoice_privileges_' . $authUserID), true);
+        $contractPrivileges = json_decode(Redis::get('contract_privileges_' . $authUserID), true);
+
+        if ($authUserRole == 'Admin') {
+            $invoicePrivileges[$paymentRequestID] = 'full';
+        } else {
+            if (isset($contractPrivileges[$contractID])) {
+                if ($contractPrivileges[$contractID] == 'full') {
+                    $invoicePrivileges[$paymentRequestID] = 'full';
+                }
+
+                if ($contractPrivileges[$contractID] == 'approve') {
+                    $invoicePrivileges[$paymentRequestID] = 'approve';
+                }
+
+                if ($contractPrivileges[$contractID] == 'edit') {
+                    $invoicePrivileges[$paymentRequestID] = 'edit';
+                }
+            } else {
+                $invoicePrivileges[$paymentRequestID] = 'edit';
+            }
+
+
+            Redis::set('invoice_privileges_' . $authUserID, json_encode($invoicePrivileges));
+
+            Session::put('invoice_privileges', json_encode($invoicePrivileges));
         }
     }
 }

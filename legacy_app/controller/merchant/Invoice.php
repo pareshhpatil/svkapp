@@ -720,6 +720,10 @@ class Invoice extends Controller
                     $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
 
                     $InvoiceHelper->sendInvoiceForApprovalNotification($payment_request_id);
+                } else {
+                    $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
+
+                    $InvoiceHelper->updateInvoicePrivileges($payment_request_id, $get_payment_request_details['contract_id']);
                 }
 
                 $get_payment_request_details['change_order_id'] = json_decode($get_payment_request_details['change_order_id'], 1);

@@ -23,7 +23,7 @@
   <![endif]-->
     <style>
         body {
-            font-family: Roboto;
+    font-family: 'Roboto', sans-serif;
             letter-spacing: 0;
             line-height: 75%;
         }
@@ -79,7 +79,7 @@
         if ($PAGE_COUNT > 0) {
         $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
         $size = 10;
-        $font = $fontMetrics->getFont("Verdana");
+        $font = $fontMetrics->getFont("Roboto");
         $width = $fontMetrics->get_text_width($text, $font, $size) / 3;
         $x = ($pdf->get_width() - $width - 12);
         $y = $pdf->get_height() - 25;
@@ -88,18 +88,17 @@
         @if($has_watermark)
         $w = $pdf->get_width();
         $h = $pdf->get_height();
-        $pdf->set_opacity(.1,'Multiply');
 
         $text = "{{$watermark_text}}";
         $text = chunk_split($text, 10);
-        $font = $fontMetrics->getFont('times');
+        $font = $fontMetrics->getFont('Roboto');
         $txtHeight = $fontMetrics->getFontHeight($font, 150);
         $textWidth = $fontMetrics->getTextWidth($text, $font, 40);
             
-        $x = ($w-$textWidth-400);
-        $y = ($h-$txtHeight);
-            
-        $pdf->page_text($x, $y, $text, $font, 80,$color = array(0, 0, 0, .2), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
+        $x = (($w-$textWidth)/2);
+        $y = (($h-$txtHeight)/1.5);
+        $pdf->page_script('$pdf->set_opacity(.1, "Multiply");');
+        $pdf->page_text($x, $y, $text, $font, 80,$color =array(0,0,0), $word_space = 0.0, $char_space = 0.0, $angle = -30.0);
         @endif
     }
 </script>
@@ -119,26 +118,14 @@
                             <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703® – 1992</div>
                         </td>
                     </tr>
-                    @else
-                    <tr>
-                        <td>
-                            <div style="margin-top: 20px; text-align: left; font-size: 24px; font-weight: 600; color: #000;">Document G703 – 1992</div>
-                        </td>
-                    </tr>
                     @endif
                 </table>
-                <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">Continuation Sheet</div>
+                <div style="font-size:22px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">CONTINUATION SHEET</div>
                 <div style="margin-top: 5px;margin-bottom: 2px; height: 2px; width: 100%; background-color: #111827"></div>
                 <table style="width:100%">
                     <td>
                         @if($has_aia_license)
                         <div style="font-size: 12px">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                            Application and Certificate for
-                            Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                            is attached.
-                            Use Column I on Contracts where variable retainage for line items may apply. </div>
-                        @else
-                        <div style="font-size: 12px">Document G702, Application and Certificate for Payment, or G732™,
                             Application and Certificate for
                             Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
                             is attached.

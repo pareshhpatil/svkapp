@@ -41,11 +41,11 @@ class SSP
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
                         // $value = formatDateString($data[$i][$column['db']]);
-                        if ($data[$i][$column['db']] < date("Y-m-d")) {
+                        if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status']==0) {
                             $value = formatDateString($data[$i][$column['db']]);
                             $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
                         } else {
-                            $row[$column['dt']] = $data[$i][$column['db']];
+                            $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
                         }
                         
                     } elseif ($column['datatype'] == 'specialDate') {
@@ -163,12 +163,12 @@ class SSP
                             $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
                                 if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
-                                    $value = '<span class="badge badge-pill status unpaid">In review</span>';
+                                    $value = '<span class="badge badge-pill status unpaid">IN REVIEW</span>';
                                 }
                             } elseif($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
-                                $value = '<span class="badge badge-pill status unpaid">In review</span>';
+                                $value = '<span class="badge badge-pill status unpaid">IN REVIEW</span>';
                             }
-                        } else if($status == 0) {
+                        } else if($status == '0') {
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
                             $value = '<span class="badge badge-pill status overdue">' . $custom_invoice_status . '</span>';
                             //0 = unpaid, 4=failed ,5= initiated
@@ -177,6 +177,10 @@ class SSP
                             // } else {
                             //     $value = '<span class="badge badge-pill status unpaid">UNPAID</span>';
                             // }
+                        } else if($status == '5') {
+                            $status = '0';
+                            $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
+                            $value = '<span class="badge badge-pill status overdue">' . $custom_invoice_status . '</span>';
                         }
                     }
                     if ($column['dt'] == self::$action_coll) {
@@ -245,7 +249,7 @@ class SSP
                                     }
                                 }
                             } else {
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>

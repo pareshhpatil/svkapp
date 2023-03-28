@@ -29,25 +29,25 @@ $header='app.patron.invoice.invoice-master';}
     overflow: hidden;
     }
 
-    .watermark__inner {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        left: 0px;
-        position: absolute;
-        top: 22px;
-        height: 70%;
-        width: 100%;
-    }
+.watermark__inner {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    left: 0px;
+    position: absolute;
+    top: 120px;
+    height: 70%;
+    width: 100%;
+}
 
-    .watermark__body {
-        color: rgba(0, 0, 0, 0.2);
-        font-size: 14vh;
-        font-weight: bold;
-        text-transform: uppercase;
-        transform: rotate(-45deg);
-        user-select: none;
-    }
+.watermark__body {
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 14vh;
+    font-weight: bold;
+    text-transform: uppercase;
+    transform: rotate(-45deg);
+    user-select: none;
+}
 </style>
 
 @extends($header)
@@ -138,15 +138,11 @@ $header='app.patron.invoice.invoice-master';}
                     <div>
                         <h1 class="text-3xl text-left mt-8 font-bold">Document G702® – 1992</h1>
                     </div>
-                @else
-                    <div>
-                        <h1 class="text-3xl text-left font-bold">Document G702 – 1992</h1>
-                    </div>
                 @endif
 
             </div>
-            <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
-            <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
+            <h1 class="text-2xl text-left mt-4 font-bold">APPLICATION AND CERTIFICATE FOR PAYMENT </h1>
+            <div class="w-full h-0.5 bg-gray-900 mb-2 mt-1"></div>
 
             <div>
                 <table width="100%" >
@@ -242,9 +238,7 @@ $header='app.patron.invoice.invoice-master';}
                     @if($has_aia_license)
                         <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
                             AIA Document G703®, Continuation Sheet, is attached.</p>
-                    @else
-                        <p class="text-xs">Application is made for payment, as shown below, in connection with the Contract.
-                            Document G703, Continuation Sheet, is attached.</p>
+                   
                     @endif
 
                         <div class="grid grid-cols-3 gap-2 mt-1">

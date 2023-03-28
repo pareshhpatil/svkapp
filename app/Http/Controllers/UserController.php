@@ -327,7 +327,7 @@ class UserController extends Controller
                     "change_order_privileges" => ['all' => 'full']
                 ];
             } else {
-                $privileges = $this->user_model->getUserPrivileges($user->user_id, $user->group_id, $role);
+                $privileges = $this->user_model->getUserPrivileges($user->user_id, $role);
             }
 
             Redis::set('customer_privileges_' . $user->user_id, json_encode($privileges['customer_privileges']));
@@ -335,7 +335,7 @@ class UserController extends Controller
             Redis::set('contract_privileges_' . $user->user_id, json_encode($privileges['contract_privileges']));
             Redis::set('invoice_privileges_' . $user->user_id, json_encode($privileges['invoice_privileges']));
             Redis::set('change_order_privileges_' . $user->user_id, json_encode($privileges['change_order_privileges']));
-            // Store in Session bcz of legacy_app
+            // Reset in Session bcz of legacy_app
             Session::put('invoice_privileges', json_encode($privileges['invoice_privileges']));
             Session::put('customer_privileges', json_encode($privileges['customer_privileges']));
 
@@ -350,7 +350,7 @@ class UserController extends Controller
                             return redirect('/cable/settopbox');
                         }
                     }
-                };
+                }
                 return redirect('/patron/dashboard');
             } else {
                 //Check if user is a sub merchant login

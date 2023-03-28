@@ -138,7 +138,7 @@
             <div class="page-bar">
                 <span class="page-title" style="float: left;">{{$title}} contract</span>
                 {{ Breadcrumbs::render('home.contractcreate') }}
-                <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step {{ $step }} of 3</span>
+                <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step {{ $step }} of 4</span>
             </div>
             <!-- END PAGE HEADER-->
             <!-- BEGIN PAGE CONTENT-->
@@ -172,6 +172,9 @@
                             @break
                             @case(3)
                                 @include('app.merchant.contract.steps.step-3')
+                            @break
+                            @case(4)
+                                @include('app.merchant.contract.steps.step-4')
                             @break
                         @endswitch
                     </form>

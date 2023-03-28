@@ -11,6 +11,7 @@ use Log;
 use PHPExcel;
 use Illuminate\Http\Request;
 use PHPExcel_IOFactory;
+use PHPExcel_Cell_DataType;
 use App\Rules\ExcelRule;
 use Illuminate\Support\Facades\Storage;
 
@@ -274,7 +275,7 @@ class ImportController extends Controller
     }
 
 
-    public function formatBillCode($type)
+    public function downloadFormatSheet($type=null,$id=null)
     {
         if ($type == 'billCode') {
             $column_name[] = 'Bill Code';
@@ -291,6 +292,39 @@ class ImportController extends Controller
             $column_name[] = 'Sub Total Group';
             $column_name[] = 'Bill Code Detail (Yes/No)';
             $title = 'Contract';
+        } elseif($type == 'changeOrder') {
+            $order_id= Encrypt::decode($id);
+            $particulars = $this->importModel->getColumnValue('order','order_id',$order_id,'particulars');
+            $particulars = json_decode($particulars,true);
+           
+            $hide = array('change_order_amount','pint');
+            $cnt = 0;
+            foreach ($particulars as $val) {
+                
+                foreach ($val as $key => $val2) {
+                    if (!in_array($key, $hide)) {
+                        if ($cnt == 0) {
+                            if($key=='retainage_percent') {
+                                $column_name[] = ucfirst(str_replace('_', ' ', $key)) . ' %';
+                            } else {
+                                $column_name[] = ucfirst(str_replace('_', ' ', $key));
+                            }
+                        }
+                        
+                        if($key=='cost_type') {
+                            $cost_type_name = $this->importModel->getColumnValue('cost_types','id',$val2,'name');
+                            $values[$cnt][] = $cost_type_name;
+                        } else if($key=='bill_code') {
+                            $bill_code = $this->importModel->getColumnValue('csi_code','id',$val2,'code');
+                            $values[$cnt][] = $bill_code;
+                        } else {
+                            $values[$cnt][] = $val2;
+                        }
+                    }
+                }
+                $cnt++;
+            }
+            $title = 'ChangeOrder';
         }
 
         $objPHPExcel = new PHPExcel();
@@ -303,26 +337,46 @@ class ImportController extends Controller
         $first = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
         $column = array();
         foreach ($first as $s) {
-            $column[] = $s . '1';
+            $column[] = $s;
         }
         foreach ($first as $f) {
             foreach ($first as $s) {
-                $column[] = $f . $s . '1';
+                $column[] = $f . $s;
             }
         }
         $int = 0;
         foreach ($column_name as $col) {
-            $objPHPExcel->getActiveSheet()->setCellValue($column[$int], $col);
+            $objPHPExcel->getActiveSheet()->setCellValue($column[$int] . '1', $col);
             $int = $int + 1;
+        }
+        
+        //for change order only
+        if($type=='changeOrder') {
+            $rint = 2;
+            if(!empty($values)) {
+                //$hide = array(3,4,7);
+                foreach ($values as $val) {
+                    $vint = 0;
+                    foreach ($val as $vall) {
+                        if (strlen($vall) > 10 && is_numeric($vall)) {
+                            $objPHPExcel->getActiveSheet()->setCellValueExplicit($column[$vint] . $rint, $vall, PHPExcel_Cell_DataType::TYPE_STRING);
+                        } else {
+                            $objPHPExcel->getActiveSheet()->setCellValue($column[$vint] . $rint, $vall);
+                        }
+                        $vint = $vint + 1;
+                    }
+                    $rint++;
+                }
+            }
         }
 
         $objPHPExcel->getDefaultStyle()->getFont()->setName('verdana')
             ->setSize(10);
         $objPHPExcel->getActiveSheet()->setTitle($title);
-        $int++;
+        //$int++;
         $autosize = 0;
         while ($autosize < $int) {
-            $objPHPExcel->getActiveSheet()->getColumnDimension(substr($column[$autosize], 0, -1))->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension(substr($column[$autosize].'1', 0, -1))->setAutoSize(true);
             $autosize++;
         }
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -342,4 +396,55 @@ class ImportController extends Controller
         unset($objPHPExcel);
         exit;
     }
+
+     /**
+     * @author Darshana
+     *
+     * Renders form to upload change order particulars
+     *
+     * @param $order_id - Encrypted change order id
+     *
+     * @return void
+     */
+    public function changeOrder($order_id=null) {
+        $data = Helpers::setBladeProperties('Import Change Order', [], [14]);
+        $data['list'] = $this->importModel->getChangeOrderList($this->merchant_id);
+        
+        foreach ($data['list'] as $k => $v) {
+            $data['list']{
+                $k}->bulk_id = Encrypt::encode($v->bulk_upload_id);
+            $data['list']{
+                $k}->order_id = Encrypt::encode($v->parent_id);
+        }
+        $data['order_id'] = ($order_id != null) ? Encrypt::decode($order_id) : 0;
+        $data['change_order_id'] = $order_id;
+        $data['datatablejs'] = 'table-no-export';
+        $data['hide_first_col'] = 1;
+        return view('app/merchant/import/changeOrder', $data);
+    }
+
+    public function uploadChangeOrder(Request $request)
+    {
+        $file = $request->file('fileupload');
+        $request->validate([
+            'order_id' => 'required',
+            'fileupload' => ['required', new ExcelRule($file)],
+        ]);
+        //Validate uploaded excel file data
+        $response = $this->validateSheet($file->getPathName(), 'ChangeOrder');
+        if (!is_numeric($response)) {
+            return redirect()->back()->withErrors([$response]);
+        }
+        $merchant_filename = $file->getClientOriginalName();
+        $id = $this->importModel->saveBulkuploadRecord($this->merchant_id, 13, $request->order_id, $merchant_filename, $merchant_filename, 0, $response - 1, $this->user_id);
+        $encryptedFileName = $id * env('IMPORT_ENC_NUMBER');
+        $fileExtension = $file->getClientOriginalExtension();
+        $encryptedFileNameExt = $encryptedFileName . '.' . $fileExtension;
+
+        $this->importModel->updateBulkuploadStatus($id, $encryptedFileNameExt, 2);
+        Storage::disk('s3_bulkupload')->put($encryptedFileNameExt, file_get_contents($file));
+
+        return redirect()->back()->with('success', "File uploaded. You will be notified via email once the upload is completed.");
+    }
+
 }

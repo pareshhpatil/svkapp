@@ -10,9 +10,8 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
-use Kutia\Larafirebase\Messages\FirebaseMessage;
 
-class InvoiceApprovalNotification extends Notification
+class InvoiceApprovalMailNotification extends Notification
 {
     use Queueable;
 
@@ -40,8 +39,7 @@ class InvoiceApprovalNotification extends Notification
      */
     public function via($notifiable)
     {
-        $channels = ['database'];
-
+        $channels = [];
         $preferences = DB::table('preferences')
                         ->where('user_id', $notifiable->user_id)
                         ->first();
@@ -50,42 +48,27 @@ class InvoiceApprovalNotification extends Notification
             return $channels;
         }
 
-        if($preferences->send_push == 1) {
-            if (!empty($this->User->fcm_token)) {
-                $channels[] = 'firebase';
-            }
+        if($preferences->send_email == 1) {
+            $channels[] = 'mail';
         }
 
         return $channels;
     }
 
     /**
-     * Get the firebase representation of the notification.
+     * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  User  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toFirebase($notifiable)
+    public function toMail($notifiable)
     {
-        return (new FirebaseMessage())
-            ->withTitle($this->invoiceNumber)
-            ->withBody($this->invoiceNumber . ' Invoice Pending for approval')
-            ->withPriority('low')->asMessage($this->User->fcm_token);
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            'type' => 'invoice',
-            'user_id' => $this->User->user_id,
-            'payment_request_id' => Encrypt::encode($this->paymentRequestID),
-            'invoice_number' => $this->invoiceNumber,
-        ];
+        return (new MailMessage)
+            ->subject($this->invoiceNumber . ' Requested for approval')
+            ->markdown('emails.invoice.approve', [
+                'user_id' => $notifiable->user_id,
+                'payment_request_id' => Encrypt::encode($this->paymentRequestID),
+                'invoice_number' => $this->invoiceNumber
+            ]);
     }
 }

@@ -533,15 +533,15 @@ class InvoiceFormatController extends AppController
         $data['template_name'] = $request->template_name;
         $data['template_type'] = $request->template_type;
         $data['particular_column'] = $particular_column;
-        $data['default_particular'] = json_encode($request->particularname);
-        $data['default_tax'] = json_encode($request->tax_id);
+        $data['default_particular'] = (!empty($request->particularname)) ? json_encode($request->particularname) : '';
+        $data['default_tax'] = (!empty($request->tax_id)) ? json_encode($request->tax_id) : '';
         $data['particular_total'] = 'Particular total';
         $data['tax_total'] = 'Tax total';
         $data['tnc'] = $request->tnc;
         $data['properties'] = $travelConfig;
         $data['design_name'] = $request->design_name;
         $data['design_color'] = $request->design_color;
-        $data['footer_note'] = $request->template_fooer_msg;
+        $data['footer_note'] = (isset($request->template_fooer_msg)) ? $request->template_fooer_msg : '';
         $data['plugin'] = $this->getPlugins();
         $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
         $data['image_path'] = $logo;
@@ -847,8 +847,8 @@ class InvoiceFormatController extends AppController
 
     function getPlugins()
     {
-        $this->setZeroValue(array('is_debit','has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark'));
-        $this->setEmptyArray(array('debit', 'debitdefaultValue', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
+        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark','include_store_materials'));
+        $this->setEmptyArray(array('debit', 'debitdefaultValue','mandatory_document_name', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
         if ($_POST['is_debit'] == 1) {
@@ -950,6 +950,9 @@ class InvoiceFormatController extends AppController
 
         if ($_POST['invoice_output'] == 1) {
             $plugin['invoice_output'] = $_POST['invoice_output'];
+        }
+        if ($_POST['include_store_materials'] == 1) {
+            $plugin['include_store_materials'] = $_POST['include_store_materials'];
         }
 
         if ($_POST['has_aia_license'] == 1) {
