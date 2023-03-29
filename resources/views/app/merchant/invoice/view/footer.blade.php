@@ -83,20 +83,20 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                             Download {{$gtype}}
                         </a>
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
 
                 </ul>
             </div>
-            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($invoice_type==1) 15px @else 20px  @endif" href="/merchant/invoice/downloadV2/{{$url}}/2 @if(isset($gtype))/{{$gtype}} @endif">
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($invoice_type==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}/2 @if(isset($gtype))/{{$gtype}} @endif">
                 Print
             </a>
             @else
@@ -107,20 +107,20 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                             Download {{$gtype}}
                         </a>
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
 
                 </ul>
             </div>
-            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($invoice_type==1) 15px @else 20px  @endif" href="/merchant/invoice/downloadV2/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($invoice_type==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
                 Print
             </a>
             @endif
@@ -133,13 +133,13 @@ $validate=(array)$validate;
                     <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                         @if($gtype != 'attachment')
                         <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                                 Download {{$gtype}}
                             </a>
                         </li>
                         @endif
                         <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/full/{{$url}}">
+                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                                 Download Full PDF
                             </a>
                         </li>
@@ -169,20 +169,20 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                             Download {{$gtype}}
                         </a>
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
 
                 </ul>
             </div>
-            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/2/{{$gtype}}@endif">
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/2/{{$gtype}}@endif">
                 Print
             </a>
             @else
@@ -198,20 +198,20 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                             Download {{$gtype}}
                         </a>
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/downloadV2/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
 
                 </ul>
             </div>
-            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/downloadV2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                 Print
             </a>
             @endif

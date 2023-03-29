@@ -1,4 +1,9 @@
-<div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10" style="max-width: 1400px; color:#394242;">
+<div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px; color:#394242;">
+    @if($has_watermark)
+    <div class="watermark__inner">
+        <div class="watermark__body">{{$watermark_text}}</div>
+    </div>
+    @endif
     <div class="flex flex-row  gap-4">
         @if($has_aia_license)
         <div>
@@ -12,7 +17,6 @@
             <h1 class="text-3xl text-left font-bold  text-black">Document G702 – 1992</h1>
         </div>
         @endif
-
     </div>
     <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
     <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
