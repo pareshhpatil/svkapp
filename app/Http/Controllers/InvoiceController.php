@@ -1935,6 +1935,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
+			
             $data = $this->setdataV2($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
@@ -3175,6 +3176,8 @@ class InvoiceController extends AppController
         } else {
             $isFirstInvoice = true;
         }
+		
+		$isFirstInvoice = true;
 
         if ($isFirstInvoice == false) {
             $previousInvoiceParticulars = [];
@@ -4253,6 +4256,7 @@ class InvoiceController extends AppController
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data['isFirstInvoice'] = true;
+
             $info['constriuction_details'] = $this->getData703V2($tt, $data['isFirstInvoice'], $data['prevDPlusE']);
             $project_details = $this->invoiceModel->getProjectDeatils($payment_request_id);
             $info['project_details'] = $project_details;
@@ -4323,6 +4327,7 @@ class InvoiceController extends AppController
             $retainage_amount_stored_materials = 0;
             $retainage_release_amount = 0;
             $retainage_stored_materials_release_amount = 0;
+			$data['isFirstInvoice']=true;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -4589,6 +4594,7 @@ class InvoiceController extends AppController
 
     public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
+		$isFirstInvoice = true;
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -4626,6 +4632,7 @@ class InvoiceController extends AppController
             $sub_h = 0;
             $sub_i = 0;
             $attach_count = 0;
+			$isFirstInvoice=true;
             foreach ($result[$names] as $data) {
 
 
@@ -4932,6 +4939,7 @@ class InvoiceController extends AppController
             $attach_count = 0;
             $sub_key = '';
             $footer_sub_key = '';
+			$isFirstInvoice = true;
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
