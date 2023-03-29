@@ -107,6 +107,7 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font">Invoice level attachments</span>
                                 </div>
+                                <!--
                                 <div class="">
                                     <label class="control-label  w-auto">Invoice attachments
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Support non mandatory document attachments at an invoice level" type="button">
@@ -122,7 +123,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <!--<div class="input-group">
+                                <div class="input-group">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">File label</label>
                         <div class="col-md-8">
@@ -131,13 +132,15 @@
                     </div>
                 </div>-->
                                 <label class="control-label w-auto">Setup required documents
-                                    <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Use this facility if you require specific documents during submission or approval" type="button">
+                                    <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Setup mandatory or non-mandatory documents that need to be uploaded while creating the invoice" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
   <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
 </svg>
                                     </span>
                                 </label>
                                 <div class="pull-right">
+                                <input value="View document"  type="hidden"   name="upload_file_label">
+                                <input value="1"  type="hidden"   name="has_upload">
                                     <input type="checkbox" @isset($plugins['has_mandatory_upload']) checked @endif id="isMandatoryUpload" onchange="setCheckbox(this.checked, 'isMandatoryUpload');" name="has_mandatory_upload" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                 </div>
                                 <a id="document_attachment_button" @if(!isset($plugins['has_mandatory_upload'])) style="display: none;" @endif data-toggle="modal" href="#new_document" class="btn btn-sm mb-1 green pull-right mr-1"><i class="fa fa-plus"> </i> Add document </a>
