@@ -78,6 +78,7 @@
 
     .popovers {
         color: #394242;
+        vertical-align: middle;
     }
 </style>
 <link href="/assets/global/plugins/summernote/summernote.min.css" rel="stylesheet">
@@ -109,7 +110,9 @@
                                 <div class="">
                                     <label class="control-label  w-auto">Invoice attachments
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Support non mandatory document attachments at an invoice level" type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
 
                                     </label>
@@ -129,7 +132,9 @@
                 </div>-->
                                 <label class="control-label w-auto">Setup required documents
                                     <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Use this facility if you require specific documents during submission or approval" type="button">
-                                        <i class="fa fa-info-circle"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                     </span>
                                 </label>
                                 <div class="pull-right">
@@ -184,8 +189,11 @@
                                 <hr>
                                 <div class="mb-2">
                                     <span class="form-section base-font">Watermark
+                                    
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Add a custom text as a watermark to your PDF documents and web links." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right">
@@ -208,7 +216,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font">Revision history&nbsp;
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Maintain a revision history of all changes made to your invoice." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right">
@@ -222,7 +232,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font"> AIA license available
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Switch this toggle ON if you have a valid AIA license. This will create invoices with the AIA logo and format." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right ml-1">
@@ -235,7 +247,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font"> Stored materials inclusion
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="To include stored materials in ''from previous application'' switch this toggle to On." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right ml-1">
@@ -260,7 +274,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font">Partial payment
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Enable logging part payments. Personalize and set the minimum amount for partial payments as per your requirements." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right">
@@ -283,7 +299,9 @@
                                     <span class="form-section base-font">Covering note 
                                         
                                     <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Send emails with a covering note. Invoices will be sent as a PDF attachment." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
 
@@ -316,7 +334,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font">CC Emails
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Automate email notifications to internal or external parties when invoices are created & sent. Enable the CC Emails plugin to send a copy of your invoices." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
                                     <div class="pull-right ml-1">
@@ -365,7 +385,9 @@
                                 <div class="mb-2">
                                     <span class="form-section base-font">Customize reminder schedule 
                                     <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Customize the schedule of invoice due reminders sent to your customers via email." type="button">
-                                            <i class="fa fa-info-circle"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 15px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+</svg>
                                         </span>
                                     </span>
 
