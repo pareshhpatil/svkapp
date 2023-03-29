@@ -5647,6 +5647,7 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
+            $type=1;
             $particulars = json_decode($contract->particulars);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
@@ -5792,6 +5793,7 @@ class InvoiceController extends AppController
                 }
             }
         } else {
+            $type=2;
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
                 $total = $total + $particulars[$k]['net_billed_amount'];
@@ -5834,8 +5836,8 @@ class InvoiceController extends AppController
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
+        $data['type'] = $type;
         $data['button'] = 'Save';
-        $data['mode'] = 'create';
         $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;
