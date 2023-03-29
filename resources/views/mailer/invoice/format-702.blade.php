@@ -65,12 +65,15 @@
     src: url({{ storage_path('fonts\Roboto-Bold.ttf') }}) format("truetype");
      font-weight:700;
 }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            letter-spacing: 0px;
-            line-height: 100%;
-        }
+body{
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0px;
+    @if($has_aia_license)
+    line-height: 93%;
+    @else
+    line-height: 100%;
+    @endif
+}
     </style>
 
 </head>
