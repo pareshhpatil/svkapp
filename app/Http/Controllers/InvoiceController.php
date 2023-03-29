@@ -999,7 +999,7 @@ class InvoiceController extends AppController
             $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
            $data["total_earned_less_retain"] = 0;
             if (isset($project_details)) {
-                $info["total_earned_less_retain"] = $this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id);
+                $info["total_earned_less_retain"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
             }
             $data['total_previously_billed_amount'] =    $this->formatInvoiceValues($construction_details['previously_billed_amount'], $currency_icon);
 
