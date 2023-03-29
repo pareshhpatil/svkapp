@@ -48,7 +48,7 @@
                     <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/patron/invoice/download/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
                         Print
                     </a>
-                    
+
                     <div class="btn-group margin-bottom-5">
                         <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right:  15px " data-toggle="dropdown" aria-expanded="true" fdprocessedid="0s2a8">
                             Download <i class="fa fa-angle-down"></i>
@@ -84,6 +84,16 @@
                         View Invoice
                     </a>
                     @else
+                    @if(isset($metadata['plugin']['has_partial']) && $metadata['plugin']['has_partial']==1)
+                    <button type="submit" name="partial" class="btn green hidden-print margin-bottom-5">
+                        Pay Partial Amount
+                    </button>
+                    @endif
+                    @if(isset($metadata['plugin']['autocollect_plan_id']) && $metadata['plugin']['autocollect_plan_id']>0)
+                    <button type="submit" name="autopay" class="btn green hidden-print margin-bottom-5">
+                        Enable auto payment
+                    </button>
+                    @endif
                     @if(isset($metadata['plugin']['has_online_payments']) && $metadata['plugin']['has_online_payments']==1 && isset($metadata['plugin']['enable_payments']) && $metadata['plugin']['enable_payments']==0)
                     @else
                     <button type="submit" name="paynow" class="btn blue hidden-print margin-bottom-5">
@@ -97,22 +107,64 @@
         </form>
 
     </div>
+    @if( !empty($info['partial_payments']))
+
+    <div class="portlet-body">
+        <h4><b>Payment details</b></h4>
+        <div class="table-scrollable">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="td-c">
+                            Transaction ID
+                        </th>
+                        <th class="td-c">
+                            Payment date
+                        </th>
+                        <th class="td-c">
+                            Payment mode
+                        </th>
+                        <th class="td-c">
+                            Amount
+                        </th>
+                    </tr>
+                    @foreach ($info['partial_payments'] as $item)
+                    <tr>
+                        <td class="td-c">
+                            {{$item->transaction_id ?? ''}}
+                        </td>
+                        <td class="td-c">
+                            {{$item->payment_date ?? ''}}
+                        </td>
+                        <td class="td-c">
+                            {{$item->payment_mode ?? ''}}
+                        </td>
+                        <td class="td-c">
+                            {{$item->amount ?? ''}}
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
 
 </div>
 @endif
 @if($has_watermark)
 <script>
     var offsetHeight = document.getElementById('main_div').offsetHeight;
-    intervalHeight = Math.round(offsetHeight/500);
-    for(let i=1;i<=intervalHeight;i++){
-        divID= Math.random();
+    intervalHeight = Math.round(offsetHeight / 500);
+    for (let i = 1; i <= intervalHeight; i++) {
+        divID = Math.random();
         let clone = document.querySelector('#watermark_div').cloneNode(true);
         clone.setAttribute('id', 'watermark_div' + divID);
         document.querySelector('#watermark_parent').appendChild(clone);
-        newElement  = document.getElementById('watermark_div'+divID)
-        pixels  = 1000*i;
-        newElement.style.paddingTop = pixels+"px";
-    }    
+        newElement = document.getElementById('watermark_div' + divID)
+        pixels = 1000 * i;
+        newElement.style.paddingTop = pixels + "px";
+    }
 </script>
 @endif
 <!-- END PAGE CONTENT-->
@@ -120,8 +172,8 @@
 
 
     <div class="col-md-12 no-margin no-padding" style="text-align: left;max-width: 909px;margin-top:10px;">
-        
-       <!-- <p><img src="/assets/admin/layout/img/logo.png" class="img-responsive pull-right powerbyimg" alt="" /><span class="powerbytxt">Powered by</span> </p>
+
+        <!-- <p><img src="/assets/admin/layout/img/logo.png" class="img-responsive pull-right powerbyimg" alt="" /><span class="powerbytxt">Powered by</span> </p>
         <br>
         <br>-->
 
