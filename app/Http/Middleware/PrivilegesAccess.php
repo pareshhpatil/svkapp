@@ -53,9 +53,12 @@ class PrivilegesAccess
                         if(($pathArray[2] == 'create' || $pathArray[2] == 'store') && (in_array('full', array_values($contractPrivilegesAccessIDs)) || in_array('edit', array_values($contractPrivilegesAccessIDs)) || in_array('approve', array_values($contractPrivilegesAccessIDs)))) {
                             $result = true;
                         } else {
-                            if(!empty($modelID) && ($contractPrivilegesAccessIDs[$modelID] == 'full' || $contractPrivilegesAccessIDs[$modelID] == 'edit' || $contractPrivilegesAccessIDs[$modelID] == 'approve')) {
-                                $result = true;
+                            if(!empty($modelID) && isset($contractPrivilegesAccessIDs[$modelID])) {
+                                if($contractPrivilegesAccessIDs[$modelID] == 'full' || $contractPrivilegesAccessIDs[$modelID] == 'edit' || $contractPrivilegesAccessIDs[$modelID] == 'approve') {
+                                    $result = true;
+                                }
                             }
+                            
                         }
                     }
                 } elseif (!empty($projectPrivilegesAccessIDs)) {
