@@ -179,6 +179,8 @@ class ContractController extends Controller
             $data = $this->step2Data($data, $contract, $project->project_id ?? '', $step);
         }
         if ($step == 3) {
+            $data['coveringNotes'] = $this->contract_model->getMerchantValues($this->merchant_id, 'covering_note');
+
             $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
             $data['template_id'] = $contract->template_id;
             $data['plugins'] = json_decode($plugins, 1);

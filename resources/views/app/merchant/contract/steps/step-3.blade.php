@@ -80,6 +80,8 @@
         color: #394242;
     }
 </style>
+<link href="/assets/global/plugins/summernote/summernote.min.css" rel="stylesheet">
+
 <script src="/assets/admin/layout/scripts/coveringnote.js" type="text/javascript"></script>
 
 <div>
@@ -298,7 +300,7 @@
                                             <option value="0">Select Template</option>
                                             @if(!empty($coveringNotes))
                                             @foreach($coveringNotes as $v)
-                                            <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v['covering_id']) selected @endif @endif value="{{$v['covering_id']}}">{{$v['template_name']}}</option>
+                                            <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v->covering_id) selected @endif @endif value="{{$v->covering_id}}">{{$v->template_name}}</option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -684,3 +686,50 @@
             })
         </script>
     </div>
+    @section('footer')
+    <script src="/assets/global/plugins/summernote/summernote.min.js"></script>
+
+            <script>
+                $('.tncrich').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ol', 'ul', 'paragraph', 'height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'hr']],
+                        ['view', ['undo', 'redo', 'codeview']]
+                    ],
+                    callbacks: {
+                        onKeydown: function(e) {
+                            var t = e.currentTarget.innerText;
+                            if (t.trim().length >= 5000) {
+                                //delete keys, arrow keys, copy, cut
+                                if (e.keyCode != 8 && !(e.keyCode >= 37 && e.keyCode <= 40) && e.keyCode != 46 && !(e.keyCode == 88 && e.ctrlKey) && !(e.keyCode == 67 && e.ctrlKey))
+                                    e.preventDefault();
+                            }
+                        },
+                        onKeyup: function(e) {
+                            var t = e.currentTarget.innerText;
+                            $('#maxContentPost').text(5000 - t.trim().length);
+                        },
+                        onPaste: function(e) {
+                            var t = e.currentTarget.innerText;
+                            var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                            e.preventDefault();
+                            var maxPaste = bufferText.length;
+                            if (t.length + bufferText.length > 5000) {
+                                maxPaste = 5000 - t.length;
+                            }
+                            if (maxPaste > 0) {
+                                document.execCommand('insertText', false, bufferText.substring(0, maxPaste));
+                            }
+                            $('#maxContentPost').text(5000 - t.length);
+                        }
+                    }
+                });
+            </script>
+            @endsection
