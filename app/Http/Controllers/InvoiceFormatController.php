@@ -922,6 +922,7 @@ class InvoiceFormatController extends AppController
         if ($_POST['is_custom_reminder'] == 1) {
             $plugin['has_custom_reminder'] = $_POST['is_custom_reminder'];
             foreach ($_POST['reminder'] as $key => $day) {
+                $_POST['reminder_sms'][$key]='';
                 $plugin['reminders'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
             }
         }
