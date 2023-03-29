@@ -346,6 +346,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('einvoice/cancel/{id}',  'EinvoiceController@canceleInvoice');
   Route::get('einvoice/errors/{id}',  'EinvoiceController@errorseInvoice');
 
+  //code refactor routes 
+  Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
 
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
@@ -518,6 +520,8 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/reportlink/{payment_request_id}', 'PaymentLinkController@reportLink');
   Route::post('paymentlink/reportthankyou', 'PaymentLinkController@reportUnsubscribe');
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
+  //code refactor 
+  Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');
