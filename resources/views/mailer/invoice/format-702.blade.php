@@ -50,7 +50,11 @@ body { margin-top: 10px;margin-bottom:5px;margin-left: 20px;margin-right: 20px }
 body{
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0px;
+    @if($has_aia_license)
+    line-height: 93%;
+    @else
     line-height: 100%;
+    @endif
 }
     </style>
 
