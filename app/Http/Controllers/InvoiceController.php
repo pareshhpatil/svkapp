@@ -3787,10 +3787,8 @@ class InvoiceController extends AppController
 
         $plugins = json_decode($info['plugin_value'], 1);
         $hasAIALicense = false;
-        if (isset($plugins['invoice_output'])) {
-            if (isset($plugins['has_aia_license'])) {
-                $hasAIALicense = true;
-            }
+        if (isset($plugins['has_aia_license'])) {
+            $hasAIALicense = true;
         }
 
         $data['has_aia_license'] = $hasAIALicense;
@@ -4494,10 +4492,8 @@ class InvoiceController extends AppController
 
         $plugins = json_decode($info['plugin_value'], 1);
         $hasAIALicense = false;
-        if (isset($plugins['invoice_output'])) {
-            if (isset($plugins['has_aia_license'])) {
-                $hasAIALicense = true;
-            }
+        if (isset($plugins['has_aia_license'])) {
+            $hasAIALicense = true;
         }
 
         $data['has_aia_license'] = $hasAIALicense;

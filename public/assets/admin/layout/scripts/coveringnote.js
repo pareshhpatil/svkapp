@@ -55,12 +55,19 @@ function saveCovering(value)
                 option.value = obj.id;
                 option.selected = 1;
                 x.add(option);
-                document.getElementById('edit_note_div').style.display = 'block';
+                try{
+                    document.getElementById('edit_note_div').style.display = 'block';
+
+                }catch(o)
+                {}
                 
                 document.getElementById(value+'cclosebutton').click();
                 document.getElementById(value+'covering_error').style.display = 'none';
                 document.getElementById(value+'covering_error').innerHTML = '';
+                try{
                 closeSidePanelcover();
+            }catch(o)
+            {}
             } else
             {
                 document.getElementById(value+'covering_error').style.display = 'block';
