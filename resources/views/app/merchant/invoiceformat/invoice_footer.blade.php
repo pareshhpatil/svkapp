@@ -131,7 +131,8 @@ $validate=(array)$validate;
             </div>
             <input type="hidden" name="payment_request_id" value="{{$info['payment_request_id']}}" />
             <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
-
+            <input type="hidden" id="preview_invoice_status" name="payment_request_status" value="{{$info->payment_request_status??0}}" />
+                    
             <div class="view-footer-btn-rht-align">
 
                 @if($info['notify_patron']==1)
