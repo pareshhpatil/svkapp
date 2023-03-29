@@ -318,7 +318,7 @@ class UserController extends Controller
 
             Session::forget('menus');
 
-            if($role == 'Admin') {
+            if ($role == 'Admin') {
                 $privileges = [
                     "customer_privileges" => ['all' => 'full'],
                     "project_privileges" => ['all' => 'full'],
@@ -483,10 +483,10 @@ class UserController extends Controller
                         return redirect('/merchant/package/confirm/' . $link);
                     }
 
-                    $merchant_config_data = $this->user_model->getMerchantData($merchant->merchant_id,'CUSTOM_PAYMENT_REQUEST_STATUS');
+                    $merchant_config_data = $this->user_model->getMerchantData($merchant->merchant_id, 'CUSTOM_PAYMENT_REQUEST_STATUS');
                     if ($merchant_config_data) {
                         Session::put('configure_invoice_statues', $merchant_config_data);
-                    } 
+                    }
 
                     return redirect('/merchant/dashboard');
                 } else {
@@ -502,42 +502,41 @@ class UserController extends Controller
 
     public function checkUserRole($user)
     {
-        if ($user->user_status == 20) {
+        if ($user->user_group_type == 2) {
             $merchant = $this->user_model->getTableRow('merchant', 'group_id', $user->group_id);
         } else {
             $merchant = $this->user_model->getTableRow('merchant', 'user_id', $user->user_id);
         }
 
+        $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
+                ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                ->where(IColumn::NAME, "Admin")
+                ->exists();
+
+        if (empty($hasAdminRoleExists)) { 
+            DB::table(ITable::BRIQ_ROLES)
+                ->insert([
+                    'merchant_id' => $merchant->merchant_id,
+                    'name' => 'Admin',
+                    'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
+                    'created_by' => $user->created_by,
+                    'last_updated_by' => $user->created_by,
+                    IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
+                    IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
+                ]);
+        }
+
         $hasUserRoleExists = DB::table(ITable::BRIQ_USER_ROLES)
-                            ->where(IColumn::USER_ID, $user->user_id)
-                            ->exists();
+            ->where(IColumn::USER_ID, $user->user_id)
+            ->exists();
 
-        if(empty($hasUserRoleExists)) {
-            //check if role exists
-            $hasAdminRoleExists = DB::table(ITable::BRIQ_ROLES)
-                                    ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                                    ->where(IColumn::NAME, "Admin")
-                                    ->exists();
-
-            if(empty($hasAdminRoleExists)) {
-                DB::table(ITable::BRIQ_ROLES)
-                    ->insert([
-                        'merchant_id' => $merchant->merchant_id,
-                        'name' => 'Admin',
-                        'description' => 'Can create / edit users and any objects (invoice. contract, co) created by admin will not go through approval process',
-                        'created_by' => $user->created_by,
-                        'last_updated_by' => $user->created_by,
-                        IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
-                        IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                    ]);
-            }
-
+        if (empty($hasUserRoleExists)) {
             $AdminRole = DB::table(ITable::BRIQ_ROLES)
-                            ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
-                            ->where(IColumn::NAME, 'Admin')
-                            ->first();
+                ->where(IColumn::MERCHANT_ID, $merchant->merchant_id)
+                ->where(IColumn::NAME, "Admin")
+                ->first();
 
-            if(!empty($AdminRole)) {
+            if (!empty($AdminRole)) {
                 DB::table(ITable::BRIQ_USER_ROLES)
                     ->updateOrInsert(
                         ['user_id' => $user->user_id],
@@ -548,9 +547,9 @@ class UserController extends Controller
                             'updated_by' => $user->created_by,
                             IColumn::CREATED_AT  => Carbon::now()->toDateTimeString(),
                             IColumn::UPDATED_AT  => Carbon::now()->toDateTimeString()
-                        ]);
+                        ]
+                    );
             }
-
         }
 
         //check if team member role exists
@@ -559,7 +558,7 @@ class UserController extends Controller
             ->where(IColumn::NAME, "Team Member")
             ->exists();
 
-        if(!$hasTeamMemberRoleExists) {
+        if (!$hasTeamMemberRoleExists) {
             DB::table(ITable::BRIQ_ROLES)
                 ->insert([
                     'merchant_id' => $merchant->merchant_id,
@@ -843,7 +842,16 @@ class UserController extends Controller
                 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $exist_email = $this->user_model->getTableRow('user', 'email_id', $email);
                     $exist_uid = $this->user_model->getTableRow('user', 'briq_user_id', $user_uid);
+                    $decrypted_token = $decrypt_token["result"]["token"];
 
+                    $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("Authorization: Bearer " . $decrypted_token));
+                    $response = json_decode($response, 1);
+                    $company_id = isset($response["company_id"]) ? $response["company_id"] : 'TBT';
+
+                    Log::error('Email:' . $email);
+                    Log::error('User id:' . $user_uid);
+                    Log::error('Company_id:' . $company_id);
+                    $set_with_data = 0;
                     if (empty($exist_email)) {
                         if (empty($exist_uid)) {
                             $data_setup_type =  env('AUTO_SETUP_CONSTRUCTION_TEST_DATA');
@@ -853,18 +861,13 @@ class UserController extends Controller
                                 $domain = array_pop($parts);
                                 if (in_array($domain, $briq_user_emails)) {
                                     //register with data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
-                                } else {
-                                    //register without data 
-                                    return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
+                                    $set_with_data = 1;
                                 }
                             } else if ($data_setup_type == 'ALL') {
                                 //register with data 
-                                return $this->registerNewBriqUser($email, $user_uid, 1, $decrypt_token["result"]["token"]);
-                            } else {
-                                // register without data  
-                                return $this->registerNewBriqUser($email, $user_uid, 0, $decrypt_token["result"]["token"]);
+                                $set_with_data = 1;
                             }
+                            return $this->registerNewBriqUser($email, $user_uid, $set_with_data, $decrypt_token["result"]["token"], $company_id);
                         } else {
                             $this->user_model->updateTable('user', 'briq_user_id', $user_uid, 'email_id', $email);
                             $redirect_url =  $this->setTokenLoginDetails($exist_uid->user_id, null);
@@ -895,16 +898,13 @@ class UserController extends Controller
         }
     }
 
-    function registerNewBriqUser($email, $uid, $is_data, $decrypted_token)
+    function registerNewBriqUser($email, $uid, $is_data, $decrypted_token, $company_id)
     {
-        $response = Helpers::APIrequest(env('BRIQ_USER_DETAIL_API_URL') . $uid, '', "GET", true,  array("Authorization: Bearer " . $decrypted_token));
-        $response = json_decode($response, 1);
 
-        $company_id = isset($response["company_id"]) ? $response["company_id"] : 'TBT';
 
         $result =  $this->user_model->briqRegister($email, 'first', 'last', '1', '', uniqid(),  $company_id, 2, 0, 2);
         if ($result->Message == 'success') {
-            
+
             $import_data  = new ImportBriqData();
 
             //remove these 4 queries and put in procedure 
@@ -914,11 +914,11 @@ class UserController extends Controller
             $this->user_model->updateTable('merchant_setting', 'merchant_id', $result->merchant_id, 'currency', ["USD"]);
 
             //import roles, permission and invoice format data 
-            $import_data->insertMandatoryData($result->merchant_id,$result->user_id );
+            $import_data->insertMandatoryData($result->merchant_id, $result->user_id);
 
             // insert test data 
-            if($is_data){
-                $import_data->insertData($result->merchant_id,$result->user_id );
+            if ($is_data) {
+                $import_data->insertData($result->merchant_id, $result->user_id);
             }
 
             $redirect_url =  $this->setTokenLoginDetails($result->user_id, null);

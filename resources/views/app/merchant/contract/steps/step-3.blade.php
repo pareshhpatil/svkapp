@@ -1,4 +1,3 @@
-
 <style>
     .customize-output-panel-wrap {
         position: fixed;
@@ -73,47 +72,54 @@
         }
     }
 
-    .control-label{
+    .control-label {
         color: #394242 !important;
     }
+
+    .popovers {
+        color: #394242;
+    }
 </style>
+<link href="/assets/global/plugins/summernote/summernote.min.css" rel="stylesheet">
+
 <script src="/assets/admin/layout/scripts/coveringnote.js" type="text/javascript"></script>
 
 <div>
     <div class="  col-md-12">
-        
 
-    <ul class="nav nav-tabs">
+
+
+
+        <div class="portlet light bordered">
+            <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
                 <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
             </ul>
-
-        <div class="portlet light bordered">
-           
             <div class="portlet-body">
-            <form action="/merchant/contract/store" method="post">
-                <input type="hidden" name="template_id" value="{{$template_id}}" >
-                <div class="tab-content" style="">
-                    <div class="tab-pane active" id="tab1">
 
-                        <div id="pgisupload" >
-                            <div class="mb-2">
-                                <span class="form-section base-font">Invoice level attachments</span>
-                            </div>
-                            <div class="">
-                                <label class="control-label  w-auto">Invoice attachments
-                                    <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Support non mandatory document attachments at an invoice level" type="button">
-                                        <i class="fa fa-info-circle"></i>
-                                    </span>
+                <form action="/merchant/contract/store" method="post">
+                    <input type="hidden" name="template_id" value="{{$template_id}}">
+                    <div class="tab-content" style="">
+                        <div class="tab-pane active" id="tab1">
 
-                                </label>
-                                <div class="pull-right">
-                                    <input value="View document" required="" type="hidden" maxlength="20" class="form-control" name="upload_file_label">
-                                    <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch pull-right" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                            <div id="pgisupload">
+                                <div class="mb-2">
+                                    <span class="form-section base-font">Invoice level attachments</span>
                                 </div>
-                            </div>
-                            <br>
-                            <!--<div class="input-group">
+                                <div class="">
+                                    <label class="control-label  w-auto">Invoice attachments
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Support non mandatory document attachments at an invoice level" type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+
+                                    </label>
+                                    <div class="pull-right">
+                                        <input value="View document" required="" type="hidden" maxlength="20" class="form-control" name="upload_file_label">
+                                        <input type="checkbox" @isset($plugins['has_upload']) checked @endif id="isupload" onchange="disablePlugin(this.checked, 'plg15');" name="has_upload" value="1" data-size="small" class="make-switch pull-right" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+                                <br>
+                                <!--<div class="input-group">
                     <div class="form-group form-horizontal">
                         <label class="control-label col-md-3 w-auto">File label</label>
                         <div class="col-md-8">
@@ -170,58 +176,74 @@
                                     </table>
                                 </div>
 
-                        </div>
+                            </div>
 
-                        
 
-                        <div id="pgiswatermark" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font">Watermark</span>
-                                <div class="pull-right">
-                                    <input type="checkbox" @isset($plugins['has_watermark']) checked @endif id="iswatermark" name="has_watermark" onchange="disablePlugin(this.checked, 'plg28');
+
+                            <div id="pgiswatermark">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">Watermark
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Add a custom text as a watermark to your PDF documents and web links." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right">
+                                        <input type="checkbox" @isset($plugins['has_watermark']) checked @endif id="iswatermark" name="has_watermark" onchange="disablePlugin(this.checked, 'plg28');
                         " value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+                                <div id="watermark_div" class="row mb-2" @if(isset($plugins['has_watermark']) && $plugins['has_watermark']=='1' ) style="display: block;" @else style="display:none;" @endif>
+                                    <label class="control-label col-md-3 w-auto">Watermark text</label>
+                                    <div class="col-md-3">
+                                        <input type="text" maxlength="25" @isset($plugins['watermark_text']) value="{{$plugins['watermark_text']}}" @else value="DRAFT" @endif class="form-control" id="watermark_text" name="watermark_text">
+                                    </div>
                                 </div>
                             </div>
-                            <div id="watermark_div" class="row mb-2" @if(isset($plugins['has_watermark']) && $plugins['has_watermark']=='1' ) style="display: block;" @else style="display:none;" @endif>
-                                <label class="control-label col-md-3 w-auto">Watermark text</label>
-                                <div class="col-md-3">
-                                    <input type="text" maxlength="25" @isset($plugins['watermark_text']) value="{{$plugins['watermark_text']}}" @else value="DRAFT" @endif class="form-control" id="watermark_text" name="watermark_text">
-                                </div>
-                            </div>
-                        </div>
 
 
 
-                        <div id="pgisrevision" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font">Revision history&nbsp;</span>
-                                <div class="pull-right">
-                                    <input type="checkbox" @isset($plugins['save_revision_history']) checked @endif id="isrevision" onchange="disablePlugin(this.checked, 'plg22');" name="is_revision" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                            <div id="pgisrevision">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">Revision history&nbsp;
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Maintain a revision history of all changes made to your invoice." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right">
+                                        <input type="checkbox" @isset($plugins['save_revision_history']) checked @endif id="isrevision" onchange="disablePlugin(this.checked, 'plg22');" name="is_revision" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="pginvoiceoutput" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font"> License available&nbsp; </span>
-                                <div class="pull-right ml-1">
-                                <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                            <div id="pginvoiceoutput">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font"> AIA license available
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Switch this toggle ON if you have a valid AIA license. This will create invoices with the AIA logo and format." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="pginvoiceoutput" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font"> Include stored materials from previous invoices </span>
-                                <div class="pull-right ml-1">
-                                <input type="checkbox" @isset($plugins['include_store_materials']) checked @endif name="include_store_materials" id="plgincludestorematerials" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                            <div id="pginvoiceoutput">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font"> Stored materials inclusion
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="To include stored materials in ''from previous application'' switch this toggle to On." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['include_store_materials']) checked @endif name="include_store_materials" id="plgincludestorematerials" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
+                            <!--
                         <div id="pgissignature" >
                             <hr>
                             <div class="mb-2">
@@ -231,117 +253,226 @@
                                 </div>
                                 <a href="/merchant/profile/digitalsignature/iframe" class="iframe btn btn-sm green pull-right"> Digital signature </a>
                             </div>
-                        </div>
+                        </div>-->
 
-                        <div id="pgispartial" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font">Partial payment</span>
-                                <div class="pull-right">
-                                    <input type="checkbox" @isset($plugins['has_partial']) checked @endif id="ispartial" name="is_partial" onchange="disablePlugin(this.checked, 'plg13');
+                            <div id="pgispartial">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">Partial payment
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Enable logging part payments. Personalize and set the minimum amount for partial payments as per your requirements." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right">
+                                        <input type="checkbox" @isset($plugins['has_partial']) checked @endif id="ispartial" name="is_partial" onchange="disablePlugin(this.checked, 'plg13');
                         showDebit('partial');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+                                <div id="min_partial_payment_div" class="row mb-2" @if(isset($plugins['has_partial']) && $plugins['has_partial']=='1' ) style="display: block;" @else style="display:none;" @endif>
+                                    <label class="control-label col-md-3 w-auto">Minimum partial amount</label>
+                                    <div class="col-md-3">
+                                        <input type="number" step="0.01" min="50" @isset($plugins['partial_min_amount']) value="{{$plugins['partial_min_amount']}}" @else value="50" @endif class="form-control" id="pma" name="partial_min_amount">
+                                    </div>
                                 </div>
                             </div>
-                            <div id="min_partial_payment_div" class="row mb-2" @if(isset($plugins['has_partial']) && $plugins['has_partial']=='1' ) style="display: block;" @else style="display:none;" @endif>
-                                <label class="control-label col-md-3 w-auto">Minimum partial amount</label>
-                                <div class="col-md-3">
-                                    <input type="number" step="0.01" min="50" @isset($plugins['partial_min_amount']) value="{{$plugins['partial_min_amount']}}" @else value="50" @endif class="form-control" id="pma" name="partial_min_amount">
+
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <div >
+                                <div class="mb-2 desk">
+                                    <span class="form-section base-font">Covering note 
+                                        
+                                    <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Send emails with a covering note. Invoices will be sent as a PDF attachment." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+
+                                    <div class=" pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['has_covering_note']) checked @endif id="iscovering" name="is_covering" onchange="disablePlugin(this.checked, 'plg10');
+                        showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+
+                                <div id="pgiscovering" @isset($plugins['has_covering_note']) @else style="display: none;" @endif class="row mb-2">
+                                    <label class="control-label col-md-3 w-auto">Select covering note</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="covering_select" name="default_covering">
+                                            <option value="0">Select Template</option>
+                                            @if(!empty($coveringNotes))
+                                            @foreach($coveringNotes as $v)
+                                            <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v->covering_id) selected @endif @endif value="{{$v->covering_id}}">{{$v->template_name}}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
+                                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right ">Add new note </a>
                                 </div>
                             </div>
+
+
+                            <div  class="">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">CC Emails
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Automate email notifications to internal or external parties when invoices are created & sent. Enable the CC Emails plugin to send a copy of your invoices." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['has_cc']) checked @endif id="iscc" name="is_cc" onchange="disablePlugin(this.checked, 'plg4'); showDebit('cc');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+
+                                    </div>
+
+                                </div>
+                                <div id="pgiscc" @isset($plugins['has_cc']) @else style="display: none;" @endif>
+                                <div   style="max-width: 500px;">
+                                <a onclick="AddCC(); tableHead('new_cc');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
+
+                                    <table id="t_new_cc" class="table table-bordered table-hover">
+                                        <thead id="h_new_cc" style="display: none;">
+                                            <tr>
+                                                <th class="td-c  default-font">
+                                                    Email
+                                                </th>
+
+                                                <th class="td-c">
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="new_cc">
+
+                                            @if(!empty($plugins['cc_email']))
+                                            @foreach($plugins['cc_email'] as $v)
+                                            <tr>
+                                                <td>
+                                                    <div class="input-icon right"><input type="email" value="{{$v}}" name="cc[]" class="form-control input-sm" placeholder="Add email"></div>
+                                                </td>
+                                                <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_cc');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>
+                                            </tr>
+                                            @endforeach
+                                            @endif
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </div>
+
+                            </div>
+
+                            <div >
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">Customize reminder schedule 
+                                    <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Customize the schedule of invoice due reminders sent to your customers via email." type="button">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </span>
+
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['has_custom_reminder']) checked @endif id="iscustreminder" name="is_custom_reminder" onchange="disablePlugin(this.checked, 'plg12');
+                        showDebit('custreminder');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                    
+
+                                </div>
+                                    <div id="pgiscustreminder" @isset($plugins['has_custom_reminder']) @else style="display: none;" @endif>
+                                    <a onclick="AddReminder2();
+                    tableHead('new_reminder');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
+                                        <table id="t_new_reminder" class="table table-bordered table-hover">
+                                            <thead id="h_new_reminder">
+                                                <tr>
+                                                    <th class="td-c  default-font" style="width: 200px;">
+                                                        Days before due date
+                                                    </th>
+                                                    <th class="td-c  default-font">
+                                                        Reminder email subject
+                                                    </th>
+                                                    <th class="td-c" style="width: 50px;">
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="new_reminder">
+                                                @if(!empty($plugins['reminders']))
+                                                @foreach($plugins['reminders'] as $day=>$r)
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="number" name="reminder[]" value="{{$day}}" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @else
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="number" name="reminder[]" value="3" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="number" name="reminder[]" value="1" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="number" name="reminder[]" value="0" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            </div>
+
                         </div>
 
                     </div>
-                    <div class="tab-pane" id="tab2">
-                        <div id="pgiscovering" >
-                            <div class="mb-2 desk">
-                                <span class="form-section base-font">Covering note </span>
+                </form>
 
-                                <div class=" pull-right ml-1">
-                                    <input type="checkbox" @isset($plugins['has_covering_note']) checked @endif id="iscovering" name="is_covering" onchange="disablePlugin(this.checked, 'plg10');
-                        showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                </div>
-
-                                <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
-                                <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right ">Add new note </a>
-
-                            </div>
-                            <div class="mb-2 mobile">
-                                <span class="form-section base-font">Covering note </span>
-
-                                <div class="pull-right ml-1">
-                                    <input type="checkbox" @isset($plugins['has_covering_note']) checked @endif id="iscovering" name="is_covering" onchange="disablePlugin(this.checked, 'plg10');
-                        showDebit('covering');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                </div>
-                                <div class="mt-1">
-                                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green  ">Add new note </a>
-
-                                    <a href="/merchant/coveringnote/dynamicvariable" class=" btn btn-sm mb-1 green">Dynamic variables </a>
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <label class="control-label col-md-3 w-auto">Select covering note</label>
-                                <div class="col-md-4">
-                                    <select class="form-control" id="covering_select" name="default_covering">
-                                        <option value="0">Select Template</option>
-                                        @if(!empty($coveringNotes))
-                                        @foreach($coveringNotes as $v)
-                                        <option @isset($plugins['default_covering_note']) @if($plugins['default_covering_note']==$v['covering_id']) selected @endif @endif value="{{$v['covering_id']}}">{{$v['template_name']}}</option>
-                                        @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div id="pgiscc" class="" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font">CC Emails</span>
-                                <div class="pull-right ml-1">
-                                    <input type="checkbox" @isset($plugins['has_cc']) checked @endif id="iscc" name="is_cc" onchange="disablePlugin(this.checked, 'plg4'); showDebit('cc');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-
-                                </div>
-                                <a onclick="AddCC(); tableHead('new_cc');" class="btn btn-sm green pull-right"> <i class="fa fa-plus"> </i> Add new row </a>
-
-                            </div>
-                            <div style="max-width: 500px;">
-                                <table id="t_new_cc" class="table table-bordered table-hover">
-                                    <thead id="h_new_cc" style="display: none;">
-                                        <tr>
-                                            <th class="td-c  default-font">
-                                                Email
-                                            </th>
-
-                                            <th class="td-c">
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="new_cc">
-
-                                        @if(!empty($plugins['cc_email']))
-                                        @foreach($plugins['cc_email'] as $v)
-                                        <tr>
-                                            <td>
-                                                <div class="input-icon right"><input type="email" value="{{$v}}" name="cc[]" class="form-control input-sm" placeholder="Add email"></div>
-                                            </td>
-                                            <td><a href="javascript:;" onclick="$(this).closest('tr').remove();tableHead('new_cc');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>
-                                        </tr>
-                                        @endforeach
-                                        @endif
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                        </div>
-                        
-                    </div>
-                    
-                </div>
-            </form>
-            
 
 
 
@@ -452,7 +583,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                         <h4 class="modal-title">Add new document</h4>
                     </div>
-                    <form action="/merchant/coveringnote/save" method="post"  class="form-horizontal form-row-sepe">
+                    <form action="/merchant/coveringnote/save" method="post" class="form-horizontal form-row-sepe">
                         <div class="form-body">
                             <!-- Start profile details -->
                             <div class="row">
@@ -555,3 +686,50 @@
             })
         </script>
     </div>
+    @section('footer')
+    <script src="/assets/global/plugins/summernote/summernote.min.js"></script>
+
+            <script>
+                $('.tncrich').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ol', 'ul', 'paragraph', 'height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'hr']],
+                        ['view', ['undo', 'redo', 'codeview']]
+                    ],
+                    callbacks: {
+                        onKeydown: function(e) {
+                            var t = e.currentTarget.innerText;
+                            if (t.trim().length >= 5000) {
+                                //delete keys, arrow keys, copy, cut
+                                if (e.keyCode != 8 && !(e.keyCode >= 37 && e.keyCode <= 40) && e.keyCode != 46 && !(e.keyCode == 88 && e.ctrlKey) && !(e.keyCode == 67 && e.ctrlKey))
+                                    e.preventDefault();
+                            }
+                        },
+                        onKeyup: function(e) {
+                            var t = e.currentTarget.innerText;
+                            $('#maxContentPost').text(5000 - t.trim().length);
+                        },
+                        onPaste: function(e) {
+                            var t = e.currentTarget.innerText;
+                            var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                            e.preventDefault();
+                            var maxPaste = bufferText.length;
+                            if (t.length + bufferText.length > 5000) {
+                                maxPaste = 5000 - t.length;
+                            }
+                            if (maxPaste > 0) {
+                                document.execCommand('insertText', false, bufferText.substring(0, maxPaste));
+                            }
+                            $('#maxContentPost').text(5000 - t.length);
+                        }
+                    }
+                });
+            </script>
+            @endsection

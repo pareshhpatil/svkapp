@@ -119,8 +119,6 @@ class SubUserController extends AppController
         $rules = [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
-            'mob_country_code' => 'required|max:6',
-            'mobile' => 'required|max:12',
             'role' => 'required',
         ];
 
@@ -525,9 +523,13 @@ class SubUserController extends AppController
                     ]);
             }
 
-            return redirect()->back()->with('success', 'Privileges set for user successfully!');
+            return response()->json([
+                'success' => true
+            ]);
         } catch (\Exception $exception) {
-            return redirect()->back()->with('error', 'Something went wrong!');
+            return response()->json([
+                'success' => false
+            ]);
         }
     }
 
