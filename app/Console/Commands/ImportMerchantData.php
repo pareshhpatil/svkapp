@@ -44,25 +44,24 @@ class ImportMerchantData extends Command
      */
     public function handle()
     {
-        $array = [];
         $this->model = new MigrateModel();
         $this->merchant_id = $this->argument('merchant_id');
         $merchant = $this->model->getTableRow('merchant', 'merchant_id', $this->merchant_id);
         $this->user_id = $merchant->user_id;
-        //$this->saveCustomer();
-        //$this->saveInvoiceNumber();
-        //$this->saveProject();
-        //$this->saveBillCode();
-        //$this->saveCostType();
-        //$this->saveTemplate();
-        //$this->saveMetadata();
-        //$this->saveFunctionMapping();
-        //$this->saveContract();
-        //$this->saveChangeOrder();
-        //$this->saveBillingCycle();
-        //$this->saveInvoice();
-        //$this->saveAttachments();
-        //$this->saveColumnValues();
+        $this->saveCustomer();
+        $this->saveInvoiceNumber();
+        $this->saveProject();
+        $this->saveBillCode();
+        $this->saveCostType();
+        $this->saveTemplate();
+        $this->saveMetadata();
+        $this->saveFunctionMapping();
+        $this->saveContract();
+        $this->saveChangeOrder();
+        $this->saveBillingCycle();
+        $this->saveInvoice();
+        $this->saveAttachments();
+        $this->saveColumnValues();
         $this->saveInvoiceParticular();
 
 
