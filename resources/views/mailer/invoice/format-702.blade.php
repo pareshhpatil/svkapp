@@ -119,8 +119,8 @@ body{
                         @endif
 
                     </table>
-                    <div style="font-size:15px;margin-top: 10px; text-align: left; font-weight: 600; color: #000">APPLICATION AND CERTIFICATE FOR PAYMENT</div>
-                    <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827;margin-bottom: 10px;"></div>
+                    <div style="font-size:15px;margin-top: 2px; text-align: left; font-weight: 600; color: #000">APPLICATION AND CERTIFICATE FOR PAYMENT</div>
+                    <div style="margin-top: 3px; height: 2px; width: 100%; background-color: #111827;margin-bottom: 2px;"></div>
                     <div>
                         <table width="100%">
                             <tr>
