@@ -129,9 +129,28 @@
         width: auto;
     }
 
+    .form-group-rule-engine-value {
+        margin: 5px 10px 5px 5px;
+    }
+
+    .form-group-rule-engine-value .input-group-addon {
+        min-width: 30px;
+        padding: 0 7px;
+    }
+
     .rule-engine-value {
-        width: 60px;
-        margin: 5px 10px;
+        width: 140px  !important;
+        margin: 0;
+        min-width: 140px !important;
+        font-size: 14px;
+        font-weight: 400;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        box-shadow: none;
+        padding: 6px 12px;
+        height: 34px;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     }
 
     .custom-show {
@@ -144,6 +163,12 @@
 
     .select2-selection__rendered {
         min-height: 32px;
+    }
+
+    .rule-engine-value-format {
+        padding: 5px 5px 0 5px;
+        color: #333;
+        margin-bottom: 5px;
     }
 
     @media (max-width: 767px) {
@@ -174,165 +199,188 @@
     }
 </style>
 <div class="panel-wrap" id="panelWrapPrivileges">
-        <div class="panel">
-            <div>
-                <h3 class="modal-title">
-                    Set Privileges for <span id="panel-user-name"></span>
-                    <a class="close " data-toggle="modal"  onclick="closePrivilegesDrawer()">
-                        <button type="button" class="close" aria-hidden="true"></button>
+    <div class="panel">
+        <div>
+            <h3 class="modal-title">
+                Set Privileges for <span id="panel-user-name"></span>
+                {{-- <button type="button" class="close close-privileges-drawer" aria-hidden="true">Cancel</button> --}}
+                <a class="close close-privileges-drawer" data-toggle="modal">
+                    <button type="button" class="close" aria-hidden="true"></button>
+                </a>
+            </h3>
+
+        </div>
+
+        <div style="margin-top: 30px;">
+            <ul id="privileges-tab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">
+                        <span class="desc">Customer</span>
                     </a>
-                </h3>
+                </li>
+                <li>
+                    <a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">
+                        <span class="desc">Project</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">
+                        <span class="desc">Contract</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab4" data-toggle="tab" class="step" aria-expanded="true">
+                        <span class="desc">Invoice</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab5" data-toggle="tab" class="step" aria-expanded="true">
+                        <span class="desc">Change Order</span>
+                    </a>
+                </li>
+            </ul>
 
-            </div>
-
-            <div style="margin-top: 30px;">
-                <ul id="privileges-tab" class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">
-                            <span class="desc">Customer</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">
-                            <span class="desc">Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">
-                            <span class="desc">Contract</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tab4" data-toggle="tab" class="step" aria-expanded="true">
-                            <span class="desc">Invoice</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tab5" data-toggle="tab" class="step" aria-expanded="true">
-                            <span class="desc">Change Order</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <form method="post" action="/merchant/subusers/privileges" class="privileges-form form" onsubmit="loader();" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" class="panel-user-id">
-                    <div class="tab-content" style="margin-top: 30px">
-                        <div class="tab-pane active" id="tab1">
-                            <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
-                                <div class="form-group">
-                                    <label for="select-customer">Select Customer</label>
-                                    <select class="form-control select2-customer">
-                                    </select>
-                                    <input type="hidden" name="customers_privileges">
-                                </div>
-                                <div class="customer-array"></div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                                                <button type="button" class="btn blue save-btn">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            <form method="post" action="/merchant/subusers/privileges" class="privileges-form form" onsubmit="loader();" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="user_id" class="panel-user-id">
+                <div class="tab-content" style="margin-top: 30px">
+                    <div class="tab-pane active" id="tab1">
+                        <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
+                            <div class="form-group">
+                                <label for="select-customer">Select Customer</label>
+                                <select class="form-control select2-customer">
+                                </select>
+                                <input type="hidden" name="customers_privileges">
                             </div>
-                        </div>
-                        <div class="tab-pane" id="tab2">
-                            <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
-                                <div class="form-group">
-                                    <label for="select-project" style="display: block">Select Project</label>
-                                    <select class="form-control select2-project" style="width: 100%; display: block">
-                                    </select>
-                                    <input type="hidden" name="projects_privileges">
-                                </div>
-                                <div class="project-array"></div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                                                <button type="button" class="btn blue save-btn">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab3">
-                            <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
-                                <div class="form-group">
-                                    <label for="select-customer" style="display: block">Select Contract</label>
-                                    <select class="form-control select2-contract" style="width: 100%; display: block">
-                                    </select>
-                                    <input type="hidden" name="contracts_privileges">
-                                </div>
-                                <div class="contract-array"></div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                                                <button type="button" class="btn blue save-btn">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab4">
-                            <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
-                                <div class="form-group">
-                                    <label for="select-customer" style="display: block">Select Invoice</label>
-                                    <select class="form-control select2-invoice" style="width: 100%; display: block">
-                                    </select>
-                                    <input type="hidden" name="invoices_privileges">
-                                </div>
-                                <div class="invoice-array"></div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                                                <button type="button" class="btn blue save-btn">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab5">
-                            <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
-                                <div class="form-group">
-                                    <label for="select-customer" style="display: block">Select Change Order</label>
-                                    <select class="form-control select2-change-order" style="width: 100%; display: block">
-                                    </select>
-                                    <input type="hidden" name="change_orders_privileges">
-                                </div>
-                                <div class="change-order-array"></div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="pull-right">
-                                                <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button>
-                                                <button type="button" class="btn blue save-btn">Save</button>
-                                            </div>
+                            <div class="customer-array"></div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                            <button type="button" class="btn blue save-btn">Save</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="tab-pane" id="tab2">
+                        <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
+                            <div class="form-group">
+                                <label for="select-project" style="display: block">Select Project</label>
+                                <select class="form-control select2-project" style="width: 100%; display: block">
+                                </select>
+                                <input type="hidden" name="projects_privileges">
+                            </div>
+                            <div class="project-array"></div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                            <button type="button" class="btn blue save-btn">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab3">
+                        <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
+                            <div class="form-group">
+                                <label for="select-customer" style="display: block">Select Contract</label>
+                                <select class="form-control select2-contract" style="width: 100%; display: block">
+                                </select>
+                                <input type="hidden" name="contracts_privileges">
+                            </div>
+                            <div class="contract-array"></div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                            <button type="button" class="btn blue save-btn">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab4">
+                        <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
+                            <div class="form-group">
+                                <label for="select-customer" style="display: block">Select Invoice</label>
+                                <select class="form-control select2-invoice" style="width: 100%; display: block">
+                                </select>
+                                <input type="hidden" name="invoices_privileges">
+                            </div>
+                            <div class="invoice-array"></div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                            <button type="button" class="btn blue save-btn">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab5">
+                        <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
+                            <div class="form-group">
+                                <label for="select-customer" style="display: block">Select Change Order</label>
+                                <select class="form-control select2-change-order" style="width: 100%; display: block">
+                                </select>
+                                <input type="hidden" name="change_orders_privileges">
+                            </div>
+                            <div class="change-order-array"></div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            {{-- <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button> --}}
+                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                            <button type="button" class="btn blue save-btn">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- Delete Access Row Modal -->
+<div class="modal fade" id="delete-privilege-row-modal" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Privileges</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you would like to delete this access?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirm-delete-privileges-btn" data-id="" data-type="" class="btn delete">Confirm</button>
+            </div>
+        </div>
+        <!-- modal-content -->
+    </div>
+    <!-- modal-dialog -->
+</div>
     <script>
-        function closePrivilegesDrawer() {
-            document.getElementById("panelWrapPrivileges").style.boxShadow = "none";
-            document.getElementById("panelWrapPrivileges").style.transform = "translateX(100%)";
-        }
+        // function closePrivilegesDrawer() {
+        //     document.getElementById("panelWrapPrivileges").style.boxShadow = "none";
+        //     document.getElementById("panelWrapPrivileges").style.transform = "translateX(100%)";
+        // }
 
         $(document).ready(function() {
             let privilegesFormWrap = $('.privileges-form');
@@ -353,6 +401,23 @@
             let changeOrderValArr = [];
             let userID;
             let userName;
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $(document).on("click", ".close-privileges-drawer", function() {
+                customerValArr = [];
+                projectValArr = [];
+                contractValArr = [];
+                invoiceValArr = [];
+                changeOrderValArr = [];
+
+                document.getElementById("panelWrapPrivileges").style.boxShadow = "none";
+                document.getElementById("panelWrapPrivileges").style.transform = "translateX(100%)";
+            });
 
             $(document).on("click",".open-privileges-drawer-btn",function() {
                 let panelWrap =  document.getElementById("panelWrapPrivileges");
@@ -387,16 +452,6 @@
 
                             let rule_engine = [];
 
-                            // if(hasRuleEngine) {
-                            //     rule_engine = [
-                            //         {
-                            //             query_name: 'grand_total',
-                            //             query_model: 'payment_request',
-                            //             query_operator: ruleEngine[0].query_operator,
-                            //             query_value: ruleEngine[0].query_value
-                            //         }
-                            //     ]
-                            // }
                             let html = accessHTML(el.type_label, el.access, i, 'customer', hasRuleEngine, ruleEngine);
                             customerValArr.push({
                                 value: el.type_id,
@@ -419,25 +474,6 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            // let rule_engine = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ];
-
-                            // if(hasRuleEngine) {
-                            //     rule_engine = [
-                            //         {
-                            //             query_name: 'grand_total',
-                            //             query_model: 'payment_request',
-                            //             query_operator: ruleEngine[0].query_operator,
-                            //             query_value: ruleEngine[0].query_value
-                            //         }
-                            //     ]
-                            // }
 
                             let html = accessHTML(el.type_label, el.access, i, 'project', hasRuleEngine, ruleEngine);
 
@@ -462,25 +498,6 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            // let rule_engine = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ];
-
-                            // if(hasRuleEngine) {
-                            //     rule_engine = [
-                            //         {
-                            //             query_name: 'grand_total',
-                            //             query_model: 'payment_request',
-                            //             query_operator: ruleEngine[0].query_operator,
-                            //             query_value: ruleEngine[0].query_value
-                            //         }
-                            //     ]
-                            // }
 
                             let html = accessHTML(el.type_label, el.access, i, 'contract', hasRuleEngine, ruleEngine);
                             contractValArr.push({
@@ -504,24 +521,6 @@
                             if(ruleEngine) {
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
-                            // let rule_engine = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: ''
-                            //     }
-                            // ]
-                            // if(hasRuleEngine) {
-                            //     rule_engine = [
-                            //         {
-                            //             query_name: 'grand_total',
-                            //             query_model: 'payment_request',
-                            //             query_operator: ruleEngine[0].query_operator,
-                            //             query_value: ruleEngine[0].query_value
-                            //         }
-                            //     ]
-                            // }
 
                             let html = accessHTML(el.type_label, el.access, i, 'invoice', hasRuleEngine, ruleEngine);
                             invoiceValArr.push({
@@ -546,25 +545,6 @@
                                 hasRuleEngine = ruleEngine.length > 0;
                             }
 
-                            // let rule_engine = [
-                            //     {
-                            //         query_name: 'total_change_order_amount',
-                            //         query_model: 'change_order',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
-                            //
-                            // if(hasRuleEngine) {
-                            //     rule_engine = [
-                            //         {
-                            //             query_name: 'total_change_order_amount',
-                            //             query_model: 'change_order',
-                            //             query_operator: ruleEngine[0].query_operator,
-                            //             query_value: ruleEngine[0].query_value
-                            //         }
-                            //     ]
-                            // }
                             let html = accessHTML(el.type_label, el.access, i, 'change-order', hasRuleEngine, ruleEngine);
                             changeOrderValArr.push({
                                 value: el.type_id,
@@ -590,8 +570,31 @@
                 privilegesFormWrap.find('[name="invoices_privileges"]').val(JSON.stringify(invoiceValArr));
                 privilegesFormWrap.find('[name="change_orders_privileges"]').val(JSON.stringify(changeOrderValArr));
 
-                privilegesFormWrap.submit();
-            })
+                // privilegesFormWrap.submit();
+
+                let data = {
+                    'user_id': privilegesFormWrap.find("input.panel-user-id").val(),
+                    'customers_privileges': JSON.stringify(customerValArr),
+                    'projects_privileges': JSON.stringify(projectValArr),
+                    'contracts_privileges': JSON.stringify(contractValArr),
+                    'invoices_privileges': JSON.stringify(invoiceValArr),
+                    'change_orders_privileges': JSON.stringify(changeOrderValArr),
+                };
+                
+                loader();
+
+                $.ajax({
+                    url: '/merchant/subusers/privileges',
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        if(response.success == true) {
+                            window.location.reload();
+                        }
+
+                    }
+                });
+            });
 
             select2Customer.select2({
                 placeholder: "search customer...",
@@ -627,14 +630,6 @@
             select2Customer.on('select2:select', function (e) {
                 let selected = select2Customer.find(':selected');
                 let customerValArrLength = customerValArr.length;
-                // let rule_engine = [
-                //     {
-                //         query_name: 'grand_total',
-                //         query_model: 'payment_request',
-                //         query_operator: '',
-                //         query_value: '',
-                //     }
-                // ];
 
                 let rule_engine = [];
 
@@ -694,15 +689,6 @@
                     access: 'full',
                     rule_engine_query: rule_engine
                 });
-
-                // let rule_engine = [
-                //     {
-                //         query_name: 'grand_total',
-                //         query_model: 'payment_request',
-                //         query_operator: '',
-                //         query_value: '',
-                //     }
-                // ];
 
                 let html = accessHTML(selected[0].text, 'full', projectValArrLength, 'project', false, rule_engine);
 
@@ -866,7 +852,7 @@
                 let privilegesType = $(this).attr('data-type');
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
-
+                console.log(val, privilegesType);
                 switch (privilegesType) {
                     case 'customer':
                         if(val === 'full' || val === 'approve') {
@@ -880,14 +866,6 @@
                             $('#customer-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#customer-rule-engine-'+privilegesID).addClass('custom-hide');
                             customerValArr[privilegesID].rule_engine_query = [];
-                            // customerValArr[privilegesID].rule_engine_query = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
                         }
                         customerValArr[privilegesID].access = val;
                         break;
@@ -904,14 +882,6 @@
                             $('#project-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#project-rule-engine-'+privilegesID).addClass('custom-hide');
                             projectValArr[privilegesID].rule_engine_query = [];
-                            // projectValArr[privilegesID].rule_engine_query = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
                         }
                         projectValArr[privilegesID].access = val;
                         break;
@@ -927,14 +897,6 @@
                             $('#contract-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#contract-rule-engine-'+privilegesID).addClass('custom-hide');
                             contractValArr[privilegesID].rule_engine_query = [];
-                            // contractValArr[privilegesID].rule_engine_query = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
                         }
                         contractValArr[privilegesID].access = val;
                         break;
@@ -950,14 +912,6 @@
                             $('#invoice-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#invoice-rule-engine-'+privilegesID).addClass('custom-hide');
                             invoiceValArr[privilegesID].rule_engine_query = [];
-                            // invoiceValArr[privilegesID].rule_engine_query = [
-                            //     {
-                            //         query_name: 'grand_total',
-                            //         query_model: 'payment_request',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
                         }
 
                         invoiceValArr[privilegesID].access = val;
@@ -974,23 +928,19 @@
                             $('#change-order-rule-engine-'+privilegesID).removeClass('custom-show');
                             $('#change-order-rule-engine-'+privilegesID).addClass('custom-hide');
                             changeOrderValArr[privilegesID].rule_engine_query = [];
-                            // changeOrderValArr[privilegesID].rule_engine_query = [
-                            //     {
-                            //         query_name: 'total_change_order_amount',
-                            //         query_model: 'change_order',
-                            //         query_operator: '',
-                            //         query_value: '',
-                            //     }
-                            // ]
                         }
                         changeOrderValArr[privilegesID].access = val;
                         break;
                 }
             });
 
-            $(document).on("click", ".delete-privilege-access", function() {
+            $(document).on("click", "#confirm-delete-privileges-btn", function() {
                 let privilegesType = $(this).attr('data-type');
                 let privilegesIndex = $(this).attr('data-id');
+                let privilegesDeleteModal = $('#delete-privilege-row-modal');
+
+                //hide modal
+                privilegesDeleteModal.modal('hide');
 
                 switch (privilegesType) {
                     case 'customer':
@@ -998,11 +948,11 @@
                         customerArrayHTML.empty();
                         customerValArr.forEach((el, i) => {
                             let hasRuleEngine = false;
-
+                
                             if(el.rule_engine_query) {
                                 hasRuleEngine = el.rule_engine_query.length > 0;
                             }
-
+                
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
@@ -1011,7 +961,7 @@
                                     query_value: '',
                                 }
                             ];
-
+                
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
@@ -1022,22 +972,21 @@
                                     }
                                 ]
                             }
-
+                
                             let html = accessHTML(el.label, el.access, i, 'customer', hasRuleEngine, rule_engine);
                             customerArrayHTML.append(html);
                         });
                         break;
                     case 'project':
                         projectValArr.splice(privilegesIndex, 1);
-                        // $("#project-access-item-"+privilegesIndex).remove();
                         projectArrayHTML.empty();
                         projectValArr.forEach((el, i) => {
                             let hasRuleEngine = false;
-
+                
                             if(el.rule_engine_query) {
                                 hasRuleEngine = el.rule_engine_query.length > 0;
                             }
-
+                
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
@@ -1046,7 +995,7 @@
                                     query_value: '',
                                 }
                             ];
-
+                
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
@@ -1057,7 +1006,7 @@
                                     }
                                 ]
                             }
-
+                
                             let html = accessHTML(el.label, el.access, i, 'project', hasRuleEngine, rule_engine);
                             projectArrayHTML.append(html);
                         });
@@ -1067,11 +1016,11 @@
                         contractArrayHTML.empty();
                         contractValArr.forEach((el, i) => {
                             let hasRuleEngine = false;
-
+                
                             if(el.rule_engine_query) {
                                 hasRuleEngine = el.rule_engine_query.length > 0;
                             }
-
+                
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
@@ -1080,7 +1029,7 @@
                                     query_value: '',
                                 }
                             ];
-
+                
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
@@ -1091,7 +1040,7 @@
                                     }
                                 ]
                             }
-
+                
                             let html = accessHTML(el.label, el.access, i, 'contract', hasRuleEngine, rule_engine);
                             contractArrayHTML.append(html);
                         });
@@ -1101,11 +1050,11 @@
                         invoiceArrayHTML.empty();
                         invoiceValArr.forEach((el, i) => {
                             let hasRuleEngine = false;
-
+                
                             if(el.rule_engine_query) {
                                 hasRuleEngine = el.rule_engine_query.length > 0;
                             }
-
+                
                             let rule_engine = [
                                 {
                                     query_name: 'grand_total',
@@ -1114,7 +1063,7 @@
                                     query_value: '',
                                 }
                             ];
-
+                
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
@@ -1125,7 +1074,7 @@
                                     }
                                 ]
                             }
-
+                
                             let html = accessHTML(el.label, el.access, i, 'invoice', hasRuleEngine, rule_engine);
                             invoiceArrayHTML.append(html);
                         });
@@ -1135,11 +1084,11 @@
                         changeOrderArrayHTML.empty();
                         changeOrderValArr.forEach((el, i) => {
                             let hasRuleEngine = false;
-
+                
                             if(el.rule_engine_query) {
                                 hasRuleEngine = el.rule_engine_query.length > 0;
                             }
-
+                
                             let rule_engine = [
                                 {
                                     query_name: 'total_change_order_amount',
@@ -1148,7 +1097,7 @@
                                     query_value: '',
                                 }
                             ];
-
+                
                             if(hasRuleEngine) {
                                 rule_engine = [
                                     {
@@ -1166,11 +1115,22 @@
                 }
             });
 
+            $(document).on("click", ".delete-privilege-access", function() {
+                let privilegesType = $(this).attr('data-type');
+                let privilegesIndex = $(this).attr('data-id');
+                let privilegesDeleteModal = $('#delete-privilege-row-modal');
+
+                privilegesDeleteModal.modal('show');
+
+                privilegesDeleteModal.find('#confirm-delete-privileges-btn').attr('data-id', privilegesIndex);
+                privilegesDeleteModal.find('#confirm-delete-privileges-btn').attr('data-type', privilegesType);
+            });
+
             $(document).on("click", ".add-rule-engine-btn",function() {
                 let val = $(this).val();
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
-                console.log(privilegesID, type, customerValArr);
+
                 switch (type) {
                     case 'customer':
                         $('#customer-rule-engine-'+privilegesID).removeClass('custom-hide');
@@ -1249,10 +1209,14 @@
                 let privilegesID = $(this).attr('data-id');
                 let type = $(this).attr('data-type');
 
-                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide');
-                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').addClass('custom-show');
-                $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show');
-                $('#'+type+'-rule-engine-'+privilegesID).addClass('custom-hide');
+                $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn').removeClass('custom-hide').addClass('custom-show');
+                // $('#'+type+'-access-item-'+privilegesID).find('.add-rule-engine-btn');
+                $('#'+type+'-rule-engine-'+privilegesID).removeClass('custom-show').addClass('custom-hide');
+                // $('#'+type+'-rule-engine-'+privilegesID);
+
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide').addClass('show');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').val('');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('show').addClass('hide');
 
                 switch(type) {
                     case 'customer':
@@ -1393,6 +1357,28 @@
 
             });
 
+            $(document).on("blur", ".rule-engine-value", function() {
+                let val = $(this).val();
+                let privilegesID = $(this).attr('data-id');
+                let type = $(this).attr('data-type');
+
+                if(val > 0) {
+                    $(this).addClass('hide');
+                    $(this).removeClass('show');
+                    
+                    $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').removeClass('hide').addClass('show');
+                    $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value-format').text(updateTextView1(val));
+                }
+            })
+
+            $(document).on("click", ".rule-engine-value-format", function() {
+                $(this).addClass('hide');
+                $(this).removeClass('show');
+                let privilegesID = $(this).attr('data-id');
+                let type = $(this).attr('data-type');
+                $('#'+type+'-access-item-'+privilegesID).find('.rule-engine-value').removeClass('hide').addClass('show');
+            })
+
             function accessHTML(label, privileges = '', index, type, hasRuleEngine, rule_engine = []) {
                 return `<div id="${type}-access-item-${index}" class="privileges-access-row">
 <div class="privileges-access-item">
@@ -1414,10 +1400,6 @@ ${addRuleBtn(type, privileges, hasRuleEngine, index)}
 ${showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine[0])}
 </div>`;
             }
-
-            // function approveHTML(privileges) {
-            //     return `<option value="approve" ${privileges === 'approve' ? 'selected' : ''}>Approve</option>`
-            // }
 
             function showRuleEngineHTML(type, privileges, index, hasRuleEngine, rule_engine) {
                 return `<div class="rule-engine-row ${hasRuleEngine ? 'custom-show' : 'custom-hide'}" id="${type}-rule-engine-${index}">
@@ -1480,9 +1462,19 @@ ${ruleEngineValue(rule_engine?.query_value, index, type)}
             function ruleEngineValue(queryValue, index, type) {
                 let html = '';
                 if(queryValue) {
-                    html = `<input type="number" name="rule-engine-value" value="${queryValue}" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">`;
+                    html = `<div class="form-group form-group-rule-engine-value">
+                        <div class="input-group">
+                            <p class="rule-engine-value-format show" data-id="${index}" data-type="${type}">${updateTextView1(queryValue)}</p>
+                            <input type="number" name="rule-engine-value" value="${queryValue}" class="rule-engine-value hide" data-id="${index}" data-type="${type}">
+                        </div>
+                    </div>`;
                 } else {
-                    html = `<input type="number" name="rule-engine-value" class="rule-engine-value form-control" data-id="${index}" data-type="${type}">`;
+                    html = `<div class="form-group form-group-rule-engine-value">
+                        <div class="input-group">
+                            <p class="rule-engine-value-format hide" data-id="${index}" data-type="${type}">${queryValue}</p>
+                            <input type="number" name="rule-engine-value" class="rule-engine-value show" data-id="${index}" data-type="${type}">
+                        </div>
+                    </div>`;
                 }
                 return html;
             }

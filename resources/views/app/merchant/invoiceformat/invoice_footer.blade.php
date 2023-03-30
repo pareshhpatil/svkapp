@@ -120,83 +120,54 @@ $validate=(array)$validate;
 @endif
 <div class="row no-margin">
     <div class="col-md-12 mt-1">
-        @if($info['payment_request_status']==11 || $info['payment_request_status']==14)
-
-        <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
-            @csrf
+        @if($info['payment_request_status']==11)
+        <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             <div class="col-md-4 pull-left btn-pl-0">
-                @if($invoice_access == 'full')
                 <div class="input-icon">
                     <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
                     <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
                 </div>
-                @endif
 
             </div>
             <input type="hidden" name="payment_request_id" value="{{$info['payment_request_id']}}" />
             <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
-            <input type="hidden" name="payment_request_status" value="{{$info['payment_request_status']}}" />
-
+            <input type="hidden" id="preview_invoice_status" name="payment_request_status" value="{{$info->payment_request_status??0}}" />
+                    
             <div class="view-footer-btn-rht-align">
-                @if(!empty($invoice_access))
-                    @if ($invoice_access != 'view-only')
-                        @if($info['payment_request_status'] == 14 && ($invoice_access == 'full' || $invoice_access == 'approve'))
-                        <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                        @elseif($invoice_access == 'full')
-                        @if($info['notify_patron'] == 1)
-                        <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                        @else
-                        <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                        @endif
-                        {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                        @elseif($info['payment_request_status'] == 14 && $invoice_access == 'edit')
-                        <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                        @elseif($info['payment_request_status'] != 14)
-                        <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                        @endif
-                    @endif
 
-                {{-- @if($info['notify_patron']==1 && $info['invoice_access'] == 'all-full')--}}
-                {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                {{-- @else--}}
-                {{-- <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                {{-- @endif--}}
+                @if($info['notify_patron']==1)
+                <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
+                @else
+                <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
                 @endif
             </div>
         </form>
         @endif
-        @if($info['payment_request_status']!=11 && $info['payment_request_status']!=14)
+        @if($info['payment_request_status']!=11)
         @if($info['grand_total']>1)
         @if($info['invoice_type']==2)
         @if($info['payment_request_status']!=6)
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#convert">
             Convert to Invoice
         </a>
-        @if($invoice_access == 'full' || $invoice_access == 'approve')
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#settleestimate">
             Settle
         </a>
         @endif
-        @endif
         @else
-        @if($invoice_access == 'full' || $invoice_access == 'approve')
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
             Settle
         </a>
         @endif
         @endif
         @endif
-        @endif
         @if($info['payment_request_status']!=6 && $info['payment_request_status']!=7)
-        @if($invoice_access == 'full' || $invoice_access == 'edit' || $invoice_access == 'approve')
         <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
 
             <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$info['Url']}}">
                 Update @if($info['invoice_type']==1) invoice @else estimate @endif
             </a>
         </div>
-        @endif
         @endif
         @if($info['payment_request_status']!=11)
         @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file'] ==1)
@@ -993,45 +964,7 @@ Print<i class="fa fa-print"></i>
         $("#is_partial_field").val('1');
         $("#respond-form").submit();
     }
-
-    $(function() {
-        let invoicePreviewForm = $('.invoice-preview-form');
-        $("#subbtn").on("click", function() {
-            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
-            paymentRequestStatus.val(14);
-            invoicePreviewForm.submit();
-        })
-
-        $("#saveandsendbtn").on("click", function() {
-            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
-            // let notifyPatronStatus = invoicePreviewForm.find('input[name=notify_patron]');
-            paymentRequestStatus.val(0);
-            // notifyPatronStatus.val(1);
-            invoicePreviewForm.submit();
-        })
-
-        $("#approvebtn").on("click", function() {
-            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
-            paymentRequestStatus.val(0);
-            invoicePreviewForm.submit();
-        })
-    })
 </script>
-@if($has_watermark)
-<script>
-    var offsetHeight = document.getElementById('main_div').offsetHeight;
-    intervalHeight = Math.round(offsetHeight/500);
-    for(let i=1;i<=intervalHeight;i++){
-        divID= Math.random();
-        let clone = document.querySelector('#watermark_div').cloneNode(true);
-        clone.setAttribute('id', 'watermark_div' + divID);
-        document.querySelector('#watermark_parent').appendChild(clone);
-        newElement  = document.getElementById('watermark_div'+divID)
-        pixels  = 1000*i;
-        newElement.style.paddingTop = pixels+"px";
-    }    
-</script>
-@endif
 <style>
     .swipez-draft-btn {
         color: #611818;

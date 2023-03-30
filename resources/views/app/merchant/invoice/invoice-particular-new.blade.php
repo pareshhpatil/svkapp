@@ -355,7 +355,7 @@
                                                                     @else
                                                                         @if($dropdown==false)
                                                                             <span x-show="field.txt{{$k}}">
-                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false; @if($k=='retainage_percent') calculateRetainageAmount(field); @endif @if($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount(field); @endif  calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
+                                        <input :id="`{{$k}}${field.pint}`" @if($readonly==true) type="hidden" @else type="text" x-on:blur="field.txt{{$k}} = false; @if($k=='retainage_percent') calculateRetainageAmount(field); @endif @if($k=='retainage_amount_for_this_draw') field.retainage_amount_change=true; @endif  @if($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount(field); @endif  calc(field);" @endif x-model.lazy="field.{{$k}}" value="" name="{{$k}}[]" style="width: 100%;" class="form-control input-sm ">
                                     </span>
                                                                         @endif
                                                                     @endif
@@ -622,6 +622,7 @@
                     contract_code: '{{$contract_code}}',
                     project_code : '{{$project_code}}',
                     project_id : '{{$project_id}}',
+                    particular_type : '{{$type}}',
                     goAhead: true,
                     fields : JSON.parse('{!! $particularJson !!}'),
                     bill_codes : JSON.parse('{!! $billcodeJson !!}'),
@@ -1211,15 +1212,25 @@
                                             field.current_stored_materials = updateTextView1(getamt(field.current_stored_materials));
                                         } catch (o) {}
 
+                                        
+
+                                        if(field.retainage_amount_change || this.particular_type==2)
+                                        {
                                         if(getamt(field.current_billed_amount)>0)
                                         {
                                             try {
-                                            field.retainage_percent =  getamt(field.retainage_amount_for_this_draw)  * 100 / getamt(field.current_billed_amount) ;
+                                            field.retainage_percent =  updateTextView1(getamt(field.retainage_amount_for_this_draw)  * 100 / getamt(field.current_billed_amount)) ;
                                         } catch (o) {}
                                         }else{
                                             field.retainage_amount_for_this_draw='';
                                             field.retainage_percent='';
                                         }
+                                    }else
+                                    {
+                                        try {
+                                            field.retainage_amount_for_this_draw =  updateTextView1(getamt(field.current_billed_amount)  *  getamt(field.retainage_percent) /100) ;
+                                        } catch (o) {}
+                                    }
 
                                         
 
@@ -1242,7 +1253,7 @@
                                 if(getamt(field.current_stored_materials)>0)
                                 {
                                     try {
-                                    field.retainage_percent_stored_materials =  getamt(field.retainage_amount_stored_materials)  * 100 / getamt(field.current_stored_materials) ;
+                                    field.retainage_percent_stored_materials =  updateTextView1(getamt(field.retainage_amount_stored_materials)  * 100 / getamt(field.current_stored_materials)) ;
                                 } catch (o) {}
                                 }else{
                                     field.retainage_amount_stored_materials='';

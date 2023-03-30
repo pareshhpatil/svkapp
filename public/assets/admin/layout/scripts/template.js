@@ -387,6 +387,13 @@ function AddReminder() {
     mainDiv.appendChild(newDiv);
 }
 
+function AddReminder2() {
+    var mainDiv = document.getElementById('new_reminder');
+    var newDiv = document.createElement('tr');
+    newDiv.innerHTML = '<td><div class="input-icon right"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject"></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
+    mainDiv.appendChild(newDiv);
+}
+
 function showDebit(id) {
     if ($('#is' + id).is(':checked')) {
         $("#" + id + "div").slideDown(500).fadeIn();
@@ -1746,6 +1753,24 @@ function disablePlugin(val, id) {
     }
     else if (val == false && id == "plg28") {
         $("#watermark_div").hide();
+    }
+    else if (val == false && id == "plg12") {
+        $("#pgiscustreminder").hide();
+    }
+    else if (val == true && id == "plg12") {
+        $("#pgiscustreminder").show();
+    }
+    else if (val == false && id == "plg4") {
+        $("#pgiscc").hide();
+    }
+    else if (val == true && id == "plg4") {
+        $("#pgiscc").show();
+    }
+    else if (val == false && id == "plg10") {
+        $("#pgiscovering").hide();
+    }
+    else if (val == true && id == "plg10") {
+        $("#pgiscovering").show();
     }
 
 }

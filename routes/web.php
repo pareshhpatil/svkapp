@@ -172,7 +172,7 @@ Route::post('/merchant/registersave', 'GettingStarted@merchantRegister');
   return view('home/index');
   });
  */
-Route::get('merchant/invoice/download/full/{link}', 'InvoiceController@downloadFullInvoiceV2');
+Route::get('merchant/invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
 
 Route::post('/autocollect/subscription/payment', 'AutocollectController@paymentstatus');
 
@@ -346,11 +346,13 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('einvoice/cancel/{id}',  'EinvoiceController@canceleInvoice');
   Route::get('einvoice/errors/{id}',  'EinvoiceController@errorseInvoice');
 
+  //code refactor routes 
+  Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
 
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
-  Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703_v2');
+  Route::get('invoice/viewg703/{link}', 'InvoiceController@view_g703');
   Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
   Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/document/{link}', 'InvoiceController@documents');
@@ -364,9 +366,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('invoice/bulkview/{link}', 'InvoiceController@bulkview');
 
-  Route::get('invoice/download/{link}', 'InvoiceController@downloadV2');
-  Route::get('invoice/download/{link}/{id}', 'InvoiceController@downloadV2');
-  Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@downloadV2');
+  Route::get('invoice/download/{link}', 'InvoiceController@download');
+  Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
+  Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
 
   Route::get('invoiceformat/choose-design/{from}/{link}', 'InvoiceFormatController@chooseDesign')->name('choose.design.invoiceformat');
   Route::get('invoiceformat/choose-color/{from}/{design}/{color}/{link}', 'InvoiceFormatController@chooseColor')->name('choose.color.invoiceformat');
@@ -518,6 +520,8 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/reportlink/{payment_request_id}', 'PaymentLinkController@reportLink');
   Route::post('paymentlink/reportthankyou', 'PaymentLinkController@reportUnsubscribe');
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
+  //code refactor 
+  Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');

@@ -123,4 +123,5 @@
         <!-- modal-dialog -->
     </div>
     @include('app.merchant.subuser.privileges-modal')
+    <script src="/assets/admin/layout/scripts/invoiceformat.js?version=1665065805" type="text/javascript"></script>
 @endsection
