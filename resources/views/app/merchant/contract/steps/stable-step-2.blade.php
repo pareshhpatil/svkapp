@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="table-scrollable tableFixHead">
-                <table class="table table-bordered table-hover sorted_table" id="particular_table">
+                <table class="table table-bordered table-hover" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
 
@@ -1297,20 +1297,4 @@
         }
     </script>
 </div>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script>
-        $(function() {
-            $(".sorted_table tbody").sortable({
-                handle: '.handle',
-                helper: fixWidthHelper
-            })
-
-            function fixWidthHelper(e, ui) {
-                ui.children().each(function() {
-                    $(this).width($(this).width());
-                });
-                return ui;
-            }
-        })
-    </script>
 
