@@ -3056,6 +3056,8 @@ class InvoiceController extends AppController
         } else {
             $isFirstInvoice = true;
         }
+		
+		$isFirstInvoice = true;
 
         if ($isFirstInvoice == false) {
             $previousInvoiceParticulars = [];
@@ -3499,6 +3501,7 @@ class InvoiceController extends AppController
             $retainage_amount_stored_materials = 0;
             $retainage_release_amount = 0;
             $retainage_stored_materials_release_amount = 0;
+			$data['isFirstInvoice']=true;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -3764,6 +3767,7 @@ class InvoiceController extends AppController
 
     public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
+		$isFirstInvoice = true;
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -3808,6 +3812,7 @@ class InvoiceController extends AppController
             $attach_count = 0;
             $sub_key = '';
             $footer_sub_key = '';
+			$isFirstInvoice = true;
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -4515,6 +4520,7 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
+            $type=1;
             $particulars = json_decode($contract->particulars);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
@@ -4660,6 +4666,7 @@ class InvoiceController extends AppController
                 }
             }
         } else {
+            $type=2;
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
                 $total = $total + $particulars[$k]['net_billed_amount'];
@@ -4702,8 +4709,8 @@ class InvoiceController extends AppController
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
+        $data['type'] = $type;
         $data['button'] = 'Save';
-        $data['mode'] = 'create';
         $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;

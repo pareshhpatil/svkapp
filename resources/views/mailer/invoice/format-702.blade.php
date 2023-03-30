@@ -69,7 +69,7 @@ body{
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0px;
     @if($has_aia_license)
-    line-height: 93%;
+    line-height: 92%;
     @else
     line-height: 100%;
     @endif
