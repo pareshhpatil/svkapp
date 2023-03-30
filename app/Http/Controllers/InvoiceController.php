@@ -3474,7 +3474,7 @@ class InvoiceController extends AppController
         }
         $tnc = str_replace('&lt;', '<', $info['tnc']);
         $tnc = str_replace('&gt;', '>', $tnc);
-        $info["absolute_cost"] = $info['absolute_cost'] - $info['paid_amount'];
+        $info["absolute_cost"] = $info['absolute_cost'] ;
         if (isset($plugin['roundoff'])) {
             if ($plugin['roundoff'] == 1) {
                 $info["absolute_cost"] = round($info["absolute_cost"], 0);
