@@ -171,11 +171,9 @@
 </script>
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
-
-
         {{-- 702 Part  --}}
         <div id="link_to_702">
-            @include('mailer.invoice.format-702');
+            @include('mailer.invoice.format-702')
         </div>
     </div>
     <div class="page-break"></div>
