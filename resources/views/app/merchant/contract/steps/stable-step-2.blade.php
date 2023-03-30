@@ -125,22 +125,17 @@
                                      class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                         @switch($column)
                                             @case('bill_code')
-                                                <div style="display: flex">
-                                                    <span class="handle">
-                                                        <i class="fa fa-arrows"></i>
-                                                    </span>
-                                                    <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
-                                                                                        <span x-show="! field.show{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
-                                                                                <span style="width:86%;" x-show="field.show{{$k}}">
-                                                                                    <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
-                                                                                </span>
-    
-                                                    <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
-                                                    <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
-                                                    <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
-                                                    <div class="text-center" style="display: none;">
-                                                        <p :id="`description-hidden${field.introw}`" x-text="field.description"></p>
-                                                    </div>
+                                                <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
+                                                                                    <span x-show="! field.show{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
+                                                                            <span style="width:86%;" x-show="field.show{{$k}}">
+                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                                            </span>
+
+                                                <input type="hidden" name="calculated_perc[]" x-model="field.calculated_perc" :id="`calculated_perc${field.introw}`">
+                                                <input type="hidden" name="calculated_row[]" x-model="field.calculated_row" :id="`calculated_row${field.introw}`">
+                                                <input type="hidden" name="description[]"  x-value="field.description" :id="`description${field.introw}`">
+                                                <div class="text-center" style="display: none;">
+                                                    <p :id="`description-hidden${field.introw}`" x-text="field.description"></p>
                                                 </div>
                                             @break
 
