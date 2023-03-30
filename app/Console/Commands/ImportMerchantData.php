@@ -120,7 +120,7 @@ class ImportMerchantData extends Command
         foreach ($data as $k => $row) {
             $row['merchant_id'] = $this->merchant_id;
             $row['customer_id'] = $customer[$row['customer_id']]['customer_id'];
-            $row['sequence_number'] = $merchant_auto_invoice_number[$row['sequence_number']]['auto_invoice_id'];
+            $row['sequence_number'] = (isset($merchant_auto_invoice_number[$row['sequence_number']]['auto_invoice_id'])) ? $merchant_auto_invoice_number[$row['sequence_number']]['auto_invoice_id'] : 0;
             $row['created_by'] = $this->user_id;
             $row['last_update_by'] = $this->user_id;
             unset($row[$id_column]);
