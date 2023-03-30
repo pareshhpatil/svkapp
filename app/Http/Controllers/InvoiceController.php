@@ -997,12 +997,12 @@ class InvoiceController extends AppController
             }
 
             $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
-           $data["total_earned_less_retain"] = 0;
+            $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $data['total_retainage']), $currency_icon);
+            $data["total_previously_billed_amount"] = 0;
             if (isset($project_details)) {
-                $info["total_earned_less_retain"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
+                $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
             }
-            $data['total_previously_billed_amount'] =    $this->formatInvoiceValues($construction_details['previously_billed_amount'], $currency_icon);
-
+           
             //get grand total
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
             $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
@@ -3056,8 +3056,8 @@ class InvoiceController extends AppController
         } else {
             $isFirstInvoice = true;
         }
-		
-		$isFirstInvoice = true;
+
+        $isFirstInvoice = true;
 
         if ($isFirstInvoice == false) {
             $previousInvoiceParticulars = [];
@@ -3501,7 +3501,7 @@ class InvoiceController extends AppController
             $retainage_amount_stored_materials = 0;
             $retainage_release_amount = 0;
             $retainage_stored_materials_release_amount = 0;
-			$data['isFirstInvoice']=true;
+            $data['isFirstInvoice'] = true;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -3767,7 +3767,7 @@ class InvoiceController extends AppController
 
     public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
-		$isFirstInvoice = true;
+        $isFirstInvoice = true;
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -3812,7 +3812,7 @@ class InvoiceController extends AppController
             $attach_count = 0;
             $sub_key = '';
             $footer_sub_key = '';
-			$isFirstInvoice = true;
+            $isFirstInvoice = true;
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -4520,7 +4520,7 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
-            $type=1;
+            $type = 1;
             $particulars = json_decode($contract->particulars);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
@@ -4666,7 +4666,7 @@ class InvoiceController extends AppController
                 }
             }
         } else {
-            $type=2;
+            $type = 2;
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
                 $total = $total + $particulars[$k]['net_billed_amount'];
