@@ -1302,7 +1302,6 @@ class InvoiceController extends AppController
             #get default billing profile
 
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
-
             $userRole = Session::get('user_role');
             $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
@@ -4886,5 +4885,140 @@ class InvoiceController extends AppController
             $info =  $this->invoiceModel->getInvoiceDetails($payment_request_id);
             return response()->json($this->apiController->APIResponse('', $info), 200);
         }
+    }
+
+    public function view703($link,Request $request) {
+        $payment_request_id = Encrypt::decode($link);
+        $notificationID = $request->get('notification_id');
+        
+        if (strlen($payment_request_id) == 10) {
+            $data = Helpers::setBladeProperties('Invoice', ['contract', 'template', 'invoiceformat'], [5, 28]);
+            $data['gtype'] = '703';
+            $userRole = Session::get('user_role');
+            $invoice_Data = $this->setCommonDataForViews($payment_request_id,$userRole);
+            $data=array_merge($data,$invoice_Data);
+
+            if (!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+                $Notification->markAsRead();
+            }
+
+            $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
+            $particular_details = json_decode($particular_details, 1);
+            $int=0;
+            if(!empty($particular_details)) {
+                foreach($particular_details as $ck=>$val) {
+                    //dd($val);
+                    if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
+                        //show details without subgroup, total, bill code
+                        $particularRows[$val['group']][$int] = $val;
+                        $particularRows[$val['group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
+                        $particularRows[$val['group']][$int]['g_per'] = $particularRows[$val['group']][$int]['total_completed']/$val['current_contract_amount'];
+                        $particularRows[$val['group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']][$int]['total_completed'];
+                    } else if(!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
+                        //check here for subgroup
+                        if($val['sub_group']!='') {
+                            $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
+                            if(in_array($val['sub_group'],$groups[$val['group']]['subgroup'])) {
+                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $val;
+                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
+                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['g_per'] = $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed']/$val['current_contract_amount'];
+                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed'];
+                            }
+                        } else {
+                            $groups[$val['group']][$val['group']] = $val['group']; 
+                            if(in_array($val['group'],$groups[$val['group']])) {
+                                $particularRows[$val['group']][$int] = $val;
+                                $particularRows[$val['group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
+                                $particularRows[$val['group']][$int]['g_per'] = $particularRows[$val['group']][$int]['total_completed']/$val['current_contract_amount'];
+                                $particularRows[$val['group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']][$int]['total_completed'];
+                            }
+                        }
+                    } else {
+                        //show all details without group , subgroup , total
+                        //$particularRows[$int] = $val;
+
+                    }
+                    $int++;
+                }
+            }
+            //dd($particularRows);
+            $data['particularRows'] = $particularRows;
+            return view('app/merchant/invoice/G703/index', $data);
+        } else {
+        }
+    }
+
+    public function setCommonDataForViews($payment_request_id=null,$userRole){
+        $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
+            
+        if (!isset($payment_request_data->payment_request_status)) {
+            return redirect('/error/invalidlink');
+        }
+        //get currecy icon
+        $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
+        
+        $data['payment_request_status'] = $payment_request_data->payment_request_status;
+        $data['absolute_cost'] = $payment_request_data->absolute_cost;
+        $data['invoice_type'] = $payment_request_data->invoice_type;
+        $data["url"] =  Encrypt::encode($payment_request_id);
+        if (substr($payment_request_data->invoice_number, 0, 16) == 'System generated') {
+            $invoice_number = $this->invoiceModel->getAutoInvoiceNo(substr($payment_request_data->invoice_number, 16));
+        }
+        $data['invoice_number'] = $invoice_number;
+        $data['payment_request_id'] = $payment_request_data->payment_request_id;
+        $data['notify_patron'] = $payment_request_data->notify_patron;
+        $data['payment_request_type'] = $payment_request_data->payment_request_type;
+        $data['user_name'] = Session::get('user_name');
+        $data['invoice_total'] = $payment_request_data->invoice_total;
+        $data["surcharge_amount"] = 0;
+        $data['document_url'] = $payment_request_data->document_url;
+        $data['bill_date'] = $payment_request_data->bill_date;
+
+        $plugins = json_decode($payment_request_data->plugin_value, 1);
+        $hasAIALicense = false;
+        if (isset($plugins['has_aia_license'])) {
+            $hasAIALicense = true;
+        }
+        $data['has_aia_license'] = $hasAIALicense;
+
+        $has_watermark = false;
+        $data['watermark_text'] = '';
+        if (isset($plugins['has_watermark'])) {
+            if ($plugins['has_watermark'] == 1) {
+                $has_watermark = true;
+                $data['watermark_text'] = $plugins['watermark_text'];
+            }
+        }
+        $data['has_watermark'] = $has_watermark;
+        $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
+        $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
+        $data['project_details'] =  $project_details;
+        
+        $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
+        $data['user_type'] = 'merchant';
+
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+        $hasAccess = false;
+        if ($userRole == 'Admin') {
+            $hasAccess = true;
+        } else {
+            if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                $hasAccess = true;
+            }
+            if (in_array($project_details->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                $hasAccess = true;
+            }
+        }
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
+
+        return $data;
+        
     }
 }

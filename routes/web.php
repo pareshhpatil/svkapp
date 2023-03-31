@@ -348,7 +348,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //code refactor routes 
   Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
-
+  Route::get('invoice/view/703/{link}', 'InvoiceController@view703');
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
