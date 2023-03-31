@@ -209,7 +209,7 @@
 
                                                 <tbody>
                                                 <template x-for="(field, index) in fields" :key="index">
-                                                    <tr>
+                                                    <tr :id="`${index}`">
                                                         @foreach($particular_column as $k=>$v)
                                                             @php $readonly=false; @endphp
                                                             @php $disable=false; @endphp
@@ -225,9 +225,7 @@
                                                                     @php $dropdown=true; @endphp
                                                                 @endif
                                                                 <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
-
                                                                     @if($k=='bill_code')
-
                                                                         <div style="display:flex;">
                                                                             <span class="handle">
                                                                                 <i class="fa fa-arrows"></i>
@@ -444,6 +442,7 @@
                     </tfoot>
                 </table>
             </div>
+                                        <button type="button" id="update-fields-pos" class="update-fields-pos" @click="updateSortPoss()">ddddd</button>
         </div>
     </div>
     @include('app.merchant.contract.add-group-modal')
@@ -482,7 +481,7 @@
                 </div>
             </div>
         </div>
-
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script>
             /* $(document).ready(function () {
                  particularsDropdowns(0, this.fields);
@@ -542,7 +541,11 @@
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
             var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
             var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
-            function initializeParticulars(){
+            let prevIndex = '';
+            let currIndex = '';
+            let hangoutButton = document.getElementById("update-fields-pos");
+            
+            function initializeParticulars() {
                 this.initializeDropdowns();
                 this.calculateTotal();
                 $('.tableFixHead').css('max-height', screen.height/2);
@@ -550,7 +553,51 @@
                 {
                     this.calc(this.fields[p]);
                 }
-                        
+
+
+                $(".sorted_table tbody").sortable({
+                    handle: '.handle',
+                    helper: fixWidthHelper,
+                    start: function(e, ui) {
+                        let current = ui.item[0];
+
+                        // console.log(current.id);
+                        // creates a temporary attribute on the element with the old index
+                        // credits to this answer
+                        // $(this).attr('data-previndex', ui.item.index());
+                        prevIndex = current.id;
+                        // prevIndex = ui.item.index();
+                        // prevIndex = ui.item.attr('id');
+                    },
+                    update:function(ev, ui){
+                        currIndex = ui.item[0].nextElementSibling.id;
+                        // let prevPosElement = ui.item[0].previousElementSibling;
+                        // console.log(prevIndex, currIndex);
+                        // particularray[newPosElement] = prevIndex;
+                        // particularray[prevIndex] = newPosElement;
+                        // Alpine.store('handler_create').fields = [];
+
+                        hangoutButton.click();
+                        // handler_create().updateSortPos(prevIndex, currIndex);
+
+                        // console.log(ui.item[0].previousElementSibling);
+                    },
+                    stop: function(event, ui) {
+                        // console.log(ui.item);
+                        // let index = ui.item.index();
+                        // console.log(index, ui.item);
+                        // console.log(particularray);
+                    }
+                })
+
+
+            }
+
+            function fixWidthHelper(e, ui) {
+                ui.children().each(function() {
+                    $(this).width($(this).width());
+                });
+                return ui;
             }
 
             function initSelect2(){
@@ -648,6 +695,36 @@
                     addbuttonactive:true,
                     cost_bill_code:null,
                     cost_cost_type:null,
+
+                    updateSortPoss() {
+                        this.fields = this.moveElement(this.fields, prevIndex, currIndex);
+
+                        //update pint and sort order
+                        this.fields.map((field, i) => {
+                            field.pint = i;
+                            field.sort_order = i;
+
+                            return field;
+                        })
+
+                        particularray = this.moveElement(particularray, prevIndex, currIndex);
+
+                        //update pint and sort order
+                        particularray.map((item, i) => {
+                            item.pint = i;
+                            item.sort_order = i;
+
+                            return item;
+                        })
+                    },
+
+                    moveElement(array, fromIndex, toIndex) {
+                        const element = array.splice(fromIndex, 1)[0];
+
+                        array.splice(toIndex, 0, element);
+
+                        return array;
+                    },
 
                     addNewBillCode(){
                         var data = $("#billcodeform").serialize();
@@ -2291,22 +2368,6 @@
         <!-- /.modal-dialog -->
     </div>
 
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script>
-        $(function() {
-            $(".sorted_table tbody").sortable({
-                handle: '.handle',
-                helper: fixWidthHelper
-            })
-
-            function fixWidthHelper(e, ui) {
-                ui.children().each(function() {
-                    $(this).width($(this).width());
-                });
-                return ui;
-            }
-        })
-    </script>
     <style>
         .table-bordered {
             border: 1px solid #dddddd;

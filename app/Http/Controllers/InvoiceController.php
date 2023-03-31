@@ -1295,6 +1295,7 @@ class InvoiceController extends AppController
     public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+
         $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
@@ -3428,6 +3429,7 @@ class InvoiceController extends AppController
             }
         } else if ($info['template_type'] == 'construction') {
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data['isFirstInvoice'] = true;
@@ -4288,6 +4290,7 @@ class InvoiceController extends AppController
                     $data['original_contract_amount'] = $request->original_contract_amount[$k];
                     $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
                     $data['pint'] = $request->pint[$k];
+                    $data['sort_order'] = $request->pint[$k];
                     $data['current_contract_amount'] = $request->current_contract_amount[$k];
                     $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
                     $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
@@ -4486,6 +4489,7 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
@@ -4509,7 +4513,8 @@ class InvoiceController extends AppController
             $billed_transactions[$k]->rate = number_format($row->rate);
             $billed_transactions[$k]->amount = number_format($row->amount);
         }
-        $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $invoice_particulars = $this->invoiceModel->getTableListOrderby('invoice_construction_particular', 'payment_request_id', $request_id, 'sort_order');
+
         $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
@@ -4522,6 +4527,7 @@ class InvoiceController extends AppController
         if ($invoice_particulars->isEmpty()) {
             $type=1;
             $particulars = json_decode($contract->particulars);
+
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
@@ -4553,6 +4559,7 @@ class InvoiceController extends AppController
                     $particulars[$key]->id = '';
                 }
             }
+
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -4658,6 +4665,7 @@ class InvoiceController extends AppController
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
+                $particulars[$k]['sort_order'] = $row['pint'];
                 if (isset($row['pint'])) {
                     $int = $row['pint'];
                 } else {

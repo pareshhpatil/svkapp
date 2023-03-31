@@ -316,6 +316,7 @@ class Invoice extends ParentModel
             ->join('csi_code', 'csi_code.id', '=', 'invoice_construction_particular.bill_code')
             ->where('payment_request_id', $payment_request_id)
             ->where('invoice_construction_particular.is_active', 1)
+            ->orderBy('sort_order')
             ->get();
         return $retObj;
     }
@@ -717,6 +718,7 @@ class Invoice extends ParentModel
             [
                 'payment_request_id' => $request_id,
                 'pint' => $data['pint'],
+                'sort_order' => $data['sort_order'],
                 'bill_code' => $data['bill_code'],
                 'description' => $data['description'],
                 'bill_type' => $data['bill_type'],
@@ -769,6 +771,7 @@ class Invoice extends ParentModel
             ->update(
                 [
                     'pint' => $data['pint'],
+                    'sort_order' => $data['sort_order'],
                     'bill_code' => $data['bill_code'],
                     'description' => $data['description'],
                     'bill_type' => $data['bill_type'],
