@@ -1935,7 +1935,7 @@ class InvoiceController extends AppController
             $info["is_online_payment"] = $is_online_payment;
             $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
             Session::put('paidMerchant_request', $paidMerchant_request);
-			
+
             $data = $this->setdataV2($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
             return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
@@ -3105,7 +3105,8 @@ class InvoiceController extends AppController
             //attache pdf
 
             if ($info['template_type'] == 'construction') {
-
+                $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
+                $info['project_name'] = $project->project_name;
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
                 if (!empty($covernote)) {
                     $subject = $this->getDynamicString($info, $covernote['subject']);
@@ -3117,9 +3118,9 @@ class InvoiceController extends AppController
                 } else {
                     $pdf_enable = 1;
                     $file = 'invoice.mail';
-                    $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
-                    $subject = $project->project_name . ' invoice';
-                    $data['project_name'] = $project->project_name;
+
+                    $subject = $info['project_name'] . ' invoice';
+                    $data['project_name'] = $info['project_name'];
                     $data['bill_date'] = Helpers::htmlDate($info['bill_date']);
                     $data['due_date'] = Helpers::htmlDate($info['due_date']);
                     $data['company_name'] = $info['company_name'];
@@ -3133,7 +3134,7 @@ class InvoiceController extends AppController
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-                Helpers::sendMail($info['customer_email'], $file, $data, $subject.' overdue by 2 days');
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject . ' overdue by 2 days');
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
@@ -3188,8 +3189,8 @@ class InvoiceController extends AppController
         } else {
             $isFirstInvoice = true;
         }
-		
-		$isFirstInvoice = true;
+
+        $isFirstInvoice = true;
 
         if ($isFirstInvoice == false) {
             $previousInvoiceParticulars = [];
@@ -3486,7 +3487,7 @@ class InvoiceController extends AppController
         }
         $tnc = str_replace('&lt;', '<', $info['tnc']);
         $tnc = str_replace('&gt;', '>', $tnc);
-        $info["absolute_cost"] = $info['absolute_cost'] ;
+        $info["absolute_cost"] = $info['absolute_cost'];
         if (isset($plugin['roundoff'])) {
             if ($plugin['roundoff'] == 1) {
                 $info["absolute_cost"] = round($info["absolute_cost"], 0);
@@ -3667,13 +3668,11 @@ class InvoiceController extends AppController
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
             }
-            if($info['retainage_amount']!='')
-            {
-                $total_retainage_amount=$info['retainage_amount'];
+            if ($info['retainage_amount'] != '') {
+                $total_retainage_amount = $info['retainage_amount'];
             }
-            if($info['retainage_store_material']!='')
-            {
-                $sumOfrasm=$info['retainage_store_material'];
+            if ($info['retainage_store_material'] != '') {
+                $sumOfrasm = $info['retainage_store_material'];
             }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
@@ -4347,7 +4346,7 @@ class InvoiceController extends AppController
             $retainage_amount_stored_materials = 0;
             $retainage_release_amount = 0;
             $retainage_stored_materials_release_amount = 0;
-			$data['isFirstInvoice']=true;
+            $data['isFirstInvoice'] = true;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -4382,13 +4381,11 @@ class InvoiceController extends AppController
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
             }
-            if($info['retainage_amount']!='')
-            {
-                $total_retainage_amount=$info['retainage_amount'];
+            if ($info['retainage_amount'] != '') {
+                $total_retainage_amount = $info['retainage_amount'];
             }
-            if($info['retainage_store_material']!='')
-            {
-                $sumOfrasm=$info['retainage_store_material'];
+            if ($info['retainage_store_material'] != '') {
+                $sumOfrasm = $info['retainage_store_material'];
             }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
@@ -4622,7 +4619,7 @@ class InvoiceController extends AppController
 
     public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
-		$isFirstInvoice = true;
+        $isFirstInvoice = true;
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -4660,7 +4657,7 @@ class InvoiceController extends AppController
             $sub_h = 0;
             $sub_i = 0;
             $attach_count = 0;
-			$isFirstInvoice=true;
+            $isFirstInvoice = true;
             foreach ($result[$names] as $data) {
 
 
@@ -4967,7 +4964,7 @@ class InvoiceController extends AppController
             $attach_count = 0;
             $sub_key = '';
             $footer_sub_key = '';
-			$isFirstInvoice = true;
+            $isFirstInvoice = true;
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -5346,8 +5343,18 @@ class InvoiceController extends AppController
                 }
             }
 
+
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
+        }
+        if (isset($request->covering_id)) {
+            if ($request->covering_id > 0) {
+                $covering_note = $this->invoiceModel->getTableRow('covering_note', 'covering_id', $request->covering_id);
+                $data = json_decode(json_encode($covering_note), 1);
+                unset($data['covering_id']);
+                $data['payment_request_id'] = $request_id;
+                $this->invoiceModel->saveCoveringNote($data);
+            }
         }
         return redirect('/merchant/invoice/particular/' . Encrypt::encode($request_id));
     }
@@ -5675,7 +5682,7 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
-            $type=1;
+            $type = 1;
             $particulars = json_decode($contract->particulars);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
@@ -5821,7 +5828,7 @@ class InvoiceController extends AppController
                 }
             }
         } else {
-            $type=2;
+            $type = 2;
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
                 $total = $total + $particulars[$k]['net_billed_amount'];

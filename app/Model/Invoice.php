@@ -143,13 +143,13 @@ class Invoice extends ParentModel
         return $retObj;
     }
 
-    public function getPreviousContractBill($merchant_id, $contract_id,$request_id)
+    public function getPreviousContractBill($merchant_id, $contract_id, $request_id)
     {
         $retObj = DB::table('payment_request')
             ->select(DB::raw('payment_request_id'))
             ->where('merchant_id', $merchant_id)
             ->where('contract_id', $contract_id)
-            ->where('payment_request_id', '<>',$request_id)
+            ->where('payment_request_id', '<>', $request_id)
             ->whereNotIn('payment_request_status', [11, 3])
             ->orderBy('payment_request_id', 'desc')
             ->first();
@@ -534,6 +534,12 @@ class Invoice extends ParentModel
 
         return $retObj;
     }
+    public function saveCoveringNote($data)
+    {
+        $id = DB::table('invoice_covering_note')->insertGetId(
+            $data
+        );
+    }
 
     public function getRevisionList($payment_request_id, $id)
     {
@@ -651,7 +657,7 @@ class Invoice extends ParentModel
 
     public function updateInvoiceDetail($request_id, $amount, $ids, $previous_amount = 0)
     {
-        $amount = (is_numeric($amount)) ? $amount : 0; 
+        $amount = (is_numeric($amount)) ? $amount : 0;
         DB::table('payment_request')->where('payment_request_id', $request_id)
             ->update([
                 'absolute_cost' => $amount - $previous_amount,
@@ -879,7 +885,7 @@ class Invoice extends ParentModel
             ->where('total_change_order_amount', $operator, 0)
             ->wherein('order_id', $ids)
             ->sum('total_change_order_amount');
-            
+
         return $sum;
     }
 
@@ -892,10 +898,11 @@ class Invoice extends ParentModel
             ]);
     }
 
-    public function getInvoiceColumnValues($payment_request_id) {
+    public function getInvoiceColumnValues($payment_request_id)
+    {
         $values = DB::table('invoice_column_values')
-                    ->where('payment_request_id', $payment_request_id)
-                    ->pluck('value')->toArray();
+            ->where('payment_request_id', $payment_request_id)
+            ->pluck('value')->toArray();
 
         return $values;
     }
@@ -909,18 +916,18 @@ class Invoice extends ParentModel
         return $retObj[0];
     }
 
-    public function getInvoiceList($merchant_id,$from_date,$to_date,$start,$limit)
+    public function getInvoiceList($merchant_id, $from_date, $to_date, $start, $limit)
     {
         $where = '';
 
-        if($limit!='') {
-            $limit = "limit ".$limit;
+        if ($limit != '') {
+            $limit = "limit " . $limit;
         }
-        if($start!='') {
-            if($start==-1) {
+        if ($start != '') {
+            if ($start == -1) {
                 $start = "offset 0";
-            }else{
-                $start = "offset ".$start;
+            } else {
+                $start = "offset " . $start;
             }
         }
 
@@ -938,7 +945,7 @@ class Invoice extends ParentModel
         AND a.is_active ='1'
         AND (expiry_date is null or expiry_date>curdate())
         ORDER BY a.created_date desc $limit $start");
-        
+
         return $retObj;
     }
 
