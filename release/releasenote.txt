@@ -6,7 +6,7 @@ ADD COLUMN `retainage_store_material` DECIMAL(11,2)  NULL DEFAULT null AFTER `re
 INSERT INTO `swipez`.`dynamic_variable` (`id`, `name`, `column_name`, `description`, `is_active`, `created_date`) VALUES ('11', '%PROJECT_NAME%', 'project_name', 'Project name', '1', '2023-04-03 14:41:31');
 INSERT INTO `swipez`.`dynamic_variable` (`id`, `name`, `column_name`, `description`, `is_active`, `created_date`) VALUES ('12', '%INVOICE_LINK%', 'viewurl', 'Invoice Link', '1', '2023-04-03 15:28:39');
 INSERT INTO `swipez`.`dynamic_variable` (`id`, `name`, `column_name`, `description`, `is_active`, `created_date`) VALUES ('12', '%INVOICE_LINK%', 'viewurl', 'Invoice Link', '1', '2023-04-03 15:28:39');
-INSERT INTO `swipez`.`dynamic_variable` (`name`, `column_name`, `description`) VALUES ('PAYABLE_AMOUNT', 'absolute_cost', 'Payable amount');
+INSERT INTO `swipez`.`dynamic_variable` (`name`, `column_name`, `description`) VALUES ('%PAYABLE_AMOUNT%', 'absolute_cost', 'Payable amount');
 
 USE `swipez`;
 DROP procedure IF EXISTS `getinvoice_details`;
