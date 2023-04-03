@@ -86,7 +86,7 @@
     <!-- Toastr css -->
     <link href="{{asset('css/toastr.css')}}" rel="stylesheet">
 
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/images/briq.ico" />
     <style>
         .bootstrap-switch .bootstrap-switch-handle-on,
         .bootstrap-switch .bootstrap-switch-handle-off,

@@ -13,7 +13,7 @@ maximum-scale=1.0, user-scalable=no" />
 <link href="/assets/admin/layout/css/movingintotailwind.css<?php echo $this->fileTime('css', 'movingintotailwind'); ?>" rel="stylesheet" type="text/css"/>
 
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="images/briq.ico"/>
 </head>
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
     <?php

@@ -24,7 +24,7 @@
         <lin href="/assets/admin/layout/css/swipezapp.min.css" rel="stylesheet" type="text/css"/>
         <link href="/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
         <link href="/assets/admin/layout/css/movingintotailwind.css?version=1630416533" rel="stylesheet" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
         <script type="text/javascript" src="/assets/admin/pages/scripts/scanqr/adapter.min.js"></script>
         <script type="text/javascript" src="/assets/admin/pages/scripts/scanqr/vue.min.js"></script>
         <script type="text/javascript" src="/assets/admin/pages/scripts/scanqr/instascan.min.js"></script>

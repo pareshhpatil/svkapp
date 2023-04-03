@@ -33,9 +33,9 @@
         <link id="style_color" href="/assets/admin/layout/css/themes/blue.css<?php echo $this->fileTime('css', 'layout'); ?>" rel="stylesheet" type="text/css"/>
         <link href="/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
         <!-- END THEME STYLES -->
-        <link rel="shortcut icon" href="favicon.ico"/>
+        <link rel="shortcut icon" href="images/briq.ico"/>
         <script src='https://www.google.com/recaptcha/api.js'></script>
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
     </head>
     <!-- END HEAD -->
     <!-- BEGIN BODY -->

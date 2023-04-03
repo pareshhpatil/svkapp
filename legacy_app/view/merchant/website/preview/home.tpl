@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>{$company_name}</title>
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/images/briq.ico" type="image/x-icon">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
         <script type="text/javascript" src="{$cloud_front}/live/js/jquery-1.9.1.min.js"></script> 

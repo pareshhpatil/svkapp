@@ -45,7 +45,7 @@
                                 var myOptions = {zoom: 15, center: new google.maps.LatLng(18.5563514, 73.8943515), mapTypeId: google.maps.MapTypeId.ROADMAP};
                                 map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
                                 marker = new google.maps.Marker({map: map, position: new google.maps.LatLng(18.5563514, 73.8943515),
-                                  // icon: '{{ config('app.APP_URL') }}favicon.ico'
+                                  // icon: '{{ config('app.APP_URL') }}images/briq.ico'
                                   // @if($logo == null)
                                   //   @if(strpos($merchant_detail->logo,'/'))
                                   //   icon: '{{ asset($merchant_detail->logo) }}'
