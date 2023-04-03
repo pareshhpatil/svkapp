@@ -605,7 +605,11 @@
                                             </span></label>
                                         <div class="col-md-7">
                                             <textarea required name="body" id="summernote" class="form-control tncrich">
-                                                <div style="text-align: center;"><span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif">Dear %CUSTOMER_NAME%,<br><br>Please find attached our invoice for the services provided to your company.<br><br>It has been a pleasure serving you. We look forward to working with you again.<br><br>If you have any questions about your invoice, please contact us by replying to this email.<br><br>Thanking You<br><br>With best regards,<br>%COMPANY_NAME%</span></div>
+                                                <div style="text-align: left;"><span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif">Dear Team,<br><br>
+							  Please find attached invoice dated : %BILL_DATE% for %PROJECT_NAME%.<br><br>
+                              This invoice for amount $%PAYABLE_AMOUNT% is due by %DUE_DATE% - %INVOICE_LINK%<br><br>
+                              In case of queries related to this invoice, please reply back to this email.
+                                <br><br>Thanking You<br><br>With best regards,<br>%COMPANY_NAME%</span></div>
                                     </textarea>
                                             <span class="help-block"></span>
                                         </div>
@@ -614,7 +618,7 @@
                                         <label class="control-label col-md-4">Mail Subject <span class="required">*
                                             </span></label>
                                         <div class="col-md-6">
-                                            <input type="text" required maxlength="100" name="subject" class="form-control" value="Payment request from %COMPANY_NAME%">
+                                            <input type="text" required maxlength="100" name="subject" class="form-control" value="%PROJECT_NAME% invoice">
                                         </div>
                                     </div>
                                     <div class="form-group">

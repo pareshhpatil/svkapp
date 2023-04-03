@@ -3151,7 +3151,9 @@ class InvoiceController extends AppController
             if ($row['name'] == '%BILL_MONTH%') {
                 $message = str_replace($row['name'], date("M-y", strtotime($info[$row['column_name']])), $message);
             } else if ($row['name'] == '%INVOICE_LINK%') {
-                $message = str_replace($row['name'], '<a href="'. $info[$row['column_name']].'">invoice link</a>', $message);
+                $message = str_replace($row['name'], '<a href="' . $info[$row['column_name']] . '">invoice link</a>', $message);
+            } else if ($row['name'] == '%PAYABLE_AMOUNT%') {
+                $message = str_replace($row['name'], number_format($info[$row['column_name']], 2), $message);
             } else {
                 $message = str_replace($row['name'], $info[$row['column_name']], $message);
             }
