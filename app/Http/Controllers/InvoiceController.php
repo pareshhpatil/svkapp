@@ -3134,7 +3134,7 @@ class InvoiceController extends AppController
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-                Helpers::sendMail($info['customer_email'], $file, $data, $subject . ' overdue by 2 days');
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject );
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
