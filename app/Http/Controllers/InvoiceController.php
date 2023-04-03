@@ -2045,10 +2045,10 @@ class InvoiceController extends AppController
 
                     $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\\pdf\\702' . $name . '.pdf'));
                     $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\pdf\\703' . $name . '.pdf'));
                 }
 
 
@@ -3107,21 +3107,33 @@ class InvoiceController extends AppController
             if ($info['template_type'] == 'construction') {
 
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
-
-                $subject = $this->getDynamicString($info, $covernote['subject']);
-                $msg = $this->getDynamicString($info, $covernote['body']);
-                $data['body'] = $msg;
-                $data['notebutton'] = $covernote['invoice_label'];
-                if ($covernote['pdf_enable'] == 1) {
+                if (!empty($covernote)) {
+                    $subject = $this->getDynamicString($info, $covernote['subject']);
+                    $msg = $this->getDynamicString($info, $covernote['body']);
+                    $data['body'] = $msg;
+                    $data['notebutton'] = $covernote['invoice_label'];
+                    $pdf_enable = $covernote['pdf_enable'];
+                    $file = 'invoice.covering-note';
+                } else {
+                    $pdf_enable = 1;
+                    $file = 'invoice.mail';
+                    $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
+                    $subject = $project->project_name . ' invoice';
+                    $data['project_name'] = $project->project_name;
+                    $data['bill_date'] = Helpers::htmlDate($info['bill_date']);
+                    $data['due_date'] = Helpers::htmlDate($info['due_date']);
+                    $data['company_name'] = $info['company_name'];
+                    $data['absolute_cost'] = number_format($info['absolute_cost'], 2);
+                    $data['invoice_link'] = $info['viewurl'];
+                }
+                if ($pdf_enable == 1) {
                     $nm = $this->download($link, 1);
-                    $attached[] = array('path' => storage_path("pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
-                    $attached[] = array('path' => storage_path("pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
-
+                    $attached[] = array('path' => storage_path("app\\pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
+                    $attached[] = array('path' => storage_path("app\\pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-
-                Helpers::sendMail($info['customer_email'], 'invoice.covering-note', $data, $subject);
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject.' overdue by 2 days');
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
