@@ -3667,6 +3667,14 @@ class InvoiceController extends AppController
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
             }
+            if($info['retainage_amount']!='')
+            {
+                $total_retainage_amount=$info['retainage_amount'];
+            }
+            if($info['retainage_store_material']!='')
+            {
+                $sumOfrasm=$info['retainage_store_material'];
+            }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
             $info['total_e'] = $sumOfe;
@@ -4373,6 +4381,14 @@ class InvoiceController extends AppController
                 } else {
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
+            }
+            if($info['retainage_amount']!='')
+            {
+                $total_retainage_amount=$info['retainage_amount'];
+            }
+            if($info['retainage_store_material']!='')
+            {
+                $sumOfrasm=$info['retainage_store_material'];
             }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
