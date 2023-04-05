@@ -11,7 +11,6 @@
             background-color: transparent !important;
         }
 
-
         .table thead tr th {
             font-size: 12px;
             padding: 3px;
@@ -138,7 +137,20 @@
             font-weight: 500 !important;
         }
 
+        .sorted_table .handle {
+            opacity: 0;
+            cursor: move;
+            position: relative;
+            top: 5px;
+        }
+        
+        .sorted_table_tr:hover  .handle {
+            opacity: 1;
+        }
 
+        #update-fields-pos {
+            opacity: 0;
+        }
     </style>
 
 
@@ -209,7 +221,7 @@
 
                                                 <tbody>
                                                 <template x-for="(field, index) in fields" :key="index">
-                                                    <tr :id="`${index}`">
+                                                    <tr :id="`${index}`" class="sorted_table_tr">
                                                         @foreach($particular_column as $k=>$v)
                                                             @php $readonly=false; @endphp
                                                             @php $disable=false; @endphp
@@ -228,7 +240,8 @@
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
                                                                             <span class="handle">
-                                                                                <i class="fa fa-arrows"></i>
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1"><path d="M384 64H256C220.66 64 192 92.66 192 128v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64zM768 64h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z" fill=""/></svg>
+                                                                                {{-- <i class="fa fa-arrows"></i> --}}
                                                                             </span>
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                                     <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
@@ -316,6 +329,7 @@
 
                                                                         <input :id="`id${field.pint}`" type="hidden"  x-model="field.id" name="id[]">
                                                                         <input :id="`introw${field.pint}`" type="hidden" :value="field.pint" x-model="field.pint" name="pint[]">
+                                                                        <input :id="`introw${field.sort_order}`" type="hidden" :value="field.sort_order" x-model="field.sort_order" name="sort_order[]">
                                                                         <input :id="`index${index}`" type="hidden" x-model="field.pint" name="rowindex[]">
 
 
@@ -442,7 +456,7 @@
                     </tfoot>
                 </table>
             </div>
-                                        <button type="button" id="update-fields-pos" class="update-fields-pos" @click="updateSortPoss()">ddddd</button>
+                                        <button type="button" id="update-fields-pos" class="update-fields-pos" @click="updateSortPoss()">don't display</button>
         </div>
     </div>
     @include('app.merchant.contract.add-group-modal')
@@ -560,33 +574,16 @@
                     helper: fixWidthHelper,
                     start: function(e, ui) {
                         let current = ui.item[0];
-
-                        // console.log(current.id);
-                        // creates a temporary attribute on the element with the old index
-                        // credits to this answer
-                        // $(this).attr('data-previndex', ui.item.index());
                         prevIndex = current.id;
-                        // prevIndex = ui.item.index();
-                        // prevIndex = ui.item.attr('id');
                     },
-                    update:function(ev, ui){
+                    update:function(ev, ui) {
                         currIndex = ui.item[0].nextElementSibling.id;
                         // let prevPosElement = ui.item[0].previousElementSibling;
-                        // console.log(prevIndex, currIndex);
-                        // particularray[newPosElement] = prevIndex;
-                        // particularray[prevIndex] = newPosElement;
-                        // Alpine.store('handler_create').fields = [];
 
                         hangoutButton.click();
-                        // handler_create().updateSortPos(prevIndex, currIndex);
-
-                        // console.log(ui.item[0].previousElementSibling);
                     },
                     stop: function(event, ui) {
-                        // console.log(ui.item);
-                        // let index = ui.item.index();
-                        // console.log(index, ui.item);
-                        // console.log(particularray);
+                        
                     }
                 })
 
@@ -595,7 +592,8 @@
 
             function fixWidthHelper(e, ui) {
                 ui.children().each(function() {
-                    $(this).width($(this).width());
+                    // $(this).width($(this).width());
+                    $(this).css({"background-color": "white", "min-width": $(this).width() + 10 + 'px'});
                 });
                 return ui;
             }
@@ -697,6 +695,10 @@
                     cost_cost_type:null,
 
                     updateSortPoss() {
+                        // console.log(prevIndex, currIndex, 'bnm');
+                        if(currIndex > prevIndex) {
+                            currIndex = currIndex - 1
+                        }
                         this.fields = this.moveElement(this.fields, prevIndex, currIndex);
 
                         //update pint and sort order
