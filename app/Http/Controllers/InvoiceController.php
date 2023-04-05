@@ -2304,7 +2304,7 @@ class InvoiceController extends AppController
                 define("DOMPDF_DPI", 120);
                 define("DOMPDF_ENABLE_REMOTE", true);
                 if ($info['template_type'] == 'construction') {
-                    return view('mailer.invoice.format-' . $type, $data);
+                    //return view('mailer.invoice.format-' . $type, $data);
                     $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
                     $pdf->setPaper("a4", "landscape");
                 } else {
@@ -4887,7 +4887,7 @@ class InvoiceController extends AppController
         }
     }
 
-    public function view703($link,Request $request) {
+    public function view703($link,$user_type="merchant", Request $request) {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
         
@@ -4895,7 +4895,8 @@ class InvoiceController extends AppController
             $data = Helpers::setBladeProperties('Invoice', ['contract', 'template', 'invoiceformat'], [5, 28]);
             $data['gtype'] = '703';
             $userRole = Session::get('user_role');
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole);
+            $data['user_type'] = $user_type;
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole,$user_type);
             $data=array_merge($data,$invoice_Data);
 
             if (!empty($notificationID)) {
@@ -4981,9 +4982,9 @@ class InvoiceController extends AppController
         return $data;        
     }
 
-    public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null){
+    public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null,$user_type=null){
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
-            
+
         if (!isset($payment_request_data->payment_request_status)) {
             return redirect('/error/invalidlink');
         }
@@ -5031,25 +5032,38 @@ class InvoiceController extends AppController
         $data['project_details'] =  $project_details;
         
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
-        $data['user_type'] = 'merchant';
+        $data['user_type'] = $user_type;
 
-        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-
-        $hasAccess = false;
-        if ($userRole == 'Admin') {
-            $hasAccess = true;
+        //check is online payment 
+        $fee_id = $this->invoiceModel->getmerchantfeeID($payment_request_data->merchant_id);
+        
+        if ($fee_id != false) {
+            $data['is_online_payment'] = TRUE;
         } else {
-            if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                $hasAccess = true;
-            }
-            if (in_array($project_details->contract_id, array_keys($contractPrivilegesAccessIDs))) {
-                $hasAccess = true;
-            }
+            $data['is_online_payment'] = FALSE;
         }
+        
+        if($user_type=='merchant') {
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            
+            $hasAccess = false;
+            if ($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if (in_array($project_details->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
 
-        if (!$hasAccess) {
-            return redirect('/merchant/no-permission');
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+        } else {
+            $hasAccess = true;
         }
         return $data;
     }
@@ -5104,9 +5118,12 @@ class InvoiceController extends AppController
                 } catch (Exception $o) {
                 }
             }
-
-            $particular_details = $this->get703Contents($payment_request_id);
-            $data=array_merge($data,$particular_details);
+            //refactor 703 code
+            if($type=='703') {
+                $particular_details = $this->get703Contents($payment_request_id);
+                $data=array_merge($data,$particular_details);
+            }
+            
             //dd($data);
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
@@ -5120,21 +5137,18 @@ class InvoiceController extends AppController
                 $name = str_replace('-', '', $name);
                 $name = str_replace(':', '', $name);
                 
-                $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
+                $pdf = DOMPDF::loadView('mailer.invoice.format-'.$type.'-v2', $data);
                 $pdf->setPaper("a4", "landscape");
-                $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
-                $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
-                $pdf->setPaper("a4", "landscape");
-                $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
-                
+                $pdf->save(storage_path('pdf\\'.$type . $name . '.pdf'));
+                // $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
+                // $pdf->setPaper("a4", "landscape");
+                // $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
                 return $name;
             } else {
-               
-                return view('mailer.invoice.format-' . $type.'-v2', $data);
+                //return view('mailer.invoice.format-' . $type.'-v2', $data);
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type.'-v2', $data);
                 $pdf->setPaper("a4", "landscape");
                 
-
                 $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
                 if ($savepdf == 2) {
                     return  $pdf->stream();

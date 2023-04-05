@@ -8,10 +8,10 @@
         <ul class="nav nav-tabs">
             @if($user_type!='merchant')
                 <li class="@if($gtype=='702') active @endif">
-                    <a href="/patron/invoice/view/{{$url}}/702">702</a>
+                    <a href="/patron/invoice/view/702/{{$url}}/patron">702</a>
                 </li>
                 <li class="@if($gtype=='703') active @endif">
-                    <a href="/patron/invoice/view/{{$url}}/703">703</a>
+                    <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
                 </li>
                 <li>
                     <a href="/patron/invoice/document/{{$url}}">Attached files</a>

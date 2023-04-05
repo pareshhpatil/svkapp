@@ -84,7 +84,7 @@ $header='app.patron.invoice.invoice-master';
             {
             $footers='app.merchant.invoice.view.footer-v2';}
             else{
-            $footers='app.patron.invoice.footer';}
+            $footers='app.patron.invoice.footer-v2';}
 
             @endphp
             <div class="w-full mt-1" style="max-width: 1400px">
