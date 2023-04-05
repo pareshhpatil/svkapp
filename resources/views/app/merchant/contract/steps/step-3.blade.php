@@ -242,7 +242,7 @@
                                         </span>
                                     </span>
                                     <div class="pull-right ml-1">
-                                        <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                        <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif  id="plglicenseavailable" name="has_aia_license" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                     </div>
                                 </div>
                             </div>
@@ -720,33 +720,7 @@
         </div>
 
         <!-- Customize invoice output drawer -->
-        <div class="customize-output-panel-wrap" id="panelWrapInvoiceOutput">
-            <div class="customize-output-panel">
-                <div>
-                    <h3 class="modal-title">
-                        Customize invoice views
-                        <a class="close " data-toggle="modal" onclick="closeCustomizeInvoiceOutputDrawer()">
-                            <button type="button" class="close" aria-hidden="true"></button>
-                        </a>
-                    </h3>
-
-                </div>
-
-                <div style="position: relative;margin-top: 30px;">
-                    <h4>AIA format </h4>
-                    <hr />
-                    <div class="mb-2" style="display: flex;justify-content: space-between;">
-                        <span class="form-section base-font">License available&nbsp;</span>
-                        <div>
-                            <div class="plugin-button">
-                                <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- /.Customize invoice output drawer -->
 
         <script>
