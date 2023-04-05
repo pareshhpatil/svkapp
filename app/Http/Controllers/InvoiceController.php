@@ -4290,7 +4290,7 @@ class InvoiceController extends AppController
                     $data['original_contract_amount'] = $request->original_contract_amount[$k];
                     $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
                     $data['pint'] = $request->pint[$k];
-                    $data['sort_order'] = $request->pint[$k];
+                    $data['sort_order'] = $request->sort_order[$k];
                     $data['current_contract_amount'] = $request->current_contract_amount[$k];
                     $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
                     $data['previously_billed_amount'] = $request->previously_billed_amount[$k];

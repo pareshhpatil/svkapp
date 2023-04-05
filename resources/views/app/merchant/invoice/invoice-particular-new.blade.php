@@ -150,6 +150,7 @@
 
         #update-fields-pos {
             opacity: 0;
+            visibility: hidden;
         }
     </style>
 
@@ -241,7 +242,6 @@
                                                                         <div style="display:flex;">
                                                                             <span class="handle">
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1"><path d="M384 64H256C220.66 64 192 92.66 192 128v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64zM768 64h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z" fill=""/></svg>
-                                                                                {{-- <i class="fa fa-arrows"></i> --}}
                                                                             </span>
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                                     <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
