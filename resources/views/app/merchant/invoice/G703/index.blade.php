@@ -79,10 +79,10 @@ $header='app.patron.invoice.invoice-master';
             @include('app.merchant.invoice.G703.content');
             
             @php
-            $footers='app.merchant.invoice.view.footer';
+            $footers='app.merchant.invoice.view.footer-v2';
             if($user_type=='merchant')
             {
-            $footers='app.merchant.invoice.view.footer';}
+            $footers='app.merchant.invoice.view.footer-v2';}
             else{
             $footers='app.patron.invoice.footer';}
 

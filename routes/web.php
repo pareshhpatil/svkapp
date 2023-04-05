@@ -370,6 +370,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
 
+  Route::get('invoice/download-v2/{link}/{id}/{type}','InvoiceController@download_v2');
+
   Route::get('invoiceformat/choose-design/{from}/{link}', 'InvoiceFormatController@chooseDesign')->name('choose.design.invoiceformat');
   Route::get('invoiceformat/choose-color/{from}/{design}/{color}/{link}', 'InvoiceFormatController@chooseColor')->name('choose.color.invoiceformat');
 

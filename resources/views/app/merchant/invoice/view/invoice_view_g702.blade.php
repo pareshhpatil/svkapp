@@ -256,7 +256,7 @@ $header='app.patron.invoice.invoice-master';}
                             </div>
                             <div class="text-right">
                                 <p class="font-bold text-xs border-b   border-gray-600 mt-1"> {{$info['currency_icon']}}@if($info['total_original_contract'] < 0)({{str_replace('-','',number_format($info['total_original_contract'],2))}})@else{{number_format($info['total_original_contract'],2)}}@endif</p>
-                                        <p class="font-bold text-xs border-b  border-gray-600 mt-1"> {{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif< /p>
+                                        <p class="font-bold text-xs border-b  border-gray-600 mt-1"> {{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif</p>
                                                 <p class="font-bold text-xs border-b   border-gray-600 mt-1"> {{$info['currency_icon']}}@if( $contract_sum_to_date < 0)({{str_replace('-','',number_format($contract_sum_to_date,2))}}) @else{{number_format(($contract_sum_to_date),2)}}@endif</p>
                                                         <p class="font-bold text-xs border-b   border-gray-600 mt-0.5"> {{$info['currency_icon']}}@if($info['total_g'] < 0)({{str_replace('-','',number_format($info['total_g'],2))}}) @else{{number_format($info['total_g'],2)}}@endif</p>
 
@@ -391,7 +391,7 @@ $header='app.patron.invoice.invoice-master';}
                                     <p class="text-xs">NET CHANGES by Change Order</p>
                                 </td>
                                 <td colspan="2" class=" border-collapse border border-gray-500 py-1 px-1">
-                                    <p class="text-xs text-right">{{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif< /p>
+                                    <p class="text-xs text-right">{{$info['currency_icon']}}@if(($info['last_month_co_amount']+$info['this_month_co_amount'])<0)({{str_replace('-','',number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2))}})@else{{number_format($info['last_month_co_amount']+$info['this_month_co_amount'],2)}}@endif</p>
                                 </td>
 
                             </tr>

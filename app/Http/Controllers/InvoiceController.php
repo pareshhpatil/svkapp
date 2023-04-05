@@ -1375,6 +1375,7 @@ class InvoiceController extends AppController
             }
 
             $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            //dd($data);
             return view('app/merchant/invoice/view/invoice_view_g703', $data);
         } else {
         }
@@ -2102,7 +2103,6 @@ class InvoiceController extends AppController
     }
     public function patronView703($link, $type)
     {
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -2210,7 +2210,6 @@ class InvoiceController extends AppController
 
     public function download($link, $savepdf = 0, $type = null)
     {
-
         ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
 
@@ -2274,6 +2273,7 @@ class InvoiceController extends AppController
             // }
             // die();
             // } else
+           
             if ($savepdf == 1) {
 
                 $data['viewtype'] = 'pdf';
@@ -2304,7 +2304,7 @@ class InvoiceController extends AppController
                 define("DOMPDF_DPI", 120);
                 define("DOMPDF_ENABLE_REMOTE", true);
                 if ($info['template_type'] == 'construction') {
-                    // return view('mailer.invoice.format-' . $type, $data);
+                    return view('mailer.invoice.format-' . $type, $data);
                     $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
                     $pdf->setPaper("a4", "landscape");
                 } else {
@@ -4895,7 +4895,7 @@ class InvoiceController extends AppController
             $data = Helpers::setBladeProperties('Invoice', ['contract', 'template', 'invoiceformat'], [5, 28]);
             $data['gtype'] = '703';
             $userRole = Session::get('user_role');
-            $invoice_Data = $this->setCommonDataForViews($payment_request_id,$userRole);
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole);
             $data=array_merge($data,$invoice_Data);
 
             if (!empty($notificationID)) {
@@ -4903,54 +4903,85 @@ class InvoiceController extends AppController
                 $Notification = Notification::findOrFail($notificationID);
                 $Notification->markAsRead();
             }
-
-            $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
-            $particular_details = json_decode($particular_details, 1);
-            $int=0;
-            if(!empty($particular_details)) {
-                foreach($particular_details as $ck=>$val) {
-                    //dd($val);
-                    if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
-                        //show details without subgroup, total, bill code
-                        $particularRows[$val['group']][$int] = $val;
-                        $particularRows[$val['group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
-                        $particularRows[$val['group']][$int]['g_per'] = $particularRows[$val['group']][$int]['total_completed']/$val['current_contract_amount'];
-                        $particularRows[$val['group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']][$int]['total_completed'];
-                    } else if(!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
-                        //check here for subgroup
-                        if($val['sub_group']!='') {
-                            $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
-                            if(in_array($val['sub_group'],$groups[$val['group']]['subgroup'])) {
-                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $val;
-                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
-                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['g_per'] = $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed']/$val['current_contract_amount'];
-                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int]['total_completed'];
-                            }
-                        } else {
-                            $groups[$val['group']][$val['group']] = $val['group']; 
-                            if(in_array($val['group'],$groups[$val['group']])) {
-                                $particularRows[$val['group']][$int] = $val;
-                                $particularRows[$val['group']][$int]['total_completed'] = $val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials'];
-                                $particularRows[$val['group']][$int]['g_per'] = $particularRows[$val['group']][$int]['total_completed']/$val['current_contract_amount'];
-                                $particularRows[$val['group']][$int]['balance_to_finish'] = $val['current_contract_amount'] - $particularRows[$val['group']][$int]['total_completed'];
-                            }
-                        }
-                    } else {
-                        //show all details without group , subgroup , total
-                        //$particularRows[$int] = $val;
-
-                    }
-                    $int++;
-                }
-            }
-            //dd($particularRows);
-            $data['particularRows'] = $particularRows;
+            $particular_details = $this->get703Contents($payment_request_id);
+            $data=array_merge($data,$particular_details);
             return view('app/merchant/invoice/G703/index', $data);
         } else {
         }
     }
 
-    public function setCommonDataForViews($payment_request_id=null,$userRole){
+    public function get703Contents($payment_request_id) {
+        $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
+        $particular_details = json_decode($particular_details, 1);
+        $int=0;
+        $grand_total_schedule_value=0;
+        $grand_total_previouly_billed_amt = 0;
+        $grand_total_current_billed_amt=0;
+        $grand_total_d_plus_e=0;
+        $grand_total_stored_material=0;
+        $grand_total_total_completed=0;
+        $grand_total_balance_to_finish=0;
+        $grand_total_retainge=0;
+        if(!empty($particular_details)) {
+            foreach($particular_details as $ck=>$val) {
+                //dd($val);
+                if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
+                    //show details without subgroup, total, bill code
+                    $valArray = $this->setParticularRowArray($val);
+                    $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
+                    
+                } else if(!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
+                    //check if subgroup is exist in co
+                    if($val['sub_group']!='') {
+                        $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
+                        if(in_array($val['sub_group'],$groups[$val['group']]['subgroup'])) {
+                            $valArray = $this->setParticularRowArray($val);
+                            $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
+                        }
+                    } else {
+                        $groups[$val['group']][$val['group']] = $val['group']; 
+                        if(in_array($val['group'],$groups[$val['group']])) {
+                            $valArray = $this->setParticularRowArray($val);
+                            $particularRows[$val['group']]['only-group~'][$int] = $valArray;
+                        }
+                    }
+                } else {
+                    //show all details without group , subgroup , total rows
+                    $valArray = $this->setParticularRowArray($val);
+                    $particularRows['no-group~'][$int] = $valArray;
+                }
+                
+                //calculate grand total
+                $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
+                $grand_total_previouly_billed_amt = $grand_total_previouly_billed_amt + $val['previously_billed_amount'];
+                $grand_total_d_plus_e = $grand_total_d_plus_e;
+                $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
+                $grand_total_stored_material = $grand_total_stored_material + $val['stored_materials'];
+                $grand_total_total_completed = $grand_total_total_completed + ($val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials']);
+                if($grand_total_schedule_value!=0) {
+                    $grand_total_g_per = $grand_total_total_completed/$grand_total_schedule_value;
+                }
+                $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
+                $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
+
+                $int++;
+            }
+        }
+        //dd($particularRows);
+        $data['grand_total_schedule_value'] = $grand_total_schedule_value;
+        $data['grand_total_previouly_billed_amt'] = $grand_total_previouly_billed_amt;
+        $data['grand_total_d_plus_e'] = $grand_total_d_plus_e;
+        $data['grand_total_current_billed_amt'] = $grand_total_current_billed_amt;
+        $data['grand_total_stored_material'] = $grand_total_stored_material;
+        $data['grand_total_total_completed'] = $grand_total_total_completed;
+        $data['grand_total_g_per'] = $grand_total_g_per;
+        $data['grand_total_balance_to_finish'] = $grand_total_balance_to_finish;
+        $data['grand_total_retainge']= $grand_total_retainge;
+        $data['particularRows'] = $particularRows;
+        return $data;        
+    }
+
+    public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null){
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
             
         if (!isset($payment_request_data->payment_request_status)) {
@@ -4958,13 +4989,15 @@ class InvoiceController extends AppController
         }
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
-        
+        $data['currency_icon'] = $currency_icon;
         $data['payment_request_status'] = $payment_request_data->payment_request_status;
         $data['absolute_cost'] = $payment_request_data->absolute_cost;
         $data['invoice_type'] = $payment_request_data->invoice_type;
         $data["url"] =  Encrypt::encode($payment_request_id);
         if (substr($payment_request_data->invoice_number, 0, 16) == 'System generated') {
             $invoice_number = $this->invoiceModel->getAutoInvoiceNo(substr($payment_request_data->invoice_number, 16));
+        } else {
+            $invoice_number = $payment_request_data->invoice_number;
         }
         $data['invoice_number'] = $invoice_number;
         $data['payment_request_id'] = $payment_request_data->payment_request_id;
@@ -4975,7 +5008,8 @@ class InvoiceController extends AppController
         $data["surcharge_amount"] = 0;
         $data['document_url'] = $payment_request_data->document_url;
         $data['bill_date'] = $payment_request_data->bill_date;
-
+        $data['customer_id'] = $payment_request_data->customer_id;
+        $data['customer_name'] = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
         $plugins = json_decode($payment_request_data->plugin_value, 1);
         $hasAIALicense = false;
         if (isset($plugins['has_aia_license'])) {
@@ -5017,8 +5051,98 @@ class InvoiceController extends AppController
         if (!$hasAccess) {
             return redirect('/merchant/no-permission');
         }
-
         return $data;
-        
+    }
+
+
+    function setParticularRowArray($rowArray=null) {
+
+        if($rowArray!=null) {
+            $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
+            $rowArray['g_per'] = $rowArray['total_completed']/$rowArray['current_contract_amount'];
+            $rowArray['balance_to_finish'] = $rowArray['current_contract_amount'] - $rowArray['total_completed'];
+
+            if (!empty($rowArray['attachments'])) {
+                $nm = substr(substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.')), -10);
+            }
+
+            $rowArray['attachment'] = str_replace(' ', '_', $rowArray['attachments'] ? strlen(substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.')) : $nm : '');
+
+            $counts = 0;
+            if (!empty($rowArray['attachments']))
+                $counts = count(json_decode($rowArray['attachments'], 1));
+            if ($counts > 1)
+                $rowArray['files'] = $counts . ' files';
+            else
+                $rowArray['files'] = $counts . ' file';
+        } 
+        return $rowArray;
+    }
+
+    public function download_v2($link, $savepdf = 0, $type = null)
+    {
+        ini_set('max_execution_time', 120);
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+            $userRole = Session::get('user_role');
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole);
+            $data=array_merge($data,$invoice_Data);
+            
+            if ($type === '703' || $type === '702') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $arrContextOptions = [
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                            "allow_self_signed" => true,
+                        ]
+                    ];
+                    $data['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
+                } catch (Exception $o) {
+                }
+            }
+
+            $particular_details = $this->get703Contents($payment_request_id);
+            $data=array_merge($data,$particular_details);
+            //dd($data);
+            $data['viewtype'] = 'pdf';
+            define("DOMPDF_ENABLE_HTML5PARSER", true);
+            define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+            define("DOMPDF_UNICODE_ENABLED", true);
+            define("DOMPDF_DPI", 120);
+            define("DOMPDF_ENABLE_REMOTE", true);
+
+            if ($savepdf == 1) {
+                $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
+                $name = str_replace('-', '', $name);
+                $name = str_replace(':', '', $name);
+                
+                $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
+                $pdf->setPaper("a4", "landscape");
+                $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
+                $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
+                $pdf->setPaper("a4", "landscape");
+                $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
+                
+                return $name;
+            } else {
+               
+                return view('mailer.invoice.format-' . $type.'-v2', $data);
+                $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type.'-v2', $data);
+                $pdf->setPaper("a4", "landscape");
+                
+
+                $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
+                if ($savepdf == 2) {
+                    return  $pdf->stream();
+                } else {
+                    return $pdf->download($name . '.pdf');
+                }
+            }
+        } else {
+        }
     }
 }
