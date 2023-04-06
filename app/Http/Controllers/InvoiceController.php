@@ -5131,14 +5131,13 @@ class InvoiceController extends AppController
             define("DOMPDF_UNICODE_ENABLED", true);
             define("DOMPDF_DPI", 120);
             define("DOMPDF_ENABLE_REMOTE", true);
-
+            $pdf = DOMPDF::loadView('mailer.invoice.format-'.$type.'-v2', $data);
+            $pdf->setPaper("a4", "landscape");
+            $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
             if ($savepdf == 1) {
-                $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
                 $name = str_replace('-', '', $name);
                 $name = str_replace(':', '', $name);
-                
-                $pdf = DOMPDF::loadView('mailer.invoice.format-'.$type.'-v2', $data);
-                $pdf->setPaper("a4", "landscape");
+            
                 $pdf->save(storage_path('pdf\\'.$type . $name . '.pdf'));
                 // $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
                 // $pdf->setPaper("a4", "landscape");
@@ -5146,10 +5145,6 @@ class InvoiceController extends AppController
                 return $name;
             } else {
                 //return view('mailer.invoice.format-' . $type.'-v2', $data);
-                $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type.'-v2', $data);
-                $pdf->setPaper("a4", "landscape");
-                
-                $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
                 if ($savepdf == 2) {
                     return  $pdf->stream();
                 } else {
