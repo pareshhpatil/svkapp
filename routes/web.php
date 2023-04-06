@@ -346,7 +346,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('einvoice/cancel/{id}',  'EinvoiceController@canceleInvoice');
   Route::get('einvoice/errors/{id}',  'EinvoiceController@errorseInvoice');
 
-
+  //code refactor routes 
+  Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
+  Route::get('invoice/view/703/{link}', 'InvoiceController@view703');
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
@@ -364,6 +366,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('invoice/bulkview/{link}', 'InvoiceController@bulkview');
 
+  //delete download routes once v2 is final
   Route::get('invoice/download/{link}', 'InvoiceController@download');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController@download');
   Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
@@ -518,6 +521,9 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/reportlink/{payment_request_id}', 'PaymentLinkController@reportLink');
   Route::post('paymentlink/reportthankyou', 'PaymentLinkController@reportUnsubscribe');
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
+  //code refactor 
+  Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
+  Route::get('invoice/view/703/{link}/{user_type}', 'InvoiceController@view703');
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');
@@ -534,7 +540,7 @@ Route::group(['prefix' => 'patron'], function () {
 
 
 });
-
+Route::get('invoice/download-v2/{link}/{id}/{type}','InvoiceController@download_v2');
 Route::get('select/{type}', 'SelectController@searchModule');
 
 Route::get('invoice/sendmail/{link}/{subject}', 'InvoiceController@sendEmail');
