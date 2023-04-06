@@ -86,7 +86,7 @@
     <!-- Toastr css -->
     <link href="{{asset('css/toastr.css')}}" rel="stylesheet">
 
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/images/briq.ico" />
     <style>
         .bootstrap-switch .bootstrap-switch-handle-on,
         .bootstrap-switch .bootstrap-switch-handle-off,
@@ -182,7 +182,7 @@
                             </a>
                             <ul class="dropdown-menu" style="min-width: 230px;">
                                 <li>
-                                    <a href="#">
+                                    <a href="{{env('BRIQ_APP_URL')}}">
                                         <div style="position: relative;">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="v-icon__component theme--light" style="color: rgb(33, 33, 64); caret-color: rgb(33, 33, 64);">
                                                 <path d="M0 2C0 0.89543 0.895431 0 2 0H22C23.1046 0 24 0.895431 24 2V22C24 23.1046 23.1046 24 22 24H2C0.89543 24 0 23.1046 0 22V2Z" fill="#212140"></path>
@@ -198,7 +198,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="{{env('BRIQ_APP_URL')}}">
                                         <div style="position: relative;">
                                             <img src="<?php echo '/assets/admin/layout/img/spend.png'; ?>">
                                             <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Spend Management</span>
@@ -206,7 +206,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="{{env('BRIQ_APP_URL')}}">
                                         <div style="position: relative;">
                                             <img src="<?php echo '/assets/admin/layout/img/cash.png'; ?>">
                                             <span style="padding:10px; margin: -3px; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">Briq Cash</span>
@@ -214,7 +214,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="{{env('BRIQ_APP_URL')}}">
                                         <div style="position: relative;">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="v-icon__component theme--light" style="color: rgb(33, 33, 64); caret-color: rgb(33, 33, 64);">
                                                 <path d="M18.7219 10.7219C18.7219 11.9259 18.4053 13.0559 17.8509 14.0333L15.4224 10.3087C15.097 9.80952 14.3031 9.80952 13.9777 10.3087L13.1193 11.6253L12.5097 12.5434L10.5239 9.44277C10.1752 8.89826 9.32465 8.89826 8.9759 9.44277L6.09657 13.9392C5.5747 12.9836 5.27808 11.8874 5.27808 10.7219C5.27808 7.00949 8.28757 4 12 4C15.7124 4 18.7219 7.00949 18.7219 10.7219Z" fill="#212140"></path>

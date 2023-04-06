@@ -15,7 +15,7 @@
         <meta property="og:type" content="website">
         <meta property="og:locale" content="en_US">
 
-        <link rel="icon" type="image/x-icon" href="{$server_name}/swipez-web/public/static/images/swipez.ico">
+        <link rel="icon" type="image/x-icon" href="{$server_name}/swipez-web/public/static/images/briq.ico">
         <link rel="apple-touch-icon" sizes="180x180" href="{$server_name}/swipez-web/public/static/images/apple-touch-icon.png">
         <link rel="mask-icon" href="{$server_name}/swipez-web/public/static/images/apple-touch-icon.png" color="#18AEBF">
         <meta name="msapplication-TileColor" content="#18AEBF">

@@ -135,7 +135,7 @@
                                                 Payment gateway
                                             {else}
                                                 {if $v.offline_response_type==1}
-                                                    NEFT/RTGS
+                                                    Wire transfer
                                                 {else if $v.offline_response_type==2}
                                                     Cheque
                                                 {else if $v.offline_response_type==3}

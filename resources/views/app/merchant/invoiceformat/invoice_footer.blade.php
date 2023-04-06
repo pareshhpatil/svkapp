@@ -512,7 +512,7 @@ Print<i class="fa fa-print"></i>
                                                 </span></label>
                                             <div class="col-md-5">
                                                 <select class="form-control input-sm" name="response_type" onchange="responseType(this.value);" data-placeholder="Select type">
-                                                    <option value="1">NEFT/RTGS</option>
+                                                    <option value="1">Wire transfer</option>
                                                     <option value="2">Cheque</option>
                                                     <option value="3">Cash</option>
                                                     <option value="5">Online Payment</option>
@@ -833,7 +833,7 @@ Print<i class="fa fa-print"></i>
                                                 </span></label>
                                             <div class="col-md-5">
                                                 <select class="form-control input-sm select2me" name="response_type" onchange="responseType(this.value);" data-placeholder="Select type">
-                                                    <option value="1">NEFT/RTGS</option>
+                                                    <option value="1">Wire transfer</option>
                                                     <option value="2">Cheque</option>
                                                     <option value="3">Cash</option>
                                                     <option value="5">Online Payment</option>

@@ -387,10 +387,10 @@ function AddReminder() {
     mainDiv.appendChild(newDiv);
 }
 
-function AddReminder2() {
-    var mainDiv = document.getElementById('new_reminder');
+function AddReminder2(type='before') {
+    var mainDiv = document.getElementById('new_reminder_'+type);
     var newDiv = document.createElement('tr');
-    newDiv.innerHTML = '<td><div class="input-icon right"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject"></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
+    newDiv.innerHTML = '<td><div class="input-icon right"><input type="hidden" name="reminder_type[]" value="'+type+'"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder email subject "></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
 }
 

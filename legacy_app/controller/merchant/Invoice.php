@@ -636,7 +636,7 @@ class Invoice extends Controller
             }
 
             if ($template_type != 'construction') {
-               
+
                 $new_tax = [];
                 $old_tax = [];
                 $table_name = 'invoice_tax';
@@ -701,7 +701,7 @@ class Invoice extends Controller
             $get_payment_request_details = $this->common->getSingleValue('payment_request', 'payment_request_id', $payment_request_id);
 
             $get_invoice_values = $this->common->querylist("select value from invoice_column_values where payment_request_id='$payment_request_id'");
-            
+
             $invoice_values = array();
             foreach ($get_invoice_values as $k => $val) {
                 $invoice_values[$k] = $val['value'];
@@ -716,7 +716,7 @@ class Invoice extends Controller
                     $notification->sendInvoiceNotification($payment_request_id, $revised, 1, $custom_covering = null);
                 }
 
-                if($prevPaymentRequestStatus == 11 && $get_payment_request_details['payment_request_status'] == 14) {
+                if ($prevPaymentRequestStatus == 11 && $get_payment_request_details['payment_request_status'] == 14) {
                     $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
 
                     $InvoiceHelper->sendInvoiceForApprovalNotification($payment_request_id);
@@ -724,6 +724,27 @@ class Invoice extends Controller
                     $InvoiceHelper = new \App\Helpers\Merchant\InvoiceHelper();
 
                     $InvoiceHelper->updateInvoicePrivileges($payment_request_id, $get_payment_request_details['contract_id']);
+                }
+                $plugins = json_decode($get_payment_request_details['plugin_value'], 1);
+                if ($plugins['has_custom_reminder'] == 1) {
+                    $reminders = [];
+                    $reminder_subject = [];
+                    $reminder_sms = [];
+                    if (!empty($plugins['reminders'])) {
+                        foreach ($plugins['reminders'] as $day => $row) {
+                            $reminders[] = $day;
+                            $reminder_subject[] = $row['email_subject'];
+                            $reminder_sms[] = '';
+                        }
+                    }
+                    if (!empty($plugins['reminders_after'])) {
+                        foreach ($plugins['reminders_after'] as $day => $row) {
+                            $reminders[] = '-' . $day;
+                            $reminder_subject[] = $row['email_subject'];
+                            $reminder_sms[] = '';
+                        }
+                    }
+                    $this->model->saveInvoiceReminder($payment_request_id, $get_payment_request_details['due_date'], $reminders, $reminder_subject, $reminder_sms, $this->merchant_id, $this->session->get('system_user_id'));
                 }
 
                 $get_payment_request_details['change_order_id'] = json_decode($get_payment_request_details['change_order_id'], 1);

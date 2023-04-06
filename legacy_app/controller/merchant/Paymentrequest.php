@@ -514,7 +514,7 @@ class Paymentrequest extends Controller
                 }
                 $date = new DateTime($_POST['date']);
 
-                $is_partial = (isset($_POST['is_partial']) > 0) ? 1 : 0;
+                $is_partial = ($_POST['is_partial'] > 0) ? 1 : 0;
 
                 $PaymentRequestRow = $this->model->getPaymentRequestRow($_POST['payment_req_id']);
                 if($PaymentRequestRow[0]['payment_request_status'] == '2' && $PaymentRequestRow[0]['grand_total'] > $_POST['amount']) {

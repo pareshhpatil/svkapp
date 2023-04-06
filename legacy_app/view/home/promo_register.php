@@ -36,7 +36,7 @@
 
         <!-- END THEME STYLES -->
 
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
        
 </head>
 <!-- END HEAD -->

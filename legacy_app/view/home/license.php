@@ -40,7 +40,7 @@
 
 
 
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
         <?php if ($this->env == 'PROD') { ?>
             <!-- Google Code for Remarketing Tag -->
             <!--------------------------------------------------

@@ -6,7 +6,7 @@ include_once '../legacy_app/view/header/header_common.php';
 <script src="/assets/admin/layout/scripts/register.js<?php echo $this->fileTime('js', 'register'); ?>" type="text/javascript"></script>
 <link href="/assets/admin/layout/css/movingintotailwind.css<?php echo $this->fileTime('css', 'movingintotailwind'); ?>" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="shortcut icon" href="/images/briq.ico"/>
 
 <?php
 if ($this->showcampaign_script == 1 && $this->env == 'PROD') {

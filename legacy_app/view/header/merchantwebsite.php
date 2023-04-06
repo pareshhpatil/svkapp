@@ -8,7 +8,7 @@ include_once '../legacy_app/view/header/header_common.php';
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME STYLES -->
     <!-- END THEME STYLES -->
-    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="shortcut icon" href="images/briq.ico"/>
     <script src='https://www.google.com/recaptcha/api.js'></script>
 <?php }
 ?>
@@ -16,7 +16,7 @@ include_once '../legacy_app/view/header/header_common.php';
 <link href="/assets/admin/layout/css/movingintotailwind.css<?php echo $this->fileTime('css', 'movingintotailwind'); ?>" rel="stylesheet" type="text/css"/>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
 <link href="/assets/global/css/plugins.css" rel="stylesheet" type="text/css" />
-<link rel = "shortcut icon" href = "/favicon.ico"/>
+<link rel = "shortcut icon" href = "/images/briq.ico"/>
 
 
 </head>
