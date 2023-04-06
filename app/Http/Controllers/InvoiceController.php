@@ -887,8 +887,34 @@ class InvoiceController extends AppController
 
             //get payment request status 
             $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
+
             if (!isset($payment_request_data->payment_request_status)) {
                 return redirect('/error/invalidlink');
+            }
+
+            $userRole = Session::get('user_role');
+            $hasAccess = false;
+            if($user_type == 'merchant') {
+                $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+                $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+                
+                if ($userRole == 'Admin') {
+                    $hasAccess = true;
+                } else {
+                    if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                        $hasAccess = true;
+                    }
+                    if (in_array($payment_request_data->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                        $hasAccess = true;
+                    }
+                }
+
+            } else {
+                $hasAccess = true;
+            }
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
             }
 
             //get currecy icon
@@ -1007,6 +1033,15 @@ class InvoiceController extends AppController
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
             $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
             $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $currency_icon);
+
+            //Check If user have acces to this invoice
+            if(!empty($userRole) && $userRole == 'Admin') {
+                $invoiceAccess = 'full';
+            } else {
+                $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
+            }
+
+            $data['invoice_access'] = $invoiceAccess;
 
             if ($is_data) {
                 return $data;
@@ -1295,6 +1330,7 @@ class InvoiceController extends AppController
     public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+
         $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
@@ -2289,10 +2325,10 @@ class InvoiceController extends AppController
 
                     $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\\pdf\\702' . $name . '.pdf'));
                     $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\pdf\\703' . $name . '.pdf'));
                 }
 
                 return $name;
@@ -2984,23 +3020,36 @@ class InvoiceController extends AppController
             //attache pdf
 
             if ($info['template_type'] == 'construction') {
-
+                $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
+                $info['project_name'] = $project->project_name;
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
+                if (!empty($covernote)) {
+                    $subject = $this->getDynamicString($info, $covernote['subject']);
+                    $msg = $this->getDynamicString($info, $covernote['body']);
+                    $data['body'] = $msg;
+                    $data['notebutton'] = $covernote['invoice_label'];
+                    $pdf_enable = $covernote['pdf_enable'];
+                    $file = 'invoice.covering-note';
+                } else {
+                    $pdf_enable = 1;
+                    $file = 'invoice.mail';
 
-                $subject = $this->getDynamicString($info, $covernote['subject']);
-                $msg = $this->getDynamicString($info, $covernote['body']);
-                $data['body'] = $msg;
-                $data['notebutton'] = $covernote['invoice_label'];
-                if ($covernote['pdf_enable'] == 1) {
+                    $subject = $info['project_name'] . ' invoice';
+                    $data['project_name'] = $info['project_name'];
+                    $data['bill_date'] = Helpers::htmlDate($info['bill_date']);
+                    $data['due_date'] = Helpers::htmlDate($info['due_date']);
+                    $data['company_name'] = $info['company_name'];
+                    $data['absolute_cost'] = number_format($info['absolute_cost'], 2);
+                    $data['invoice_link'] = $info['viewurl'];
+                }
+                if ($pdf_enable == 1) {
                     $nm = $this->download($link, 1);
-                    $attached[] = array('path' => storage_path("pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
-                    $attached[] = array('path' => storage_path("pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
-
+                    $attached[] = array('path' => storage_path("app\\pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
+                    $attached[] = array('path' => storage_path("app\\pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-
-                Helpers::sendMail($info['customer_email'], 'invoice.covering-note', $data, $subject);
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject );
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
@@ -3014,9 +3063,12 @@ class InvoiceController extends AppController
 
         $vars = json_decode($vars, 1);
         foreach ($vars as $row) {
-
             if ($row['name'] == '%BILL_MONTH%') {
                 $message = str_replace($row['name'], date("M-y", strtotime($info[$row['column_name']])), $message);
+            } else if ($row['name'] == '%INVOICE_LINK%') {
+                $message = str_replace($row['name'], '<a href="' . $info[$row['column_name']] . '">invoice link</a>', $message);
+            } else if ($row['name'] == '%PAYABLE_AMOUNT%') {
+                $message = str_replace($row['name'], number_format($info[$row['column_name']], 2), $message);
             } else {
                 $message = str_replace($row['name'], $info[$row['column_name']], $message);
             }
@@ -3353,7 +3405,7 @@ class InvoiceController extends AppController
         }
         $tnc = str_replace('&lt;', '<', $info['tnc']);
         $tnc = str_replace('&gt;', '>', $tnc);
-        $info["absolute_cost"] = $info['absolute_cost'] - $info['paid_amount'];
+        $info["absolute_cost"] = $info['absolute_cost'];
         if (isset($plugin['roundoff'])) {
             if ($plugin['roundoff'] == 1) {
                 $info["absolute_cost"] = round($info["absolute_cost"], 0);
@@ -3427,6 +3479,7 @@ class InvoiceController extends AppController
             }
         } else if ($info['template_type'] == 'construction') {
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data['isFirstInvoice'] = true;
@@ -3534,6 +3587,12 @@ class InvoiceController extends AppController
                 } else {
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
+            }
+            if ($info['retainage_amount'] != '') {
+                $total_retainage_amount = $info['retainage_amount'];
+            }
+            if ($info['retainage_store_material'] != '') {
+                $sumOfrasm = $info['retainage_store_material'];
             }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
@@ -4162,8 +4221,18 @@ class InvoiceController extends AppController
                 }
             }
 
+
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
+        }
+        if (isset($request->covering_id)) {
+            if ($request->covering_id > 0) {
+                $covering_note = $this->invoiceModel->getTableRow('covering_note', 'covering_id', $request->covering_id);
+                $data = json_decode(json_encode($covering_note), 1);
+                unset($data['covering_id']);
+                $data['payment_request_id'] = $request_id;
+                $this->invoiceModel->saveCoveringNote($data);
+            }
         }
         return redirect('/merchant/invoice/particular/' . Encrypt::encode($request_id));
     }
@@ -4259,6 +4328,7 @@ class InvoiceController extends AppController
                     $data['original_contract_amount'] = $request->original_contract_amount[$k];
                     $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
                     $data['pint'] = $request->pint[$k];
+                    $data['sort_order'] = $request->sort_order[$k];
                     $data['current_contract_amount'] = $request->current_contract_amount[$k];
                     $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
                     $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
@@ -4457,6 +4527,7 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
@@ -4480,7 +4551,8 @@ class InvoiceController extends AppController
             $billed_transactions[$k]->rate = number_format($row->rate);
             $billed_transactions[$k]->amount = number_format($row->amount);
         }
-        $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $invoice_particulars = $this->invoiceModel->getTableListOrderby('invoice_construction_particular', 'payment_request_id', $request_id, 'sort_order');
+
         $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
@@ -4493,6 +4565,7 @@ class InvoiceController extends AppController
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
             $particulars = json_decode($contract->particulars);
+
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
@@ -4524,6 +4597,7 @@ class InvoiceController extends AppController
                     $particulars[$key]->id = '';
                 }
             }
+
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -4629,6 +4703,7 @@ class InvoiceController extends AppController
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
+                $particulars[$k]['sort_order'] = $row['pint'];
                 if (isset($row['pint'])) {
                     $int = $row['pint'];
                 } else {
@@ -4966,33 +5041,34 @@ class InvoiceController extends AppController
 
         $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
         $data['project_details'] =  $project_details;
-        //check permissions
-        if($user_type=='merchant') {
+        
+        if (!isset($payment_request_data->payment_request_status)) {
+            return redirect('/error/invalidlink');
+        }
+
+        $hasAccess = false;
+        if($user_type == 'merchant') {
             $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
             
-            $hasAccess = false;
             if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
                 if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-                if (in_array($project_details->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                if (in_array($payment_request_data->contract_id, array_keys($contractPrivilegesAccessIDs))) {
                     $hasAccess = true;
                 }
-            }
-
-            if (!$hasAccess) {
-                return redirect('/merchant/no-permission');
             }
         } else {
             $hasAccess = true;
         }
-       
-        if (!isset($payment_request_data->payment_request_status)) {
-            return redirect('/error/invalidlink');
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
         }
+
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
        
@@ -5046,6 +5122,16 @@ class InvoiceController extends AppController
         } else {
             $data['is_online_payment'] = FALSE;
         }
+
+        //Check If user have acces to this invoice
+        if(!empty($userRole) && $userRole == 'Admin') {
+            $invoiceAccess = 'full';
+        } else {
+            $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
+        }
+
+        $data['invoice_access'] = $invoiceAccess;
+       
         return $data;
     }
 

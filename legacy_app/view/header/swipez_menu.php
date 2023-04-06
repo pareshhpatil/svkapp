@@ -10,7 +10,7 @@
 <!-- END THEME STYLES -->
 
 
-<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="shortcut icon" href="/images/briq.ico" />
 
 <script type="text/javascript" src="https://apiv2.popupsmart.com/api/Bundle/364244" async></script>
 </head>

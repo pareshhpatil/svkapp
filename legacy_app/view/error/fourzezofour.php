@@ -18,7 +18,7 @@ include_once '../legacy_app/view/header/header_common.php';
 <link href="/assets/frontend/onepage2/css/layout.css" rel="stylesheet" type="text/css"/>
 <link href="/assets/frontend/onepage2/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="shortcut icon" href="/images/briq.ico"/>
 
 </head>
 </head>

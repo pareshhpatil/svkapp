@@ -11,7 +11,7 @@ include_once '../legacy_app/view/header/header_common.php';
 <link href="/assets/admin/layout/css/movingintotailwind.css<?php echo $this->fileTime('css', 'movingintotailwind'); ?>" rel="stylesheet" type="text/css"/>
 
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="images/briq.ico"/>
 
 
 </head>

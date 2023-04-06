@@ -211,7 +211,7 @@
                                     <div class="col-md-6">
                                         <select class="form-control " id="payment_mode"  name="payment_mode" onchange="responseType(this.value);" data-placeholder="Select type">
                                             <option value="0">Select..</option>
-                                            <option value="1">NEFT/RTGS</option>
+                                            <option value="1">Wire transfer</option>
                                             <option value="2">Cheque</option>
                                             <option value="3">Cash</option>
                                             <option value="5">Online Payment</option>

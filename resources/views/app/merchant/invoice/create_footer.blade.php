@@ -453,7 +453,7 @@
         <div class="form-group form-horizontal">
             <label class="control-label col-md-3 w-auto" style="min-width: 128px;">Email Subject</label>
             <div class="col-md-6">
-                <input class="form-control" value="@if(isset($plugin['custom_email_subject'])){{$plugin['custom_email_subject']??''}} @else Payment request from %COMPANY_NAME% @endif" type="text" maxlength="200" data-cy="plugin_custom_subject" name="custom_subject" placeholder="Email subject">
+                <input class="form-control" value="@if(isset($plugin['custom_email_subject'])){{$plugin['custom_email_subject']??''}} @else %PROJECT_NAME% invoice @endif" type="text" maxlength="200" data-cy="plugin_custom_subject" name="custom_subject" placeholder="Email subject">
             </div>
         </div>
     </div>

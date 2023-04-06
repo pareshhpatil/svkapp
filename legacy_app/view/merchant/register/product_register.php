@@ -46,7 +46,7 @@
         <link href="/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
         <script src='https://www.google.com/recaptcha/api.js'></script>
         <!-- END THEME STYLES -->
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
 
 
     </head>

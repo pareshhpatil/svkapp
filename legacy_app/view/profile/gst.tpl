@@ -33,12 +33,12 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME STYLES -->
     <!-- END THEME STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="images/briq.ico" />
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <link href="/assets/admin/layout/css/custom.css?version=1649071087" rel="stylesheet" type="text/css" />
     <link href="/assets/admin/layout/css/movingintotailwind.css?version=1649071087" rel="stylesheet" type="text/css" />
 
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/images/briq.ico" />
 
 
 </head>

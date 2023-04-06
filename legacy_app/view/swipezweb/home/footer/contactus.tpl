@@ -33,7 +33,7 @@
                                     var myOptions = {zoom: 15, center: new google.maps.LatLng(18.5563514, 73.8943515), mapTypeId: google.maps.MapTypeId.ROADMAP};
                                     map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
                                     marker = new google.maps.Marker({map: map, position: new google.maps.LatLng(18.5563514, 73.8943515),
-                                        icon: '{$server_name}/favicon.ico'
+                                        icon: '{$server_name}/images/briq.ico'
 
                                     });
                                     infowindow = new google.maps.InfoWindow({content: '<strong>OPUS Net Pvt. Ltd.</strong><br>91 Springboard, Sky Loft, Creaticity Mall Shastri Nagar, Pune - 411006<br>'});
@@ -70,7 +70,7 @@
                                     var myOptions2 = {zoom: 15, center: new google.maps.LatLng(19.058121, 72.865038), mapTypeId: google.maps.MapTypeId.ROADMAP};
                                     map = new google.maps.Map(document.getElementById('gmap_canvas2'), myOptions2);
                                     marker = new google.maps.Marker({map: map, position: new google.maps.LatLng(19.058121, 72.865038),
-                                        icon: '{$server_name}/favicon.ico'
+                                        icon: '{$server_name}/images/briq.ico'
 
                                     });
                                     infowindow = new google.maps.InfoWindow({content: '<strong>OPUS Net Pvt. Ltd.</strong><br>C - 20, G Block, Bandra Kurla Complex, Mumbai, Maharashtra 400051<br>'});

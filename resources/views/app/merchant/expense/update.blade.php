@@ -191,7 +191,7 @@
                                                 <div class="col-md-8">
                                                     <select class="form-control " id="payment_mode"  name="payment_mode" onchange="responseType(this.value);" data-placeholder="Select type">
                                                         <option value="">Select..</option>
-                                                        <option @if($detail->payment_mode==1)selected @endif value="1">NEFT/RTGS</option>
+                                                        <option @if($detail->payment_mode==1)selected @endif value="1">Wire transfer</option>
                                                         <option @if($detail->payment_mode==2)selected @endif value="2">Cheque</option>
                                                         <option @if($detail->payment_mode==3)selected @endif value="3">Cash</option>
                                                         <option @if($detail->payment_mode==4)selected @endif value="4">ONLINE</option>
