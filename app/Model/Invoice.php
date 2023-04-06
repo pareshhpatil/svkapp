@@ -1079,6 +1079,7 @@ class Invoice extends ParentModel
             ->join('csi_code', 'csi_code.id', '=', 'i.bill_code')
             ->where('i.payment_request_id', $payment_request_id)
             ->where('i.is_active', 1)
+            ->orderBy('sort_order')
             ->get();
         return $retObj;
     }
