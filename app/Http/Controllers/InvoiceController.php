@@ -887,8 +887,34 @@ class InvoiceController extends AppController
 
             //get payment request status 
             $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
+
             if (!isset($payment_request_data->payment_request_status)) {
                 return redirect('/error/invalidlink');
+            }
+
+            $userRole = Session::get('user_role');
+            $hasAccess = false;
+            if($user_type == 'merchant') {
+                $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+                $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+                
+                if ($userRole == 'Admin') {
+                    $hasAccess = true;
+                } else {
+                    if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                        $hasAccess = true;
+                    }
+                    if (in_array($payment_request_data->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                        $hasAccess = true;
+                    }
+                }
+
+            } else {
+                $hasAccess = true;
+            }
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
             }
 
             //get currecy icon
@@ -1007,6 +1033,15 @@ class InvoiceController extends AppController
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
             $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
             $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $currency_icon);
+
+            //Check If user have acces to this invoice
+            if(!empty($userRole) && $userRole == 'Admin') {
+                $invoiceAccess = 'full';
+            } else {
+                $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
+            }
+
+            $data['invoice_access'] = $invoiceAccess;
 
             if ($is_data) {
                 return $data;
@@ -1295,6 +1330,7 @@ class InvoiceController extends AppController
     public function view_g703($link, Request $request)
     {
         $payment_request_id = Encrypt::decode($link);
+
         $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
@@ -3443,6 +3479,7 @@ class InvoiceController extends AppController
             }
         } else if ($info['template_type'] == 'construction') {
             $constriuction_details = $this->invoiceModel->getInvoiceConstructionParticulars($payment_request_id);
+
             //$this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
             $tt = json_decode($constriuction_details, 1);
             $data['isFirstInvoice'] = true;
@@ -4291,6 +4328,7 @@ class InvoiceController extends AppController
                     $data['original_contract_amount'] = $request->original_contract_amount[$k];
                     $data['approved_change_order_amount'] = $request->approved_change_order_amount[$k];
                     $data['pint'] = $request->pint[$k];
+                    $data['sort_order'] = $request->sort_order[$k];
                     $data['current_contract_amount'] = $request->current_contract_amount[$k];
                     $data['previously_billed_percent'] = $request->previously_billed_percent[$k];
                     $data['previously_billed_amount'] = $request->previously_billed_amount[$k];
@@ -4489,6 +4527,7 @@ class InvoiceController extends AppController
     public function particular($link)
     {
         $request_id = Encrypt::decode($link);
+
         if (strlen($request_id) != 10) {
             return redirect('/error/invalidlink');
         }
@@ -4512,7 +4551,8 @@ class InvoiceController extends AppController
             $billed_transactions[$k]->rate = number_format($row->rate);
             $billed_transactions[$k]->amount = number_format($row->amount);
         }
-        $invoice_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+        $invoice_particulars = $this->invoiceModel->getTableListOrderby('invoice_construction_particular', 'payment_request_id', $request_id, 'sort_order');
+
         $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
@@ -4525,6 +4565,7 @@ class InvoiceController extends AppController
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
             $particulars = json_decode($contract->particulars);
+
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
@@ -4556,6 +4597,7 @@ class InvoiceController extends AppController
                     $particulars[$key]->id = '';
                 }
             }
+
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
             $change_order_data = json_decode($change_order_data, true);
 
@@ -4661,6 +4703,7 @@ class InvoiceController extends AppController
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
+                $particulars[$k]['sort_order'] = $row['pint'];
                 if (isset($row['pint'])) {
                     $int = $row['pint'];
                 } else {
@@ -4903,7 +4946,7 @@ class InvoiceController extends AppController
         $notificationID = $request->get('notification_id');
         
         if (strlen($payment_request_id) == 10) {
-            $data = Helpers::setBladeProperties('Invoice', ['contract', 'template', 'invoiceformat'], [5, 28]);
+            $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
             $data['gtype'] = '703';
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
@@ -4996,21 +5039,49 @@ class InvoiceController extends AppController
     public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null,$user_type=null){
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
 
+        $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
+        $data['project_details'] =  $project_details;
+        
         if (!isset($payment_request_data->payment_request_status)) {
             return redirect('/error/invalidlink');
         }
+
+        $hasAccess = false;
+        if($user_type == 'merchant') {
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+            
+            if ($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if (in_array($payment_request_data->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+        } else {
+            $hasAccess = true;
+        }
+
+        if (!$hasAccess) {
+            return redirect('/merchant/no-permission');
+        }
+
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
-        $data['currency_icon'] = $currency_icon;
-        $data['payment_request_status'] = $payment_request_data->payment_request_status;
-        $data['absolute_cost'] = $payment_request_data->absolute_cost;
-        $data['invoice_type'] = $payment_request_data->invoice_type;
+       
         $data["url"] =  Encrypt::encode($payment_request_id);
         if (substr($payment_request_data->invoice_number, 0, 16) == 'System generated') {
             $invoice_number = $this->invoiceModel->getAutoInvoiceNo(substr($payment_request_data->invoice_number, 16));
         } else {
             $invoice_number = $payment_request_data->invoice_number;
         }
+        $data['currency_icon'] = $currency_icon;
+        $data['payment_request_status'] = $payment_request_data->payment_request_status;
+        $data['absolute_cost'] = $payment_request_data->absolute_cost;
+        $data['invoice_type'] = $payment_request_data->invoice_type;
         $data['invoice_number'] = $invoice_number;
         $data['payment_request_id'] = $payment_request_data->payment_request_id;
         $data['notify_patron'] = $payment_request_data->notify_patron;
@@ -5039,8 +5110,6 @@ class InvoiceController extends AppController
         }
         $data['has_watermark'] = $has_watermark;
         $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
-        $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
-        $data['project_details'] =  $project_details;
         
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
         $data['user_type'] = $user_type;
@@ -5053,29 +5122,16 @@ class InvoiceController extends AppController
         } else {
             $data['is_online_payment'] = FALSE;
         }
-        
-        if($user_type=='merchant') {
-            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-            
-            $hasAccess = false;
-            if ($userRole == 'Admin') {
-                $hasAccess = true;
-            } else {
-                if (in_array($payment_request_data->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                    $hasAccess = true;
-                }
-                if (in_array($project_details->contract_id, array_keys($contractPrivilegesAccessIDs))) {
-                    $hasAccess = true;
-                }
-            }
 
-            if (!$hasAccess) {
-                return redirect('/merchant/no-permission');
-            }
+        //Check If user have acces to this invoice
+        if(!empty($userRole) && $userRole == 'Admin') {
+            $invoiceAccess = 'full';
         } else {
-            $hasAccess = true;
+            $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
         }
+
+        $data['invoice_access'] = $invoiceAccess;
+       
         return $data;
     }
 
