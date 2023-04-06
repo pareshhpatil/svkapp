@@ -357,7 +357,6 @@ $header = 'app.patron.invoice.invoice-master';
                                 </td>
                                 <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['d'] < 0)({{str_replace('-','',$item['d'])}}) @else{{ $item['d'] }} @endif</p>
-
                                 </td>
                                 <td class="border border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['e'] < 0)({{str_replace('-','',$item['e'])}}) @else{{ $item['e'] }} @endif</p>
@@ -516,7 +515,6 @@ $header = 'app.patron.invoice.invoice-master';
                                 </td>
                                 <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm">@if($item['g_per'] < 0)({{str_replace('-','',number_format($item['g_per']  * 100, 2) )}}) @else{{ number_format($item['g_per'] * 100,2)}}@endif%</p>
-
                                 </td>
                                 <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
                                     <p class="text-sm"> @if($item['h'] < 0)({{str_replace('-','',$item['h'])}}) @else{{ $item['h'] }} @endif</p>
@@ -528,7 +526,6 @@ $header = 'app.patron.invoice.invoice-master';
                             </tr>
                             @endif
                             @endforeach
-
                             <tr>
                                 <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-left">
 

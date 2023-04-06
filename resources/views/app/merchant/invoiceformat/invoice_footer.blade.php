@@ -121,12 +121,14 @@ $validate=(array)$validate;
 <div class="row no-margin">
     <div class="col-md-12 mt-1">
         @if($info['payment_request_status']==11)
-        <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
+        <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             <div class="col-md-4 pull-left btn-pl-0">
-                <div class="input-icon">
-                    <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
-                    <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
-                </div>
+                @if($invoice_access == 'full' || $invoice_access == 'approve')
+                    <div class="input-icon">
+                        <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
+                        <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
+                    </div>
+                @endif
 
             </div>
             <input type="hidden" name="payment_request_id" value="{{$info['payment_request_id']}}" />
@@ -134,16 +136,33 @@ $validate=(array)$validate;
             <input type="hidden" id="preview_invoice_status" name="payment_request_status" value="{{$info->payment_request_status??0}}" />
                     
             <div class="view-footer-btn-rht-align">
+                @if(!empty($invoice_access))
+                    @if ($invoice_access != 'view-only')
+                        @if($info['payment_request_status'] == 14 && ($invoice_access == 'full' || $invoice_access == 'approve'))
+                            <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
+                        @elseif($invoice_access == 'full')
+                            @if($info['notify_patron'] == 1)
+                                <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                            @else
+                                <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                            @endif
+                            {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+                        @elseif($invoice_access == 'edit')
+                            <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-5 view-footer-btn-rht-align" />
+                        @endif
+                    @endif
 
-                @if($info['notify_patron']==1)
-                <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
-                @else
-                <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />
                 @endif
+
+{{--                @if($info['notify_patron']==1)--}}
+{{--                <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
+{{--                @else--}}
+{{--                <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
+{{--                @endif--}}
             </div>
         </form>
         @endif
-        @if($info['payment_request_status']!=11)
+        @if($info['payment_request_status']!=11 && $info['payment_request_status']!=14)
         @if($info['grand_total']>1)
         @if($info['invoice_type']==2)
         @if($info['payment_request_status']!=6)
@@ -964,6 +983,28 @@ Print<i class="fa fa-print"></i>
         $("#is_partial_field").val('1');
         $("#respond-form").submit();
     }
+
+    $(function() {
+        let invoicePreviewForm = $('.invoice-preview-form');
+        $("#subbtn").on("click", function() {
+
+            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
+            paymentRequestStatus.val(14);
+            invoicePreviewForm.submit();
+        })
+        $("#saveandsendbtn").on("click", function() {
+            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
+            // let notifyPatronStatus = invoicePreviewForm.find('input[name=notify_patron]');
+            paymentRequestStatus.val(0);
+            // notifyPatronStatus.val(1);
+            invoicePreviewForm.submit();
+        })
+        $("#approvebtn").on("click", function() {
+            let paymentRequestStatus = invoicePreviewForm.find('input[name=payment_request_status]');
+            paymentRequestStatus.val(0);
+            invoicePreviewForm.submit();
+        })
+    })
 </script>
 <style>
     .swipez-draft-btn {

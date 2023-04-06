@@ -242,7 +242,7 @@
                                         </span>
                                     </span>
                                     <div class="pull-right ml-1">
-                                        <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                        <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif  id="plglicenseavailable" name="has_aia_license" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                     </div>
                                 </div>
                             </div>
@@ -327,8 +327,9 @@
                                             @endif
                                         </select>
                                     </div>
-                                    <a href="/merchant/coveringnote/dynamicvariable" class="iframe btn btn-sm green pull-right ml-1">Dynamic variables </a>
-                                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right ">Add new note </a>
+                                    <a data-toggle="modal" href="#new_covering" class="btn btn-sm mb-1 green pull-right" style="margin-right: 15px;" >Add new note </a>
+                                    <a href="/merchant/coveringnote/dynamicvariable" style="text-decoration: underline; margin-top: 5px;"  class="iframe pull-right mr-1">Dynamic variables </a>
+
                                 </div>
                             </div>
 
@@ -403,10 +404,12 @@
 
                                 </div>
                                     <div id="pgiscustreminder" @isset($plugins['has_custom_reminder']) @else style="display: none;" @endif>
-                                    <a onclick="AddReminder2();
-                    tableHead('new_reminder');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
-                                        <table id="t_new_reminder" class="table table-bordered table-hover">
-                                            <thead id="h_new_reminder">
+                                    <a onclick="AddReminder2('before');
+                    tableHead('new_reminder_before');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
+                                                        <a href="/merchant/coveringnote/dynamicvariable" style="text-decoration: underline; margin-top: 5px;" class="iframe pull-right ml-1">Dynamic variables </a>
+
+                                        <table id="t_new_reminder_before" class="table table-bordered table-hover">
+                                            <thead id="h_new_reminder_before">
                                                 <tr>
                                                     <th class="td-c  default-font" style="width: 200px;">
                                                         Days before due date
@@ -418,7 +421,7 @@
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="new_reminder">
+                                            <tbody id="new_reminder_before">
                                                 @if(!empty($plugins['reminders']))
                                                 @foreach($plugins['reminders'] as $day=>$r)
                                                 <tr>
@@ -429,12 +432,13 @@
                                                     </td>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                            <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder email subject">
+                                                            <input type="hidden" name="reminder_type[]" value="before">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <a href="javascript:;" onclick="$(this).closest('tr').remove();
-                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                            tableHead('new_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -447,12 +451,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder email subject">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <a href="javascript:;" onclick="$(this).closest('tr').remove();
-                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                            tableHead('new_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -463,12 +467,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder email subject">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <a href="javascript:;" onclick="$(this).closest('tr').remove();
-                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                            tableHead('new_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -479,18 +483,63 @@
                                                     </td>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder mail subject">
+                                                            <input type="text" name="reminder_subject[]" maxlength="250" class="form-control input-sm" placeholder="Reminder email subject">
+                                                            <input type="hidden" name="reminder_type[]" value="before">
                                                         </div>
                                                     </td>
-
                                                     <td>
                                                         <a href="javascript:;" onclick="$(this).closest('tr').remove();
-                                            tableHead('new_reminder');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                            tableHead('new_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                                     </td>
                                                 </tr>
                                                 @endif
                                             </tbody>
                                         </table>
+
+
+
+
+                                        <a onclick="AddReminder2('after');
+                    tableHead('new_reminder_after');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
+                                        <table id="t_new_reminder_after" class="table table-bordered table-hover">
+                                            <thead id="h_new_reminder_after">
+                                                <tr>
+                                                    <th class="td-c  default-font" style="width: 200px;">
+                                                        Days after due date
+                                                    </th>
+                                                    <th class="td-c  default-font">
+                                                        Reminder email subject
+                                                    </th>
+                                                    <th class="td-c" style="width: 50px;">
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="new_reminder_after">
+                                                @if(!empty($plugins['reminders_after']))
+                                                @foreach($plugins['reminders_after'] as $day=>$r)
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="number" name="reminder[]" value="{{$day}}" step="1" max="100" class="form-control input-sm" placeholder="Add day">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-icon right">
+                                                            <input type="text" name="reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Reminder email subject">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                    <input type="hidden" name="reminder_type[]" value="after">
+                                                        <a href="javascript:;" onclick="$(this).closest('tr').remove();
+                                            tableHead('new_reminder_after');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @endif
+                                               
+                                            </tbody>
+                                        </table>
+
                                     </div>
                             </div>
 
@@ -556,7 +605,11 @@
                                             </span></label>
                                         <div class="col-md-7">
                                             <textarea required name="body" id="summernote" class="form-control tncrich">
-                                                <div style="text-align: center;"><span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif">Dear %CUSTOMER_NAME%,<br><br>Please find attached our invoice for the services provided to your company.<br><br>It has been a pleasure serving you. We look forward to working with you again.<br><br>If you have any questions about your invoice, please contact us by replying to this email.<br><br>Thanking You<br><br>With best regards,<br>%COMPANY_NAME%</span></div>
+                                                <div style="text-align: left;"><span style="font-family:open sans,helvetica neue,helvetica,arial,sans-serif">Dear Team,<br><br>
+							  Please find attached invoice dated : %BILL_DATE% for %PROJECT_NAME%.<br><br>
+                              This invoice for amount $%PAYABLE_AMOUNT% is due by %DUE_DATE% - %INVOICE_LINK%<br><br>
+                              In case of queries related to this invoice, please reply back to this email.
+                                <br><br>Thanking You<br><br>With best regards,<br>%COMPANY_NAME%</span></div>
                                     </textarea>
                                             <span class="help-block"></span>
                                         </div>
@@ -565,7 +618,7 @@
                                         <label class="control-label col-md-4">Mail Subject <span class="required">*
                                             </span></label>
                                         <div class="col-md-6">
-                                            <input type="text" required maxlength="100" name="subject" class="form-control" value="Payment request from %COMPANY_NAME%">
+                                            <input type="text" required maxlength="100" name="subject" class="form-control" value="%PROJECT_NAME% invoice">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -667,33 +720,7 @@
         </div>
 
         <!-- Customize invoice output drawer -->
-        <div class="customize-output-panel-wrap" id="panelWrapInvoiceOutput">
-            <div class="customize-output-panel">
-                <div>
-                    <h3 class="modal-title">
-                        Customize invoice views
-                        <a class="close " data-toggle="modal" onclick="closeCustomizeInvoiceOutputDrawer()">
-                            <button type="button" class="close" aria-hidden="true"></button>
-                        </a>
-                    </h3>
-
-                </div>
-
-                <div style="position: relative;margin-top: 30px;">
-                    <h4>AIA format </h4>
-                    <hr />
-                    <div class="mb-2" style="display: flex;justify-content: space-between;">
-                        <span class="form-section base-font">License available&nbsp;</span>
-                        <div>
-                            <div class="plugin-button">
-                                <input type="checkbox" @isset($plugins['has_aia_license']) checked @endif name="has_aia_license" id="plglicenseavailable" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- /.Customize invoice output drawer -->
 
         <script>

@@ -1,25 +1,7 @@
 <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px; color:#394242;">
-    @if($has_watermark)
-    <div class="watermark__inner">
-        <div class="watermark__body">{{$watermark_text}}</div>
-    </div>
-    @endif
-    <div class="flex flex-row  gap-4">
-        @if($has_aia_license)
-        <div>
-            <img src="{{ asset('images/logo-703.PNG') }}" />
-        </div>
-        <div>
-            <h1 class="text-3xl text-left mt-8 font-bold  text-black">Document G702® – 1992</h1>
-        </div>
-        @else
-        <div>
-            <h1 class="text-3xl text-left font-bold  text-black">Document G702 – 1992</h1>
-        </div>
-        @endif
-    </div>
-    <h1 class="text-2xl text-left mt-4 font-bold">Application and Certificate for Payment </h1>
-    <div class="w-full h-0.5 bg-gray-900 mb-1 mt-1"></div>
+    <!-- include subheader file -->
+    @include('app.merchant.invoice.view.subheader',array('title'=>'Application and Certificate for Payment','gtype'=>'G702'))
+
     <div>
         <table width="100%">
             <tbody>
@@ -126,6 +108,7 @@
                     <p class="text-light ml-4 text-xs italic">(Line 4 minus Line 5 Total)</p>
                     <p class="font-bold text-xs mt-1">7. LESS PREVIOUS CERTIFICATES FOR PAYMENT </p>
                     <p class="text-light ml-4 text-xs italic">(Line 6 from prior Certificate)</p>
+                    <p class="font-bold text-xs mt-5"></p>
                     <p class="font-bold text-xs mt-1">8. CURRENT PAYMENT DUE </p>
                     <p class="font-bold text-xs mt-1">9. BALANCE TO FINISH, INCLUDING RETAINAGE </p>
                     <p class="text-light ml-4 text-xs italic">(Line 3 minus Line 6)</p>
@@ -140,7 +123,9 @@
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_stored_materials}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-2"> {{$total_retainage}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_earned_less_retain}}</p>
+                    <p class="font-bold text-xs mt-5"></p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-1"> {{$total_previously_billed_amount}}</p>
+                    <p class="font-bold text-xs mt-5"></p>
                     <p class="font-bold text-xs border   border-gray-600 mt-0 py-1"> {{$grand_total}}</p>
                     <p class="font-bold text-xs border-b border-gray-600 mt-4"> {{$balance_to_finish}} </p>
                 </div>

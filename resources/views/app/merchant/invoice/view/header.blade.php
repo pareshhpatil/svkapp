@@ -7,29 +7,25 @@
     <div class="tabbable-line" @if($user_type!='merchant' ) style="padding-left: 0px;" @endif>
         <ul class="nav nav-tabs">
             @if($user_type!='merchant')
-            <li class="active">
-                <a href="/patron/invoice/view/{{$url}}/702">702</a>
-            </li>
-            <li>
-                <a href="/patron/invoice/view/{{$url}}/703">703</a>
-            </li>
-
-            <li>
-                <a href="/patron/invoice/document/{{$url}}">Attached files</a>
-            </li>
-
+                <li class="@if($gtype=='702') active @endif">
+                    <a href="/patron/invoice/view/702/{{$url}}/patron">702</a>
+                </li>
+                <li class="@if($gtype=='703') active @endif">
+                    <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
+                </li>
+                <li>
+                    <a href="/patron/invoice/document/{{$url}}">Attached files</a>
+                </li>
             @else
-            <li class="active">
-                <a href="/merchant/invoice/viewg702/{{$url}}">702</a>
-            </li>
-            <li>
-                <a href="/merchant/invoice/viewg703/{{$url}}">703</a>
-            </li>
-
-            <li>
-                <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
-            </li>
-
+                <li class="@if($gtype=='702') active @endif">
+                    <a href="/merchant/invoice/view/702/{{$url}}">702</a>
+                </li>
+                <li class="@if($gtype=='703') active @endif">
+                    <a href="/merchant/invoice/view/703/{{$url}}">703</a>
+                </li>
+                <li>
+                    <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
+                </li>
             @endif
         </ul>
     </div>
