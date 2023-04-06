@@ -45,6 +45,14 @@ $header='app.patron.invoice.invoice-master';
         transform: rotate(-45deg);
         user-select: none;
     }
+    .td-703 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        --tw-border-opacity: 1;
+        border-color: rgb(160 172 172 / var(--tw-border-opacity)) !important;
+    }
 </style>
 
 <script src="/js/tailwind.js"></script>
@@ -74,9 +82,9 @@ $header='app.patron.invoice.invoice-master';
 
         <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
 
-        <div class=" w-full flex flex-col items-center justify-center  ">
-            @include('app.merchant.invoice.view.header');
-            @include('app.merchant.invoice.G703.content');
+        <div class=" w-full flex flex-col items-center justify-center">
+            @include('app.merchant.invoice.view.header')
+            @include('app.merchant.invoice.G703.content')
             
             @php
             $footers='app.merchant.invoice.view.footer-v2';

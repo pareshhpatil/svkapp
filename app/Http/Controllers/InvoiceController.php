@@ -4946,8 +4946,7 @@ class InvoiceController extends AppController
         $notificationID = $request->get('notification_id');
         
         if (strlen($payment_request_id) == 10) {
-            
-            $data = Helpers::setBladeProperties('Invoice', ['contract', 'template', 'invoiceformat'], [5, 28]);
+            $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
             $data['gtype'] = '703';
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
@@ -5040,6 +5039,9 @@ class InvoiceController extends AppController
     public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null,$user_type=null){
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
 
+        $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
+        $data['project_details'] =  $project_details;
+        
         if (!isset($payment_request_data->payment_request_status)) {
             return redirect('/error/invalidlink');
         }
@@ -5069,16 +5071,17 @@ class InvoiceController extends AppController
 
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
-        $data['currency_icon'] = $currency_icon;
-        $data['payment_request_status'] = $payment_request_data->payment_request_status;
-        $data['absolute_cost'] = $payment_request_data->absolute_cost;
-        $data['invoice_type'] = $payment_request_data->invoice_type;
+       
         $data["url"] =  Encrypt::encode($payment_request_id);
         if (substr($payment_request_data->invoice_number, 0, 16) == 'System generated') {
             $invoice_number = $this->invoiceModel->getAutoInvoiceNo(substr($payment_request_data->invoice_number, 16));
         } else {
             $invoice_number = $payment_request_data->invoice_number;
         }
+        $data['currency_icon'] = $currency_icon;
+        $data['payment_request_status'] = $payment_request_data->payment_request_status;
+        $data['absolute_cost'] = $payment_request_data->absolute_cost;
+        $data['invoice_type'] = $payment_request_data->invoice_type;
         $data['invoice_number'] = $invoice_number;
         $data['payment_request_id'] = $payment_request_data->payment_request_id;
         $data['notify_patron'] = $payment_request_data->notify_patron;
@@ -5107,8 +5110,6 @@ class InvoiceController extends AppController
         }
         $data['has_watermark'] = $has_watermark;
         $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
-        $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
-        $data['project_details'] =  $project_details;
         
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
         $data['user_type'] = $user_type;
