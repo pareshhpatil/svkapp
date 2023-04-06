@@ -52,6 +52,17 @@ class MigrateModel extends Model
         return $retObj;
     }
 
+    public function getTableRowsIn($table, $col, $val)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->whereIn($col, $val)
+            ->where('is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
     public function getTemplateDetail($template_id)
     {
 
