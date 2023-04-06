@@ -583,7 +583,6 @@
                         hangoutButton.click();
                     },
                     stop: function(event, ui) {
-                        
                     }
                 })
 
@@ -593,7 +592,7 @@
             function fixWidthHelper(e, ui) {
                 ui.children().each(function() {
                     // $(this).width($(this).width());
-                    $(this).css({"background-color": "white", "min-width": $(this).width() + 10 + 'px'});
+                    $(this).css({"min-width": $(this).width() + 10 + 'px'});
                 });
                 return ui;
             }
