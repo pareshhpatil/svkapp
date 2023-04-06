@@ -57,71 +57,71 @@
         <table class='mx-auto w-full border-collapse border border-[#A0ACAC] overflow-hidden'>
             <thead>
                 <tr class="text-center">
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> A </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> B </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> C </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">D </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> E </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> F </td>
-                    <td colspan="2" class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> G
+                    <td class="border td-703 font-regular text-xs  text-center"> A </td>
+                    <td class="border td-703 font-regular text-xs  text-center"> B </td>
+                    <td class="border td-703 font-regular text-xs  text-center"> C </td>
+                    <td class="border td-703 font-regular text-xs  text-center">D </td>
+                    <td class="border td-703 font-regular text-xs  text-center"> E </td>
+                    <td class="border td-703 font-regular text-xs  text-center"> F </td>
+                    <td colspan="2" class="border td-703 font-regular text-xs  text-center"> G
                     </td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> H</td>
-                    <td class="border border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center"> I </td>
+                    <td class="border td-703 font-regular text-xs  text-center"> H</td>
+                    <td class="border td-703 font-regular text-xs  text-center"> I </td>
                 </tr>
                 <tr class="text-center">
-                    <td class=" font-regular text-xs  border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td colspan="2" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td colspan="2" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
                         WORK COMPLETED </td>
-                    <td class="font-regular text-xs   border-r border-l border-[#A0ACAC] px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC]  px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class=" font-regular text-xs   border-r border-l border-[#A0ACAC] px-2 py-2 text-center">
+                    <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
                 </tr>
                 <tr class="text-center">
-                    <td style="min-width:70px" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td style="min-width:70px" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
                         ITEM
                         NO. </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         DESCRIPTION
                         OF WORK </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         SCHEDULED
                         VALUE </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         FROM
                         PREVIOUS APPLICATION
                         <br />(D + E)
                     </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         THIS PERIOD
                     </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC]  font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         MATERIALS
                         PRESENTLY
                         STORED<br />
                         (Not in D or E) </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         TOTAL
                         COMPLETED AND
                         STORED TO DATE<br />
                         (D+E+F) </td>
-                    <td style="min-width:80px" class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td style="min-width:80px" class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         %(G ÷ C)
                     </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         BALANCE TO
                         FINISH<br />
                         (C – G) </td>
-                    <td class="border-b border-r border-l border-[#A0ACAC] font-regular text-xs  px-2 py-2 text-center">
+                    <td class="border-b border-r border-l font-regular text-xs text-center">
                         RETAINAGE
                         <br />(If variable rate)
                     </td>
@@ -131,7 +131,7 @@
                 @foreach ($particularRows as $key => $row)
                     @if($key!='no-group~')
                         <tr>
-                            <td colspan="10" class="border border-[#A0ACAC] px-2 py-2 text-left">
+                            <td colspan="10" class="border td-703 text-left">
                                 <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
                             </td>
                         </tr>
@@ -186,25 +186,25 @@
                                 $group_total_retainage = $group_total_retainage + filter_var($sub_total_retainage, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             @endphp
                             <tr>
-                                <td class="border border-[#A0ACAC] px-2 py-2" style="border-right: none;">
+                                <td class="border td-703" style="border-right: none;">
                                     <p class="text-sm" style="color: #6F8181;"></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-left" style="border-left: none;">
+                                <td class="border td-703 text-left" style="border-left: none;">
                                     <p class="text-sm" style="color: #6F8181;"> {{$sk . ' sub total'}}</p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_previously_billed_amt" /></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_current_billed_amount" /></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_material_stored" /></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_completed" /></p>
                                 </td>
                                 @php
@@ -216,13 +216,13 @@
                                     }
                                     $sub_total_balance_to_finish = $sub_total_schedule_value - $sub_total_completed;
                                 @endphp
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right" style="min-width: 90px;">
+                                <td class="border td-703 text-right" style="min-width: 90px;">
                                     <p class="text-sm">@if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c  * 100, 2) )}}) @else{{ number_format($sub_total_g_by_c * 100,2)}}@endif%</p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_balance_to_finish" /></p>
                                 </td>
-                                <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_retainage" /></p>
                                 </td>
                             </tr>
@@ -244,31 +244,31 @@
                     @if(isset($row['no-bill-code-detail~']) && !empty($row['no-bill-code-detail~']))
                         @foreach ($row['no-bill-code-detail~'] as $rk => $val)
                             <tr class="border-row">
-                                <td colspan="2" class="border-r border-l border-[#A0ACAC] px-2 py-2 text-left">
+                                <td colspan="2" class="border-r border-l td-703 text-left">
                                     <p class="text-sm">{{$key}}</p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['previously_billed_amount']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['current_billed_amount']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['stored_materials']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['total_completed']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm">@if($val['g_per'] < 0)({{str_replace('-','',number_format($val['g_per']  * 100, 2) )}}) @else{{ number_format($val['g_per'] * 100,2)}}@endif%</p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['balance_to_finish']" /></p>
                                 </td>
-                                <td class="border-r border-l border-[#A0ACAC] px-2 py-2 text-right">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['total_outstanding_retainage']" /></p>
                                 </td>
                             </tr>
@@ -276,22 +276,22 @@
                     @endif
                     @if($key!='no-group~')
                         <tr>
-                            <td colspan="2" class="border border-[#A0ACAC] px-2 py-2 text-left">
+                            <td colspan="2" class="border td-703 text-left">
                                 <p class="text-sm" style="color: #6F8181;"> {{$key. ' sub total'}}</p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_previously_billed_amt" /></p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_current_billed_amt" /></p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_material_stored" /></p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_completed" /></p>
                             </td>
                             @php
@@ -303,13 +303,13 @@
                                 }
                                 $group_total_balance_to_finish = $group_total_schedule_value - $group_total_completed;
                             @endphp
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right" style="min-width: 90px;">
+                            <td class="border td-703 text-right" style="min-width: 90px;">
                                 <p class="text-sm">@if($group_total_g_by_c < 0)({{str_replace('-','',number_format($group_total_g_by_c  * 100, 2) )}}) @else{{ number_format($group_total_g_by_c * 100,2)}}@endif%</p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_balance_to_finish" /></p>
                             </td>
-                            <td class="border border-[#A0ACAC] px-2 py-2 text-right">
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_retainage" /></p>
                             </td>
                         </tr>
@@ -320,34 +320,34 @@
                     @endif
                 @endforeach
                     <tr>
-                        <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-left">
+                        <td style="min-width: 40px" class="border-r border-t border-l td-703 text-left">
                             <p class="text-sm"> </p>
                         </td>
-                        <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-left">
+                        <td style="min-width: 40px" class="border-r border-t border-l td-703 text-left">
                             <p class="text-xs"><b>GRAND TOTAL</b> </p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right"> 
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_previouly_billed_amt" /></p>
                         </td>
-                        <td style="min-width: 90px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 90px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_billed_amt" /></p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_stored_material" /> </p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_total_completed" /> </p>
                         </td>
-                        <td style="min-width: 40px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 40px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">@if($grand_total_g_per < 0) ({{str_replace('-','',number_format($grand_total_g_per * 100,2))}}) @else{{ number_format($grand_total_g_per * 100, 2) }} @endif%</p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_balance_to_finish" /> </p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l border-[#A0ACAC] px-2 py-2 text-right">
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_retainge" /> </p>
                         </td>
                     </tr>
