@@ -7,7 +7,8 @@ $validate=(array)$validate;
     <div class="row no-margin">
         <div class="col-md-12 mt-1">
             @if($payment_request_status==11)
-                <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$payment_request_id}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
+                <form class="form-horizontal" action="/merchant/invoice/saveInvoicePreview/{{$payment_request_id}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';" 
+                style="display:inline">
                     <div class="col-md-4 pull-left btn-pl-0">
                         <div class="input-icon">
                             <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($notify_patron==1) checked @endif class="make-switch" data-size="small">
@@ -26,64 +27,42 @@ $validate=(array)$validate;
                 </form>
             @endif
             @if($payment_request_status!=11)
-                @if($grand_total>1)
+                @if($absolute_cost>1)
                     <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" data-toggle="modal" href="#respond">
                         Settle
                     </a>
                 @endif
             @endif
             @if($payment_request_status!=6 && $payment_request_status!=7)
-                <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($payment_request_status==11)-13px @else 0px;@endif">
+                <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top:0px;">
                     <a class="btn green hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($invoice_type==1) 15px @else 20px @endif" href="/merchant/invoice/update/{{$url}}">
                         Update invoice
                     </a>
                 </div>
             @endif
+            <div class="btn-group pull-right">
+                <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right:15px" data-toggle="dropdown" aria-expanded="true">
+                    Download <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
+                    @if($gtype != 'attachment')
+                    <li>
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                            Download {{$gtype}}
+                        </a>
+                    </li>
+                    @endif
+                    <li>
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
+                            Download Full PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
             @if($payment_request_status!=11)
-                <div class="btn-group pull-right">
-                    <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($invoice_type==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
-                        Download <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                        @if($gtype != 'attachment')
-                        <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
-                                Download {{$gtype}}
-                            </a>
-                        </li>
-                        @endif
-                        <li>
-                            <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
-                                Download Full PDF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
                 <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right:15px;" href="/invoice/download-v2/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
                     Print
                 </a>
-            @else
-                <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($payment_request_status==11)-13px @else 0px;@endif">
-                    <div class="btn-group pull-right">
-                        <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right:15px" data-toggle="dropdown" aria-expanded="true">
-                            Download <i class="fa fa-angle-down"></i>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
-                            @if($gtype != 'attachment')
-                            <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
-                                    Download {{$gtype}}
-                                </a>
-                            </li>
-                            @endif
-                            <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
-                                    Download Full PDF
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             @endif
         </div>
     </div>
