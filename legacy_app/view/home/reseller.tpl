@@ -33,7 +33,7 @@
         <script src='https://www.google.com/recaptcha/api.js'></script>
 
         <!-- END THEME STYLES -->
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
     </head>
 </head>
 {strip}

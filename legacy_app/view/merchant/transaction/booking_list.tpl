@@ -345,7 +345,7 @@
                                                 <div class="col-md-5">
                                                     <select class="form-control input-sm select2me" name="response_type"
                                                         onchange="responseType(this.value);" data-placeholder="Select type">
-                                                        <option value="1" {if $res_type==1} selected {/if}>NEFT/RTGS
+                                                        <option value="1" {if $res_type==1} selected {/if}>Wire transfer
                                                         </option>
                                                         <option value="2" {if $res_type==2} selected {/if}>Cheque</option>
                                                         <option value="3" {if $res_type==3} selected {/if}>Cash</option>

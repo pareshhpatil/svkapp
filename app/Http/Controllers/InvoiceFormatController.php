@@ -847,8 +847,8 @@ class InvoiceFormatController extends AppController
 
     function getPlugins()
     {
-        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark','include_store_materials'));
-        $this->setEmptyArray(array('debit', 'debitdefaultValue','mandatory_document_name', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
+        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark', 'include_store_materials'));
+        $this->setEmptyArray(array('debit', 'debitdefaultValue', 'mandatory_document_name', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
         if ($_POST['is_debit'] == 1) {
@@ -921,9 +921,16 @@ class InvoiceFormatController extends AppController
         }
         if ($_POST['is_custom_reminder'] == 1) {
             $plugin['has_custom_reminder'] = $_POST['is_custom_reminder'];
-            foreach ($_POST['reminder'] as $key => $day) {
-                $_POST['reminder_sms'][$key]='';
-                $plugin['reminders'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
+            if (!empty($_POST['reminder_type'])) {
+                foreach ($_POST['reminder_type'] as $key => $type) {
+                    $_POST['reminder_sms'][$key] = '';
+                    $day = $_POST['reminder'][$key];
+                    if ($type == 'after') {
+                        $plugin['reminders_after'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
+                    } else {
+                        $plugin['reminders'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
+                    }
+                }
             }
         }
         if ($_POST['has_online_payments'] == 1) {

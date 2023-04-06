@@ -16,21 +16,7 @@
                                   @endphp 
 </td></tr></tbody></table></td></tr></tbody>
 </table>
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%">
-    <tbody>
-        <tr>
-            <td style="padding-top:0;padding-right:18px;padding-bottom:18px;padding-left:18px" valign="top" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:3px">
-                    <tbody>
-                        <tr>
-                            <td align="center" valign="middle"><a href="{{$info['viewurl']}}" class="m_353655406043433382mcnButton" title="View 702 & 703" style="font-family:Arial;font-size:16px;padding:10px;background-color:#275770;font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:#ffffff">{{$notebutton}}</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
+
 
 </td></tr>
 </tbody>

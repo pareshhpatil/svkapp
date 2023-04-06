@@ -2325,10 +2325,10 @@ class InvoiceController extends AppController
 
                     $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\702' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\\pdf\\702' . $name . '.pdf'));
                     $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
                     $pdf->setPaper("a4", "landscape");
-                    $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
+                    $pdf->save(storage_path('app\pdf\\703' . $name . '.pdf'));
                 }
 
                 return $name;
@@ -3020,23 +3020,36 @@ class InvoiceController extends AppController
             //attache pdf
 
             if ($info['template_type'] == 'construction') {
-
+                $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
+                $info['project_name'] = $project->project_name;
                 $covernote = (array) $this->invoiceModel->getCoveringNoteDetails($payment_request_id);
+                if (!empty($covernote)) {
+                    $subject = $this->getDynamicString($info, $covernote['subject']);
+                    $msg = $this->getDynamicString($info, $covernote['body']);
+                    $data['body'] = $msg;
+                    $data['notebutton'] = $covernote['invoice_label'];
+                    $pdf_enable = $covernote['pdf_enable'];
+                    $file = 'invoice.covering-note';
+                } else {
+                    $pdf_enable = 1;
+                    $file = 'invoice.mail';
 
-                $subject = $this->getDynamicString($info, $covernote['subject']);
-                $msg = $this->getDynamicString($info, $covernote['body']);
-                $data['body'] = $msg;
-                $data['notebutton'] = $covernote['invoice_label'];
-                if ($covernote['pdf_enable'] == 1) {
+                    $subject = $info['project_name'] . ' invoice';
+                    $data['project_name'] = $info['project_name'];
+                    $data['bill_date'] = Helpers::htmlDate($info['bill_date']);
+                    $data['due_date'] = Helpers::htmlDate($info['due_date']);
+                    $data['company_name'] = $info['company_name'];
+                    $data['absolute_cost'] = number_format($info['absolute_cost'], 2);
+                    $data['invoice_link'] = $info['viewurl'];
+                }
+                if ($pdf_enable == 1) {
                     $nm = $this->download($link, 1);
-                    $attached[] = array('path' => storage_path("pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
-                    $attached[] = array('path' => storage_path("pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
-
+                    $attached[] = array('path' => storage_path("app\\pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
+                    $attached[] = array('path' => storage_path("app\\pdf\\703" . $nm . ".pdf"), 'name' => '703.pdf');
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-
-                Helpers::sendMail($info['customer_email'], 'invoice.covering-note', $data, $subject);
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject );
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
@@ -3050,9 +3063,12 @@ class InvoiceController extends AppController
 
         $vars = json_decode($vars, 1);
         foreach ($vars as $row) {
-
             if ($row['name'] == '%BILL_MONTH%') {
                 $message = str_replace($row['name'], date("M-y", strtotime($info[$row['column_name']])), $message);
+            } else if ($row['name'] == '%INVOICE_LINK%') {
+                $message = str_replace($row['name'], '<a href="' . $info[$row['column_name']] . '">invoice link</a>', $message);
+            } else if ($row['name'] == '%PAYABLE_AMOUNT%') {
+                $message = str_replace($row['name'], number_format($info[$row['column_name']], 2), $message);
             } else {
                 $message = str_replace($row['name'], $info[$row['column_name']], $message);
             }
@@ -3389,7 +3405,7 @@ class InvoiceController extends AppController
         }
         $tnc = str_replace('&lt;', '<', $info['tnc']);
         $tnc = str_replace('&gt;', '>', $tnc);
-        $info["absolute_cost"] = $info['absolute_cost'] - $info['paid_amount'];
+        $info["absolute_cost"] = $info['absolute_cost'];
         if (isset($plugin['roundoff'])) {
             if ($plugin['roundoff'] == 1) {
                 $info["absolute_cost"] = round($info["absolute_cost"], 0);
@@ -3571,6 +3587,12 @@ class InvoiceController extends AppController
                 } else {
                     $sumOfi += $itesm['retainage_amount_previously_withheld'];
                 }
+            }
+            if ($info['retainage_amount'] != '') {
+                $total_retainage_amount = $info['retainage_amount'];
+            }
+            if ($info['retainage_store_material'] != '') {
+                $sumOfrasm = $info['retainage_store_material'];
             }
             $info['total_c'] = $sumOfc;
             $info['total_d'] = $sumOfd;
@@ -4199,8 +4221,18 @@ class InvoiceController extends AppController
                 }
             }
 
+
             $this->invoiceModel->updateTable('payment_request', 'payment_request_id', $response->request_id, 'contract_id', $request->contract_id);
             $request_id = $response->request_id;
+        }
+        if (isset($request->covering_id)) {
+            if ($request->covering_id > 0) {
+                $covering_note = $this->invoiceModel->getTableRow('covering_note', 'covering_id', $request->covering_id);
+                $data = json_decode(json_encode($covering_note), 1);
+                unset($data['covering_id']);
+                $data['payment_request_id'] = $request_id;
+                $this->invoiceModel->saveCoveringNote($data);
+            }
         }
         return redirect('/merchant/invoice/particular/' . Encrypt::encode($request_id));
     }

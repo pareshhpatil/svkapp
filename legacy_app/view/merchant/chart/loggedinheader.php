@@ -54,7 +54,7 @@
         <script type="text/javascript" src="/assets/global/plugins/chart/amcharts.js" ></script>
         <script type="text/javascript" src="/assets/global/plugins/amcharts/amcharts/pie.js"></script>
         <script type="text/javascript" src="/assets/global/plugins/amcharts/amcharts/serial.js"></script>
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
     </head>
     <!-- END HEAD -->
     <!-- BEGIN BODY -->

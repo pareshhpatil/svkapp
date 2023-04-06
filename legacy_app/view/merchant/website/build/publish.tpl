@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>Swipez website builder</title>
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/images/briq.ico" type="image/x-icon">
         <script type="text/javascript" src="/assets/site-builder/build/js/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="/assets/site-builder/build/js/site.inc.js"></script>
         <script type="text/javascript" src="/assets/site-builder/build/js/jquery.scrollTo.min.js"></script>

@@ -35,7 +35,7 @@
         <link href="/assets/frontend/onepage2/css/custom.css" rel="stylesheet" type="text/css"/>
         <link href="/assets/admin/layout/css/colorbox.css" rel="stylesheet" type="text/css"/>
         <!-- END THEME STYLES -->
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/images/briq.ico"/>
         {if $env == 'PROD'}
         {literal}
         <!-- Facebook Pixel Code -->

@@ -15,7 +15,7 @@ if ($this->header_file) {
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
 <link href="/assets/global/css/plugins.css" rel="stylesheet" type="text/css" />
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="shortcut icon" href="/images/briq.ico" />
 </head>
 
 <body class="page-quick-sidebar-over-content" <?php if ($this->is_secure == 1) { ?> oncontextmenu="return false;" <?php } ?> style="<?php echo $this->minwidth; ?>">

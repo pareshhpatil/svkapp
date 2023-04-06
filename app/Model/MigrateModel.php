@@ -47,6 +47,18 @@ class MigrateModel extends Model
         $retObj = DB::table($table)
             ->select(DB::raw('*'))
             ->where($col, $val)
+            ->where('is_active', 1)
+            ->get();
+        return $retObj;
+    }
+
+    public function getTableRowsIn($table, $col, $val)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->whereIn($col, $val)
+            ->where('is_active', 1)
             ->get();
         return $retObj;
     }
@@ -774,7 +786,8 @@ class MigrateModel extends Model
         return $id;
     }
 
-    public function getCustomerMetadata() {
+    public function getCustomerMetadata()
+    {
         $retObj = DB::select("select column_id,merchant_id,column_name,column_datatype from customer_column_metadata where is_active=1 and (
         column_name like '%Company Name%' OR 
         column_name like '%Company%' OR 
@@ -784,13 +797,29 @@ class MigrateModel extends Model
         return $retObj;
     }
 
-    public function setCustomerCompanyName($column_id) {
-        $retObj = DB::select("Update customer c, customer_column_values v set c.company_name = v.value where c.customer_id=v.customer_id and v.column_id='".$column_id."'");
+    public function setCustomerCompanyName($column_id)
+    {
+        $retObj = DB::select("Update customer c, customer_column_values v set c.company_name = v.value where c.customer_id=v.customer_id and v.column_id='" . $column_id . "'");
         return $retObj;
     }
 
-    public function updateCompanyMetadata($column_id) {
-        $retObj = DB::select("update customer_column_metadata set column_datatype='company_name' where column_id='".$column_id."'");
+    public function updateCompanyMetadata($column_id)
+    {
+        $retObj = DB::select("update customer_column_metadata set column_datatype='company_name' where column_id='" . $column_id . "'");
         return $retObj;
+    }
+
+
+    public function saveTable($table_name, $data)
+    {
+        $id = DB::table($table_name)->insertGetId(
+            $data
+        );
+        return $id;
+    }
+    public function saveSeq($name)
+    {
+        $retObj = DB::select("select generate_sequence('" . $name . "') as id;");
+        return $retObj[0]->id;
     }
 }

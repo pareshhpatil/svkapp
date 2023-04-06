@@ -79,7 +79,7 @@
     <!-- Uppy file upload css -->
     <link href="/assets/admin/layout/css/uppy.min.css" rel="stylesheet" type="text/css" />
 
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/images/briq.ico" />
     <style>
         .bootstrap-switch .bootstrap-switch-handle-on,
         .bootstrap-switch .bootstrap-switch-handle-off,
