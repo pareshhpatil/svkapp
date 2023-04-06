@@ -997,12 +997,12 @@ class InvoiceController extends AppController
             }
 
             $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
-           $data["total_earned_less_retain"] = 0;
+            $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $data['total_retainage']), $currency_icon);
+            $data["total_previously_billed_amount"] = 0;
             if (isset($project_details)) {
-                $info["total_earned_less_retain"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
+                $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
             }
-            $data['total_previously_billed_amount'] =    $this->formatInvoiceValues($construction_details['previously_billed_amount'], $currency_icon);
-
+           
             //get grand total
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
             $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
@@ -3056,6 +3056,8 @@ class InvoiceController extends AppController
             $isFirstInvoice = true;
         }
 
+        $isFirstInvoice = true;
+
         if ($isFirstInvoice == false) {
             $previousInvoiceParticulars = [];
             $previousInvoice = $this->invoiceModel->getPreviousRequest($payment_request_id, $paymentRequestData->contract_id, $paymentRequestData->created_date);
@@ -3498,6 +3500,7 @@ class InvoiceController extends AppController
             $retainage_amount_stored_materials = 0;
             $retainage_release_amount = 0;
             $retainage_stored_materials_release_amount = 0;
+            $data['isFirstInvoice'] = true;
             foreach ($tt as $itesm) {
                 $total_appro += $itesm['approved_change_order_amount'];
                 $sumOforg += $itesm['original_contract_amount'];
@@ -3683,66 +3686,38 @@ class InvoiceController extends AppController
         }
         $data['has_watermark'] = $has_watermark;
 
+        $userRole = Session::get('user_role');
 
-        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-        //$projectPrivilegesAccessIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
-        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-        $invoiceAccess = '';
-
-        if ($user_type == 'patron') {
+        //Check If user have acces to this invoice
+        if(!empty($userRole) && $userRole == 'Admin') {
             $invoiceAccess = 'full';
         } else {
-            if (in_array($info['payment_request_id'], array_keys($invoicePrivilegesAccessIDs))) {
-                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'full') {
-                    $invoiceAccess = 'full';
-                }
-                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'edit') {
-                    $invoiceAccess = 'edit';
-                }
-                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'view-only') {
-                    $invoiceAccess = 'view-only';
-                }
-                if ($invoicePrivilegesAccessIDs[$info['payment_request_id']] == 'approve') {
-                    $invoiceAccess = 'approve';
-                }
-            } elseif (in_array($info['contract_id'], array_keys($contractPrivilegesAccessIDs))) {
-                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'full') {
-                    $invoiceAccess = 'full';
-                }
-
-                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'edit') {
-                    $invoiceAccess = 'edit';
-                }
-
-                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'approve') {
-                    $invoiceAccess = 'approve';
-                }
-
-                if ($contractPrivilegesAccessIDs[$info['contract_id']] == 'view-only') {
-                    $invoiceAccess = 'view-only';
-                }
-            } elseif (in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
-                if ($invoicePrivilegesAccessIDs['all'] == 'full') {
-                    $invoiceAccess = 'full';
-                }
-
-                if ($invoicePrivilegesAccessIDs['all'] == 'edit') {
-                    $invoiceAccess = 'edit';
-                }
-
-                if ($invoicePrivilegesAccessIDs['all'] == 'view-only') {
-                    $invoiceAccess = 'view-only';
-                }
-
-                if ($invoicePrivilegesAccessIDs['all'] == 'approve') {
-                    $invoiceAccess = 'approve';
-                }
-            }
+            $invoiceAccess = $this->hasInvoiceAccess($info['payment_request_id'], $info['contract_id'], $user_type);
         }
 
         $data['invoice_access'] = $invoiceAccess;
 
         return $data;
+    }
+
+    public function hasInvoiceAccess($payment_request_id, $contract_id, $userType) {
+        $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+        $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+        $invoiceAccess = '';
+
+        if ($userType == 'patron') {
+            $invoiceAccess = 'full';
+        } else {
+            if (in_array($payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                $invoiceAccess = $invoicePrivilegesAccessIDs[$payment_request_id];
+            } elseif (in_array($contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                $invoiceAccess = $contractPrivilegesAccessIDs[$contract_id];
+            } elseif (in_array('all', array_keys($invoicePrivilegesAccessIDs))) {
+                $invoiceAccess = $invoicePrivilegesAccessIDs['all'];
+            }
+        }
+
+        return $invoiceAccess;
     }
 
     /**
@@ -3763,6 +3738,7 @@ class InvoiceController extends AppController
 
     public function getData703($tt, $isFirstInvoice = true, $prevParictular = null)
     {
+        $isFirstInvoice = true;
         $group_names = array();
         $grouping_data = array();
         foreach ($tt as $td) {
@@ -3807,6 +3783,7 @@ class InvoiceController extends AppController
             $attach_count = 0;
             $sub_key = '';
             $footer_sub_key = '';
+            $isFirstInvoice = true;
             foreach ($sub_result[$names] as $key => $data2) {
 
                 foreach ($data2 as $data) {
@@ -4514,6 +4491,7 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         if ($invoice_particulars->isEmpty()) {
+            $type = 1;
             $particulars = json_decode($contract->particulars);
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
@@ -4659,6 +4637,7 @@ class InvoiceController extends AppController
                 }
             }
         } else {
+            $type = 2;
             $particulars = json_decode(json_encode($invoice_particulars), 1);
             foreach ($particulars as $k => $row) {
                 $total = $total + $particulars[$k]['net_billed_amount'];
@@ -4701,8 +4680,8 @@ class InvoiceController extends AppController
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
+        $data['type'] = $type;
         $data['button'] = 'Save';
-        $data['mode'] = 'create';
         $data['title'] = 'Add Particulars';
         $data['contract_id'] = $invoice->contract_id;
         $data['contract_code'] = $contract->contract_code;
