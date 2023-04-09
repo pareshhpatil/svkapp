@@ -70,6 +70,11 @@ class Mis extends Model
                 'vendor_amount' => $det->vendor_amount,
                 'admin_amount' => $det->admin_amount,
                 'company_amount' => $det->company_amount,
+				'logsheet_no' => $request->logsheet_no,
+				'toll' => $request->toll,
+				'pickup_drop' => $request->pickup_drop,
+				'remark' => $request->remark,
+				'employee_name' => $request->employee_name,
                 'created_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s'),
                 'last_update_by' => $user_id

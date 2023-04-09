@@ -44,6 +44,7 @@ public function report(Exception $exception)
  */
 public function render($request, Exception $exception)
 {
+    dd($exception);
 if($request->is('api/*')){
 if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
 {

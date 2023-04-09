@@ -49,6 +49,12 @@
                                     <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy">
                                 </div>
                             </div>
+							<div class="form-group">
+                                <label class="control-label col-md-4">Logsheet no<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <input type="text" required=""  name="logsheet_no" class="form-control">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">Pickup Time</label>
                                 <div class="col-md-7">
@@ -102,6 +108,48 @@
                                     </select>
                                 </div>
                             </div>
+
+							<div class="form-group">
+                                <label class="control-label col-md-4">Toll<span class="required">  </span></label>
+                                <div class="col-md-7">
+                                    <input type="number"  pattern="[0-9]*" name="toll" class="form-control">
+                                </div>
+                            </div>
+							<div class="form-group">
+                                <label class="control-label col-md-4">Employee name<span class="required">  </span></label>
+                                <div class="col-md-7">
+                                    <input type="text"   name="employee_name" class="form-control">
+                                </div>
+                            </div>
+							<div class="form-group">
+                                <label class="control-label col-md-4">User count<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <input type="number" required="" pattern="[0-9]*" name="user_count" class="form-control">
+                                </div>
+                            </div>
+							
+							<div class="form-group">
+                                <label class="control-label col-md-4">Pickup/Drop<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <select name="pickup_drop"  class="form-control select2" data-placeholder="Select...">
+                                        <option value="Pickup">Pickup</option>
+										<option value="Drop">Drop</option>
+                                    </select>
+                                </div>
+                            </div>
+							
+							<div class="form-group">
+                                <label class="control-label col-md-4">Pickup<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <input type="text" required=""  name="pickup" class="form-control">
+                                </div>
+                            </div>
+							<div class="form-group">
+                                <label class="control-label col-md-4">Drop<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <input type="text" required=""  name="drop" class="form-control">
+                                </div>
+                            </div>
                             @if($company_type==3)
                             <div class="form-group">
                                 <label class="control-label col-md-4">Office Location<span class="required"> * </span></label>
@@ -115,18 +163,18 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4">User count<span class="required"> * </span></label>
-                                <div class="col-md-7">
-                                    <input type="number" required="" pattern="[0-9]*" name="user_count" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label col-md-4">Vendor<span class="required">  </span></label>
                                 <div class="col-md-7">
                                     <input type="text"   name="vendor" class="form-control">
                                 </div>
                             </div>
                             @endif
+							<div class="form-group">
+                                <label class="control-label col-md-4">Remark<span class="required">  </span></label>
+                                <div class="col-md-7">
+                                    <input type="text"   name="remark" class="form-control">
+                                </div>
+                            </div>
 
                            
 

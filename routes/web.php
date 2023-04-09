@@ -173,5 +173,25 @@ Route::get('/admin/paymentsource/statement/{id}', 'BillController@statement');
 
 
 
+Route::get('/admin/sms', 'RosterController@sms');
+Route::post('/admin/sendsms', 'RosterController@sendsms');
+Route::get('/admin/resendsms/{id}', 'RosterController@resendsms');
+Route::get('/admin/roster/createroster', 'RosterController@create');
+Route::get('/admin/roster/asigncab', 'RosterController@asigncab');
+Route::get('/admin/roster/createmis/{id}', 'RosterController@createmis');
+Route::get('/admin/roster/sendnotification/{id}', 'RosterController@sendnotification');
+Route::any('/admin/roster/list', 'RosterController@rosterlist');
+Route::post('/admin/roster/saveroster', 'RosterController@saveroster');
+Route::get('/admin/roster/updateroster/{id}', 'RosterController@updateroster');
+Route::post('/admin/roster/updatesaveroster', 'RosterController@updatesaveroster');
+Route::post('/admin/roster/asignsaveroster', 'RosterController@asignsaveroster');
+Route::get('/admin/roster/deleteroster/{id}', 'RosterController@deleteroster');
+Route::get('/admin/roster/closeroster/{id}', 'RosterController@closeroster');
+Route::get('/roster/trip/{type}/{id}', 'RosterController@trip');
+Route::get('/admin/roster/detail/{id}', 'RosterController@rosterdetail');
+Route::get('/admin/roster/print/{id}', 'RosterController@printroster');
+Route::any('/admin/roster/notificationdetail', 'RosterController@notificationdetail');
 
+Route::get('/roster/rating/{id}/{rating}', 'RosterController@rating');
 
+Route::post('/roster/reviewsave', 'RosterController@savereview');

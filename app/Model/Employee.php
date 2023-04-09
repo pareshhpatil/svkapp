@@ -226,4 +226,39 @@ class Employee extends Model {
         ]);
     }
 
+
+    public function getPassengers() {
+        $retObj = DB::table('passenger as a')
+                ->join('project as ea', 'ea.project_id', '=', 'a.project_id')
+                ->where('a.is_active', 1)
+                ->select(DB::raw('a.*,ea.name as project_name'))
+                ->get();
+        return $retObj;
+    }
+	
+	public function getCoursePassengers() {
+		$retObj = DB::select("select * from course5_mis group by employee_name,employee_id;");
+        return $retObj;
+    }
+
+
+    public function savePassenger($project_id, $name, $gender, $address, $location, $mobile, $email, $map, $user_id) {
+        $id = DB::table('passenger')->insertGetId(
+                [
+                    'employee_name' => $name,
+                    'project_id' => $project_id,
+                    'gender' => $gender,
+                    'address' => $address,
+                    'location' => $location,
+                    'mobile' => $mobile,
+                    'email' => $email,
+                    'map' => $map,
+                    'created_by' => $user_id,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'last_update_by' => $user_id
+                ]
+        );
+        return $id;
+    }
+
 }
