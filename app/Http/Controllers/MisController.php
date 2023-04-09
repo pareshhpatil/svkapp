@@ -268,17 +268,22 @@ class MisController extends Controller
         if (isset($_POST['export'])) {
             $array = json_decode(json_encode($invoice_list), True);
             foreach ($array as $key => $row) {
-                $export[$key]['DATE'] = date('d/m/Y', strtotime($row['date']));
+                $export[$key]['Date'] = date('d/m/Y', strtotime($row['date']));
+				$export[$key]['Package'] = $row['zone'];
+				$export[$key]['Logsheet number'] = $row['logsheet_no'];
                 $export[$key]['Company name'] = $row['company_name'];
-                $export[$key]['LOG SHEET NUMBER'] = $row['logsheet_no'];
-                $export[$key]['NAME'] = $row['employee'];
-                $export[$key]['LOCATION'] = $row['location'];
-                $export[$key]['Details'] = $row['pickdrop'];
-                $export[$key]['Start KMS'] = $row['start_km'];
-                $export[$key]['End KMS'] = $row['end_km'];
-                $export[$key]['Total KMS'] = $row['total_km'];
-                $export[$key]['Shift Time'] = date('h:i', strtotime($row['shift_time']));
-                $export[$key]['Toll'] = $row['toll'];
+				$export[$key]['Car Type'] = $row['car_type'];
+				$export[$key]['Car Number'] = $row['car_no'];
+				$export[$key]['Pickup/Drop'] = $row['pickup_drop'];
+				$export[$key]['Pickup location'] = $row['pickup_location'];
+				$export[$key]['Drop location'] = $row['drop_location'];
+				$export[$key]['Pickup time'] = date('h:i', strtotime($row['pickup_time']));
+				$export[$key]['Drop time'] = date('h:i', strtotime($row['drop_time']));
+				$export[$key]['Toll'] = $row['toll'];
+                
+                $export[$key]['Employee name'] = $row['employee_name'];
+                $export[$key]['Remark'] = $row['remark'];
+                
             }
             $this->exportExcel($export, 'MIS');
         }

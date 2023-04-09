@@ -56,13 +56,18 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+							<th>Logsheet no </th>
                             <th>Company name </th>
+							<th>Car type </th>
+                            <th>Car no</th>
                             <th>Pickup time </th>
                             <th>Drop time </th>
-                            <th>Pickup location </th>
-                            <th>Drop location </th>
-                            <th>Car type </th>
-                            <th>Car no</th>
+                            <th>Pickup  </th>
+                            <th>Drop  </th>
+                            
+							<th>Toll</th>
+							<th>Employee</th>
+							<th>Remark</th>
                             <th style="width: 40px;">Action </th>
                         </tr>
                     </thead>
@@ -70,13 +75,18 @@
                         @foreach ($list as $item)
                         <tr class="odd gradeX">
                             <td>{{$item->date}}</td>
+							<td>{{$item->logsheet_no}}</td>
                             <td>{{$item->company_name}}</td>
+							<td>{{$item->car_type}}</td>
+                            <td>{{$item->car_no}}</td>
                             <td>{{$item->pickup_time}}</td>
                             <td>{{$item->drop_time}}</td>
                             <td>{{$item->pickup_location}}</td>
                             <td>{{$item->drop_location}}</td>
-                            <td>{{$item->car_type}}</td>
-                            <td>{{$item->car_no}}</td>
+                            
+							<td>{{$item->toll}}</td>
+							<td>{{$item->employee_name}}</td>
+							<td>{{$item->remark}}</td>
                             <td>
                                 <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/mis/deletecompanymis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
