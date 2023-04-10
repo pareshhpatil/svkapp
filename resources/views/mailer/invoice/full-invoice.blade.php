@@ -429,6 +429,18 @@
                     </table>
                     <div style="margin-top: 0; font-size: 12px; font-weight: 300;font-style: italic;">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
                         Application and on the Continuation Sheet that are changed to conform with the amount certified.)</div>
+						
+					 <div style="margin-top: 0; font-size: 12px; font-weight: 700">ARCHITECT:</div>
+                    <table style="width:100%">
+			<tr>
+				<td style="width: 70%">
+					<div style="margin-top: 10px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
+				</td>
+				<td style="width: 30%">
+					<div style="margin-top: 10px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
+				</td>
+			</tr>
+		</table>
                     
                     <div style="margin-top: 0; font-size: 12px">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
                         named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of

@@ -415,7 +415,20 @@ that current payment shown herein is now due.</p>
 
     <p class="text-xs font-light mt-1 italic">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
         Application and on the Continuation Sheet that are changed to conform with the amount certified.)</p>
-        <br>
+        <p class="font-bold text-xs mt-1">ARCHITECT:</p>
+        <div class="grid grid-cols-3 gap-2 mt-1">
+            <div class="col-span-2">
+        <p class="font-normal text-xs mt-1 border-b border-gray-600"> By: </p>
+        
+        
+        </div>
+            <div>
+              
+                <p class="font-normal text-xs border-b   border-gray-600 mt-1">Date: </p>
+              
+             
+            </div>
+        </div>
         <p class="text-xs mt-1">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
             named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
             the Owner or Contractor under this Contract.</p>
