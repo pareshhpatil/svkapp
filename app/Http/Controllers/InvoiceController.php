@@ -4856,11 +4856,10 @@ class InvoiceController extends AppController
             if ($type == '703') {
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
-                $particular_details = $this->get702Contents($payment_request_id, $data, 'merchant');
+                $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
             } else {
                 return redirect('/error/invalidlink');
             }
-
             $data = array_merge($data, $particular_details);
             return view('app/merchant/invoice/G' . $type . '/index', $data);
         } else {
@@ -5032,10 +5031,14 @@ class InvoiceController extends AppController
         }
 
         //Check If user have acces to this invoice
-        if (!empty($userRole) && $userRole == 'Admin') {
-            $invoiceAccess = 'full';
+        if ($user_type == 'merchant') {
+            if (!empty($userRole) && $userRole == 'Admin') {
+                $invoiceAccess = 'full';
+            } else {
+                $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
+            }
         } else {
-            $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
+            $invoiceAccess = 'full';
         }
 
         $data['invoice_access'] = $invoiceAccess;
@@ -5069,17 +5072,16 @@ class InvoiceController extends AppController
         return $rowArray;
     }
 
-    public function download_v2($link, $savepdf = 0, $type = null)
+    public function download_v2($link, $savepdf = 0, $type = null, $user_type='merchant')
     {
         ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
-
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             $userRole = Session::get('user_role');
+           
             $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole);
             $data = array_merge($data, $invoice_Data);
-
             if ($type != null) {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
@@ -5099,17 +5101,17 @@ class InvoiceController extends AppController
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
             } else if ($type == '702') {
-                $particular_702_details = $this->get702Contents($payment_request_id, $data, 'merchant');
+                $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
             } else if($type=='full') {
-                $particular_702_details = $this->get702Contents($payment_request_id, $data, 'merchant');
+                $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
                 $attachements=$this->download_attachments($payment_request_id);
                 $data = array_merge($data,$attachements);
             }
-
+           
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
             define("DOMPDF_ENABLE_FONTSUBSETTING", true);
