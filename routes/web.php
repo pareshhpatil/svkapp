@@ -347,7 +347,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('einvoice/errors/{id}',  'EinvoiceController@errorseInvoice');
 
   //code refactor routes 
-  Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
+  //Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
   //Route::get('invoice/view/703/{link}', 'InvoiceController@view703');
   Route::get('invoice/view/{type}/{link}', 'InvoiceController@invoiceView');  //new url for both 702 & 703 view
 
