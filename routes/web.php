@@ -524,7 +524,7 @@ Route::group(['prefix' => 'patron'], function () {
   Route::post('paymentlink/reportthankyou', 'PaymentLinkController@reportUnsubscribe');
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
   //code refactor 
-  Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
+  //Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
   //Route::get('invoice/view/703/{link}/{user_type}', 'InvoiceController@view703');
   //new url for 702 & 703 for patron view
   Route::get('invoice/view/{type}/{link}/{user_type}', 'InvoiceController@invoiceView');
