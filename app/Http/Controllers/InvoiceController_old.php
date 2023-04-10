@@ -38,7 +38,7 @@ use App;
 
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
-class InvoiceController extends AppController
+class InvoiceController_old extends AppController
 {
     private $formatModel;
     use InvoiceFormatTrait;
@@ -1152,6 +1152,177 @@ class InvoiceController extends AppController
         return $currency_icon . $value;
     }
 
+    public function view_g702($link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
+
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if ($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            $info = (array)$info;
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
+            }
+            $info['gtype'] = '702';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if (!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+
+            if ($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+
+            //end code for new design
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+
+            $imgpath = '';
+            if (isset($info['image_path'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+            if (Session::get('success_array')) {
+                $whatsapp_share = $this->getWhatsapptext($info);
+                $success_array = Session::get('success_array');
+                $active_payment = Session::get('has_payment_active');
+                Session::remove('success_array');
+                $info["invoice_success"] = true;
+
+                $info["whatsapp_share"] = $whatsapp_share;
+                foreach ($success_array as $key => $val) {
+                    $info[$key] = $val;
+                }
+                if (Session::get('has_payment_active') == false) {
+                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                }
+                if ($success_array['type'] == 'insert' && $active_payment == false) {
+                    $info["payment_gateway_info"] = true;
+                }
+            }
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            return view('app/merchant/invoice/view/invoice_view_g702', $data);
+        } else {
+        }
+    }
+
+    public function view_g703($link, Request $request)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        $notificationID = $request->get('notification_id');
+
+        if (strlen($payment_request_id) == 10) {
+            $data = Helpers::setBladeProperties('Invoice', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [5, 28]);
+            #get default billing profile
+
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $userRole = Session::get('user_role');
+            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
+            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
+
+            $hasAccess = false;
+            if ($userRole == 'Admin') {
+                $hasAccess = true;
+            } else {
+                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
+                    $hasAccess = true;
+                }
+            }
+
+            if (!$hasAccess) {
+                return redirect('/merchant/no-permission');
+            }
+
+            if (!empty($notificationID)) {
+                /** @var Notification $Notification */
+                $Notification = Notification::findOrFail($notificationID);
+
+                $Notification->markAsRead();
+            }
+
+            $info = (array)$info;
+            $info['gtype'] = '703';
+
+            $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
+
+            if (!empty($offlineResponse)) {
+                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+            }
+            if (!isset($info['payment_request_status'])) {
+                return redirect('/error/invalidlink');
+            }
+            if ($info['payment_request_status'] == '2') {
+                $info['offline_success_transaction'] = $offlineResponse;
+            }
+
+            //end code for new design
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'] ?? '';
+
+            if (isset($info['image_path'])) {
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+            if (Session::get('success_array')) {
+                $whatsapp_share = $this->getWhatsapptext($info);
+                $success_array = Session::get('success_array');
+                $active_payment = Session::get('has_payment_active');
+                Session::remove('success_array');
+                $info["invoice_success"] = true;
+
+                $info["whatsapp_share"] = $whatsapp_share;
+                foreach ($success_array as $key => $val) {
+                    $info[$key] = $val;
+                }
+                if (Session::get('has_payment_active') == false) {
+                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                }
+                if ($success_array['type'] == 'insert' && $active_payment == false) {
+                    $info["payment_gateway_info"] = true;
+                }
+            }
+
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            //dd($data);
+            return view('app/merchant/invoice/view/invoice_view_g703', $data);
+        } else {
+        }
+    }
+
     public function documents($link, $parentnm = '', $sub = '', $docpath = '')
     {
         $payment_request_id = Encrypt::decode($link);
@@ -1787,6 +1958,175 @@ class InvoiceController extends AppController
         }
     }
 
+    public function patronView($link)
+    {
+
+
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+            $info = (array)$info;
+            //if new design empty then added patron link here
+            if (empty($info['design_name']) || is_null($info['design_name'])) {
+                header('Location: /patron/paymentrequest/view/' . $link);
+                die();
+            }
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $plugin = json_decode($info['plugin_value'], 1);
+            if (isset($plugin['has_coupon']) && $plugin['has_coupon'] == 1) {
+                $is_coupon = $this->invoiceModel->getActiveCoupon($info['merchant_user_id']);
+                if ($is_coupon)
+                    $info["is_coupon"] = true;
+                else
+                    $info["is_coupon"] = false;
+            }
+
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+
+            if (isset($info['image_path'])) {
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+
+            if ($info['payment_request_status'] == 6) {
+                $invoice_link = Encrypt::encode($info['converted_request_id']);
+                $info["invoice_link"] = $invoice_link;
+            }
+
+            if (isset($plugin['has_autocollect']) && $plugin['has_autocollect'] == 1) {
+                $parent_request_id = $this->parentModel->getColumnValue('payment_request', 'payment_request_id', $info['payment_request_id'], 'parent_request_id');
+                $subscription_id = $this->parentModel->getColumnValue('subscription', 'payment_request_id', $parent_request_id, 'subscription_id');
+                $subscription_id = $this->parentModel->getColumnValueExtraWhere('autocollect_subscriptions', 'invoice_subscription_id', $subscription_id, 'subscription_id', 1, '1');
+
+                if ($subscription_id != false) {
+                    $plugin['has_autocollect'] = 0;
+                    $plugin['autocollect_plan_id'] = 0;
+                }
+            }
+
+            $fee_id = $this->invoiceModel->getmerchantfeeID($info['merchant_id']);
+            if ($fee_id != false) {
+                $info['fee_id'] = $fee_id;
+            } else {
+                $info['fee_id'] = '';
+            }
+
+            $info['plugin_value'] = json_encode($plugin);
+
+            if ($info['customer_user_id'] != '') {
+                Session::put('patron_type', 1);
+                $info['patron_type'] = 1;
+            } else {
+                Session::put('patron_type', 2);
+                $info['patron_type'] = 2;
+            }
+
+
+            if ($info['customer_user_id'] != $this->user_id) {
+                $info['diff_login'] = '1';
+            }
+
+            $is_online_payment = ($info['merchant_type'] == 2 && $info['legal_complete'] == 1) ? 1 : 0;
+            $info["is_online_payment"] = $is_online_payment;
+            $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
+            Session::put('paidMerchant_request', $paidMerchant_request);
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+
+
+            return view('app/merchant/invoice/view/invoice_view', $data);
+        } else {
+        }
+    }
+    public function patronView703($link, $type)
+    {
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+            $info = (array)$info;
+            $info['gtype'] = $type;
+            //if new design empty then added patron link here
+            // if (empty($info['design_name']) || is_null($info['design_name'])) {
+            //     header('Location: /patron/paymentrequest/view/' . $link);
+            //     die();
+            // }
+
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $plugin = json_decode($info['plugin_value'], 1);
+            if (isset($plugin['has_coupon']) && $plugin['has_coupon'] == 1) {
+                $is_coupon = $this->invoiceModel->getActiveCoupon($info['merchant_user_id']);
+                if ($is_coupon)
+                    $info["is_coupon"] = true;
+                else
+                    $info["is_coupon"] = false;
+            }
+
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+
+            if (isset($info['image_path'])) {
+                if ($info['image_path'] != '') {
+                    $info['image_path'] =  $imgpath;
+                }
+            }
+
+            if ($info['payment_request_status'] == 6) {
+                $invoice_link = Encrypt::encode($info['converted_request_id']);
+                $info["invoice_link"] = $invoice_link;
+            }
+
+            if (isset($plugin['has_autocollect']) && $plugin['has_autocollect'] == 1) {
+                $parent_request_id = $this->parentModel->getColumnValue('payment_request', 'payment_request_id', $info['payment_request_id'], 'parent_request_id');
+                $subscription_id = $this->parentModel->getColumnValue('subscription', 'payment_request_id', $parent_request_id, 'subscription_id');
+                $subscription_id = $this->parentModel->getColumnValueExtraWhere('autocollect_subscriptions', 'invoice_subscription_id', $subscription_id, 'subscription_id', 1, '1');
+
+                if ($subscription_id != false) {
+                    $plugin['has_autocollect'] = 0;
+                    $plugin['autocollect_plan_id'] = 0;
+                }
+            }
+
+            $fee_id = $this->invoiceModel->getmerchantfeeID($info['merchant_id']);
+            if ($fee_id != false) {
+                $info['fee_id'] = $fee_id;
+            } else {
+                $info['fee_id'] = '';
+            }
+
+            $info['plugin_value'] = json_encode($plugin);
+
+            if ($info['customer_user_id'] != '') {
+                Session::put('patron_type', 1);
+                $info['patron_type'] = 1;
+            } else {
+                Session::put('patron_type', 2);
+                $info['patron_type'] = 2;
+            }
+
+
+            if ($info['customer_user_id'] != $this->user_id) {
+                $info['diff_login'] = '1';
+            }
+
+            $is_online_payment = ($info['merchant_type'] == 2 && $info['legal_complete'] == 1) ? 1 : 0;
+            $info["is_online_payment"] = $is_online_payment;
+            $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
+            Session::put('paidMerchant_request', $paidMerchant_request);
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+
+            return view('app/merchant/invoice/view/invoice_view_g' . $type, $data);
+        } else {
+        }
+    }
+
     public function bulkview($link)
     {
 
@@ -1810,6 +2150,489 @@ class InvoiceController extends AppController
         }
     }
 
+    public function download($link, $savepdf = 0, $type = null)
+    {
+        ini_set('max_execution_time', 120);
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, $this->merchant_id);
+            $info = (array)$info;
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            if (isset($info['image_path'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+                if ($info['image_path'] != '') {
+                    try {
+                        $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    } catch (Exception $o) {
+                    }
+                }
+            } else {
+                $info['image_path'] = '';
+            }
+
+            if ($type === '703' || $type === '702') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $arrContextOptions = [
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                            "allow_self_signed" => true,
+                        ]
+                    ];
+
+                    $info['logo'] = base64_encode(file_get_contents($imgpath, false, stream_context_create($arrContextOptions)));
+                } catch (Exception $o) {
+                }
+            }
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            //$data = $this->setdata($data, $info, $banklist, $payment_request_id);
+            //uncommment this for new refactor code 
+            $data = $this->view702($link, 'merchant', 1);
+            $data['info'] = $info;
+            if ($savepdf == 1) {
+
+                $data['viewtype'] = 'pdf';
+                define("DOMPDF_ENABLE_HTML5PARSER", true);
+                define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+                define("DOMPDF_UNICODE_ENABLED", true);
+                define("DOMPDF_DPI", 120);
+                define("DOMPDF_ENABLE_REMOTE", true);
+                $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+                $name = str_replace('-', '', $name);
+                $name = str_replace(':', '', $name);
+                if ($info['template_type'] == 'construction') {
+
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-702', $data);
+                    $pdf->setPaper("a4", "landscape");
+                    $pdf->save(storage_path('app\\pdf\\702' . $name . '.pdf'));
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
+                    $pdf->setPaper("a4", "landscape");
+                    $pdf->save(storage_path('app\pdf\\703' . $name . '.pdf'));
+                }
+
+                return $name;
+            } else {
+                $data['viewtype'] = 'pdf';
+                define("DOMPDF_ENABLE_HTML5PARSER", true);
+                define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+                define("DOMPDF_UNICODE_ENABLED", true);
+                define("DOMPDF_DPI", 120);
+                define("DOMPDF_ENABLE_REMOTE", true);
+                if ($info['template_type'] == 'construction') {
+                    //return view('mailer.invoice.format-' . $type, $data);
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
+                    $pdf->setPaper("a4", "landscape");
+                } else {
+                    $pdf = DOMPDF::loadView('mailer.invoice.' . $info['design_name'], $data);
+                    $pdf->setPaper("a4", "portrait");
+                }
+
+
+                $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+                if ($savepdf == 2) {
+                    return  $pdf->stream();
+                } else {
+                    return $pdf->download($name . '.pdf');
+                }
+            }
+        } else {
+        }
+    }
+
+    public function downloadPatron($link, $savepdf = 0, $type = null)
+    {
+
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+            $info = (array)$info;
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $imgpath = env('APP_URL') . '/uploads/images/logos/' . $info['image_path'];
+            $info['logo'] = '';
+            if (isset($info['image_path'])) {
+                if ($info['image_path'] != '') {
+                    try {
+                        $info['logo'] = base64_encode(file_get_contents($imgpath));
+                    } catch (Exception $o) {
+                    }
+                }
+            }
+            if ($type == '703' || $type == '702') {
+                $imgpath = env('APP_URL') . '/images/logo-703.PNG';
+                try {
+                    $info['logo'] = base64_encode(file_get_contents($imgpath));
+                } catch (Exception $o) {
+                }
+            }
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+            $plugin = json_decode($info['plugin_value'], 1);
+
+            if (isset($plugin['has_coupon']) && $plugin['has_coupon'] == 1) {
+                $is_coupon = $this->invoiceModel->getActiveCoupon($info['merchant_user_id']);
+                if ($is_coupon)
+                    $info["is_coupon"] = true;
+                else
+                    $info["is_coupon"] = false;
+            }
+
+
+            if ($info['payment_request_status'] == 6) {
+                $invoice_link = Encrypt::encode($info['converted_request_id']);
+                $info["invoice_link"] = $invoice_link;
+            }
+
+            if (isset($plugin['has_autocollect']) && $plugin['has_autocollect'] == 1) {
+
+                $parent_request_id = $this->parentModel->getColumnValue('payment_request', 'payment_request_id', $info['payment_request_id'], 'parent_request_id');
+                $subscription_id = $this->parentModel->getColumnValue('subscription', 'payment_request_id', $parent_request_id, 'subscription_id');
+                $subscription_id = $this->parentModel->getColumnValueExtraWhere('autocollect_subscriptions', 'invoice_subscription_id', $subscription_id, 'subscription_id', 1, '1');
+                if ($subscription_id != false) {
+                    $plugin['has_autocollect'] = 0;
+                    $plugin['autocollect_plan_id'] = 0;
+                }
+            }
+
+            $fee_id = $this->invoiceModel->getmerchantfeeID($info['merchant_id']);
+            if ($fee_id != false) {
+                $info['fee_id'] = $fee_id;
+            } else {
+                $info['fee_id'] = '';
+            }
+
+            $info['plugin_value'] = json_encode($plugin);
+
+            if ($info['customer_user_id'] != '') {
+                Session::put('patron_type', 1);
+                $info['patron_type'] = 1;
+            } else {
+                Session::put('patron_type', 2);
+                $info['patron_type'] = 2;
+            }
+            $user_id = Session::get('userid');
+
+            if ($info['customer_user_id'] != $this->user_id) {
+                $info['diff_login'] = '1';
+            }
+
+            $is_online_payment = ($info['merchant_type'] == 2 && $info['legal_complete'] == 1) ? 1 : 0;
+            $info["is_online_payment"] = $is_online_payment;
+            $paidMerchant_request = ($is_online_payment == 1) ? TRUE : FALSE;
+            Session::put('paidMerchant_request', $paidMerchant_request);
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+
+            if ($savepdf == 2) {
+                $data['viewtype'] = 'print';
+                if ($info['template_type'] == 'construction') {
+
+                    return view('mailer/invoice/format-' . $type, $data);
+                } else {
+                    return view('mailer/invoice/' . $info['design_name'], $data);
+                }
+                die();
+            } else {
+
+                $data['viewtype'] = 'pdf';
+                define("DOMPDF_ENABLE_HTML5PARSER", true);
+                define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+                define("DOMPDF_UNICODE_ENABLED", true);
+                define("DOMPDF_DPI", 120);
+                define("DOMPDF_ENABLE_REMOTE", true);
+                if ($info['template_type'] == 'construction') {
+                    $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type, $data);
+                    $pdf->setPaper("a4", "landscape");
+                } else {
+                    $pdf = DOMPDF::loadView('mailer.invoice.' . $info['design_name'], $data);
+                    $pdf->setPaper("a4", "portrait");
+                }
+                $name = $info['customer_name'] . '_' . date('Y-M-d H:m:s');
+                return $pdf->download($name . '.pdf');
+            }
+        } else {
+        }
+    }
+
+    /**
+     * @param $link
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function downloadFullPatron($link)
+    {
+        ini_set('max_execution_time', 120);
+        $payment_request_id = Encrypt::decode($link);
+
+        if (strlen($payment_request_id) == 10) {
+            $data = $this->setBladeProperties('Invoice view', [], [3]);
+
+            #get default billing profile
+            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
+            $info = (array)$info;
+
+            $banklist = $this->parentModel->getConfigList('Bank_name');
+            $banklist = json_decode($banklist, 1);
+            $info['logo'] = '';
+
+            $logoPath = env('APP_URL') . '/images/logo-703.PNG';
+            try {
+                $arrContextOptions = [
+                    "ssl" => [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false,
+                        "allow_self_signed" => true,
+                    ]
+                ];
+
+                $info['logo'] = base64_encode(file_get_contents($logoPath, false, stream_context_create($arrContextOptions)));
+            } catch (Exception $o) {
+            }
+
+            $info['signimg'] = '';
+            if (isset($info['signature']['signature_file'])) {
+                $imgpath = env('APP_URL') . '/uploads/images/landing/' . $info['signature']['signature_file'];
+                if ($info['signature']['signature_file'] != '') {
+                    $info['signimg'] = base64_encode(file_get_contents($imgpath));
+                }
+            }
+
+            $IAM_KEY = config('filesystems.disks.s3_expense.key');
+            $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
+            $region = config('filesystems.disks.s3_expense.region');
+
+            $s3 = S3Client::factory(
+                array(
+                    'credentials' => array(
+                        'key' => $IAM_KEY,
+                        'secret' => $IAM_SECRET
+                    ),
+                    'version' => 'latest',
+                    'region'  => $region
+                )
+            );
+
+            $invoicePaymentRequest = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $payment_request_id);
+
+            $invoiceAttachments = [];
+            if (!empty($invoicePaymentRequest->plugin_value)) {
+                $pluginValue = json_decode($invoicePaymentRequest->plugin_value);
+                if (isset($pluginValue->has_upload)) {
+                    //uat.expense/invoices/download 190637995.jpeg
+                    $files = $pluginValue->files;
+                    foreach ($files as $file) {
+                        if (!empty($file)) {
+                            $fileUrlExplode = explode('/', $file);
+                            $fileLastFromURL = end($fileUrlExplode);
+                            $fileExplode = explode('.', $fileLastFromURL);
+
+                            $fileName = Arr::first($fileExplode);
+                            $fileType = Arr::last($fileExplode);
+                            $fileContent = '';
+
+                            if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                $filePath = 'invoices/' . $fileLastFromURL;
+                                $bucketName = 'uat.expense';
+
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $bucketName,
+                                    'Key'    => $filePath
+                                ));
+
+                                $body = $result->get('Body');
+                                $fileContent = base64_encode($body->getContents());
+                            }
+
+                            $invoiceAttachments[] = [
+                                'fileName' => $fileName,
+                                'fileNameSlug' => Str::slug($fileName, '-'),
+                                'fileType' => $fileType,
+                                'fileContent' => $fileContent,
+                                'url' => $file
+                            ];
+                        }
+                    }
+                }
+            }
+
+
+            $info['invoice_attachments'] = $invoiceAttachments;
+
+
+            $mandatoryDocumentAttachments = [];
+            $pdf_link_array = [];
+            if (isset($pluginValue->has_mandatory_upload)) {
+                $oMerger = PDFMerger::init();
+                if ($pluginValue->has_mandatory_upload == 1) {
+                    foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
+
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
+
+                        foreach ($mandatory_files as $file) {
+                            if (!empty($file->file_url)) {
+                                $fileUrlExplode = explode('/', $file->file_url);
+                                $fileLastFromURL = end($fileUrlExplode);
+                                $fileExplode = explode('.', $fileLastFromURL);
+
+                                $fileName = Arr::first($fileExplode);
+                                $fileType = Arr::last($fileExplode);
+                                $fileContent = '';
+
+                                if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 'uat.expense';
+
+                                    $result = $s3->getObject(array(
+                                        'Bucket' => $bucketName,
+                                        'Key'    => $filePath
+                                    ));
+
+                                    $body = $result->get('Body');
+                                    $fileContent = base64_encode($body->getContents());
+                                }
+
+                                if ($fileType == 'pdf') {
+                                    $filePath = 'invoices/' . $fileLastFromURL;
+                                    $bucketName = 's3_expense';
+
+                                    $source_path = 'invoices/' . basename($file->file_url);
+                                    $file_content = Storage::disk($bucketName)->get($source_path);
+                                    Storage::disk('local')->put($fileName . '.' . $fileType, $file_content);
+
+                                    $path = Storage::disk('local')->path($fileName . '.' . $fileType);
+                                    array_push($pdf_link_array, $path);
+                                }
+
+                                $mandatoryDocumentAttachments[] = [
+                                    'fileName' => $fileName,
+                                    'name' => $mandatory_data->name,
+                                    'fileNameSlug' => Str::slug($fileName, '-'),
+                                    'fileType' => $fileType,
+                                    'fileContent' => $fileContent,
+                                    'url' => $file->file_url
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            $info['mandatory_document_attachments'] = $mandatoryDocumentAttachments;
+
+            $constructionParticulars = $this->parentModel->getTableList('invoice_construction_particular', 'payment_request_id', $payment_request_id);
+
+            $billCodeAttachments = [];
+            foreach ($constructionParticulars as $constructionParticular) {
+                $billCode = $this->parentModel->getTableRow(ITable::CSI_CODE, IColumn::ID, $constructionParticular->bill_code);
+                $particularAttachments = json_decode($constructionParticular->attachments);
+
+                $billCodeAttachments[$billCode->id] = [
+                    'billCodeId' => $billCode->id,
+                    'billCode' => $billCode->code,
+                    'billName' => $billCode->title,
+                    'attachments' => []
+                ];
+
+                if (!empty($particularAttachments)) {
+                    foreach ($particularAttachments as $particularAttachment) {
+                        $urlExplode = explode('/', $particularAttachment);
+                        $file = end($urlExplode);
+                        $fileExplode = explode('.', $file);
+
+                        $fileName = Arr::first($fileExplode);
+                        $fileType = Arr::last($fileExplode);
+                        $fileContent = '';
+
+                        if ($fileType == 'jpeg' || $fileType == 'jpg' || $fileType == 'png') {
+                            $filePath = 'invoices/' . $billCode->id . '/' . $file;
+                            $bucketName = 'uat.expense';
+
+                            $result = $s3->getObject(array(
+                                'Bucket' => $bucketName,
+                                'Key'    => $filePath
+                            ));
+
+                            $body = $result->get('Body');
+                            $fileContent = base64_encode($body->getContents());
+                        }
+
+
+                        $billCodeAttachments[$billCode->id]['attachments'][] = [
+                            'fileName' => $fileName,
+                            'fileNameSlug' => Str::slug($fileName, '-'),
+                            'fileType' => $fileType,
+                            'fileContent' => $fileContent,
+                            'url' => $particularAttachment
+                        ];
+                    }
+                }
+            }
+
+            $info['bill_code_attachments'] = $billCodeAttachments;
+            $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
+
+            $data['viewtype'] = 'pdf';
+            define("DOMPDF_ENABLE_HTML5PARSER", true);
+            define("DOMPDF_ENABLE_FONTSUBSETTING", true);
+            define("DOMPDF_UNICODE_ENABLED", true);
+            define("DOMPDF_DPI", 120);
+            define("DOMPDF_ENABLE_REMOTE", true);
+
+            if ($info['template_type'] == 'construction') {
+                $pdf = App::make('dompdf.wrapper');
+                $data['pdf'] = $pdf;
+                $pdf->loadView('mailer.invoice.full-invoice', $data);
+                $pdf->setPaper("a4", "landscape");
+            }
+
+            $name = str_replace(" ", "_", $info['customer_name']) . '_' . time() . '.pdf';
+
+            if (count($pdf_link_array) > 0) {
+                Storage::disk('local')->put($name, $pdf->output());
+                $DOMpath = Storage::disk('local')->path($name);
+                $oMerger->addPDF($DOMpath, 'all', 'L');
+
+                foreach ($pdf_link_array as $path) {
+                    $oMerger->addPDF($path, 'all');
+                }
+
+                $oMerger->merge();
+                $oMerger->setFileName($name);
+                $oMerger->save();
+                return $oMerger->download();
+            } else {
+                return $pdf->download($name);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Payment request ID'
+        ]);
+    }
 
     /**
      * @param $link
@@ -3464,7 +4287,7 @@ class InvoiceController extends AppController
             }
         }
 
-        return redirect('/merchant/invoice/view/703/' . Encrypt::encode($request_id));
+        return redirect('/merchant/invoice/viewg703/' . Encrypt::encode($request_id));
     }
 
     function storeRevision($req_id, $revision, $template_type = 'construction')
