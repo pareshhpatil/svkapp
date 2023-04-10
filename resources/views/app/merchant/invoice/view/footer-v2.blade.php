@@ -53,8 +53,8 @@ $validate=(array)$validate;
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/full/{{$url}}">
-                            Download Full PDF
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}/0/full">
+                            Download Full PDF fff
                         </a>
                     </li>
                 </ul>
@@ -81,13 +81,13 @@ $validate=(array)$validate;
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download-v2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
                             Download {{$gtype}}
                         </a>
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download-v2/{{$url}}/0/full">
                             Download Full PDF
                         </a>
                     </li>
