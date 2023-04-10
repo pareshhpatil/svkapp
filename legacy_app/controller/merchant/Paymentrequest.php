@@ -226,7 +226,8 @@ class Paymentrequest extends Controller
                 $this->setInvalidLinkError();
             }
             if ($info['template_type'] == 'construction') {
-                header('Location: /merchant/invoice/viewg703/' . $link);
+                header('Location: /merchant/invoice/view/703/' . $link);
+                //header('Location: /merchant/invoice/viewg703/' . $link);
                 die();
             }
             if (!empty($info['design_name'])) {

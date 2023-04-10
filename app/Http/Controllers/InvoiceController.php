@@ -4040,7 +4040,9 @@ class InvoiceController extends AppController
         $grand_total_stored_material = 0;
         $grand_total_total_completed = 0;
         $grand_total_balance_to_finish = 0;
+        $grand_total_g_per = 0;
         $grand_total_retainge = 0;
+        $particularRows = array();
         if (!empty($particular_details)) {
             foreach ($particular_details as $ck => $val) {
                 //dd($val);
