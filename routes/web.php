@@ -173,7 +173,7 @@ Route::post('/merchant/registersave', 'GettingStarted@merchantRegister');
   });
  */
 Route::get('merchant/invoice/download/full/{link}', 'InvoiceController@downloadFullInvoice');
-
+Route::get('invoice/download-v2/full/{link}', 'InvoiceController@downloadFull_v2');
 Route::post('/autocollect/subscription/payment', 'AutocollectController@paymentstatus');
 
 Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
@@ -348,7 +348,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //code refactor routes 
   Route::get('invoice/view/702/{link}', 'InvoiceController@view702');
-  Route::get('invoice/view/703/{link}', 'InvoiceController@view703');
+  //Route::get('invoice/view/703/{link}', 'InvoiceController@view703');
+  Route::get('invoice/view/{type}/{link}', 'InvoiceController@invoiceView');  //new url for both 702 & 703 view
+
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController@view_g702');
@@ -523,7 +525,9 @@ Route::group(['prefix' => 'patron'], function () {
   Route::get('paymentlink/build/{payment_request_id}', 'PaymentLinkController@build');
   //code refactor 
   Route::get('invoice/view/702/{link}/{user_type}', 'InvoiceController@view702');
-  Route::get('invoice/view/703/{link}/{user_type}', 'InvoiceController@view703');
+  //Route::get('invoice/view/703/{link}/{user_type}', 'InvoiceController@view703');
+  //new url for 702 & 703 for patron view
+  Route::get('invoice/view/{type}/{link}/{user_type}', 'InvoiceController@invoiceView');
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController@patronView');

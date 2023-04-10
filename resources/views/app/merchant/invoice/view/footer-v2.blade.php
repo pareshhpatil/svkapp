@@ -53,7 +53,7 @@ $validate=(array)$validate;
                     </li>
                     @endif
                     <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/merchant/invoice/download/full/{{$url}}">
+                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/full/{{$url}}">
                             Download Full PDF
                         </a>
                     </li>
