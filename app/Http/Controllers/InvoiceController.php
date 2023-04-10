@@ -1160,45 +1160,29 @@ class InvoiceController extends AppController
             $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
             #get default billing profile
 
-            $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
-
+            //$info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $userRole = Session::get('user_role');
-            $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
-            $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-
-            $hasAccess = false;
-            if ($userRole == 'Admin') {
-                $hasAccess = true;
-            } else {
-                if (in_array($info->payment_request_id, array_keys($invoicePrivilegesAccessIDs))) {
-                    $hasAccess = true;
-                }
-                if (in_array($info->contract_id, array_keys($contractPrivilegesAccessIDs))) {
-                    $hasAccess = true;
-                }
-            }
-
-            if (!$hasAccess) {
-                return redirect('/merchant/no-permission');
-            }
-
+            $data['user_type'] = 'merchant';
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $data['user_type']);
+            $data = array_merge($data, $invoice_Data);
+            
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
 
-            $banklist = $this->parentModel->getConfigList('Bank_name');
-            $banklist = json_decode($banklist, 1);
+            // $banklist = $this->parentModel->getConfigList('Bank_name');
+            // $banklist = json_decode($banklist, 1);
 
-            $info = (array)$info;
-            $info['its_from'] = 'real';
-            $info['gtype'] = 'attachment';
+            
+            $data['its_from'] = 'real';
+            $data['gtype'] = 'attachment';
 
             $offlineResponse = $this->invoiceModel->getPaymentRequestOfflineResponse($payment_request_id, $this->merchant_id);
 
             if (!empty($offlineResponse)) {
-                $info['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
+                $data['offline_response_id'] = Encrypt::encode($offlineResponse->offline_response_id) ?? '';
             }
 
-            if ($info['payment_request_status'] == '2') {
-                $info['offline_success_transaction'] = $offlineResponse;
+            if ($data['payment_request_status'] == '2') {
+                $data['offline_success_transaction'] = $offlineResponse;
             }
 
 
@@ -1346,8 +1330,8 @@ class InvoiceController extends AppController
             $selectedDoc[1] = $sub;
             $selectedDoc[2] = $docpath;
             $data['selectedDoc'] = $selectedDoc;
-            $data = $this->setdata($data, $info, $banklist, $payment_request_id);
-
+            $data['staging'] = 0;
+            //$data = $this->setdata($data, $info, $banklist, $payment_request_id);
             return view('app/merchant/invoice/documents', $data);
         } else {
         }

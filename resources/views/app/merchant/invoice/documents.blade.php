@@ -1,6 +1,6 @@
 @php
 $header='app.master';
-if($info['user_type']=='merchant')
+if($user_type=='merchant')
 {
 $header='app.master';}
 else{
@@ -39,18 +39,18 @@ $header='app.patron.invoice.invoice-master';}
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
 @section('content')
-@if($info['user_type']=='merchant')
+@if($user_type=='merchant')
 <div class="page-content" style="text-align: -webkit-center !important;">
     @else
     <div class="w-full flex flex-col  justify-center" style="background-color: #F7F8F8;min-height: 344px;    padding: 20px 10px 20px 10px;">
         @endif
 
-        @if($info['user_type']=='merchant')
+        @if($user_type=='merchant')
         <div class="page-bar">
 
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render('home.invoice.view','Invoice') }}
-            @if ($info['payment_request_status']==11)
+            @if ($payment_request_status==11)
             <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;width: auto;background: transparent;">Step 3 of 3</span>
             @endif
         </div>
@@ -65,32 +65,32 @@ $header='app.patron.invoice.invoice-master';}
             </div>
 
             <div class="w-full mb-2 " style="max-width: 1400px;">
-                @if ($info['payment_request_status']==11)
+                @if ($payment_request_status==11)
                 <div class="alert alert-block alert-success fade in">
-                    <p>@if($info['invoice_type']==1) Invoice @else estimate @endif preview</p>
+                    <p>@if($invoice_type==1) Invoice @else estimate @endif preview</p>
                 </div>
                 @endif
-                <div class="tabbable-line" @if($info['user_type']!='merchant' ) style="padding-left: 0px;" @endif>
+                <div class="tabbable-line" @if($user_type!='merchant' ) style="padding-left: 0px;" @endif>
                     <ul class="nav nav-tabs">
-                        @if($info['user_type']!='merchant')
+                        @if($user_type!='merchant')
                         <li>
-                            <a href="/patron/invoice/view/702/{{$info['Url']}}/patron">702</a>
+                            <a href="/patron/invoice/view/702/{{$url}}/patron">702</a>
                         </li>
                         <li>
-                            <a href="/patron/invoice/view/703/{{$info['Url']}}/patron">703</a>
+                            <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
                         </li>
                         <li class="active">
-                            <a href="/patron/invoice/document/{{$info['Url']}}">Attached files</a>
+                            <a href="/patron/invoice/document/{{$url}}">Attached files</a>
                         </li>
                         @else
                         <li>
-                            <a href="/merchant/invoice/view/702/{{$info['Url']}}">702</a>
+                            <a href="/merchant/invoice/view/702/{{$url}}">702</a>
                         </li>
                         <li>
-                            <a href="/merchant/invoice/view/703/{{$info['Url']}}">703</a>
+                            <a href="/merchant/invoice/view/703/{{$url}}">703</a>
                         </li>
                         <li class="active">
-                            <a href="/merchant/invoice/document/{{$info['Url']}}">Attached files</a>
+                            <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
                         </li>
                         @endif
                     </ul>
@@ -122,7 +122,7 @@ $header='app.patron.invoice.invoice-master';}
                                 $folder=$folder.'_'.basename($item);
                                 @endphp
                                 <div>
-                                    <h2 class="text-sm text-right  font-normal  text-blue-800"> <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank"><i class="ml-2 popovers fa fa-download support blue" data-placement="left" data-container="body" data-trigger="hover" data-content="Download file" data-original-title="" title=""></i></a> <a href="/merchant/invoice/document/download/all/{{$info['Url']}}" target="_blank"><i class="ml-2 popovers fa fa-archive support blue" style="font-size:18px" data-container="body" data-trigger="hover" data-placement="left" data-content="Download all files" data-original-title="" title=""></i></a>
+                                    <h2 class="text-sm text-right  font-normal  text-blue-800"> <a href="/merchant/invoice/document/download/{{$folder}}" target="_blank"><i class="ml-2 popovers fa fa-download support blue" data-placement="left" data-container="body" data-trigger="hover" data-content="Download file" data-original-title="" title=""></i></a> <a href="/merchant/invoice/document/download/all/{{$url}}" target="_blank"><i class="ml-2 popovers fa fa-archive support blue" style="font-size:18px" data-container="body" data-trigger="hover" data-placement="left" data-content="Download all files" data-original-title="" title=""></i></a>
                                     </h2>
                                 </div>
                             </div>
@@ -153,17 +153,25 @@ $header='app.patron.invoice.invoice-master';}
             </div>
             @endif
 
-            @php
+            {{-- @php
                 $footers='app.merchant.invoiceformat.invoice_footer';
                 if($info['user_type']=='merchant')
                 {
                 $footers='app.merchant.invoiceformat.invoice_footer';}
                 else{
                 $footers='app.patron.invoice.invoice-footer';}
+            @endphp --}}
+            @php
+            $footers='app.merchant.invoice.view.footer-v2';
+            if($user_type=='merchant')
+            {
+            $footers='app.merchant.invoice.view.footer-v2';}
+            else{
+            $footers='app.patron.invoice.footer-v2';}
             @endphp
 
-            @if($info['its_from']!='preview')
-                @if($info['staging']==0)
+            @if($its_from!='preview')
+                @if($staging==0)
                 <div class="w-full mt-1" style="max-width: 1400px">
                     @include($footers)
                 </div>
