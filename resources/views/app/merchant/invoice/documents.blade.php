@@ -74,20 +74,20 @@ $header='app.patron.invoice.invoice-master';}
                     <ul class="nav nav-tabs">
                         @if($info['user_type']!='merchant')
                         <li>
-                            <a href="/patron/invoice/view/{{$info['Url']}}/702">702</a>
+                            <a href="/patron/invoice/view/702/{{$info['Url']}}/patron">702</a>
                         </li>
                         <li>
-                            <a href="/patron/invoice/view/{{$info['Url']}}/703">703</a>
+                            <a href="/patron/invoice/view/703/{{$info['Url']}}/patron">703</a>
                         </li>
                         <li class="active">
                             <a href="/patron/invoice/document/{{$info['Url']}}">Attached files</a>
                         </li>
                         @else
                         <li>
-                            <a href="/merchant/invoice/viewg702/{{$info['Url']}}">702</a>
+                            <a href="/merchant/invoice/view/702/{{$info['Url']}}">702</a>
                         </li>
                         <li>
-                            <a href="/merchant/invoice/viewg703/{{$info['Url']}}">703</a>
+                            <a href="/merchant/invoice/view/703/{{$info['Url']}}">703</a>
                         </li>
                         <li class="active">
                             <a href="/merchant/invoice/document/{{$info['Url']}}">Attached files</a>
