@@ -5335,9 +5335,12 @@ class InvoiceController extends AppController
 
             $data['bill_code_attachments'] = $billCodeAttachments;
 
-            $particular_details = $this->get703Contents($payment_request_id);
-            $data = array_merge($data, $particular_details);
-
+            $particular_702_details = $this->get702Contents($payment_request_id, $data, 'merchant');
+            $data = array_merge($data, $particular_702_details);
+            
+            $particular_703_details = $this->get703Contents($payment_request_id);
+            $data = array_merge($data, $particular_703_details);
+            
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
             define("DOMPDF_ENABLE_FONTSUBSETTING", true);
