@@ -4763,15 +4763,17 @@ class InvoiceController extends AppController
         $data['project_id'] = $project->id;
         $data['project_code'] = $project->project_id;
         $data['link'] = $link;
+        
         $data['particulars'] = $particulars;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
+        $data['csi_codes_list'] = json_decode($data['csi_codes_array'], 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
 
-        return view('app/merchant/invoice/invoice-particular-new', $data);
+        return view('app/merchant/invoice/invoice-particular', $data);
     }
 
     private function getKeyArrayJson($array, $key)
