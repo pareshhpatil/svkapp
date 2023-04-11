@@ -334,21 +334,19 @@
                                 </table>
                             </td>
                             <td style="width:50%; padding-left: 10px;">
-
-
                                 <div style="font-size: 12px">The undersigned Contractor certifies that to the best of the Contractor’s knowledge, information
                                     and belief the Work covered by this Application for Payment has been completed in accordance
                                     with the Contract Documents, that all amounts have been paid by the Contractor for Work for
                                     which previous Certificates for Payment were issued and payments received from the Owner, and
                                     that current payment shown herein is now due.</div>
-                                <div style="margin-top: 5px; font-size: 14px; font-weight: 700">CONTRACTOR:</div>
+                                <div style="margin-top: 0px; font-size: 14px; font-weight: 700">CONTRACTOR:</div>
                                 <table style="width:100%">
                                     <tr>
                                         <td style="width: 70%">
-                                            <div style="margin-top: 5px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
                                         </td>
                                         <td style="width: 30%">
-                                            <div style="margin-top: 5px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
                                         </td>
                                     </tr>
                                 </table>
@@ -379,10 +377,10 @@
                                 <table style="width:100%">
                                     <tr>
                                         <td style="width: 70%">
-                                            <div style="margin-top: 5px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
                                         </td>
                                         <td style="width: 30%">
-                                            <div style="margin-top: 5px;margin-bottom: 5px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
                                         </td>
                                     </tr>
                                 </table>
