@@ -4,14 +4,15 @@
     </td>
     <td class="border-r border-l td-703 text-left">
         @if (isset($group_name))
+            @php $groupName=str_replace(' ', '_', strlen($group_name) > 7 ? substr($group_name, 0, 7) : $group_name) @endphp
             <p class="text-sm">{{ $rowArray['description'] }}  @if (!empty($rowArray['attachment']))
-                <a href="/{{ $user_type }}/invoice/document/{{ $url }}/{{ $group_name }}/{{str_replace(' ', '_', strlen($rowArray['code']) > 7 ? substr($rowArray['code'], 0, 7) : $rowArray['code'])}}/{{ $rowArray['attachment'] }}">
+                <a href="/invoice/document/{{$user_type}}/{{$url}}/{{ $groupName }}/{{str_replace(' ', '_', strlen($rowArray['code']) > 7 ? substr($rowArray['code'], 0, 7) : $rowArray['code'])}}/{{ $rowArray['attachment'] }}">
                     <i class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover" data-content="{{ $rowArray['files'] }}" aria-hidden="true"></i></a>
                 @endif
             </p>
         @else
             <p class="text-sm">{{ $rowArray['description'] }}  @if (!empty($rowArray['attachment']))
-                <a href="/{{ $user_type }}/invoice/document/{{ $url }}/{{str_replace(' ', '_', strlen($rowArray['code']) > 7 ? substr($rowArray['code'], 0, 7) : $rowArray['code']) }}/{{ $rowArray['attachment'] }}">
+                <a href="/invoice/document/{{$user_type}}/{{$url}}/{{str_replace(' ', '_', strlen($rowArray['code']) > 7 ? substr($rowArray['code'], 0, 7) : $rowArray['code']) }}/{{ $rowArray['attachment'] }}">
                     <i class="fa fa-paperclip popovers" data-placement="right" data-container="body" data-trigger="hover" data-content="{{ $rowArray['files'] }}" aria-hidden="true"></i></a>
                 @endif
             </p>
