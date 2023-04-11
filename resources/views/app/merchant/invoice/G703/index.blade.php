@@ -57,7 +57,7 @@ $header='app.patron.invoice.invoice-master';
 
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
+{{-- <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script> --}}
 <script src="/assets/admin/layout/scripts/transaction.js?version=16456140396" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/invoice.js?version=1649936891" type="text/javascript"></script>
 
