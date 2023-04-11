@@ -3618,6 +3618,7 @@ class InvoiceController extends AppController
             $plugin_array['include_store_materials'] = 0;
         }
         $order_id_array = [];
+        
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
             $particulars = json_decode($contract->particulars);
@@ -3759,13 +3760,13 @@ class InvoiceController extends AppController
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
-                $particulars[$k]['sort_order'] = $row['pint'];
                 if (isset($row['pint'])) {
                     $int = $row['pint'];
                 } else {
                     $particulars[$k]['pint'] = $int + 1;
                     $int = $int + 1;
                 }
+                $particulars[$k]['sort_order'] = $int;
             }
         } else {
             $type = 2;
