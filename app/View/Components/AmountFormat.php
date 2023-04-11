@@ -26,7 +26,7 @@ class AmountFormat extends Component
     public function render()
     {
         if($this->amount < 0) {
-            $this->amount = str_replace('-','',number_format($this->amount,2));
+            $this->amount = '('.str_replace('-','',number_format($this->amount,2)).')';
         } else {
             $this->amount = number_format($this->amount, 2);
         }
