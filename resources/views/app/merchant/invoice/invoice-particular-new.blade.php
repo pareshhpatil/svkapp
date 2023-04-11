@@ -156,6 +156,10 @@
             opacity: 0;
             visibility: hidden;
         }
+
+        .sorted_table_tr {
+            left: 20px !important;
+        }
     </style>
 
 
