@@ -78,15 +78,21 @@
     function myFunction(parent, id) {
 
         var list = {!! $docjson !!};
-
+        
         for (var i = 0; i < list.length; i++) {
             var filenm = list[i]['id'];
+           
             if (parent != filenm) {
-                var text = document.getElementById("ul" + filenm);
-                text.style.display = "none";
-                var ele = document.getElementById("arrow" + filenm);
-                ele.classList.remove('fa', 'fa-angle-down');
-                ele.classList.add('fa', 'fa-angle-right');
+                try {
+                    var text = document.getElementById("ul" + filenm);
+                    text.style.display = "none";
+                    var ele = document.getElementById("arrow" + filenm);
+                    ele.classList.remove('fa', 'fa-angle-down');
+                    ele.classList.add('fa', 'fa-angle-right');
+                } catch(o) {
+
+                }
+                
             }
         }
 
