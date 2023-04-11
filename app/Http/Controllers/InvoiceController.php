@@ -1152,7 +1152,7 @@ class InvoiceController extends AppController
         return $currency_icon . $value;
     }
 
-    public function documents($link, $parentnm = '', $sub = '', $docpath = '')
+    public function documents($user_type="merchant",$link, $parentnm = '', $sub = '', $docpath = '')
     {
         $payment_request_id = Encrypt::decode($link);
 
@@ -1162,8 +1162,8 @@ class InvoiceController extends AppController
 
             //$info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $userRole = Session::get('user_role');
-            $data['user_type'] = 'merchant';
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $data['user_type']);
+            $data['user_type'] = $user_type;
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $user_type);
             $data = array_merge($data, $invoice_Data);
             
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
@@ -1507,7 +1507,6 @@ class InvoiceController extends AppController
 
     public function documentsPatron($link, $parentnm = '', $sub = '', $docpath = '')
     {
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -4004,7 +4003,7 @@ class InvoiceController extends AppController
         $notificationID = $request->get('notification_id');
 
         if (strlen($payment_request_id) == 10) {
-            $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
+            $data = Helpers::setBladeProperties('Invoice', ['template'], [5, 28]);
             $data['gtype'] = $type;
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;

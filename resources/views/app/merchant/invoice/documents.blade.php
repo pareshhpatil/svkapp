@@ -32,7 +32,7 @@ $header='app.patron.invoice.invoice-master';}
 
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
+{{-- <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script> --}}
 <script src="/assets/admin/layout/scripts/transaction.js?version=16456140396" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/invoice.js?version=1649936891" type="text/javascript"></script>
 
@@ -80,7 +80,7 @@ $header='app.patron.invoice.invoice-master';}
                             <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
                         </li>
                         <li class="active">
-                            <a href="/patron/invoice/document/{{$url}}">Attached files</a>
+                            <a href="/invoice/document/patron/{{$url}}">Attached files</a>
                         </li>
                         @else
                         <li>
@@ -90,7 +90,7 @@ $header='app.patron.invoice.invoice-master';}
                             <a href="/merchant/invoice/view/703/{{$url}}">703</a>
                         </li>
                         <li class="active">
-                            <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
+                            <a href="/invoice/document/merchant/{{$url}}">Attached files</a>
                         </li>
                         @endif
                     </ul>
