@@ -197,12 +197,21 @@
             </p>
             <p class="font-bold text-sm mt-1">CONTRACTOR:</p>
             <div class="grid grid-cols-3 gap-2 mt-1">
+                <div class="col-span-2">
+                    <p class="font-normal text-xs mt-1 border-b border-gray-600"> By: </p>
+                </div>
+                <div>
+                    <p class="font-normal text-xs border-b border-gray-600 mt-1">Date: </p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mt-1">
             </div>
             <p class="text-xs mt-1">State of: </p>
             <p class="text-xs mt-2">County of:</p>
             <p class="text-xs mt-2">Subscribed and sworn to before me this <span class="ml-8"> day of</span></p>
             <p class="text-xs mt-2">Notary Public:</p>
             <p class="text-xs mt-1">My commission expires:</p>
+           
             <div class="w-full h-0.5 bg-gray-900 mt-2 "></div>
             <h4 class="font-bold mt-1">ARCHITECT’S CERTIFICATE FOR PAYMENT</h4>
             <p class="text-xs">In accordance with the Contract Documents, based on on-site observations and the data comprising this application, the Architect certifies to the Owner that to the best of the Architect’s knowledge,
@@ -221,7 +230,15 @@
             <p class="text-xs font-light mt-1 italic">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
                 Application and on the Continuation Sheet that are changed to conform with the amount certified.)
             </p>
-            <br>
+            <p class="font-bold text-xs mt-1">ARCHITECT:</p>
+            <div class="grid grid-cols-3 gap-2 mt-1">
+                <div class="col-span-2">
+                    <p class="font-normal text-xs mt-1 border-b border-gray-600"> By: </p>
+                </div>
+                <div>
+                    <p class="font-normal text-xs border-b   border-gray-600 mt-1">Date: </p>
+                </div>
+            </div>
             <p class="text-xs mt-1">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
                 named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
                 the Owner or Contractor under this Contract.

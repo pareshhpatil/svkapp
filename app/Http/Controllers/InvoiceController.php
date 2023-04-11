@@ -913,9 +913,9 @@ class InvoiceController extends AppController
         $data['last_month_co_amount_negative'] =  $this->formatInvoiceValues($changOrderData['last_month_co_amount_negative'], $data['currency_icon']);
         $data['this_month_co_amount_positive'] =   $this->formatInvoiceValues($changOrderData['this_month_co_amount_positive'], $data['currency_icon']);
         $data['this_month_co_amount_negative'] =  $this->formatInvoiceValues($changOrderData['this_month_co_amount_negative'], $data['currency_icon']);
-        $data['total_co'] = $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount'];
-        $data['total_co_amount_positive'] = $changOrderData['total_co_amount_positive'];
-        $data['total_co_amount_negative'] = $changOrderData['total_co_amount_negative'];
+        $data['total_co'] = $this->formatInvoiceValues($changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount'], $data['currency_icon']);
+        $data['total_co_amount_positive'] = $this->formatInvoiceValues($changOrderData['total_co_amount_positive'], $data['currency_icon']);
+        $data['total_co_amount_negative'] = $this->formatInvoiceValues($changOrderData['total_co_amount_negative'], $data['currency_icon']);
 
         $data["total_complete_stored"] =   $this->formatInvoiceValues($construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'], $data['currency_icon']);
         $data["original_contract_amount"] =  $this->formatInvoiceValues($construction_details['original_contract_amount'], $data['currency_icon']);
@@ -940,12 +940,10 @@ class InvoiceController extends AppController
 
         if ($data['total_retainage'] == 0) {
             $data['total_retainage'] = $sumOfi;
-        } else {
-            $data['total_retainage'] = $data['total_retainage'];
         }
 
         $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
-        $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $data['total_retainage']), $data['currency_icon']);
+        $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($data['total_retainage']), $data['currency_icon']);
         $data["total_previously_billed_amount"] = 0;
         if (isset($project_details)) {
             $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $data['currency_icon']);
