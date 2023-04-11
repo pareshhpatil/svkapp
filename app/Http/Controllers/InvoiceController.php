@@ -4215,7 +4215,11 @@ class InvoiceController extends AppController
 
         if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
-            $rowArray['g_per'] = $rowArray['total_completed'] / $rowArray['current_contract_amount'];
+            if($rowArray['current_contract_amount'] > 0) {
+                $rowArray['g_per'] = $rowArray['total_completed'] / $rowArray['current_contract_amount'];
+            } else {
+                $rowArray['g_per'] = 0;
+            }
             $rowArray['balance_to_finish'] = $rowArray['current_contract_amount'] - $rowArray['total_completed'];
 
             if (!empty($rowArray['attachments'])) {
