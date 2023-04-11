@@ -119,7 +119,7 @@ $validate=(array)$validate;
 </div> --}}
 @endif
 <div class="row no-margin">
-    <div class="col-md-12 mt-1">
+    <div class="col-md-12 mt-1">fff
         @if($info['payment_request_status']==11)
         <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             <div class="col-md-4 pull-left btn-pl-0">

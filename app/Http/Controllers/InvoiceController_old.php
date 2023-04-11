@@ -1909,7 +1909,6 @@ class InvoiceController_old extends AppController
     public function view($link)
     {
 
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {

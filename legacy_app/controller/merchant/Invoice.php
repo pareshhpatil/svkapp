@@ -685,7 +685,6 @@ class Invoice extends Controller
     function saveInvoicePreview($payment_request_id)
     {
         $user_role = $this->session->get('user_role');
-
         if ($payment_request_id != '') {
             if (strlen($payment_request_id) != 10 || $payment_request_id != $_POST['payment_request_id']) {
                 $this->setInvalidLinkError();
