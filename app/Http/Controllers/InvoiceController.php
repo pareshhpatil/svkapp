@@ -940,12 +940,10 @@ class InvoiceController extends AppController
 
         if ($data['total_retainage'] == 0) {
             $data['total_retainage'] = $sumOfi;
-        } else {
-            $data['total_retainage'] = $data['total_retainage'];
         }
 
         $sumOfg = $construction_details['previously_billed_amount'] + $construction_details['current_billed_amount'] + $construction_details['stored_materials'];
-        $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($sum_stored_materials + $data['total_retainage']), $data['currency_icon']);
+        $data['total_earned_less_retain'] = $this->formatInvoiceValues($sumOfg - ($data['total_retainage']), $data['currency_icon']);
         $data["total_previously_billed_amount"] = 0;
         if (isset($project_details)) {
             $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $data['currency_icon']);
