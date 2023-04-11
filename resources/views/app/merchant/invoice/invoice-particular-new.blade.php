@@ -143,6 +143,10 @@
             position: relative;
             top: 5px;
         }
+
+        .sorted_table .handle svg {
+            color: #a0acac;
+        }
         
         .sorted_table_tr:hover  .handle {
             opacity: 1;
