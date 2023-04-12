@@ -894,10 +894,10 @@ class InvoiceController extends AppController
 
             $userRole = Session::get('user_role');
             $hasAccess = false;
-            if($user_type == 'merchant') {
+            if ($user_type == 'merchant') {
                 $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
                 $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-                
+
                 if ($userRole == 'Admin') {
                     $hasAccess = true;
                 } else {
@@ -908,7 +908,6 @@ class InvoiceController extends AppController
                         $hasAccess = true;
                     }
                 }
-
             } else {
                 $hasAccess = true;
             }
@@ -1028,14 +1027,14 @@ class InvoiceController extends AppController
             if (isset($project_details)) {
                 $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $currency_icon);
             }
-           
+
             //get grand total
             $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
             $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $currency_icon);
             $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $currency_icon);
 
             //Check If user have acces to this invoice
-            if(!empty($userRole) && $userRole == 'Admin') {
+            if (!empty($userRole) && $userRole == 'Admin') {
                 $invoiceAccess = 'full';
             } else {
                 $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
@@ -2309,7 +2308,7 @@ class InvoiceController extends AppController
             // }
             // die();
             // } else
-           
+
             if ($savepdf == 1) {
 
                 $data['viewtype'] = 'pdf';
@@ -3049,7 +3048,7 @@ class InvoiceController extends AppController
                     $data['multiattach'] = $attached;
                 }
                 $data['viewtype'] = 'mailer';
-                Helpers::sendMail($info['customer_email'], $file, $data, $subject );
+                Helpers::sendMail($info['customer_email'], $file, $data, $subject);
             } else {
                 $data['viewtype'] = 'mailer';
                 Helpers::sendMail($info['customer_email'], 'invoice.' . $info['design_name'], $data, $subject);
@@ -3748,7 +3747,7 @@ class InvoiceController extends AppController
         $userRole = Session::get('user_role');
 
         //Check If user have acces to this invoice
-        if(!empty($userRole) && $userRole == 'Admin') {
+        if (!empty($userRole) && $userRole == 'Admin') {
             $invoiceAccess = 'full';
         } else {
             $invoiceAccess = $this->hasInvoiceAccess($info['payment_request_id'], $info['contract_id'], $user_type);
@@ -3759,7 +3758,8 @@ class InvoiceController extends AppController
         return $data;
     }
 
-    public function hasInvoiceAccess($payment_request_id, $contract_id, $userType) {
+    public function hasInvoiceAccess($payment_request_id, $contract_id, $userType)
+    {
         $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
         $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         $invoiceAccess = '';
@@ -4262,7 +4262,7 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-        //        dd($request);
+                dd($request->all());
         $request_id = Encrypt::decode($request->link);
 
         if (strlen($request_id) != 10) {
@@ -4552,7 +4552,6 @@ class InvoiceController extends AppController
             $billed_transactions[$k]->amount = number_format($row->amount);
         }
         $invoice_particulars = $this->invoiceModel->getTableListOrderby('invoice_construction_particular', 'payment_request_id', $request_id, 'sort_order');
-
         $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
@@ -4751,7 +4750,7 @@ class InvoiceController extends AppController
         $data['billed_transactions'] = $billed_transactions;
         $data['merchant_cost_types'] = $merchant_cost_types;
         $data['cost_types_array'] = $merchant_cost_types_array;
-        $data['cost_types'] = $merchant_cost_types;
+        $data['cost_types'] = json_decode($merchant_cost_types_array, 1);
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
@@ -4763,8 +4762,11 @@ class InvoiceController extends AppController
         $data['project_id'] = $project->id;
         $data['project_code'] = $project->project_id;
         $data['link'] = $link;
-        
+
+
+        list($particulars, $summary) = $this->setParticularMoney($particulars);
         $data['particulars'] = $particulars;
+        $data['summary'] = $summary;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
         $data['csi_codes_list'] = json_decode($data['csi_codes_array'], 1);
@@ -4772,8 +4774,49 @@ class InvoiceController extends AppController
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
-
         return view('app/merchant/invoice/invoice-particular', $data);
+    }
+
+    private function setParticularMoney($particulars)
+    {
+        $list = [];
+        $arraysum = ['original_contract_amount', 'approved_change_order_amount', 'current_contract_amount',  'previously_billed_amount',  'current_billed_amount', 'total_billed', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount', 'retainage_amount_stored_materials', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'stored_materials', 'previously_stored_materials', 'current_stored_materials'];
+        $array = ['original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount', 'retainage_amount_stored_materials', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'stored_materials', 'previously_stored_materials', 'current_stored_materials'];
+        foreach ($particulars as $k => $v) {
+            foreach ($array as $key) {
+                if (isset($v[$key])) {
+                    if ($v[$key] != '') {
+                        if (in_array($key, $arraysum)) {
+                            $list[$key][] = $particulars[$k][$key];
+                        }
+                        $particulars[$k][$key] = $this->num_format($particulars[$k][$key], 2, 0);
+                    }
+                }
+            }
+        }
+        $summary = [];
+        foreach ($list as $l => $v) {
+            $summary['sum_' . $l] = $this->num_format(array_sum($v));
+        }
+        return array($particulars, $summary);
+    }
+
+    function num_format($numVal, $afterPoint = 2, $minAfterPoint = 0, $thousandSep = ",", $decPoint = ".")
+    {
+        // Same as number_format() but without unnecessary zeros.
+        $ret = number_format($numVal, $afterPoint, $decPoint, $thousandSep);
+        if ($afterPoint != $minAfterPoint) {
+            while (($afterPoint > $minAfterPoint) && (substr($ret, -1) == "0")) {
+                // $minAfterPoint!=$minAfterPoint and number ends with a '0'
+                // Remove '0' from end of string and set $afterPoint=$afterPoint-1
+                $ret = substr($ret, 0, -1);
+                $afterPoint = $afterPoint - 1;
+            }
+        }
+        if (substr($ret, -1) == $decPoint) {
+            $ret = substr($ret, 0, -1);
+        }
+        return $ret;
     }
 
     private function getKeyArrayJson($array, $key)
@@ -4943,66 +4986,67 @@ class InvoiceController extends AppController
         }
     }
 
-    public function invoiceView($type,$link,$user_type="merchant", Request $request) {
+    public function invoiceView($type, $link, $user_type = "merchant", Request $request)
+    {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-        
+
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
             $data['gtype'] = $type;
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole,$user_type);
-            $data=array_merge($data,$invoice_Data);
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $user_type);
+            $data = array_merge($data, $invoice_Data);
 
             if (!empty($notificationID)) {
                 /** @var Notification $Notification */
                 $Notification = Notification::findOrFail($notificationID);
                 $Notification->markAsRead();
             }
-            if($type=='703') {
+            if ($type == '703') {
                 $particular_details = $this->get703Contents($payment_request_id);
-            } else if($type=='702') {
+            } else if ($type == '702') {
                 //call here 702 contents
             }
-            
-            $data=array_merge($data,$particular_details);
+
+            $data = array_merge($data, $particular_details);
             return view('app/merchant/invoice/G703/index', $data);
         } else {
         }
     }
 
-    public function get703Contents($payment_request_id) {
+    public function get703Contents($payment_request_id)
+    {
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
         $particular_details = json_decode($particular_details, 1);
-        $int=0;
-        $grand_total_schedule_value=0;
+        $int = 0;
+        $grand_total_schedule_value = 0;
         $grand_total_previouly_billed_amt = 0;
-        $grand_total_current_billed_amt=0;
-        $grand_total_d_plus_e=0;
-        $grand_total_stored_material=0;
-        $grand_total_total_completed=0;
-        $grand_total_balance_to_finish=0;
-        $grand_total_retainge=0;
-        if(!empty($particular_details)) {
-            foreach($particular_details as $ck=>$val) {
+        $grand_total_current_billed_amt = 0;
+        $grand_total_d_plus_e = 0;
+        $grand_total_stored_material = 0;
+        $grand_total_total_completed = 0;
+        $grand_total_balance_to_finish = 0;
+        $grand_total_retainge = 0;
+        if (!empty($particular_details)) {
+            foreach ($particular_details as $ck => $val) {
                 //dd($val);
                 if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
                     //show details without subgroup, total, bill code
                     $valArray = $this->setParticularRowArray($val);
                     $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
-                    
-                } else if(!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
+                } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
                     //check if subgroup is exist in co
-                    if($val['sub_group']!='') {
+                    if ($val['sub_group'] != '') {
                         $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
-                        if(in_array($val['sub_group'],$groups[$val['group']]['subgroup'])) {
+                        if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
                             $valArray = $this->setParticularRowArray($val);
                             $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
                         }
                     } else {
-                        $groups[$val['group']][$val['group']] = $val['group']; 
-                        if(in_array($val['group'],$groups[$val['group']])) {
+                        $groups[$val['group']][$val['group']] = $val['group'];
+                        if (in_array($val['group'], $groups[$val['group']])) {
                             $valArray = $this->setParticularRowArray($val);
                             $particularRows[$val['group']]['only-group~'][$int] = $valArray;
                         }
@@ -5012,7 +5056,7 @@ class InvoiceController extends AppController
                     $valArray = $this->setParticularRowArray($val);
                     $particularRows['no-group~'][$int] = $valArray;
                 }
-                
+
                 //calculate grand total
                 $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
                 $grand_total_previouly_billed_amt = $grand_total_previouly_billed_amt + $val['previously_billed_amount'];
@@ -5020,8 +5064,8 @@ class InvoiceController extends AppController
                 $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
                 $grand_total_stored_material = $grand_total_stored_material + $val['stored_materials'];
                 $grand_total_total_completed = $grand_total_total_completed + ($val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials']);
-                if($grand_total_schedule_value!=0) {
-                    $grand_total_g_per = $grand_total_total_completed/$grand_total_schedule_value;
+                if ($grand_total_schedule_value != 0) {
+                    $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
                 }
                 $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
                 $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
@@ -5038,26 +5082,27 @@ class InvoiceController extends AppController
         $data['grand_total_total_completed'] = $grand_total_total_completed;
         $data['grand_total_g_per'] = $grand_total_g_per;
         $data['grand_total_balance_to_finish'] = $grand_total_balance_to_finish;
-        $data['grand_total_retainge']= $grand_total_retainge;
+        $data['grand_total_retainge'] = $grand_total_retainge;
         $data['particularRows'] = $particularRows;
-        return $data;        
+        return $data;
     }
 
-    public function getInvoiceDetailsForViews($payment_request_id=null,$userRole=null,$user_type=null){
+    public function getInvoiceDetailsForViews($payment_request_id = null, $userRole = null, $user_type = null)
+    {
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
 
         $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
         $data['project_details'] =  $project_details;
-        
+
         if (!isset($payment_request_data->payment_request_status)) {
             return redirect('/error/invalidlink');
         }
 
         $hasAccess = false;
-        if($user_type == 'merchant') {
+        if ($user_type == 'merchant') {
             $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
-            
+
             if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
@@ -5078,7 +5123,7 @@ class InvoiceController extends AppController
 
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
-       
+
         $data["url"] =  Encrypt::encode($payment_request_id);
         if (substr($payment_request_data->invoice_number, 0, 16) == 'System generated') {
             $invoice_number = $this->invoiceModel->getAutoInvoiceNo(substr($payment_request_data->invoice_number, 16));
@@ -5117,13 +5162,13 @@ class InvoiceController extends AppController
         }
         $data['has_watermark'] = $has_watermark;
         $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
-        
+
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
         $data['user_type'] = $user_type;
 
         //check is online payment 
         $fee_id = $this->invoiceModel->getmerchantfeeID($payment_request_data->merchant_id);
-        
+
         if ($fee_id != false) {
             $data['is_online_payment'] = TRUE;
         } else {
@@ -5131,23 +5176,24 @@ class InvoiceController extends AppController
         }
 
         //Check If user have acces to this invoice
-        if(!empty($userRole) && $userRole == 'Admin') {
+        if (!empty($userRole) && $userRole == 'Admin') {
             $invoiceAccess = 'full';
         } else {
             $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
         }
 
         $data['invoice_access'] = $invoiceAccess;
-       
+
         return $data;
     }
 
 
-    function setParticularRowArray($rowArray=null) {
+    function setParticularRowArray($rowArray = null)
+    {
 
-        if($rowArray!=null) {
+        if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
-            $rowArray['g_per'] = $rowArray['total_completed']/$rowArray['current_contract_amount'];
+            $rowArray['g_per'] = $rowArray['total_completed'] / $rowArray['current_contract_amount'];
             $rowArray['balance_to_finish'] = $rowArray['current_contract_amount'] - $rowArray['total_completed'];
 
             if (!empty($rowArray['attachments'])) {
@@ -5163,7 +5209,7 @@ class InvoiceController extends AppController
                 $rowArray['files'] = $counts . ' files';
             else
                 $rowArray['files'] = $counts . ' file';
-        } 
+        }
         return $rowArray;
     }
 
@@ -5175,9 +5221,9 @@ class InvoiceController extends AppController
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             $userRole = Session::get('user_role');
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole);
-            $data=array_merge($data,$invoice_Data);
-            
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole);
+            $data = array_merge($data, $invoice_Data);
+
             if ($type === '703' || $type === '702') {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';
                 try {
@@ -5193,14 +5239,14 @@ class InvoiceController extends AppController
                 }
             }
             //refactor 703 code
-            if($type=='703') {
+            if ($type == '703') {
                 $particular_details = $this->get703Contents($payment_request_id);
-                $data=array_merge($data,$particular_details);
-            } else if($type=='702') {
+                $data = array_merge($data, $particular_details);
+            } else if ($type == '702') {
                 //add refactor 702 code 
             }
-            
-            
+
+
             //dd($data);
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
@@ -5208,14 +5254,14 @@ class InvoiceController extends AppController
             define("DOMPDF_UNICODE_ENABLED", true);
             define("DOMPDF_DPI", 120);
             define("DOMPDF_ENABLE_REMOTE", true);
-            $pdf = DOMPDF::loadView('mailer.invoice.format-'.$type.'-v2', $data);
+            $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
             $pdf->setPaper("a4", "landscape");
             $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
             if ($savepdf == 1) {
                 $name = str_replace('-', '', $name);
                 $name = str_replace(':', '', $name);
-            
-                $pdf->save(storage_path('pdf\\'.$type . $name . '.pdf'));
+
+                $pdf->save(storage_path('pdf\\' . $type . $name . '.pdf'));
                 // $pdf = DOMPDF::loadView('mailer.invoice.format-703', $data);
                 // $pdf->setPaper("a4", "landscape");
                 // $pdf->save(storage_path('pdf\\703' . $name . '.pdf'));
@@ -5241,8 +5287,8 @@ class InvoiceController extends AppController
             $data = $this->setBladeProperties('Invoice view', [], [3]);
 
             $userRole = Session::get('user_role');
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id,$userRole);
-            $data=array_merge($data,$invoice_Data);
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole);
+            $data = array_merge($data, $invoice_Data);
 
             $data['logo'] = '';
 
@@ -5433,21 +5479,21 @@ class InvoiceController extends AppController
             }
 
             $data['bill_code_attachments'] = $billCodeAttachments;
-            
+
             $particular_details = $this->get703Contents($payment_request_id);
-            $data=array_merge($data,$particular_details);
-            
+            $data = array_merge($data, $particular_details);
+
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
             define("DOMPDF_ENABLE_FONTSUBSETTING", true);
             define("DOMPDF_UNICODE_ENABLED", true);
             define("DOMPDF_DPI", 120);
             define("DOMPDF_ENABLE_REMOTE", true);
-            
+
             //return view('mailer.invoice.full-invoice-v2', $data);
             $pdf = DOMPDF::loadView('mailer.invoice.full-invoice-v2', $data);
             $pdf->setPaper("a4", "landscape");
-            
+
             $name = str_replace(" ", "_", $data['customer_name']) . '_' . time() . '.pdf';
 
             if (count($pdf_link_array) > 0) {

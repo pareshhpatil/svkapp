@@ -129,7 +129,7 @@
         <div class='cnt223'>
             <h3 class="modal-title">Bill code attachment
 
-            <a class="close " data-toggle="modal"  @click="closeAttachmentPanel">
+            <a class="close " data-toggle="modal" onclick="closeAttachmentPanel"  @click="closeAttachmentPanel">
                     <button type="button" class="close" aria-hidden="true"></button></a>
             </h3>
           <br/>

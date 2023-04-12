@@ -490,7 +490,13 @@ function addRowinCalcTable(ind) {
 
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
-            let displayValue = document.querySelector('#bill_code' + int ).getDisplayValue().split('|');
+            var displayValue = [];
+            try {
+                var displayValue = document.querySelector('#bill_code' + int).getDisplayValue().split('|');
+            } catch (o) {
+                var span_bill_code = document.getElementById('span_bill_code' + int).innerHTML;
+                var displayValue = span_bill_code.split('|');
+            }
             /*try {
                 var bill_code = particularray[int].bill_code;
             } catch (o) {
@@ -684,42 +690,39 @@ function addbillcode2() {
 function updatebillcode() {
 
     var pid = document.getElementById("project_id").value;
-   var bill_code= document.querySelector('#bill_code').value;
-   var cost_type= document.querySelector('#cost_type').value;
-   if(bill_code!='' && cost_type!='')
-   {
-   
-    $("#billcodeform").submit(function (e) {
-        $('#bill_code_error').html('');
-        $('#cost_type_error').html('');
-        e.preventDefault();
-        var form = $(this);
-        var actionUrl = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: actionUrl,
-            data: form.serialize(),
-            success: function (data) {
-                alert(data);
+    var bill_code = document.querySelector('#bill_code').value;
+    var cost_type = document.querySelector('#cost_type').value;
+    if (bill_code != '' && cost_type != '') {
 
-                if (data[2] > 0) {
+        $("#billcodeform").submit(function (e) {
+            $('#bill_code_error').html('');
+            $('#cost_type_error').html('');
+            e.preventDefault();
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function (data) {
+                    alert(data);
 
+                    if (data[2] > 0) {
+
+                    }
+                    closeSideUpdatePanelBillCode()
                 }
-                closeSideUpdatePanelBillCode()
-            }
-        });
+            });
 
-    });
-}else{
-    if(bill_code=='')
-   {
-    $('#bill_code_error').html('Please select cost code');
-   }
-   if(cost_type=='')
-   {
-    $('#cost_type_error').html('Please select cost type');
-   }
-}
+        });
+    } else {
+        if (bill_code == '') {
+            $('#bill_code_error').html('Please select cost code');
+        }
+        if (cost_type == '') {
+            $('#cost_type_error').html('Please select cost type');
+        }
+    }
 }
 
 
@@ -786,13 +789,16 @@ function calculatePercContract(value) {
 }
 
 function setOriginalContractAmount() {
-    console.log(calcRowInt);
     try {
         document.getElementById("original_contract_amount" + calcRowInt).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
     } catch (o) {
 
     }
-    document.getElementById("lbl_original_contract_amount" + calcRowInt).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+    try {
+        document.getElementById("lbl_original_contract_amount" + calcRowInt).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+    } catch (o) {
+
+    }
     // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
     try {
         document.getElementById("approved_change_order_amount" + calcRowInt).readOnly = true;
@@ -853,9 +859,9 @@ function editCaculatedRow(row) {
         for (let element of calc_json) {
             // if(element === 0 || element === null) element = ''
             let contractElement = document.getElementById("original_contract_amount" + element);
-            if((contractElement === undefined || contractElement === null ) && element === '') element = 0;
-            if((contractElement === undefined || contractElement === null ) && element === 0) element = '';
-            if((contractElement === undefined || contractElement === null ) && element === null) element = '';
+            if ((contractElement === undefined || contractElement === null) && element === '') element = 0;
+            if ((contractElement === undefined || contractElement === null) && element === 0) element = '';
+            if ((contractElement === undefined || contractElement === null) && element === null) element = '';
             amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
             document.getElementById("calc" + element).checked = true
             inputCalcClicked(element, amount_value)
@@ -2937,9 +2943,13 @@ function updateTextView1(val) {
             number = Number(num);
         }
         if (num == 0) {
-            return 0.00;
+            return '';
         } else {
             if (decimal_text != '.00') {
+                if(decimal_text.substring(2)=='0')
+                {
+                    decimal_text=decimal_text.substring(0,2)
+                }
                 return number.toLocaleString() + decimal_text;
             } else {
                 return number.toLocaleString();
@@ -3345,7 +3355,7 @@ function setBillCodeMenuData() {
                 ' <div class="row"><div>';
             const newFileTypes = ['doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'];
             let extensionInLowerCase = extension.toLowerCase();
-            if(newFileTypes.includes(extensionInLowerCase)) {
+            if (newFileTypes.includes(extensionInLowerCase)) {
                 let splitPath = pathlist[i].split('/');
                 let fileName = splitPath[splitPath.length - 1];
                 let folder = splitPath[splitPath.length - 2];

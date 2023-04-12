@@ -142,263 +142,50 @@
     }
 </style>
 
+<script>
+        @php
+        $billcodeJson = json_encode($csi_codes);
+        $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
+        $billcodeJson = str_replace("'", "\'", $billcodeJson);
+        $billcodeJson = str_replace('"', '\\"', $billcodeJson);
 
-<div>
+        $particularJson = json_encode($particulars);
+        $particularJson = str_replace("\\", '\\\\', $particularJson);
+        $particularJson = str_replace("'", "\'", $particularJson);
+        $particularJson = str_replace('"', '\\"', $particularJson);
 
+        $groupJson = json_encode($groups);
+        $groupJson = str_replace("\\", '\\\\', $groupJson);
+        $groupJson = str_replace("'", "\'", $groupJson);
+        $groupJson = str_replace('"', '\\"', $groupJson);
 
-    <div class="page-content">
-        <div x-data="handler_create()" x-init="initializeParticulars">
-            <!-- BEGIN PAGE HEADER-->
-            <div class="page-bar">
-                <span class="page-title" style="float: left;">{{$title}}</span>
-                {{ Breadcrumbs::render('create.invoice','invoice') }}
-                <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step 2 of 3</span>
-            </div>
-            <!-- END PAGE HEADER-->
-            <!-- BEGIN PAGE CONTENT-->
-            <div class="row">
-                <div class="col-md-12">
+        $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
+        $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
+        $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
+        $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
 
-                    <div id="perror" style="display: none;" class="alert alert-block alert-danger fade in">
-                        <p>Error! Select a project before trying to add a new row
-                        </p>
-                    </div>
-                    <div id="paticulars_error" style="display: none;" class="alert alert-block alert-danger fade in">
-                        <p>Error! Before proceeding, please verify the details.. <br> 'Bill code', 'Bill Type', 'Original Contract Amount' are mandatory fields !
-                        </p>
-                    </div>
-                    <form action="/merchant/invoice/particularsave" id="frm_invoice" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
-                        @csrf
+        //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+        $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
+        $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
+        $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
 
-                        <div>
+        $merchantCostTypeJson = json_encode($merchant_cost_types);
+        $merchantCostTypeJson = str_replace("\\", '\\\\', $merchantCostTypeJson);
+        $merchantCostTypeJson = str_replace("'", "\'", $merchantCostTypeJson);
+        $merchantCostTypeJson = str_replace('"', '\\"', $merchantCostTypeJson);
 
-                            <div class="portlet light bordered">
-                                <div class="portlet-body form">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h3 class="form-section">Add Particulars</h3>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a data-cy="add_particulars_btn" href="javascript:;" @click="await addNewField();" class="btn green pull-right mb-1"> Add new row </a>
-                                        </div>
-                                    </div>
-                                    <div class="table-scrollable  tableFixHead" id="table-scroll" style="max-height: 540px;">
-                                        <table class="table table-bordered table-hover" id="particular_table" wire:ignore="">
-                                            <thead class="headFootZIndex">
-                                                @if(!empty($particular_column))
-                                                <thead class="headFootZIndex">
-                                                    <tr>
-                                                        @foreach($particular_column as $k=>$v)
-                                                        @if($k!='description')
-                                                        <th @if($k=='bill_code' ) class="td-c col-id-no biggerHead" style="min-width:200px ;" @elseif($k=='bill_type' ) class="td-c biggerHead" style="min-width:120px ;" @else class="td-c biggerHead" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
-                                                            {!! (strlen($v) > 10) ? str_replace( ' ', '<br>', $v) : $v !!}
-                                                        </th>
-                                                        @endif
-                                                        @endforeach
-                                                        <th class="td-c" style="min-width: 60px;">
-                                                            ?
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                @endif
-                                            </thead>
+        $merchantCostTypeJsonArray = str_replace("\\", '\\\\', $cost_types_array);
+        $merchantCostTypeJsonArray = str_replace("'", "\'", $merchantCostTypeJsonArray);
+        $merchantCostTypeJsonArray = str_replace('"', '\\"', $merchantCostTypeJsonArray);
+        @endphp
 
-                                            @php
-                                            $readonly_array=array('original_contract_amount','stored_materials','bill_type','retainage_amount','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage',/*'retainage_amount_stored_materials'*/);
-                                            @endphp
-                                            <tbody>
-                                                @foreach($particulars as $pk=>$pv)
-                                                @php $readonly=false; @endphp
-                                                <tr id="{{$pk}}" class="sorted_table_tr">
-                                                    @foreach($particular_column as $k=>$v)
-                                                    @if(in_array($k, $readonly_array))
-                                                    @php $readonly=true; @endphp
-                                                    @endif
-                                                    @if($k!='description')
-
-                                                    @if($k=='bill_code')
-                                                    <td style="vertical-align: middle;" id="cell_{{$k}}_{{$pv['pint']}}" onclick="virtualSelectInit({{$pv['pint']}}, {{$k}},{{$pk}})" class="td-c onhover-border  col-id-no">
-                                                        <div style="display:flex;">
-                                                            <span class="handle">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1">
-                                                                    <path d="M384 64H256C220.66 64 192 92.66 192 128v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64zM768 64h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z" fill="" />
-                                                                </svg>
-                                                            </span>
-                                                            <input type="hidden" id="{{$k}}{{$pv['pint']}}" value="{{$pv['bill_code']}}" name="{{$k}}[]">
-                                                            <span style="width:80%">{{$csi_codes_list[$pv['bill_code']]['label']}}</span>
-                                                            <span>
-                                                                <div id="{{$k}}{{$pv['pint']}}"></div>
-                                                            </span>
-                                                            <a @click="showupdatebillcodeattachment({{$pv['pint']}});" id="attacha-{{$pv['pint']}}" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
-                                                                <i id="icon-{{$pv['pint']}}" class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
-                                                            </a>
-                                                            <input type="hidden" name="attachments[]" value={{$pv['attachments']}}" id="attach-{{$pv['pint']}}" />
-                                                            <input type="hidden" name="calculated_perc[]" value={{$pv['calculated_perc']}}" id="calculated_perc{{$pv['pint']}}">
-                                                            <input type="hidden" name="calculated_row[]" value={{$pv['calculated_row']}}" id="calculated_row{{$pv['pint']}}">
-                                                            <input type="hidden" name="description[]" value={{$pv['description']}}" id="description{{$pv['pint']}}">
-                                                            <input type="hidden" name="billed_transaction_ids[]" value={{$pv['billed_transaction_ids']}}" id="billed_transaction_ids{{$pv['pint']}}">
-                                                        </div>
-                                                    </td>
-                                                    @elseif($k=='bill_type')
-                                                    <td style="vertical-align: middle; min-width: 124px;" class="td-c onhover-border " id="cell_bill_type_{{$pv['pint']}}">
-                                                        <select required="" style="width: 100%; min-width: 150px;font-size: 12px;" id="bill_type{{$pv['pint']}}" name="bill_type[]" data-placeholder="Select.." class="form-control billTypeSelect input-sm" onchange="changeBillType({{$pv['pint']}}, {{$pk}})">
-                                                            <option value="">Select..</option>
-                                                            <option @if($pv['bill_type']=='% Complete' ) selected @endif value="% Complete">% Complete</option>
-                                                            <option @if($pv['bill_type']=='Unit' ) selected @endif value="Unit">Unit</option>
-                                                            <option @if($pv['bill_type']=='Calculated' ) selected @endif value="Calculated">Calculated</option>
-                                                            <option @if($pv['bill_type']=='Cost' ) selected @endif value="Cost">Cost</option>
-                                                        </select>
-                                                    </td>
-                                                    @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
-                                                    <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pv['pint']}}" onclick="virtualSelectInit({{$pv['pint']}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
-                                                        <input type="hidden" name="{{$k}}[]" value="{{$pv[$k]}}">
-                                                        <span x-show="! field.txt{{$k}}" x-text="setdropdowndiv('{{$k}}',field)">{{$pv[$k]}}</span>
-                                                        <span style="width: 100%; display: none;" x-show="field.txt{{$k}}">
-                                                            <div id="{{$k}}{{$pv['pint']}}"></div>
-                                                        </span>
-                                                    </td>
-                                                    @else
-                                                    <td style="vertical-align: middle; " :id="`cell_current_billed_percent_${field.pint}`" x-on:click="field.txtcurrent_billed_percent = true;particularray[`${index}`].txtcurrent_billed_percent = true; " class="td-c onhover-border " id="cell_current_billed_percent_0">
-                                                        <span x-show="! field.txtcurrent_billed_percent" x-text="field.current_billed_percent">{{$pv[$k]}}</span>
-                                                        <template x-if="field.bill_type!='Cost'">
-                                                            <span x-show="field.txtcurrent_billed_percent">
-                                                                <input :id="`current_billed_percent${field.pint}`" type="text" x-on:blur="field.txtcurrent_billed_percent = false;calculateCurrentBillAmount(field);calc(field);" x-model.lazy="field.current_billed_percent" value="" name="current_billed_percent[]" style="width: 100%;" class="form-control input-sm ">
-                                                            </span>
-                                                        </template>
-                                                        <span x-show="field.txtcurrent_billed_percent" style="display: none;">
-                                                            <input :id="`current_billed_percent${field.pint}`" type="text" x-on:blur="field.txtcurrent_billed_percent = false;calculateCurrentBillAmount(field);calc(field);" x-model.lazy="field.current_billed_percent" value="" name="current_billed_percent[]" style="width: 100%;" class="form-control input-sm " id="current_billed_percent0">
-                                                        </span>
-                                                        @if($pv['bill_type']=='Cost')
-                                                        <span x-show="field.txtcurrent_billed_percent">
-                                                            <input :id="`current_billed_percent${field.pint}`" type="hidden" x-on:blur="field.txtcurrent_billed_percent = false;calc(field);" x-model.lazy="field.current_billed_percent" value="" name="current_billed_percent[]" style="width: 100%;" class="form-control input-sm ">
-                                                        </span>
-                                                        @endif
-                                                    </td>
-                                                    @endif
-
-                                                    @endif
-
-                                                    @endforeach
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <tfoot class="headFootZIndex">
-                                                <tr class="warning">
-                                                    <th class="col-id-no">Grand total</th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th>
-                                                        <span id="total_oca">10,000</span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_acoa"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_cca">10,000</span>
-                                                    </th>
-                                                    <th>
-
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_pba"></span>
-                                                    </th>
-                                                    <th></th>
-                                                    <th>
-                                                        <span id="total_cba"></span>
-                                                    </th>
-
-                                                    <th>
-                                                        <span id="total_psm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_csm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_sm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_tb"></span>
-                                                    </th>
-                                                    <th class="td-c"></th>
-                                                    <th>
-                                                        <span id="total_rapw"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_rad"></span>
-                                                    </th>
-                                                    <th class="td-c"></th>
-                                                    <th>
-                                                        <span id="total_rapsm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_rasm"></span>
-                                                    </th>
-                                                    <th class="td-c"><span id="particulartotaldiv"></span>
-                                                        <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="" class="form-control " readonly="">
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_rra"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_rrasm"></span>
-                                                    </th>
-                                                    <th>
-                                                        <span id="total_tor">0</span>
-                                                    </th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            @include('app.merchant.contract.add-group-modal')
-                            @include('app.merchant.contract.add-calculation-modal2')
-                            @include('app.merchant.contract.add-cost-modal')
-                            <script>
-
-                            </script>
-                        </div>
-
-                        <div class="portlet light bordered">
-                            <div class="portlet-body form">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="pull-right">
-                                            <input type="hidden" id="request_id" name="link" value="{{$link}}"></th>
-                                            <input type="hidden" name="order_ids" value="{{$order_id_array}}">
-
-                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                            <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
-                                            <a @click="return setParticulars();" class="btn blue">{{$mode}} invoice</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
-                @include('app.merchant.contract.add-bill-code-modal-contract')
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        /* $(document).ready(function () {
-                 particularsDropdowns(0, this.fields);
-
-             });*/
-        csi_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-        var particularray = JSON.parse('{!! json_encode($particulars) !!}');
+        csi_codes = JSON.parse('{!! $billcodeJson !!}');
+        csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
+        var particularray = JSON.parse('{!! $particularJson !!}');
+        //console.log(particularray);
         var previewArray = [];
-        var bill_codes = JSON.parse('{!! json_encode($csi_codes) !!}');
-        var groups = JSON.parse('{!! json_encode($groups) !!}');
+        var bill_codes = JSON.parse('{!! $billcodeJson !!}');
+        var groups = JSON.parse('{!! $groupJson !!}');
         var bill_code_details = [{
             'label': 'Yes',
             'value': 'Yes'
@@ -408,27 +195,13 @@
         }];
         var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
         var billed_transactions_filter = [];
-        var only_bill_codes = JSON.parse('{!! json_encode(array_column($csi_codes, '
-            value ')) !!}');
+        var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
         var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
         var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
-        var merchant_cost_types = JSON.parse('{!! json_encode($merchant_cost_types) !!}');
-
-        function initializeParticulars() {
-            this.initializeDropdowns();
-            this.calculateTotal();
-            $('.tableFixHead').css('max-height', screen.height / 2);
-        }
-
-        function initSelect2() {
-
-            if (particularray.length > 1) {
-                for (let p = 0; p < particularray.length; p++)
-                    this.particularsDropdowns(p);
-            } else {
-                this.particularsDropdowns(0);
-            }
-        }
+        var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
+        var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
+        let hangoutButton = document.getElementById("update-fields-pos");
+        var particular_type = '{{$type}}';
 
         function updateBillCodeDropdowns(optionArray, newBillCode) {
             let selectedId = $('#selectedBillCodeId').val();
@@ -479,6 +252,262 @@
             }).popover();
         }
     </script>
+<div>
+
+
+    <div class="page-content">
+        <div>
+            <!-- BEGIN PAGE HEADER-->
+            <div class="page-bar">
+                <span class="page-title" style="float: left;">{{$title}}</span>
+                {{ Breadcrumbs::render('create.invoice','invoice') }}
+                <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step 2 of 3</span>
+            </div>
+            <!-- END PAGE HEADER-->
+            <!-- BEGIN PAGE CONTENT-->
+            <div class="row">
+                <form action="/merchant/invoice/particularsave" id="frm_invoice" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
+                    <input type="hidden" id="request_id" name="link" value="{{$link}}"></th>
+                    <input type="hidden" name="order_ids" value="{{$order_id_array}}">
+
+                    <div class="col-md-12">
+
+                        <div id="perror" style="display: none;" class="alert alert-block alert-danger fade in">
+                            <p>Error! Select a project before trying to add a new row
+                            </p>
+                        </div>
+                        <div id="paticulars_error" style="display: none;" class="alert alert-block alert-danger fade in">
+                            <p>Error! Before proceeding, please verify the details.. <br> 'Bill code', 'Bill Type', 'Original Contract Amount' are mandatory fields !
+                            </p>
+                        </div>
+                        @csrf
+                        <div>
+
+                            <div class="portlet light bordered">
+                                <div class="portlet-body form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h3 class="form-section">Add Particulars</h3>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a data-cy="add_particulars_btn" href="javascript:;" @click="await addNewField();" class="btn green pull-right mb-1"> Add new row </a>
+                                        </div>
+                                    </div>
+                                    <div class="table-scrollable  tableFixHead" id="table-scroll" style="max-height: 540px;">
+                                        <div class="loading" id="loader2">Loading&#8230;</div>
+
+                                        <table class="table table-bordered" id="particular_table">
+                                            <thead class="headFootZIndex">
+                                                @if(!empty($particular_column))
+                                                <thead class="headFootZIndex">
+                                                    <tr>
+                                                        @foreach($particular_column as $k=>$v)
+                                                        @if($k!='description')
+                                                        <th @if($k=='bill_code' ) class="td-c col-id-no biggerHead" style="min-width:200px ;" @elseif($k=='bill_type' ) class="td-c biggerHead" style="min-width:120px ;" @else class="td-c biggerHead" style="min-width:100px ;" @endif @if($k=='description' || $k=='bill_code' ) style="min-width: 100px;" @endif>
+                                                            {!! (strlen($v) > 10) ? str_replace( ' ', '<br>', $v) : $v !!}
+                                                        </th>
+                                                        @endif
+                                                        @endforeach
+                                                        <th class="td-c" style="min-width: 60px;">
+                                                            ?
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                @endif
+                                            </thead>
+
+                                            @php
+                                            $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage',/*'retainage_amount_stored_materials'*/);
+                                            @endphp
+                                            <tbody>
+                                                @foreach($particulars as $pk=>$pv)
+
+                                                <tr id="{{$pk}}" class="sorted_table_tr">
+                                                    @foreach($particular_column as $k=>$v)
+                                                    @php $readonly=false;
+                                                    $pint=$pv['pint']; @endphp
+                                                    @if(in_array($k, $readonly_array))
+                                                    @php $readonly=true; @endphp
+                                                    @endif
+                                                    @if($k!='description')
+
+                                                    @if($k=='bill_code')
+                                                    <td style="vertical-align: middle;" id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border  col-id-no">
+                                                        <div style="display:flex;">
+                                                            <span style="margin-right: 3px;" class="handle">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1">
+                                                                    <path d="M384 64H256C220.66 64 192 92.66 192 128v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64zM768 64h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z" fill="" />
+                                                                </svg>
+                                                            </span>
+                                                            <input type="hidden" id="{{$k}}{{$pint}}" value="{{$pv['bill_code']}}" name="{{$k}}[]">
+                                                            <span id="span_{{$k}}{{$pint}}" style="width:80%">{{$csi_codes_list[$pv['bill_code']]['label']}}</span>
+                                                            <span id="vspan_{{$k}}{{$pint}}" style="width:80%; display: none;">
+                                                                <div id="v_{{$k}}{{$pint}}"></div>
+                                                            </span>
+                                                            <a onclick="showupdatebillcodeattachment({{$pint}});" id="attacha-{{$pint}}" style="align-self: center; margin-left: 3px;" class="pull-right popovers">
+                                                                <i id="icon-{{$pint}}" class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
+                                                            </a>
+                                                            <input type="hidden" name="attachments[]" value="{{$pv['attachments']}}" id="attach-{{$pint}}" />
+                                                            <input type="hidden" name="calculated_perc[]" value="{{$pv['calculated_perc']}}" id="calculated_perc{{$pint}}">
+                                                            <input type="hidden" name="calculated_row[]" value="{{$pv['calculated_row']}}" id="calculated_row{{$pint}}">
+                                                            <input type="hidden" name="description[]" value="{{$pv['description']}}" id="description{{$pint}}">
+                                                            <input type="hidden" name="billed_transaction_ids[]" value="{{$pv['billed_transaction_ids']}}" id="billed_transaction_ids{{$pint}}">
+                                                            <input id="id{{$pint}}" value="{{$pv['id']}}" type="hidden" name="id[]">
+                                                            <input id="pint{{$pint}}" value="{{$pint}}" type="hidden" name="pint[]">
+                                                            <input id="sort_order{{$pint}}" value="{{$pv['sort_order']}}" type="hidden" name="sort_order[]">
+                                                            <input type="hidden" name="sub_group[]" value="{{$pv['sub_group']}}">
+                                                            <input type="hidden" id="retainage_amount_change{{$pint}}" value="">
+                                                        </div>
+                                                    </td>
+                                                    @elseif($k=='bill_type')
+                                                    <td style="vertical-align: middle; min-width: 124px;" class="td-c onhover-border " id="cell_bill_type_{{$pint}}">
+                                                        <select required="" style="width: 100%; min-width: 150px;font-size: 12px;" id="bill_type{{$pint}}" name="bill_type[]" data-placeholder="Select.." class="form-control billTypeSelect input-sm" onchange="changeBillType({{$pint}})">
+                                                            <option value="">Select..</option>
+                                                            <option @if($pv['bill_type']=='% Complete' ) selected @endif value="% Complete">% Complete</option>
+                                                            <option @if($pv['bill_type']=='Unit' ) selected @endif value="Unit">Unit</option>
+                                                            <option @if($pv['bill_type']=='Calculated' ) selected @endif value="Calculated">Calculated</option>
+                                                            <option @if($pv['bill_type']=='Cost' ) selected @endif value="Cost">Cost</option>
+                                                        </select>
+                                                    </td>
+                                                    @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
+                                                    <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
+                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="{{$pv[$k]}}">
+                                                        <span id="span_{{$k}}{{$pint}}">
+                                                            @if($k=='cost_type')
+                                                            {{$cost_types[$pv['cost_type']]['label']}}
+                                                            @else
+                                                            {{$pv[$k]}}
+                                                            @endif
+                                                        </span>
+                                                        <span id="vspan_{{$k}}{{$pint}}" style="width: 100%; display: none;">
+                                                            <div id="v_{{$k}}{{$pint}}"></div>
+                                                        </span>
+                                                    </td>
+                                                    @else
+                                                    <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border " id="cell_current_billed_percent_{{$pint}}">
+                                                        <input @if($readonly==true) readonly @endif value="{{$pv[$k]}}" @if($k=='retainage_amount_for_this_draw' ) onchange="_('retainage_amount_change{{$pint}}').value='true'" @elseif($k=='retainage_percent' ) onchange="_('retainage_amount_change{{$pint}}').value='false'" @endif type="text" onblur="@if($k=='current_billed_percent') calculateCurrentBillAmount('{{$pint}}'); @elseif($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount('{{$pint}}'); @else calculateRow('{{$pint}}'); @endif" name="{{$k}}[]" style="width: 100%;border:none;text-align: center;background-color: transparent;" class="form-control input-sm " id="{{$k}}{{$pint}}">
+                                                        @if($k=='original_contract_amount')
+                                                        <span id="add-calc-span{{$pint}}">
+
+                                                        </span>
+                                                        @endif
+                                                    </td>
+                                                    @endif
+
+                                                    @endif
+
+                                                    @endforeach
+                                                    <td class="td-c " style="vertical-align: middle;width: 60px;">
+                                                        <button type="button" class="btn btn-xs red">×</button>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot class="headFootZIndex">
+                                                <tr class="warning">
+                                                    <th class="col-id-no">Grand total</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>
+                                                        <span id="total_oca">@isset($summary['sum_original_contract_amount']){{$summary['sum_original_contract_amount']}}@endisset</span>
+                                                    </th>
+
+
+                                                    <th>
+                                                        <span id="total_acoa">@isset($summary['sum_approved_change_order_amount']){{$summary['sum_approved_change_order_amount']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_cca">@isset($summary['sum_current_contract_amount']){{$summary['sum_current_contract_amount']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_pba">@isset($summary['sum_previously_billed_amount']){{$summary['sum_previously_billed_amount']}}@endisset</span>
+                                                    </th>
+                                                    <th></th>
+                                                    <th>
+                                                        <span id="total_cba">@isset($summary['sum_current_billed_amount']){{$summary['sum_current_billed_amount']}}@endisset</span>
+                                                    </th>
+
+                                                    <th>
+                                                        <span id="total_psm">@isset($summary['sum_previously_stored_materials']){{$summary['sum_previously_stored_materials']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_csm">@isset($summary['sum_current_stored_materials']){{$summary['sum_current_stored_materials']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_sm">@isset($summary['sum_stored_materials']){{$summary['sum_stored_materials']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_tb">@isset($summary['sum_total_billed']){{$summary['sum_total_billed']}}@endisset</span>
+                                                    </th>
+                                                    <th class="td-c"></th>
+                                                    <th>
+                                                        <span id="total_rapw">@isset($summary['sum_retainage_amount_previously_withheld']){{$summary['sum_retainage_amount_previously_withheld']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_rad">@isset($summary['sum_retainage_amount_for_this_draw']){{$summary['sum_retainage_amount_for_this_draw']}}@endisset</span>
+                                                    </th>
+                                                    <th class="td-c"></th>
+                                                    <th>
+                                                        <span id="total_rapsm">@isset($summary['sum_retainage_amount_previously_stored_materials']){{$summary['sum_retainage_amount_previously_stored_materials']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_rasm">@isset($summary['sum_retainage_amount_stored_materials']){{$summary['sum_retainage_amount_stored_materials']}}@endisset</span>
+                                                    </th>
+                                                    <th class="td-c"><span id="particulartotaldiv">@isset($summary['sum_net_billed_amount']){{$summary['sum_net_billed_amount']}}@endisset</span>
+                                                        <input type="hidden" id="particulartotal" data-cy="particular-total1" name="totalcost" value="@isset($summary['sum_net_billed_amount']){{$summary['sum_net_billed_amount']}}@endisset" class="form-control " readonly="">
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_rra">@isset($summary['sum_retainage_release_amount']){{$summary['sum_retainage_release_amount']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_rrasm">@isset($summary['sum_retainage_stored_materials_release_amount']){{$summary['sum_retainage_stored_materials_release_amount']}}@endisset</span>
+                                                    </th>
+                                                    <th>
+                                                        <span id="total_tor">@isset($summary['sum_total_outstanding_retainage']){{$summary['sum_total_outstanding_retainage']}}@endisset</span>
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+
+                            </script>
+                        </div>
+
+                        <div class="portlet light bordered">
+                            <div class="portlet-body form">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+
+                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
+                                            <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
+                                            <input type="submit" class="btn blue" value="{{$mode}} invoice">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    
 
 </div>
 <script>
@@ -487,6 +516,8 @@
 </div>
 
 <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
+<script src="/assets/admin/layout/scripts/invoiceConstruction.js?version=1672291496" type="text/javascript"></script>
+
 <script>
     var newdocfileslist = [];
     //uppy file upload code
@@ -589,53 +620,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<script>
-    function setdata(name, fullurl) {
 
-        document.getElementById('poptitle').innerHTML = "Delete attachment - " + name;
-        document.getElementById('docfullurl').value = fullurl;
-    }
-
-    function deletedocfile(x) {
-        var html = '';
-        if (x == 'delete') {
-            var fullurl = document.getElementById('docfullurl').value;
-            var index = newdocfileslist.indexOf(fullurl);
-            if (index !== -1) {
-                newdocfileslist.splice(index, 1);
-            }
-        }
-
-        for (var i = 0; i < newdocfileslist.length; i++) {
-            var filenm = newdocfileslist[i].substring(newdocfileslist[i].lastIndexOf('/') + 1);
-            filenm = filenm.split('.').slice(0, -1).join('.')
-            filenm = filenm.substring(0, filenm.length - 4);
-            html = html + '<span class=" btn btn-xs green" style="margin-bottom: 5px;margin-left: 0px !important;margin-right: 5px !important">' +
-                '<a class=" btn btn-xs " target="_BLANK" href="' + newdocfileslist[i] + '" title="Click to view full size">' + filenm.substring(0, 10) + '..</a>' +
-                '<a href="#delete_doc" onclick="setdata(\'' + filenm.substring(0, 10) + '\',\'' + newdocfileslist[i] + '\');"   data-toggle="modal"> ' +
-                ' <i class=" popovers fa fa-close" style="color: #A0ACAC;" data-placement="top" data-container="body" data-trigger="hover"  data-content="Remove doc"></i>   </a> </span>';
-
-
-        }
-        clearnewuploads('no');
-        document.getElementById('docviewbox').innerHTML = html;
-        document.getElementById('closeconformdoc').click();
-    }
-
-    function clearnewuploads(x) {
-        document.getElementById("file_upload").value = '';
-
-        var filesnm = '';
-
-        for (var i = 0; i < newdocfileslist.length; i++) {
-            if (filesnm != '')
-                filesnm = filesnm + ',' + newdocfileslist[i];
-            else
-                filesnm = filesnm + newdocfileslist[i];
-        }
-        document.getElementById("file_upload").value = filesnm;
-    }
-</script>
 
 @include('app.merchant.invoice.add-attachment-billcode-modal')
 
@@ -660,5 +645,9 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+<script>
+    $(window).load(function() {
+        _('loader2').style.display = 'none';
+    })
+</script>
 @endsection
