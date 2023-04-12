@@ -1075,7 +1075,7 @@ class Invoice extends ParentModel
     public function getInvoiceConstructionParticularRows($payment_request_id)
     {
         $retObj = DB::table('invoice_construction_particular as i')
-            ->select(DB::raw('i.id,i.bill_code,i.description,i.previously_billed_amount,i.current_contract_amount,i.current_billed_amount,i.stored_materials,i.total_outstanding_retainage,i.group,i.sub_group,i.bill_code_detail,i.attachments,csi_code.code'))
+            ->select(DB::raw('i.id,i.bill_code,i.description,i.previously_billed_amount,i.current_contract_amount,i.current_billed_amount,i.stored_materials,i.total_outstanding_retainage,i.group,i.sub_group,i.bill_code_detail,i.attachments,i.original_contract_amount,i.approved_change_order_amount,csi_code.code'))
             ->join('csi_code', 'csi_code.id', '=', 'i.bill_code')
             ->where('i.payment_request_id', $payment_request_id)
             ->where('i.is_active', 1)
