@@ -995,7 +995,7 @@ class InvoiceController extends AppController
     {
         $work_complete_perc = 0;
         if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
-            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount,  $currency_icon);
+            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount, '');
         }
 
         return $work_complete_perc;
@@ -1005,7 +1005,7 @@ class InvoiceController extends AppController
     {
         $stored_material_perc = 0;
         if ($stored_materials_sum > 0 && $sumOfrasm > 0) {
-            $stored_material_perc = $this->formatInvoiceValues((($sumOfrasm * 100) / $stored_materials_sum), $currency_icon);
+            $stored_material_perc = $this->formatInvoiceValues((($sumOfrasm * 100) / $stored_materials_sum), '');
         }
 
         return $stored_material_perc;
