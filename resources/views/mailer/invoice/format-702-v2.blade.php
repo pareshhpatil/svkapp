@@ -49,7 +49,8 @@
             margin-right: 15px
         }
 
-        @endif body {
+        @endif 
+        body {
             margin-top: 10px;
             margin-bottom: 5px;
             margin-left: 20px;
@@ -69,7 +70,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             letter-spacing: 0px;
-            line-height: 100%;
+            line-height: 95%;
         }
     </style>
 
@@ -226,7 +227,7 @@
                                     AIA Document G703®, Continuation Sheet, is attached.</div>
                                 @endif
 
-                             <table style="width:100%">
+                                <table style="width:100%">
                                     <tr>
                                         <td>
                                             <div style="margin-top: 0px; font-size: 12px; font-weight: 700">1. ORIGINAL CONTRACT SUM </div>
@@ -334,16 +335,21 @@
                                 </table>
                             </td>
                             <td style="width:50%; padding-left: 10px;">
-
-
                                 <div style="font-size: 12px">The undersigned Contractor certifies that to the best of the Contractor’s knowledge, information
                                     and belief the Work covered by this Application for Payment has been completed in accordance
                                     with the Contract Documents, that all amounts have been paid by the Contractor for Work for
                                     which previous Certificates for Payment were issued and payments received from the Owner, and
                                     that current payment shown herein is now due.</div>
-                                <div style="margin-top: 5px; font-size: 14px; font-weight: 700">CONTRACTOR:</div>
+                                <div style="margin-top: 0px; font-size: 14px; font-weight: 700">CONTRACTOR:</div>
                                 <table style="width:100%">
-
+                                    <tr>
+                                        <td style="width: 70%">
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
+                                        </td>
+                                        <td style="width: 30%">
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
+                                        </td>
+                                    </tr>
                                 </table>
                                 <div style="margin-top: 0px; font-size: 12px">State of:</div>
                                 <div style="margin-top: 3px; font-size: 12px">County of:</div>
@@ -368,7 +374,17 @@
                                 </table>
                                 <div style="margin-top: 0px; font-size: 12px; font-weight: 300;font-style: italic;">(Attach explanation if amount certified differs from the amount applied. Initial all figures on this
                                     Application and on the Continuation Sheet that are changed to conform with the amount certified.)</div>
-
+                                <div style="margin-top: 0; font-size: 12px; font-weight: 700">ARCHITECT:</div>
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width: 70%">
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400"> By: </div>
+                                        </td>
+                                        <td style="width: 30%">
+                                            <div style="margin-top: 0px;margin-bottom: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 400">Date: </div>
+                                        </td>
+                                    </tr>
+                                </table>
                                 <div style="margin-top: 0px; font-size: 12px">This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor
                                     named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of
                                     the Owner or Contractor under this Contract.</div>

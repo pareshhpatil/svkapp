@@ -351,8 +351,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/view/{link}', 'InvoiceController_old@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController_old@view_g702');
   Route::get('invoice/viewg703/{link}', 'InvoiceController_old@view_g703');
-  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
-  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
+  // Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
+  // Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   // Route::get('invoice/document/{link}', 'InvoiceController@documents');
   // Route::get('invoice/document/{link}/{name}', 'InvoiceController@documents');
   // Route::get('invoice/document/{link}/{parent}/{sub}', 'InvoiceController@documents');
@@ -525,8 +525,8 @@ Route::group(['prefix' => 'patron'], function () {
   //patron added by ganesh
   Route::get('invoice/view/{link}/{type}', 'InvoiceController_old@patronView703');
   Route::get('invoice/view/{link}', 'InvoiceController_old@patronView');
-  Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
-  Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
+  // Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
+  // Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
   Route::get('invoice/download/full/{link}', 'InvoiceController_old@downloadFullPatron');
   Route::get('invoice/download/{link}', 'InvoiceController_old@downloadPatron');
   Route::get('invoice/download/{link}/{id}', 'InvoiceController_old@downloadPatron');
@@ -536,6 +536,9 @@ Route::group(['prefix' => 'patron'], function () {
   // Route::get('invoice/document/{link}/{parent}/{sub}', 'InvoiceController@documentsPatron');
   // Route::get('invoice/document/{link}/{parent}/{sub}/{name}', 'InvoiceController@documentsPatron');
 });
+
+Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
+Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
 Route::get('invoice/download-v2/{link}/{id}/{type}','InvoiceController@download_v2');
 Route::get('invoice/download-v2/{link}/{id}/{type}/{user_type}','InvoiceController@download_v2');
 Route::get('invoice/document/{user_type}/{link}', 'InvoiceController@documents');

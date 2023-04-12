@@ -893,9 +893,8 @@ class InvoiceController extends AppController
         }
 
         //merchant data 
-        $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
-
-        $data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
+        //$merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
+        //$data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
 
         //get merchsnt company name from billing profile id 
         $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($this->merchant_id);
@@ -949,7 +948,7 @@ class InvoiceController extends AppController
             $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $data['currency_icon']);
         }
 
-        $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $data['currency_icon']);
+        $data['balance_to_finish'] = $this->formatInvoiceValues(($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']) - ($sumOfg - $data['total_retainage']), $data['currency_icon']);
         $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $data['currency_icon']);
 
         return $data;
@@ -995,7 +994,7 @@ class InvoiceController extends AppController
     {
         $work_complete_perc = 0;
         if ($total_retainage_amount > 0 && $totalBilledAmount > 0) {
-            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount,  $currency_icon);
+            $work_complete_perc = $this->formatInvoiceValues($total_retainage_amount * 100 / $totalBilledAmount, '');
         }
 
         return $work_complete_perc;
@@ -1005,7 +1004,7 @@ class InvoiceController extends AppController
     {
         $stored_material_perc = 0;
         if ($stored_materials_sum > 0 && $sumOfrasm > 0) {
-            $stored_material_perc = $this->formatInvoiceValues((($sumOfrasm * 100) / $stored_materials_sum), $currency_icon);
+            $stored_material_perc = $this->formatInvoiceValues((($sumOfrasm * 100) / $stored_materials_sum), '');
         }
 
         return $stored_material_perc;
@@ -1660,6 +1659,7 @@ class InvoiceController extends AppController
     {
         $filePath = '';
         $data = explode("_", $link);
+       
         $folder = $data[0];
         $link = str_replace($data[0] . '_', "", $link);
         if ($folder != 'invoices') {
@@ -1667,37 +1667,43 @@ class InvoiceController extends AppController
         } else {
             $filePath = 'invoices/' . $link;
         }
-
-        return  redirect(Storage::disk('s3_expense')->temporaryUrl(
+       
+        $url=Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
             now()->addHour(),
             ['ResponseContentDisposition' => 'attachment']
-        ));
+        );
+        header("Location:".$url);
+        exit();
     }
     public function downloadZip($link)
     {
         $payment_request_id = Encrypt::decode($link);
-
+        
         if (strlen($payment_request_id) == 10) {
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
             $attach_value =  $this->invoiceModel->getColumnValueWithAllRow('invoice_construction_particular', 'payment_request_id', $payment_request_id, 'attachments');
 
             $plugin_array = json_decode($plugin_value, 1);
+            
             $source_disk = 's3_expense';
             if (File::exists(public_path('tmp/documents.zip'))) {
                 unlink(public_path('tmp/documents.zip'));
             }
+           
             $zip = new Filesystem(new ZipArchiveAdapter(public_path('tmp/documents.zip')));
-            if (isset($plugin_array['files'])) {
+            if(isset($plugin_array['files'])) {
                 foreach ($plugin_array['files'] as $file_name) {
-
-                    $source_path = 'invoices/' . basename($file_name);
-                    $file_content = Storage::disk($source_disk)->get($source_path);
-                    $zip->put(basename($file_name), $file_content);
+                    if($file_name!='') {
+                        $source_path = 'invoices/' . basename($file_name);
+                        $file_content = Storage::disk($source_disk)->get($source_path);
+                        $zip->put(basename($file_name), $file_content);
+                    }
                 }
             }
+           
             $billcode_docs = json_decode($attach_value, 1);
-
+            
             foreach ($billcode_docs as $items) {
 
                 $inner_data = json_decode($items['value'], 1);
@@ -1711,8 +1717,9 @@ class InvoiceController extends AppController
                     }
                 }
             }
-
-            return redirect('tmp/documents.zip');
+            header('Location:/tmp/documents.zip');
+            exit();
+            //return redirect('tmp/documents.zip');
         }
     }
 
@@ -4183,6 +4190,7 @@ class InvoiceController extends AppController
         $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
 
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
+        $data['grand_total_offline'] =  $this->getGrandTotal((array)$payment_request_data,  '');
         $data['user_type'] = $user_type;
 
         //check is online payment 

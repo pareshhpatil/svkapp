@@ -13,10 +13,6 @@
         <div>
             <h1 class="text-3xl text-left mt-8 font-bold">Document {{$gtype}}® – 1992</h1>
         </div>
-    @else
-        <div>
-            <h1 class="text-3xl text-left font-bold text-black">Document {{$gtype}} – 1992</h1>
-        </div>
     @endif
 </div>
 <h1 class="text-2xl text-left mt-4 font-bold">{{$title}}</h1>
