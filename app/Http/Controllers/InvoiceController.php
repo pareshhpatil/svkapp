@@ -3999,7 +3999,7 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-
+        
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['template'], [5, 28]);
             $data['gtype'] = $type;
@@ -4016,6 +4016,8 @@ class InvoiceController extends AppController
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
+            }  else if ($type == 'co-listing') {
+                $particular_details = [];
             } else {
                 return redirect('/error/invalidlink');
             }
