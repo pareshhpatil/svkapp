@@ -1660,6 +1660,7 @@ class InvoiceController extends AppController
     {
         $filePath = '';
         $data = explode("_", $link);
+       
         $folder = $data[0];
         $link = str_replace($data[0] . '_', "", $link);
         if ($folder != 'invoices') {
@@ -1667,37 +1668,43 @@ class InvoiceController extends AppController
         } else {
             $filePath = 'invoices/' . $link;
         }
-        
-        return redirect(Storage::disk('s3_expense')->temporaryUrl(
+       
+        $url=Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
             now()->addHour(),
             ['ResponseContentDisposition' => 'attachment']
-        ));
+        );
+        header("Location:".$url);
+        exit();
     }
     public function downloadZip($link)
     {
         $payment_request_id = Encrypt::decode($link);
-
+        
         if (strlen($payment_request_id) == 10) {
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
             $attach_value =  $this->invoiceModel->getColumnValueWithAllRow('invoice_construction_particular', 'payment_request_id', $payment_request_id, 'attachments');
 
             $plugin_array = json_decode($plugin_value, 1);
+            
             $source_disk = 's3_expense';
             if (File::exists(public_path('tmp/documents.zip'))) {
                 unlink(public_path('tmp/documents.zip'));
             }
+           
             $zip = new Filesystem(new ZipArchiveAdapter(public_path('tmp/documents.zip')));
-            if (isset($plugin_array['files'])) {
+            if(isset($plugin_array['files'])) {
                 foreach ($plugin_array['files'] as $file_name) {
-
-                    $source_path = 'invoices/' . basename($file_name);
-                    $file_content = Storage::disk($source_disk)->get($source_path);
-                    $zip->put(basename($file_name), $file_content);
+                    if($file_name!='') {
+                        $source_path = 'invoices/' . basename($file_name);
+                        $file_content = Storage::disk($source_disk)->get($source_path);
+                        $zip->put(basename($file_name), $file_content);
+                    }
                 }
             }
+           
             $billcode_docs = json_decode($attach_value, 1);
-
+            
             foreach ($billcode_docs as $items) {
 
                 $inner_data = json_decode($items['value'], 1);
