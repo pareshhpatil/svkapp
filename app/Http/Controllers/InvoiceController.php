@@ -1718,8 +1718,9 @@ class InvoiceController extends AppController
                     }
                 }
             }
-
-            return redirect('tmp/documents.zip');
+            header('Location:tmp/documents.zip');
+            exit();
+            //return redirect('tmp/documents.zip');
         }
     }
 
