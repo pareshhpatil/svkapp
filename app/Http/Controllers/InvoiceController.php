@@ -1718,7 +1718,9 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            return redirect('tmp/documents.zip');
+            header('Location:/tmp/documents.zip');
+            exit();
+            //return redirect('tmp/documents.zip');
         }
     }
 
@@ -4186,7 +4188,6 @@ class InvoiceController extends AppController
         $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
 
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
-        $data['grand_total_offline'] =  $this->getGrandTotal((array)$payment_request_data,  '');
         $data['user_type'] = $user_type;
 
         //check is online payment 
