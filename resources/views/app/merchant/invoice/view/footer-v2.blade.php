@@ -275,7 +275,7 @@ $validate=(array)$validate;
                                                 <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$info['offline_success_transaction']->amount}}" placeholder="Amount" />
                                                 <input type="hidden" id="original_amount" value="{{$absolute_cost}}" />
                                                 @else
-                                                <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$absolute_cost}}" placeholder="Amount" />
+                                                <input class="form-control form-control-inline input-sm" id="total" name="amount" required type="text" {!!$validate['amount']!!} value="{{$grand_total_offline}}" placeholder="Amount" />
                                                 <input type="hidden" id="original_amount" value="{{$absolute_cost}}" />
                                                 @endif
                                             </div>
