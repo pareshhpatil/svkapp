@@ -47,7 +47,7 @@
                             {if $is_partial!=true}
                                 <div class="col-md-4">
                                     <div class="caption font-blue pull-right">
-                                        <h2 class="">{$currency_icon} <span
+                                        <h2 class="">{$currency_icon}<span
                                                 id="grandtotal">{$amount|number_format:2:".":","}/-</span></h2>
                                         {if $surcharge_amount>0}
                                             <p>Including convenience fee : &nbsp;{$currency_icon} {$surcharge_amount}</p>

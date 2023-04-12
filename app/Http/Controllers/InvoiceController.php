@@ -1718,9 +1718,9 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            header('Location:tmp/documents.zip');
+            $url = 'tmp/documents.zip';
+            header("Location:".$url);
             exit();
-            //return redirect('tmp/documents.zip');
         }
     }
 
