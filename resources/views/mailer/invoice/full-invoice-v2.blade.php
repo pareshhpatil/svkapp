@@ -128,7 +128,7 @@
     }
 </script>
     {{-- 702 Part  --}}
-    <div id="link_to_702">
+    <div id="link_to_702" style="line-height: 90%">
         @include('mailer.invoice.format-702-v2')
     </div>
     <div class="page-break"></div>
