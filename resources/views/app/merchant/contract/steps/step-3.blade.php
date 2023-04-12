@@ -318,11 +318,11 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="col-md-7"></div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-3">
                                                 <button type="button" onclick="saveSequence()" class="btn btn-sm blue">Save sequence</button>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <button type="button" onclick="showNewSequencePanel()" class="btn default btn-sm">Cancel</button>
                                                 <p id="seq_error" style="color: red;"></p>
                                             </div>
