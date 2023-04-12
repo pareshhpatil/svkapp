@@ -70,7 +70,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             letter-spacing: 0px;
-            line-height: 100%;
+            line-height: 95%;
         }
     </style>
 
