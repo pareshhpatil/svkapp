@@ -225,6 +225,9 @@ class OrderController extends Controller
         $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
+            if($row->approved_date == '0000-00-00'){
+                $row->approved_date = '';
+            }
         }
         $data['list'] = $list;
         $userRole = Session::get('user_role');

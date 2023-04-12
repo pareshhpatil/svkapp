@@ -68,7 +68,7 @@
                                     Amount
                                 </th>
                                 <th class="td-c">
-                                    Change order date
+                                    Approved date
                                 </th>
                                 <th class="td-c">
                                     Created on
@@ -115,12 +115,14 @@
                                     <td class="td-c">
                                         $@if($v->total_change_order_amount < 0)({{str_replace('-','',number_format($v->total_change_order_amount,2))}})@else{{number_format($v->total_change_order_amount,2)}}@endif </td>
                                     <td class="td-c">
-
-                                        <x-localize :date="$v->order_date" type="date" />
+                                        @if($v->approved_date != '' || $v->approved_date != null)
+                                        <x-localize :date="$v->approved_date" type="date" />
+                                        @else
+                                        -
+                                        @endif
                                     </td>
                                     <td class="td-c">
                                         <x-localize :date="$v->created_date" type="datetime" />
-
                                     </td>
                                     <td class="td-c">
                                         @if($v->status == 0)

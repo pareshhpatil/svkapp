@@ -18,7 +18,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/patron/invoice/download/full/{{$url}}">
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}/0/full/{{$user_type}}">
                                     Download Full PDF
                                 </a>
                             </li>

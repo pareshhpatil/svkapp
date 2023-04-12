@@ -14,7 +14,7 @@
                     <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
                 </li>
                 <li>
-                    <a href="/patron/invoice/document/{{$url}}">Attached files</a>
+                    <a href="/invoice/document/patron/{{$url}}">Attached files</a>
                 </li>
             @else
                 <li class="@if($gtype=='702') active @endif">
@@ -24,7 +24,7 @@
                     <a href="/merchant/invoice/view/703/{{$url}}">703</a>
                 </li>
                 <li>
-                    <a href="/merchant/invoice/document/{{$url}}">Attached files</a>
+                    <a href="/invoice/document/merchant/{{$url}}">Attached files</a>
                 </li>
             @endif
         </ul>

@@ -143,6 +143,10 @@
             position: relative;
             top: 5px;
         }
+
+        .sorted_table .handle svg {
+            color: #a0acac;
+        }
         
         .sorted_table_tr:hover  .handle {
             opacity: 1;
@@ -151,6 +155,10 @@
         #update-fields-pos {
             opacity: 0;
             visibility: hidden;
+        }
+
+        .sorted_table_tr {
+            left: 20px !important;
         }
     </style>
 
