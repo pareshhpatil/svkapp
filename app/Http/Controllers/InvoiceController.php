@@ -893,9 +893,8 @@ class InvoiceController extends AppController
         }
 
         //merchant data 
-        $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
-
-        $data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
+        //$merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
+        //$data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
 
         //get merchsnt company name from billing profile id 
         $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($this->merchant_id);
