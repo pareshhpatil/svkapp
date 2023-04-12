@@ -282,7 +282,7 @@
                                     </span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3 w-auto">Select a sequence 
+                                    <label class="control-label col-md-3 w-auto">Select a sequence
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Pick an existing sequence number or create a new sequence number. To create a new sequence number, enter the start of your sequence i.e. If you want to start your sequence at 100 enter 100" type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -303,24 +303,30 @@
                                         <a title="New invoice number" onclick="showNewSequencePanel()" class="btn btn-sm green"><i class="fa fa-plus"></i> New sequence</a>
                                     </div>
                                 </div>
-                                <div id="newSequencePanel" hidden>
-                                    <div class="form-group" style="margin-left: 160px;">
-                                        <div class="col-md-3">
-                                            <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}" />
+                                <div class="row" id="newSequencePanel" hidden>
+                                    <div class="portlet light bordered col-md-6">
+                                        <div class="portlet-body">
+                                        <div class="form-group " style="margin-left: 140px;">
+                                            <div class="col-md-6">
+                                                <input class="form-control" type="text" id="project_prefix" name="prefix" placeholder="Prefix" maxlength="20" onkeyup="changeSeparatorVal(this.value)" value="{{ old('prefix') }}" />
+                                            </div>
+                                            <div class="col-md-2 ml-minus-1">
+                                                <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input class="form-control" onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence" placeholder="Seq. no" value="{{ old('sequence') }}" id="seq_no" />
+                                            </div>
                                         </div>
-                                        <div class="col-md-1 ml-minus-1">
-                                            <input class="form-control" type="text" name="seprator" placeholder="Separator" maxlength="5" value="{{ old('seprator')!='' ? old('seprator') : '-' }}" id="separator" />
+                                        <div class="form-group">
+                                            <div class="col-md-7"></div>
+                                            <div class="col-md-2">
+                                                <button type="button" onclick="saveSequence()" class="btn btn-sm blue">Save sequence</button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" onclick="showNewSequencePanel()" class="btn default btn-sm">Cancel</button>
+                                                <p id="seq_error" style="color: red;"></p>
+                                            </div>
                                         </div>
-                                        <div class="col-md-1">
-                                            <input class="form-control" onkeyup=imposeMinMax(this) type="number" min="0" max="99999999" name="sequence" placeholder="Seq. no" value="{{ old('sequence') }}" id="seq_no" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group"  style="margin-left: 150px;">
-                                        <label class="control-label col-md-3"></label>
-                                        <div class="col-md-6">
-                                            <button type="button" onclick="saveSequence()" class="btn btn-sm blue">Save sequence</button>
-                                            <button type="button" onclick="showNewSequencePanel()" class="btn default btn-sm">Cancel</button>
-                                            <p id="seq_error" style="color: red;"></p>
                                         </div>
                                     </div>
                                 </div>
