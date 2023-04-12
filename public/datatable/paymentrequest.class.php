@@ -82,7 +82,7 @@ class SSP
                     $value = $data[$i][$columns[$j]['db']];
                     $link = $encrypt->encode($data[$i]['payment_request_id']);
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
-                    $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link . '/702';
+                    $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/702/' . $link . '/patron';
 
                     if (!empty($data[$i]['short_url'])) {
                         $copy_link = $data[$i]['short_url'];
@@ -194,10 +194,10 @@ class SSP
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
                                 if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
                                     $row[$column['dt']] .= '<li>
-                                                    <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
+                                                    <a target="_BLANK" href="/merchant/invoice/view/702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
                                                 </li><li>
-                                                <a target="_BLANK" href="/merchant/invoice/viewg703/' . $link . '">
+                                                <a target="_BLANK" href="/merchant/invoice/view/703/' . $link . '">
                                                     <i class="fa fa-table"></i> View 703</a>
                                             </li>
                                             ';
@@ -251,10 +251,10 @@ class SSP
                             } else {
                                 if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
                                     $row[$column['dt']] .= '<li>
-                                                    <a target="_BLANK" href="/merchant/invoice/viewg702/' . $link . '">
+                                                    <a target="_BLANK" href="/merchant/invoice/view/702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
                                                 </li><li>
-                                                <a target="_BLANK" href="/merchant/invoice/viewg703/' . $link . '">
+                                                <a target="_BLANK" href="/merchant/invoice/view/703/' . $link . '">
                                                     <i class="fa fa-table"></i> View 703</a>
                                             </li>
                                             ';

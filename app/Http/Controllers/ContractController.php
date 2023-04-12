@@ -13,6 +13,7 @@ use App\Model\Contract;
 use App\Model\Merchant\CostType;
 use App\Model\Invoice;
 use App\Model\Master;
+use App\Model\InvoiceFormat;
 use App\Libraries\Encrypt;
 use App\Project;
 use App\Traits\Contract\ContractParticulars;
@@ -164,7 +165,7 @@ class ContractController extends Controller
         if (old('project_id'))
             $project = $this->getProject(old('project_id'));
 
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2', 'invoiceformat'], [3, 179]);
 
         $data['project_list'] = $project_list;
         $data['title'] = $title;
@@ -179,6 +180,13 @@ class ContractController extends Controller
             $data = $this->step2Data($data, $contract, $project->project_id ?? '', $step);
         }
         if ($step == 3) {
+            $model = new InvoiceFormat();
+            $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
+            $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
+            $data['invoiceSeq'] = $invoiceSeq;
+            
+            $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $contract->project_id);
+
             $data['coveringNotes'] = $this->contract_model->getMerchantValues($this->merchant_id, 'covering_note');
 
             $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
@@ -245,6 +253,9 @@ class ContractController extends Controller
                 } else {
                     $template_id = $this->saveInvoiceFormat($contract->contract_code);
                     $this->contract_model->updateTable('contract', 'contract_id', $contract->contract_id, 'template_id', $template_id);
+                }
+                if(isset($request->sequence_number)){
+                    $this->contract_model->updateTable('project', 'id', $contract->project_id, 'sequence_number',$request->sequence_number);
                 }
                 $invoice_format = new InvoiceFormatController();
                 $_POST = json_decode(json_encode($request->all()), 1);

@@ -11,7 +11,6 @@
             background-color: transparent !important;
         }
 
-
         .table thead tr th {
             font-size: 12px;
             padding: 3px;
@@ -138,7 +137,29 @@
             font-weight: 500 !important;
         }
 
+        .sorted_table .handle {
+            opacity: 0;
+            cursor: move;
+            position: relative;
+            top: 5px;
+        }
 
+        .sorted_table .handle svg {
+            color: #a0acac;
+        }
+        
+        .sorted_table_tr:hover  .handle {
+            opacity: 1;
+        }
+
+        #update-fields-pos {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .sorted_table_tr {
+            left: 20px !important;
+        }
     </style>
 
 
@@ -183,7 +204,7 @@
                                             </div>
                                         </div>
                                         <div class="table-scrollable  tableFixHead" id="table-scroll">
-                                            <table class="table table-bordered table-hover" id="particular_table" wire:ignore>
+                                            <table class="table table-bordered table-hover sorted_table" id="particular_table" wire:ignore>
                                                 @if(!empty($particular_column))
                                                     <thead class="headFootZIndex">
                                                     <tr>
@@ -209,7 +230,7 @@
 
                                                 <tbody>
                                                 <template x-for="(field, index) in fields" :key="index">
-                                                    <tr>
+                                                    <tr :id="`${index}`" class="sorted_table_tr">
                                                         @foreach($particular_column as $k=>$v)
                                                             @php $readonly=false; @endphp
                                                             @php $disable=false; @endphp
@@ -227,6 +248,9 @@
                                                                 <td style="vertical-align: middle; @if($disable==true) background-color:#f5f5f5; @endif" :id="`cell_{{$k}}_${field.pint}`" @if($readonly==false)  x-on:click="field.txt{{$k}} = true;particularray[`${index}`].txt{{$k}} = true; @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$k}}',`${index}`)@endif"  @endif class="td-c onhover-border @if($k=='bill_code') col-id-no @endif">
                                                                     @if($k=='bill_code')
                                                                         <div style="display:flex;">
+                                                                            <span class="handle">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1"><path d="M384 64H256C220.66 64 192 92.66 192 128v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320H256c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64zM768 64h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64V128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z m0 320h-128c-35.34 0-64 28.66-64 64v128c0 35.34 28.66 64 64 64h128c35.34 0 64-28.66 64-64v-128c0-35.34-28.66-64-64-64z" fill=""/></svg>
+                                                                            </span>
                                                                         <input  type="hidden" x-model="particularray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                                                     <span x-show="! field.txt{{$k}}" style="width:80%" x-text="setdropdowndiv('{{$k}}',field)"></span>
                                                                             <span style="width:100%;" x-show="field.txt{{$k}}">
@@ -313,6 +337,7 @@
 
                                                                         <input :id="`id${field.pint}`" type="hidden"  x-model="field.id" name="id[]">
                                                                         <input :id="`introw${field.pint}`" type="hidden" :value="field.pint" x-model="field.pint" name="pint[]">
+                                                                        <input :id="`introw${field.sort_order}`" type="hidden" :value="field.sort_order" x-model="field.sort_order" name="sort_order[]">
                                                                         <input :id="`index${index}`" type="hidden" x-model="field.pint" name="rowindex[]">
 
 
@@ -439,6 +464,7 @@
                     </tfoot>
                 </table>
             </div>
+                                        <button type="button" id="update-fields-pos" class="update-fields-pos" @click="updateSortPoss()">don't display</button>
         </div>
     </div>
     @include('app.merchant.contract.add-group-modal')
@@ -477,7 +503,7 @@
                 </div>
             </div>
         </div>
-
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script>
             /* $(document).ready(function () {
                  particularsDropdowns(0, this.fields);
@@ -537,7 +563,11 @@
             var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
             var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
             var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
-            function initializeParticulars(){
+            let prevIndex = '';
+            let currIndex = '';
+            let hangoutButton = document.getElementById("update-fields-pos");
+            
+            function initializeParticulars() {
                 this.initializeDropdowns();
                 this.calculateTotal();
                 $('.tableFixHead').css('max-height', screen.height/2);
@@ -545,7 +575,34 @@
                 {
                     this.calc(this.fields[p]);
                 }
-                        
+
+
+                $(".sorted_table tbody").sortable({
+                    handle: '.handle',
+                    helper: fixWidthHelper,
+                    start: function(e, ui) {
+                        let current = ui.item[0];
+                        prevIndex = current.id;
+                    },
+                    update:function(ev, ui) {
+                        currIndex = ui.item[0].nextElementSibling.id;
+                        // let prevPosElement = ui.item[0].previousElementSibling;
+
+                        hangoutButton.click();
+                    },
+                    stop: function(event, ui) {
+                    }
+                })
+
+
+            }
+
+            function fixWidthHelper(e, ui) {
+                ui.children().each(function() {
+                    // $(this).width($(this).width());
+                    $(this).css({"min-width": $(this).width() + 10 + 'px'});
+                });
+                return ui;
             }
 
             function initSelect2(){
@@ -643,6 +700,40 @@
                     addbuttonactive:true,
                     cost_bill_code:null,
                     cost_cost_type:null,
+
+                    updateSortPoss() {
+                        // console.log(prevIndex, currIndex, 'bnm');
+                        if(currIndex > prevIndex) {
+                            currIndex = currIndex - 1
+                        }
+                        this.fields = this.moveElement(this.fields, prevIndex, currIndex);
+
+                        //update pint and sort order
+                        this.fields.map((field, i) => {
+                            field.pint = i;
+                            field.sort_order = i;
+
+                            return field;
+                        })
+
+                        particularray = this.moveElement(particularray, prevIndex, currIndex);
+
+                        //update pint and sort order
+                        particularray.map((item, i) => {
+                            item.pint = i;
+                            item.sort_order = i;
+
+                            return item;
+                        })
+                    },
+
+                    moveElement(array, fromIndex, toIndex) {
+                        const element = array.splice(fromIndex, 1)[0];
+
+                        array.splice(toIndex, 0, element);
+
+                        return array;
+                    },
 
                     addNewBillCode(){
                         var data = $("#billcodeform").serialize();
@@ -2286,4 +2377,24 @@
         <!-- /.modal-dialog -->
     </div>
 
+    <style>
+        .table-bordered {
+            border: 1px solid #dddddd;
+            border-collapse: separate;
+            *border-collapse: collapsed;
+            border-left: 0;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        .sorted_table2 tr {
+            cursor: pointer;
+        }
+
+        .ui-sortable-helper {
+            width: 100% !important;
+            background-color: #fff !important;
+        }
+    </style>
 @endsection

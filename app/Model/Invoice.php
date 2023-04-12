@@ -316,6 +316,31 @@ class Invoice extends ParentModel
             ->join('csi_code', 'csi_code.id', '=', 'invoice_construction_particular.bill_code')
             ->where('payment_request_id', $payment_request_id)
             ->where('invoice_construction_particular.is_active', 1)
+            ->orderBy('sort_order')
+            ->get();
+        return $retObj;
+    }
+
+    public function getInvoiceConstructionParticularsSum($payment_request_id)
+    {
+        $retObj = DB::table('invoice_construction_particular as icp')
+            ->select(DB::raw('SUM(icp.approved_change_order_amount) as approved_change_order_amount, 
+            SUM(icp.original_contract_amount) as original_contract_amount, 
+            SUM(icp.current_contract_amount ) as current_contract_amount, 
+            SUM(icp.previously_billed_amount ) as previously_billed_amount, 
+            SUM(icp.current_billed_amount)  as current_billed_amount, 
+            SUM(icp.stored_materials) as stored_materials, 
+            SUM(icp.retainage_amount_stored_materials) as retainage_amount_stored_materials, 
+            SUM(icp.retainage_amount_for_this_draw) as retainage_amount_for_this_draw, 
+            SUM(icp.retainage_release_amount) as retainage_release_amount, 
+            SUM(icp.retainage_stored_materials_release_amount) as retainage_stored_materials_release_amount, 
+            SUM(icp.total_outstanding_retainage) as total_outstanding_retainage, 
+            SUM(icp.retainage_amount_previously_stored_materials) as retainage_amount_previously_stored_materials,
+            SUM(icp.retainage_amount_previously_withheld) as retainage_amount_previously_withheld, 
+            csi_code.code'))
+            ->join('csi_code', 'csi_code.id', '=', 'icp.bill_code')
+            ->where('payment_request_id', $payment_request_id)
+            ->where('icp.is_active', 1)
             ->get();
         return $retObj;
     }
@@ -699,6 +724,7 @@ class Invoice extends ParentModel
             [
                 'payment_request_id' => $request_id,
                 'pint' => $data['pint'],
+                'sort_order' => $data['sort_order'],
                 'bill_code' => $data['bill_code'],
                 'description' => $data['description'],
                 'bill_type' => $data['bill_type'],
@@ -751,6 +777,7 @@ class Invoice extends ParentModel
             ->update(
                 [
                     'pint' => $data['pint'],
+                    'sort_order' => $data['sort_order'],
                     'bill_code' => $data['bill_code'],
                     'description' => $data['description'],
                     'bill_type' => $data['bill_type'],
@@ -820,6 +847,38 @@ class Invoice extends ParentModel
         return $row;
     }
 
+    public function getCustomerNameFromID($customer_id)
+    {
+        $row = DB::table('customer')
+            ->where('customer_id', $customer_id)
+            ->first();
+
+        $customer_name = $row->first_name . ' '.  $row->last_name;
+        return $customer_name;
+    }
+
+    public function getMerchantDataByID($merchant_id)
+    {
+        $row = DB::table('merchant')
+            ->where('merchant_id', $merchant_id)
+            ->first();
+
+        return $row;
+    }
+
+    
+
+    public function getCompanyNameFromBillingID($merchant_id)
+    {
+        $row = DB::table('merchant_billing_profile')
+            ->where('merchant_id', $merchant_id)
+            ->where('is_default', '1')
+            ->first();
+
+        return $row->company_name;
+    }
+    
+
     public function getPaymentRequest($contract_id)
     {
         $retObj = DB::table('payment_request as p')
@@ -843,6 +902,28 @@ class Invoice extends ParentModel
 
         return $retObj;
     }
+
+    public function getPaymentRequestData($payment_request_id, $merchant_id = 'customer')
+    {
+        $retObj = DB::table('payment_request')
+            ->select(DB::raw('*,  DATE_FORMAT(bill_date, "%d %b %Y") as bill_date'))
+            ->where('payment_request_id', '=', $payment_request_id)
+            ->where('merchant_id', '=', $merchant_id)
+            ->orderBy('created_date', 'desc')->first();
+
+        return $retObj;
+    }
+
+    public function getCurrencyIcon($currency)
+    {
+        $retObj = DB::table('currency')
+            ->select(DB::raw('icon'))
+            ->where('code', '=', $currency)
+            ->first();
+
+        return $retObj;
+    }
+
 
     public function getPreviousInvoiceParticular($payment_request_id)
     {
@@ -990,4 +1071,17 @@ class Invoice extends ParentModel
             return $retObj[0];
         }
     }
+
+    public function getInvoiceConstructionParticularRows($payment_request_id)
+    {
+        $retObj = DB::table('invoice_construction_particular as i')
+            ->select(DB::raw('i.id,i.bill_code,i.description,i.previously_billed_amount,i.current_contract_amount,i.current_billed_amount,i.stored_materials,i.total_outstanding_retainage,i.group,i.sub_group,i.bill_code_detail,i.attachments,csi_code.code'))
+            ->join('csi_code', 'csi_code.id', '=', 'i.bill_code')
+            ->where('i.payment_request_id', $payment_request_id)
+            ->where('i.is_active', 1)
+            ->orderBy('sort_order')
+            ->get();
+        return $retObj;
+    }
+
 }
