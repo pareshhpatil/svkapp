@@ -49,7 +49,8 @@
             margin-right: 15px
         }
 
-        @endif body {
+        @endif 
+        body {
             margin-top: 10px;
             margin-bottom: 5px;
             margin-left: 20px;
