@@ -1667,8 +1667,8 @@ class InvoiceController extends AppController
         } else {
             $filePath = 'invoices/' . $link;
         }
-
-        return  redirect(Storage::disk('s3_expense')->temporaryUrl(
+        
+        return redirect(Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
             now()->addHour(),
             ['ResponseContentDisposition' => 'attachment']
