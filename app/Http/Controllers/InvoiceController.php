@@ -4347,7 +4347,7 @@ class InvoiceController extends AppController
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
             } else if($type == 'co-listing') {
-                $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id'])
+                $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
                 $data = array_merge($data, $particular_co_listing_details);
             } else if($type=='full') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
@@ -4366,7 +4366,7 @@ class InvoiceController extends AppController
             define("DOMPDF_ENABLE_REMOTE", true);
             $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
 
-            if ($type == '702' || $type == '703') {
+            if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
                 $pdf->setPaper("a4", "landscape");
                 if ($savepdf == 1) {

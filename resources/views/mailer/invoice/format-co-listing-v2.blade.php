@@ -94,19 +94,19 @@
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                         @foreach ($change_order_columns as $change_order_column)
-                            <td class="font-regular text-xs border-r border-l td-703 text-center">
+                            <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
                             </td>
                         @endforeach
-                        <td class="font-regular text-xs border-r border-l td-703 text-center">
+                        <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
                         </td>
-                        <td class="font-regular text-xs border-r border-l td-703 text-center">
+                        <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
                         </td>
                         <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">WORK COMPLETED </td>
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                         <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"></td>
-                        <td style=" padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"></td>
+                        <td style="padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"></td>
                     </tr>
 
                     <tr style="text-align: center; color: #000">
@@ -114,35 +114,35 @@
                             NO. </td>
                         <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> DESCRIPTION
                             OF WORK </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> Orig. Scheduled
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> Orig. Scheduled
                             VALUE </td>
                         @foreach ($change_order_columns as $change_order_column)
-                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center text-capitalize">
+                            <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px;text-transform: capitalize;">
                                 {{ Str::replace('_', ' ', $change_order_column) }}
                             </td>
                         @endforeach
-                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
                             Total Change Order
                         </td>
-                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
                             Scheduled Value
                         </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> FROM
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> FROM
                             PREVIOUS APPLICATION<br />
                             (D + E) </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> THIS PERIOD
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> THIS PERIOD
                         </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> MATERIALS
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> MATERIALS
                             PRESENTLY
                             STORED<br />
                             (Not in D or E) </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">TOTAL
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">TOTAL
                             COMPLETED AND
                             STORED TO DATE<br />
                             (D+E+F) </td>
-                        <td style="width: 60px; border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px; "> %(G ÷ C)
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; width: 60px; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px; "> %(G ÷ C)
                         </td>
-                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">BALANCE TO
+                        <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">BALANCE TO
                             FINISH<br />
                             (C – G) </td>
                         <td style="border-bottom:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">RETAINAGE
@@ -151,10 +151,14 @@
                     </tr>
                     </thead>
                     <tbody>
+                    @php
+                        $changeOrderColumnCount = count($change_order_columns);
+                        $noGroupColSpan = $changeOrderColumnCount + 12;
+                    @endphp
                     @foreach ($particularRows as $key=>$row)
                         @if($key!='no-group~')
                             <tr>
-                                <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                <td colspan="{{$noGroupColSpan}}" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px; color: #6F8181;">{{ $key }} </div>
                                 </td>
                             </tr>
@@ -224,16 +228,16 @@
                                         </td>
                                         @if (isset($item['change_order_col_values']))
                                             @foreach ($item['change_order_col_values'] as $key => $change_order_col_value)
-                                                <td class="border-r border-l td-703 text-right">
-                                                    {{$change_order_col_value}}
+                                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                                    <div style="font-size: 14px">{{$change_order_col_value}}</div>
                                                 </td>
                                             @endforeach
                                         @endif
-                                        <td class="border-r border-l td-703 text-right">
-                                            <p class="text-sm"><x-amount-format :amount="$item['approved_change_order_amount']" /></p>
+                                        <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                            <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$item['approved_change_order_amount']" /></div>
                                         </td>
-                                        <td class="border-r border-l td-703 text-right">
-                                            <p class="text-sm"><x-amount-format :amount="$item['current_contract_amount']" /></p>
+                                        <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                            <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$item['current_contract_amount']" /></div>
                                         </td>
                                         <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                             <div style="font-size: 14px"><x-amount-format :amount="$item['previously_billed_amount']" /></div>
@@ -331,6 +335,19 @@
                                         <div style="font-size: 14px">{{ $group['description'] }}</div>
                                     </td>
                                     <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['original_contract_amount']" /></div>
+                                    </td>
+                                    @if (isset($group['change_order_col_values']))
+                                        @foreach ($group['change_order_col_values'] as $cokey => $change_order_col_value)
+                                            <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                                <div style="font-size: 14px">{{$change_order_col_value}}</div>
+                                            </td>
+                                        @endforeach
+                                    @endif
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['approved_change_order_amount']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$group['current_contract_amount']" /></div>
                                     </td>
                                     <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -342,17 +359,17 @@
                                     <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$group['stored_materials']" /></div>
                                     </td>
-                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$group['total_completed']" /></div>
                                     </td>
-                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px">
                                             @if($group['g_per'] < 0)({{str_replace('-','',number_format($group['g_per']  * 100, 2) )}}) @else{{ number_format($group['g_per'] * 100,2) }} @endif% </div>
                                     </td>
-                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$group['balance_to_finish']" /></div>
                                     </td>
-                                    <td style="border-bottom: solid 1px #A0ACAC; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <td style="border-bottom: solid 1px #A0ACAC; border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$group['total_outstanding_retainage']" /></div>
                                     </td>
                                 </tr>
@@ -406,8 +423,8 @@
                                 <td colspan="2" style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px;color: #6F8181;">{{$key. ' sub total'}}</div>
                                 </td>
-                                <td class="border td-703 text-right">
-                                    <p class="text-sm"><x-amount-format :amount="$group_total_original_schedule_value" /></p>
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$group_total_original_schedule_value" /></div>
                                 </td>
                                 @php
                                     $approvedCOAmount = 0;
@@ -429,12 +446,12 @@
 
                                 @endphp
                                 @foreach ($changeOrdersGroupTotalAmount as $changeOrderGroupTotalAmount)
-                                    <td class="border td-703 text-right">
-                                        <p class="text-sm"><x-amount-format :amount="$changeOrderGroupTotalAmount" /></p>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$changeOrderGroupTotalAmount" /></div>
                                     </td>
                                 @endforeach
-                                <td class="border td-703 text-right">
-                                    <p class="text-sm"><x-amount-format :amount="$approvedCOAmount" /></p>
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$approvedCOAmount" /></div>
                                 </td>
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"> <x-amount-format :amount="$group_total_schedule_value" /></div>
@@ -526,16 +543,16 @@
                         <td style="min-width: 50px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
                             <div style="font-size: 12px;font-weight: 600"><b>GRAND TOTAL</b> </div>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_original_schedule_value" /> </p>
+                        <td style="min-width: 70px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                            <div style="font-size: 14px;color: #6F8181;">{{ $currency_icon }}<x-amount-format :amount="$grand_total_original_schedule_value" /> </div>
                         </td>
                         @foreach($changeOrdersTotalAmountArray as $changeOrderTotalAmount)
-                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$changeOrderTotalAmount" /> </p>
+                            <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                <div style="font-size: 14px;color: #6F8181;">{{ $currency_icon }}<x-amount-format :amount="$changeOrderTotalAmount" /> </div>
                             </td>
                         @endforeach
-                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_approved_change_order_value" /> </p>
+                        <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                            <div style="font-size: 14px;color: #6F8181;">{{ $currency_icon }}<x-amount-format :amount="$grand_total_approved_change_order_value" /> </div>
                         </td>
                         <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                             <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_schedule_value" /></div>
