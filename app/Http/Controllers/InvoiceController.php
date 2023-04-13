@@ -3323,7 +3323,6 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-                dd($request->all());
         $request_id = Encrypt::decode($request->link);
 
         if (strlen($request_id) != 10) {
@@ -3807,7 +3806,7 @@ class InvoiceController extends AppController
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', [ 'invoiceConstruction', 'template', 'invoiceformat2'], [3, 179]);
         $merchant_cost_types_array = $this->getKeyArrayJson($merchant_cost_types, 'value');
         $data['billed_transactions'] = $billed_transactions;
         $data['merchant_cost_types'] = $merchant_cost_types;

@@ -140,118 +140,161 @@
         vertical-align: middle !important;
         font-weight: 500 !important;
     }
+
+    .table-bordered {
+            border: 1px solid #dddddd;
+            border-collapse: separate;
+            *border-collapse: collapsed;
+            border-left: 0;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        .sorted_table2 tr {
+            cursor: pointer;
+        }
+
+        .ui-sortable-helper {
+            width: 100% !important;
+            background-color: #fff !important;
+        }
+
+        .sorted_table .handle {
+            opacity: 0;
+            cursor: move;
+            position: relative;
+            top: 5px;
+        }
+
+        .sorted_table .handle svg {
+            color: #a0acac;
+        }
+        
+        .sorted_table_tr:hover  .handle {
+            opacity: 1;
+        }
+
+        #update-fields-pos {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .sorted_table_tr {
+            left: 20px !important;
+        }
 </style>
 
 <script>
-        @php
-        $billcodeJson = json_encode($csi_codes);
-        $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
-        $billcodeJson = str_replace("'", "\'", $billcodeJson);
-        $billcodeJson = str_replace('"', '\\"', $billcodeJson);
+    @php
+    $billcodeJson = json_encode($csi_codes);
+    $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
+    $billcodeJson = str_replace("'", "\'", $billcodeJson);
+    $billcodeJson = str_replace('"', '\\"', $billcodeJson);
 
-        $particularJson = json_encode($particulars);
-        $particularJson = str_replace("\\", '\\\\', $particularJson);
-        $particularJson = str_replace("'", "\'", $particularJson);
-        $particularJson = str_replace('"', '\\"', $particularJson);
+    $particularJson = json_encode($particulars);
+    $particularJson = str_replace("\\", '\\\\', $particularJson);
+    $particularJson = str_replace("'", "\'", $particularJson);
+    $particularJson = str_replace('"', '\\"', $particularJson);
 
-        $groupJson = json_encode($groups);
-        $groupJson = str_replace("\\", '\\\\', $groupJson);
-        $groupJson = str_replace("'", "\'", $groupJson);
-        $groupJson = str_replace('"', '\\"', $groupJson);
+    $groupJson = json_encode($groups);
+    $groupJson = str_replace("\\", '\\\\', $groupJson);
+    $groupJson = str_replace("'", "\'", $groupJson);
+    $groupJson = str_replace('"', '\\"', $groupJson);
 
-        $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
-        $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
-        $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
-        $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
+    $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
+    $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
+    $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
+    $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
 
-        //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
-        $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
-        $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
-        $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
+    //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+    $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
+    $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
+    $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
 
-        $merchantCostTypeJson = json_encode($merchant_cost_types);
-        $merchantCostTypeJson = str_replace("\\", '\\\\', $merchantCostTypeJson);
-        $merchantCostTypeJson = str_replace("'", "\'", $merchantCostTypeJson);
-        $merchantCostTypeJson = str_replace('"', '\\"', $merchantCostTypeJson);
+    $merchantCostTypeJson = json_encode($merchant_cost_types);
+    $merchantCostTypeJson = str_replace("\\", '\\\\', $merchantCostTypeJson);
+    $merchantCostTypeJson = str_replace("'", "\'", $merchantCostTypeJson);
+    $merchantCostTypeJson = str_replace('"', '\\"', $merchantCostTypeJson);
 
-        $merchantCostTypeJsonArray = str_replace("\\", '\\\\', $cost_types_array);
-        $merchantCostTypeJsonArray = str_replace("'", "\'", $merchantCostTypeJsonArray);
-        $merchantCostTypeJsonArray = str_replace('"', '\\"', $merchantCostTypeJsonArray);
-        @endphp
+    $merchantCostTypeJsonArray = str_replace("\\", '\\\\', $cost_types_array);
+    $merchantCostTypeJsonArray = str_replace("'", "\'", $merchantCostTypeJsonArray);
+    $merchantCostTypeJsonArray = str_replace('"', '\\"', $merchantCostTypeJsonArray);
+    @endphp
 
-        csi_codes = JSON.parse('{!! $billcodeJson !!}');
-        csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
-        var particularray = JSON.parse('{!! $particularJson !!}');
-        //console.log(particularray);
-        var previewArray = [];
-        var bill_codes = JSON.parse('{!! $billcodeJson !!}');
-        var groups = JSON.parse('{!! $groupJson !!}');
-        var bill_code_details = [{
-            'label': 'Yes',
-            'value': 'Yes'
-        }, {
-            'label': 'No',
-            'value': 'No'
-        }];
-        var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
-        var billed_transactions_filter = [];
-        var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
-        var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
-        var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
-        var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
-        var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
-        let hangoutButton = document.getElementById("update-fields-pos");
-        var particular_type = '{{$type}}';
+    csi_codes = JSON.parse('{!! $billcodeJson !!}');
+    csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
+    var particularray = JSON.parse('{!! $particularJson !!}');
+    //console.log(particularray);
+    var previewArray = [];
+    var bill_codes = JSON.parse('{!! $billcodeJson !!}');
+    var groups = JSON.parse('{!! $groupJson !!}');
+    var bill_code_details = [{
+        'label': 'Yes',
+        'value': 'Yes'
+    }, {
+        'label': 'No',
+        'value': 'No'
+    }];
+    var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
+    var billed_transactions_filter = [];
+    var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
+    var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
+    var cost_types = JSON.parse('{!! json_encode($cost_types) !!}');
+    var merchant_cost_types = JSON.parse('{!! $merchantCostTypeJson !!}');
+    var cost_types_array = JSON.parse('{!! $merchantCostTypeJsonArray !!}');
+    let hangoutButton = document.getElementById("update-fields-pos");
+    var particular_type = '{{$type}}';
 
-        function updateBillCodeDropdowns(optionArray, newBillCode) {
-            let selectedId = $('#selectedBillCodeId').val();
+    function updateBillCodeDropdowns(optionArray, newBillCode) {
+        let selectedId = $('#selectedBillCodeId').val();
 
-            for (let v = 0; v < particularray.length; v++) {
-                let currentField = particularray[v];
-                let billCodeSelector = document.querySelector('#bill_code' + v);
+        for (let v = 0; v < particularray.length; v++) {
+            let currentField = particularray[v];
+            let billCodeSelector = document.querySelector('#bill_code' + v);
 
-                if (selectedId === 'bill_code' + v) {
+            if (selectedId === 'bill_code' + v) {
 
-                    billCodeSelector.setOptions(optionArray);
-                    billCodeSelector.setValue(newBillCode.id);
+                billCodeSelector.setOptions(optionArray);
+                billCodeSelector.setValue(newBillCode.id);
 
-                    only_bill_codes.push(newBillCode.id)
+                only_bill_codes.push(newBillCode.id)
 
-                    particularray[v].bill_code = newBillCode.code;
-                    particularray[v].description = newBillCode.description;
-                    $('#description' + v).val(newBillCode.description)
+                particularray[v].bill_code = newBillCode.code;
+                particularray[v].description = newBillCode.description;
+                $('#description' + v).val(newBillCode.description)
 
-                } else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
+            } else billCodeSelector.setOptions(optionArray, particularray[v].bill_code);
 
-            }
-            closeSidePanelBillCode();
-
-            $('#new_bill_code').val(null);
-            $('#new_bill_description').val(null);
-            $('#selectedBillCodeId').val(null);
         }
+        closeSidePanelBillCode();
 
-        /*$('#cell_bill_code_' + p).addClass(' error-corner');
+        $('#new_bill_code').val(null);
+        $('#new_bill_description').val(null);
+        $('#selectedBillCodeId').val(null);
+    }
+
+    /*$('#cell_bill_code_' + p).addClass(' error-corner');
+    this.goAhead = false;
+    }else $('#cell_bill_code_' + p).removeClass(' error-corner');
+
+    if(particularray[p].bill_type === null || particularray[p].bill_type === '') {
+        $('#cell_bill_type_' + p).addClass(' error-corner');
         this.goAhead = false;
-        }else $('#cell_bill_code_' + p).removeClass(' error-corner');
+    }else $('#cell_bill_type_' + p).removeClass(' error-corner');
+    if(particularray[p].original_contract_amount === null || particularray[p].original_contract_amount === '') {
+        $('#cell_original_contract_amount_' + p).addClass(' error-corner');*/
 
-        if(particularray[p].bill_type === null || particularray[p].bill_type === '') {
-            $('#cell_bill_type_' + p).addClass(' error-corner');
-            this.goAhead = false;
-        }else $('#cell_bill_type_' + p).removeClass(' error-corner');
-        if(particularray[p].original_contract_amount === null || particularray[p].original_contract_amount === '') {
-            $('#cell_original_contract_amount_' + p).addClass(' error-corner');*/
-
-        function addPopover(id, message) {
-            $('#' + id).attr({
-                'data-placement': 'right',
-                'data-container': "body",
-                'data-trigger': 'hover',
-                'data-content': message,
-                // 'data-original-title'
-            }).popover();
-        }
-    </script>
+    function addPopover(id, message) {
+        $('#' + id).attr({
+            'data-placement': 'right',
+            'data-container': "body",
+            'data-trigger': 'hover',
+            'data-content': message,
+            // 'data-original-title'
+        }).popover();
+    }
+</script>
 <div>
 
 
@@ -296,7 +339,7 @@
                                     <div class="table-scrollable  tableFixHead" id="table-scroll" style="max-height: 540px;">
                                         <div class="loading" id="loader2">Loading&#8230;</div>
 
-                                        <table class="table table-bordered" id="particular_table">
+                                        <table class="table table-bordered sorted_table" id="particular_table">
                                             <thead class="headFootZIndex">
                                                 @if(!empty($particular_column))
                                                 <thead class="headFootZIndex">
@@ -388,6 +431,11 @@
                                                         <input @if($readonly==true) readonly @endif value="{{$pv[$k]}}" @if($k=='retainage_amount_for_this_draw' ) onchange="_('retainage_amount_change{{$pint}}').value='true'" @elseif($k=='retainage_percent' ) onchange="_('retainage_amount_change{{$pint}}').value='false'" @endif type="text" onblur="@if($k=='current_billed_percent') calculateCurrentBillAmount('{{$pint}}'); @elseif($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount('{{$pint}}'); @else calculateRow('{{$pint}}'); @endif" name="{{$k}}[]" style="width: 100%;border:none;text-align: center;background-color: transparent;" class="form-control input-sm " id="{{$k}}{{$pint}}">
                                                         @if($k=='original_contract_amount')
                                                         <span id="add-calc-span{{$pint}}">
+
+                                                        </span>
+                                                        @endif
+                                                        @if($k=='current_billed_amount')
+                                                        <span id="add-cost-span{{$pint}}">
 
                                                         </span>
                                                         @endif
@@ -507,7 +555,7 @@
         </div>
     </div>
 
-    
+
 
 </div>
 <script>
@@ -516,7 +564,6 @@
 </div>
 
 <script src="https://releases.transloadit.com/uppy/v1.28.1/uppy.min.js"></script>
-<script src="/assets/admin/layout/scripts/invoiceConstruction.js?version=1672291496" type="text/javascript"></script>
 
 <script>
     var newdocfileslist = [];
@@ -623,6 +670,10 @@
 
 
 @include('app.merchant.invoice.add-attachment-billcode-modal')
+@include('app.merchant.contract.add-group-modal')
+    @include('app.merchant.contract.add-calculation-modal2')
+    @include('app.merchant.contract.add-cost-modal')
+    @include('app.merchant.invoice.add-attachment-billcode-modal')
 
 
 <div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
@@ -650,4 +701,19 @@
         _('loader2').style.display = 'none';
     })
 </script>
+@endsection
+
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+@section('readyscript')
+
+
+  $(".sorted_table tbody").sortable({
+                    handle: '.handle',
+                    
+                });
+
+
+                
+    
 @endsection

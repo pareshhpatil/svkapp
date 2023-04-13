@@ -104,15 +104,17 @@
                         <div class="row">
                             <div class="col-md-3">
                              Select cost code   
-                            <div id="cost_codes" x-model="cost_bill_code" ></div>
+                            <div id="v_bill_codecost"  ></div>
                             </div>
                             <div class="col-md-3">
                                 Select cost type
-                            <div id="cost_types" x-model="cost_cost_type" ></div>
+                            <div id="v_cost_typecost"  ></div>
                             </div>
                             <div class="col-md-2">
                                 <br>
-                            <a href="#" @click="filterCost('aa')" id="filterbutton" class="btn btn-sm blue"  >Search</a>
+                                <input type="hidden" id="bill_codecost">
+                                <input type="hidden" id="cost_typecost">
+                            <a href="#" onclick="filterCost('aa')" id="filterbutton" class="btn btn-sm blue"  >Search</a>
                             </div>
                         </div>
                         </div>
@@ -189,7 +191,7 @@
                                     <div class="pull-right">
                                         <input type="hidden" value="0" id="cost_selected_id">
                                         <input type="hidden" value="" id="billed_transaction_ids">
-                                        <a href="#" @click="closeSidePanelcost();" class="btn default">Cancel</a>
+                                        <a href="#" onclick="closeSidePanelcost();" class="btn default">Cancel</a>
                                         <a href="#" @click="setCostAmount();" class="btn blue">Add cost</a>
                                     </div>
                                 </div>

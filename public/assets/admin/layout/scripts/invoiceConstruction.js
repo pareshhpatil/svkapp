@@ -101,7 +101,9 @@ function calculateRow(id, type = 0) {
             _('retainage_percent' + id).value == '';
         }
     } else {
-        _('retainage_amount_for_this_draw' + id).value = updateTextView1(getamt(current_billed_amount) * 100 / getamt(retainage_percent));
+        console.log(getamt(current_billed_amount));
+        console.log(getamt(retainage_percent));
+        _('retainage_amount_for_this_draw' + id).value = updateTextView1(getamt(current_billed_amount) * getamt(retainage_percent) / 100);
     }
 
 
@@ -238,8 +240,11 @@ function virtualSelectInit(id, type, index) {
     search = true;
     dropboxWrapper = 'body';
     vs_class = 'vs-option1';
-    _('span_' + type + id).style.display = 'none';
-    _('vspan_' + type + id).style.display = 'block';
+    try {
+        _('span_' + type + id).style.display = 'none';
+        _('vspan_' + type + id).style.display = 'block';
+
+    } catch (o) { }
 
     if (type == 'group') {
         try {
@@ -443,8 +448,14 @@ function changeBillType(id) {
     if (_('bill_type' + id).value === 'Calculated') {
         _('add-calc-span' + id).innerHTML = '<a  style=" padding-top: 5px;"  href="javascript:;" onclick="OpenAddCaculated(' + id + ')" id="add-calc' + id + '">Add calculation</a><a  style="padding-top: 5px; padding-left: 5px; display: none;" href="javascript:;" onclick="EditCaculated(' + id + ')" id="edit-calc' + id + '">Override</a><span  style="margin-left: 4px; color:#859494;display: none;" id="pipe-calc' + id + '"> | </span><a  style="padding-top:5px;display: none;" href="javascript:;" onclick="RemoveCaculated(' + id + ')" id="remove-calc' + id + '">Remove</a>';
         RemoveCaculated(id);
-    } else {
+    }
+    else if (_('bill_type' + id).value === 'Cost') {
+        _('add-cost-span' + id).innerHTML = '<a  style=" padding-top: 5px;"  href="javascript:;" onclick="OpenAddCost(' + id + ')" id="add-cost' + id + '">Add</a><a   style="padding-top: 5px; display: none;" href="javascript:;" onclick="RemoveCost(' + id + ')" id="remove-cost' + id + '">Remove</a>        <span   style="margin-left: 4px; color: rgb(133, 148, 148); display: none;" id="pipe-cost' + id + '"> | </span><a   style="padding-top: 5px; padding-left: 5px; display: none;" href="javascript:;" onclick="OpenAddCost(' + id + ',' + "'edit'" + ')" id="edit-cost' + id + '">Edit</a>';
+        RemoveCaculated(id);
+    }
+    else {
         _('add-calc-span' + id).innerHTML = '';
+        _('add-cost-span' + id).innerHTML = '';
     }
 }
 
@@ -520,4 +531,155 @@ function reflectOriginalContractAmountChange(id) {
     document.getElementById('particulartotal').value = updateTextView1(total);
     document.getElementById('particulartotaldiv').innerHTML = updateTextView1(total);
 
+}
+
+function OpenAddCost(id, type = 'new') {
+    this.billed_transactions = [];
+    billed_transactions_filter = [];
+
+    document.getElementById('cost_selected_id').value = id;
+
+    cost_code_selected = _('bill_code' + id).value;
+    cost_type_selected = _('cost_type' + id).value;
+    virtualSelectInit('cost', 'cost_type', id);
+    virtualSelectInit('cost', 'bill_code', id);
+
+    document.querySelector('#v_cost_typecost').setValue(cost_code_selected);
+    document.querySelector('#v_bill_codecost').setValue(cost_type_selected);
+
+    billed_transactions_array.forEach(function (currentValue, index, arr) {
+        billed_transactions_filter.push(currentValue);
+    });
+    this.filterCost(type);
+    OpenAdCostRow();
+    if (type == 'edit') {
+        var exist_array = [];
+        let fieldIndex = field;
+        if (this.fields[fieldIndex].billed_transaction_ids != '' && this.fields[fieldIndex].billed_transaction_ids != null) {
+            var exist_array = JSON.parse(this.fields[fieldIndex].billed_transaction_ids);
+        }
+        ids = [];
+        total = 0;
+        this.billed_transactions.forEach(function (currentValue, index, arr) {
+            if (exist_array.includes(currentValue.id)) {
+                total = Number(total) + getamt(currentValue.amount);
+                ids.push(currentValue.id);
+                currentValue.checked = true;
+            }
+        });
+        billed_transactions_id_array = this.billed_transactions_id_array;
+        billed_transactions = this.billed_transactions;
+        exist_array.forEach(function (currentValue, index, arr) {
+            if (!billed_transactions_id_array.includes(currentValue)) {
+                billed_transactions_filter.forEach(function (cv, idx, arra) {
+                    if (currentValue == cv.id) {
+                        cv.checked = true;
+                        total = Number(total) + getamt(cv.amount);
+                        ids.push(cv.id);
+                        billed_transactions.push(cv);
+                    }
+                });
+
+            }
+
+        });
+
+        this.billed_transactions = billed_transactions;
+
+        _('billed_transaction_ids').value = JSON.stringify(ids);
+        _('cost_amount').value = updateTextView1(total);
+
+    }
+
+}
+
+
+
+function filterCost(type) {
+
+    _('allCheckboxcost').checked = false;
+    allcostCheck();
+    var billed_transactions_id_array = [];
+    var array = [];
+    var ignore_array = [];
+    var int = _('cost_selected_id').value;
+
+    $('input[name="pint[]"]').each(function (ind, value) {
+        index = this.value;
+        if (index != int) {
+            billed_transaction_ids = _('billed_transaction_ids' + index).value;
+            if (billed_transaction_ids != '') {
+                var array = JSON.parse(billed_transaction_ids);
+                array.forEach(function (arrv, ii, aaa) {
+                    ignore_array.push(arrv);
+                });
+            }
+        }
+    });
+
+    cost_code_selected = document.getElementsByName('bill_codecost').value;
+    cost_type_selected = document.getElementsByName('cost_typecost').value;
+    billed_transactions_filter.forEach(function (currentValue, index, arr) {
+        var filter = true;
+        if (cost_code_selected != '') {
+            if (cost_code_selected != currentValue.cost_code) {
+                filter = false;
+            }
+        }
+
+        if (cost_type_selected != '') {
+            if (cost_type_selected != currentValue.cost_type) {
+                filter = false;
+            }
+        }
+
+        if (ignore_array.includes(currentValue.id)) {
+            filter = false;
+        }
+
+
+        if (filter == true) {
+            array.push(currentValue);
+            billed_transactions_id_array.splice(index, 0, currentValue.id);
+        }
+
+    });
+    this.billed_transactions = array;
+    this.billed_transactions_id_array = billed_transactions_id_array;
+
+}
+function allcostCheck() {
+    var check = _('allCheckboxcost').checked;
+    if (check) {
+        this.billed_transactions.forEach(function (currentValue, index, arr) {
+            currentValue.checked = true;
+        });
+    } else {
+        this.billed_transactions.forEach(function (currentValue, index, arr) {
+            currentValue.checked = false;
+        });
+    }
+    this.costCalc();
+}
+function costCalc() {
+    total = 0;
+    ids = [];
+    this.billed_transactions.forEach(function (currentValue, index, arr) {
+        if (currentValue.checked != undefined) {
+            if (currentValue.checked == true) {
+                ids.push(currentValue.id);
+                total = Number(total) + getamt(currentValue.amount);
+            }
+        }
+    });
+    _('billed_transaction_ids').value = JSON.stringify(ids);
+    _('cost_amount').value = updateTextView1(total);
+}
+function closeSidePanelcost() {
+    document.getElementById("panelWrapIdcost").style.boxShadow = "none";
+    document.getElementById("panelWrapIdcost").style.transform = "translateX(100%)";
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
+    _('allCheckboxcost').checked = false;
+    allcostCheck();
 }
