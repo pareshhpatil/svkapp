@@ -3596,3 +3596,103 @@ function removePreviousRowAddButton(numrow) {
     let oldrow = numrow - 1;
     $('#addRowButton' + oldrow).html('');
 }
+
+function changeSeparatorVal(prefix) {
+    if (prefix == "") {
+        $("#separator").prop('disabled', true);
+        document.getElementById("separator").value = '';
+    } else {
+        $("#separator").prop('disabled', false);
+    }
+}
+
+function showNewSequencePanel() {
+    $("#newSequencePanel").toggle();
+}
+
+function saveSequence() {
+    var data = '';
+    var prefix = document.getElementById("project_prefix").value;
+    var last_no = document.getElementById("seq_no").value;
+    var separator = document.getElementById("separator").value;
+    data = {
+        'prefix': prefix,
+        'last_no': last_no,
+        'seprator': separator
+    };
+    $.ajax({
+        type: 'POST',
+        url: '/merchant/invoice/saveProjectInvoiceSequence',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            obj = JSON.parse(response);
+            if (obj.status == 1) {
+                addOptionIntoDropdown('seq_no_drpdwn', obj);
+                clearNewSequenceForm();
+            } else if (obj.status == 2) {
+                document.getElementById('seq_error').innerHTML = '';
+                $('#confirm').modal("show");
+                $('#use_existing_no').on('click', function (e) {
+                    $('#confirm').modal("hide");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/merchant/invoice/saveExistingSequence',
+                        data: data,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (res) {
+                            obj = JSON.parse(res);
+                            if (obj.status == 1) {
+                                $('#seq_no_drpdwn').val(obj.id);
+                                $("#seq_no_drpdwn").select2();
+                                clearNewSequenceForm();
+                            }
+                        }
+                    });
+                });
+                $('#create_new_sequence').on('click', function (e) {
+                    document.getElementById('seq_error').innerHTML = '';
+                    $('#confirm').modal("hide");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/merchant/invoice/createNewSequence',
+                        data: data,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            obj = JSON.parse(response);
+                            if (obj.status == 1) {
+                                addOptionIntoDropdown('seq_no_drpdwn', obj);
+                                clearNewSequenceForm();
+                            }
+                        }
+                    });
+                });
+            } else {
+                document.getElementById('seq_error').innerHTML = obj.error;
+            }
+        }
+    });
+    return false;
+}
+
+function clearNewSequenceForm() {
+    document.getElementById("project_prefix").value = '';
+    document.getElementById("separator").value = '';
+    document.getElementById("seq_no").value = '0';
+    document.getElementById("newSequencePanel").style.display = 'none';
+}
+
+function addOptionIntoDropdown(id_of_drpdwn, obj_data) {
+    var x = document.getElementById(id_of_drpdwn);
+    var option = document.createElement("option");
+    option.text = obj_data.name;
+    option.value = obj_data.id;
+    option.selected = 1;
+    x.add(option);
+}
