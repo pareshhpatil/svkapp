@@ -32,6 +32,10 @@ class Localize extends Component
         $default_date_format =  Session::get('default_date_format');
         $default_date_format =  str_replace('yyyy', 'Y', $default_date_format);
         $default_timezone =  Session::get('default_timezone');
+       
+        if($default_date_format=='') {
+            $default_date_format="M d Y";
+        }
 
         if ($this->type == 'date') {
             $this->date = Carbon::parse($this->date)->format($default_date_format);
