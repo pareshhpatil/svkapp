@@ -9,137 +9,95 @@
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light dark">
-    {{-- <link rel="preconnect" href="https://fonts.googleapis.com">--}}
-    {{-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
-    {{-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">--}}
-    <!--[if mso]>
-    <noscript>
-        <xml>
-            <o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office">
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-    </noscript>
     <style>
-        td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
-    </style>
-    <![endif]-->
-    <style>
-    {{--@font-face {--}}
-    {{-- font-family: 'Roboto';--}}
-    {{-- font-style: normal;--}}
+        .page-break {
+            page-break-after: always;
+        }
 
+        .toc-list-item-link {
+            text-decoration: none;
+            color: #3E4AA3;
+        }
 
-    {{-- src: url({{ storage_path('fonts\Roboto-Bold.ttf') }}) format("truetype");--}}
-    {{-- font-weight: 600;--}}
-    {{--}--}}
+        .toc-lists {
+            list-style-type: none;
+            font-weight: 600;
+        }
 
-    @if($viewtype=='print')
-    @page {
-    margin: 0 10px 0 20px;
-    }
-    @else
-    @page {
-    margin: 15px;
-    }
-    @endif
+        .toc-wrapper {
+            padding: 50px;
+            font-family: 'Roboto', sans-serif;
+            color: #5C6B6B;
+        }
 
-    body{
-    font-family: 'Roboto', sans-serif;
-    letter-spacing: 0;
-    line-height: 95%;
-    margin: 10px 20px 5px;
-    }
+        .toc-wrapper .title {
+            font-size: 28px;
+            text-align: center;
+        }
 
-    .page-break {
-    page-break-after: always;
-    }
+        .toc-wrapper .title-toc {
+            margin: 20px 0;
+        }
 
-    .toc-list-item-link {
+        .toc-list>li {
+            line-height: 1.2;
+            margin: 10px 0;
+            font-size: 18px;
+        }
 
-    text-decoration: none;
-    color: #3E4AA3;
-    }
-    .toc-lists {
-    list-style-type: none;
-    font-weight: 600;
-    }
+        .attachment-title {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px 0;
+            font-size: 24px;
+        }
 
-    .toc-wrapper {
-    padding: 50px;
-    font-family: 'Roboto', sans-serif;
-    color: #5C6B6B;
-    }
+        .attachment-item {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px 20px 30px;
+            text-align: center;
+        }
 
-    .toc-wrapper .title {
-    font-size: 28px;
-    text-align: center;
-    }
+        .attachment-item-wrapper {
+            width: 70%;
+            height: 70%;
+        }
 
-    .toc-wrapper .title-toc {
-    margin: 20px 0;
-    }
+        .attachment-item-image {
+            max-width: 80%;
+            max-height: 80%;
+        }
 
-    .toc-list > li {
-    line-height: 1.2;
-    margin: 10px 0;
-    font-size: 18px;
-    }
+        .toc-item {
+            font-weight: 400;
+            font-size: 16px;
+        }
 
-    #link_to_702, #link_to_703 {
-    font-family: 'Roboto', sans-serif;
-    }
+        #header,
+        #footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            color: #aaa;
+            font-size: 0.9em;
+        }
 
-    .attachment-title {
-    font-family: 'Roboto', sans-serif;
-    margin: 20px 0;
-    font-size: 24px;
-    }
+        #header {
+            top: 0;
+            border-bottom: 0.1pt solid #aaa;
+        }
 
-    .attachment-item {
-    font-family: 'Roboto', sans-serif;
-    margin: 20px 20px 30px;
-    text-align: center;
-    }
+        #footer {
+            bottom: 0;
+        }
 
-    .attachment-item-wrapper {
-    width: 70%;
-    height: 70%;
-    }
-
-    .attachment-item-image {
-    max-width: 80%;
-    max-height: 80%;
-    }
-    .toc-item{
-    font-weight: 400;
-    font-size: 16px;
-    }
-
-    #header,
-    #footer {
-    position: fixed;
-    left: 0;
-    right: 0;
-    color: #aaa;
-    font-size: 0.9em;
-    }
-    #header {
-    top: 0;
-    border-bottom: 0.1pt solid #aaa;
-    }
-    #footer {
-    bottom: 0;
-    }
-    .page-number:before {
-    content: "Page " counter(page);
-    }
-
+        .page-number:before {
+            content: "Page " counter(page);
+        }
     </style>
 
 </head>
 
-<body style="margin: 0; width: 100%; padding: 0;">
+<body>
     <script type="text/php">
         if (isset($pdf)) {
         if ($PAGE_COUNT > 0) {
@@ -169,12 +127,9 @@
         @endif
     }
 </script>
-    <div role="article" aria-roledescription="email" aria-label="" lang="en">
-        <!doctype html>
-        {{-- 702 Part  --}}
-        <div id="link_to_702">
-            @include('mailer.invoice.format-702-v2')
-        </div>
+    {{-- 702 Part  --}}
+    <div id="link_to_702" style="line-height: 90%">
+        @include('mailer.invoice.format-702-v2')
     </div>
     <div class="page-break"></div>
     {{-- 703 Part  --}}

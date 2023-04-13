@@ -893,9 +893,8 @@ class InvoiceController extends AppController
         }
 
         //merchant data 
-        $merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
-
-        $data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
+        //$merchant_data =  (array)$this->invoiceModel->getMerchantDataByID($this->merchant_id);
+        //$data["is_online_payment"] = ($merchant_data['merchant_type'] == 2 && $merchant_data['is_legal_complete'] == 1) ? 1 : 0;
 
         //get merchsnt company name from billing profile id 
         $data['company_name']  = $this->invoiceModel->getCompanyNameFromBillingID($this->merchant_id);
@@ -949,7 +948,7 @@ class InvoiceController extends AppController
             $data["total_previously_billed_amount"] = $this->formatInvoiceValues($this->getLessPreviousCertificatesForPayment($project_details->contract_id, $payment_request_id), $data['currency_icon']);
         }
 
-        $data['balance_to_finish'] = $this->getBalanceToFinish($construction_details, $changOrderData, $data['total_retainage'], $data['currency_icon']);
+        $data['balance_to_finish'] = $this->formatInvoiceValues(($construction_details['original_contract_amount'] + $changOrderData['last_month_co_amount'] + $changOrderData['this_month_co_amount']) - ($sumOfg - $data['total_retainage']), $data['currency_icon']);
         $data['total_retainage'] = $this->formatInvoiceValues($data['total_retainage'], $data['currency_icon']);
 
         return $data;

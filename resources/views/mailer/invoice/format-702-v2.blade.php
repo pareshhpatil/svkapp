@@ -49,7 +49,8 @@
             margin-right: 15px
         }
 
-        @endif body {
+        @endif 
+        body {
             margin-top: 10px;
             margin-bottom: 5px;
             margin-left: 20px;
@@ -69,7 +70,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             letter-spacing: 0px;
-            line-height: 100%;
+            line-height: 95%;
         }
     </style>
 
