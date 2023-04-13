@@ -4339,6 +4339,7 @@ class InvoiceController extends AppController
                 } catch (Exception $o) {
                 }
             }
+
             //refactor 703 code
             if ($type == '703') {
                 $particular_703_details = $this->get703Contents($payment_request_id);
@@ -4354,6 +4355,10 @@ class InvoiceController extends AppController
                 $data = array_merge($data, $particular_702_details);
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
+                if($data['list_all_change_orders']) {
+                    $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
+                    $data = array_merge($data, $particular_co_listing_details);
+                }
                 $attachements = $this->download_attachments($payment_request_id);
                 $data = array_merge($data, $attachements);
             }
@@ -4376,7 +4381,6 @@ class InvoiceController extends AppController
                     $pdf->save(storage_path('pdf\\' . $type . $name . '.pdf'));
                     return $name;
                 } else {
-                    //return view('mailer.invoice.format-' . $type.'-v2', $data);
                     if ($savepdf == 2) {
                         return  $pdf->stream();
                     } else {

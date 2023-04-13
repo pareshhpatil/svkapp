@@ -136,7 +136,13 @@
     <div id="link_to_703">
         @include('mailer.invoice.format-703-v2')
     </div>
-
+    {{-- Co Listing  --}}
+    @if($list_all_change_orders)
+        <div class="page-break"></div>
+        <div id="link_to_703">
+            @include('mailer.invoice.format-co-listing-v2')
+        </div>
+    @endif
 
     @if(count($invoice_attachments) > 0)
     {{-- Attachment Pages --}}
