@@ -175,7 +175,7 @@ function saveParticularRow(id) {
         url: '/merchant/invoice/particulars/row',
         data: {'data':json},
         success: function (data) {
-            console.log(data);
+            _('id' + id).value=data;
         }
     });
 }
