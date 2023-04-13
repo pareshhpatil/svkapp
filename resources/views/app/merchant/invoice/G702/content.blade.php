@@ -1,6 +1,6 @@
 <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px; color:#394242;">
     <!-- include subheader file -->
-    @include('app.merchant.invoice.view.subheader',array('title'=>'Application and Certificate for Payment','gtype'=>'G702'))
+    @include('app.merchant.invoice.view.subheader',array('title'=>'APPLICATION AND CERTIFICATE FOR PAYMENT','gtype'=>'G702'))
 
     <div>
         <table width="100%">
