@@ -491,15 +491,16 @@ function addRowinCalcTable(ind) {
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
             let displayValue = document.querySelector('#bill_code' + int ).getDisplayValue().split('|');
-            /*try {
+            let bill_code = displayValue[0];
+            var discription = displayValue[1];
+            try {
                 var bill_code = particularray[int].bill_code;
             } catch (o) {
                 var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
             }
-            var discription = document.getElementById('description' + int).value;*/
+            var discription = document.getElementById('description' + int).value;
 
-            let bill_code = displayValue[0];
-            var discription = displayValue[1];
+            
 
             //bill_code = document.getElementById('bill_code' + bint).value;
             if (amt > 0) {
