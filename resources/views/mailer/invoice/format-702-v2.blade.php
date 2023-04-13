@@ -144,7 +144,12 @@
                                     {{$project_details->project_address}}
                                 </td>
                                 <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
-                                    PERIOD TO: <x-localize :date="$bill_date" type="onlydate" />
+                                    PERIOD TO:
+                                    @if($user_type!='merchant')
+                                        <x-localize :date="$bill_date" type="onlydate" :userid="$user_id" />
+                                    @else
+                                        <x-localize :date="$bill_date" type="onlydate" />
+                                    @endif
                                 </td>
                                 <td width="25%" style="text-align: right;">
 

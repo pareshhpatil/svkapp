@@ -5,20 +5,25 @@ namespace App\View\Components;
 use Illuminate\View\Component;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
+use App\Model\User;
 
 class Localize extends Component
 {
     public $date;
     public $type;
+    public $userid = null;
+    private $user_model = null;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($date, $type)
+    public function __construct($date, $type, $userid='')
     {
         $this->date = $date;
         $this->type = $type;
+        $this->userid= ($userid!='') ? $userid : null;
+        $this->user_model = new User();
     }
 
     /**
@@ -28,27 +33,37 @@ class Localize extends Component
      */
     public function render()
     {
+        
+        $default_timezone="America/Cancun";
+        $default_date_format="M d yyyy";
+        $default_time_format="24";
 
+        if($this->userid!=null) {
+            $preference = $this->user_model->getPreferences($this->userid);
+            if($preference!='') {
+                $default_timezone=$preference->timezone;
+                $default_date_format=$preference->date_format;
+                $default_time_format=$preference->time_format;
+            }
+        }
+       
         if (Session::has('default_date_format')) {
             $default_date_format =  Session::get('default_date_format');
-            $default_date_format =  str_replace('yyyy', 'Y', $default_date_format);
-        } else {
-            $default_date_format = "M d Y";
         }
+        $default_date_format =  str_replace('yyyy', 'Y', $default_date_format);
 
         if (Session::has('default_timezone')) {
             $default_timezone =  Session::get('default_timezone');
-        } else {
-            $default_timezone = 'America/Cancun';
         }
-
-
+        
         if ($this->type == 'date') {
             $this->date = Carbon::parse($this->date)->format($default_date_format);
             $this->date = Carbon::createFromFormat($default_date_format, $this->date, 'UTC');
             $this->date = $this->date->setTimezone($default_timezone)->format($default_date_format);
         } else if ($this->type == 'datetime') {
-            $default_time_format =  Session::get('default_time_format');
+            if (Session::has('default_time_format')) {
+                $default_time_format =  Session::get('default_time_format');
+            }
 
             if ($default_time_format == '24') {
                 $time_format = 'G:i';

@@ -4170,7 +4170,6 @@ class InvoiceController extends AppController
     public function getInvoiceDetailsForViews($payment_request_id = null, $userRole = null, $user_type = null)
     {
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
-
         $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
         $data['project_details'] =  $project_details;
 
@@ -4229,7 +4228,7 @@ class InvoiceController extends AppController
         $data['change_order_id'] = $payment_request_data->change_order_id;
         $data['created_date'] = $payment_request_data->created_date;
         $data['contract_id'] = $payment_request_data->contract_id;
-        
+        $data['user_id'] = $payment_request_data->user_id;
         $hasAIALicense = false;
         if (isset($plugins['has_aia_license'])) {
             $hasAIALicense = true;
@@ -4314,7 +4313,7 @@ class InvoiceController extends AppController
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             $userRole = Session::get('user_role');
 
-            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole);
+            $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $user_type);
             $data = array_merge($data, $invoice_Data);
             if ($type != null) {
                 $imgpath = env('APP_URL') . '/images/logo-703.PNG';

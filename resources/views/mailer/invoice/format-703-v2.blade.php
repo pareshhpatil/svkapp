@@ -132,13 +132,25 @@
                                 <td>
                                     <div style="font-size: 12px; font-weight: 600">APPLICATION DATE:</div>
                                 </td>
-                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$created_date" type="onlydate" /></td>
+                                <td style="padding-left:5px;font-size: 12px; font-weight: 600">
+                                    @if($user_type!='merchant')
+                                        <x-localize :date="$created_date" type="onlydate" :userid="$user_id" />
+                                    @else
+                                        <x-localize :date="$created_date" type="onlydate" />
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>
                                     <div style="font-size: 12px; font-weight: 600">PERIOD TO:</div>
                                 </td>
-                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$bill_date" type="onlydate" /></td>
+                                <td style="padding-left:5px;font-size: 12px; font-weight: 600">
+                                    @if($user_type!='merchant')
+                                        <x-localize :date="$bill_date" type="onlydate" :userid="$user_id" />
+                                    @else
+                                        <x-localize :date="$bill_date" type="onlydate" />
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>
