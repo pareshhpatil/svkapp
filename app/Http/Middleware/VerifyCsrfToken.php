@@ -29,6 +29,7 @@ class VerifyCsrfToken extends Middleware {
         '/stripe/webhook/notifications',
         '/payment-gateway',
         '/merchant/billcode/create',
+        '/merchant/invoice/particulars/row',
         '/merchant/uppyfileupload/uploadImage/*',
     ];
 

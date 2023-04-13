@@ -1552,18 +1552,19 @@
                         cost_code_selected=particularray[field].bill_code;
                         cost_type_selected=this.fields[field].cost_type;
                         particularray[field].cost_type=cost_type_selected;
+                        try{
                         this.virtualSelectInit(pint, 'cost_types',field);
                         this.virtualSelectInit(pint, 'cost_codes',field);
-                        
                         document.querySelector('#cost_codes').setValue(cost_code_selected);
                         document.querySelector('#cost_types').setValue(cost_type_selected);
+                        }catch(o){}
 
                         billed_transactions_array.forEach(function(currentValue, index, arr) {
                             billed_transactions_filter.push(currentValue);
                         });
                         this.filterCost(type);
                         OpenAdCostRow();
-                        const x = await this.wait(10);
+                        //const x = await this.wait(10);
                         if(type=='edit')
                         {
                             var exist_array=[];
@@ -1631,9 +1632,10 @@
                                 }
                             }
                         });
-
+                        try{
                         cost_code_selected= document.getElementsByName('cost_codes[]')[0].value;
                         cost_type_selected= document.getElementsByName('cost_types[]')[0].value;
+                        }catch(o){}
                         billed_transactions_filter.forEach(function(currentValue, index, arr) {
                             var filter=true;
                             if(cost_code_selected!='')
@@ -2061,7 +2063,18 @@
                         catch(o){
                             selectedValue = '';
                         }
-                    } else if (type == 'bill_code_detail') {
+                    }
+                    else if (type == 'cost_types') {
+                        options = merchant_cost_types;
+						try{
+                             selectedValue = particularray[index].cost_type;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        id='';
+                    }
+                    else if (type == 'bill_code_detail') {
                         options = bill_code_details;
 						try{
                              selectedValue = particularray[index].bill_code_detail;
@@ -2082,6 +2095,16 @@
                         catch(o){
                             selectedValue = '';
                         }
+                    } else if (type == 'cost_codes') {
+                        vs_class = 'vs-option';
+                        options = csi_codes;
+                        try{
+                            selectedValue = particularray[index].bill_code;
+                        }
+                        catch(o){
+                            selectedValue = '';
+                        }
+                        id='';
                     }
 
 

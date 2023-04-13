@@ -1149,7 +1149,7 @@ class InvoiceController extends AppController
         return $currency_icon . $value;
     }
 
-    public function documents($user_type="merchant",$link, $parentnm = '', $sub = '', $docpath = '')
+    public function documents($user_type = "merchant", $link, $parentnm = '', $sub = '', $docpath = '')
     {
         $payment_request_id = Encrypt::decode($link);
 
@@ -1162,13 +1162,13 @@ class InvoiceController extends AppController
             $data['user_type'] = $user_type;
             $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $user_type);
             $data = array_merge($data, $invoice_Data);
-            
+
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
 
             // $banklist = $this->parentModel->getConfigList('Bank_name');
             // $banklist = json_decode($banklist, 1);
 
-            
+
             $data['its_from'] = 'real';
             $data['gtype'] = 'attachment';
 
@@ -1659,7 +1659,7 @@ class InvoiceController extends AppController
     {
         $filePath = '';
         $data = explode("_", $link);
-       
+
         $folder = $data[0];
         $link = str_replace($data[0] . '_', "", $link);
         if ($folder != 'invoices') {
@@ -1667,43 +1667,43 @@ class InvoiceController extends AppController
         } else {
             $filePath = 'invoices/' . $link;
         }
-       
-        $url=Storage::disk('s3_expense')->temporaryUrl(
+
+        $url = Storage::disk('s3_expense')->temporaryUrl(
             $filePath,
             now()->addHour(),
             ['ResponseContentDisposition' => 'attachment']
         );
-        header("Location:".$url);
+        header("Location:" . $url);
         exit();
     }
     public function downloadZip($link)
     {
         $payment_request_id = Encrypt::decode($link);
-        
+
         if (strlen($payment_request_id) == 10) {
             $plugin_value =  $this->invoiceModel->getColumnValue('payment_request', 'payment_request_id', $payment_request_id, 'plugin_value');
             $attach_value =  $this->invoiceModel->getColumnValueWithAllRow('invoice_construction_particular', 'payment_request_id', $payment_request_id, 'attachments');
 
             $plugin_array = json_decode($plugin_value, 1);
-            
+
             $source_disk = 's3_expense';
             if (File::exists(public_path('tmp/documents.zip'))) {
                 unlink(public_path('tmp/documents.zip'));
             }
-           
+
             $zip = new Filesystem(new ZipArchiveAdapter(public_path('tmp/documents.zip')));
-            if(isset($plugin_array['files'])) {
+            if (isset($plugin_array['files'])) {
                 foreach ($plugin_array['files'] as $file_name) {
-                    if($file_name!='') {
+                    if ($file_name != '') {
                         $source_path = 'invoices/' . basename($file_name);
                         $file_content = Storage::disk($source_disk)->get($source_path);
                         $zip->put(basename($file_name), $file_content);
                     }
                 }
             }
-           
+
             $billcode_docs = json_decode($attach_value, 1);
-            
+
             foreach ($billcode_docs as $items) {
 
                 $inner_data = json_decode($items['value'], 1);
@@ -3322,7 +3322,6 @@ class InvoiceController extends AppController
     public function particularsave(Request $request, $type = null)
     {
         ini_set('max_execution_time', 120);
-        //        dd($request);
         $request_id = Encrypt::decode($request->link);
 
         if (strlen($request_id) != 10) {
@@ -3453,6 +3452,23 @@ class InvoiceController extends AppController
         }
 
         return redirect('/merchant/invoice/view/703/' . Encrypt::encode($request_id));
+    }
+
+    public function saveParticularRow(Request $request)
+    {
+        $data = json_decode($_POST['data'], 1);
+        $request_id = Encrypt::decode($data['request_id']);
+        $data = Helpers::setArrayPostZeroValue(array(
+            'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
+            'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
+        ),$data);
+        if ($data['id'] > 0) {
+            $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
+            $id = $data['id'];
+        } else {
+            $id = $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
+        }
+        return $id;
     }
 
     function storeRevision($req_id, $revision, $template_type = 'construction')
@@ -3612,7 +3628,6 @@ class InvoiceController extends AppController
             $billed_transactions[$k]->amount = number_format($row->amount);
         }
         $invoice_particulars = $this->invoiceModel->getTableListOrderby('invoice_construction_particular', 'payment_request_id', $request_id, 'sort_order');
-
         $merchant_cost_types = $this->getCostTypes();
         $particulars[] = [];
         $groups = [];
@@ -3622,7 +3637,7 @@ class InvoiceController extends AppController
             $plugin_array['include_store_materials'] = 0;
         }
         $order_id_array = [];
-        
+
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
             $particulars = json_decode($contract->particulars);
@@ -3807,12 +3822,12 @@ class InvoiceController extends AppController
         $title = 'create';
 
         Session::put('valid_ajax', 'expense');
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['invoiceConstruction', 'template', 'invoiceformat2'], [3, 179]);
         $merchant_cost_types_array = $this->getKeyArrayJson($merchant_cost_types, 'value');
         $data['billed_transactions'] = $billed_transactions;
         $data['merchant_cost_types'] = $merchant_cost_types;
         $data['cost_types_array'] = $merchant_cost_types_array;
-        $data['cost_types'] = $merchant_cost_types;
+        $data['cost_types'] = json_decode($merchant_cost_types_array, 1);
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
         $data['gst_type'] = 'intra';
@@ -3824,15 +3839,61 @@ class InvoiceController extends AppController
         $data['project_id'] = $project->id;
         $data['project_code'] = $project->project_id;
         $data['link'] = $link;
+
+
+        list($particulars, $summary) = $this->setParticularMoney($particulars);
         $data['particulars'] = $particulars;
+        $data['summary'] = $summary;
         $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
         $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
+        $data['csi_codes_list'] = json_decode($data['csi_codes_array'], 1);
         $data['total'] = $total;
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
+        return view('app/merchant/invoice/invoice-particular', $data);
+    }
 
-        return view('app/merchant/invoice/invoice-particular-new', $data);
+    private function setParticularMoney($particulars)
+    {
+        $list = [];
+        $arraysum = ['original_contract_amount', 'approved_change_order_amount', 'current_contract_amount',  'previously_billed_amount',  'current_billed_amount', 'total_billed', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount', 'retainage_amount_stored_materials', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'stored_materials', 'previously_stored_materials', 'current_stored_materials'];
+        $array = ['original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount', 'retainage_amount_stored_materials', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'stored_materials', 'previously_stored_materials', 'current_stored_materials'];
+        foreach ($particulars as $k => $v) {
+            foreach ($array as $key) {
+                if (isset($v[$key])) {
+                    if ($v[$key] != '') {
+                        if (in_array($key, $arraysum)) {
+                            $list[$key][] = $particulars[$k][$key];
+                        }
+                        $particulars[$k][$key] = $this->num_format($particulars[$k][$key], 2, 0);
+                    }
+                }
+            }
+        }
+        $summary = [];
+        foreach ($list as $l => $v) {
+            $summary['sum_' . $l] = $this->num_format(array_sum($v));
+        }
+        return array($particulars, $summary);
+    }
+
+    function num_format($numVal, $afterPoint = 2, $minAfterPoint = 0, $thousandSep = ",", $decPoint = ".")
+    {
+        // Same as number_format() but without unnecessary zeros.
+        $ret = number_format($numVal, $afterPoint, $decPoint, $thousandSep);
+        if ($afterPoint != $minAfterPoint) {
+            while (($afterPoint > $minAfterPoint) && (substr($ret, -1) == "0")) {
+                // $minAfterPoint!=$minAfterPoint and number ends with a '0'
+                // Remove '0' from end of string and set $afterPoint=$afterPoint-1
+                $ret = substr($ret, 0, -1);
+                $afterPoint = $afterPoint - 1;
+            }
+        }
+        if (substr($ret, -1) == $decPoint) {
+            $ret = substr($ret, 0, -1);
+        }
+        return $ret;
     }
 
     private function getKeyArrayJson($array, $key)
@@ -4230,7 +4291,7 @@ class InvoiceController extends AppController
 
         if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
-            if($rowArray['current_contract_amount'] > 0) {
+            if ($rowArray['current_contract_amount'] > 0) {
                 $rowArray['g_per'] = $rowArray['total_completed'] / $rowArray['current_contract_amount'];
             } else {
                 $rowArray['g_per'] = 0;
@@ -4254,14 +4315,14 @@ class InvoiceController extends AppController
         return $rowArray;
     }
 
-    public function download_v2($link, $savepdf = 0, $type = null, $user_type='merchant')
+    public function download_v2($link, $savepdf = 0, $type = null, $user_type = 'merchant')
     {
         ini_set('max_execution_time', 120);
         $payment_request_id = Encrypt::decode($link);
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             $userRole = Session::get('user_role');
-           
+
             $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole);
             $data = array_merge($data, $invoice_Data);
             if ($type != null) {
@@ -4293,10 +4354,10 @@ class InvoiceController extends AppController
                 $data = array_merge($data, $particular_702_details);
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
-                $attachements=$this->download_attachments($payment_request_id);
-                $data = array_merge($data,$attachements);
+                $attachements = $this->download_attachments($payment_request_id);
+                $data = array_merge($data, $attachements);
             }
-           
+
             $data['viewtype'] = 'pdf';
             define("DOMPDF_ENABLE_HTML5PARSER", true);
             define("DOMPDF_ENABLE_FONTSUBSETTING", true);
@@ -4305,13 +4366,13 @@ class InvoiceController extends AppController
             define("DOMPDF_ENABLE_REMOTE", true);
             $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
 
-            if($type=='702' || $type =='703') {
+            if ($type == '702' || $type == '703') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
                 $pdf->setPaper("a4", "landscape");
                 if ($savepdf == 1) {
                     $name = str_replace('-', '', $name);
                     $name = str_replace(':', '', $name);
-    
+
                     $pdf->save(storage_path('pdf\\' . $type . $name . '.pdf'));
                     return $name;
                 } else {
@@ -4351,7 +4412,7 @@ class InvoiceController extends AppController
 
     public function download_attachments($payment_request_id)
     {
-        
+
         $IAM_KEY = config('filesystems.disks.s3_expense.key');
         $IAM_SECRET = config('filesystems.disks.s3_expense.secret');
         $region = config('filesystems.disks.s3_expense.region');
