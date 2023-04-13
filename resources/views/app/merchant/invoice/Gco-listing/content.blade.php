@@ -1,58 +1,8 @@
 <div class="w-full   bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px;  color:#394242;" id="main_div">
     <!--include subheader file-->
-    @include('app.merchant.invoice.view.subheader',array('title'=>'CONTINUATION SHEET','gtype'=>'G703'))
+    @include('app.merchant.invoice.view.subheader',array('title'=>'Change order listing','gtype'=>'co-listing'))
 
-    <div class="grid grid-cols-3 gap-4">
-        <div class="col-span-2">
-            @if($has_aia_license)
-            <p class="text-xs">AIA Document G702®, Application and Certificate for Payment, or G732™,
-                Application and Certificate for
-                Payment, Construction Manager as Adviser Edition, containing Contractor’s signed certification
-                is attached.
-                Use Column I on Contracts where variable retainage for line items may apply. </p>
-            @endif
-        </div>
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <p class="text-xs font-bold">APPLICATION NO: </p>
-                    </td>
-                    <td>
-                        <p class="ml-2 text-xs font-bold">
-                            {{ $invoice_number ? $invoice_number : 'NA' }}
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="text-xs font-bold">APPLICATION DATE: </p>
-                    </td>
-                    <td>
-                        <p class="ml-2 text-xs font-bold">
-                            <x-localize :date="$bill_date" type="date" />
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="text-xs font-bold">PERIOD TO: </p>
-                    </td>
-                    <td>
-                        <p class="ml-2 text-xs font-bold">{{ $cycle_name }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="text-xs font-bold">ARCHITECT’S PROJECT NO:</p>
-                    </td>
-                    <td>
-                        <p class=" ml-2 text-xs font-bold">{{$project_details->project_code}}</p>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+    
     <div class='overflow-x-auto w-full mt-4 mb-4'>
         <table class='mx-auto w-full border-collapse border border-[#A0ACAC] overflow-hidden'>
             <thead>
@@ -145,6 +95,7 @@
                 </tr>
             </thead>
             <tbody>
+                
                 @foreach ($particularRows as $key => $row)
                     @if($key!='no-group~')
                         <tr>
@@ -184,6 +135,7 @@
                                 $sub_total_material_stored = 0;
                                 $sub_total_completed = 0;
                                 $sub_total_retainage = 0;
+                                
                             @endphp
                             @foreach ($subgroup as $ik => $item)
                                 @include('app.merchant.invoice.Gco-listing.particular_row',array('rowArray'=>$item))
@@ -251,9 +203,9 @@
                     @endif
                     @if(isset($row['only-group~']) && $row['only-group~']!='')
                         @foreach ($row['only-group~'] as $ok => $group)
-                            
                             @include('app.merchant.invoice.Gco-listing.particular_row',array('rowArray'=>$group,'group_name'=>$key))
-                            @php 
+                            @php
+                                
                                 $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_original_schedule_value = $group_total_original_schedule_value + filter_var($group['original_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($group['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -305,10 +257,39 @@
                             <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_original_schedule_value" /></p>
                             </td>
-                            
-                            {{-- <td class="border td-703 text-right">
+                            @php
+                                $approvedCOAmount = 0;
+
+                                foreach ($row['only-group~'] as $group) {
+                                    $approvedCOAmount += $group['approved_change_order_amount'];
+                                }
+
+                                $changeOrdersGroupTotalAmount = [];
+                                foreach ($change_order_columns as $change_order_column) {
+                                    $coGroupTotal = 0;
+                                    foreach($change_orders_group_data[$change_order_column] as $change_order_group_data) {
+                                        if($change_order_group_data['group'] == $key) {
+                                            $coGroupTotal += $change_order_group_data['change_order_amount'];
+                                        }
+                                    }
+                                    $changeOrdersGroupTotalAmount[$change_order_column] = $coGroupTotal;
+                                }
+
+                            @endphp
+
+
+                            @foreach ($changeOrdersGroupTotalAmount as $changeOrderGroupTotalAmount)
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$changeOrderGroupTotalAmount" /></p>
+                                </td>
+                            @endforeach
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$approvedCOAmount" /></p>
+                            </td>
+
+                            <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
-                            </td> --}}
+                            </td>
                             <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_previously_billed_amt" /></p>
                             </td>
@@ -346,12 +327,33 @@
                         @endforeach
                     @endif
                 @endforeach
+                    @php
+                        $changeOrdersTotalAmountArray = [];
+                        foreach ($change_order_columns as $change_order_column) {
+                            $changeOrderGroupTotal = 0;
+                            foreach($change_orders_group_data[$change_order_column] as $change_order_group_data) {
+                                $changeOrderGroupTotal += $change_order_group_data['change_order_amount'];
+                            }
+                            $changeOrdersTotalAmountArray[$change_order_column] = $changeOrderGroupTotal;
+                        }
+                    @endphp
                     <tr>
                         <td style="min-width: 40px" class="border-r border-t border-l td-703 text-left">
                             <p class="text-sm"> </p>
                         </td>
                         <td style="min-width: 40px" class="border-r border-t border-l td-703 text-left">
                             <p class="text-xs"><b>GRAND TOTAL</b> </p>
+                        </td>
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_original_schedule_value" /> </p>
+                        </td>
+                        @foreach($changeOrdersTotalAmountArray as $changeOrderTotalAmount)
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$changeOrderTotalAmount" /> </p>
+                            </td>
+                        @endforeach
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_approved_change_order_value" /> </p>
                         </td>
                         <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
@@ -382,14 +384,4 @@
         </table>
     </div>
     <hr>
-    <div class="mt-2">
-        @if($has_aia_license)
-        <p class="leading-3"><span class="text-xs font-bold">AIA Document G703® – 1992. Copyright</span><span class="text-xs"> © 1963, 1965, 1966, 1967, 1970, 1978, 1983 and 1992 by The American Institute
-                of Architects. All rights reserved.</span><span class="text-xs text-red-500"> The “American
-                Institute of Architects,” “AIA,” the AIA Logo, “G703,”
-                and “AIA Contract Documents” are registered trademarks and may not be used without
-                permission.</span><span class="text-xs"> To report copyright violations of AIA Contract
-                Documents, e-mail copyright@aia.org.</span></p>
-        @endif
-    </div>
 </div>

@@ -22,6 +22,7 @@
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['original_contract_amount']" /></p>
     </td>
+    
     @if (isset($rowArray['change_order_col_values']))
         @foreach ($rowArray['change_order_col_values'] as $key => $change_order_col_value)
             <td class="border-r border-l td-703 text-right">

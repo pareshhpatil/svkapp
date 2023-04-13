@@ -26,9 +26,11 @@
                 <li>
                     <a href="/invoice/document/merchant/{{$url}}">Attached files</a>
                 </li>
-                <li class="@if($gtype=='co-listing') active @endif">
-                    <a href="/merchant/invoice/view/co-listing/{{$url}}">CO Listing</a>
-                </li>
+                @if($list_all_change_orders)
+                    <li class="@if($gtype == 'co-listing') active @endif">
+                        <a href="/merchant/invoice/view/co-listing/{{$url}}">CO Listing</a>
+                    </li>
+                @endif
             @endif
         </ul>
     </div>
