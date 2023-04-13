@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <p class="ml-2 text-xs font-bold">
-                            <x-localize :date="$bill_date" type="date" />
+                            <x-localize :date="$created_date" type="onlydate" />
                         </p>
                     </td>
                 </tr>
@@ -39,7 +39,7 @@
                         <p class="text-xs font-bold">PERIOD TO: </p>
                     </td>
                     <td>
-                        <p class="ml-2 text-xs font-bold">{{ $cycle_name }}</p>
+                        <p class="ml-2 text-xs font-bold"><x-localize :date="$bill_date" type="onlydate" /></p>
                     </td>
                 </tr>
                 <tr>

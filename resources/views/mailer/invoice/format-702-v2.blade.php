@@ -144,7 +144,7 @@
                                     {{$project_details->project_address}}
                                 </td>
                                 <td width="25%" style="text-align: left;font-size: 12px;font-weight: 700 ">
-                                    PERIOD TO: {{ $cycle_name }}
+                                    PERIOD TO: <x-localize :date="$bill_date" type="onlydate" />
                                 </td>
                                 <td width="25%" style="text-align: right;">
 

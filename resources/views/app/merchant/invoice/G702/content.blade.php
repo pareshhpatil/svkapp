@@ -29,7 +29,7 @@
                         <span class="text-xs">{{$project_details->project_address}}</span>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">PERIOD TO: {{$cycle_name}}</p>
+                        <p class="text-xs font-bold">PERIOD TO: <x-localize :date="$bill_date" type="onlydate" /></p>
                     </td>
                     <td width="25%" class="text-right">
                         <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">OWNER</label> <input class="" type="checkbox" value=""></p>
