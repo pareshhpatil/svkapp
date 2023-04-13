@@ -132,13 +132,13 @@
                                 <td>
                                     <div style="font-size: 12px; font-weight: 600">APPLICATION DATE:</div>
                                 </td>
-                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$bill_date" type="date" /></td>
+                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$created_date" type="onlydate" /></td>
                             </tr>
                             <tr>
                                 <td>
                                     <div style="font-size: 12px; font-weight: 600">PERIOD TO:</div>
                                 </td>
-                                <td style="padding-left:5px;font-size: 12px; font-weight: 600">{{$cycle_name}}</td>
+                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$bill_date" type="onlydate" /></td>
                             </tr>
                             <tr>
                                 <td>

@@ -3217,10 +3217,10 @@ class InvoiceController extends AppController
             }
         }
         $template = $this->invoiceModel->getTableRow('invoice_template', 'template_id', $request->template_id);
-
+        $cyclename = '';
         foreach ($request->col_position as $k => $position) {
             if ($position == 4) {
-                $cyclename = $request->requestvalue[$k];
+                //$cyclename = $request->requestvalue[$k];
             } elseif ($position == 5) {
                 $billdate = Helpers::sqlDate($request->requestvalue[$k]);
             } elseif ($position == 6) {
@@ -4229,7 +4229,7 @@ class InvoiceController extends AppController
         $data['change_order_id'] = $payment_request_data->change_order_id;
         $data['created_date'] = $payment_request_data->created_date;
         $data['contract_id'] = $payment_request_data->contract_id;
-
+        
         $hasAIALicense = false;
         if (isset($plugins['has_aia_license'])) {
             $hasAIALicense = true;
@@ -4245,7 +4245,7 @@ class InvoiceController extends AppController
             }
         }
         $data['has_watermark'] = $has_watermark;
-        $data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
+        //$data['cycle_name'] = $this->invoiceModel->getColumnValue('billing_cycle_detail', 'billing_cycle_id', $payment_request_data->billing_cycle_id, 'cycle_name');
 
         $data['grand_total'] =  $this->getGrandTotal((array)$payment_request_data,  $currency_icon);
         $data['grand_total_offline'] =  $this->getGrandTotal((array)$payment_request_data,  '');

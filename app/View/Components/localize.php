@@ -90,6 +90,8 @@ class Localize extends Component
                         ' at ' . $time_formatted;
                 }
             }
+        } else if($this->type == 'onlydate') {
+            $this->date = Carbon::parse($this->date)->format($default_date_format);
         }
         return view('components.localize');
     }
