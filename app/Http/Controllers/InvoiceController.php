@@ -1156,7 +1156,6 @@ class InvoiceController extends AppController
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
             #get default billing profile
-
             //$info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
@@ -1233,16 +1232,16 @@ class InvoiceController extends AppController
 
             if (isset($plugin_array['has_mandatory_upload'])) {
                 if ($plugin_array['has_mandatory_upload'] == 1) {
-
+                    
                     $menus0['title'] = "Required documents";
                     $menus0['id'] = "hellow_required_document";
                     $menus0['full'] = "Required documents";
                     $menus0['link'] = "";
                     $menus0['type'] = "required";
-
+                    
                     foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
                         $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
-
+                        
                         $menus1 = array();
                         $menus2 = array();
                         $pos = 1;
@@ -1698,6 +1697,23 @@ class InvoiceController extends AppController
                         $source_path = 'invoices/' . basename($file_name);
                         $file_content = Storage::disk($source_disk)->get($source_path);
                         $zip->put(basename($file_name), $file_content);
+                    }
+                }
+            }
+
+            //required documents attachments
+            if (isset($plugin_array['has_mandatory_upload'])) {
+                if ($plugin_array['has_mandatory_upload'] == 1) {
+                    foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
+                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
+                        foreach ($mandatory_files as $files) {
+                            if ($files->file_url != '') {
+                                $file_name=basename($files->file_url);
+                                $source_path = 'invoices/' . $file_name;
+                                $file_content = Storage::disk($source_disk)->get($source_path);
+                                $zip->put($file_name, $file_content);
+                            }
+                        }
                     }
                 }
             }
@@ -4471,7 +4487,6 @@ class InvoiceController extends AppController
                     foreach ($pluginValue->mandatory_data as $key => $mandatory_data) {
 
                         $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data->name);
-
                         foreach ($mandatory_files as $file) {
                             if (!empty($file->file_url)) {
                                 $fileUrlExplode = explode('/', $file->file_url);
