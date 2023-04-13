@@ -335,7 +335,7 @@
                                             <h3 class="form-section">Add Particulars</h3>
                                         </div>
                                         <div class="col-md-6">
-                                            <a data-cy="add_particulars_btn" href="javascript:;" @click="await addNewField();" class="btn green pull-right mb-1"> Add new row </a>
+                                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="addnewRow();" class="btn green pull-right mb-1"> Add new row </a>
                                         </div>
                                     </div>
                                     <div class="table-scrollable  tableFixHead" id="table-scroll" style="max-height: 540px;">
@@ -364,13 +364,12 @@
                                             @php
                                             $readonly_array=array('original_contract_amount','stored_materials','retainage_amount','approved_change_order_amount','current_contract_amount','previously_billed_percent','previously_billed_amount',/*'current_billed_amount',*/'total_billed','retainage_amount_previously_withheld','retainage_amount_previously_stored_materials',/*'retainage_amount_for_this_draw',*/'net_billed_amount','total_outstanding_retainage',/*'retainage_amount_stored_materials'*/);
                                             @endphp
-                                            <tbody>
+                                            <tbody id="particular_body">
                                                 @foreach($particulars as $pk=>$pv)
-
-                                                <tr id="{{$pk}}" class="sorted_table_tr">
+                                                @php $pint=$pv['pint']; @endphp
+                                                <tr id="{{$pint}}" class="sorted_table_tr">
                                                     @foreach($particular_column as $k=>$v)
-                                                    @php $readonly=false;
-                                                    $pint=$pv['pint']; @endphp
+                                                    @php $readonly=false; @endphp
                                                     @if(in_array($k, $readonly_array))
                                                     @php $readonly=true; @endphp
                                                     @endif
