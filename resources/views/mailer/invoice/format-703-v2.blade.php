@@ -132,7 +132,9 @@
                                 <td>
                                     <div style="font-size: 12px; font-weight: 600">APPLICATION DATE:</div>
                                 </td>
-                                <td style="padding-left:5px;font-size: 12px; font-weight: 600"><x-localize :date="$bill_date" type="date" /></td>
+                                <td style="padding-left:5px;font-size: 12px; font-weight: 600">
+                                    {{date('M d Y', strtotime($bill_date))}}
+                                </td>
                             </tr>
                             <tr>
                                 <td>

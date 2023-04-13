@@ -30,7 +30,8 @@
                     </td>
                     <td>
                         <p class="ml-2 text-xs font-bold">
-                            <x-localize :date="$bill_date" type="date" />
+                            {{date('M d Y', strtotime($bill_date))}}
+                            {{-- <x-localize :date="$bill_date" type="date" /> --}}
                         </p>
                     </td>
                 </tr>
