@@ -202,6 +202,7 @@
     $groupJson = str_replace("'", "\'", $groupJson);
     $groupJson = str_replace('"', '\\"', $groupJson);
 
+
     $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
     $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
     $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
@@ -237,6 +238,7 @@
         'value': 'No'
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
+    var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
     var billed_transactions_filter = [];
     var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
     var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');

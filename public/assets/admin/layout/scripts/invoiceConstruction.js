@@ -147,6 +147,37 @@ function calculateRow(id, type = 0) {
         calculateTotal();
     }
 
+    saveParticularRow(id);
+
+
+}
+
+function saveParticularRow(id) {
+    row = new Array();
+    row1 = [];
+    json='{';
+    $.each(particular_column_array, function (index, av) {
+        row['"'+index+'"'] = ev(index + id);
+        json=json+'"'+index+'":"'+ev(index + id)+'",';
+    });
+    json=json+'"request_id":"'+ev('request_id')+'",';
+    json=json+'"id":"'+ev('id' + id)+'",';
+    json=json+'"sort_order":"'+ev('sort_order' + id)+'",';
+    json=json+'"sub_group":"'+ev('sub_group' + id)+'",';
+    json=json+'"calculated_perc":"'+ev('calculated_perc' + id)+'",';
+    json=json+'"calculated_row":"'+ev('calculated_row' + id)+'",';
+    json=json+'"billed_transaction_ids":"'+ev('billed_transaction_ids' + id)+'",';
+    json=json+'"attachments":"'+ev('attachments' + id)+'",';
+    json=json+'"pint":"'+ev('pint' + id)+'"}';
+
+    $.ajax({
+        type: 'POST',
+        url: '/merchant/invoice/particulars/row',
+        data: {'data':json},
+        success: function (data) {
+            console.log(data);
+        }
+    });
 }
 
 
