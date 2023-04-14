@@ -55,7 +55,7 @@ class InvoiceController extends AppController
         $this->formatModel = new InvoiceFormat();
         $this->apiController = new APIController();
     }
-    
+
 
     public function create(Request $request, $link = null, $update = null)
     {
@@ -729,7 +729,7 @@ class InvoiceController extends AppController
         $data['getVendors'] = $getData['getVendors'];
         $data['getUnitTypes'] = $getData['getUnitTypes'];
         $data['enable_inventory'] = $product->checkInventoryServiceEnable();
-        $data['service_id'] = $this->inventory_service_id;
+        //$data['service_id'] = $this->inventory_service_id;
         return $data;
     }
 
@@ -1028,16 +1028,16 @@ class InvoiceController extends AppController
 
             if (isset($plugin_array['has_mandatory_upload'])) {
                 if ($plugin_array['has_mandatory_upload'] == 1) {
-                    
+
                     $menus0['title'] = "Required documents";
                     $menus0['id'] = "hellow_required_document";
                     $menus0['full'] = "Required documents";
                     $menus0['link'] = "";
                     $menus0['type'] = "required";
-                    
+
                     foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
                         $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
-                        
+
                         $menus1 = array();
                         $menus2 = array();
                         $pos = 1;
@@ -1350,7 +1350,7 @@ class InvoiceController extends AppController
                         $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
                         foreach ($mandatory_files as $files) {
                             if ($files->file_url != '') {
-                                $file_name=basename($files->file_url);
+                                $file_name = basename($files->file_url);
                                 $source_path = 'invoices/' . $file_name;
                                 $file_content = Storage::disk($source_disk)->get($source_path);
                                 $zip->put($file_name, $file_content);
@@ -1389,13 +1389,13 @@ class InvoiceController extends AppController
             #get default billing profile
             $info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $info = (array)$info;
-            
-           
+
+
             $savepdfurl = env('APP_URL') . '/patron/invoice/download/' . $link;  //download link 
             $info['savepdfurl'] = $savepdfurl;
             $info['paylink'] = env('APP_URL') . '/patron/paymentrequest/pay/' . $link;
             $info['viewurl'] = env('APP_URL') . '/patron/invoice/view/' . $link . '/702'; //new url
-            
+
             //attache pdf
             $project = $this->parentModel->getTableRow('project', 'id', $info['project_id']);
             $info['project_name'] = $project->project_name;
@@ -1419,7 +1419,7 @@ class InvoiceController extends AppController
                 $data['absolute_cost'] = number_format($info['absolute_cost'], 2);
                 $data['invoice_link'] = $info['viewurl'];
             }
-            if ($pdf_enable == 1) { 
+            if ($pdf_enable == 1) {
                 $nm = $this->download($link, 1, '702');
                 $attached[] = array('path' => storage_path("app\\pdf\\702" . $nm . ".pdf"), 'name' => '702.pdf');
                 $nm = $this->download($link, 1, '703');
@@ -1428,7 +1428,6 @@ class InvoiceController extends AppController
             }
             $data['viewtype'] = 'mailer';
             Helpers::sendMail($info['customer_email'], $file, $data, $subject);
-            
         }
     }
     function getDynamicString($info, $message)
@@ -1499,7 +1498,7 @@ class InvoiceController extends AppController
         }
         return $less_previous_certificates_for_payment;
     }
-    
+
     public function save(Request $request)
     {
         $invoice_number = '';
@@ -1526,14 +1525,16 @@ class InvoiceController extends AppController
             $plugin = $this->setPlugins(json_decode($invoice->plugin_value, 1), $request);
             $revision = false;
             if ($invoice->payment_request_status != 11) {
-                if ($plugin['save_revision_history'] == 1) {
-                    $revision = true;
-                    $revision_data['payment_request'] = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
-                    $revision_data['payment_request'] = json_decode(json_encode($revision_data['payment_request']), 1);
-                    $revision_data['invoice_column_values'] = $this->invoiceModel->getTableList('invoice_column_values', 'payment_request_id', $request_id);
-                    $revision_data['invoice_column_values'] = json_decode(json_encode($revision_data['invoice_column_values']), 1);
-                    $revision_data['invoice_construction_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
-                    $revision_data['invoice_construction_particular'] = json_decode(json_encode($revision_data['invoice_construction_particular']), 1);
+                if (isset($plugin['save_revision_history'])) {
+                    if ($plugin['save_revision_history'] == 1) {
+                        $revision = true;
+                        $revision_data['payment_request'] = $this->invoiceModel->getTableRow('payment_request', 'payment_request_id', $request_id);
+                        $revision_data['payment_request'] = json_decode(json_encode($revision_data['payment_request']), 1);
+                        $revision_data['invoice_column_values'] = $this->invoiceModel->getTableList('invoice_column_values', 'payment_request_id', $request_id);
+                        $revision_data['invoice_column_values'] = json_decode(json_encode($revision_data['invoice_column_values']), 1);
+                        $revision_data['invoice_construction_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+                        $revision_data['invoice_construction_particular'] = json_decode(json_encode($revision_data['invoice_construction_particular']), 1);
+                    }
                 }
             }
 
@@ -1647,6 +1648,7 @@ class InvoiceController extends AppController
         $revision = false;
         if ($invoice->payment_request_status != 11) {
             $plugin = json_decode($invoice->plugin_value, 1);
+            if (isset($plugin['save_revision_history'])) {
             if ($plugin['save_revision_history'] == 1) {
                 $revision = true;
                 $revision_data['payment_request'] = $invoice;
@@ -1656,9 +1658,11 @@ class InvoiceController extends AppController
                 $revision_data['invoice_construction_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
                 $revision_data['invoice_construction_particular'] = json_decode(json_encode($revision_data['invoice_construction_particular']), 1);
             }
+            }
         }
 
         $this->invoiceModel->updateTable('invoice_construction_particular', 'payment_request_id', $request_id, 'is_active', 0);
+        $this->invoiceModel->updateTable('invoice_draft', 'payment_request_id', $request_id, 'status', 1);
         $project_id = $this->invoiceModel->getColumnValue('contract', 'contract_id', $invoice->contract_id, 'project_id');
         $this->invoiceModel->updateBilledTransactionStatus($request_id, $project_id);
         if ($type == null) {
@@ -1748,17 +1752,24 @@ class InvoiceController extends AppController
 
     public function saveParticularRow(Request $request)
     {
+
         $data = json_decode($_POST['data'], 1);
         $request_id = Encrypt::decode($data['request_id']);
         $data = Helpers::setArrayPostZeroValue(array(
-            'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
+            'id', 'original_contract_amount', 'approved_change_order_amount', 'current_contract_amount', 'previously_billed_percent', 'previously_billed_amount', 'current_billed_percent', 'current_billed_amount', 'total_billed', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_amount_for_this_draw', 'net_billed_amount', 'retainage_release_amount', 'total_outstanding_retainage', 'calculated_perc',
             'retainage_percent_stored_materials', 'retainage_amount_stored_materials', 'retainage_amount_previously_stored_materials', 'retainage_stored_materials_release_amount'
-        ),$data);
-        if ($data['id'] > 0) {
-            $this->invoiceModel->updateConstructionParticular($data, $data['id'], $this->user_id);
-            $id = $data['id'];
+        ), $data);
+        if (!Session::has('draft_id')) {
+            $data['draft_id'] = $this->invoiceModel->saveDraft($request_id, $this->user_id);
+            Session::put('draft_id', $data['draft_id']);
         } else {
-            $id = $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id);
+            $data['draft_id'] = Session::get('draft_id');
+        }
+        if ($data['dpid'] > 0) {
+            $this->invoiceModel->updateConstructionParticular($data, $data['dpid'], $this->user_id, 'draft');
+            $id = $data['dpid'];
+        } else {
+            $id = $this->invoiceModel->saveConstructionParticular($data, $request_id, $this->user_id, 'draft');
         }
         return $id;
     }
@@ -2131,6 +2142,13 @@ class InvoiceController extends AppController
         $data['project_id'] = $project->id;
         $data['project_code'] = $project->project_id;
         $data['link'] = $link;
+        $data['draft_particulars'] = '';
+
+        $draft_id = $this->invoiceModel->getColumnValue('invoice_draft', 'payment_request_id', $request_id, 'id', ['status' => 0], 'id');
+        if ($draft_id != false) {
+            $draft_particulars = $this->invoiceModel->getList('staging_invoice_construction_particular', ['draft_id' => $draft_id]);
+            $data['draft_particulars'] = json_encode($draft_particulars);
+        }
 
 
         list($particulars, $summary) = $this->setParticularMoney($particulars);
@@ -2143,6 +2161,8 @@ class InvoiceController extends AppController
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
+        //dd($data);
+        Session::remove('draft_id');
         return view('app/merchant/invoice/invoice-particular', $data);
     }
 

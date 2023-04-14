@@ -43,7 +43,7 @@ class ParentModel extends Model
         }
     }
 
-    public function getColumnValue($table, $where, $value, $column_name, $param = [])
+    public function getColumnValue($table, $where, $value, $column_name, $param = [],$orderby=null)
     {
 
         $retObj = DB::table($table)
@@ -53,6 +53,10 @@ class ParentModel extends Model
             foreach ($param as $k => $v) {
                 $retObj->where($k, $v);
             }
+        }
+        if($orderby!=null)
+        {
+            $retObj->orderByDesc($orderby);
         }
         $array = $retObj->first();
         if (!empty($array)) {
@@ -121,12 +125,16 @@ class ParentModel extends Model
             ->get();
         return $retObj;
     }
-    public function getList($table)
+    public function getList($table, $param = [])
     {
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
-            ->get();
-        return $retObj;
+            ->select(DB::raw('*'));
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        return $retObj->get();
     }
 
     public function updateTable($table, $where, $whvalue, $col, $val)

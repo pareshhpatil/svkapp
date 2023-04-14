@@ -142,47 +142,54 @@
     }
 
     .table-bordered {
-            border: 1px solid #dddddd;
-            border-collapse: separate;
-            *border-collapse: collapsed;
-            border-left: 0;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-radius: 4px;
-        }
+        border: 1px solid #dddddd;
+        border-collapse: separate;
+        *border-collapse: collapsed;
+        border-left: 0;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
 
-        .sorted_table2 tr {
-            cursor: pointer;
-        }
+    .sorted_table2 tr {
+        cursor: pointer;
+    }
 
-        .ui-sortable-helper {
-            width: 100% !important;
-            background-color: #fff !important;
-        }
+    .ui-sortable-helper {
+        width: 100% !important;
+        background-color: #fff !important;
+    }
 
-        .sorted_table .handle {
-            opacity: 0;
-            cursor: move;
-            position: relative;
-            top: 5px;
-        }
+    .sorted_table .handle {
+        opacity: 0;
+        cursor: move;
+        position: relative;
+        top: 5px;
+    }
 
-        .sorted_table .handle svg {
-            color: #a0acac;
-        }
-        
-        .sorted_table_tr:hover  .handle {
-            opacity: 1;
-        }
+    .sorted_table .handle svg {
+        color: #a0acac;
+    }
 
-        #update-fields-pos {
-            opacity: 0;
-            visibility: hidden;
-        }
+    .sorted_table_tr:hover .handle {
+        opacity: 1;
+    }
 
-        .sorted_table_tr {
-            left: 20px !important;
-        }
+    #update-fields-pos {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .sorted_table_tr {
+        left: 20px !important;
+    }
+
+    .amtbox {
+        width: 100%;
+        border: none;
+        text-align: center;
+        background-color: transparent;
+    }
 </style>
 
 <script>
@@ -239,6 +246,7 @@
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
+    var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
     var billed_transactions_filter = [];
     var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
     var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
@@ -397,21 +405,18 @@
                                                             <input type="hidden" name="description[]" value="{{$pv['description']}}" id="description{{$pint}}">
                                                             <input type="hidden" name="billed_transaction_ids[]" value="{{$pv['billed_transaction_ids']}}" id="billed_transaction_ids{{$pint}}">
                                                             <input id="id{{$pint}}" value="{{$pv['id']}}" type="hidden" name="id[]">
+                                                            <input id="dpid{{$pint}}" value="@isset($pv['dpid']){{$pv['dpid']}}@endisset" type="hidden" name="dpid[]">
                                                             <input id="pint{{$pint}}" value="{{$pint}}" type="hidden" name="pint[]">
                                                             <input id="sort_order{{$pint}}" value="{{$pv['sort_order']}}" type="hidden" name="sort_order[]">
                                                             <input type="hidden" name="sub_group[]" value="{{$pv['sub_group']}}">
-                                                            <input type="hidden" id="retainage_amount_change{{$pint}}" value="">
+                                                            <input type="hidden" id="retainage_amount_change{{$pint}}" >
                                                         </div>
                                                     </td>
                                                     @elseif($k=='bill_type')
-                                                    <td style="vertical-align: middle; min-width: 124px;" class="td-c onhover-border " id="cell_bill_type_{{$pint}}">
-                                                        <select required="" style="width: 100%; min-width: 150px;font-size: 12px;" id="bill_type{{$pint}}" name="bill_type[]" data-placeholder="Select.." class="form-control billTypeSelect input-sm" onchange="changeBillType({{$pint}})">
-                                                            <option value="">Select..</option>
-                                                            <option @if($pv['bill_type']=='% Complete' ) selected @endif value="% Complete">% Complete</option>
-                                                            <option @if($pv['bill_type']=='Unit' ) selected @endif value="Unit">Unit</option>
-                                                            <option @if($pv['bill_type']=='Calculated' ) selected @endif value="Calculated">Calculated</option>
-                                                            <option @if($pv['bill_type']=='Cost' ) selected @endif value="Cost">Cost</option>
-                                                        </select>
+                                                    <td style="vertical-align: middle; min-width: 124px;" class="td-c onhover-border" id="cell_bill_type_{{$pint}}">
+                                                        <span style="width: 100%;" onclick="setBilltype('{{$pv['bill_type']}}',{{$pint}})">
+                                                        <span id="span_bill_type{{$pint}}">{{$pv['bill_type']}}</span>
+                                                        <input type="hidden" id="bill_type{{$pint}}" name="bill_type[]" value="{{$pv['bill_type']}}"></span>
                                                     </td>
                                                     @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
                                                     <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
@@ -428,18 +433,26 @@
                                                         </span>
                                                     </td>
                                                     @else
-                                                    <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border " id="cell_current_billed_percent_{{$pint}}">
-                                                        <input @if($readonly==true) readonly @endif value="{{$pv[$k]}}" @if($k=='retainage_amount_for_this_draw' ) onchange="_('retainage_amount_change{{$pint}}').value='true'" @elseif($k=='retainage_percent' ) onchange="_('retainage_amount_change{{$pint}}').value='false'" @endif type="text" onblur="@if($k=='current_billed_percent') calculateCurrentBillAmount('{{$pint}}'); @elseif($k=='retainage_percent_stored_materials') calculateRetainageStoreMaterialAmount('{{$pint}}'); @else calculateRow('{{$pint}}'); @endif" name="{{$k}}[]" style="width: 100%;border:none;text-align: center;background-color: transparent;" class="form-control input-sm " id="{{$k}}{{$pint}}">
-                                                        @if($k=='original_contract_amount')
-                                                        <span id="add-calc-span{{$pint}}">
-
-                                                        </span>
-                                                        @endif
-                                                        @if($k=='current_billed_amount')
-                                                        <span id="add-cost-span{{$pint}}">
-
-                                                        </span>
-                                                        @endif
+                                                    <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
+                                                    @if($readonly==true)
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="{{$pv[$k]}}" name="{{$k}}[]">
+                                                    {{$pv[$k]}}
+                                                    @else
+                                                    <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
+                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">{{$pv[$k]}}&nbsp;
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="{{$pv[$k]}}">
+                                                    </span>
+                                                    </span>
+                                                    @if($k=='original_contract_amount')
+                                                    <span id="add-calc-span{{$pint}}">
+                                                    </span>
+                                                    @endif
+                                                    @if($k=='current_billed_amount')
+                                                    <span id="add-cost-span{{$pint}}">
+                                                    </span>
+                                                    @endif
+                                                   @endif
+                                                        
                                                     </td>
                                                     @endif
 
@@ -447,7 +460,7 @@
 
                                                     @endforeach
                                                     <td class="td-c " style="vertical-align: middle;width: 60px;">
-                                                        <button type="button" class="btn btn-xs red">×</button>
+                                                        <button type="button" onclick="saveParticularRow({{$pint}},0);$(this).closest('tr').remove();calculateTotal();" class="btn btn-xs red">×</button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -669,12 +682,34 @@
     <!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="draft" tabindex="-1" role="basic" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 id="poptitle" class="modal-title">Unsaved draft</h4>
+                <input type="hidden" id="docfullurl">
+            </div>
+            <div class="modal-body">
+                Unsaved draft is exist do you want to load draft values?
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="loadDraft()"  class="btn blue">Yes</button>
+
+                <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 
 @include('app.merchant.invoice.add-attachment-billcode-modal')
 @include('app.merchant.contract.add-group-modal')
-    @include('app.merchant.contract.add-calculation-modal2')
-    @include('app.merchant.contract.add-cost-modal')
-    @include('app.merchant.invoice.add-attachment-billcode-modal')
+@include('app.merchant.contract.add-calculation-modal2')
+@include('app.merchant.contract.add-cost-modal')
+@include('app.merchant.invoice.add-attachment-billcode-modal')
 
 
 <div class="modal fade" id="attach-delete" tabindex="-1" role="attach-delete" aria-hidden="true">
@@ -700,6 +735,9 @@
 <script>
     $(window).load(function() {
         _('loader2').style.display = 'none';
+        @if($draft_particulars!='')
+        $("#draft").modal('show');
+        @endif
     })
 </script>
 @endsection
@@ -709,12 +747,14 @@
 @section('readyscript')
 
 
-  $(".sorted_table tbody").sortable({
-                    handle: '.handle',
-                    
-                });
+$(".sorted_table tbody").sortable({
+handle: '.handle',
 
 
-                
-    
+
+});
+
+
+
+
 @endsection
