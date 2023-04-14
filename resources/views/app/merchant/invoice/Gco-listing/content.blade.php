@@ -53,20 +53,28 @@
                         ITEM
                         NO. </td>
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        Description</td>
+                        DESCRIPTION</td>
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        Orig. Scheduled
-                        Value</td>
-                    @foreach ($change_order_columns as $change_order_column)
+                        Orig. SCHEDULED
+                        VALUE</td>
+                    @foreach ($change_order_columns as $coKeyIndex => $change_order_column)
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center text-capitalize">
-                        {{ Str::replace('_', ' ', $change_order_column) }}
+{{--                        {{ Str::replace('_', ' ', $change_order_column) }}--}}
+                        @php
+                            if(is_numeric($coKeyIndex)) {
+                                $coNumber = $coKeyIndex + 1;
+                            } else {
+                                $coNumber = intval($coKeyIndex) + 1;
+                            }
+                        @endphp
+                        {{'CO ' . $coNumber}}
                     </td>
                     @endforeach    
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        Total Change Order
+                        TOTAL CHANGE ORDER
                     </td>
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        Scheduled Value
+                        SCHEDULED VALUE
                     </td>
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         FROM

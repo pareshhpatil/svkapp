@@ -582,7 +582,6 @@
                         </div>
                         <div class="tab-pane active" id="tab3">
                             <div>
-                                <hr>
                                 <div class="mb-2">
                                     <span class="form-section base-font">List all change orders
                                         <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Add a page which lists all incorporated COs. This will be a supplemental sheet after 703 listing." type="button">
