@@ -35,7 +35,7 @@
                     @endif
                     <a class="btn green" href="/merchant/invoice/update/{{$link}}">
                         Update invoice </a>
-                    <a class="btn green" href="/invoice/download/{{$link}}@if(isset($gtype)) /0/{{$gtype}}@endif">
+                    <a class="btn green" href="/invoice/download/{{$link}}@if(isset($gtype))/0/{{$gtype}}@endif">
                         Save as PDF</a>
                     <a class="btn green" href="/invoice/download/{{$link}}/2 @if(isset($gtype))/{{$gtype}}@endif">
                         Print</a>
