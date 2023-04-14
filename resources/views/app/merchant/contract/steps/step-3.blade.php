@@ -92,7 +92,7 @@
             <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
                 <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
-                <li role="presentation"><a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">Invoice Format</a></li>
+                <li role="presentation"><a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">Invoice format</a></li>
             </ul>
             <div class="portlet-body">
 
