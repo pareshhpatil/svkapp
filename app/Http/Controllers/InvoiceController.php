@@ -2373,26 +2373,6 @@ class InvoiceController extends AppController
                 $Notification->markAsRead();
             }
             if ($type == '703') {
-                if($user_type=='merchant') {
-                    if (Session::get('success_array')) {
-                        $whatsapp_share = $this->getWhatsapptext($invoice_Data);
-                        $success_array = Session::get('success_array');
-                        $active_payment = Session::get('has_payment_active');
-                        Session::remove('success_array');
-                        $data["invoice_success"] = true;
-            
-                        $data["whatsapp_share"] = $whatsapp_share;
-                        foreach ($success_array as $key => $val) {
-                            $data[$key] = $val;
-                        }
-                        if (Session::get('has_payment_active') == false) {
-                            Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
-                        }
-                        if ($success_array['type'] == 'insert' && $active_payment == false) {
-                            $data["payment_gateway_info"] = true;
-                        }
-                    }
-                }
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
@@ -2579,6 +2559,27 @@ class InvoiceController extends AppController
             } else {
                 $invoiceAccess = $this->hasInvoiceAccess($payment_request_data->payment_request_id, $payment_request_data->contract_id, $user_type);
             }
+
+            //for invoice-alert blade file
+            if (Session::get('success_array')) {
+                $whatsapp_share = $this->getWhatsapptext($data);
+                $success_array = Session::get('success_array');
+                $active_payment = Session::get('has_payment_active');
+                Session::remove('success_array');
+                $data["invoice_success"] = true;
+    
+                $data["whatsapp_share"] = $whatsapp_share;
+                foreach ($success_array as $key => $val) {
+                    $data[$key] = $val;
+                }
+                if (Session::get('has_payment_active') == false) {
+                    Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                }
+                if ($success_array['type'] == 'insert' && $active_payment == false) {
+                    $data["payment_gateway_info"] = true;
+                }
+            }
+
         } else {
             $invoiceAccess = 'full';
         }
