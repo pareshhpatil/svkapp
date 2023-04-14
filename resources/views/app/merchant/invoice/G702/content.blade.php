@@ -1,6 +1,6 @@
 <div class="w-full bg-white  shadow-2xl font-rubik m-2 p-10 watermark" style="max-width: 1400px; color:#394242;">
     <!-- include subheader file -->
-    @include('app.merchant.invoice.view.subheader',array('title'=>'Application and Certificate for Payment','gtype'=>'G702'))
+    @include('app.merchant.invoice.view.subheader',array('title'=>'APPLICATION AND CERTIFICATE FOR PAYMENT','gtype'=>'G702'))
 
     <div>
         <table width="100%">
@@ -29,7 +29,13 @@
                         <span class="text-xs">{{$project_details->project_address}}</span>
                     </td>
                     <td width="25%" class="text-left">
-                        <p class="text-xs font-bold">PERIOD TO: {{$cycle_name}}</p>
+                        <p class="text-xs font-bold">PERIOD TO: 
+                            @if($user_type!='merchant')
+                                <x-localize :date="$bill_date" type="onlydate" :userid="$user_id" />
+                            @else
+                                <x-localize :date="$bill_date" type="onlydate" />
+                            @endif
+                        </p>
                     </td>
                     <td width="25%" class="text-right">
                         <p style="display:inline-flex"><label class="text-xs mr-2 mt-1">OWNER</label> <input class="" type="checkbox" value=""></p>

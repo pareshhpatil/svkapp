@@ -83,6 +83,12 @@ $header='app.patron.invoice.invoice-master';
         <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
 
         <div class=" w-full flex flex-col items-center justify-center">
+            @if($user_type=='merchant')
+                <div class="w-full" style="max-width: 1400px;">
+                    @include('app.merchant.invoice.view.invoice-alert')
+                </div>
+            @endif
+
             @include('app.merchant.invoice.view.header')
             @include('app.merchant.invoice.G703.content')
             

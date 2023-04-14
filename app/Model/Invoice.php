@@ -614,14 +614,14 @@ class Invoice extends ParentModel
     }
 
 
-    public function saveInvoice($merchant_id, $user_id, $customer_id, $invoice_number, $template_id, $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
+    public function saveInvoice($merchant_id, $user_id, $customer_id, $invoice_number, $template_id, $values, $ids, $billdate, $duedate, $cyclename='', $narrative, $amount, $tax, $previous_dues, $plugin, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
     {
         $plugin = str_replace("'", "\'", $plugin);
         $retObj = DB::select("call `insert_invoicevalues`('$merchant_id','$user_id','$customer_id','$invoice_number','$template_id','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,1,0,0,'$plugin',0,1,0,'$currency',null,1);");
         return $retObj[0];
     }
 
-    public function updateInvoice($payment_request_id, $user_id, $customer_id, $invoice_number,  $values, $ids, $billdate, $duedate, $cyclename, $narrative, $amount, $tax, $previous_dues, $plugin, $billing_profile_id = 0, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
+    public function updateInvoice($payment_request_id, $user_id, $customer_id, $invoice_number,  $values, $ids, $billdate, $duedate, $cyclename='', $narrative, $amount, $tax, $previous_dues, $plugin, $billing_profile_id = 0, $currency = 'INR',  $invoice_type = 1, $notify = 0, $payment_request_status = 0)
     {
         $plugin = str_replace("'", "\'", $plugin);
         $retObj = DB::select("call `update_invoicevalues`('$payment_request_id','$user_id','$customer_id','$invoice_number','$values','$ids','$billdate','$duedate','$cyclename','$narrative',$amount,$tax,$previous_dues,0,0,0,0,$notify,$payment_request_status,0,0,null,'$user_id',$invoice_type,0,'$plugin',0,$billing_profile_id,0,'$currency',null,1);");

@@ -30,7 +30,11 @@
                     </td>
                     <td>
                         <p class="ml-2 text-xs font-bold">
-                            <x-localize :date="$bill_date" type="date" />
+                            @if($user_type!='merchant')
+                                <x-localize :date="$created_date" type="onlydate" :userid="$user_id" />
+                            @else
+                                <x-localize :date="$created_date" type="onlydate" />
+                            @endif
                         </p>
                     </td>
                 </tr>
@@ -39,7 +43,13 @@
                         <p class="text-xs font-bold">PERIOD TO: </p>
                     </td>
                     <td>
-                        <p class="ml-2 text-xs font-bold">{{ $cycle_name }}</p>
+                        <p class="ml-2 text-xs font-bold">
+                            @if($user_type!='merchant')
+                                <x-localize :date="$bill_date" type="onlydate" :userid="$user_id" />
+                            @else
+                                <x-localize :date="$bill_date" type="onlydate" />
+                            @endif
+                        </p>
                     </td>
                 </tr>
                 <tr>
