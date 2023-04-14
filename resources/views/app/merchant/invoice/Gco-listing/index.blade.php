@@ -57,7 +57,6 @@ $header='app.patron.invoice.invoice-master';
 
 <script src="/js/tailwind.js"></script>
 <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
-{{-- <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script> --}}
 <script src="/assets/admin/layout/scripts/transaction.js?version=16456140396" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/invoice.js?version=1649936891" type="text/javascript"></script>
 
@@ -83,14 +82,8 @@ $header='app.patron.invoice.invoice-master';
         <div class="loading" id="loader" style="display: none;">Loading&#8230;</div>
 
         <div class=" w-full flex flex-col items-center justify-center">
-            @if($user_type=='merchant')
-                <div class="w-full" style="max-width: 1400px;">
-                    @include('app.merchant.invoice.view.invoice-alert')
-                </div>
-            @endif
-
             @include('app.merchant.invoice.view.header')
-            @include('app.merchant.invoice.G703.content')
+            @include('app.merchant.invoice.Gco-listing.content')
             
             @php
             $footers='app.merchant.invoice.view.footer-v2';
