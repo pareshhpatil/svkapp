@@ -4081,6 +4081,7 @@ class InvoiceController extends AppController
                 $Notification = Notification::findOrFail($notificationID);
                 $Notification->markAsRead();
             }
+
             if ($type == '703') {
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
