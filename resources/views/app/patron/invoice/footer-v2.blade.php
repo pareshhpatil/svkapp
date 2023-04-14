@@ -4,7 +4,7 @@
         <form action="/patron/paymentrequest/pay/{{$url}}" method="post">
             <div class="row no-margin">
                 <div class="col-md-12 invoice-block">
-                    <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/invoice/download-v2/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
+                    <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/invoice/download/{{$url}}/2 @if(isset($gtype))/{{$gtype}}@endif">
                         Print
                     </a>
                     <div class="btn-group margin-bottom-5">
@@ -13,12 +13,12 @@
                         </button>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                             <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif/patron">
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif/patron">
                                     Download {{$gtype}}
                                 </a>
                             </li>
                             <li>
-                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download-v2/{{$url}}/0/full/{{$user_type}}/patron">
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}/0/full/{{$user_type}}/patron">
                                     Download Full PDF
                                 </a>
                             </li>
