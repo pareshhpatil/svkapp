@@ -108,7 +108,6 @@ class Localize extends Component
         } else if($this->type == 'onlydate') {
             //for date only no time
             $this->date = Carbon::parse($this->date)->format($default_date_format);
-            dd($this->date);
         }
         return view('components.localize');
     }
