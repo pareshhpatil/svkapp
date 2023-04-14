@@ -29,7 +29,7 @@
                         <p class="text-xs font-bold">APPLICATION DATE: </p>
                     </td>
                     <td>
-                        <p class="ml-2 text-xs font-bold">
+                        <p class="ml-2 text-xs font-bold">{{$created_date}}
                             @if($user_type!='merchant')
                                 <x-localize :date="$created_date" type="onlydate" :userid="$user_id" />
                             @else
