@@ -728,8 +728,8 @@ class InvoiceController extends AppController
         $data['gstTax'] = $getData['gstTax'];
         $data['getVendors'] = $getData['getVendors'];
         $data['getUnitTypes'] = $getData['getUnitTypes'];
-        $data['enable_inventory'] = $product->checkInventoryServiceEnable();
-        $data['service_id'] = $this->inventory_service_id;
+        //$data['enable_inventory'] = $product->checkInventoryServiceEnable();
+        //$data['service_id'] = $this->inventory_service_id;
         return $data;
     }
 
@@ -1453,13 +1453,13 @@ class InvoiceController extends AppController
     private function getWhatsapptext($info)
     {
         $link = env('APP_URL') . '/patron/paymentrequest/view/' .  Encrypt::encode($info['payment_request_id']); //to do
-        if (strlen($info['customer_mobile']) == 10) {
+        if (isset($info['customer_mobile']) && strlen($info['customer_mobile']) == 10) {
             $mobile = '91' . $info['customer_mobile'];
             $mobile = '&phone=' . $mobile;
         } else {
             $mobile = '';
         }
-        $sms = "Your latest invoice by " . $info['company_name'] . " for " . number_format($info['grand_total'], 2) . " is ready. Click here to view your invoice and make the payment online - " . $link;
+        $sms = "Your latest invoice by " . $info['company_name'] . " for " . $info['grand_total'] . " is ready. Click here to view your invoice and make the payment online - " . $link;
         return 'https://api.whatsapp.com/send?text=' . $sms . $mobile;
     }
 
@@ -1499,7 +1499,7 @@ class InvoiceController extends AppController
         }
         return $less_previous_certificates_for_payment;
     }
-    
+
     public function save(Request $request)
     {
         $invoice_number = '';
@@ -2373,6 +2373,26 @@ class InvoiceController extends AppController
                 $Notification->markAsRead();
             }
             if ($type == '703') {
+                if($user_type=='merchant') {
+                    if (Session::get('success_array')) {
+                        $whatsapp_share = $this->getWhatsapptext($invoice_Data);
+                        $success_array = Session::get('success_array');
+                        $active_payment = Session::get('has_payment_active');
+                        Session::remove('success_array');
+                        $data["invoice_success"] = true;
+            
+                        $data["whatsapp_share"] = $whatsapp_share;
+                        foreach ($success_array as $key => $val) {
+                            $data[$key] = $val;
+                        }
+                        if (Session::get('has_payment_active') == false) {
+                            Session::put('has_payment_active', $this->invoiceModel->isPaymentActive($this->merchant_id));
+                        }
+                        if ($success_array['type'] == 'insert' && $active_payment == false) {
+                            $data["payment_gateway_info"] = true;
+                        }
+                    }
+                }
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
@@ -2516,6 +2536,7 @@ class InvoiceController extends AppController
         $data['bill_date'] = $payment_request_data->bill_date;
         $data['customer_id'] = $payment_request_data->customer_id;
         $data['customer_name'] = $this->invoiceModel->getCustomerNameFromID($payment_request_data->customer_id);
+        $data['company_name'] = $this->invoiceModel->getColumnValue('customer', 'customer_id', $payment_request_data->customer_id, 'company_name');
         $plugins = json_decode($payment_request_data->plugin_value, 1);
         $data['change_order_id'] = $payment_request_data->change_order_id;
         $data['created_date'] = $payment_request_data->created_date;
