@@ -1725,7 +1725,7 @@ class InvoiceController extends AppController
                     } else {
                         $data['attachments'] = null;
                     }
-                    $request->totalcost = str_replace(',', '', $request->totalcost ?? 0);
+                    $request->totalcost = str_replace(',', ' ', $request->totalcost ?? 0);
                     $previous_invoice_amount = $this->getLessPreviousCertificatesForPayment($invoice->contract_id, $request_id);
                     $this->invoiceModel->updateInvoiceDetail($request_id, $request->totalcost, $request->order_ids ?? [], $previous_invoice_amount);
                     if ($data['id'] > 0) {
@@ -2359,19 +2359,21 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-
+        
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['template'], [5, 28]);
             $data['gtype'] = $type;
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
             $invoice_Data = $this->getInvoiceDetailsForViews($payment_request_id, $userRole, $user_type);
+
             $data = array_merge($data, $invoice_Data);
             if (!empty($notificationID)) {
                 /** @var Notification $Notification */
                 $Notification = Notification::findOrFail($notificationID);
                 $Notification->markAsRead();
             }
+
             if ($type == '703') {
                 if($user_type=='merchant') {
                     if (Session::get('success_array')) {
@@ -2396,6 +2398,8 @@ class InvoiceController extends AppController
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
+            }  else if ($type == 'co-listing') {
+                $particular_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
             } else {
                 return redirect('/error/invalidlink');
             }
@@ -2546,7 +2550,13 @@ class InvoiceController extends AppController
         if (isset($plugins['has_aia_license'])) {
             $hasAIALicense = true;
         }
+
+        $hasListAllChangeOrders = false;
+        if (isset($plugins['list_all_change_orders'])) {
+            $hasListAllChangeOrders = true;
+        }
         $data['has_aia_license'] = $hasAIALicense;
+        $data['list_all_change_orders'] = $hasListAllChangeOrders;
 
         $has_watermark = false;
         $data['watermark_text'] = '';
@@ -2642,6 +2652,7 @@ class InvoiceController extends AppController
                 } catch (Exception $o) {
                 }
             }
+
             //refactor 703 code
             if ($type == '703') {
                 $particular_703_details = $this->get703Contents($payment_request_id);
@@ -2649,11 +2660,18 @@ class InvoiceController extends AppController
             } else if ($type == '702') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
-            } else if ($type == 'full') {
+            } else if($type == 'co-listing') {
+                $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
+                $data = array_merge($data, $particular_co_listing_details);
+            } else if($type=='full') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
+                if($data['list_all_change_orders']) {
+                    $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
+                    $data = array_merge($data, $particular_co_listing_details);
+                }
                 $attachements = $this->download_attachments($payment_request_id);
                 $data = array_merge($data, $attachements);
             }
@@ -2666,7 +2684,7 @@ class InvoiceController extends AppController
             define("DOMPDF_ENABLE_REMOTE", true);
             $name = $data['customer_name'] . '_' . date('Y-M-d H:m:s');
 
-            if ($type == '702' || $type == '703') {
+            if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
                 $pdf->setPaper("a4", "landscape");
                 if ($savepdf == 1) {
@@ -2676,7 +2694,6 @@ class InvoiceController extends AppController
                     $pdf->save(storage_path('pdf\\' . $type . $name . '.pdf'));
                     return $name;
                 } else {
-                    //return view('mailer.invoice.format-' . $type.'-v2', $data);
                     if ($savepdf == 2) {
                         return  $pdf->stream();
                     } else {
@@ -2887,6 +2904,119 @@ class InvoiceController extends AppController
 
         $data['bill_code_attachments'] = $billCodeAttachments;
         $data['pdf_link_array'] = $pdf_link_array;
+
+        return $data;
+    }
+
+    public function getChangeOrderListingContents($payment_request_id, $contract_id)
+    {
+        $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
+        
+        $changeOrdersData = $this->invoiceModel->getOrderbyContract($contract_id, date("Y-m-d"));
+        
+        $particular_details = json_decode($particular_details, 1);
+        $int = 0;
+        $grand_total_schedule_value = 0;
+        $grand_total_original_schedule_value = 0;
+        $grand_total_previouly_billed_amt = 0;
+        $grand_total_current_billed_amt = 0;
+        $grand_total_d_plus_e = 0;
+        $grand_total_stored_material = 0;
+        $grand_total_total_completed = 0;
+        $grand_total_balance_to_finish = 0;
+        $grand_total_g_per = 0;
+        $grand_total_retainge = 0;
+        $grand_total_approved_change_order_value = 0;
+        $particularRows = array();
+        $changeOrderColumns = [];
+        $changeOrderGroupData = [];
+
+        if (!empty($particular_details)) {
+            $changeOrderValues = [];
+            foreach ($particular_details as $ck => $val) {
+
+                foreach($changeOrdersData as $changeOrderData) {
+                   
+                    $coParticulars = json_decode($changeOrderData->particulars, 1);
+                    $changeOrderGroupData[$changeOrderData->order_no] = $coParticulars;
+
+                    
+                    if(!in_array($changeOrderData->order_no, $changeOrderColumns)){
+                        $changeOrderColumns[] = $changeOrderData->order_no;
+                    }
+                    
+                    foreach($coParticulars as $coParticular) {
+                        if($coParticular['bill_code'] == $val['bill_code']) {
+                            $changeOrderValues[$changeOrderData->order_no] = $coParticular['change_order_amount'];
+                        }
+                    }
+                   
+                    if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
+                        //show details without subgroup, total, bill code
+                        $valArray = $this->setParticularRowArray($val);
+                        $valArray['change_order_col_values'] = $changeOrderValues;
+                        $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
+                    } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
+                        
+                        if ($val['sub_group'] != '') {
+                            $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
+                            if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
+                                $valArray = $this->setParticularRowArray($val);
+                                $valArray['change_order_col_values'] = $changeOrderValues;
+                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
+                            }
+                            
+                        } else {
+                            $groups[$val['group']][$val['group']] = $val['group'];
+                            if (in_array($val['group'], $groups[$val['group']])) {
+                                $valArray = $this->setParticularRowArray($val);
+                                $valArray['change_order_col_values'] = $changeOrderValues;
+                                $particularRows[$val['group']]['only-group~'][$int] = $valArray;
+
+                            }
+                        }
+                    } else {
+                        //show all details without group , subgroup , total rows
+                        $valArray = $this->setParticularRowArray($val);
+                        $valArray['change_order_col_values'] = $changeOrderValues;
+                        $particularRows['no-group~'][$int] = $valArray;
+                    }
+                }
+
+                //calculate grand total
+                $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
+                $grand_total_original_schedule_value = $grand_total_original_schedule_value + $val['original_contract_amount'];
+                $grand_total_previouly_billed_amt = $grand_total_previouly_billed_amt + $val['previously_billed_amount'];
+                $grand_total_d_plus_e = $grand_total_d_plus_e;
+                $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
+                $grand_total_stored_material = $grand_total_stored_material + $val['stored_materials'];
+                $grand_total_total_completed = $grand_total_total_completed + ($val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials']);
+                if ($grand_total_schedule_value != 0) {
+                    $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
+                }
+                $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
+                $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
+                $grand_total_approved_change_order_value = $grand_total_approved_change_order_value + $val['approved_change_order_amount'];
+
+                $int++;
+            }
+
+        }
+
+        $data['grand_total_schedule_value'] = $grand_total_schedule_value;
+        $data['grand_total_original_schedule_value'] = $grand_total_original_schedule_value;
+        $data['grand_total_previouly_billed_amt'] = $grand_total_previouly_billed_amt;
+        $data['grand_total_d_plus_e'] = $grand_total_d_plus_e;
+        $data['grand_total_current_billed_amt'] = $grand_total_current_billed_amt;
+        $data['grand_total_stored_material'] = $grand_total_stored_material;
+        $data['grand_total_total_completed'] = $grand_total_total_completed;
+        $data['grand_total_g_per'] = $grand_total_g_per;
+        $data['grand_total_balance_to_finish'] = $grand_total_balance_to_finish;
+        $data['grand_total_retainge'] = $grand_total_retainge;
+        $data['grand_total_approved_change_order_value'] = $grand_total_approved_change_order_value;
+        $data['particularRows'] = $particularRows;
+        $data['change_order_columns'] = $changeOrderColumns;
+        $data['change_orders_group_data'] = $changeOrderGroupData;
 
         return $data;
     }
