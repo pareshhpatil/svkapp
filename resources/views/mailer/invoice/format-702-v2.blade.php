@@ -238,10 +238,10 @@
                                         </td>
                                         <td style="width: 30%;text-align: right">
 
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$original_contract_amount}}</div>
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$total_co}}</div>
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$contract_sum_to_date}}</div>
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$total_complete_stored}}</div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$original_contract_amount}}</span></div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_co}}</span></div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$contract_sum_to_date}}</span></div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$total_complete_stored}}</span></div>
 
                                         </td>
                                     </tr>
@@ -256,9 +256,9 @@
                                             </div>
                                         </td>
                                         <td style="width: 30%;text-align: right">
-                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$total_retainage_amount}}</div>
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$total_stored_materials}}</div>
-                                            <div style="margin-top: 8px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$total_retainage}}</div>
+                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_retainage_amount}}</span></div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_stored_materials}}</span></div>
+                                            <div style="margin-top: 8px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_retainage}}</span></div>
                                         </td>
                                     </tr>
                                 </table>
@@ -269,7 +269,7 @@
                                             <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 4 minus Line 5 Total)</div>
                                         </td>
                                         <td style="width: 30%;text-align: right">
-                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">{{$total_earned_less_retain}}</div>
+                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_earned_less_retain}}</span></div>
                                         </td>
                                     </tr>
                                 </table>
@@ -281,7 +281,7 @@
                                         </td>
 
                                         <td style="width: 30%;text-align: right">
-                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700">{{$total_previously_billed_amount}}</div>
+                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$total_previously_billed_amount}}</span></div>
                                         </td>
 
                                     </tr>
@@ -292,7 +292,7 @@
                                             <div style="margin-top: 0px; font-size: 12px; font-weight: 700">8. CURRENT PAYMENT DUE </div>
                                         </td>
                                         <td style="width: 30%;text-align: right">
-                                            <div style="margin-top: 0px; border: 1px solid; padding-top: 4px; padding-bottom: 4px; font-size: 12px; font-weight: 700">{{$grand_total}}</div>
+                                            <div style="margin-top: 0px; border: 1px solid; padding-top: 4px; padding-bottom: 4px; font-size: 12px; font-weight: 700"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$grand_total}}</span></div>
                                         </td>
                                     </tr>
                                 </table>
@@ -303,7 +303,7 @@
                                             <div style="margin-left: 16px; font-size: 12px;font-style: italic;">(Line 3 minus Line 6)</div>
                                         </td>
                                         <td style="width: 30%;text-align: right">
-                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> {{$balance_to_finish}}</div>
+                                            <div style="margin-top: 16px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700"> <span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;"> {{$balance_to_finish}}</span></div>
                                         </td>
                                     </tr>
                                 </table>
@@ -315,22 +315,22 @@
                                     </tr>
                                     <tr>
                                         <td style="font-size: 12px;padding: 2px;">Total changes approved in previous months by Owner</td>
-                                        <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;">{{$last_month_co_amount_positive}} </td>
-                                        <td style="font-size: 12px;padding: 2px;text-align: right;">{{$last_month_co_amount_negative}}</td>
+                                        <td style="padding: 2px;font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$last_month_co_amount_positive}}</span> </td>
+                                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$last_month_co_amount_negative}}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="font-size: 12px;padding: 2px;">Total approved this month </td>
-                                        <td style="font-size: 12px;padding: 2px;text-align: right;">{{$this_month_co_amount_positive}}</td>
-                                        <td style="font-size: 12px;padding: 2px;text-align: right;">{{$this_month_co_amount_negative}}</td>
+                                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$this_month_co_amount_positive}}</span></td>
+                                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$this_month_co_amount_negative}}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="text-align: right;font-size: 12px;padding: 2px;">TOTAL </td>
-                                        <td style="font-size: 12px;padding: 2px;text-align: right;">{{$total_co_amount_positive}} </td>
-                                        <td style="font-size: 12px;padding: 2px;text-align: right;">{{$total_co_amount_negative}}</td>
+                                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$total_co_amount_positive}} </span></td>
+                                        <td style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$total_co_amount_negative}}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="font-size: 12px;padding: 2px;">NET CHANGES by Change Order </td>
-                                        <td colspan="2" style="font-size: 12px;padding: 2px;text-align: right;">{{$total_co}}</td>
+                                        <td colspan="2" style="font-size: 12px;padding: 2px;text-align: right;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$total_co}}</span></td>
                                     </tr>
                                 </table>
                             </td>
@@ -368,7 +368,7 @@
                                             <div style="margin-top: 0px; font-size: 12px; font-weight: 700">AMOUNT CERTIFIED</div>
                                         </td>
                                         <td style="width: 30%">
-                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700;text-align: right">{{$grand_total}}</div>
+                                            <div style="margin-top: 0px;border-bottom: 1px solid gray; font-size: 12px; font-weight: 700;text-align: right"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$grand_total}}</span></div>
                                         </td>
                                     </tr>
                                 </table>
