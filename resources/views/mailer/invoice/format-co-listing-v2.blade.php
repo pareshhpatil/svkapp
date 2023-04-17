@@ -236,7 +236,7 @@
                                         @if (isset($item['change_order_col_values']))
                                             @foreach ($item['change_order_col_values'] as $key => $change_order_col_value)
                                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                                    <div style="font-size: 14px">{{$change_order_col_value}}</div>
+                                                    <div style="font-size: 14px"><x-amount-format :amount="$change_order_col_value" /></div>
                                                 </td>
                                             @endforeach
                                         @endif
@@ -347,7 +347,7 @@
                                     @if (isset($group['change_order_col_values']))
                                         @foreach ($group['change_order_col_values'] as $cokey => $change_order_col_value)
                                             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                                <div style="font-size: 14px">{{$change_order_col_value}}</div>
+                                                <div style="font-size: 14px"><x-amount-format :amount="$change_order_col_value" /></div>
                                             </td>
                                         @endforeach
                                     @endif
@@ -510,7 +510,7 @@
                                     @if (isset($val['change_order_col_values']))
                                         @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
                                             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                                <div style="font-size: 14px">{{$change_order_col_value}}</div>
+                                                <div style="font-size: 14px"><x-amount-format :amount="$change_order_col_value" /></div>
                                             </td>
                                         @endforeach
                                     @endif
