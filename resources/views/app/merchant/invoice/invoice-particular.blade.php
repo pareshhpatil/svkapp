@@ -690,7 +690,7 @@
                 <h4 id="poptitle" class="modal-title">Resume previous session</h4>
             </div>
             <div class="modal-body">
-            Unsaved changes were found in this invoice from the session on <x-localize :date="{{$draft_date}}" type="datetime" /> by user <Paresh Patil>. Would you like to continue with the previous changes or discard them?
+            Unsaved changes were found in this invoice from the session on . Would you like to continue with the previous changes or discard them?
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="loadDraft()"  class="btn blue">Resume session</button>
