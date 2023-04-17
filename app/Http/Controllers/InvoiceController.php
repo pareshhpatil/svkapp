@@ -2762,7 +2762,14 @@ class InvoiceController extends AppController
 
             if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
-                $pdf->setPaper("a4", "landscape");
+                if($type == 'co-listing') {
+                    if(count($data['change_order_columns']) > 4) {
+                        $pdf->setPaper("a3", "landscape");
+                    }
+                } else {
+                    $pdf->setPaper("a4", "landscape");
+                }
+
                 if ($savepdf == 1) {
                     $name = str_replace('-', '', $name);
                     $name = str_replace(':', '', $name);
@@ -3000,14 +3007,7 @@ class InvoiceController extends AppController
         $int = 0;
         $grand_total_schedule_value = 0;
         $grand_total_original_schedule_value = 0;
-        $grand_total_previouly_billed_amt = 0;
         $grand_total_current_billed_amt = 0;
-        $grand_total_d_plus_e = 0;
-        $grand_total_stored_material = 0;
-        $grand_total_total_completed = 0;
-        $grand_total_balance_to_finish = 0;
-        $grand_total_g_per = 0;
-        $grand_total_retainge = 0;
         $grand_total_approved_change_order_value = 0;
         $particularRows = array();
         $changeOrderColumns = [];
@@ -3066,16 +3066,9 @@ class InvoiceController extends AppController
                 //calculate grand total
                 $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
                 $grand_total_original_schedule_value = $grand_total_original_schedule_value + $val['original_contract_amount'];
-                $grand_total_previouly_billed_amt = $grand_total_previouly_billed_amt + $val['previously_billed_amount'];
-                $grand_total_d_plus_e = $grand_total_d_plus_e;
+
                 $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
-                $grand_total_stored_material = $grand_total_stored_material + $val['stored_materials'];
-                $grand_total_total_completed = $grand_total_total_completed + ($val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials']);
-                if ($grand_total_schedule_value != 0) {
-                    $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
-                }
-                $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
-                $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
+
                 $grand_total_approved_change_order_value = $grand_total_approved_change_order_value + $val['approved_change_order_amount'];
 
                 $int++;
@@ -3084,14 +3077,6 @@ class InvoiceController extends AppController
 
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;
         $data['grand_total_original_schedule_value'] = $grand_total_original_schedule_value;
-        $data['grand_total_previouly_billed_amt'] = $grand_total_previouly_billed_amt;
-        $data['grand_total_d_plus_e'] = $grand_total_d_plus_e;
-        $data['grand_total_current_billed_amt'] = $grand_total_current_billed_amt;
-        $data['grand_total_stored_material'] = $grand_total_stored_material;
-        $data['grand_total_total_completed'] = $grand_total_total_completed;
-        $data['grand_total_g_per'] = $grand_total_g_per;
-        $data['grand_total_balance_to_finish'] = $grand_total_balance_to_finish;
-        $data['grand_total_retainge'] = $grand_total_retainge;
         $data['grand_total_approved_change_order_value'] = $grand_total_approved_change_order_value;
         $data['particularRows'] = $particularRows;
         $data['change_order_columns'] = $changeOrderColumns;
