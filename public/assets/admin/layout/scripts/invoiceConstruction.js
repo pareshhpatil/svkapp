@@ -824,3 +824,31 @@ function closeSidePanelcost() {
     _('allCheckboxcost').checked = false;
     allcostCheck();
 }
+
+
+function closeAttachmentPanel(){
+    alert();
+    let attachment_pos = $('#attachment_pos_id').val();
+    let attach_index = $('#index'+attachment_pos).val();
+    let vals = document.getElementById('attach-' + attachment_pos).value;
+    _('attachments'+attach_index) = vals;
+    // this.fields[attach_index].attachments = particularray[attach_index].attachments;
+
+    //reset attachment pos id in attachment modal
+    document.getElementById('attachment_pos_id').value = '';
+    return closeSidePanelBillCodeAttachment();
+}
+
+function closeSidePanelBillCodeAttachment() {
+    try {
+        var closebutton = document.getElementsByClassName("uppy-u-reset uppy-c-btn uppy-StatusBar-actionBtn uppy-StatusBar-actionBtn--done")[0].click();
+    } catch (o) { }
+    document.getElementById("listtab2").classList.remove('active');
+    document.getElementById("tab2").classList.remove('active')
+    document.getElementById("panelWrapIdBillCodeAttachment").style.boxShadow = "none";
+    document.getElementById("panelWrapIdBillCodeAttachment").style.transform = "translateX(100%)";
+    $("#billcodeform").trigger("reset");
+    $('.page-sidebar-wrapper').css('pointer-events', 'auto');
+    $('.page-content-wrapper').css('pointer-events', 'auto');
+    return false;
+}

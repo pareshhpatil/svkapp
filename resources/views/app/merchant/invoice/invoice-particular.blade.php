@@ -420,12 +420,12 @@
                                                     </td>
                                                     @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
                                                     <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
-                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="{{$pv[$k]}}">
+                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endif">
                                                         <span id="span_{{$k}}{{$pint}}">
                                                             @if($k=='cost_type')
                                                             {{$cost_types[$pv['cost_type']]['label']}}
                                                             @else
-                                                            {{$pv[$k]}}
+                                                            @isset($pv[$k]){{$pv[$k]}}@endif
                                                             @endif
                                                         </span>
                                                         <span id="vspan_{{$k}}{{$pint}}" style="width: 100%; display: none;">
@@ -687,16 +687,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 id="poptitle" class="modal-title">Unsaved draft</h4>
-                <input type="hidden" id="docfullurl">
+                <h4 id="poptitle" class="modal-title">Resume previous session</h4>
             </div>
             <div class="modal-body">
-                Unsaved draft is exist do you want to load draft values?
+            Unsaved changes were found in this invoice from the session on <x-localize :date="{{$draft_date}}" type="datetime" /> by user <Paresh Patil>. Would you like to continue with the previous changes or discard them?
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="loadDraft()"  class="btn blue">Yes</button>
+                <button type="button" onclick="loadDraft()"  class="btn blue">Resume session</button>
 
-                <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+                <button type="button"  class="btn default" data-dismiss="modal">Discard changes</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -705,7 +704,6 @@
 </div>
 
 
-@include('app.merchant.invoice.add-attachment-billcode-modal')
 @include('app.merchant.contract.add-group-modal')
 @include('app.merchant.contract.add-calculation-modal2')
 @include('app.merchant.contract.add-cost-modal')
