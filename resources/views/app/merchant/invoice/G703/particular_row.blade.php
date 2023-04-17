@@ -19,9 +19,25 @@
             </p>
         @endif
     </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
-    </td>
+   
+    @if($has_schedule_value)
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+        </td>
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
+        </td>
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']" /></p>
+        </td> 
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
+        </td>
+    @else
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+        </td>
+    @endif
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['previously_billed_amount']" /></p>
     </td>

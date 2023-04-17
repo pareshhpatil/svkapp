@@ -2403,7 +2403,7 @@ class InvoiceController extends AppController
             }
 
             if ($type == '703') {
-                $particular_details = $this->get703Contents($payment_request_id);
+                $particular_details = $this->get703Contents($payment_request_id, $data);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
             } else if ($type == 'co-listing') {
@@ -2418,12 +2418,15 @@ class InvoiceController extends AppController
         }
     }
 
-    public function get703Contents($payment_request_id)
+    public function get703Contents($payment_request_id, $data)
     {
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
         $particular_details = json_decode($particular_details, 1);
         $int = 0;
         $grand_total_schedule_value = 0;
+        $grand_total_change_from_previous_application = 0;
+        $grand_total_change_this_period = 0;
+        $grand_total_current_total = 0;
         $grand_total_previouly_billed_amt = 0;
         $grand_total_current_billed_amt = 0;
         $grand_total_d_plus_e = 0;
@@ -2438,31 +2441,36 @@ class InvoiceController extends AppController
                 //dd($val);
                 if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
                     //show details without subgroup, total, bill code
-                    $valArray = $this->setParticularRowArray($val);
+                    $valArray = $this->setParticularRowArray($val, $data);
                     $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
                 } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
                     //check if subgroup is exist in co
                     if ($val['sub_group'] != '') {
                         $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
                         if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
-                            $valArray = $this->setParticularRowArray($val);
+                            $valArray = $this->setParticularRowArray($val, $data);
                             $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
                         }
                     } else {
                         $groups[$val['group']][$val['group']] = $val['group'];
                         if (in_array($val['group'], $groups[$val['group']])) {
-                            $valArray = $this->setParticularRowArray($val);
+                            $valArray = $this->setParticularRowArray($val, $data);
                             $particularRows[$val['group']]['only-group~'][$int] = $valArray;
                         }
                     }
                 } else {
                     //show all details without group , subgroup , total rows
-                    $valArray = $this->setParticularRowArray($val);
+                    $valArray = $this->setParticularRowArray($val, $data);
                     $particularRows['no-group~'][$int] = $valArray;
                 }
 
                 //calculate grand total
                 $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
+                if($data['has_schedule_value']){
+                    $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + $valArray['change_from_previous_application'];
+                    $grand_total_change_this_period = $grand_total_change_this_period + $valArray['change_this_period'];
+                    $grand_total_current_total = $grand_total_current_total + $valArray['current_total'];
+                }
                 $grand_total_previouly_billed_amt = $grand_total_previouly_billed_amt + $val['previously_billed_amount'];
                 $grand_total_d_plus_e = $grand_total_d_plus_e;
                 $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
@@ -2477,8 +2485,11 @@ class InvoiceController extends AppController
                 $int++;
             }
         }
-        //dd($particularRows);
+
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;
+        $data['grand_total_change_from_previous_application'] = $grand_total_change_from_previous_application;
+        $data['grand_total_change_this_period'] = $grand_total_change_this_period;
+        $data['grand_total_current_total'] = $grand_total_current_total;
         $data['grand_total_previouly_billed_amt'] = $grand_total_previouly_billed_amt;
         $data['grand_total_d_plus_e'] = $grand_total_d_plus_e;
         $data['grand_total_current_billed_amt'] = $grand_total_current_billed_amt;
@@ -2553,6 +2564,13 @@ class InvoiceController extends AppController
         $data['change_order_id'] = $payment_request_data->change_order_id;
         $data['created_date'] = $payment_request_data->created_date;
         $data['contract_id'] = $payment_request_data->contract_id;
+
+        $hasScheduleValue = false;
+        if (isset($plugins['has_schedule_value'])) {
+            $hasScheduleValue = true;
+        }
+        $data['has_schedule_value'] = $hasScheduleValue;
+
         $data['user_id'] = $payment_request_data->user_id;
         $hasAIALicense = false;
         if (isset($plugins['has_aia_license'])) {
@@ -2627,9 +2645,8 @@ class InvoiceController extends AppController
     }
 
 
-    function setParticularRowArray($rowArray = null)
+    function setParticularRowArray($rowArray = null, $data= [])
     {
-
         if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
             if ($rowArray['current_contract_amount'] > 0) {
@@ -2652,8 +2669,39 @@ class InvoiceController extends AppController
                 $rowArray['files'] = $counts . ' files';
             else
                 $rowArray['files'] = $counts . ' file';
+
+            if($data['has_schedule_value']){
+                $start_date = '1990-01-01';
+                $end_date = date("Y-m-01", strtotime($data['bill_date']));
+                $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+                
+                $start_date = date("Y-m-01", strtotime($data['bill_date']));
+                $end_date = date("Y-m-d", strtotime("first day of next month"));
+                $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+
+                $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
+            }
+           
         }
         return $rowArray;
+    }
+
+    public function getChangeOrderSumRow($change_order_ids, $billcode, $start_date,  $end_date ){
+        $total_co_amount =0;
+        $change_order_ids = json_decode($change_order_ids, 1);
+        if (!empty($change_order_ids)) {
+            $co_data  = (array)$this->invoiceModel->getChangeOrderAmountRow($change_order_ids, $start_date, $end_date);
+            foreach($co_data as $co_row){
+                foreach(json_decode($co_row->particulars,1) as $row){
+                    if($billcode == $row['bill_code']){
+                        $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
+                    }
+                }
+            }
+            
+        }
+       
+        return $total_co_amount;
     }
 
     public function download($link, $savepdf = 0, $type = null, $user_type = 'merchant')
@@ -2683,7 +2731,7 @@ class InvoiceController extends AppController
 
             //refactor 703 code
             if ($type == '703') {
-                $particular_703_details = $this->get703Contents($payment_request_id);
+                $particular_703_details = $this->get703Contents($payment_request_id, $data);
                 $data = array_merge($data, $particular_703_details);
             } else if ($type == '702') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
@@ -2694,7 +2742,7 @@ class InvoiceController extends AppController
             } else if ($type == 'full') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
-                $particular_703_details = $this->get703Contents($payment_request_id);
+                $particular_703_details = $this->get703Contents($payment_request_id, $data);
                 $data = array_merge($data, $particular_703_details);
                 if ($data['list_all_change_orders']) {
                     $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);

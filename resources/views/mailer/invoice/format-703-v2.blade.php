@@ -168,7 +168,15 @@
                             <tr style="text-align: center; color: #000">
                                 <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> A </td>
                                 <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> B </td>
-                                <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C </td>
+                                @if($has_schedule_value)
+                                    <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C1 </td>
+                                    <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C2 </td>
+                                    <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C3 </td>
+                                    <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C4 </td>
+                                @else
+                                    <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> C </td>
+                                @endif
+                                
                                 <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">D </td>
                                 <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> E </td>
                                 <td style="border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> F </td>
@@ -179,7 +187,11 @@
                             <tr style="text-align: center; color: #000">
                                 <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                                 <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
-                                <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
+                                @if($has_schedule_value)
+                                    <td colspan="4" style="border-right:1px solid #313131; border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">SCHEDULED VALUE</td>
+                                @else
+                                    <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
+                                @endif
                                 <td colspan="2" style="border-right:1px solid #313131;border-bottom:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">WORK COMPLETED </td>
                                 <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
                                 <td style="border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> </td>
@@ -193,8 +205,19 @@
                                     NO. </td>
                                 <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> DESCRIPTION
                                     OF WORK </td>
-                                <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> SCHEDULED
+                                @if($has_schedule_value)
+                                    <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
+                                    ORIGINAL </td>
+                                    <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
+                                    CHANGE FROM PREVIOUS APPLICATION </td>
+                                    <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
+                                    CHANGE THIS PERIOD </td>
+                                    <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
+                                    CURRENT (C1 + C2 + C3)</td>
+                                @else
+                                    <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> SCHEDULED
                                     VALUE </td>
+                                @endif
                                 <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> FROM
                                     PREVIOUS APPLICATION<br />
                                     (D + E) </td>
@@ -222,13 +245,22 @@
                             @foreach ($particularRows as $key=>$row)
                             @if($key!='no-group~')
                             <tr>
+                            @if($has_schedule_value)
+                                <td colspan="13" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                    <div style="font-size: 14px; color: #6F8181;">{{ $key }} </div>
+                                </td>
+                            @else
                                 <td colspan="10" style="border-top:1px solid #313131;border-bottom:1px solid #313131; padding-left: 4px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px; color: #6F8181;">{{ $key }} </div>
                                 </td>
+                            @endif
                             </tr>
                             @endif
                             @php
                             $group_total_schedule_value = 0;
+                            $grand_total_change_from_previous_application = 0;
+                            $grand_total_change_this_period = 0;
+                            $grand_total_current_total = 0;
                             $group_total_previously_billed_amt = 0;
                             $group_total_current_billed_amt = 0;
                             $group_total_material_stored = 0;
@@ -247,9 +279,24 @@
                                 <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px"></div>
                                 </td>
-                                <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
-                                    <div style="font-size: 14px"></div>
-                                </td>
+                                @if($has_schedule_value) 
+                                    <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                        <div style="font-size: 14px"></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                        <div style="font-size: 14px"></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                        <div style="font-size: 14px"></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                        <div style="font-size: 14px"></div>
+                                    </td>
+                                @else
+                                    <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
+                                        <div style="font-size: 14px"></div>
+                                    </td>
+                                @endif
                                 <td style="border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px"></div>
                                 </td>
@@ -270,7 +317,10 @@
                                 </td>
                             </tr>
                             @php
-                            $sub_total_schedule_value = 0;
+                            $sub_total_schedule_value = 0; 
+                            $sub_total_change_from_previous_application = 0;
+                            $sub_total_change_this_period = 0;
+                            $sub_total_current_total = 0;
                             $sub_total_previously_billed_amt = 0;
                             $sub_total_current_billed_amount = 0;
                             $sub_total_material_stored = 0;
@@ -285,9 +335,24 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px">{{$item['description']}}</div>
                                 </td>
+                                @if($has_schedule_value) 
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$item['current_contract_amount']" /></div>
                                 </td>
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$item['change_from_previous_application']" /></div>
+                                </td>
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$item['change_this_period']" /></div>
+                                </td>
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$item['current_total']" /></div>
+                                </td>
+                                @else
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$item['current_contract_amount']" /></div>
+                                </td>
+                                @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$item['previously_billed_amount']" /></div>
                                 </td>
@@ -313,6 +378,9 @@
                             </tr>
                             @php
                             $sub_total_schedule_value = $sub_total_schedule_value + filter_var($item['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $sub_total_change_from_previous_application = $sub_total_change_from_previous_application + filter_var($item['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $sub_total_change_this_period = $sub_total_change_this_period + filter_var($item['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $sub_total_current_total = $sub_total_current_total + filter_var($item['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $sub_total_previously_billed_amt = $sub_total_previously_billed_amt + filter_var($item['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $sub_total_current_billed_amount = $sub_total_current_billed_amount + filter_var($item['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $sub_total_material_stored = $sub_total_material_stored + filter_var($item['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -322,6 +390,9 @@
                             @endforeach
                             @php
                             $group_total_schedule_value = $group_total_schedule_value + filter_var($sub_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($sub_total_change_from_previous_application, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_change_this_period = $grand_total_change_this_period + filter_var($sub_total_change_this_period, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_current_total = $grand_total_current_total + filter_var($sub_total_current_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($sub_total_previously_billed_amt, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($sub_total_current_billed_amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_material_stored = $group_total_material_stored + filter_var($sub_total_material_stored, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -335,9 +406,24 @@
                                 <td style="border-right:1px solid #313131;border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px;color: #6F8181;">{{$sk . ' sub total'}} </div>
                                 </td>
-                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$sub_total_schedule_value" /> </div>
-                                </td>
+                                @if($has_schedule_value) 
+                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_schedule_value" /> </div>
+                                    </td>
+                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_change_from_previous_application" /> </div>
+                                    </td>
+                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_change_this_period" /> </div>
+                                    </td>
+                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_current_total" /> </div>
+                                    </td>
+                                @else
+                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_schedule_value" /> </div>
+                                    </td>
+                                @endif
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$sub_total_previously_billed_amt" /></div>
                                 </td>
@@ -381,9 +467,24 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px">{{ $group['description'] }}</div>
                                 </td>
-                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$group['current_contract_amount']" /></div>
-                                </td>
+                                @if($has_schedule_value) 
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['current_contract_amount']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['change_from_previous_application']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['change_this_period']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['current_total']" /></div>
+                                    </td>
+                                @else
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group['current_contract_amount']" /></div>
+                                    </td>
+                                @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$group['previously_billed_amount']" /></div>
                                 </td>
@@ -409,6 +510,9 @@
                             </tr>
                             @php
                             $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($sub_total_change_from_previous_application, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_change_this_period = $grand_total_change_this_period + filter_var($sub_total_change_this_period, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $grand_total_current_total = $grand_total_current_total + filter_var($sub_total_current_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($group['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($group['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_material_stored = $group_total_material_stored + filter_var($group['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -423,9 +527,24 @@
                                 <td colspan="2" style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px">{{$key}}</div>
                                 </td>
-                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
-                                </td>
+                                @if($has_schedule_value) 
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['change_from_previous_application']" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['change_this_period']" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_total']" /></div>
+                                    </td>
+                                @else
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
+                                    </td>
+                                @endif
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['previously_billed_amount']" /></div>
                                 </td>
@@ -456,9 +575,24 @@
                                 <td colspan="2" style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px;color: #6F8181;">{{$key. ' sub total'}}</div>
                                 </td>
-                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"> <x-amount-format :amount="$group_total_schedule_value" /></div>
-                                </td>
+                                @if($has_schedule_value) 
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$group_total_schedule_value" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$grand_total_change_from_previous_application" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$grand_total_change_this_period" /></div>
+                                    </td>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$grand_total_current_total" /></div>
+                                    </td>
+                                @else
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$group_total_schedule_value" /></div>
+                                    </td>
+                                @endif
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$group_total_previously_billed_amt" /></div>
                                 </td>
@@ -500,9 +634,24 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                     <div style="font-size: 14px">{{ $val['description'] }}</div>
                                 </td>
-                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
-                                </td>
+                                @if($has_schedule_value)
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['change_from_previous_application']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['change_this_period']" /></div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_total']" /></div>
+                                    </td>
+                                @else
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
+                                    </td>
+                                @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['previously_billed_amount']" /></div>
                                 </td>
@@ -536,9 +685,24 @@
                                 <td style="min-width: 50px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
                                     <div style="font-size: 12px;font-weight: 600"><b>GRAND TOTAL</b> </div>
                                 </td>
-                                <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_schedule_value" /></div>
-                                </td>
+                                @if($has_schedule_value)
+                                    <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_schedule_value" /></div>
+                                    </td>
+                                    <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_change_from_previous_application" /></div>
+                                    </td>
+                                    <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_change_this_period" /></div>
+                                    </td>
+                                    <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_current_total" /></div>
+                                    </td>
+                                @else
+                                    <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_schedule_value" /></div>
+                                    </td>
+                                @endif
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_previouly_billed_amt" /></div>
                                 </td>

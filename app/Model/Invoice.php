@@ -1000,6 +1000,17 @@ class Invoice extends ParentModel
         return $sum;
     }
 
+    public function getChangeOrderAmountRow($ids, $start_date, $end_date)
+    {
+        $sum = DB::table('order')
+            ->where('approved_date', '>=', $start_date)
+            ->where('approved_date', '<', $end_date)
+            ->wherein('order_id', $ids)
+            ->get()->toArray();
+
+        return $sum;
+    }
+
     public function updatePaymentRequestStatusAndNotifyPatron($payment_request_id, $status, $notifyPatron)
     {
         DB::table('payment_request')->where('payment_request_id', $payment_request_id)
