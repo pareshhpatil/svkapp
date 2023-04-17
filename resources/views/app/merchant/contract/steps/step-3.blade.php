@@ -218,6 +218,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="pgschedulevalue">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font"> Scheduled value split
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content='Show the impact of change orders on scheduled value i.e. against all bill codes display "Change from previous applications", "Change this period" and "Current CO" columns' type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" onchange="disablePlugin(this.checked, 'plgincludestorematerials')"
+                                         @isset($plugins['has_schedule_value']) checked @endif id="plgscheduleavailable" name="has_schedule_value" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+                            </div>
                             <div id="pginvoiceoutput">
                                 <hr>
                                 <div class="mb-2">

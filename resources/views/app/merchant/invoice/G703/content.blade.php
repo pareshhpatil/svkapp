@@ -59,7 +59,14 @@
                 <tr class="text-center">
                     <td class="border td-703 font-regular text-xs  text-center"> A </td>
                     <td class="border td-703 font-regular text-xs  text-center"> B </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C </td>
+                    @if($has_schedule_value)
+                        <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
+                        <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
+                        <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
+                        <td class="border td-703 font-regular text-xs  text-center"> C4 </td>
+                    @else
+                        <td class="border td-703 font-regular text-xs  text-center"> C </td>
+                    @endif
                     <td class="border td-703 font-regular text-xs  text-center">D </td>
                     <td class="border td-703 font-regular text-xs  text-center"> E </td>
                     <td class="border td-703 font-regular text-xs  text-center"> F </td>
@@ -73,8 +80,14 @@
                     </td>
                     <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
-                    <td class="font-regular text-xs border-r border-l td-703 text-center">
-                    </td>
+                    @if($has_schedule_value)
+                        <td colspan="4" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                            SCHEDULED VALUE
+                        </td>
+                    @else
+                        <td class="font-regular text-xs border-r border-l td-703 text-center">
+                        </td>
+                    @endif
                     <td colspan="2" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
                         WORK COMPLETED </td>
                     <td class="font-regular text-xs border-r border-l td-703 text-center">
@@ -93,9 +106,19 @@
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         DESCRIPTION
                         OF WORK </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        SCHEDULED
-                        VALUE </td>
+                    @if($has_schedule_value)
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                        ORIGINAL </td>
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                            CHANGE FROM PREVIOUS APPLICATION </td>
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                            CHANGE THIS PERIOD </td>
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                            CURRENT (C1 + C2 + C3) </td>
+                    @else
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                            SCHEDULE VALUE </td>
+                    @endif
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         FROM
                         PREVIOUS APPLICATION
@@ -326,9 +349,24 @@
                         <td style="min-width: 40px" class="border-r border-t border-l td-703 text-left">
                             <p class="text-xs"><b>GRAND TOTAL</b> </p>
                         </td>
-                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
-                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
-                        </td>
+                        @if($has_schedule_value)
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_from_previous_application" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_this_period" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
+                            </td>
+                        @else
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                            </td>
+                        @endif
                         <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                             <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_previouly_billed_amt" /></p>
                         </td>
