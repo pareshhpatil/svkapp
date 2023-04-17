@@ -490,19 +490,22 @@ function addRowinCalcTable(ind) {
 
             oca = document.getElementById('original_contract_amount' + int).value;
             amt = getamt(oca);
+            var displayValue = [];
             try {
-            let displayValue = document.querySelector('#bill_code' + int ).getDisplayValue().split('|');
-            var bill_code = displayValue[0];
-            var discription = displayValue[1];
-        } catch (o) {}
-            try {
+                var displayValue = document.querySelector('#bill_code' + int).getDisplayValue().split('|');
+            } catch (o) {
+                var span_bill_code = document.getElementById('span_bill_code' + int).innerHTML;
+                var displayValue = span_bill_code.split('|');
+            }
+            /*try {
                 var bill_code = particularray[int].bill_code;
             } catch (o) {
                 var bill_code = document.getElementById('select2-billcode' + int + '-container').innerHTML;
             }
-            var discription = document.getElementById('description' + int).value;
+            var discription = document.getElementById('description' + int).value;*/
 
-            
+            let bill_code = displayValue[0];
+            var discription = displayValue[1];
 
             //bill_code = document.getElementById('bill_code' + bint).value;
             if (amt > 0) {
@@ -687,42 +690,39 @@ function addbillcode2() {
 function updatebillcode() {
 
     var pid = document.getElementById("project_id").value;
-   var bill_code= document.querySelector('#bill_code').value;
-   var cost_type= document.querySelector('#cost_type').value;
-   if(bill_code!='' && cost_type!='')
-   {
-   
-    $("#billcodeform").submit(function (e) {
-        $('#bill_code_error').html('');
-        $('#cost_type_error').html('');
-        e.preventDefault();
-        var form = $(this);
-        var actionUrl = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: actionUrl,
-            data: form.serialize(),
-            success: function (data) {
-                alert(data);
+    var bill_code = document.querySelector('#bill_code').value;
+    var cost_type = document.querySelector('#cost_type').value;
+    if (bill_code != '' && cost_type != '') {
 
-                if (data[2] > 0) {
+        $("#billcodeform").submit(function (e) {
+            $('#bill_code_error').html('');
+            $('#cost_type_error').html('');
+            e.preventDefault();
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function (data) {
+                    alert(data);
 
+                    if (data[2] > 0) {
+
+                    }
+                    closeSideUpdatePanelBillCode()
                 }
-                closeSideUpdatePanelBillCode()
-            }
-        });
+            });
 
-    });
-}else{
-    if(bill_code=='')
-   {
-    $('#bill_code_error').html('Please select cost code');
-   }
-   if(cost_type=='')
-   {
-    $('#cost_type_error').html('Please select cost type');
-   }
-}
+        });
+    } else {
+        if (bill_code == '') {
+            $('#bill_code_error').html('Please select cost code');
+        }
+        if (cost_type == '') {
+            $('#cost_type_error').html('Please select cost type');
+        }
+    }
 }
 
 
@@ -789,13 +789,16 @@ function calculatePercContract(value) {
 }
 
 function setOriginalContractAmount() {
-    console.log(calcRowInt);
     try {
         document.getElementById("original_contract_amount" + calcRowInt).value = updateTextView1(getamt(document.getElementById("calc_amount").value));
     } catch (o) {
 
     }
-    document.getElementById("lbl_original_contract_amount" + calcRowInt).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+    try {
+        document.getElementById("lbl_original_contract_amount" + calcRowInt).innerHTML = updateTextView1(getamt(document.getElementById("calc_amount").value));
+    } catch (o) {
+
+    }
     // document.getElementById("original_contract_amount" + calcRowInt).readOnly = true;
     try {
         document.getElementById("approved_change_order_amount" + calcRowInt).readOnly = true;
@@ -856,9 +859,9 @@ function editCaculatedRow(row) {
         for (let element of calc_json) {
             // if(element === 0 || element === null) element = ''
             let contractElement = document.getElementById("original_contract_amount" + element);
-            if((contractElement === undefined || contractElement === null ) && element === '') element = 0;
-            if((contractElement === undefined || contractElement === null ) && element === 0) element = '';
-            if((contractElement === undefined || contractElement === null ) && element === null) element = '';
+            if ((contractElement === undefined || contractElement === null) && element === '') element = 0;
+            if ((contractElement === undefined || contractElement === null) && element === 0) element = '';
+            if ((contractElement === undefined || contractElement === null) && element === null) element = '';
             amount_value = getamt(document.getElementById("original_contract_amount" + element).value)
             document.getElementById("calc" + element).checked = true
             inputCalcClicked(element, amount_value)
@@ -2940,9 +2943,13 @@ function updateTextView1(val) {
             number = Number(num);
         }
         if (num == 0) {
-            return 0.00;
+            return '';
         } else {
             if (decimal_text != '.00') {
+                if(decimal_text.substring(2)=='0')
+                {
+                    decimal_text=decimal_text.substring(0,2)
+                }
                 return number.toLocaleString() + decimal_text;
             } else {
                 return number.toLocaleString();
@@ -3348,7 +3355,7 @@ function setBillCodeMenuData() {
                 ' <div class="row"><div>';
             const newFileTypes = ['doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'];
             let extensionInLowerCase = extension.toLowerCase();
-            if(newFileTypes.includes(extensionInLowerCase)) {
+            if (newFileTypes.includes(extensionInLowerCase)) {
                 let splitPath = pathlist[i].split('/');
                 let fileName = splitPath[splitPath.length - 1];
                 let folder = splitPath[splitPath.length - 2];
@@ -3381,6 +3388,7 @@ function setBillCodeMenuData() {
 
 
 function closeSidePanelBillCodeAttachment() {
+    alert();
     try {
         var closebutton = document.getElementsByClassName("uppy-u-reset uppy-c-btn uppy-StatusBar-actionBtn uppy-StatusBar-actionBtn--done")[0].click();
     } catch (o) { }
@@ -3595,4 +3603,104 @@ function limitMe(evt, txt) {
 function removePreviousRowAddButton(numrow) {
     let oldrow = numrow - 1;
     $('#addRowButton' + oldrow).html('');
+}
+
+function changeSeparatorVal(prefix) {
+    if (prefix == "") {
+        $("#separator").prop('disabled', true);
+        document.getElementById("separator").value = '';
+    } else {
+        $("#separator").prop('disabled', false);
+    }
+}
+
+function showNewSequencePanel() {
+    $("#newSequencePanel").toggle();
+}
+
+function saveSequence() {
+    var data = '';
+    var prefix = document.getElementById("project_prefix").value;
+    var last_no = document.getElementById("seq_no").value;
+    var separator = document.getElementById("separator").value;
+    data = {
+        'prefix': prefix,
+        'last_no': last_no,
+        'seprator': separator
+    };
+    $.ajax({
+        type: 'POST',
+        url: '/merchant/invoice/saveProjectInvoiceSequence',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            obj = JSON.parse(response);
+            if (obj.status == 1) {
+                addOptionIntoDropdown('seq_no_drpdwn', obj);
+                clearNewSequenceForm();
+            } else if (obj.status == 2) {
+                document.getElementById('seq_error').innerHTML = '';
+                $('#confirm').modal("show");
+                $('#use_existing_no').on('click', function (e) {
+                    $('#confirm').modal("hide");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/merchant/invoice/saveExistingSequence',
+                        data: data,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (res) {
+                            obj = JSON.parse(res);
+                            if (obj.status == 1) {
+                                $('#seq_no_drpdwn').val(obj.id);
+                                $("#seq_no_drpdwn").select2();
+                                clearNewSequenceForm();
+                            }
+                        }
+                    });
+                });
+                $('#create_new_sequence').on('click', function (e) {
+                    document.getElementById('seq_error').innerHTML = '';
+                    $('#confirm').modal("hide");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/merchant/invoice/createNewSequence',
+                        data: data,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            obj = JSON.parse(response);
+                            if (obj.status == 1) {
+                                addOptionIntoDropdown('seq_no_drpdwn', obj);
+                                clearNewSequenceForm();
+                            }
+                        }
+                    });
+                });
+            } else {
+                document.getElementById('seq_error').innerHTML = obj.error;
+            }
+        }
+    });
+    return false;
+}
+
+function clearNewSequenceForm() {
+    document.getElementById("project_prefix").value = '';
+    document.getElementById("separator").value = '';
+    document.getElementById("seq_no").value = '0';
+    document.getElementById("newSequencePanel").style.display = 'none';
+}
+
+function addOptionIntoDropdown(id_of_drpdwn, obj_data) {
+    var x = document.getElementById(id_of_drpdwn);
+    var option = document.createElement("option");
+    option.text = obj_data.name;
+    option.value = obj_data.id;
+    option.selected = 1;
+    x.add(option);
 }

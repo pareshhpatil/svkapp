@@ -374,6 +374,7 @@
                     @endif
 
 
+                    @yield('readyscript')
 
                     $(".iframe").colorbox({
                         iframe: true,

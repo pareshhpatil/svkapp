@@ -165,7 +165,7 @@ class ContractController extends Controller
         if (old('project_id'))
             $project = $this->getProject(old('project_id'));
 
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2', 'invoiceformat'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
 
         $data['project_list'] = $project_list;
         $data['title'] = $title;

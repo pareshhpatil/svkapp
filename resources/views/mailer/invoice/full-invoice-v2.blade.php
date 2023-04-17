@@ -128,7 +128,7 @@
     }
 </script>
     {{-- 702 Part  --}}
-    <div id="link_to_702" style="line-height: 90%">
+    <div id="link_to_702" style="line-height: 82%">
         @include('mailer.invoice.format-702-v2')
     </div>
     <div class="page-break"></div>
@@ -136,7 +136,13 @@
     <div id="link_to_703">
         @include('mailer.invoice.format-703-v2')
     </div>
-
+    {{-- Co Listing  --}}
+    @if($list_all_change_orders)
+        <div class="page-break"></div>
+        <div id="link_to_703">
+            @include('mailer.invoice.format-co-listing-v2')
+        </div>
+    @endif
 
     @if(count($invoice_attachments) > 0)
     {{-- Attachment Pages --}}

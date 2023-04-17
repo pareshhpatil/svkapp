@@ -159,7 +159,7 @@
                                 <div class="col-md-12">
                                     <div class="pull-right">
                                         <a href="#" @click="return closeBillCodePanel();" class="btn default">Cancel</a>
-                                        <input type="button" value="Add bill code" @click="return addNewBillCode('{{ csrf_token() }}');" class="btn blue" />
+                                        <input type="button" value="Add bill code" onclick="addNewBillCode('{{ csrf_token() }}');" @click="return addNewBillCode('{{ csrf_token() }}');" class="btn blue" />
                                     </div>
                                 </div>
                             </div>
