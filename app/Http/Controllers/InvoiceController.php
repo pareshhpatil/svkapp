@@ -2737,7 +2737,7 @@ class InvoiceController extends AppController
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
             } else if ($type == 'co-listing') {
-                $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
+                $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data);
                 $data = array_merge($data, $particular_co_listing_details);
             } else if ($type == 'full') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
@@ -2745,7 +2745,7 @@ class InvoiceController extends AppController
                 $particular_703_details = $this->get703Contents($payment_request_id, $data);
                 $data = array_merge($data, $particular_703_details);
                 if ($data['list_all_change_orders']) {
-                    $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
+                    $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data);
                     $data = array_merge($data, $particular_co_listing_details);
                 }
                 $attachements = $this->download_attachments($payment_request_id);
