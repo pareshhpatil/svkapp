@@ -100,7 +100,6 @@
                     <input type="hidden" name="template_id" value="{{$template_id}}">
                     <div class="tab-content" style="">
                         <div class="tab-pane active" id="tab1">
-
                             <div id="pgisupload">
                                 <div class="mb-2">
                                     <span class="form-section base-font">Invoice level attachments</span>
@@ -333,6 +332,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Tab 2 -->
                         <div class="tab-pane" id="tab2">
                             <div>
                                 <div class="mb-2 desk">
@@ -580,7 +580,9 @@
                             </div>
 
                         </div>
-                        <div class="tab-pane active" id="tab3">
+
+                        <!-- Tab 3 -->
+                        <div class="tab-pane" id="tab3">
                             <div>
                                 <div class="mb-2">
                                     <span class="form-section base-font">List all change orders
