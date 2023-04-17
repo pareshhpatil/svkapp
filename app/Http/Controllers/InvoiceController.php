@@ -2683,10 +2683,15 @@ class InvoiceController extends AppController
         $total_co_amount =0;
         $change_order_ids = json_decode($change_order_ids, 1);
         if (!empty($change_order_ids)) {
-            $co_data  = (array)$this->invoiceModel->getChangeOrderAmountRow($change_order_ids, $start_date, $end_date)[0];
-            foreach(json_decode($co_data['particulars'],1) as $row){
-                $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
+            $co_data  = (array)$this->invoiceModel->getChangeOrderAmountRow($change_order_ids, $start_date, $end_date);
+            foreach($co_data as $co_row){
+                foreach(json_decode($co_row->particulars,1) as $row){
+                    if($billcode == $row['bill_code']){
+                        $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
+                    }
+                }
             }
+            
         }
        
         return $total_co_amount;
