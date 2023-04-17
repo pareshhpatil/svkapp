@@ -116,9 +116,16 @@
                             OF WORK </td>
                         <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px"> Orig. Scheduled
                             VALUE </td>
-                        @foreach ($change_order_columns as $change_order_column)
+                        @foreach ($change_order_columns as $coKeyIndex => $change_order_column)
                             <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px;text-transform: capitalize;">
-                                {{ Str::replace('_', ' ', $change_order_column) }}
+                                @php
+                                    if(is_numeric($coKeyIndex)) {
+                                        $coNumber = $coKeyIndex + 1;
+                                    } else {
+                                        $coNumber = intval($coKeyIndex) + 1;
+                                    }
+                                @endphp
+                                {{'CO ' . $coNumber}}
                             </td>
                         @endforeach
                         <td style="border-bottom:1px solid #313131; border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size: 12px">
@@ -496,6 +503,19 @@
                                     </td>
                                     <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
                                         <div style="font-size: 14px">{{ $val['description'] }}</div>
+                                    </td>
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['original_contract_amount']" /></div>
+                                    </td>
+                                    @if (isset($val['change_order_col_values']))
+                                        @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
+                                            <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                                <div style="font-size: 14px">{{$change_order_col_value}}</div>
+                                            </td>
+                                        @endforeach
+                                    @endif
+                                    <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"><x-amount-format :amount="$val['approved_change_order_amount']" /></div>
                                     </td>
                                     <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                         <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
