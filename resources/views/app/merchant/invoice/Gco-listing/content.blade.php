@@ -235,7 +235,7 @@
                                 @if (isset($val['change_order_col_values']))
                                     @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
                                         <td class="border-r border-l td-703 text-right">
-                                            {{$change_order_col_value}}
+                                            <p class="text-sm"><x-amount-format :amount="$change_order_col_value" /></p>
                                         </td>
                                     @endforeach
                                 @endif

@@ -83,7 +83,14 @@ $header='app.patron.invoice.invoice-master';
 
         <div class=" w-full flex flex-col items-center justify-center">
             @include('app.merchant.invoice.view.header')
-            @include('app.merchant.invoice.Gco-listing.content')
+
+            @if(isset($has_change_order_data))
+                @if($has_change_order_data == true)
+                    <p>No Change Order Found for this contract</p>
+                @endif
+            @else
+                @include('app.merchant.invoice.Gco-listing.content')
+            @endif
             
             @php
             $footers='app.merchant.invoice.view.footer-v2';
