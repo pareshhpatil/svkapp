@@ -403,8 +403,8 @@
                                                             <input type="hidden" name="calculated_perc[]" value="{{$pv['calculated_perc']}}" id="calculated_perc{{$pint}}">
                                                             <input type="hidden" name="calculated_row[]" value="{{$pv['calculated_row']}}" id="calculated_row{{$pint}}">
                                                             <input type="hidden" name="description[]" value="{{$pv['description']}}" id="description{{$pint}}">
-                                                            <input type="hidden" name="billed_transaction_ids[]" value="{{$pv['billed_transaction_ids']}}" id="billed_transaction_ids{{$pint}}">
-                                                            <input id="id{{$pint}}" value="{{$pv['id']}}" type="hidden" name="id[]">
+                                                            <input type="hidden" name="billed_transaction_ids[]" value="@isset($pv['billed_transaction_ids']){{$pv['billed_transaction_ids']}}@endif" id="billed_transaction_ids{{$pint}}">
+                                                            <input id="id{{$pint}}" value="@isset($pv['id']){{$pv['id']}}@endif" type="hidden" name="id[]">
                                                             <input id="dpid{{$pint}}" value="@isset($pv['dpid']){{$pv['dpid']}}@endisset" type="hidden" name="dpid[]">
                                                             <input id="pint{{$pint}}" value="{{$pint}}" type="hidden" name="pint[]">
                                                             <input id="sort_order{{$pint}}" value="{{$pv['sort_order']}}" type="hidden" name="sort_order[]">
@@ -435,12 +435,12 @@
                                                     @else
                                                     <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
                                                     @if($readonly==true)
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="{{$pv[$k]}}" name="{{$k}}[]">
-                                                    {{$pv[$k]}}
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endif" name="{{$k}}[]">
+                                                    @isset($pv[$k]){{$pv[$k]}}@endif
                                                     @else
                                                     <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
-                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">{{$pv[$k]}}&nbsp;
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="{{$pv[$k]}}">
+                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endif&nbsp;
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endif">
                                                     </span>
                                                     </span>
                                                     @if($k=='original_contract_amount')

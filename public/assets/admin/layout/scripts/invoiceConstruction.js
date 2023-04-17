@@ -95,6 +95,11 @@ function calculateRow(id, type = 0) {
         retainage_percent_cal = 0;
     }
 
+    current_contract_amount = ev('current_contract_amount' + id);
+    if (getamt(current_contract_amount) > 0) {
+        _('current_billed_percent' + id).value = updateTextView1(getamt(current_billed_amount) * 100 / getamt(current_contract_amount));
+    } 
+
     if (retainage_percent_cal == 1) {
         if (getamt(current_billed_amount) > 0) {
             _('retainage_percent' + id).value = updateTextView1(getamt(retainage_amount_for_this_draw) * 100 / getamt(current_billed_amount));
@@ -103,8 +108,6 @@ function calculateRow(id, type = 0) {
             _('retainage_percent' + id).value == '';
         }
     } else {
-        console.log(getamt(current_billed_amount));
-        console.log(getamt(retainage_percent));
         _('retainage_amount_for_this_draw' + id).value = updateTextView1(getamt(current_billed_amount) * getamt(retainage_percent) / 100);
     }
 
@@ -275,13 +278,13 @@ function loadDraft() {
                     _(column + pint).value = value;
                 } catch (o) { }
             });
-            _('span_bill_code'+pint).innerHTML=csi_codes_array[av.bill_code].label;
-            _('span_cost_type'+pint).innerHTML=cost_types_array[av.cost_type].label;
-            _('span_bill_type'+pint).innerHTML=av.bill_type;
+            _('span_bill_code' + pint).innerHTML = csi_codes_array[av.bill_code].label;
+            _('span_cost_type' + pint).innerHTML = cost_types_array[av.cost_type].label;
+            _('span_bill_type' + pint).innerHTML = av.bill_type;
             setInput(pint, '');
         }
     });
-    
+
 
     calculateTotal();
     _('loader2').style.display = 'none';
