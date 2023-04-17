@@ -67,11 +67,13 @@ $validate=(array)$validate;
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop7">
                     @if($gtype != 'attachment')
-                    <li>
-                        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
-                            Download {{$gtype}}
-                        </a>
-                    </li>
+                        @if($gtype == 'co-listing' && !isset($has_change_order_data))
+                            <li>
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                                    Download {{$gtype}}
+                                </a>
+                            </li>
+                        @endif
                     @endif
                     <li>
                         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}/0/full">
