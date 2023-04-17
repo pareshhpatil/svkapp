@@ -2988,7 +2988,7 @@ class InvoiceController extends AppController
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
-        dd($changeOrdersData, $data['contract_id']);
+        
         $particular_details = json_decode($particular_details, 1);
         $int = 0;
         $grand_total_schedule_value = 0;
