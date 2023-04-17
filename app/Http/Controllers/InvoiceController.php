@@ -2408,6 +2408,7 @@ class InvoiceController extends AppController
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
             } else if ($type == 'co-listing') {
                 $particular_details = $this->getChangeOrderListingContents($payment_request_id, $data);
+                dd($particular_details);
             } else {
                 return redirect('/error/invalidlink');
             }
