@@ -2412,6 +2412,7 @@ class InvoiceController extends AppController
                 return redirect('/error/invalidlink');
             }
             $data = array_merge($data, $particular_details);
+
             return view('app/merchant/invoice/G' . $type . '/index', $data);
         } else {
             return redirect('/error/invalidlink');
@@ -2988,7 +2989,13 @@ class InvoiceController extends AppController
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
-        
+
+        if($changeOrdersData->count() <= 0) {
+            return [
+                'has_change_order_data' => true
+            ];
+        }
+
         $particular_details = json_decode($particular_details, 1);
         $int = 0;
         $grand_total_schedule_value = 0;
