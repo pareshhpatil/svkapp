@@ -246,7 +246,12 @@
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
+    @if($draft_particulars!='')
     var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
+    @else
+    var draft_particulars = [];
+    @endif
+    
     var billed_transactions_filter = [];
     var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
     var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
