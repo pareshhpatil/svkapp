@@ -164,13 +164,22 @@
                 @foreach ($particularRows as $key => $row)
                     @if($key!='no-group~')
                         <tr>
+                        @if($has_schedule_value) 
+                            <td colspan="13" class="border td-703 text-left">
+                                <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
+                            </td>
+                        @else
                             <td colspan="10" class="border td-703 text-left">
                                 <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
                             </td>
+                        @endif
                         </tr>
                     @endif
                     @php 
                         $group_total_schedule_value = 0;
+                        $grand_total_change_from_previous_application = 0;
+                        $grand_total_change_this_period = 0;
+                        $grand_total_current_total = 0;
                         $group_total_previously_billed_amt = 0;
                         $group_total_current_billed_amt = 0;
                         $group_total_material_stored = 0;
@@ -183,7 +192,14 @@
                                 <td class="px-2 py-2 text-left"></td>
                                 <td class="px-2 py-2 text-left"><p class="text-sm" style="color: #6F8181;">{{$sk}}</p></td>
                                 <td class="px-2 py-2 text-left"></td>
+                                @if($has_schedule_value) 
                                 <td class="px-2 py-2 text-left"></td>
+                                <td class="px-2 py-2 text-left"></td>
+                                <td class="px-2 py-2 text-left"></td>
+                                <td class="px-2 py-2 text-left"></td>
+                                @else
+                                <td class="px-2 py-2 text-left"></td>
+                                @endif
                                 <td class="px-2 py-2 text-left"></td>
                                 <td class="px-2 py-2 text-left"></td>
                                 <td class="px-2 py-2 text-left"></td>
@@ -193,6 +209,9 @@
                             </tr>
                             @php 
                                 $sub_total_schedule_value = 0;
+                                $sub_total_change_from_previous_application = 0;
+                                $sub_total_change_this_period = 0;
+                                $sub_total_current_total = 0;
                                 $sub_total_previously_billed_amt = 0;
                                 $sub_total_current_billed_amount = 0;
                                 $sub_total_material_stored = 0;
@@ -203,6 +222,9 @@
                                 @include('app.merchant.invoice.G703.particular_row',array('rowArray'=>$item))
                                 @php
                                     $sub_total_schedule_value = $sub_total_schedule_value + filter_var($item['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                    $sub_total_change_from_previous_application = $sub_total_change_from_previous_application + filter_var($item['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                    $sub_total_change_this_period = $sub_total_change_this_period + filter_var($item['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                    $sub_total_current_total = $sub_total_current_total + filter_var($item['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                     $sub_total_previously_billed_amt =  $sub_total_previously_billed_amt + filter_var($item['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                     $sub_total_current_billed_amount = $sub_total_current_billed_amount + filter_var($item['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                     $sub_total_material_stored = $sub_total_material_stored + filter_var($item['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -212,6 +234,9 @@
                             @endforeach
                             @php 
                                 $group_total_schedule_value = $group_total_schedule_value + filter_var($sub_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($sub_total_change_from_previous_application, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_change_this_period = $grand_total_change_this_period + filter_var($sub_total_change_this_period, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_current_total = $grand_total_current_total + filter_var($sub_total_current_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($sub_total_previously_billed_amt, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($sub_total_current_billed_amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_material_stored = $group_total_material_stored + filter_var($sub_total_material_stored, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -225,9 +250,24 @@
                                 <td class="border td-703 text-left" style="border-left: none;">
                                     <p class="text-sm" style="color: #6F8181;"> {{$sk . ' sub total'}}</p>
                                 </td>
+                                @if($has_schedule_value) 
                                 <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
                                 </td>
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_change_from_previous_application" /></p>
+                                </td>
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_change_this_period" /></p>
+                                </td>
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
+                                </td>
+                                @else
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
+                                </td>
+                                @endif
                                 <td class="border td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$sub_total_previously_billed_amt" /></p>
                                 </td>
@@ -266,6 +306,9 @@
                             @include('app.merchant.invoice.G703.particular_row',array('rowArray'=>$group,'group_name'=>$key))
                             @php 
                                 $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($group['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_change_this_period = $grand_total_change_this_period + filter_var($group['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $grand_total_current_total = $grand_total_current_total + filter_var($group['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($group['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($group['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_material_stored = $group_total_material_stored + filter_var($group['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -312,9 +355,24 @@
                             <td colspan="2" class="border td-703 text-left">
                                 <p class="text-sm" style="color: #6F8181;"> {{$key. ' sub total'}}</p>
                             </td>
+                            @if($has_schedule_value) 
                             <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
                             </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$grand_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$grand_total_change_this_period" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$grand_total_current_total" /></p>
+                            </td>
+                            @else
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
+                            </td>
+                            @endif
                             <td class="border td-703 text-right">
                                 <p class="text-sm"><x-amount-format :amount="$group_total_previously_billed_amt" /></p>
                             </td>
