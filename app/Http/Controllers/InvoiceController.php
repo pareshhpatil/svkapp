@@ -3025,7 +3025,7 @@ class InvoiceController extends AppController
         }
 
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;
-        $data['grand_total_original_schedule_value'] = '2334';
+        $data['grand_total_original_schedule_value'] = $grand_total_original_schedule_value;
         $data['grand_total_previouly_billed_amt'] = $grand_total_previouly_billed_amt;
         $data['grand_total_d_plus_e'] = $grand_total_d_plus_e;
         $data['grand_total_current_billed_amt'] = $grand_total_current_billed_amt;
