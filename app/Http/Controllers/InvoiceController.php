@@ -2670,17 +2670,16 @@ class InvoiceController extends AppController
             else
                 $rowArray['files'] = $counts . ' file';
 
-            if($data['has_schedule_value']){
-                $start_date = '1990-01-01';
-                $end_date = date("Y-m-01", strtotime($data['bill_date']));
-                $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
-                
-                $start_date = date("Y-m-01", strtotime($data['bill_date']));
-                $end_date = date("Y-m-d", strtotime("first day of next month"));
-                $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+            //schedule plugin calcualtions
+            $start_date = '1990-01-01';
+            $end_date = date("Y-m-01", strtotime($data['bill_date']));
+            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+            
+            $start_date = date("Y-m-01", strtotime($data['bill_date']));
+            $end_date = date("Y-m-d", strtotime("first day of next month"));
+            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
 
-                $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
-            }
+            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
            
         }
         return $rowArray;
