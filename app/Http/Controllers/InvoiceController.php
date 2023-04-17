@@ -2408,7 +2408,6 @@ class InvoiceController extends AppController
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
             } else if ($type == 'co-listing') {
                 $particular_details = $this->getChangeOrderListingContents($payment_request_id, $data);
-                dd($particular_details);
             } else {
                 return redirect('/error/invalidlink');
             }
@@ -2989,7 +2988,7 @@ class InvoiceController extends AppController
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
-
+        dd($changeOrdersData, $data['contract_id']);
         $particular_details = json_decode($particular_details, 1);
         $int = 0;
         $grand_total_schedule_value = 0;
