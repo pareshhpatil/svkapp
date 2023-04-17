@@ -420,12 +420,12 @@
                                                     </td>
                                                     @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
                                                     <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
-                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endif">
+                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                         <span id="span_{{$k}}{{$pint}}">
                                                             @if($k=='cost_type')
-                                                            {{$cost_types[$pv['cost_type']]['label']}}
+                                                           @isset($cost_types[$pv['cost_type']]['label']){{$cost_types[$pv['cost_type']]['label']}}@endisset
                                                             @else
-                                                            @isset($pv[$k]){{$pv[$k]}}@endif
+                                                            @isset($pv[$k]){{$pv[$k]}}@endisset
                                                             @endif
                                                         </span>
                                                         <span id="vspan_{{$k}}{{$pint}}" style="width: 100%; display: none;">
@@ -435,12 +435,12 @@
                                                     @else
                                                     <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
                                                     @if($readonly==true)
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endif" name="{{$k}}[]">
-                                                    @isset($pv[$k]){{$pv[$k]}}@endif
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
+                                                    @isset($pv[$k]){{$pv[$k]}}@endisset
                                                     @else
                                                     <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
-                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endif&nbsp;
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endif">
+                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                     </span>
                                                     </span>
                                                     @if($k=='original_contract_amount')
