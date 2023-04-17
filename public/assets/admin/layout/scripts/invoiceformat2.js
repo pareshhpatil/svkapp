@@ -3388,7 +3388,6 @@ function setBillCodeMenuData() {
 
 
 function closeSidePanelBillCodeAttachment() {
-    alert();
     try {
         var closebutton = document.getElementsByClassName("uppy-u-reset uppy-c-btn uppy-StatusBar-actionBtn uppy-StatusBar-actionBtn--done")[0].click();
     } catch (o) { }
