@@ -230,6 +230,19 @@
                                     <p class="text-sm">{{$key}}</p>
                                 </td>
                                 <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['original_contract_amount']" /></p>
+                                </td>
+                                @if (isset($val['change_order_col_values']))
+                                    @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
+                                        <td class="border-r border-l td-703 text-right">
+                                            {{$change_order_col_value}}
+                                        </td>
+                                    @endforeach
+                                @endif
+                                <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['approved_change_order_amount']" /></p>
+                                </td>
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
                                 </td>
                                 <td class="border-r border-l td-703 text-right">
