@@ -98,7 +98,7 @@ function calculateRow(id, type = 0) {
     current_contract_amount = ev('current_contract_amount' + id);
     if (getamt(current_contract_amount) > 0) {
         _('current_billed_percent' + id).value = updateTextView1(getamt(current_billed_amount) * 100 / getamt(current_contract_amount));
-    } 
+    }
 
     if (retainage_percent_cal == 1) {
         if (getamt(current_billed_amount) > 0) {
@@ -278,9 +278,17 @@ function loadDraft() {
                     _(column + pint).value = value;
                 } catch (o) { }
             });
-            _('span_bill_code' + pint).innerHTML = csi_codes_array[av.bill_code].label;
-            _('span_cost_type' + pint).innerHTML = cost_types_array[av.cost_type].label;
-            _('span_bill_type' + pint).innerHTML = av.bill_type;
+            try {
+                _('span_bill_code' + pint).innerHTML = csi_codes_array[av.bill_code].label;
+            } catch (o) { }
+
+            try {
+                _('span_cost_type' + pint).innerHTML = cost_types_array[av.cost_type].label;
+            } catch (o) { }
+
+            try {
+                _('span_bill_type' + pint).innerHTML = av.bill_type;
+            } catch (o) { }
             setInput(pint, '');
         }
     });
@@ -826,12 +834,11 @@ function closeSidePanelcost() {
 }
 
 
-function closeAttachmentPanel(){
-    alert();
-    let attachment_pos = $('#attachment_pos_id').val();
-    let attach_index = $('#index'+attachment_pos).val();
-    let vals = document.getElementById('attach-' + attachment_pos).value;
-    _('attachments'+attach_index) = vals;
+function closeAttachmentPanel() {
+   // let attachment_pos = $('#attachment_pos_id').val();
+    //let attach_index = $('#index' + attachment_pos).val();
+    //let vals = document.getElementById('attach-' + attachment_pos).value;
+   // _('attachments' + attach_index) = vals;
     // this.fields[attach_index].attachments = particularray[attach_index].attachments;
 
     //reset attachment pos id in attachment modal

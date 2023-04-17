@@ -1649,15 +1649,15 @@ class InvoiceController extends AppController
         if ($invoice->payment_request_status != 11) {
             $plugin = json_decode($invoice->plugin_value, 1);
             if (isset($plugin['save_revision_history'])) {
-            if ($plugin['save_revision_history'] == 1) {
-                $revision = true;
-                $revision_data['payment_request'] = $invoice;
-                $revision_data['payment_request'] = json_decode(json_encode($revision_data['payment_request']), 1);
-                $revision_data['invoice_column_values'] = $this->invoiceModel->getTableList('invoice_column_values', 'payment_request_id', $request_id);
-                $revision_data['invoice_column_values'] = json_decode(json_encode($revision_data['invoice_column_values']), 1);
-                $revision_data['invoice_construction_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
-                $revision_data['invoice_construction_particular'] = json_decode(json_encode($revision_data['invoice_construction_particular']), 1);
-            }
+                if ($plugin['save_revision_history'] == 1) {
+                    $revision = true;
+                    $revision_data['payment_request'] = $invoice;
+                    $revision_data['payment_request'] = json_decode(json_encode($revision_data['payment_request']), 1);
+                    $revision_data['invoice_column_values'] = $this->invoiceModel->getTableList('invoice_column_values', 'payment_request_id', $request_id);
+                    $revision_data['invoice_column_values'] = json_decode(json_encode($revision_data['invoice_column_values']), 1);
+                    $revision_data['invoice_construction_particular'] = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $request_id);
+                    $revision_data['invoice_construction_particular'] = json_decode(json_encode($revision_data['invoice_construction_particular']), 1);
+                }
             }
         }
 
@@ -2146,6 +2146,15 @@ class InvoiceController extends AppController
 
         $draft_id = $this->invoiceModel->getColumnValue('invoice_draft', 'payment_request_id', $request_id, 'id', ['status' => 0], 'id');
         if ($draft_id != false) {
+            $draft = $this->invoiceModel->getTableRow('invoice_draft', 'id', $draft_id);
+            $data['draft_date'] = $draft->last_update_date;
+
+            if ($draft->created_by != $this->user_id) {
+                $user = $this->invoiceModel->getTableRow('user', 'user_id', $draft->created_by);
+                $data['draft_created_by'] = $user->first_name . ' ' .  $user->last_name;
+            } else {
+                $data['draft_created_by'] = Session::get('full_name');
+            }
             $draft_particulars = $this->invoiceModel->getList('staging_invoice_construction_particular', ['draft_id' => $draft_id]);
             $data['draft_particulars'] = json_encode($draft_particulars);
         }
@@ -2161,7 +2170,6 @@ class InvoiceController extends AppController
         $data['groups'] = $groups;
         $data['mode'] = $mode;
         $data["particular_column"] = json_decode($template->particular_column, 1);
-        //dd($data);
         Session::remove('draft_id');
         return view('app/merchant/invoice/invoice-particular', $data);
     }
@@ -2379,7 +2387,7 @@ class InvoiceController extends AppController
     {
         $payment_request_id = Encrypt::decode($link);
         $notificationID = $request->get('notification_id');
-        
+
         if (strlen($payment_request_id) == 10) {
             $data = Helpers::setBladeProperties('Invoice', ['template'], [5, 28]);
             $data['gtype'] = $type;
@@ -2398,7 +2406,7 @@ class InvoiceController extends AppController
                 $particular_details = $this->get703Contents($payment_request_id);
             } else if ($type == '702') {
                 $particular_details = $this->get702Contents($payment_request_id, $data, $user_type);
-            }  else if ($type == 'co-listing') {
+            } else if ($type == 'co-listing') {
                 $particular_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
             } else {
                 return redirect('/error/invalidlink');
@@ -2597,7 +2605,7 @@ class InvoiceController extends AppController
                 $active_payment = Session::get('has_payment_active');
                 Session::remove('success_array');
                 $data["invoice_success"] = true;
-    
+
                 $data["whatsapp_share"] = $whatsapp_share;
                 foreach ($success_array as $key => $val) {
                     $data[$key] = $val;
@@ -2609,7 +2617,6 @@ class InvoiceController extends AppController
                     $data["payment_gateway_info"] = true;
                 }
             }
-
         } else {
             $invoiceAccess = 'full';
         }
@@ -2681,15 +2688,15 @@ class InvoiceController extends AppController
             } else if ($type == '702') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
-            } else if($type == 'co-listing') {
+            } else if ($type == 'co-listing') {
                 $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
                 $data = array_merge($data, $particular_co_listing_details);
-            } else if($type=='full') {
+            } else if ($type == 'full') {
                 $particular_702_details = $this->get702Contents($payment_request_id, $data, $user_type);
                 $data = array_merge($data, $particular_702_details);
                 $particular_703_details = $this->get703Contents($payment_request_id);
                 $data = array_merge($data, $particular_703_details);
-                if($data['list_all_change_orders']) {
+                if ($data['list_all_change_orders']) {
                     $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data['contract_id']);
                     $data = array_merge($data, $particular_co_listing_details);
                 }
@@ -2932,9 +2939,9 @@ class InvoiceController extends AppController
     public function getChangeOrderListingContents($payment_request_id, $contract_id)
     {
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
-        
+
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($contract_id, date("Y-m-d"));
-        
+
         $particular_details = json_decode($particular_details, 1);
         $int = 0;
         $grand_total_schedule_value = 0;
@@ -2956,29 +2963,29 @@ class InvoiceController extends AppController
             $changeOrderValues = [];
             foreach ($particular_details as $ck => $val) {
 
-                foreach($changeOrdersData as $changeOrderData) {
-                   
+                foreach ($changeOrdersData as $changeOrderData) {
+
                     $coParticulars = json_decode($changeOrderData->particulars, 1);
                     $changeOrderGroupData[$changeOrderData->order_no] = $coParticulars;
 
-                    
-                    if(!in_array($changeOrderData->order_no, $changeOrderColumns)){
+
+                    if (!in_array($changeOrderData->order_no, $changeOrderColumns)) {
                         $changeOrderColumns[] = $changeOrderData->order_no;
                     }
-                    
-                    foreach($coParticulars as $coParticular) {
-                        if($coParticular['bill_code'] == $val['bill_code']) {
+
+                    foreach ($coParticulars as $coParticular) {
+                        if ($coParticular['bill_code'] == $val['bill_code']) {
                             $changeOrderValues[$changeOrderData->order_no] = $coParticular['change_order_amount'];
                         }
                     }
-                   
+
                     if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
                         //show details without subgroup, total, bill code
                         $valArray = $this->setParticularRowArray($val);
                         $valArray['change_order_col_values'] = $changeOrderValues;
                         $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
                     } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
-                        
+
                         if ($val['sub_group'] != '') {
                             $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
                             if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
@@ -2986,14 +2993,12 @@ class InvoiceController extends AppController
                                 $valArray['change_order_col_values'] = $changeOrderValues;
                                 $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
                             }
-                            
                         } else {
                             $groups[$val['group']][$val['group']] = $val['group'];
                             if (in_array($val['group'], $groups[$val['group']])) {
                                 $valArray = $this->setParticularRowArray($val);
                                 $valArray['change_order_col_values'] = $changeOrderValues;
                                 $particularRows[$val['group']]['only-group~'][$int] = $valArray;
-
                             }
                         }
                     } else {
@@ -3021,7 +3026,6 @@ class InvoiceController extends AppController
 
                 $int++;
             }
-
         }
 
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;

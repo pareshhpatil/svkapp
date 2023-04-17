@@ -408,7 +408,7 @@
                                                             <input id="dpid{{$pint}}" value="@isset($pv['dpid']){{$pv['dpid']}}@endisset" type="hidden" name="dpid[]">
                                                             <input id="pint{{$pint}}" value="{{$pint}}" type="hidden" name="pint[]">
                                                             <input id="sort_order{{$pint}}" value="{{$pv['sort_order']}}" type="hidden" name="sort_order[]">
-                                                            <input type="hidden" name="sub_group[]" value="{{$pv['sub_group']}}">
+                                                            <input type="hidden" name="sub_group[]" value="@isset($pv['sub_group']){{$pv['sub_group']}}@endisset">
                                                             <input type="hidden" id="retainage_amount_change{{$pint}}" >
                                                         </div>
                                                     </td>
@@ -423,7 +423,7 @@
                                                         <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                         <span id="span_{{$k}}{{$pint}}">
                                                             @if($k=='cost_type')
-                                                           @isset($cost_types[$pv['cost_type']]['label']){{$cost_types[$pv['cost_type']]['label']}}@endisset
+                                                            @isset($cost_types[$pv['cost_type']]['label']){{$cost_types[$pv['cost_type']]['label']}}@endisset
                                                             @else
                                                             @isset($pv[$k]){{$pv[$k]}}@endisset
                                                             @endif
@@ -681,7 +681,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+@if($draft_particulars!='')
 <div class="modal fade" id="draft" tabindex="-1" role="basic" >
     <div class="modal-dialog">
         <div class="modal-content">
@@ -690,7 +690,7 @@
                 <h4 id="poptitle" class="modal-title">Resume previous session</h4>
             </div>
             <div class="modal-body">
-            Unsaved changes were found in this invoice from the session on . Would you like to continue with the previous changes or discard them?
+            Unsaved changes were found in this invoice from the session on <x-localize :date="$draft_date" type="datetime" /> by user {{$draft_created_by}}. Would you like to continue with the previous changes or discard them?
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="loadDraft()"  class="btn blue">Resume session</button>
@@ -702,6 +702,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+@endif
 
 
 @include('app.merchant.contract.add-group-modal')
