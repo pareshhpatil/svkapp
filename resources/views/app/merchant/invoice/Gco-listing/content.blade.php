@@ -59,7 +59,6 @@
                         VALUE</td>
                     @foreach ($change_order_columns as $coKeyIndex => $change_order_column)
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center text-capitalize">
-{{--                        {{ Str::replace('_', ' ', $change_order_column) }}--}}
                         @php
                             if(is_numeric($coKeyIndex)) {
                                 $coNumber = $coKeyIndex + 1;
