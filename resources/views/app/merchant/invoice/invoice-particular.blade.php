@@ -420,12 +420,12 @@
                                                     </td>
                                                     @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
                                                     <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
-                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="{{$pv[$k]}}">
+                                                        <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                         <span id="span_{{$k}}{{$pint}}">
                                                             @if($k=='cost_type')
-                                                            {{$cost_types[$pv['cost_type']]['label']}}
+                                                           @isset($cost_types[$pv['cost_type']]['label']){{$cost_types[$pv['cost_type']]['label']}}@endisset
                                                             @else
-                                                            {{$pv[$k]}}
+                                                            @isset($pv[$k]){{$pv[$k]}}@endisset
                                                             @endif
                                                         </span>
                                                         <span id="vspan_{{$k}}{{$pint}}" style="width: 100%; display: none;">
@@ -435,12 +435,12 @@
                                                     @else
                                                     <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
                                                     @if($readonly==true)
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endif" name="{{$k}}[]">
-                                                    @isset($pv[$k]){{$pv[$k]}}@endif
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
+                                                    @isset($pv[$k]){{$pv[$k]}}@endisset
                                                     @else
                                                     <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
-                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endif&nbsp;
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endif">
+                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
+                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                     </span>
                                                     </span>
                                                     @if($k=='original_contract_amount')
@@ -687,16 +687,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 id="poptitle" class="modal-title">Unsaved draft</h4>
-                <input type="hidden" id="docfullurl">
+                <h4 id="poptitle" class="modal-title">Resume previous session</h4>
             </div>
             <div class="modal-body">
-                Unsaved draft is exist do you want to load draft values?
+            Unsaved changes were found in this invoice from the session on . Would you like to continue with the previous changes or discard them?
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="loadDraft()"  class="btn blue">Yes</button>
+                <button type="button" onclick="loadDraft()"  class="btn blue">Resume session</button>
 
-                <button type="button" id="closeconformdoc" class="btn default" data-dismiss="modal">Cancel </button>
+                <button type="button"  class="btn default" data-dismiss="modal">Discard changes</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -705,7 +704,6 @@
 </div>
 
 
-@include('app.merchant.invoice.add-attachment-billcode-modal')
 @include('app.merchant.contract.add-group-modal')
 @include('app.merchant.contract.add-calculation-modal2')
 @include('app.merchant.contract.add-cost-modal')
