@@ -2486,10 +2486,18 @@ class InvoiceController extends AppController
                 $grand_total_current_billed_amt = $grand_total_current_billed_amt + $val['current_billed_amount'];
                 $grand_total_stored_material = $grand_total_stored_material + $val['stored_materials'];
                 $grand_total_total_completed = $grand_total_total_completed + ($val['previously_billed_amount'] + $val['current_billed_amount'] + $val['stored_materials']);
-                if ($grand_total_schedule_value != 0) {
-                    $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
+                if ($data['has_schedule_value']) {
+                    if ($grand_total_current_total != 0) {
+                        $grand_total_g_per = $grand_total_total_completed / $grand_total_current_total;
+                    }
+                    $grand_total_balance_to_finish = $grand_total_current_total - $grand_total_total_completed;
+                }else{
+                    if ($grand_total_schedule_value != 0) {
+                        $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
+                    }
+                    $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
                 }
-                $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
+               
                 $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
 
                 $int++;
