@@ -188,7 +188,7 @@
         width: 100%;
         border: none;
         text-align: center;
-        background-color: transparent;
+        background-color: transparent !important;
     }
 </style>
 
@@ -245,6 +245,8 @@
         'value': 'No'
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
+    var billed_transactions_filter=[];
+    var billed_transactions_id_array=[];
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
     @if($draft_particulars != '')
     var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
@@ -440,18 +442,19 @@
                                                     @else
                                                     <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
                                                         @if($readonly==true)
-                                                        <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
-                                                        @isset($pv[$k]){{$pv[$k]}}@endisset
+                                                        <input type="text" readonly id="{{$k}}{{$pint}}" class="form-control input-sm amtbox" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
+                                                        @if($k=='original_contract_amount')
+                                                        <span id="add-calc-span{{$pint}}">
+                                                        </span>
+                                                        @endif
+                                                        
                                                         @else
                                                         <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
                                                             <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
                                                                 <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                             </span>
                                                         </span>
-                                                        @if($k=='original_contract_amount')
-                                                        <span id="add-calc-span{{$pint}}">
-                                                        </span>
-                                                        @endif
+                                                       
                                                         @if($k=='current_billed_amount')
                                                         <span id="add-cost-span{{$pint}}">
                                                         </span>
