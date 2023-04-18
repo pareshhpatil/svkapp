@@ -37,25 +37,5 @@
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
     </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['previously_billed_amount']" /></p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['current_billed_amount']" /></p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['stored_materials']" /></p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"> <x-amount-format :amount="$rowArray['total_completed']" /></p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm">@if($rowArray['g_per'] < 0)({{str_replace('-','',number_format($rowArray['g_per']  * 100, 2) )}}) @else{{ number_format($rowArray['g_per'] * 100,2)}}@endif%</p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"> <x-amount-format :amount="$rowArray['balance_to_finish']" /> </p>
-    </td>
-    <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"> <x-amount-format :amount="$rowArray['total_outstanding_retainage']" /></p>
-    </td>
+
 </tr>
