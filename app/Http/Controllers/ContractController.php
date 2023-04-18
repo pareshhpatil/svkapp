@@ -260,6 +260,13 @@ class ContractController extends Controller
                 $invoice_format = new InvoiceFormatController();
                 $_POST = json_decode(json_encode($request->all()), 1);
                 $plugins = $invoice_format->getPlugins();
+                
+                if(isset($request->has_schedule_value)){
+                    $plugins = json_decode($plugins,1);
+                    $plugins['has_schedule_value'] = "1";
+                    $plugins = json_encode($plugins);
+                }
+
                 $this->contract_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $plugins);
                 $step++;
                 break;
