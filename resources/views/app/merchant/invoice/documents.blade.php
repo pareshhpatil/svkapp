@@ -81,7 +81,7 @@ $header='app.patron.invoice.invoice-master';}
                         </li>
                             @if($list_all_change_orders)
                                 <li>
-                                    <a href="/patron/invoice/view/co-listing/{{$url}}">CO Listing</a>
+                                    <a href="/patron/invoice/view/co-listing/{{$url}}/patron">CO Listing</a>
                                 </li>
                             @endif
                         <li class="active">
