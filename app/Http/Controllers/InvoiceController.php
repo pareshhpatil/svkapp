@@ -2090,7 +2090,7 @@ class InvoiceController extends AppController
             $particulars = json_decode(json_encode($particulars), 1);
             $int = 0;
             foreach ($particulars as $k => $row) {
-                $ocm = ($row['original_contract_amount']>0) ? $row['original_contract_amount'] : 0;
+                $ocm = ($row['original_contract_amount'] > 0) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
@@ -2462,7 +2462,11 @@ class InvoiceController extends AppController
                 }
 
                 //calculate grand total
-                $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
+                if ($data['has_schedule_value']) {
+                    $grand_total_schedule_value = $grand_total_schedule_value + $valArray['current_contract_amount'];
+                } else {
+                    $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
+                }
                 if ($data['has_schedule_value']) {
                     $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + $valArray['change_from_previous_application'];
                     $grand_total_change_this_period = $grand_total_change_this_period + $valArray['change_this_period'];
@@ -2675,7 +2679,9 @@ class InvoiceController extends AppController
             $start_date = date("Y-m-01", strtotime($data['bill_date']));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
             $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
-
+            if ($data['has_schedule_value']) {
+                $rowArray['current_contract_amount'] = ($rowArray['current_contract_amount'] - $rowArray['current_contract_amount']);
+            }
             $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'];
         }
         return $rowArray;
@@ -2758,9 +2764,9 @@ class InvoiceController extends AppController
             if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
 
-                if($type == 'co-listing') {
+                if ($type == 'co-listing') {
                     // If change order have more than 4 then change size
-                    if(count($data['change_order_columns']) > 4) {
+                    if (count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
                     } else {
                         $pdf->setPaper("a4", "landscape");
@@ -2786,7 +2792,7 @@ class InvoiceController extends AppController
                 $pdf = DOMPDF::loadView('mailer.invoice.full-invoice-v2', $data);
                 if ($data['list_all_change_orders']) {
                     // If change order have more than 4 then change size
-                    if(count($data['change_order_columns']) > 4) {
+                    if (count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
                     } else {
                         $pdf->setPaper("a4", "landscape");

@@ -71,7 +71,7 @@
                     <td class="border td-703 font-regular text-xs  text-center"> B </td>
                     @if($has_schedule_value)
                         <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
-                        <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
+                        <td class="border td-703 font-regular text-xs  text-center"> C2 </td>
                         <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
                         <td class="border td-703 font-regular text-xs  text-center"> C4 </td>
                     @else
