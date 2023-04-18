@@ -1903,7 +1903,7 @@ class InvoiceController extends AppController
 
 
 
-    public function particular($link)
+    public function particular($link, $req_type = null)
     {
         $request_id = Encrypt::decode($link);
 
@@ -1941,6 +1941,9 @@ class InvoiceController extends AppController
         }
         $order_id_array = [];
         $change_order_enable = true;
+        $change_order_compare = false;
+        $exist_order_id_array = [];
+        $new_change_order_array = [];
         $cp = array();
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
@@ -1997,22 +2000,37 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            $order_id_array = json_decode($invoice->change_order_id, 1);
+            $exist_order_id_array = json_decode($invoice->change_order_id, 1);
             if ($invoice->payment_request_status <> 11) {
                 $change_order_enable = false;
+            } else {
+                $change_order_compare = true;
             }
         }
 
         if ($change_order_enable == true) {
             $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, $invoice->bill_date);
             $change_order_data = json_decode($change_order_data, true);
-
             $cop_particulars = [];
             foreach ($change_order_data as $co_data) {
-                array_push($order_id_array, (int)$co_data["order_id"]);
-                foreach (json_decode($co_data["particulars"], true) as $co_par) {
-                    $co_par["change_order_amount"] = $co_par["change_order_amount"];
-                    array_push($cop_particulars, $co_par);
+                $change_order_id = (int)$co_data["order_id"];
+                $include_co = false;
+                if (in_array($change_order_id, $exist_order_id_array)) {
+                    $include_co = true;
+                } else {
+                    if ($req_type != null || $change_order_compare==false) {
+                        $include_co = true;
+                    } else {
+                        $co_detail = $this->invoiceModel->getTableRow('order', 'order_id', $change_order_id);
+                        $new_change_order_array[] = array('order_no' => $co_detail->order_no, 'total_change_order_amount' => $co_detail->total_change_order_amount, 'approved_date' => $co_detail->approved_date);
+                    }
+                }
+                if ($include_co == true) {
+                    array_push($order_id_array, $change_order_id);
+                    foreach (json_decode($co_data["particulars"], true) as $co_par) {
+                        $co_par["change_order_amount"] = $co_par["change_order_amount"];
+                        array_push($cop_particulars, $co_par);
+                    }
                 }
             }
 
@@ -2026,8 +2044,6 @@ class InvoiceController extends AppController
             foreach ($result as $key => $value) {
                 foreach ($cop_particulars as $kdata) {
                     if ($kdata["bill_code"] == $key) {
-                        $kdata["cost_type"] = isset($kdata["cost_type"]) ? $kdata["cost_type"] : '';
-
                         $co_particulars[] = array(
                             'bill_code' => $key,
                             'change_order_amount' => array_sum($value),
@@ -2035,12 +2051,11 @@ class InvoiceController extends AppController
                             'retainage_percent' => isset($kdata["retainage_percent"]) ? $kdata["retainage_percent"] : '',
                             'sub_group' => isset($kdata["sub_group"]) ? $kdata["sub_group"] : '',
                             'group' => isset($kdata["group"]) ? $kdata["group"] : '',
-                            'cost_type' =>  $kdata["cost_type"]
+                            'cost_type' =>  isset($kdata["cost_type"]) ? $kdata["cost_type"] : ''
                         );
                     }
                 }
             }
-
 
             if ($change_order_data != false) {
                 $cop = array();
@@ -2060,14 +2075,6 @@ class InvoiceController extends AppController
                         $cop[$v["bill_code"]]['group'] = $v["group"];
                     } else {
                         $cop[$v["bill_code"]] = [];
-                        if (!empty($cp[$v["bill_code"]])) {
-                            if (isset($cp[$v["bill_code"]])) {
-                                $cop[$v["bill_code"]]['previously_billed_amount'] = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
-                                $cop[$v["bill_code"]]['previously_billed_percent'] = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
-                                $cop[$v["bill_code"]]['retainage_amount_previously_withheld'] = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
-                                $cop[$v["bill_code"]]['retainage_amount_previously_stored_materials'] = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials + $cp[$v["bill_code"]]->retainage_amount_previously_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
-                            }
-                        }
                         $cop[$v["bill_code"]]['approved_change_order_amount'] = $v["change_order_amount"];
                         $cop[$v["bill_code"]]['original_contract_amount'] = 0;
                         $cop[$v["bill_code"]]['bill_code'] = $v["bill_code"];
@@ -2088,9 +2095,10 @@ class InvoiceController extends AppController
                 }
             }
             $particulars = json_decode(json_encode($particulars), 1);
+
             $int = 0;
             foreach ($particulars as $k => $row) {
-                $ocm = ($row['original_contract_amount']>0) ? $row['original_contract_amount'] : 0;
+                $ocm = ($row['original_contract_amount'] > 0) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
@@ -2129,6 +2137,7 @@ class InvoiceController extends AppController
         $data['cost_types'] = json_decode($merchant_cost_types_array, 1);
         $data['cost_codes'] = $cost_codes;
         $data['order_id_array'] = json_encode($order_id_array);
+        $data['new_change_order_array'] = $new_change_order_array;
         $data['gst_type'] = 'intra';
         $data['type'] = $type;
         $data['button'] = 'Save';
@@ -2758,9 +2767,9 @@ class InvoiceController extends AppController
             if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
 
-                if($type == 'co-listing') {
+                if ($type == 'co-listing') {
                     // If change order have more than 4 then change size
-                    if(count($data['change_order_columns']) > 4) {
+                    if (count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
                     } else {
                         $pdf->setPaper("a4", "landscape");
@@ -2786,7 +2795,7 @@ class InvoiceController extends AppController
                 $pdf = DOMPDF::loadView('mailer.invoice.full-invoice-v2', $data);
                 if ($data['list_all_change_orders']) {
                     // If change order have more than 4 then change size
-                    if(count($data['change_order_columns']) > 4) {
+                    if (count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
                     } else {
                         $pdf->setPaper("a4", "landscape");

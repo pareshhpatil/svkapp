@@ -246,12 +246,12 @@
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
-    @if($draft_particulars!='')
+    @if($draft_particulars != '')
     var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
     @else
     var draft_particulars = [];
     @endif
-    
+
     var billed_transactions_filter = [];
     var only_bill_codes = JSON.parse('{!! $onlyBillCodeJson !!}');
     var cost_codes = JSON.parse('{!! json_encode($cost_codes) !!}');
@@ -414,14 +414,14 @@
                                                             <input id="pint{{$pint}}" value="{{$pint}}" type="hidden" name="pint[]">
                                                             <input id="sort_order{{$pint}}" value="{{$pv['sort_order']}}" type="hidden" name="sort_order[]">
                                                             <input type="hidden" name="sub_group[]" value="@isset($pv['sub_group']){{$pv['sub_group']}}@endisset">
-                                                            <input type="hidden" id="retainage_amount_change{{$pint}}" >
+                                                            <input type="hidden" id="retainage_amount_change{{$pint}}">
                                                         </div>
                                                     </td>
                                                     @elseif($k=='bill_type')
                                                     <td style="vertical-align: middle; min-width: 124px;" class="td-c onhover-border" id="cell_bill_type_{{$pint}}">
                                                         <span style="width: 100%;" onclick="setBilltype('{{$pv['bill_type']}}',{{$pint}})">
-                                                        <span id="span_bill_type{{$pint}}">{{$pv['bill_type']}}</span>
-                                                        <input type="hidden" id="bill_type{{$pint}}" name="bill_type[]" value="{{$pv['bill_type']}}"></span>
+                                                            <span id="span_bill_type{{$pint}}">{{$pv['bill_type']}}</span>
+                                                            <input type="hidden" id="bill_type{{$pint}}" name="bill_type[]" value="{{$pv['bill_type']}}"></span>
                                                     </td>
                                                     @elseif($k=='cost_type' || $k=='group' || $k=='bill_code_detail')
                                                     <td style="vertical-align: middle; " id="cell_{{$k}}_{{$pint}}" onclick="virtualSelectInit({{$pint}}, '{{$k}}',{{$pk}})" class="td-c onhover-border ">
@@ -439,25 +439,25 @@
                                                     </td>
                                                     @else
                                                     <td style="vertical-align: middle; @if($readonly==true) background-color:#f5f5f5; @endif" class="td-c onhover-border ">
-                                                    @if($readonly==true)
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
-                                                    @isset($pv[$k]){{$pv[$k]}}@endisset
-                                                    @else
-                                                    <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
-                                                    <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
-                                                    <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
-                                                    </span>
-                                                    </span>
-                                                    @if($k=='original_contract_amount')
-                                                    <span id="add-calc-span{{$pint}}">
-                                                    </span>
-                                                    @endif
-                                                    @if($k=='current_billed_amount')
-                                                    <span id="add-cost-span{{$pint}}">
-                                                    </span>
-                                                    @endif
-                                                   @endif
-                                                        
+                                                        @if($readonly==true)
+                                                        <input type="hidden" id="{{$k}}{{$pint}}" value="@isset($pv[$k]){{$pv[$k]}}@endisset" name="{{$k}}[]">
+                                                        @isset($pv[$k]){{$pv[$k]}}@endisset
+                                                        @else
+                                                        <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
+                                                            <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
+                                                                <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
+                                                            </span>
+                                                        </span>
+                                                        @if($k=='original_contract_amount')
+                                                        <span id="add-calc-span{{$pint}}">
+                                                        </span>
+                                                        @endif
+                                                        @if($k=='current_billed_amount')
+                                                        <span id="add-cost-span{{$pint}}">
+                                                        </span>
+                                                        @endif
+                                                        @endif
+
                                                     </td>
                                                     @endif
 
@@ -687,7 +687,7 @@
     <!-- /.modal-dialog -->
 </div>
 @if($draft_particulars!='')
-<div class="modal fade" id="draft" tabindex="-1" role="basic" >
+<div class="modal fade" id="draft" tabindex="-1" role="basic">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -695,12 +695,51 @@
                 <h4 id="poptitle" class="modal-title">Resume previous session</h4>
             </div>
             <div class="modal-body">
-            Unsaved changes were found in this invoice from the session on <x-localize :date="$draft_date" type="datetime" /> by user {{$draft_created_by}}. Would you like to continue with the previous changes or discard them?
+                Unsaved changes were found in this invoice from the session on <x-localize :date="$draft_date" type="datetime" /> by user {{$draft_created_by}}. Would you like to continue with the previous changes or discard them?
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="loadDraft()"  class="btn blue">Resume session</button>
+                <button type="button" onclick="loadDraft()" class="btn blue">Resume session</button>
 
-                <button type="button"  class="btn default" data-dismiss="modal">Discard changes</button>
+                <button type="button" class="btn default" data-dismiss="modal">Discard changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@endif
+
+@if(!empty($new_change_order_array))
+<div class="modal fade" id="new_cos" tabindex="-1" role="basic">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">New change orders detected</h4>
+            </div>
+            <div class="modal-body">
+                Following COs were created after this draft invoice was created. Would you like to incorporate these into the current invoice?
+                <br>
+                <h3 class="form-section">Change orders</h3>
+                <table class="table ">
+                    <tr>
+                        <th class="td-c" style="border-left: 1px solid #D9DEDE;border-right: 1px solid #D9DEDE;">CO number</th>
+                        <th class="td-c" style="border-right: 1px solid #D9DEDE;">CO amount</th>
+                        <th class="td-c" style="border-right: 1px solid #D9DEDE;">Approval date</th>
+                    </tr>
+                    @foreach($new_change_order_array as $k=>$v)
+                    <tr style="border: 1px solid #D9DEDE;">
+                        <td class="td-c" style="border-right: 1px solid #D9DEDE;">{{$v['order_no']}}</td>
+                        <td class="td-c" style="border-right: 1px solid #D9DEDE;">{{$v['total_change_order_amount']}}</td>
+                        <td class="td-c"><x-localize :date="$v['approved_date']" type="date" /></td>
+                    </tr>
+                    @endforeach
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a  href="/merchant/invoice/particular/{{$link}}/change-order" class="btn blue">Include COs</a>
+                <button type="button"  data-dismiss="modal" class="btn green">Skip COs</button>
+                <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -739,8 +778,11 @@
 <script>
     $(window).load(function() {
         _('loader2').style.display = 'none';
-        @if($draft_particulars!='')
+        @if($draft_particulars != '')
         $("#draft").modal('show');
+        @endif
+        @if(!empty($new_change_order_array))
+        $("#new_cos").modal('show');
         @endif
     })
 </script>
