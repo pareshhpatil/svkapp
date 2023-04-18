@@ -1940,11 +1940,11 @@ class InvoiceController extends AppController
             $plugin_array['include_store_materials'] = 0;
         }
         $order_id_array = [];
-
+        $change_order_enable = true;
+        $cp = array();
         if ($invoice_particulars->isEmpty()) {
             $type = 1;
             $particulars = json_decode($contract->particulars);
-
             $pre_req_id =  $this->invoiceModel->getPreviousContractBill($this->merchant_id, $invoice->contract_id, $request_id);
             if ($pre_req_id != false) {
                 $particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
@@ -1966,6 +1966,7 @@ class InvoiceController extends AppController
                         $particulars[$key]->previously_billed_percent = $particulars[$key]->previously_billed_percent + $particulars[$key]->current_billed_percent;
                         $particulars[$key]->retainage_amount_previously_withheld = $particulars[$key]->retainage_amount_previously_withheld + $particulars[$key]->retainage_amount_for_this_draw;
                         $particulars[$key]->retainage_amount_previously_stored_materials = $particulars[$key]->retainage_amount_previously_stored_materials + $particulars[$key]->retainage_amount_stored_materials;
+                        $particulars[$key]->previously_stored_materials = $particulars[$key]->stored_materials;
                     }
                     $particulars[$key]->current_billed_amount = '';
                     $particulars[$key]->current_billed_percent = '';
@@ -1974,10 +1975,36 @@ class InvoiceController extends AppController
                     $particulars[$key]->retainage_amount_stored_materials = '';
                     $particulars[$key]->current_stored_materials = '';
                     $particulars[$key]->id = '';
+                    $cp[$row->bill_code] = $row;
                 }
             }
+        } else {
+            $type = 2;
+            $particulars = json_decode(json_encode($invoice_particulars), 1);
+            foreach ($particulars as $k => $row) {
+                $total = $total + $particulars[$k]['net_billed_amount'];
+                $particulars[$k]['override'] = false;
 
-            $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, date("Y-m-d"));
+                if ($particulars[$k]['attachments'] != '') {
+                    $attachment = json_decode($particulars[$k]['attachments'], 1);
+                    $particulars[$k]['count'] = count($attachment);
+                    $particulars[$k]['attachments'] = implode(',', $attachment);
+                }
+
+                foreach ($row as $kr => $kv) {
+                    if ($kr != 'pint') {
+                        $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
+                    }
+                }
+            }
+            $order_id_array = json_decode($invoice->change_order_id, 1);
+            if ($invoice->payment_request_status <> 11) {
+                $change_order_enable = false;
+            }
+        }
+
+        if ($change_order_enable == true) {
+            $change_order_data = $this->invoiceModel->getOrderbyContract($invoice->contract_id, $invoice->bill_date);
             $change_order_data = json_decode($change_order_data, true);
 
             $cop_particulars = [];
@@ -2013,59 +2040,45 @@ class InvoiceController extends AppController
                     }
                 }
             }
-            $cp = array();
-            if ($pre_req_id != false) {
-                $contract_particulars = $this->invoiceModel->getTableList('invoice_construction_particular', 'payment_request_id', $pre_req_id);
 
-                foreach ($contract_particulars as $row) {
-                    $cp[$row->bill_code] = $row;
-                }
-                if ($plugin_array['include_store_materials'] == 0) {
-                    foreach ($particulars as $k => $v) {
-                        if (isset($cp[$v->bill_code])) {
-                            $particulars[$k]->previously_stored_materials = $cp[$v->bill_code]->stored_materials;
-                        }
-                    }
-                }
-            }
 
             if ($change_order_data != false) {
                 $cop = array();
+                $particulars = json_decode(json_encode($particulars), 1);
                 foreach ($particulars as $row2) {
-                    if (isset($cop[$row2->bill_code])) {
-                        $cop[$row2->bill_code . rand()] = $row2;
+                    if (isset($cop[$row2['bill_code']])) {
+                        $cop[$row2['bill_code'] . rand()] = $row2;
                     } else {
-                        $cop[$row2->bill_code] = $row2;
+                        $cop[$row2['bill_code']] = $row2;
                     }
                 }
-
                 foreach ($co_particulars as $k => $v) {
                     if (isset($cop[$v["bill_code"]])) {
-                        $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
-                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
-                        $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
-                        $cop[$v["bill_code"]]->group = $v["group"];
+                        $cop[$v["bill_code"]]['approved_change_order_amount'] = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]['retainage_percent'] = $v["retainage_percent"];
+                        $cop[$v["bill_code"]]['sub_group'] = $v["sub_group"];
+                        $cop[$v["bill_code"]]['group'] = $v["group"];
                     } else {
-                        $cop[$v["bill_code"]] = (object)[];
+                        $cop[$v["bill_code"]] = [];
                         if (!empty($cp[$v["bill_code"]])) {
                             if (isset($cp[$v["bill_code"]])) {
-                                $cop[$v["bill_code"]]->previously_billed_amount = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
-                                $cop[$v["bill_code"]]->previously_billed_percent = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
-                                $cop[$v["bill_code"]]->retainage_amount_previously_withheld = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
-                                $cop[$v["bill_code"]]->retainage_amount_previously_stored_materials = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials + $cp[$v["bill_code"]]->retainage_amount_previously_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
+                                $cop[$v["bill_code"]]['previously_billed_amount'] = number_format($cp[$v["bill_code"]]->current_billed_amount + $cp[$v["bill_code"]]->previously_billed_amount, 2);
+                                $cop[$v["bill_code"]]['previously_billed_percent'] = number_format($cp[$v["bill_code"]]->current_billed_percent + $cp[$v["bill_code"]]->previously_billed_percent, 2);
+                                $cop[$v["bill_code"]]['retainage_amount_previously_withheld'] = number_format($cp[$v["bill_code"]]->retainage_amount_for_this_draw + $cp[$v["bill_code"]]->retainage_amount_previously_withheld -  $cp[$v["bill_code"]]->retainage_release_amount, 2);
+                                $cop[$v["bill_code"]]['retainage_amount_previously_stored_materials'] = number_format($cp[$v["bill_code"]]->retainage_amount_stored_materials + $cp[$v["bill_code"]]->retainage_amount_previously_stored_materials -  $cp[$v["bill_code"]]->retainage_stored_materials_release_amount, 2);
                             }
                         }
-                        $cop[$v["bill_code"]]->approved_change_order_amount = $v["change_order_amount"];
-                        $cop[$v["bill_code"]]->original_contract_amount = 0;
-                        $cop[$v["bill_code"]]->bill_code = $v["bill_code"];
-                        $cop[$v["bill_code"]]->cost_type = $v["cost_type"];
-                        $cop[$v["bill_code"]]->bill_type = '% Complete';
-                        $cop[$v["bill_code"]]->description = $v["description"];
-                        $cop[$v["bill_code"]]->retainage_percent = $v["retainage_percent"];
-                        $cop[$v["bill_code"]]->sub_group = $v["sub_group"];
-                        $cop[$v["bill_code"]]->group = $v["group"];
-                        $cop[$v["bill_code"]]->calculated_perc = '';
-                        $cop[$v["bill_code"]]->calculated_row  = '';
+                        $cop[$v["bill_code"]]['approved_change_order_amount'] = $v["change_order_amount"];
+                        $cop[$v["bill_code"]]['original_contract_amount'] = 0;
+                        $cop[$v["bill_code"]]['bill_code'] = $v["bill_code"];
+                        $cop[$v["bill_code"]]['cost_type'] = $v["cost_type"];
+                        $cop[$v["bill_code"]]['bill_type'] = '% Complete';
+                        $cop[$v["bill_code"]]['description'] = $v["description"];
+                        $cop[$v["bill_code"]]['retainage_percent'] = $v["retainage_percent"];
+                        $cop[$v["bill_code"]]['sub_group'] = $v["sub_group"];
+                        $cop[$v["bill_code"]]['group'] = $v["group"];
+                        $cop[$v["bill_code"]]['calculated_perc'] = '';
+                        $cop[$v["bill_code"]]['calculated_row']  = '';
                     }
                 }
                 $particulars_c = json_decode(json_encode($cop), 1);
@@ -2077,7 +2090,7 @@ class InvoiceController extends AppController
             $particulars = json_decode(json_encode($particulars), 1);
             $int = 0;
             foreach ($particulars as $k => $row) {
-                $ocm = (isset($row['original_contract_amount'])) ? $row['original_contract_amount'] : 0;
+                $ocm = ($row['original_contract_amount']>0) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
@@ -2090,27 +2103,10 @@ class InvoiceController extends AppController
                 }
                 $particulars[$k]['sort_order'] = $int;
             }
-        } else {
-            $type = 2;
-            $particulars = json_decode(json_encode($invoice_particulars), 1);
-            foreach ($particulars as $k => $row) {
-                $total = $total + $particulars[$k]['net_billed_amount'];
-                $particulars[$k]['override'] = false;
-
-                if ($particulars[$k]['attachments'] != '') {
-                    $attachment = json_decode($particulars[$k]['attachments'], 1);
-                    $particulars[$k]['count'] = count($attachment);
-                    $particulars[$k]['attachments'] = implode(',', $attachment);
-                }
-
-                foreach ($row as $kr => $kv) {
-                    if ($kr != 'pint') {
-                        $particulars[$k][$kr] = ($particulars[$k][$kr] == '0.00') ? '' : $particulars[$k][$kr];
-                    }
-                }
-            }
-            $order_id_array = json_decode($invoice->change_order_id, 1);
         }
+
+
+
         if (!empty($particulars)) {
             foreach ($particulars as $cp) {
                 if ($cp['group'] != '') {
@@ -2467,7 +2463,7 @@ class InvoiceController extends AppController
 
                 //calculate grand total
                 $grand_total_schedule_value = $grand_total_schedule_value + $val['current_contract_amount'];
-                if($data['has_schedule_value']){
+                if ($data['has_schedule_value']) {
                     $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + $valArray['change_from_previous_application'];
                     $grand_total_change_this_period = $grand_total_change_this_period + $valArray['change_this_period'];
                     $grand_total_current_total = $grand_total_current_total + $valArray['current_total'];
@@ -2646,7 +2642,7 @@ class InvoiceController extends AppController
     }
 
 
-    function setParticularRowArray($rowArray = null, $data= [])
+    function setParticularRowArray($rowArray = null, $data = [])
     {
         if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
@@ -2674,33 +2670,32 @@ class InvoiceController extends AppController
             //schedule plugin calcualtions
             $start_date = '1990-01-01';
             $end_date = date("Y-m-01", strtotime($data['bill_date']));
-            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
-            
+            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
+
             $start_date = date("Y-m-01", strtotime($data['bill_date']));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
-            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
 
-            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
-           
+            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'];
         }
         return $rowArray;
     }
 
-    public function getChangeOrderSumRow($change_order_ids, $billcode, $start_date,  $end_date ){
-        $total_co_amount =0;
+    public function getChangeOrderSumRow($change_order_ids, $billcode, $start_date,  $end_date)
+    {
+        $total_co_amount = 0;
         $change_order_ids = json_decode($change_order_ids, 1);
         if (!empty($change_order_ids)) {
             $co_data  = (array)$this->invoiceModel->getChangeOrderAmountRow($change_order_ids, $start_date, $end_date);
-            foreach($co_data as $co_row){
-                foreach(json_decode($co_row->particulars,1) as $row){
-                    if($billcode == $row['bill_code']){
+            foreach ($co_data as $co_row) {
+                foreach (json_decode($co_row->particulars, 1) as $row) {
+                    if ($billcode == $row['bill_code']) {
                         $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
                     }
                 }
             }
-            
         }
-       
+
         return $total_co_amount;
     }
 
@@ -3011,7 +3006,7 @@ class InvoiceController extends AppController
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
 
-        if($changeOrdersData->count() <= 0) {
+        if ($changeOrdersData->count() <= 0) {
             return [
                 'has_change_order_data' => true
             ];
