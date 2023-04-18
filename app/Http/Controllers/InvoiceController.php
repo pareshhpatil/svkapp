@@ -2764,7 +2764,8 @@ class InvoiceController extends AppController
                 $data = array_merge($data, $particular_703_details);
                 if ($data['list_all_change_orders']) {
                     $particular_co_listing_details = $this->getChangeOrderListingContents($payment_request_id, $data);
-                    $data = array_merge($data, $particular_co_listing_details);
+                    $particular_co_listing_details['viewtype'] = 'pdf';
+                    $data = array_merge($data, ['co_listing_data' => $particular_co_listing_details]);
                 }
                 $attachements = $this->download_attachments($payment_request_id);
                 $data = array_merge($data, $attachements);
@@ -2807,19 +2808,43 @@ class InvoiceController extends AppController
                 }
             } else {
                 $pdf = DOMPDF::loadView('mailer.invoice.full-invoice-v2', $data);
-                if ($data['list_all_change_orders']) {
-                    // If change order have more than 4 then change size
-                    if (count($data['change_order_columns']) > 4) {
-                        $pdf->setPaper("a3", "landscape");
-                    } else {
-                        $pdf->setPaper("a4", "landscape");
-                    }
-                } else {
-                    $pdf->setPaper("a4", "landscape");
-                }
+                $pdf->setPaper("a4", "landscape");
+
 
                 $name = str_replace(" ", "_", $data['customer_name']) . '_' . time() . '.pdf';
                 $oMerger = PDFMerger::init();
+
+                //If change order listing enable then merge it as new pdf
+                if ($data['list_all_change_orders']) {
+                    $coPDF = DOMPDF::loadView('mailer.invoice.format-co-listing-v2', $data['co_listing_data']);
+
+                    if(count($data['co_listing_data']['change_order_columns']) > 4) {
+                        $coPDF->setPaper("a3", "landscape");
+                    } else {
+                        $coPDF->setPaper("a4", "landscape");
+                    }
+
+                    $coPDFName = str_replace(" ", "_", $data['customer_name']) . '_co_pdf_' . time() . '.pdf';
+                    $fullPDFName = str_replace(" ", "_", $data['customer_name']) . '_full_pdf_' . time() . '.pdf';
+
+                    $coPDFPath = 'public/pdf/' . $coPDFName;
+                    $fullPDFPath = 'public/pdf/' . $fullPDFName;
+
+                    Storage::disk('local')->put($coPDFPath, $coPDF->output());
+                    Storage::disk('local')->put($fullPDFPath, $pdf->output());
+                    $coPDFDOMPath = Storage::disk('local')->path($coPDFPath);
+                    $fullPDFDOMPath = Storage::disk('local')->path($fullPDFPath);
+
+                    $oMerger->addPDF($fullPDFDOMPath, 'all');
+                    $oMerger->addPDF($coPDFDOMPath, 'all');
+                    $oMerger->merge();
+
+                    $oMerger->setFileName($data['customer_name'] . '.pdf');
+
+                    return $oMerger->download();
+                }
+
+
                 if (count($data['pdf_link_array']) > 0) {
                     Storage::disk('local')->put($name, $pdf->output());
                     $DOMpath = Storage::disk('local')->path($name);
