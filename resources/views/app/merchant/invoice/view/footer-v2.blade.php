@@ -73,6 +73,12 @@ $validate=(array)$validate;
                                     Download {{$gtype}}
                                 </a>
                             </li>
+                        @else
+                            <li>
+                                <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5" href="/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
+                                    Download {{$gtype}}
+                                </a>
+                            </li>
                         @endif
                     @endif
                     <li>
