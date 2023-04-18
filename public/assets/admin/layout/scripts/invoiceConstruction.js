@@ -427,6 +427,7 @@ function virtualSelectInit(id, type, index) {
     } else if (type == 'bill_code') {
         vs_class = 'vs-option';
         options = csi_codes;
+
         try {
             selectedValue = ev('bill_code' + id);
         }
@@ -434,7 +435,6 @@ function virtualSelectInit(id, type, index) {
             selectedValue = '';
         }
     }
-
 
     VirtualSelect.init({
         ele: '#v_' + type + id,
@@ -462,9 +462,12 @@ function virtualSelectInit(id, type, index) {
             }
             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(parseInt(this.value))) {
                 //  only_bill_codes.push(this.value)
-                $('#new_bill_code').val(this.value)
-                $('#selectedBillCodeId').val(type + id)
-                billIndex(0, 0, 0)
+                // $('#new_bill_code').val(this.value)
+                //   $('#selectedBillCodeId').val(type + id)
+                try {
+                    billIndex(0, 0, 0)
+                } catch (o) { }
+
             }
         }
         if (type === 'group') {
@@ -600,7 +603,6 @@ function changeBillType(id) {
     }
     else if (_('bill_type' + id).value === 'Cost') {
         _('add-cost-span' + id).innerHTML = '<a  style=" padding-top: 5px;"  href="javascript:;" onclick="OpenAddCost(' + id + ')" id="add-cost' + id + '">Add</a><a   style="padding-top: 5px; display: none;" href="javascript:;" onclick="RemoveCost(' + id + ')" id="remove-cost' + id + '">Remove</a>        <span   style="margin-left: 4px; color: rgb(133, 148, 148); display: none;" id="pipe-cost' + id + '"> | </span><a   style="padding-top: 5px; padding-left: 5px; display: none;" href="javascript:;" onclick="OpenAddCost(' + id + ',' + "'edit'" + ')" id="edit-cost' + id + '">Edit</a>';
-        RemoveCaculated(id);
     }
     else {
         _('add-calc-span' + id).innerHTML = '';
@@ -683,68 +685,38 @@ function reflectOriginalContractAmountChange(id) {
 }
 
 function OpenAddCost(id, type = 'new') {
-    this.billed_transactions = [];
+    billed_transactions = [];
     billed_transactions_filter = [];
-
+    OpenAdCostRow();
     document.getElementById('cost_selected_id').value = id;
 
     cost_code_selected = _('bill_code' + id).value;
     cost_type_selected = _('cost_type' + id).value;
-    virtualSelectInit('cost', 'cost_type', id);
-    virtualSelectInit('cost', 'bill_code', id);
+    VirtualSelect.init({ ele: '#v_bill_codecost' });
+    VirtualSelect.init({ ele: '#v_cost_typecost' });
 
-    document.querySelector('#v_cost_typecost').setValue(cost_code_selected);
-    document.querySelector('#v_bill_codecost').setValue(cost_type_selected);
+
+
+    document.querySelector('#v_cost_typecost').setValue(cost_type_selected);
+    document.querySelector('#v_bill_codecost').setValue(cost_code_selected);
 
     billed_transactions_array.forEach(function (currentValue, index, arr) {
         billed_transactions_filter.push(currentValue);
     });
-    this.filterCost(type);
-    OpenAdCostRow();
+    filterCost(type, id);
+
     if (type == 'edit') {
-        var exist_array = [];
-        let fieldIndex = field;
-        if (this.fields[fieldIndex].billed_transaction_ids != '' && this.fields[fieldIndex].billed_transaction_ids != null) {
-            var exist_array = JSON.parse(this.fields[fieldIndex].billed_transaction_ids);
-        }
-        ids = [];
-        total = 0;
-        this.billed_transactions.forEach(function (currentValue, index, arr) {
-            if (exist_array.includes(currentValue.id)) {
-                total = Number(total) + getamt(currentValue.amount);
-                ids.push(currentValue.id);
-                currentValue.checked = true;
-            }
-        });
-        billed_transactions_id_array = this.billed_transactions_id_array;
-        billed_transactions = this.billed_transactions;
-        exist_array.forEach(function (currentValue, index, arr) {
-            if (!billed_transactions_id_array.includes(currentValue)) {
-                billed_transactions_filter.forEach(function (cv, idx, arra) {
-                    if (currentValue == cv.id) {
-                        cv.checked = true;
-                        total = Number(total) + getamt(cv.amount);
-                        ids.push(cv.id);
-                        billed_transactions.push(cv);
-                    }
-                });
-
-            }
-
-        });
-
-        this.billed_transactions = billed_transactions;
-
-        _('billed_transaction_ids').value = JSON.stringify(ids);
-        _('cost_amount').value = updateTextView1(total);
+        _('billed_transaction_ids').value = _('billed_transaction_ids' + id).value;
+        _('cost_amount').value = updateTextView1(ev('current_billed_amount' + id));
 
     }
+
 
 }
 
 
 
-function filterCost(type) {
+function filterCost(type, id) {
 
     _('allCheckboxcost').checked = false;
     allcostCheck();
@@ -765,11 +737,14 @@ function filterCost(type) {
             }
         }
     });
-
-    cost_code_selected = document.getElementsByName('bill_codecost').value;
-    cost_type_selected = document.getElementsByName('cost_typecost').value;
+    cost_code_selected = document.querySelector('#v_bill_codecost').value;
+    cost_type_selected = document.querySelector('#v_cost_typecost').value;
+    if (type == 'edit') {
+        var exist_array = _('billed_transaction_ids' + id).value;
+    }
     billed_transactions_filter.forEach(function (currentValue, index, arr) {
         var filter = true;
+        currentValue.checked = '';
         if (cost_code_selected != '') {
             if (cost_code_selected != currentValue.cost_code) {
                 filter = false;
@@ -786,6 +761,14 @@ function filterCost(type) {
             filter = false;
         }
 
+        if (type == 'edit') {
+            costid = '"' + currentValue.id + '"';
+            if (exist_array.indexOf(costid) > -1) {
+                currentValue.checked = 'checked';
+                filter = true;
+            }
+        }
+
 
         if (filter == true) {
             array.push(currentValue);
@@ -793,37 +776,74 @@ function filterCost(type) {
         }
 
     });
-    this.billed_transactions = array;
-    this.billed_transactions_id_array = billed_transactions_id_array;
+    billed_transactions = array;
+    billed_transactions_id_array = billed_transactions_id_array;
+    console.log(csi_codes_array);
+
+    var mainDiv = document.getElementById('new_particular_cost');
+    _('new_particular_cost').innerHTML = '';
+    billed_transactions.forEach(function (field, index, arr) {
+        var newDiv = document.createElement('tr');
+        csi_code=csi_codes_array[field.cost_code].label;
+        newDiv.innerHTML = '<td class="td-c"><input type="checkbox" ' + field.checked + ' name="cost-checkbox[]" value="' + field.id + '" onchange="costCalc();"></td><td class="td-c" >' + csi_code + '</td><td class="td-c" >' + field.cost_type_label + '</td><td class="td-c" >' + field.rate + '</td><td class="td-c" >' + field.unit + '</td><td class="td-c" id="costamt' + field.id + '">' + field.amount + '</td><td class="td-c" >' + field.description + '</td>';
+        mainDiv.appendChild(newDiv);
+    });
 
 }
 function allcostCheck() {
     var check = _('allCheckboxcost').checked;
-    if (check) {
-        this.billed_transactions.forEach(function (currentValue, index, arr) {
-            currentValue.checked = true;
-        });
-    } else {
-        this.billed_transactions.forEach(function (currentValue, index, arr) {
-            currentValue.checked = false;
-        });
-    }
+    $('input[name="cost-checkbox[]"]').each(function (ind, value) {
+        this.checked = check;
+    });
     this.costCalc();
 }
 function costCalc() {
     total = 0;
     ids = [];
-    this.billed_transactions.forEach(function (currentValue, index, arr) {
-        if (currentValue.checked != undefined) {
-            if (currentValue.checked == true) {
-                ids.push(currentValue.id);
-                total = Number(total) + getamt(currentValue.amount);
-            }
+
+    $('input[name="cost-checkbox[]"]').each(function (ind, value) {
+        checked = this.checked;
+        id = this.value;
+        amount = getamt(_('costamt' + id).innerHTML);
+        if (checked == true) {
+            ids.push(id);
+            total = Number(total) + amount;
         }
     });
+
+
     _('billed_transaction_ids').value = JSON.stringify(ids);
     _('cost_amount').value = updateTextView1(total);
 }
+function setCostAmount() {
+    if ($('input[name^=cost-checkbox]:checked').length <= 0) {
+        $('#cost_checkbox_error').html('Please select atleast one transaction');
+    } else {
+        $('#cost_checkbox_error').html('');
+        let cost_selected_id = document.getElementById('cost_selected_id').value;
+        let calc_amount = updateTextView1(getamt(document.getElementById("cost_amount").value));
+        _('current_billed_amount' + cost_selected_id).value = calc_amount;
+        _('billed_transaction_ids' + cost_selected_id).value = ev('billed_transaction_ids');
+        // document.getElementById('billed_transaction_ids' + cost_selected_id).value = document.getElementById('billed_transaction_ids').value;
+        setInput(cost_selected_id, 'current_billed_amount');
+        calculateRow(cost_selected_id);
+        closeSidePanelcost();
+        _('add-cost' + cost_selected_id).style.display = 'none';
+        _('remove-cost' + cost_selected_id).style.display = 'inline-block';
+        _('edit-cost' + cost_selected_id).style.display = 'inline-block';
+    }
+}
+
+function RemoveCost(id) {
+
+    _('current_billed_amount' + id).value = '';
+    _('billed_transaction_ids' + id).value = '';
+    calculateRow(id);
+}
+
+
+
+
 function closeSidePanelcost() {
     document.getElementById("panelWrapIdcost").style.boxShadow = "none";
     document.getElementById("panelWrapIdcost").style.transform = "translateX(100%)";
@@ -835,10 +855,10 @@ function closeSidePanelcost() {
 
 
 function closeAttachmentPanel() {
-   // let attachment_pos = $('#attachment_pos_id').val();
+    // let attachment_pos = $('#attachment_pos_id').val();
     //let attach_index = $('#index' + attachment_pos).val();
     //let vals = document.getElementById('attach-' + attachment_pos).value;
-   // _('attachments' + attach_index) = vals;
+    // _('attachments' + attach_index) = vals;
     // this.fields[attach_index].attachments = particularray[attach_index].attachments;
 
     //reset attachment pos id in attachment modal
