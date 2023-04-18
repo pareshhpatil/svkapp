@@ -730,7 +730,7 @@
                     @foreach($new_change_order_array as $k=>$v)
                     <tr style="border: 1px solid #D9DEDE;">
                         <td class="td-c" style="border-right: 1px solid #D9DEDE;">{{$v['order_no']}}</td>
-                        <td class="td-c" style="border-right: 1px solid #D9DEDE;">{{$v['total_change_order_amount']}}</td>
+                        <td class="td-c" style="border-right: 1px solid #D9DEDE;"><x-amount-format :amount="$v['total_change_order_amount']" /></td>
                         <td class="td-c"><x-localize :date="$v['approved_date']" type="date" /></td>
                     </tr>
                     @endforeach
