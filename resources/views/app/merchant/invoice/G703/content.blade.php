@@ -177,9 +177,9 @@
                     @endif
                     @php 
                         $group_total_schedule_value = 0;
-                        $grand_total_change_from_previous_application = 0;
-                        $grand_total_change_this_period = 0;
-                        $grand_total_current_total = 0;
+                        $group_total_change_from_previous_application = 0;
+                        $group_total_change_this_period = 0;
+                        $group_total_current_total = 0;
                         $group_total_previously_billed_amt = 0;
                         $group_total_current_billed_amt = 0;
                         $group_total_material_stored = 0;
@@ -234,9 +234,9 @@
                             @endforeach
                             @php 
                                 $group_total_schedule_value = $group_total_schedule_value + filter_var($sub_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($sub_total_change_from_previous_application, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_change_this_period = $grand_total_change_this_period + filter_var($sub_total_change_this_period, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_current_total = $grand_total_current_total + filter_var($sub_total_current_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_change_from_previous_application = $group_total_change_from_previous_application + filter_var($sub_total_change_from_previous_application, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_change_this_period = $group_total_change_this_period + filter_var($sub_total_change_this_period, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_current_total = $group_total_current_total + filter_var($sub_total_current_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($sub_total_previously_billed_amt, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($sub_total_current_billed_amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_material_stored = $group_total_material_stored + filter_var($sub_total_material_stored, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -306,9 +306,9 @@
                             @include('app.merchant.invoice.G703.particular_row',array('rowArray'=>$group,'group_name'=>$key))
                             @php 
                                 $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_change_from_previous_application = $grand_total_change_from_previous_application + filter_var($group['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_change_this_period = $grand_total_change_this_period + filter_var($group['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                $grand_total_current_total = $grand_total_current_total + filter_var($group['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_change_from_previous_application = $group_total_change_from_previous_application + filter_var($group['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_change_this_period = $group_total_change_this_period + filter_var($group['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                                $group_total_current_total = $group_total_current_total + filter_var($group['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($group['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($group['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                 $group_total_material_stored = $group_total_material_stored + filter_var($group['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -360,13 +360,13 @@
                                 <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
                             </td>
                             <td class="border td-703 text-right">
-                                <p class="text-sm"><x-amount-format :amount="$grand_total_change_from_previous_application" /></p>
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_from_previous_application" /></p>
                             </td>
                             <td class="border td-703 text-right">
-                                <p class="text-sm"><x-amount-format :amount="$grand_total_change_this_period" /></p>
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_this_period" /></p>
                             </td>
                             <td class="border td-703 text-right">
-                                <p class="text-sm"><x-amount-format :amount="$grand_total_current_total" /></p>
+                                <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
                             </td>
                             @else
                             <td class="border td-703 text-right">
@@ -418,6 +418,7 @@
                             <p class="text-xs"><b>GRAND TOTAL</b> </p>
                         </td>
                         @if($has_schedule_value)
+                       
                             <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right"> 
                                 <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
                             </td>

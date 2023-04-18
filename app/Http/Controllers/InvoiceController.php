@@ -2689,7 +2689,7 @@ class InvoiceController extends AppController
             $end_date = date("Y-m-d", strtotime("first day of next month"));
             $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
             if ($data['has_schedule_value']) {
-                $rowArray['current_contract_amount'] = ($rowArray['current_contract_amount'] - $rowArray['current_contract_amount']);
+                $rowArray['current_contract_amount'] = ($rowArray['current_contract_amount'] - $rowArray['approved_change_order_amount']);
             }
             $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'];
         }
