@@ -161,7 +161,7 @@
             <script src="/assets/admin/pages/scripts/components-pickers.js?version=2"></script>
           
 
-         =   <script src="/assets/admin/pages/scripts/clipboard/dist/clipboard.min.js"></script>
+            <script src="/assets/admin/pages/scripts/clipboard/dist/clipboard.min.js"></script>
             <script src="/assets/admin/layout/scripts/colorbox.js?version=1603971994"></script>
 
 
