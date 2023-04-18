@@ -2762,9 +2762,13 @@ class InvoiceController extends AppController
 
             if ($type == '702' || $type == '703' || $type == 'co-listing') {
                 $pdf = DOMPDF::loadView('mailer.invoice.format-' . $type . '-v2', $data);
+
                 if($type == 'co-listing') {
+                    // If change order have more than 4 then change size
                     if(count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
+                    } else {
+                        $pdf->setPaper("a4", "landscape");
                     }
                 } else {
                     $pdf->setPaper("a4", "landscape");
@@ -2785,7 +2789,17 @@ class InvoiceController extends AppController
                 }
             } else {
                 $pdf = DOMPDF::loadView('mailer.invoice.full-invoice-v2', $data);
-                $pdf->setPaper("a4", "landscape");
+                if ($data['list_all_change_orders']) {
+                    // If change order have more than 4 then change size
+                    if(count($data['change_order_columns']) > 4) {
+                        $pdf->setPaper("a3", "landscape");
+                    } else {
+                        $pdf->setPaper("a4", "landscape");
+                    }
+                } else {
+                    $pdf->setPaper("a4", "landscape");
+                }
+
                 $name = str_replace(" ", "_", $data['customer_name']) . '_' . time() . '.pdf';
                 $oMerger = PDFMerger::init();
                 if (count($data['pdf_link_array']) > 0) {

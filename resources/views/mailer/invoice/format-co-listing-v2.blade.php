@@ -133,11 +133,6 @@
                         @php
                             $group_total_original_schedule_value = 0;
                             $group_total_schedule_value = 0;
-                            $group_total_previously_billed_amt = 0;
-                            $group_total_current_billed_amt = 0;
-                            $group_total_material_stored = 0;
-                            $group_total_completed = 0;
-                            $group_total_retainage = 0;
                         @endphp
                         @if(isset($row['subgroup']) && $row['subgroup']!='')
                             @foreach ($row['subgroup'] as $sk => $subgroup)
@@ -163,11 +158,6 @@
                                 @php
                                     $sub_original_total_schedule_value = 0;
                                     $sub_total_schedule_value = 0;
-                                    $sub_total_previously_billed_amt = 0;
-                                    $sub_total_current_billed_amount = 0;
-                                    $sub_total_material_stored = 0;
-                                    $sub_total_completed = 0;
-                                    $sub_total_retainage = 0;
                                 @endphp
                                 @foreach ($subgroup as $ik => $item)
                                     <tr>
@@ -198,22 +188,15 @@
                                     @php
                                         $sub_total_schedule_value = $sub_total_schedule_value + filter_var($item['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                         $sub_original_total_schedule_value =  $sub_original_total_schedule_value + filter_var($item['original_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_previously_billed_amt = $sub_total_previously_billed_amt + filter_var($item['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_current_billed_amount = $sub_total_current_billed_amount + filter_var($item['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_material_stored = $sub_total_material_stored + filter_var($item['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_completed = $sub_total_completed + filter_var($item['total_completed'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                        $sub_total_retainage = $sub_total_retainage + filter_var($item['total_outstanding_retainage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
                                     @endphp
                                 @endforeach
                                 @php
                                     $group_total_schedule_value = $group_total_schedule_value + filter_var($sub_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                     $group_total_original_schedule_value = $group_total_original_schedule_value + filter_var($sub_original_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($sub_total_previously_billed_amt, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($sub_total_current_billed_amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_material_stored = $group_total_material_stored + filter_var($sub_total_material_stored, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_completed = $group_total_completed + filter_var($sub_total_completed, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_retainage = $group_total_retainage + filter_var($sub_total_retainage, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
                                 @endphp
+
                                 <tr>
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center">
                                         <div style="font-size: 14px"></div>
@@ -222,39 +205,39 @@
                                         <div style="font-size: 14px;color: #6F8181;">{{$sk . ' sub total'}} </div>
                                     </td>
                                     <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_schedule_value" /> </div>
-                                    </td>
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_previously_billed_amt" /></div>
-                                    </td>
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_current_billed_amount" /></div>
-                                    </td>
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_material_stored" /></div>
-                                    </td>
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_completed" /></div>
+                                        <div style="font-size: 14px"><x-amount-format :amount="$group_total_original_schedule_value" /> </div>
                                     </td>
                                     @php
-                                        if($sub_total_completed>0 && $sub_total_schedule_value>0)
-                                        {
-                                        $sub_total_g_by_c = $sub_total_completed / $sub_total_schedule_value;
-                                        }else{
-                                        $sub_total_g_by_c=0;
+                                        $approvedCOAmount = 0;
+
+                                        foreach ($row['only-group~'] as $group) {
+                                            $approvedCOAmount += $group['approved_change_order_amount'];
                                         }
-                                        $sub_total_balance_to_finish = $sub_total_schedule_value - $sub_total_completed;
+
+                                        $changeOrdersGroupTotalAmount = [];
+                                        foreach ($change_order_columns as $change_order_column) {
+                                            $coGroupTotal = 0;
+                                            foreach($change_orders_group_data[$change_order_column] as $change_order_group_data) {
+                                                if($change_order_group_data['group'] == $sk) {
+                                                    $coGroupTotal += $change_order_group_data['change_order_amount'];
+                                                }
+                                            }
+                                            $changeOrdersGroupTotalAmount[$change_order_column] = $coGroupTotal;
+                                        }
+
                                     @endphp
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px">
-                                            >@if($sub_total_g_by_c < 0)({{str_replace('-','',number_format($sub_total_g_by_c  * 100, 2) )}}) @else{{ number_format($sub_total_g_by_c * 100,2)}}@endif%</div>
+                                    @foreach ($changeOrdersGroupTotalAmount as $changeOrderGroupTotalAmount)
+                                        <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                            <div style="font-size: 14px;"><x-amount-format :amount="$changeOrderGroupTotalAmount" /></div>
+                                        </td>
+                                    @endforeach
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px;"><x-amount-format :amount="$approvedCOAmount" /></div>
                                     </td>
-                                    <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_balance_to_finish" /></div>
+                                    <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                        <div style="font-size: 14px"> <x-amount-format :amount="$group_total_schedule_value" /></div>
                                     </td>
-                                    <td style=" border-top:1px solid #313131;border-bottom:1px solid #313131;padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size: 14px"><x-amount-format :amount="$sub_total_retainage" /></div>
-                                    </td>
+
                                 </tr>
                             @endforeach
                         @endif
@@ -288,11 +271,7 @@
                                 @php
                                     $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                                     $group_total_original_schedule_value = $group_total_original_schedule_value + filter_var($group['original_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($group['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($group['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_material_stored = $group_total_material_stored + filter_var($group['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_completed = $group_total_completed + filter_var($group['total_completed'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                                    $group_total_retainage = $group_total_retainage + filter_var($group['total_outstanding_retainage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
                                 @endphp
                             @endforeach
                         @endif
