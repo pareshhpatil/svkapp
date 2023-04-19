@@ -173,7 +173,7 @@
                                 <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['approved_change_order_amount']" /></p>
                                 </td>
-                                <td class="border-r border-l td-703 text-right ehi hai">
+                                <td class="border-r border-l td-703 text-right">
                                     <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
                                 </td>
                             </tr>
