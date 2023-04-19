@@ -3086,7 +3086,7 @@ class InvoiceController extends AppController
                     }
 
                     foreach ($coParticulars as $coParticular) {
-                        if ($coParticular['bill_code'] == $val['bill_code']) {
+                        if ($coParticular['bill_code'] === $val['bill_code']) {
                             $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
                         } else {
                             $changeOrderValues[$changeOrderData->order_id] = 0;
@@ -3134,6 +3134,8 @@ class InvoiceController extends AppController
                 $int++;
             }
         }
+
+
 
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;
         $data['grand_total_original_schedule_value'] = $grand_total_original_schedule_value;
