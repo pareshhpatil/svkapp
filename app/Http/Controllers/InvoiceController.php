@@ -3100,7 +3100,7 @@ class InvoiceController extends AppController
 
                 if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
                     //show details without subgroup, total, bill code
-                    $valArray = $this->setParticularRowArray($val, $data);
+                    $valArray = $this->setChangeOrderParticularRowArray($val, $data);
                     $valArray['change_order_col_values'] = $changeOrderValues;
                     $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
                 } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
@@ -3108,21 +3108,21 @@ class InvoiceController extends AppController
                     if ($val['sub_group'] != '') {
                         $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
                         if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
-                            $valArray = $this->setParticularRowArray($val, $data);
+                            $valArray = $this->setChangeOrderParticularRowArray($val, $data);
                             $valArray['change_order_col_values'] = $changeOrderValues;
                             $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
                         }
                     } else {
                         $groups[$val['group']][$val['group']] = $val['group'];
                         if (in_array($val['group'], $groups[$val['group']])) {
-                            $valArray = $this->setParticularRowArray($val, $data);
+                            $valArray = $this->setChangeOrderParticularRowArray($val, $data);
                             $valArray['change_order_col_values'] = $changeOrderValues;
                             $particularRows[$val['group']]['only-group~'][$int] = $valArray;
                         }
                     }
                 } else {
                     //show all details without group , subgroup , total rows
-                    $valArray = $this->setParticularRowArray($val, $data);
+                    $valArray = $this->setChangeOrderParticularRowArray($val, $data);
                     $valArray['change_order_col_values'] = $changeOrderValues;
                     $particularRows['no-group~'][$int] = $valArray;
                 }
@@ -3147,5 +3147,45 @@ class InvoiceController extends AppController
         $data['change_orders_group_data'] = $changeOrderGroupData;
 
         return $data;
+    }
+
+    function setChangeOrderParticularRowArray($rowArray = null, $data= [])
+    {
+        if ($rowArray != null) {
+            $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
+            if ($rowArray['current_contract_amount'] > 0) {
+                $rowArray['g_per'] = $rowArray['total_completed'] / $rowArray['current_contract_amount'];
+            } else {
+                $rowArray['g_per'] = 0;
+            }
+            $rowArray['balance_to_finish'] = $rowArray['current_contract_amount'] - $rowArray['total_completed'];
+
+            if (!empty($rowArray['attachments'])) {
+                $nm = substr(substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.')), -10);
+            }
+
+            $rowArray['attachment'] = str_replace(' ', '_', $rowArray['attachments'] ? strlen(substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.'))) < 10 ? substr(basename(json_decode($rowArray['attachments'], 1)[0]), 0, strrpos(basename(json_decode($rowArray['attachments'], 1)[0]), '.')) : $nm : '');
+
+            $counts = 0;
+            if (!empty($rowArray['attachments']))
+                $counts = count(json_decode($rowArray['attachments'], 1));
+            if ($counts > 1)
+                $rowArray['files'] = $counts . ' files';
+            else
+                $rowArray['files'] = $counts . ' file';
+
+            //schedule plugin calcualtions
+            $start_date = '1990-01-01';
+            $end_date = date("Y-m-01", strtotime($data['bill_date']));
+            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+
+            $start_date = date("Y-m-01", strtotime($data['bill_date']));
+            $end_date = date("Y-m-d", strtotime("first day of next month"));
+            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+
+            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
+
+        }
+        return $rowArray;
     }
 }
