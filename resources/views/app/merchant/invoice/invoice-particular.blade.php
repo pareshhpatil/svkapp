@@ -131,7 +131,7 @@
     }
 
     .headFootZIndex {
-        z-index: 3;
+        z-index: 2;
     }
 
     .biggerHead {
