@@ -42,6 +42,7 @@
                             }
                         @endphp
                         {{'CO ' . $coNumber}}
+                        {{ Str::replace('_', ' ', $change_order_column) }}
                     </td>
                     @endforeach    
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
@@ -229,7 +230,6 @@
                     @endif
                 @endforeach
                     @php
-                        dd($change_orders_group_data, $change_order_columns);
                         $changeOrdersTotalAmountArray = [];
                         foreach ($change_order_columns as $change_order_column) {
                             $changeOrderGroupTotal = 0;
