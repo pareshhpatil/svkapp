@@ -3072,6 +3072,7 @@ class InvoiceController extends AppController
 
         if (!empty($particular_details)) {
             $changeOrderValues = [];
+            dd($particular_details, $changeOrdersData);
             foreach ($particular_details as $ck => $val) {
 
                 foreach ($changeOrdersData as $changeOrderData) {
