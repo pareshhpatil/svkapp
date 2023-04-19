@@ -3088,7 +3088,7 @@ class InvoiceController extends AppController
                         if ($coParticular['bill_code'] == $val['bill_code']) {
                             $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
                         } else {
-                            $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
+                            $changeOrderValues[$changeOrderData->order_id] = 0;
                         }
                     }
 
@@ -3140,7 +3140,7 @@ class InvoiceController extends AppController
         $data['particularRows'] = $particularRows;
         $data['change_order_columns'] = $changeOrderColumns;
         $data['change_orders_group_data'] = $changeOrderGroupData;
-
+        dd($data);
         return $data;
     }
 }
