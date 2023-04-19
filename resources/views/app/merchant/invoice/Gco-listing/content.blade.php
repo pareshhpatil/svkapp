@@ -229,6 +229,7 @@
                     @endif
                 @endforeach
                     @php
+                        dd($change_orders_group_data, $change_order_columns);
                         $changeOrdersTotalAmountArray = [];
                         foreach ($change_order_columns as $change_order_column) {
                             $changeOrderGroupTotal = 0;
