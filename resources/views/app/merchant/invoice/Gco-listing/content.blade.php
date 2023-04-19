@@ -42,7 +42,6 @@
                             }
                         @endphp
                         {{'CO ' . $coNumber}}
-                        {{ Str::replace('_', ' ', $change_order_column) }}
                     </td>
                     @endforeach    
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
