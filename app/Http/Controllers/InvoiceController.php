@@ -3053,7 +3053,7 @@ class InvoiceController extends AppController
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
-        
+
         if ($changeOrdersData->count() <= 0) {
             return [
                 'has_change_order_data' => true
@@ -3077,16 +3077,16 @@ class InvoiceController extends AppController
                 foreach ($changeOrdersData as $changeOrderData) {
 
                     $coParticulars = json_decode($changeOrderData->particulars, 1);
-                    $changeOrderGroupData[$changeOrderData->order_no] = $coParticulars;
+                    $changeOrderGroupData[$changeOrderData->order_id] = $coParticulars;
 
 
-                    if (!in_array($changeOrderData->order_no, $changeOrderColumns)) {
-                        $changeOrderColumns[] = $changeOrderData->order_no;
+                    if (!in_array($changeOrderData->order_id, $changeOrderColumns)) {
+                        $changeOrderColumns[] = $changeOrderData->order_id;
                     }
 
                     foreach ($coParticulars as $coParticular) {
                         if ($coParticular['bill_code'] == $val['bill_code']) {
-                            $changeOrderValues[$changeOrderData->order_no] = $coParticular['change_order_amount'];
+                            $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
                         }
                     }
 
