@@ -6,8 +6,11 @@ CREATE TABLE `invoice_draft` (
   `created_date` timestamp NOT NULL DEFAULT '2013-12-31 18:30:00',
   `last_update_by` varchar(10) NOT NULL,
   `last_update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  PRIMARY KEY (`id`),
+  KEY `payment_request_idx` (`payment_request_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
 
 
 
@@ -15,6 +18,7 @@ CREATE TABLE `staging_invoice_construction_particular` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `draft_id` int(11) NOT NULL,
   `payment_request_id` char(10) NOT NULL,
+  `particular_id` int(11) NOT NULL DEFAULT 0,
   `pint` int(11) DEFAULT NULL,
   `sort_order` int(11) DEFAULT NULL,
   `bill_code` varchar(100) DEFAULT NULL,
@@ -62,5 +66,7 @@ CREATE TABLE `staging_invoice_construction_particular` (
   `last_update_by` varchar(10) NOT NULL,
   `last_update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
-  KEY `payment_request_id_idx` (`payment_request_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  KEY `payment_request_id_idx` (`payment_request_id`),
+  KEY `draft_idx` (`draft_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
