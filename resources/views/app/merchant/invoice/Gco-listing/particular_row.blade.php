@@ -20,7 +20,7 @@
         
     </td>
     <td class="border-r border-l td-703 text-right original-con">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['original_contract_amount']" /></p>
+        <p class="text-sm"><x-amount-format :amount="$rowArray['original_contract_amount']" /> {{count($rowArray)}}</p>
     </td>
     
     @if (isset($rowArray['change_order_col_values']))
