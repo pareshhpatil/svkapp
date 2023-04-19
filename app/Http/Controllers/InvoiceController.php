@@ -3053,7 +3053,7 @@ class InvoiceController extends AppController
         $particular_details = $this->invoiceModel->getInvoiceConstructionParticularRows($payment_request_id);
 
         $changeOrdersData = $this->invoiceModel->getOrderbyContract($data['contract_id'], date("Y-m-d"));
-        dd($changeOrdersData, $data['contract_id'], $payment_request_id);
+        
         if ($changeOrdersData->count() <= 0) {
             return [
                 'has_change_order_data' => true
