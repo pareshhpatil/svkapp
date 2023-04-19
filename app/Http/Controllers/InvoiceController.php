@@ -3088,7 +3088,7 @@ class InvoiceController extends AppController
                         if ($coParticular['bill_code'] == $val['bill_code']) {
                             $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
                         } else {
-                            $changeOrderValues[$changeOrderData->order_id] = 0;
+                            $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
                         }
                     }
 
