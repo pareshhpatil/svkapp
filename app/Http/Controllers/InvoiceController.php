@@ -3140,7 +3140,7 @@ class InvoiceController extends AppController
         $data['particularRows'] = $particularRows;
         $data['change_order_columns'] = $changeOrderColumns;
         $data['change_orders_group_data'] = $changeOrderGroupData;
-        dd($data);
+//        dd($data);
         return $data;
     }
 }
