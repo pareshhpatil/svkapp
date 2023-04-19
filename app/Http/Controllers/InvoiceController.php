@@ -3071,56 +3071,60 @@ class InvoiceController extends AppController
         $changeOrderGroupData = [];
 
         if (!empty($particular_details)) {
-            $changeOrderValues = [];
-            
+
             foreach ($particular_details as $ck => $val) {
 
+                $changeOrderValues = [];
                 foreach ($changeOrdersData as $changeOrderData) {
 
-                    $coParticulars = json_decode($changeOrderData->particulars, 1);
-                    $changeOrderGroupData[$changeOrderData->order_id] = $coParticulars;
+                    $changeOrderParticulars = json_decode($changeOrderData->particulars, 1);
+                    $changeOrderGroupData[$changeOrderData->order_id] = $changeOrderParticulars;
 
 
                     if (!in_array($changeOrderData->order_id, $changeOrderColumns)) {
                         $changeOrderColumns[] = $changeOrderData->order_id;
                     }
+                    
+                    //create collection for change order particulars
+                    $changeOrderParticularsCollect = collect($changeOrderParticulars);
 
-                    foreach ($coParticulars as $coParticular) {
-                        if ($coParticular['bill_code'] === $val['bill_code']) {
-                            $changeOrderValues[$changeOrderData->order_id] = $coParticular['change_order_amount'];
-                        } else {
-                            $changeOrderValues[$changeOrderData->order_id] = 0;
-                        }
+                    $findParticular = $changeOrderParticularsCollect->where('bill_code', $val['bill_code'])->first();
+
+                    if(!empty($findParticular)) {
+                        $changeOrderValues[$changeOrderData->order_id] = $findParticular['change_order_amount'];
+                    } else {
+                        $changeOrderValues[$changeOrderData->order_id] = 0;
                     }
+                }
 
-                    if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
-                        //show details without subgroup, total, bill code
-                        $valArray = $this->setParticularRowArray($val, $data);
-                        $valArray['change_order_col_values'] = $changeOrderValues;
-                        $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
-                    } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
 
-                        if ($val['sub_group'] != '') {
-                            $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
-                            if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
-                                $valArray = $this->setParticularRowArray($val, $data);
-                                $valArray['change_order_col_values'] = $changeOrderValues;
-                                $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
-                            }
-                        } else {
-                            $groups[$val['group']][$val['group']] = $val['group'];
-                            if (in_array($val['group'], $groups[$val['group']])) {
-                                $valArray = $this->setParticularRowArray($val, $data);
-                                $valArray['change_order_col_values'] = $changeOrderValues;
-                                $particularRows[$val['group']]['only-group~'][$int] = $valArray;
-                            }
+                if (!empty($val['group']) && $val['bill_code_detail'] == 'No') {
+                    //show details without subgroup, total, bill code
+                    $valArray = $this->setParticularRowArray($val, $data);
+                    $valArray['change_order_col_values'] = $changeOrderValues;
+                    $particularRows[$val['group']]['no-bill-code-detail~'][$int] = $valArray;
+                } else if (!empty($val['group']) && $val['bill_code_detail'] == 'Yes') {
+
+                    if ($val['sub_group'] != '') {
+                        $groups[$val['group']]['subgroup'][$val['sub_group']] = $val['sub_group'];
+                        if (in_array($val['sub_group'], $groups[$val['group']]['subgroup'])) {
+                            $valArray = $this->setParticularRowArray($val, $data);
+                            $valArray['change_order_col_values'] = $changeOrderValues;
+                            $particularRows[$val['group']]['subgroup'][$val['sub_group']][$int] = $valArray;
                         }
                     } else {
-                        //show all details without group , subgroup , total rows
-                        $valArray = $this->setParticularRowArray($val, $data);
-                        $valArray['change_order_col_values'] = $changeOrderValues;
-                        $particularRows['no-group~'][$int] = $valArray;
+                        $groups[$val['group']][$val['group']] = $val['group'];
+                        if (in_array($val['group'], $groups[$val['group']])) {
+                            $valArray = $this->setParticularRowArray($val, $data);
+                            $valArray['change_order_col_values'] = $changeOrderValues;
+                            $particularRows[$val['group']]['only-group~'][$int] = $valArray;
+                        }
                     }
+                } else {
+                    //show all details without group , subgroup , total rows
+                    $valArray = $this->setParticularRowArray($val, $data);
+                    $valArray['change_order_col_values'] = $changeOrderValues;
+                    $particularRows['no-group~'][$int] = $valArray;
                 }
 
                 //calculate grand total
@@ -3134,8 +3138,6 @@ class InvoiceController extends AppController
                 $int++;
             }
         }
-
-
 
         $data['grand_total_schedule_value'] = $grand_total_schedule_value;
         $data['grand_total_original_schedule_value'] = $grand_total_original_schedule_value;
