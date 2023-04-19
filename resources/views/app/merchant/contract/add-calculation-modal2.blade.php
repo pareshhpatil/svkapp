@@ -160,7 +160,7 @@
                                 <div class="pull-right">
                                     <input type="hidden" value="0" id="contract_amount" name="contract_amount">
                                     <a href="#" onclick="return closeSidePanelcalc();" class="btn default">Cancel</a>
-                                    <a href="#"  @click="setAOriginalContractAmount();" class="btn blue">Add calculation</a>
+                                    <a href="#" onclick="setAOriginalContractAmount();"  @click="setAOriginalContractAmount();" class="btn blue">Add calculation</a>
                                 </div>
                             </div>
                         </div>

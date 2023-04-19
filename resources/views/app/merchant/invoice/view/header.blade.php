@@ -13,6 +13,11 @@
                 <li class="@if($gtype=='703') active @endif">
                     <a href="/patron/invoice/view/703/{{$url}}/patron">703</a>
                 </li>
+                @if($list_all_change_orders)
+                    <li class="@if($gtype == 'co-listing') active @endif">
+                        <a href="/patron/invoice/view/co-listing/{{$url}}/patron">CO Listing</a>
+                    </li>
+                @endif
                 <li>
                     <a href="/invoice/document/patron/{{$url}}">Attached files</a>
                 </li>
@@ -23,6 +28,11 @@
                 <li class="@if($gtype=='703') active @endif">
                     <a href="/merchant/invoice/view/703/{{$url}}">703</a>
                 </li>
+                @if($list_all_change_orders)
+                    <li class="@if($gtype == 'co-listing') active @endif">
+                        <a href="/merchant/invoice/view/co-listing/{{$url}}">CO Listing</a>
+                    </li>
+                @endif
                 <li>
                     <a href="/invoice/document/merchant/{{$url}}">Attached files</a>
                 </li>

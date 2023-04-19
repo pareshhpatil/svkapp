@@ -103,26 +103,40 @@
 
                         <div class="row">
                             <div class="col-md-3">
-                             Select cost code   
-                            <div id="cost_codes" x-model="cost_bill_code" ></div>
+                                Select cost code
+                                <select id="v_bill_codecost" placeholder="Native Select" data-search="false" data-silent-initial-value-set="true">
+                                    @if(!empty($csi_codes))
+                                    @foreach($csi_codes as $v)
+                                    <option value="{{$v['value']}}">{{$v['label']}}</option>
+                                    @endforeach
+                                    @endif
+                                </select>
                             </div>
                             <div class="col-md-3">
                                 Select cost type
-                            <div id="cost_types" x-model="cost_cost_type" ></div>
+                                <select id="v_cost_typecost" placeholder="Native Select" data-search="false" data-silent-initial-value-set="true">
+                                    @if(!empty($merchant_cost_types))
+                                    @foreach($merchant_cost_types as $v)
+                                    <option value="{{$v['value']}}">{{$v['label']}}</option>
+                                    @endforeach
+                                    @endif
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <br>
-                            <a href="#" @click="filterCost('aa')" id="filterbutton" class="btn btn-sm blue"  >Search</a>
+                                <input type="hidden" id="bill_codecost">
+                                <input type="hidden" id="cost_typecost">
+                                <a href="#" onclick="filterCost('aa')" id="filterbutton" class="btn btn-sm blue">Search</a>
                             </div>
                         </div>
-                        </div>
-                        </div>
+                    </div>
+                </div>
 
                 <div class="portlet light bordered ">
 
                     <div class="portlet-body form">
 
-                        
+
 
 
                         <h3 class="form-section">Billed transactions</h3>
@@ -131,12 +145,12 @@
                                 <thead>
                                     <tr>
                                         <th class="td-c">
-                                            <input id="allCheckboxcost" type="checkbox" @click="allcostCheck()">
+                                            <input id="allCheckboxcost" type="checkbox" onclick="allcostCheck()">
                                         </th>
                                         <th class="td-c" style="min-width: 150px;">
                                             Cost code
                                         </th>
-                                        <th class="td-c" >
+                                        <th class="td-c">
                                             Cost type
                                         </th>
                                         <th class="td-c">
@@ -154,19 +168,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="new_particular_cost">
-                                    <template x-for="(field, index) in billed_transactions" :key="index">
-                                        <tr>
-                                            <td class="td-c">
-                                                <input type="checkbox" x-model="field.checked" name="cost-checkbox[]" x-value="field.id" :id="index" @change="costCalc();">
-                                            </td>
-                                            <td class="td-c" x-text="field.cost_code"></td>
-                                            <td class="td-c" x-text="field.cost_type_label"></td>
-                                            <td class="td-c" x-text="field.rate"></td>
-                                            <td class="td-c" x-text="field.unit"></td>
-                                            <td class="td-c" x-text="field.amount"></td>
-                                            <td class="td-c" x-text="field.description"></td>
-                                        </tr>
-                                    </template>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -189,8 +191,8 @@
                                     <div class="pull-right">
                                         <input type="hidden" value="0" id="cost_selected_id">
                                         <input type="hidden" value="" id="billed_transaction_ids">
-                                        <a href="#" @click="closeSidePanelcost();" class="btn default">Cancel</a>
-                                        <a href="#" @click="setCostAmount();" class="btn blue">Add cost</a>
+                                        <a href="#" onclick="closeSidePanelcost();" class="btn default">Cancel</a>
+                                        <a href="#" onclick="setCostAmount();" class="btn blue">Add cost</a>
                                     </div>
                                 </div>
                             </div>

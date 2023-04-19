@@ -19,14 +19,13 @@ header('Cache-Control: max-age=604800');
 
 //Route::get('merchant/register', 'HomeController@register')->name('home.register');
 
-if(env('BRIQ_URL_REDIRECTION')){
+if (env('BRIQ_URL_REDIRECTION')) {
   Route::redirect('login', env('BRIQ_APP_URL'), 301);
-  Route::redirect('merchant/register',env('BRIQ_APP_URL'), 301);
+  Route::redirect('merchant/register', env('BRIQ_APP_URL'), 301);
   Route::redirect('/', env('BRIQ_APP_URL'), 301);
-}
-else {
+} else {
   Auth::routes(['register' => false]);
-  Route::redirect('/', '/login' , 301);
+  Route::redirect('/', '/login', 301);
 }
 Route::get('404', 'HomeController@pagenotfound');
 // Route::get('billing-software', 'HomeController@billing')->name('home.billing');
@@ -267,12 +266,14 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('invoiceformat/savePluginValue/', 'InvoiceFormatController@savePluginValue');
 
   Route::any('invoice/create', 'InvoiceController@create')
-      ->name('create.invoice')
-      ->middleware('PrivilegesAccess');
+    ->name('create.invoice')
+    ->middleware('PrivilegesAccess');
+  Route::post('invoice/particulars/row', 'InvoiceController@saveParticularRow');
   Route::any('invoice/createv2', 'InvoiceController@createv2')->name('createv2.invoice');
   Route::any('invoice/createv2/{link}', 'InvoiceController@createv2')->name('createv23.invoice');
   Route::any('invoice/updatev2/{link}', 'InvoiceController@updatev2')->name('updatev23.invoice');
   Route::any('invoice/particular/{link}', 'InvoiceController@particular')->name('particular.invoice');
+  Route::any('invoice/particular/{link}/{type}', 'InvoiceController@particular');
   Route::get('invoice/preview/{link}', 'InvoiceController@preview')->name('preview.invoice');
   Route::post('invoice/save', 'InvoiceController@save')->name('save.invoice');
   Route::post('invoice/particularsave', 'InvoiceController@particularsave')->name('save.particular');
@@ -373,41 +374,41 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoiceformat/choose-color/{from}/{design}/{color}/{link}', 'InvoiceFormatController@chooseColor')->name('choose.color.invoiceformat');
 
   //project screen CRUD routes
-  Route::get('project/list', 'MasterController@projectlist'); 
+  Route::get('project/list', 'MasterController@projectlist');
   Route::get('project/delete/{link}', 'MasterController@projectdelete');
   Route::get('project/create', 'MasterController@projectcreate')->middleware('PrivilegesAccess');
   Route::post('project/store', 'MasterController@projectsave')->middleware('PrivilegesAccess');
   Route::get('project/edit/{link}', 'MasterController@projectupdate')->middleware('PrivilegesAccess');
   Route::post('project/updatestore', 'MasterController@projectupdatestore')->middleware('PrivilegesAccess');
   //code
-  Route::get('code/list/{id}', 'MasterController@codeList'); 
-  Route::get('code/getlist/{id}', 'MasterController@getbillcode'); 
+  Route::get('code/list/{id}', 'MasterController@codeList');
+  Route::get('code/getlist/{id}', 'MasterController@getbillcode');
   Route::get('code/delete/{project_id}/{link}', 'MasterController@projectCodeDelete');
   Route::any('/billcode/update/', 'ContractController@billcodeupdate');
 
 
-  Route::get('billedtransaction/list/{id}', 'MasterController@billedtransactionList'); 
+  Route::get('billedtransaction/list/{id}', 'MasterController@billedtransactionList');
   Route::get('billedtransaction/delete/{link}', 'MasterController@billedtransactionDelete');
   Route::any('/billedtransaction/update', 'MasterController@billedtransactionUpdate');
   //contract
-//  Route::any('contract/create', 'ContractController@create')->name('create.contract');
-//  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
+  //  Route::any('contract/create', 'ContractController@create')->name('create.contract');
+  //  Route::any('contract/create{version}', 'ContractController@create')->name('create.contractv2');
 
   Route::any('contract/create/{step?}/{contract_id?}/{bulk_id?}', 'ContractController@loadContract')
-        ->name('contract.create.new')
-        ->middleware('PrivilegesAccess');
+    ->name('contract.create.new')
+    ->middleware('PrivilegesAccess');
 
   Route::any('contract/update/{step?}/{contract_id?}', 'ContractController@loadContract')
-        ->name('contract.update.new')->middleware('PrivilegesAccess');
+    ->name('contract.update.new')->middleware('PrivilegesAccess');
 
   Route::any('contract/fetchProject', 'ContractController@fetchProject')->name('contract.fetchProject');
   Route::post('contract/store', 'ContractController@store')->name('contract.store');
 
-//  Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
+  //  Route::any('contract/update/{link}', 'ContractController@update')->name('update.contract');
   Route::any('contract/save', 'ContractController@save')->name('save.contract');
   Route::any('contract/saveV4', 'ContractController@saveV4')->name('save.contractV4');
   Route::any('contract/saveV5', 'ContractController@saveV5')->name('save.contractV4');
-//  Route::any('contract/list', 'ContractController@list')->name('list.contract');
+  //  Route::any('contract/list', 'ContractController@list')->name('list.contract');
 
   Route::any('contract/list', 'ContractController@listContracts')->name('contract.list.new');
 
@@ -425,8 +426,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');
   Route::any('order/update/{link}/{bulk_id?}', 'OrderController@update')
-      ->name('update.order')
-      ->middleware('PrivilegesAccess');
+    ->name('update.order')
+    ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
   Route::any('order/save', 'OrderController@save')->name('save.order')->middleware('PrivilegesAccess');
   Route::any('order/list', 'OrderController@list')->name('list.order');
@@ -435,10 +436,10 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order')->middleware('PrivilegesAccess');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');
   Route::any('order/updatesave/', 'OrderController@updatesave')
-      ->name('updatesave.order')
-      ->middleware('PrivilegesAccess');
+    ->name('updatesave.order')
+    ->middleware('PrivilegesAccess');
   Route::any('/billcode/create/', 'OrderController@billcodesave')->name('billcodesave.order');
-   
+
   //covering note
   Route::any('getSingleCoverNote/{covering_note_id}', 'CoveringNote@getSingleCoverNote');
   //region setting
@@ -453,7 +454,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::post('cost-types/{id}/edit', 'Merchant\CostTypesController@update')->name('merchant.cost-types.update');
 
   Route::any('inbox', 'NotificationsController@index')->name('inbox.index');
-  
+
   //Sub Merchants
   Route::get('subusers', 'Merchant\SubUserController@index')->name('merchant.subusers.index');
   Route::get('subusers/create', 'Merchant\SubUserController@create')->name('merchant.subusers.create');
@@ -473,7 +474,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('roles/{id}/edit ', 'Merchant\RolesController@edit')->name('merchant.roles.edit');
   Route::post('roles/{id}/edit', 'Merchant\RolesController@update')->name('merchant.roles.update');
   Route::get('roles/delete/{id}', 'Merchant\RolesController@delete');
-  
+
   Route::get('no-permission', 'MasterController@noPermission');
 
   Route::any('invoice/list',  'InvoiceController@list')->name("invoicelist");
@@ -495,16 +496,16 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('code/import', 'ImportController@billCodes')->name('merchant.import.billcode');
   Route::get('code/import/{project_id}', 'ImportController@billCodes')->name('merchant.import.billcode.project');
   Route::get('contract/import/{contract_id?}', 'ImportController@contract')->name('merchant.import.contract');
-  
+
   //Notifications Route
   Route::get('user/notifications', 'MasterController@getNotifications');
   Route::get('notifications', 'MasterController@getNotificationIndex')->name('notifications');
   Route::get('notifications/all', 'MasterController@getAllNotifications');
 
   Route::get('/user/create-token', 'ProjectController@createToken')->name('merchant.user.create-token');
-  Route::post('/user/save-token','ProjectController@saveToken')->name('merchant.user.save-token');
+  Route::post('/user/save-token', 'ProjectController@saveToken')->name('merchant.user.save-token');
 
-  Route::get('invoice-status', 'MasterController@invoiceStatusList')->name('merchant.invoice-status'); 
+  Route::get('invoice-status', 'MasterController@invoiceStatusList')->name('merchant.invoice-status');
   Route::any('/invoice-status/save', 'MasterController@invoiceStatusSave');
 
   Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
@@ -539,8 +540,8 @@ Route::group(['prefix' => 'patron'], function () {
 
 Route::get('invoice/document/download/{link}', 'InvoiceController@downloadSingle');
 Route::get('invoice/document/download/all/{link}', 'InvoiceController@downloadZip');
-Route::get('invoice/download-v2/{link}/{id}/{type}','InvoiceController@download_v2');
-Route::get('invoice/download-v2/{link}/{id}/{type}/{user_type}','InvoiceController@download_v2');
+Route::get('invoice/download/{link}/{id}/{type}', 'InvoiceController@download');
+Route::get('invoice/download/{link}/{id}/{type}/{user_type}', 'InvoiceController@download');
 Route::get('invoice/document/{user_type}/{link}', 'InvoiceController@documents');
 Route::get('invoice/document/{user_type}/{link}/{name}', 'InvoiceController@documents');
 Route::get('invoice/document/{user_type}/{link}/{parent}/{sub}', 'InvoiceController@documents');
@@ -665,4 +666,3 @@ Route::get('/test-user-notify', 'FirebaseCloudMessagingController@invoiceNotifyT
 
 
 Route::get('briq-login', 'UserController@checkToken')->name('home.checktoken');
-

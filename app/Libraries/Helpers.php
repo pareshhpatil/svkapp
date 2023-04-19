@@ -369,6 +369,17 @@ class Helpers
         }
         return (object)$_POST;
     }
+
+    public static function  setArrayPostZeroValue($array, $data)
+    {
+        foreach ($array as $key) {
+            $data[$key] = str_replace(',', '', $data[$key]);
+            if (!isset($data[$key])) {
+                $data[$key] = 0;
+            }
+        }
+        return $data;
+    }
 }
 
 // @abhijeet: DONT ADD ANYTHING NEW FUNTIONS/METHODS.THIS CLASS NEEDS TO BE PHASED OUT. 
