@@ -2,7 +2,7 @@
     <td class="border-r border-l td-703 text-left">
         <p class="text-sm">{{ $rowArray['code'] }} </p>
     </td>
-    <td class="border-r border-l td-703 text-left">
+    <td class="border-r border-l td-703 text-left second">
         @if (isset($group_name))
             @php $groupName=str_replace(' ', '_', strlen($group_name) > 7 ? substr($group_name, 0, 7) : $group_name) @endphp
             <p class="text-sm">{{ $rowArray['description'] }}  @if (!empty($rowArray['attachment']))
@@ -34,7 +34,7 @@
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['approved_change_order_amount']" /></p>
     </td>
-    <td class="border-r border-l td-703 text-right this">
+    <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
     </td>
 
