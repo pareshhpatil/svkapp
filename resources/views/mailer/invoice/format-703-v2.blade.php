@@ -89,7 +89,17 @@
         @endif
     }
 </script>
-
+@php
+$sub_total_schedule_value = 0; 
+$sub_total_change_from_previous_application = 0;
+$sub_total_change_this_period = 0;
+$sub_total_current_total = 0;
+$sub_total_previously_billed_amt = 0;
+$sub_total_current_billed_amount = 0;
+$sub_total_material_stored = 0;
+$sub_total_completed = 0;
+$sub_total_retainage = 0;
+@endphp
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
         <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px;">
@@ -316,17 +326,6 @@
                                     <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"></div>
                                 </td>
                             </tr>
-                            @php
-                            $sub_total_schedule_value = 0; 
-                            $sub_total_change_from_previous_application = 0;
-                            $sub_total_change_this_period = 0;
-                            $sub_total_current_total = 0;
-                            $sub_total_previously_billed_amt = 0;
-                            $sub_total_current_billed_amount = 0;
-                            $sub_total_material_stored = 0;
-                            $sub_total_completed = 0;
-                            $sub_total_retainage = 0;
-                            @endphp
                             @foreach ($subgroup as $ik => $item)
                             <tr>
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
