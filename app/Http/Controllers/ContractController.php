@@ -192,6 +192,12 @@ class ContractController extends Controller
             $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
             $data['template_id'] = $contract->template_id;
             $data['plugins'] = json_decode($plugins, 1);
+
+            $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id),1);
+            $data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
+            $data['current_day'] = now()->format('l');
+            $data['current_date'] = now()->format('d');
+            $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
             //$data['plugins'] = json_decode('{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"save_revision_history":"1","invoice_output":"1","has_aia_license":"1","has_watermark":"1","watermark_text":"DRAFT"}', 1);
         }
 

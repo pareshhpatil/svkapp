@@ -205,4 +205,16 @@ class Contract extends ParentModel
 
         return $retObj;
     }
+
+    public function getSubUsers($merchant_id) {
+        $retObj = DB::table('briq_roles as br')
+        ->select(DB::raw("u.id as value,concat(first_name,' ', last_name) as label"))
+        ->join('briq_user_roles as bu','bu.role_id','=','br.id')
+        ->join('user as u','u.user_id','=','bu.user_id')
+        ->where('br.merchant_id',$merchant_id)
+        ->where('br.name','!=','Admin')
+        ->where('u.user_status','20')
+        ->get()->toArray();
+        return $retObj;
+    }
 }

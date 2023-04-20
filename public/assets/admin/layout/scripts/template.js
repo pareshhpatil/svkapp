@@ -393,6 +393,12 @@ function AddReminder2(type='before') {
     newDiv.innerHTML = '<td><div class="input-icon right"><input type="hidden" name="reminder_type[]" value="'+type+'"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder email subject "></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
 }
+function AddInternalReminder(type='before') {
+    var mainDiv = document.getElementById('new_internal_reminder_'+type);
+    var newDiv = document.createElement('tr');
+    newDiv.innerHTML = '<td><div class="input-icon right"><input type="hidden" name="reminder_type[]" value="'+type+'"><div id="sub_user_drpdwn"></div></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder"></div></td><td></td><td></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
+    mainDiv.appendChild(newDiv);
+}
 
 function showDebit(id) {
     if ($('#is' + id).is(':checked')) {
@@ -1771,6 +1777,10 @@ function disablePlugin(val, id) {
     }
     else if (val == true && id == "plg10") {
         $("#pgiscovering").show();
+    } else if(val == false && id == "plg15") {
+        $("#pg_is_internal_reminder").hide();
+    } else if(val == true && id == "plg15") {
+        $("#pg_is_internal_reminder").show();
     }
 
 }
@@ -2378,5 +2388,60 @@ function setCheckbox(val, id) {
     } else {
         _('document_attachment_div').style.display = 'block';
         _('document_attachment_button').style.display = 'block';
+    }
+}
+
+function showEndDateInput(val,id='') {
+    if(val!='') {
+        id=(id!='') ? id : '';
+        if(val=='1') {
+            document.getElementById("occurences_div"+id).style.display = 'none';
+            document.getElementById("end_date_div"+id).style.display = 'block';
+        } else {
+            document.getElementById("end_date_div"+id).style.display = 'none';
+            document.getElementById("occurences_div"+id).style.display = 'block';
+        }
+    }
+}
+
+function showReminderDateInput(val) {
+    if(val!='') {
+        if(val==1) {
+            $('.reminder_dt_div').show();
+            $('.reminder_dt_hide').hide();
+            document.getElementById("1st_day_evry_month_div").style.display = 'block';
+        } else if(val==2) {
+            $('.reminder_dt_div').show();
+            $('.reminder_dt_hide').hide();
+            document.getElementById("week_day_div").style.display = 'block';
+        } else if(val==3) {
+            $('.reminder_dt_div').show();
+            $('.reminder_dt_hide').hide();
+            document.getElementById("30days_div").style.display = 'block';
+        } else if(val==4) {
+            $('.reminder_dt_div').show();
+            $('.reminder_dt_hide').hide();
+            // document.getElementById("custom_reminder_date_div").style.display = 'block';
+            $('#custom_date_reminder').modal('show');
+        } else if(val==0) {
+            $('.reminder_dt_div').hide();
+            $('.reminder_dt_hide').hide();
+        }
+    }
+}
+
+function checkRepeatType(val){
+    if(val!='') {
+        if(val=='week') {
+            $('#repeat_on_div').show();
+            $('#repeat_by_month').hide();
+            $('#repeat_by_week').show();
+        } else if(val=='month') {
+            $('#repeat_on_div').show();
+            $('#repeat_by_month').show();
+            $('#repeat_by_week').hide();
+        } else {
+            $('#repeat_on_div').hide();
+        }
     }
 }
