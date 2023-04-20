@@ -184,7 +184,7 @@ class ContractController extends Controller
             $invoiceSeq = $model->getInvoiceSequence($this->merchant_id);
             $invoiceSeq = json_decode(json_encode($invoiceSeq), 1);
             $data['invoiceSeq'] = $invoiceSeq;
-            
+
             $data['project_data'] = $this->masterModel->getTableRow('project', 'id', $contract->project_id);
 
             $data['coveringNotes'] = $this->contract_model->getMerchantValues($this->merchant_id, 'covering_note');
@@ -199,9 +199,15 @@ class ContractController extends Controller
             $bulk_id = Encrypt::decode($bulk_id);
             $particulars = $this->contract_model->getColumnValue('staging_contract', 'bulk_id', $bulk_id, 'particulars');
             $data['particulars'] = json_decode($particulars, 1);
+            $total = 0;
+            foreach ($data['particulars'] as $row) {
+                if ($row['original_contract_amount'] > 0) {
+                    $total = $total + $row['original_contract_amount'];
+                }
+            }
+            $data['total'] = $total;
             $data['bulk_id'] = $bulk_id;
         }
-
         return view('app/merchant/contract/createv6', $data);
     }
 
@@ -228,7 +234,7 @@ class ContractController extends Controller
                     $contractPrivilegesAccess = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
                     $projectPrivilegesAccess = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
 
-                    if(isset($projectPrivilegesAccess[$response->project_id])) {
+                    if (isset($projectPrivilegesAccess[$response->project_id])) {
                         $contractPrivilegesAccess[$response->contract_id] = $projectPrivilegesAccess[$response->project_id];
                     } else {
                         $contractPrivilegesAccess[$response->contract_id] = 'edit';
@@ -254,15 +260,15 @@ class ContractController extends Controller
                     $template_id = $this->saveInvoiceFormat($contract->contract_code);
                     $this->contract_model->updateTable('contract', 'contract_id', $contract->contract_id, 'template_id', $template_id);
                 }
-                if(isset($request->sequence_number)){
-                    $this->contract_model->updateTable('project', 'id', $contract->project_id, 'sequence_number',$request->sequence_number);
+                if (isset($request->sequence_number)) {
+                    $this->contract_model->updateTable('project', 'id', $contract->project_id, 'sequence_number', $request->sequence_number);
                 }
                 $invoice_format = new InvoiceFormatController();
                 $_POST = json_decode(json_encode($request->all()), 1);
                 $plugins = $invoice_format->getPlugins();
-                
-                if(isset($request->has_schedule_value)){
-                    $plugins = json_decode($plugins,1);
+
+                if (isset($request->has_schedule_value)) {
+                    $plugins = json_decode($plugins, 1);
                     $plugins['has_schedule_value'] = "1";
                     $plugins = json_encode($plugins);
                 }

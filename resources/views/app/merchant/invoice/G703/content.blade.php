@@ -63,7 +63,7 @@
             </table>
         </div>
     </div>
-    <div class='overflow-x-auto w-full mt-4 mb-4'>
+    <div class='overflow-x-auto w-full mt-4 mb-4' style="position:inherit;z-index:1000;">
         <table class='mx-auto w-full border-collapse border border-[#A0ACAC] overflow-hidden'>
             <thead>
                 <tr class="text-center">

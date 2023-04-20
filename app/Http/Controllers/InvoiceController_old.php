@@ -1960,7 +1960,6 @@ class InvoiceController_old extends AppController
     public function patronView($link)
     {
 
-
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
@@ -2044,6 +2043,8 @@ class InvoiceController_old extends AppController
     }
     public function patronView703($link, $type)
     {
+		header('Location: /patron/invoice/view/'.$type.'/'.$link.'/patron');	
+		die();
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {

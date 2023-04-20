@@ -89,7 +89,17 @@
         @endif
     }
 </script>
-
+@php
+$sub_total_schedule_value = 0; 
+$sub_total_change_from_previous_application = 0;
+$sub_total_change_this_period = 0;
+$sub_total_current_total = 0;
+$sub_total_previously_billed_amt = 0;
+$sub_total_current_billed_amount = 0;
+$sub_total_material_stored = 0;
+$sub_total_completed = 0;
+$sub_total_retainage = 0;
+@endphp
     <div role="article" aria-roledescription="email" aria-label="" lang="en">
         <!doctype html>
         <div style="display: flex;  align-items: center; justify-content: center; background-color: #f3f4f6; padding: 8px;">
@@ -316,17 +326,6 @@
                                     <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"></div>
                                 </td>
                             </tr>
-                            @php
-                            $sub_total_schedule_value = 0; 
-                            $sub_total_change_from_previous_application = 0;
-                            $sub_total_change_this_period = 0;
-                            $sub_total_current_total = 0;
-                            $sub_total_previously_billed_amt = 0;
-                            $sub_total_current_billed_amount = 0;
-                            $sub_total_material_stored = 0;
-                            $sub_total_completed = 0;
-                            $sub_total_retainage = 0;
-                            @endphp
                             @foreach ($subgroup as $ik => $item)
                             <tr>
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: left">
@@ -577,20 +576,20 @@
                                 </td>
                                 @if($has_schedule_value) 
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"> <x-amount-format :amount="$group_total_schedule_value" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><x-amount-format :amount="$group_total_schedule_value" /></div>
                                     </td>
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"> <x-amount-format :amount="$grand_total_change_from_previous_application" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><x-amount-format :amount="$grand_total_change_from_previous_application" /></div>
                                     </td>
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"> <x-amount-format :amount="$grand_total_change_this_period" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><x-amount-format :amount="$grand_total_change_this_period" /></div>
                                     </td>
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"> <x-amount-format :amount="$grand_total_current_total" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><x-amount-format :amount="$grand_total_current_total" /></div>
                                     </td>
                                 @else
                                     <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"> <x-amount-format :amount="$group_total_schedule_value" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><x-amount-format :amount="$group_total_schedule_value" /></div>
                                     </td>
                                 @endif
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -700,29 +699,29 @@
                                     </td>
                                 @else
                                     <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_schedule_value" /></div>
+                                        <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_schedule_value" /></div>
                                     </td>
                                 @endif
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_previouly_billed_amt" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_previouly_billed_amt" /></div>
                                 </td>
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_current_billed_amt" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_current_billed_amt" /></div>
                                 </td>
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_stored_material" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_stored_material" /></div>
                                 </td>
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_total_completed" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_total_completed" /></div>
                                 </td>
                                 <td style="min-width: 50px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size:@if($has_schedule_value)11px;@endif 14px;">@if($grand_total_g_per < 0) ({{str_replace('-','',number_format($grand_total_g_per * 100,2))}}) @else{{ number_format($grand_total_g_per * 100, 2) }} @endif%</div>
                                 </td>
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_balance_to_finish" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_balance_to_finish" /></div>
                                 </td>
                                 <td style=" min-width: 90px;border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_retainge" /></div>
+                                    <div style="font-size:@if($has_schedule_value)11px;@endif 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_retainge" /></div>
                                 </td>
                             </tr>
                         </tbody>

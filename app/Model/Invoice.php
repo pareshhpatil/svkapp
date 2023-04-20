@@ -938,10 +938,12 @@ class Invoice extends ParentModel
         $retObj = DB::table('payment_request')
             ->select(DB::raw('*,  DATE_FORMAT(bill_date, "%d %b %Y") as bill_date'))
             ->where('payment_request_id', '=', $payment_request_id)
-            ->where('merchant_id', '=', $merchant_id)
-            ->orderBy('created_date', 'desc')->first();
-
-        return $retObj;
+            ->where('payment_request_status', '<>', 3)
+            ->orderBy('created_date', 'desc');
+        if ($merchant_id != 'customer') {
+            $retObj->where('merchant_id', $merchant_id);
+        }
+        return $retObj->first();
     }
 
     public function getCurrencyIcon($currency)
