@@ -2522,7 +2522,7 @@ class InvoiceController extends AppController
 
     public function getInvoiceDetailsForViews($payment_request_id = null, $userRole = null, $user_type = null)
     {
-        $merchant_id = ($user_type == 'merchant') ? $this->merchant_id : 'customer';
+        $merchant_id = 'customer';
         $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $merchant_id);
         $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
         $data['project_details'] =  $project_details;
