@@ -2784,7 +2784,9 @@ class InvoiceController extends AppController
 
                 if ($type == 'co-listing') {
                     // If change order have more than 4 then change size
-                    if (count($data['change_order_columns']) > 4) {
+                    if (count($data['change_order_columns']) > 10) {
+                        $pdf->setPaper("a2", "landscape");
+                    } elseif (count($data['change_order_columns']) > 4) {
                         $pdf->setPaper("a3", "landscape");
                     } else {
                         $pdf->setPaper("a4", "landscape");
@@ -2818,7 +2820,9 @@ class InvoiceController extends AppController
                 if ($data['list_all_change_orders']) {
                     $coPDF = DOMPDF::loadView('mailer.invoice.format-co-listing-v2', $data['co_listing_data']);
 
-                    if(count($data['co_listing_data']['change_order_columns']) > 4) {
+                    if(count($data['co_listing_data']['change_order_columns']) > 10) {
+                        $coPDF->setPaper("a2", "landscape");
+                    } elseif (count($data['co_listing_data']['change_order_columns']) > 4) {
                         $coPDF->setPaper("a3", "landscape");
                     } else {
                         $coPDF->setPaper("a4", "landscape");
