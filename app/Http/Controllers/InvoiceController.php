@@ -2420,7 +2420,8 @@ class InvoiceController extends AppController
 
             return view('app/merchant/invoice/G' . $type . '/index', $data);
         } else {
-            return redirect('/error/invalidlink');
+            header('Location: /error/invalidlink');
+            die();
         }
     }
 
