@@ -510,6 +510,10 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
   Route::post('import/change-order/upload',  'ImportController@uploadChangeOrder')->name("merchant.import.change-order.upload");
+
+  
+	//new invoice format 
+  Route::any('template/invoice/format',  'InvoiceFormatController@format')->name("merchant.template.invoice.format");
 });
 
 Route::group(['prefix' => 'patron'], function () {

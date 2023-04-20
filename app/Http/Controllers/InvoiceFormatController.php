@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
+use App\Libraries\Helpers;
 use App\Model\InvoiceFormat;
 use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
@@ -24,6 +25,17 @@ class InvoiceFormatController extends AppController
         parent::__construct();
         $this->formatModel = new InvoiceFormat();
     }
+    
+    public function format(){
+        $title = 'Invoice Format';
+        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
+
+        $data['template_id'] = '';
+        $data['contract_id'] = '';
+         
+        return view('app.merchant.contract.steps.step-3', $data);
+    }
+
     /**
      * Renders form to create invoice format
      *
