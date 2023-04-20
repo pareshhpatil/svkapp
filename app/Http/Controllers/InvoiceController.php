@@ -2099,7 +2099,7 @@ class InvoiceController extends AppController
             $int = 0;
             foreach ($particulars as $k => $row) {
                 $ocm = ($row['original_contract_amount'] > 0) ? $row['original_contract_amount'] : 0;
-                $acoa = (isset($row['approved_change_order_amount'])) ? $row['approved_change_order_amount'] : 0;
+                $acoa = (isset($row['approved_change_order_amount'])) ? ($row['approved_change_order_amount'] > 0 ? $row['approved_change_order_amount'] : 0) : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
                 $particulars[$k]['attachments'] = '';
                 $particulars[$k]['override'] = false;
