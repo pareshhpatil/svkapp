@@ -2528,8 +2528,8 @@ class InvoiceController extends AppController
         $data['project_details'] =  $project_details;
 
         if (!isset($payment_request_data->payment_request_status)) {
-            header('Location: /error/invalidlink');
-            die();
+           // header('Location: /error/invalidlink');
+            //die();
         }
 
 
