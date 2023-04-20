@@ -2018,7 +2018,7 @@ class InvoiceController extends AppController
                 if (in_array($change_order_id, $exist_order_id_array)) {
                     $include_co = true;
                 } else {
-                    if ($req_type != null || $change_order_compare==false) {
+                    if ($req_type != null || $change_order_compare == false) {
                         $include_co = true;
                     } else {
                         $co_detail = $this->invoiceModel->getTableRow('order', 'order_id', $change_order_id);
@@ -2491,13 +2491,13 @@ class InvoiceController extends AppController
                         $grand_total_g_per = $grand_total_total_completed / $grand_total_current_total;
                     }
                     $grand_total_balance_to_finish = $grand_total_current_total - $grand_total_total_completed;
-                }else{
+                } else {
                     if ($grand_total_schedule_value != 0) {
                         $grand_total_g_per = $grand_total_total_completed / $grand_total_schedule_value;
                     }
                     $grand_total_balance_to_finish = $grand_total_schedule_value - $grand_total_total_completed;
                 }
-               
+
                 $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
 
                 $int++;
@@ -2713,7 +2713,9 @@ class InvoiceController extends AppController
             foreach ($co_data as $co_row) {
                 foreach (json_decode($co_row->particulars, 1) as $row) {
                     if ($billcode == $row['bill_code']) {
-                        $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
+                        if (is_numeric($row['change_order_amount'])) {
+                            $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
+                        }
                     }
                 }
             }
@@ -2819,10 +2821,10 @@ class InvoiceController extends AppController
                 //If change order listing enable then merge it as new pdf
                 if ($data['list_all_change_orders']) {
                     $coPDF = DOMPDF::loadView('mailer.invoice.format-co-listing-v2', $data['co_listing_data']);
-                    
-                    if(count($data['co_listing_data']['change_order_columns']) > 10) {
+
+                    if (count($data['co_listing_data']['change_order_columns']) > 10) {
                         $coPDF->setPaper("a2", "landscape");
-                    } elseif(count($data['co_listing_data']['change_order_columns']) > 4) {
+                    } elseif (count($data['co_listing_data']['change_order_columns']) > 4) {
                         $coPDF->setPaper("a3", "landscape");
                     } else {
                         $coPDF->setPaper("a4", "landscape");
@@ -3088,13 +3090,13 @@ class InvoiceController extends AppController
                     if (!in_array($changeOrderData->order_id, $changeOrderColumns)) {
                         $changeOrderColumns[] = $changeOrderData->order_id;
                     }
-                    
+
                     //create collection for change order particulars
                     $changeOrderParticularsCollect = collect($changeOrderParticulars);
 
                     $findParticular = $changeOrderParticularsCollect->where('bill_code', $val['bill_code'])->first();
 
-                    if(!empty($findParticular)) {
+                    if (!empty($findParticular)) {
                         $changeOrderValues[$changeOrderData->order_id] = $findParticular['change_order_amount'];
                     } else {
                         $changeOrderValues[$changeOrderData->order_id] = 0;
@@ -3153,7 +3155,7 @@ class InvoiceController extends AppController
         return $data;
     }
 
-    function setChangeOrderParticularRowArray($rowArray = null, $data= [])
+    function setChangeOrderParticularRowArray($rowArray = null, $data = [])
     {
         if ($rowArray != null) {
             $rowArray['total_completed'] = $rowArray['previously_billed_amount'] + $rowArray['current_billed_amount'] + $rowArray['stored_materials'];
@@ -3181,14 +3183,13 @@ class InvoiceController extends AppController
             //schedule plugin calcualtions
             $start_date = '1990-01-01';
             $end_date = date("Y-m-01", strtotime($data['bill_date']));
-            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+            $rowArray['change_from_previous_application'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
 
             $start_date = date("Y-m-01", strtotime($data['bill_date']));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
-            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date );
+            $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
 
-            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'] ;
-
+            $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'];
         }
         return $rowArray;
     }
