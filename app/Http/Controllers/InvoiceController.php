@@ -2522,16 +2522,19 @@ class InvoiceController extends AppController
 
     public function getInvoiceDetailsForViews($payment_request_id = null, $userRole = null, $user_type = null)
     {
-        $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $this->merchant_id);
+        $merchant_id = ($user_type == 'merchant') ? $this->merchant_id : 'customer';
+        $payment_request_data =  $this->invoiceModel->getPaymentRequestData($payment_request_id, $merchant_id);
         $project_details =  $this->invoiceModel->getProjectDeatils($payment_request_id);
         $data['project_details'] =  $project_details;
 
         if (!isset($payment_request_data->payment_request_status)) {
-            return redirect('/error/invalidlink');
+            header('Location: /error/invalidlink');
+            die();
         }
 
-        $hasAccess = false;
+
         if ($user_type == 'merchant') {
+            $hasAccess = false;
             $contractPrivilegesAccessIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
             $invoicePrivilegesAccessIDs = json_decode(Redis::get('invoice_privileges_' . $this->user_id), true);
 
@@ -2545,13 +2548,13 @@ class InvoiceController extends AppController
                     $hasAccess = true;
                 }
             }
-        } else {
-            $hasAccess = true;
+            if (!$hasAccess) {
+                header('Location: /merchant/no-permission');
+                die();
+            }
         }
 
-        if (!$hasAccess) {
-            return redirect('/merchant/no-permission');
-        }
+
 
         //get currecy icon
         $currency_icon =  $this->invoiceModel->getCurrencyIcon($payment_request_data->currency)->icon;
