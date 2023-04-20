@@ -198,6 +198,7 @@ class ContractController extends Controller
             $data['current_day'] = now()->format('l');
             $data['current_date'] = now()->format('d');
             $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
+            $data['current_month_last_date'] = now()->lastOfMonth()->format('Y-m-d');
             //$data['plugins'] = json_decode('{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"save_revision_history":"1","invoice_output":"1","has_aia_license":"1","has_watermark":"1","watermark_text":"DRAFT"}', 1);
         }
 
@@ -254,6 +255,7 @@ class ContractController extends Controller
                 $step++;
                 break;
             case 3:
+                dd($request->all());
                 if ($request->template_id != '') {
                     $template_id = $request->template_id;
                 } else {
@@ -266,6 +268,9 @@ class ContractController extends Controller
                 $invoice_format = new InvoiceFormatController();
                 $_POST = json_decode(json_encode($request->all()), 1);
                 $plugins = $invoice_format->getPlugins();
+
+                dd($plugins);
+
                 $this->contract_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $plugins);
                 $step++;
                 break;

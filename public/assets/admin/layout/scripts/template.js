@@ -2397,35 +2397,55 @@ function showEndDateInput(val,id='') {
         if(val=='1') {
             document.getElementById("occurences_div"+id).style.display = 'none';
             document.getElementById("end_date_div"+id).style.display = 'block';
+            $('#occurences_div'+id+' :input').attr('disabled', 'disabled');
+            $('#end_date_div'+id+' :input').attr('disabled', false);
         } else {
             document.getElementById("end_date_div"+id).style.display = 'none';
             document.getElementById("occurences_div"+id).style.display = 'block';
+            $('#end_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#occurences_div'+id+' :input').attr('disabled', false);
         }
     }
 }
 
-function showReminderDateInput(val) {
+function showReminderDateInput(val,id='') {
     if(val!='') {
+        id=(id!='') ? id : '';
         if(val==1) {
-            $('.reminder_dt_div').show();
-            $('.reminder_dt_hide').hide();
-            document.getElementById("1st_day_evry_month_div").style.display = 'block';
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("1st_day_evry_month_div"+id).style.display = 'block';
+            // $('#week_day_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#30days_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#last_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#1st_day_evry_month_div'+id+' :input').attr('disabled', false);
         } else if(val==2) {
-            $('.reminder_dt_div').show();
-            $('.reminder_dt_hide').hide();
-            document.getElementById("week_day_div").style.display = 'block';
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("week_day_div"+id).style.display = 'block';
+            // $('#1st_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#30days_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#last_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#week_day_div'+id+' :input').attr('disabled', false);
         } else if(val==3) {
-            $('.reminder_dt_div').show();
-            $('.reminder_dt_hide').hide();
-            document.getElementById("30days_div").style.display = 'block';
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("30days_div"+id).style.display = 'block';
+            // $('#1st_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#week_day_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#last_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#30days_div'+id+' :input').attr('disabled', false);
         } else if(val==4) {
-            $('.reminder_dt_div').show();
-            $('.reminder_dt_hide').hide();
+            $('.reminder_date_div'+id).hide();
             // document.getElementById("custom_reminder_date_div").style.display = 'block';
             $('#custom_date_reminder').modal('show');
         } else if(val==0) {
-            $('.reminder_dt_div').hide();
-            $('.reminder_dt_hide').hide();
+            $('.reminder_date_div'+id).hide();
+            // $('#1st_day_evry_month_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#week_day_div'+id+' :input').attr('disabled', 'disabled');
+            // $('#30days_div'+id+' :input').attr('disabled', 'disabled');
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#last_day_evry_month_div'+id+' :input').attr('disabled', false);
         }
     }
 }
