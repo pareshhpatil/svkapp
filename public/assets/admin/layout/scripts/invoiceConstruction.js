@@ -68,7 +68,7 @@ function calculateRow(id, type = 0) {
     //_('retainage_amount' + id).value = updateTextView1(getamt(original_contract_amount) * getamt(retainage_percent) / 100);
 
     approved_change_order_amount = ev('approved_change_order_amount' + id);
-    _('current_contract_amount' + id).value = updateTextView1(getamt(original_contract_amount) + getamt(approved_change_order_amount));
+    //_('current_contract_amount' + id).value = updateTextView1(getamt(original_contract_amount) + getamt(approved_change_order_amount));
 
 
     previously_billed_amount = ev('previously_billed_amount' + id);
