@@ -2116,7 +2116,6 @@ class InvoiceController extends AppController
 
         if (!empty($particulars)) {
             foreach ($particulars as $cp) {
-                dd($cp);
                 if ($cp['group'] != '') {
                     if (!in_array($cp['group'], $groups)) {
                         $groups[] = $cp['group'];
