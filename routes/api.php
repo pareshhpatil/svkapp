@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('sendotp', [App\Http\Controllers\ApiController::class, 'sendOTP'])->middleware('throttle:3,1');
+Route::post('validateotp', [App\Http\Controllers\ApiController::class, 'validateOTP']);
