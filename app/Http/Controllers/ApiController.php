@@ -69,6 +69,7 @@ class ApiController extends Controller
             $success['message'] = 'Login success';
             $success['user']['name'] = $user->name;
             $success['user']['email'] = $user->email;
+            $success['user']['mobile'] = $user->mobile;
             $success['user']['company_name'] = $user->company_name;
             $success['user']['token'] = $token;
 
