@@ -175,7 +175,7 @@ function errorCallback(error) {
 }
 var options = {
 	enableHighAccuracy: false,
-	timeout: 2000,
+	timeout: 10000,
 	maximumAge: 0
 };
 </script>
