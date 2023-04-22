@@ -26,3 +26,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
 
 
+Route::get('/app/home/{token}', [App\Http\Controllers\HomeController::class, 'home']);
+Route::get('/app/trips/{token}', [App\Http\Controllers\HomeController::class, 'trips']);
+Route::get('/app/notification/{token}', [App\Http\Controllers\HomeController::class, 'notification']);
