@@ -166,7 +166,7 @@ function successCallback(position) {
     details.innerHTML += "Heading: "+heading+"<br>";
     details.innerHTML += "Speed: "+speed+"<br>";
     details.innerHTML += "reqcount: "+reqcount;
-map.innerHTML = '<iframe width="700" height="300" src="https://maps.google.com/maps?q='+latitude+','+longitude+'&amp;z=15&amp;output=embed"></iframe>';
+map.innerHTML = '<iframe width="300" height="300" src="https://maps.google.com/maps?q='+latitude+','+longitude+'&amp;z=15&amp;output=embed"></iframe>';
 
 	
 }
