@@ -68,6 +68,7 @@
                                         </button>
                                       </div>
                                     </div>
+                                    <input type="file" name="file">
                                   </div>
                                 </div>
                               </div>
