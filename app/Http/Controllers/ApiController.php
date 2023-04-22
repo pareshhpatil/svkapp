@@ -73,15 +73,15 @@ class ApiController extends Controller
             $success['user']['token'] = $token;
 
             $success['links'][0]['title'] = 'Home';
-            $success['links'][0]['icon'] = 'fa fa-home';
+            $success['links'][0]['icon'] = 'e88a';
             $success['links'][0]['link'] = env('APP_URL') . '/app/home/' . $token;
 
             $success['links'][1]['title'] = 'Trips';
-            $success['links'][1]['icon'] = 'fa fa-trips';
+            $success['links'][1]['icon'] = 'e559';
             $success['links'][1]['link'] = env('APP_URL') . '/app/trips/' . $token;
 
             $success['links'][2]['title'] = 'Notification';
-            $success['links'][2]['icon'] = 'fa fa-notification';
+            $success['links'][2]['icon'] = 'e7f4';
             $success['links'][2]['link'] = env('APP_URL') . '/app/notification/' . $token;
 
             return response()->json(['success' => $success], 200);
