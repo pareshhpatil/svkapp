@@ -67,12 +67,14 @@ class ApiController extends Controller
             $this->model->updateTable('otp', 'id', $data->id, 'is_active', 0);
             $this->model->updateTable('users', 'id', $data->user_id, 'token', $token);
             $success['message'] = 'Login success';
-            $success['user']['name'] = array('title' => 'Name', 'value' => $user->name);
-            $success['user']['email'] = array('title' => 'Email', 'value' => $user->email);
-            $success['user']['mobile'] = array('title' => 'Mobile', 'value' => $user->mobile);
-            $success['user']['gender'] = array('title' => 'Gender', 'value' => $user->gender);
-            $success['user']['address'] = array('title' => 'Address', 'value' => $user->address);
-            $success['user']['company_name'] = array('title' => 'Company name', 'value' => $user->company_name);
+
+            $success['user']['profile_photo'] = 'https://siddhivinayaktravel.in/dist/uploads/employee/1682156612.jpg';
+            $success['user_detail'][] = array('title' => 'Name', 'value' => $user->name);
+            $success['user_detail'][] = array('title' => 'Email', 'value' => $user->email);
+            $success['user_detail'][] = array('title' => 'Mobile', 'value' => $user->mobile);
+            $success['user_detail'][] = array('title' => 'Gender', 'value' => $user->gender);
+            $success['user_detail'][] = array('title' => 'Address', 'value' => $user->address);
+            $success['user_detail'][] = array('title' => 'Company name', 'value' => $user->company_name);
 
             $success['links'][0]['title'] = 'Home';
             $success['links'][0]['icon'] = '0xf06d5';
