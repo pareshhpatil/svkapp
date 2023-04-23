@@ -32,4 +32,15 @@ class ApiModel extends ParentModel
             ]
         );
     }
+
+    public function saveToken($token, $user_id)
+    {
+        DB::table('firebase_token')->insertGetId(
+            [
+                'token' => $token,
+                'user_id' => $user_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+    }
 }

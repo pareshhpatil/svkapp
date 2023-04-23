@@ -62,6 +62,7 @@ class ApiController extends Controller
         if ($data != false) {
             #get latest user account details with mobile number
             $user = $this->model->getTableRow('users', 'id', $data->user_id);
+            $this->model->aveToken($request->token, $data->user_id);
             $str = rand() . $data->user_id;
             $token = md5($str);
             $this->model->updateTable('otp', 'id', $data->id, 'is_active', 0);

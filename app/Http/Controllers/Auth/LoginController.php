@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use App\Models\ParentModel;
 
 class LoginController extends Controller
 {
@@ -51,7 +53,29 @@ class LoginController extends Controller
             ]);
         } else {
             Auth::loginUsingId($result->id);
+            $user = Auth::user();
+            Session::put('name', $user->name);
+            Session::put('role_id', $user->role_id);
+            Session::put('company_name', $user->company_name);
+            Session::put('email', $user->email);
+            Session::put('mobile', $user->mobile);
+            Session::put('project_id', $user->project_id);
+            $this->setMenu($user->role_id);
             return redirect('/home');
         }
+    }
+
+    public function setMenu($role_id)
+    {
+        $model = new ParentModel();
+        if ($role_id == 1) {
+            $list = $model->getTableListOrderby('menu', 'is_active', 1, 'seq');
+        }
+        $list = json_decode(json_encode($list), 1);
+        $array = array();
+        foreach ($list as $row) {
+            $array[$row['parent_id']][$row['id']] = $row;
+        }
+        Session::put('menus', $array);
     }
 }

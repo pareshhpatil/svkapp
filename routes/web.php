@@ -17,11 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
-
+Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/login/verify', [App\Http\Controllers\Auth\LoginController::class, 'verify']);
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => array('auth','access')], function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/passenger/create', 'PassengerController@create');
+});
 
 Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
 
