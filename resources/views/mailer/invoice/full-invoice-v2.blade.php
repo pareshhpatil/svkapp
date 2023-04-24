@@ -137,7 +137,6 @@
         @include('mailer.invoice.format-703-v2')
     </div>
 
-
     @if(count($invoice_attachments) > 0)
     {{-- Attachment Pages --}}
     @foreach($invoice_attachments as $k => $attachment)

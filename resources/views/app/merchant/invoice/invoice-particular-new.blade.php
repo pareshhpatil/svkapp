@@ -1564,7 +1564,7 @@
                         });
                         this.filterCost(type);
                         OpenAdCostRow();
-                        const x = await this.wait(10);
+                        //const x = await this.wait(10);
                         if(type=='edit')
                         {
                             var exist_array=[];

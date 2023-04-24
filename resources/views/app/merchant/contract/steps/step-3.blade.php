@@ -112,6 +112,7 @@
             <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
                 <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
+                <li role="presentation"><a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">Invoice format</a></li>
             </ul>
             <div class="portlet-body">
 
@@ -119,7 +120,6 @@
                     <input type="hidden" name="template_id" value="{{$template_id}}">
                     <div class="tab-content" style="">
                         <div class="tab-pane active" id="tab1">
-
                             <div id="pgisupload">
                                 <div class="mb-2">
                                     <span class="form-section base-font">Invoice level attachments</span>
@@ -352,6 +352,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Tab 2 -->
                         <div class="tab-pane" id="tab2">
                             <div>
                                 <div class="mb-2 desk">
@@ -755,6 +756,44 @@
 
                             <!-- end of add reminder -->
                         </div>
+
+                        <!-- Tab 3 -->
+                        <div class="tab-pane" id="tab3">
+                            <div>
+                                <div class="mb-2">
+                                    <span class="form-section base-font">List all change orders
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content="Add a page which lists all incorporated COs. This will be a supplemental sheet after 703 listing." type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </span>
+                                    </span>
+
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" @isset($plugins['list_all_change_orders']) checked @endif id="islistallchangeorder" name="list_all_change_orders" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            
+                            <div id="pgschedulevalue">
+                                <hr>
+                                <div class="mb-2">
+                                    <span class="form-section base-font"> Scheduled value split
+                                        <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content='Show the impact of change orders on scheduled value i.e. against all bill codes display "Change from previous applications", "Change this period" and "Current CO" columns' type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                    <div class="pull-right ml-1">
+                                        <input type="checkbox" onchange="disablePlugin(this.checked, 'plgincludestorematerials')"
+                                         @isset($plugins['has_schedule_value']) checked @endif id="plgscheduleavailable" name="has_schedule_value" value="1" class="make-switch" data-size="small" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
 
                     </div>
                 </form>

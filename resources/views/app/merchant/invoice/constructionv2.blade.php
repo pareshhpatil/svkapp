@@ -263,51 +263,54 @@
                             @endif
                             @php if(!isset($v->value)) {$v->value="";} @endphp
                             @php if(!isset($v->html_id)) {$id="";}else{ $id=$v->html_id; } @endphp
-                            <div class="form-group">
-                                @if($v->column_name == 'Billing cycle name')
-                                <label class="control-label col-md-4">{{$v->column_name}}@if($v->column_datatype=="percent") (%)@endif
-                                    <i class="popovers fa fa-info-circle support blue" data-placement="top" data-container="body" data-trigger="hover" data-content="Billing cycle name field is not visible to your customer i.e. this field will not be shown in the invoice you create. The purpose of this field is to group your invoices for your reporting purposes. For ex. All invoice raised in April 2021 can be tagged as 'Apr2021'" data-original-title="" title=""></i>
-                                </label>
-                                @else
-                                <label class="control-label col-md-4">{{$v->column_name}}@if($v->column_datatype=="percent") (%)@endif @if($v->is_mandatory==1)<span class="required">* </span>@endif</label>
-                                @endif
-                                <div @if($v->function_id==4) class="col-md-7" @else class="col-md-8" @endif>
-                                    <div class="input-icon right">
-                                        @if($v->save_table_name=="request")
-                                        @php $field_name="requestvalue[]"; @endphp
-                                        <input type="hidden" name="col_position[]" value="{{$v->column_position}}">
-                                        @else
-                                        @php $field_name="newvalues[]"; @endphp
-                                        <input type="hidden" name="ids[]" value="{{$v->column_id}}" class="form-control">
-                                        @endif
-                                        <input type="hidden" name="function_id[]" value="{{$v->function_id}}">
-                                        <input type="hidden" value="{{$v->param}}" id="{{$id}}_param">
-                                        @if($v->column_datatype=="textarea")
-                                        <textarea type="text" name="{{$field_name}}" data-cy="invoice_detail_{{$v->column_name??''}}" class="form-control" placeholder="Enter specific value">{{$v->value}}</textarea>
-                                        @elseif($v->column_datatype=="date")
-                                        <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
-                                        @if($id=='due_date')<div class="text-danger" id="billing_date_error"></div>@endif
-                                        @elseif($v->column_datatype=="time")
-                                        <input type="text" {{$req}} autocomplete="off" data-cy="invoice_detail_{{$v->column_name??''}}" value="{{$v->value??''}}" id="{{$id}}" name="{{$field_name}}" class="form-control timepicker timepicker-no-seconds">
-                                        @elseif($v->function_id==15)
-                                        <select name="{{$field_name}}" required class="form-control select2me" data-cy="invoice_detail_einvoice_type" data-placeholder="Select...">
-                                            @foreach($einvoice_type as $ev)
-                                            <option value="{{$ev->config_value}}">{{$ev->description}}</option>
-                                            @endforeach
-                                        </select>
-                                        @else
-                                        @if($v->function_id==9)
-                                        <input type="hidden" id="{{$id}}" {!!$valid!!} data-cy="invoice_detail_{{$v->column_name??''}}" @if($v->column_name !='Billing cycle name' ) {{$req}} @endif value="{{$v->value??''}}" name="{{$field_name}}" class="form-control">
-                                        <input type="text" value="{{$v->display_value??''}}" class="form-control" readonly="readonly">
-                                        @else
-                                        <input type="text" id="{{$id}}" {!!$valid!!} data-cy="invoice_detail_{{$v->column_name??''}}" @if($v->column_name !='Billing cycle name' ) {{$req}} @endif value="{{$v->value??''}}" name="{{$field_name}}" class="form-control">
-                                        @endif
-                                        @endif
+                            @if($v->column_name != 'Billing cycle name')
+                                <div class="form-group">
+                                    @if($v->column_name == 'Billing cycle name')
+                                    {{-- <label class="control-label col-md-4">{{$v->column_name}}@if($v->column_datatype=="percent") (%)@endif
+                                        <i class="popovers fa fa-info-circle support blue" data-placement="top" data-container="body" data-trigger="hover" data-content="Billing cycle name field is not visible to your customer i.e. this field will not be shown in the invoice you create. The purpose of this field is to group your invoices for your reporting purposes. For ex. All invoice raised in April 2021 can be tagged as 'Apr2021'" data-original-title="" title=""></i>
+                                    </label> --}}
+                                    @else
+                                    <label class="control-label col-md-4">{{$v->column_name}}@if($v->column_datatype=="percent") (%)@endif @if($v->is_mandatory==1)<span class="required">* </span>@endif</label>
+                                    @endif
+                                    <div @if($v->function_id==4) class="col-md-7" @else class="col-md-8" @endif>
+                                        <div class="input-icon right">
+                                            @if($v->save_table_name=="request")
+                                            @php $field_name="requestvalue[]"; @endphp
+                                            <input type="hidden" name="col_position[]" value="{{$v->column_position}}">
+                                            @else
+                                            @php $field_name="newvalues[]"; @endphp
+                                            <input type="hidden" name="ids[]" value="{{$v->column_id}}" class="form-control">
+                                            @endif
+                                            <input type="hidden" name="function_id[]" value="{{$v->function_id}}">
+                                            <input type="hidden" value="{{$v->param}}" id="{{$id}}_param">
+                                            @if($v->column_datatype=="textarea")
+                                            <textarea type="text" name="{{$field_name}}" data-cy="invoice_detail_{{$v->column_name??''}}" class="form-control" placeholder="Enter specific value">{{$v->value}}</textarea>
+                                            @elseif($v->column_datatype=="date")
+                                            <input type="text" {{$req}} value="@if(isset($v->value))<x-localize :date='$v->value' type='date' /> @endif" data-cy="invoice_detail_{{$v->column_name??''}}" id="{{$id}}" name="{{$field_name}}" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
+                                            @if($id=='due_date')<div class="text-danger" id="billing_date_error"></div>@endif
+                                            @elseif($v->column_datatype=="time")
+                                            <input type="text" {{$req}} autocomplete="off" data-cy="invoice_detail_{{$v->column_name??''}}" value="{{$v->value??''}}" id="{{$id}}" name="{{$field_name}}" class="form-control timepicker timepicker-no-seconds">
+                                            @elseif($v->function_id==15)
+                                            <select name="{{$field_name}}" required class="form-control select2me" data-cy="invoice_detail_einvoice_type" data-placeholder="Select...">
+                                                @foreach($einvoice_type as $ev)
+                                                <option value="{{$ev->config_value}}">{{$ev->description}}</option>
+                                                @endforeach
+                                            </select>
+                                            @else
+                                            @if($v->function_id==9)
+                                            <input type="hidden" id="{{$id}}" {!!$valid!!} data-cy="invoice_detail_{{$v->column_name??''}}" @if($v->column_name !='Billing cycle name' ) {{$req}} @endif value="{{$v->value??''}}" name="{{$field_name}}" class="form-control">
+                                            <input type="text" value="{{$v->display_value??''}}" class="form-control" readonly="readonly">
+                                            @else
+                                            <input type="text" id="{{$id}}" {!!$valid!!} data-cy="invoice_detail_{{$v->column_name??''}}" @if($v->column_name !='Billing cycle name' ) {{$req}} @endif value="{{$v->value??''}}" name="{{$field_name}}" class="form-control">
+                                            @endif
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
-                                @if($v->function_id==4)<a onclick="showLedger();" class="btn green ml10 popovers" style="padding: 6px 10px;margin-left: 0px;" data-placement="top" data-container="body" data-trigger="hover" data-content="Pick a customer and view all invoices raised for the chosen customer"><i class="fa fa-list-ul"></i></a> @endif
+                                    @if($v->function_id==4)<a onclick="showLedger();" class="btn green ml10 popovers" style="padding: 6px 10px;margin-left: 0px;" data-placement="top" data-container="body" data-trigger="hover" data-content="Pick a customer and view all invoices raised for the chosen customer"><i class="fa fa-list-ul"></i></a> @endif
 
-                            </div>
+                                </div>
+                            @endif
+                            
                             @if($v->function_id==10)
                             <div class="form-group">
                                 <label class="control-label col-md-4">Billing Period start date</label>
