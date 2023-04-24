@@ -259,9 +259,6 @@ $font_size='11px;';
                                 <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size:{{$font_size}} 12px"> SCHEDULED
                                     VALUE </td>
                                 @endif
-
-                                <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size:{{$font_size}} 12px"> SCHEDULED
-                                    VALUE </td>
                                 @endif
                                 <td style="border-bottom:1px solid #313131; border-right:1px solid #313131;; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: center; font-size:{{$font_size}} 12px"> FROM
                                     PREVIOUS APPLICATION<br />
