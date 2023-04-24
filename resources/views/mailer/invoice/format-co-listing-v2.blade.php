@@ -180,6 +180,11 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$item['original_contract_amount']" /></div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$item['budget_reallocation']" /></div>
+                                </td>
+                                @endif
                                 @if (isset($item['change_order_col_values']))
                                 @foreach ($item['change_order_col_values'] as $key => $change_order_col_value)
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -270,6 +275,11 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$group['original_contract_amount']" /></div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$group['budget_reallocation']" /></div>
+                                </td>
+                                @endif
                                 @if (isset($group['change_order_col_values']))
                                 @foreach ($group['change_order_col_values'] as $cokey => $change_order_col_value)
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -302,6 +312,11 @@
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['original_contract_amount']" /></div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$val['budget_reallocation']" /></div>
+                                </td>
+                                @endif
                                 @if (isset($val['change_order_col_values']))
                                 @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -374,6 +389,11 @@
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['original_contract_amount']" /></div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$val['budget_reallocation']" /></div>
+                                </td>
+                                @endif
                                 @if (isset($val['change_order_col_values']))
                                 @foreach ($val['change_order_col_values'] as $key => $change_order_col_value)
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
