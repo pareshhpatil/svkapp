@@ -830,10 +830,10 @@ $font_size='11px;';
                                 @else
                                 @if($has_budget)
                                 <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:{{$font_size}} 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_schedule_value-$grand_total_bugget_reallocation" /></div>
+                                    <div style="font-size:{{$font_size}} 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_schedule_value-$grand_total_budget_reallocation" /></div>
                                 </td>
                                 <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size:{{$font_size}} 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_bugget_reallocation" /></div>
+                                    <div style="font-size:{{$font_size}} 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_budget_reallocation" /></div>
                                 </td>
                                 <td style="min-width: 100px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size:{{$font_size}} 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span><x-amount-format :amount="$grand_total_schedule_value" /></div>
