@@ -3137,10 +3137,12 @@ class InvoiceController extends AppController
                     $findParticular = $changeOrderParticularsCollect->where('bill_code', $val['bill_code'])->first();
 
                     if (!empty($findParticular)) {
-                        if (is_numeric($findParticular['budget_reallocation'])) {
-                            $has_budget = true;
-                            $grand_total_budget_reallocation = $grand_total_budget_reallocation + $findParticular['budget_reallocation'];
-                            $findParticular['change_order_amount'] = $findParticular['change_order_amount'] - $findParticular['budget_reallocation'];
+                        if (isset($findParticular['budget_reallocation'])) {
+                            if (is_numeric($findParticular['budget_reallocation'])) {
+                                $has_budget = true;
+                                $grand_total_budget_reallocation = $grand_total_budget_reallocation + $findParticular['budget_reallocation'];
+                                $findParticular['change_order_amount'] = $findParticular['change_order_amount'] - $findParticular['budget_reallocation'];
+                            }
                         }
                         $changeOrderValues[$changeOrderData->order_id] = $findParticular['change_order_amount'];
                     } else {
