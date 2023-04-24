@@ -255,7 +255,7 @@ class ContractController extends Controller
                 $step++;
                 break;
             case 3:
-                dd($request->all());
+                //dd($request->all());
                 if ($request->template_id != '') {
                     $template_id = $request->template_id;
                 } else {
@@ -269,7 +269,7 @@ class ContractController extends Controller
                 $_POST = json_decode(json_encode($request->all()), 1);
                 $plugins = $invoice_format->getPlugins();
 
-                dd($plugins);
+                //dd($plugins);
 
                 $this->contract_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $plugins);
                 $step++;

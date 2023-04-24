@@ -494,7 +494,6 @@ class InvoiceFormatController extends AppController
 
     function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null)
     {
-
         $pcarray = [];
         if (isset($request->particular_col)) {
             foreach ($request->particular_col as $pc) {
@@ -973,19 +972,20 @@ class InvoiceFormatController extends AppController
 
         if ($_POST['is_internal_reminder'] == 1) {
             $plugin['has_internal_reminder'] = $_POST['is_internal_reminder'];
-            // if (!empty($_POST['reminder_type'])) {
-            //     foreach ($_POST['reminder_type'] as $key => $type) {
-            //         $_POST['reminder_sms'][$key] = '';
-            //         $day = $_POST['reminder'][$key];
-            //         if ($type == 'after') {
-            //             $plugin['reminders_after'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
-            //         } else {
-            //             $plugin['reminders'][$day] = array('email_subject' => $_POST['reminder_subject'][$key], 'sms' => $_POST['reminder_sms'][$key]);
-            //         }
-            //     }
-            // }
+            if (!empty($_POST['internal_reminder_subject'])) {
+                foreach ($_POST['internal_reminder_subject'] as $key => $type) {
+                    
+                    $plugin['reminders'][$key] = array(
+                        'email_subject' => $_POST['internal_reminder_subject'][$key], 
+                        'reminder_date_type' => $_POST['reminder_date_type'][$key],
+                        'reminder_date'=>$_POST['reminder_date'][$key],
+                        'end_date_type'=>$_POST['end_date_type'][$key],
+                        'end_date'=>$_POST['end_date'][$key],
+                        'reminder_user'=>$_POST['reminder_user'].$key);
+                }
+            }
         }
-
+        
         if (empty($plugin)) {
             return null;
         }

@@ -612,6 +612,7 @@
                                     <div class="pull-right ml-1">
                                         <input type="checkbox" @isset($plugins['has_internal_reminder']) checked @endif id="is_internal_reminder" name="is_internal_reminder" onchange="disablePlugin(this.checked, 'plg15');
                                         showDebit('_internal_reminder');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                                        <input id="is_internal_reminder_txt" name="is_internal_reminder_txt" value="0" />
                                     </div>
                                 </div>
                                 <div id="pg_is_internal_reminder" @isset($plugins['has_internal_reminder']) @else style="display: none;" @endif>
@@ -709,13 +710,13 @@
                                                             </div>
                                                             <div id="week_day_div" style="display:none" class="reminder_date_div">
                                                                 <select class="form-control input-sm" name="reminder_date[]" disabled>
-                                                                    <option value="1">Monday</option>
-                                                                    <option value="2">Tuesday</option>
-                                                                    <option value="3">Wednesday</option>
-                                                                    <option value="4">Thursday</option>
-                                                                    <option value="5">Friday</option>
-                                                                    <option value="6">Saturday</option>
-                                                                    <option value="7">Sunday</option>
+                                                                    <option value="Monday">Monday</option>
+                                                                    <option value="Tuesday">Tuesday</option>
+                                                                    <option value="Wednesday">Wednesday</option>
+                                                                    <option value="Thursday">Thursday</option>
+                                                                    <option value="Friday">Friday</option>
+                                                                    <option value="Saturday">Saturday</option>
+                                                                    <option value="Sunday">Sunday</option>
                                                                 </select>
                                                             </div>
                                                             <div id="30days_div" style="display:none" class="reminder_date_div">
@@ -1084,13 +1085,13 @@
                                                 '<input type="text" id="1st_day_evry_month_dt'+cntInputs+'" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value="<x-localize :date="$current_month_1st_date" type="date" />" data-date-today-highlight="true" autocomplete="off" disabled/></div>'+
                                             '<div id="week_day_div'+cntInputs+'" style="display:none" class="reminder_date_div'+cntInputs+'">'+
                                                 '<select class="form-control input-sm" name="reminder_date[]" disabled>'+
-                                                    '<option value="1">Monday</option>'+
-                                                    '<option value="2">Tuesday</option>'+
-                                                    '<option value="3">Wednesday</option>'+
-                                                    '<option value="4">Thursday</option>'+
-                                                    '<option value="5">Friday</option>'+
-                                                    '<option value="6">Saturday</option>'+
-                                                    '<option value="7">Sunday</option></select></div>'+
+                                                    '<option value="Monday">Monday</option>'+
+                                                    '<option value="Tuesday">Tuesday</option>'+
+                                                    '<option value="Wednesday">Wednesday</option>'+
+                                                    '<option value="Thursday">Thursday</option>'+
+                                                    '<option value="Friday">Friday</option>'+
+                                                    '<option value="Saturday">Saturday</option>'+
+                                                    '<option value="Sunday">Sunday</option></select></div>'+
                                             '<div id="30days_div'+cntInputs+'" style="display:none" class="reminder_date_div'+cntInputs+'">'+
                                                 '<input type="number" name="reminder_date[]" min="1" max="31" class="form-control input-sm" value="30" disabled/></div>'+
                                     '</td>'+

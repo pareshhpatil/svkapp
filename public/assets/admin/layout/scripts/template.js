@@ -1778,9 +1778,13 @@ function disablePlugin(val, id) {
     else if (val == true && id == "plg10") {
         $("#pgiscovering").show();
     } else if(val == false && id == "plg15") {
+        
         $("#pg_is_internal_reminder").hide();
+        document.getElementById('is_internal_reminder_txt').value=0;
     } else if(val == true && id == "plg15") {
+       
         $("#pg_is_internal_reminder").show();
+        document.getElementById('is_internal_reminder_txt').value=1;
     }
 
 }
