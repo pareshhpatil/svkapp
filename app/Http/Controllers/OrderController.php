@@ -62,7 +62,7 @@ class OrderController extends Controller
 
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $projectPrivilegesIDs = ['all' => 'full'];
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -70,14 +70,14 @@ class OrderController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if ($privilegesID == 'full') {
                 $whereProjectIDs[] = $key;
             }
         }
 
         $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $contractPrivilegesIDs = ['all' => 'full'];
         } else {
             //get privileges from redis
@@ -87,7 +87,7 @@ class OrderController extends Controller
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'approve') {
+            if ($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'approve') {
                 $whereContractIDs[] = $key;
             }
         }
@@ -103,11 +103,11 @@ class OrderController extends Controller
             $data['detail'] = $row;
 
             $group_codes = [];
-            foreach($row->json_particulars as $row_particular){
-                if(isset($row_particular['group'])){
-                    if (!in_array($row_particular['group'], $group_codes)){
-                        if($row_particular['group'] !=''){
-                            array_push($group_codes,$row_particular['group']);
+            foreach ($row->json_particulars as $row_particular) {
+                if (isset($row_particular['group'])) {
+                    if (!in_array($row_particular['group'], $group_codes)) {
+                        if ($row_particular['group'] != '') {
+                            array_push($group_codes, $row_particular['group']);
                         }
                     }
                 }
@@ -117,6 +117,7 @@ class OrderController extends Controller
 
             $data['project_details'] = $model->getTableRow('project', 'id', $row->project_id);
             $data['project_id'] = $row->project_id;
+            $data['co_type'] = $request->co_type;
 
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
@@ -125,11 +126,13 @@ class OrderController extends Controller
             $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
         } else {
             $data['contract_id'] = '';
+            $data['co_type'] = 1;
         }
 
         $data["default_particulars"] = [];
         $data["default_particulars"]["bill_code"] = 'Bill Code';
         $data["default_particulars"]["cost_type"] = 'Cost Type';
+        $data["default_particulars"]["co_type"] = 'CO type';
         $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
         $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
         $data["default_particulars"]["unit"] = 'Unit';
@@ -147,6 +150,7 @@ class OrderController extends Controller
 
     public function save(Request $request)
     {
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'order_no' => 'required',
             'order_date' => 'required'
@@ -183,8 +187,8 @@ class OrderController extends Controller
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
-            if(isset($request->import) && $request->import=='Import') {
-                return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+            if (isset($request->import) && $request->import == 'Import') {
+                return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
             }
 
             $ChangeOrderHelper = new ChangeOrderHelper();
@@ -213,7 +217,7 @@ class OrderController extends Controller
             $data['contract_id'] = $redis_items['change_order_list']['search_param']['contract_id'];
         }
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $privilegesIDs = ['all' => 'full'];
             $contractPrivilegesIDs = ['all' => 'full'];
         } else {
@@ -225,14 +229,14 @@ class OrderController extends Controller
         $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
-            if($row->approved_date == '0000-00-00'){
+            if ($row->approved_date == '0000-00-00') {
                 $row->approved_date = '';
             }
         }
         $data['list'] = $list;
         $userRole = Session::get('user_role');
 
-        if($userRole == 'Admin') {
+        if ($userRole == 'Admin') {
             $projectPrivilegesIDs = ['all' => 'full'];
         } else {
             $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -240,7 +244,7 @@ class OrderController extends Controller
 
         $whereProjectIDs = [];
         foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-            if($privilegesID == 'full') {
+            if ($privilegesID == 'full') {
                 $whereProjectIDs[] = $key;
             }
         }
@@ -256,7 +260,7 @@ class OrderController extends Controller
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
-            if($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'view-only' || $contractPrivilegesID == 'approve') {
+            if ($contractPrivilegesID == 'full' || $contractPrivilegesID == 'edit' || $contractPrivilegesID == 'view-only' || $contractPrivilegesID == 'approve') {
                 $whereContractIDs[] = $key;
             }
         }
@@ -292,10 +296,10 @@ class OrderController extends Controller
             $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                if (in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
                     if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
                         $hasAccess = true;
                     }
@@ -306,7 +310,7 @@ class OrderController extends Controller
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
 
@@ -328,10 +332,10 @@ class OrderController extends Controller
             $orderPrivilegesAccessIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
 
             $hasAccess = false;
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $hasAccess = true;
             } else {
-                if(in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
+                if (in_array('all', array_keys($orderPrivilegesAccessIDs)) && !in_array($id, array_keys($orderPrivilegesAccessIDs))) {
                     if ($orderPrivilegesAccessIDs['all'] == 'full' || $orderPrivilegesAccessIDs['all'] == 'approve') {
                         $hasAccess = true;
                     }
@@ -342,10 +346,10 @@ class OrderController extends Controller
                 }
             }
 
-            if(!$hasAccess) {
+            if (!$hasAccess) {
                 return redirect('/merchant/no-permission');
             }
-            
+
             $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
             return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
         } else {
@@ -353,7 +357,7 @@ class OrderController extends Controller
         }
     }
 
-    public function update($link,$bulk_id=null)
+    public function update($link, $bulk_id = null)
     {
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
@@ -368,15 +372,14 @@ class OrderController extends Controller
                 }
             }
             $group_codes = [];
-            foreach($row->json_particulars as $row_particular){
-                if(isset($row_particular['group'])){
-                    if (!in_array($row_particular['group'], $group_codes)){
-                        if($row_particular['group'] !=''){
-                            array_push($group_codes,$row_particular['group']);
+            foreach ($row->json_particulars as $row_particular) {
+                if (isset($row_particular['group'])) {
+                    if (!in_array($row_particular['group'], $group_codes)) {
+                        if ($row_particular['group'] != '') {
+                            array_push($group_codes, $row_particular['group']);
                         }
                     }
                 }
-                
             }
             $data['group_codes'] = $group_codes;
             $data['group_codes_json'] =  json_encode($data['group_codes']);
@@ -388,7 +391,7 @@ class OrderController extends Controller
             $data["cust_list"] = $cust_list;
             $userRole = Session::get('user_role');
 
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $projectPrivilegesIDs = ['all' => 'full'];
             } else {
                 $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -396,7 +399,7 @@ class OrderController extends Controller
 
             $whereProjectIDs = [];
             foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-                if($privilegesID == 'full') {
+                if ($privilegesID == 'full') {
                     $whereProjectIDs[] = $key;
                 }
             }
@@ -430,7 +433,7 @@ class OrderController extends Controller
             $data['link'] = $link;
             $data['mode'] = 'update';
             $data['bulk_id'] = 0;
-           
+
             if ($bulk_id != null) {
                 $bulk_id = Encrypt::decode($bulk_id);
                 $particulars = $this->orderModel->getColumnValue('staging_change_order', 'bulk_id', $bulk_id, 'particulars');
@@ -459,7 +462,7 @@ class OrderController extends Controller
             $data["cust_list"] = $cust_list;
             $userRole = Session::get('user_role');
 
-            if($userRole == 'Admin') {
+            if ($userRole == 'Admin') {
                 $projectPrivilegesIDs = ['all' => 'full'];
             } else {
                 $projectPrivilegesIDs = json_decode(Redis::get('project_privileges_' . $this->user_id), true);
@@ -467,7 +470,7 @@ class OrderController extends Controller
 
             $whereProjectIDs = [];
             foreach ($projectPrivilegesIDs as $key => $privilegesID) {
-                if($privilegesID == 'full') {
+                if ($privilegesID == 'full') {
                     $whereProjectIDs[] = $key;
                 }
             }
@@ -535,9 +538,9 @@ class OrderController extends Controller
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
         $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
-        
-        if(isset($request->import) && $request->import=='Import') {
-            return redirect()->route('merchant.import.change-order',['order_id' => Encrypt::encode($id)]);
+
+        if (isset($request->import) && $request->import == 'Import') {
+            return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
         }
 
         if ($request->bulk_id > 0) {
@@ -587,7 +590,7 @@ class OrderController extends Controller
 
         $list = $this->orderModel->getOrderList($request->merchant_id, $from_date, $to_date, $request->contract_id, $start, $limit);
         foreach ($list as $ck => $row) {
-            if($row->status==0) {
+            if ($row->status == 0) {
                 $list[$ck]->status = 'Pending';
             } else {
                 $list[$ck]->status = 'Approved';
@@ -599,11 +602,12 @@ class OrderController extends Controller
         return response()->json($this->apiController->APIResponse('', $response), 200);
     }
 
-    public function getOrderDetails($order_id) {
+    public function getOrderDetails($order_id)
+    {
         if ($order_id != null) {
             $info =  $this->orderModel->getOrderData($order_id);
-            $info->particulars = json_decode($info->particulars,true);
-            if($info->status==0) {
+            $info->particulars = json_decode($info->particulars, true);
+            if ($info->status == 0) {
                 $info->status = 'Pending';
             } else {
                 $info->status = 'Approved';

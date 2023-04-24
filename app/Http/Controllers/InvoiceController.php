@@ -2001,6 +2001,7 @@ class InvoiceController extends AppController
                 }
             }
             $exist_order_id_array = json_decode($invoice->change_order_id, 1);
+            $order_id_array = json_decode($invoice->change_order_id, 1);
             if ($invoice->payment_request_status <> 11) {
                 $change_order_enable = false;
             } else {
