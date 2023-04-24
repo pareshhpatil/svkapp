@@ -500,7 +500,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     var row = '';
     read_cols = ["retainage_amount"];
     var numrow = Number($('input[name="particular_id[]"]').length + 1);
-    var co_type = 2;
+    var co_type = _('co_type').value;
     if (co_type == 1) {
         ur_select = 'selected';
         bd_select = '';
@@ -526,7 +526,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     row = row + '<td '+up+' id="td_unit' + numrow + '"><input id="unit' + numrow + '" placeholder="Unit" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="unit[]" data-cy="particular_unit' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td '+up+' id="td_rate' + numrow + '"><input id="rate' + numrow + '" placeholder="Rate" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="rate[]" data-cy="particular_rate' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td '+up+' id="td_co_amount' + numrow + '"><input id="change_order_amount' + numrow + '" readonly type="text" name="change_order_amount[]" data-cy="particular_change_order_amount' + numrow + '" class="form-control input-sm"></td>';
-    row = row + '<td colspan="3" '+bd+' id="td_budget' + numrow + '"><input id="budget' + numrow + '" placeholder="Budget reallocation" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td colspan="3" '+bd+' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="Budget reallocation" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ><input type="text" data-cy="particular_order_description' + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="order_description[]" class="form-control input-sm"/></td>'
     product_text = getGroupDropdown(defaultval, '', numrow);
     row = row + product_text;
@@ -1554,7 +1554,13 @@ function calculateChangeOrder(type = null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
+            if(_('co_type'+int).value==2)
+            {
+                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('budget' + int).value));
+            }else{
+                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
+
+            }
         });
     }
     catch (o) {

@@ -150,7 +150,6 @@ class OrderController extends Controller
 
     public function save(Request $request)
     {
-        dd($request->all());
         $validator = Validator::make($request->all(), [
             'order_no' => 'required',
             'order_date' => 'required'
@@ -175,7 +174,9 @@ class OrderController extends Controller
                     $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
                     $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
                     $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
+                    $row_array["budget_reallocation"] = str_replace(',', '', $request->budget[$skey]);
                     $row_array["order_description"] = $request->order_description[$skey];
+                    $row_array["co_type"] = $request->co_type[$skey];
                     $row_array["cost_type"] = $request->cost_type[$skey];
                     $row_array["retainage_percent"] = $request->retainage_percent[$skey];
                     $row_array["pint"] = $request->pint[$skey];

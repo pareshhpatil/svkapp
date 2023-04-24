@@ -399,8 +399,9 @@
                                     <div class="pull-right">
                                         <input type="hidden" value="{{$detail->contract_amount}}" id="contract_amount" name="contract_amount">
                                         <input type="hidden" value="{{$contract_id}}" name="contract_id">
+                                        <input type="hidden" value="{{$co_type}}" id="co_type">
                                         <input type="hidden" value="0" name="status">
-                                        <a href="/merchant/order/list" class="btn default">Cancel</a>
+                                        <a href="javascript:history.back()" class="btn default">Cancel</a>
                                         <input type="submit" value="{{$button}}" class="btn blue" data-cy="expense_dave" />
                                     </div>
                                 </div>
