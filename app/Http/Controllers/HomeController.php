@@ -24,7 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data['selectedMenu'] = [2,3];
+        $data['selectedMenu'] = [1];
         $data['menus'] = Session::get('menus');
         return view('web.dashboard', $data);
     }

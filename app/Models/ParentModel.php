@@ -115,15 +115,7 @@ class ParentModel extends Model
             ->get();
         return $retObj;
     }
-    public function getFromTableName($table)
-    {
 
-        $retObj = DB::table($table)
-            ->select(DB::raw('*'))
-            ->where('is_active', 1)
-            ->get();
-        return $retObj;
-    }
     public function getList($table, $param = [])
     {
         $retObj = DB::table($table)
@@ -145,87 +137,7 @@ class ParentModel extends Model
             ]);
     }
 
-    public function getConfigList($type)
-    {
 
-        $retObj = DB::table('config')
-            ->select(DB::raw('*'))
-            ->where('config_type', $type)
-            ->get();
-        return $retObj;
-    }
-
-    public function getMerchantCurrencyList($currency)
-    {
-
-        $retObj = DB::table('currency')
-            ->select(DB::raw('*'))
-            ->whereIn('code', $currency)
-            ->get();
-        return $retObj;
-    }
-
-
-    public function getConfigValue($type, $key)
-    {
-        $retObj = DB::table('config')
-            ->select(DB::raw('config_value'))
-            ->where('config_type', $type)
-            ->where('config_key', $key)
-            ->first();
-        if (!empty($retObj)) {
-            return $retObj->config_value;
-        } else {
-            return false;
-        }
-    }
-
-    public function getMerchantData($merchant_id, $key)
-    {
-
-        $retObj = DB::table('merchant_config_data')
-            ->select(DB::raw('value'))
-            ->where('key', $key)
-            ->where('is_active', 1)
-            ->where('merchant_id', $merchant_id)
-            ->first();
-        if (!empty($retObj)) {
-            return $retObj->value;
-        } else {
-            return false;
-        }
-    }
-
-
-    public function getMerchantValues($merchant_id, $table)
-    {
-        $retObj = DB::table($table)
-            ->select(DB::raw('*'))
-            ->where('is_active', 1)
-            ->where('merchant_id', $merchant_id)
-            ->get();
-        if ($retObj->isEmpty()) {
-            return array();
-        } else {
-            return $retObj;
-        }
-    }
-
-    public function getMerchantParentProducts($merchant_id, $table)
-    {
-        $retObj = DB::table($table)
-            ->select(DB::raw('*'))
-            ->where('is_active', 1)
-            ->whereIn('type', ['Goods', 'Service'])
-            ->where('parent_id', '!=', 0)
-            ->where('merchant_id', $merchant_id)
-            ->get();
-        if ($retObj->isEmpty()) {
-            return array();
-        } else {
-            return $retObj;
-        }
-    }
 
     public function isExistData($merchant_id, $table, $key, $value)
     {
@@ -243,17 +155,25 @@ class ParentModel extends Model
         }
     }
 
-    public function getSequenceId($type)
-    {
-        $retObj = DB::select("select generate_sequence('" . $type . "') as id;");
-        return $retObj[0]->id;
-    }
+
     public function querylist($query)
     {
 
         $retObj = DB::select($query);
 
         return $retObj;
+    }
+
+    public function saveTable($table, $array, $user_id = null)
+    {
+        $array['created_date'] = date('Y-m-d H:i:s');
+        if ($user_id != null) {
+            $array['created_by'] =  $user_id;
+            $array['last_update_by'] =  $user_id;
+        }
+        DB::table($table)->insertGetId(
+            $array
+        );
     }
 
     public function deleteTableRow($table, $column, $id, $merchant_id, $user_id)

@@ -54,6 +54,7 @@ class LoginController extends Controller
         } else {
             Auth::loginUsingId($result->id);
             $user = Auth::user();
+            Session::put('user_id', $user->id);
             Session::put('name', $user->name);
             Session::put('role_id', $user->role_id);
             Session::put('company_name', $user->company_name);

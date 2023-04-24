@@ -39,6 +39,8 @@
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css" />
     <link rel="stylesheet" href="/assets/css/custom.css" />
 
+    @yield('header')
+
     <!-- Page CSS -->
     <link rel="stylesheet" href="/assets/vendor/css/pages/cards-advance.css" />
     <!-- Helpers -->
@@ -233,7 +235,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">John Doe</span>
+                                                    <span class="fw-semibold d-block">{{Session::get('name')}}</span>
                                                     <small class="text-muted">Admin</small>
                                                 </div>
                                             </div>
@@ -243,7 +245,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="auth-login-cover.html" target="_blank">
+                                        <a class="dropdown-item" onclick="$('#logout').submit();" href="javascript:;">
                                             <i class="ti ti-logout me-2 ti-sm"></i>
                                             <span class="align-middle">Log Out</span>
                                         </a>
@@ -252,11 +254,8 @@
                             </li>
                             <!--/ User -->
                         </ul>
-                        <form action="{{ route('logout') }}" method="POST">
+                        <form id="logout" action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit">
-                                <span class="align-middle">Log Out</span>
-                            </button>
                         </form>
                     </div>
 
@@ -270,6 +269,16 @@
                     <!-- Content -->
 
                     <div class="container-xxl flex-grow-1 container-p-y">
+
+                        @if(session()->has('success'))
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <span class="alert-icon text-success me-2">
+                                <i class="ti ti-check ti-xs"></i>
+                            </span>
+                            {{ session()->get('success') }}
+                        </div>
+                        @endif
+
                         @yield('content')
                     </div>
                     <!-- / Content -->
@@ -329,8 +338,10 @@
     <!-- Main JS -->
     <script src="/assets/js/main.js"></script>
 
+    @yield('footer')
+
+
     <!-- Page JS -->
-    <script src="/assets/js/dashboards-analytics.js"></script>
 </body>
 
 </html>

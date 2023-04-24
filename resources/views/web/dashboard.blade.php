@@ -67,3 +67,8 @@
 
 </div>
 @endsection
+
+@section('footer')
+
+<script src="/assets/js/dashboards-analytics.js"></script>
+@endsection
