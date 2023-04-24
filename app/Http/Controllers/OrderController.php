@@ -129,19 +129,6 @@ class OrderController extends Controller
             $data['co_type'] = 1;
         }
 
-        $data["default_particulars"] = [];
-        $data["default_particulars"]["bill_code"] = 'Bill Code';
-        $data["default_particulars"]["cost_type"] = 'Cost Type';
-        $data["default_particulars"]["co_type"] = 'CO type';
-        $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
-        $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
-        $data["default_particulars"]["unit"] = 'Unit';
-        $data["default_particulars"]["rate"] = 'Rate';
-        $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
-        $data["default_particulars"]["order_description"] = 'Description';
-        $data["default_particulars"]["group"] = 'Group';
-        $data["default_particulars"]["sub_group"] = 'Sub Group';
-
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
 
@@ -174,9 +161,9 @@ class OrderController extends Controller
                     $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
                     $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
                     $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
+                    $row_array["co_type"] = $request->co_type[$skey];
                     $row_array["budget_reallocation"] = str_replace(',', '', $request->budget[$skey]);
                     $row_array["order_description"] = $request->order_description[$skey];
-                    $row_array["co_type"] = $request->co_type[$skey];
                     $row_array["cost_type"] = $request->cost_type[$skey];
                     $row_array["retainage_percent"] = $request->retainage_percent[$skey];
                     $row_array["pint"] = $request->pint[$skey];
@@ -407,17 +394,7 @@ class OrderController extends Controller
 
             $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
-            $data["default_particulars"] = [];
-            $data["default_particulars"]["bill_code"] = 'Bill Code';
-            $data["default_particulars"]["cost_type"] = 'Cost Type';
-            $data["default_particulars"]["original_contract_amount"] = 'Original Contract Amount';
-            $data["default_particulars"]["retainage_percent"] = 'Retainage Percentage';
-            $data["default_particulars"]["unit"] = 'Unit';
-            $data["default_particulars"]["rate"] = 'Rate';
-            $data["default_particulars"]["change_order_amount"] = 'Change Order Amount';
-            $data["default_particulars"]["order_description"] = 'Description';
-            $data["default_particulars"]["group"] = 'Group';
-            $data["default_particulars"]["sub_group"] = 'Sub Group';
+            
 
             $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
@@ -529,6 +506,8 @@ class OrderController extends Controller
             $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
             $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
             $row_array["order_description"] = $request->order_description[$skey];
+            $row_array["co_type"] = $request->co_type[$skey];
+            $row_array["budget_reallocation"] = str_replace(',', '', $request->budget[$skey]);
             $row_array["cost_type"] = $request->cost_type[$skey];
             $row_array["retainage_percent"] = $request->retainage_percent[$skey];
             $row_array["group"] = $request->group[$skey];
