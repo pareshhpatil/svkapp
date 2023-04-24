@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
+use App\Model\Contract;
 use App\Model\InvoiceFormat;
 use App\Model\InvoiceColumnMetadata;
 use App\Http\Controllers\AppController;
@@ -19,21 +20,52 @@ class InvoiceFormatController extends AppController
     use InvoiceFormatTrait;
     private $invoiceModel;
     private $formatModel;
+    private $contract_model;
     public function __construct()
     {
+        $this->contract_model = new Contract();
         $this->invoiceModel = new Invoice();
         parent::__construct();
         $this->formatModel = new InvoiceFormat();
     }
-    
-    public function format(){
+
+    public function format()
+    {
         $title = 'Invoice Format';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
 
         $data['template_id'] = '';
         $data['contract_id'] = '';
-         
-        return view('app.merchant.contract.steps.step-3', $data);
+        
+        $plugins = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
+        $data['plugins'] = json_decode($plugins, 1);
+        $data['post_url'] = '/merchant/invoice/format/save';
+
+        return view('app.merchant.invoiceformat.plugin', $data);
+    }
+
+    public function saveFormat(Request $request)
+    {
+        $plugins = $this->getPlugins();
+        if (isset($request->has_schedule_value)) {
+            $plugins = json_decode($plugins, 1);
+            $plugins['has_schedule_value'] = "1";
+            $plugins = json_encode($plugins);
+        }
+
+        $plugin_data = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id);
+        if ($plugin_data) {
+            $this->formatModel->updateGlobalPluginData($this->merchant_id, 'INVOICE_FORMAT', $plugins);
+            return redirect('/merchant/profile/settings');
+        } else {
+            $id = $this->formatModel->saveGlobalPluginData($this->merchant_id, $this->user_id, 'INVOICE_FORMAT', $plugins);
+
+            if ($id > 0) {
+                return redirect('/merchant/profile/settings');
+            } else {
+                return redirect('/404');
+            }
+        }
     }
 
     /**
@@ -554,7 +586,11 @@ class InvoiceFormatController extends AppController
         $data['design_name'] = $request->design_name;
         $data['design_color'] = $request->design_color;
         $data['footer_note'] = (isset($request->template_fooer_msg)) ? $request->template_fooer_msg : '';
-        $data['plugin'] = $this->getPlugins();
+        if ($type == 'update') {
+            $data['plugin'] = $this->getPlugins();
+        }else{
+            $data['plugin'] = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
+        }
         $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
         $data['image_path'] = $logo;
         $data['invoice_title'] = 'Performa Invoice';

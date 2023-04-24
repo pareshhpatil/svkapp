@@ -201,6 +201,8 @@ class ContractController extends Controller
             $data['particulars'] = json_decode($particulars, 1);
             $data['bulk_id'] = $bulk_id;
         }
+        
+        $data['post_url'] = '/merchant/contract/store';
 
         return view('app/merchant/contract/createv6', $data);
     }
