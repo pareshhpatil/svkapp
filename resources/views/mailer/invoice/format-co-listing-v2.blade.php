@@ -136,6 +136,7 @@
                             @endif
                             @php
                             $group_total_original_schedule_value = 0;
+                            $group_total_budget_reallocation = 0;
                             $group_total_schedule_value = 0;
                             @endphp
                             @if(isset($row['subgroup']) && $row['subgroup']!='')
@@ -196,12 +197,14 @@
                             </tr>
                             @php
                             $sub_total_schedule_value = $sub_total_schedule_value + filter_var($item['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $sub_total_budget_reallocation = $sub_total_budget_reallocation + filter_var($item['budget_reallocation'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $sub_original_total_schedule_value = $sub_original_total_schedule_value + filter_var($item['original_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
                             @endphp
                             @endforeach
                             @php
                             $group_total_schedule_value = $group_total_schedule_value + filter_var($sub_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $group_total_budget_reallocation = $group_total_budget_reallocation + filter_var($sub_total_budget_reallocation, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_original_schedule_value = $group_total_original_schedule_value + filter_var($sub_original_total_schedule_value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
                             @endphp
@@ -216,6 +219,11 @@
                                 <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$group_total_original_schedule_value" /> </div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-top:1px solid #313131;border-bottom:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px"><x-amount-format :amount="$group_total_budget_reallocation" /> </div>
+                                </td>
+                                @endif
                                 @php
                                 $approvedCOAmount = 0;
 
@@ -280,6 +288,7 @@
                             @php
                             $group_total_schedule_value = $group_total_schedule_value + filter_var($group['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                             $group_total_original_schedule_value = $group_total_original_schedule_value + filter_var($group['original_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                            $group_total_budget_reallocation = $group_total_budget_reallocation + filter_var($group['budget_reallocation'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
                             @endphp
                             @endforeach
@@ -317,6 +326,11 @@
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px;"><x-amount-format :amount="$group_total_original_schedule_value" /></div>
                                 </td>
+                                @if($has_budget)
+                                <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px;"><x-amount-format :amount="$group_total_budget_reallocation" /></div>
+                                </td>
+                                @endif
                                 @php
                                 $approvedCOAmount = 0;
 
@@ -397,6 +411,13 @@
                                 <td style="min-width: 70px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_original_schedule_value" /> </div>
                                 </td>
+                                @if($has_budget)
+                                <td style="min-width: 70px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
+                                    <div style="font-size: 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$grand_total_budget_reallocation" /> </div>
+                                </td>
+                                @endif
+
+
                                 @foreach($changeOrdersTotalAmountArray as $changeOrderTotalAmount)
                                 <td style="min-width: 90px;border-right:1px solid #313131;  border-top:1px solid #313131;  padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px;"><span style="font-family:@if($currency_icon=='₹')DejaVu Sans;@endif sans-serif;">{{$currency_icon}}</span> <x-amount-format :amount="$changeOrderTotalAmount" /> </div>
