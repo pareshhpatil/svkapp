@@ -39,6 +39,11 @@ class InvoiceFormatController extends AppController
         
         $plugins = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
         $data['plugins'] = json_decode($plugins, 1);
+        $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id),1);
+        $data['current_day'] = now()->format('l');
+        $data['current_date'] = now()->format('d');
+        $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
+        $data['current_month_last_date'] = now()->lastOfMonth()->format('Y-m-d');
         $data['post_url'] = '/merchant/invoice/format/save';
 
         return view('app.merchant.invoiceformat.plugin', $data);

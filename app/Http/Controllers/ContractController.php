@@ -198,7 +198,7 @@ class ContractController extends Controller
                 $internal_reminders = $this->contract_model->getTableList('internal_reminders','contract_id',$contract_id);
                 $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
             }
-            
+            //dd($data['plugins']['internal_reminders']);
             $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id),1);
             //$data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
             $data['current_day'] = now()->format('l');

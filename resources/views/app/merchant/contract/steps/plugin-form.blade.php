@@ -489,16 +489,8 @@
                     $sub_users_json = str_replace("\\", '\\\\', $sub_users);
                     $sub_users_json = str_replace("'", "\'", $sub_users_json);
                     $sub_users_json = str_replace('"', '\\"', $sub_users_json);
-                    $total_reminder_rows = '';
-                    if (!empty($plugins['internal_reminders'])) {
-                        $total_reminder_rows = count($plugins['internal_reminders']);
-                    }
                     @endphp
-                    var total_reminder_rows = {
-                        {
-                            $total_reminder_rows
-                        }
-                    };
+                    
                     var sub_users = JSON.parse('{!! $sub_users_json !!}');
                 </script>
                 <hr>
@@ -551,20 +543,12 @@
                                         <div id="sub_user_drpdwn{{$i}}"></div>
                                         <script>
                                             VirtualSelect.init({
-                                                ele: '#sub_user_drpdwn' + {
-                                                    {
-                                                        $i
-                                                    }
-                                                },
+                                                ele: '#sub_user_drpdwn'+{{$i}},
                                                 options: sub_users,
                                                 dropboxWrapper: 'body',
                                                 multiple: true,
                                                 name: 'reminder_user[]',
-                                                selectedValue: [{
-                                                    {
-                                                        $r['user_id']
-                                                    }
-                                                }],
+                                                selectedValue: [{{$r['user_id']}}],
                                             });
                                             //virtualSelectInit({{$i}});
                                         </script>
@@ -638,10 +622,10 @@
                                     <br>
                                     <div class="input-icon right">
                                         <div id="occurences_div{{$i}}" style={{($r['end_date_type']=='1') ? "display:block" : "display:none"}}>
-                                            <input type="number" name="end_date[]" min="1" max="100" class="form-control input-sm" placeholder="Enter occurrence" value="{{$r['end_date']}}" @if($r['end_date_type']!='1' ) disabled @endif />
+                                            <input type="number" name="end_date[]" min="1" max="100" class="form-control input-sm" placeholder="Enter occurrence" value="{{$r['end_date']}}" @if($r['end_date_type']!='1') disabled @endif />
                                         </div>
                                         <div id="end_date_div{{$i}}" style={{($r['end_date_type']=='2') ? "display:block" : "display:none"}}>
-                                            <input type="text" name="end_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" @if ($r['end_date_type']=='2' ) value='<x-localize :date="$r[' end_date']" type="date" />' @endif autocomplete="off" @if($r['end_date_type']!='2') disabled @endif />
+                                            <input type="text" name="end_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" @if($r['end_date_type']=='2') value='<x-localize :date="$r['end_date']" type="date" />' @endif autocomplete="off" @if($r['end_date_type']!='2') disabled @endif />
                                         </div>
                                     </div>
                                 </td>
