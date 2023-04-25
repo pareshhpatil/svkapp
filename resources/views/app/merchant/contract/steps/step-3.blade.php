@@ -1,3 +1,4 @@
+
 <style>
     .customize-output-panel-wrap {
         position: fixed;
@@ -601,6 +602,20 @@
 
                             <!--add reminder-->
                             <div>
+                                <script src='/assets/admin/layout/scripts/plugin/virtual-select.min.js'></script>
+                                <script>
+                                     @php
+                                        $sub_users_json=str_replace("\\",'\\\\', $sub_users); 
+                                        $sub_users_json=str_replace("'","\'",$sub_users_json);
+                                        $sub_users_json=str_replace('"','\\"',$sub_users_json);
+                                        $total_reminder_rows='';
+                                        if(!empty($plugins['internal_reminders'])) {
+                                            $total_reminder_rows = count($plugins['internal_reminders']);
+                                        }
+                                    @endphp
+                                    var total_reminder_rows = {{$total_reminder_rows}};
+                                    var sub_users = JSON.parse('{!! $sub_users_json !!}');
+                                </script>
                                 <hr>
                                 <div class="mb-2">
                                     <span class="form-section base-font">Add reminder
@@ -613,7 +628,7 @@
                                     <div class="pull-right ml-1">
                                         <input type="checkbox" @isset($plugins['has_internal_reminder']) checked @endif id="is_internal_reminder" name="is_internal_reminder" onchange="disablePlugin(this.checked, 'plg15');
                                         showDebit('_internal_reminder');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                        <input id="is_internal_reminder_txt" name="is_internal_reminder_txt" value="0" />
+                                        {{-- <input id="is_internal_reminder_txt" name="is_internal_reminder_txt" value="0" /> --}}
                                     </div>
                                 </div>
                                 <div id="pg_is_internal_reminder" @isset($plugins['has_internal_reminder']) @else style="display: none;" @endif>
@@ -642,47 +657,113 @@
                                         </thead>
                                         <tbody id="new_internal_reminder_before">
                                             @if(!empty($plugins['internal_reminders']))
+                                                @php $i=0 @endphp
                                                 @foreach($plugins['internal_reminders'] as $day=>$r)
                                                     <tr>
                                                         <td>
+                                                            <input type="hidden" name="internal_reminder_id[]" value="{{$r['id']}}" />
                                                             <div class="input-icon right">
-                                                                <select class="form-control" name="user_id"> 
-                                                                    <option>Select user</option>
+                                                                <div id="sub_user_drpdwn{{$i}}"></div>
+                                                                <script>
+                                                                    VirtualSelect.init({
+                                                                        ele: '#sub_user_drpdwn'+{{$i}},
+                                                                        options: sub_users,
+                                                                        dropboxWrapper: 'body',
+                                                                        multiple:true,
+                                                                        name: 'reminder_user[]',
+                                                                        selectedValue: [{{$r['user_id']}}],
+                                                                    });
+                                                                    //virtualSelectInit({{$i}});
+                                                                </script>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-icon right">
+                                                                <input type="text" name="internal_reminder_subject[]" value="{{$r['subject']}}" maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-icon right">
+                                                                <select class="form-control input-sm" id="reminder_date_type" onchange="showReminderDateInput(this.value,{{$i}})" name="reminder_date_type[]">
+                                                                    <option @if($r['reminder_date_type']=='1') selected @endif value="1">Last day of every month</option>
+                                                                    <option @if($r['reminder_date_type']=='2') selected @endif value="2">1st of every month</option>
+                                                                    <option @if($r['reminder_date_type']=='3') selected @endif value="3">Last weekday of every month</option>
+                                                                    <option @if($r['reminder_date_type']=='4') selected @endif value="4">30 days from last invoice bill date</option>
+                                                                    <option @if($r['reminder_date_type']=='5') selected @endif value="5">Custom</option>
                                                                 </select>
                                                             </div>
+                                                            <br>
+                                                            <div class="input-icon right">
+                                                                <div id="last_day_evry_month_div" style="display:none" class="reminder_date_div{{$i}}">
+                                                                    <input type="text" id="last_day_evry_month_dt" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_last_date" type="date" />' data-date-today-highlight="true" autocomplete="off" @if($r['reminder_date_type']!='1') disabled @endif/>
+                                                                </div>
+                                                                <div id="1st_day_evry_month_div{{$i}}" style={{($r['reminder_date_type']=='2') ? "display:block" : "display:none"}} class="reminder_date_div{{$i}}">
+                                                                    <input type="text" id="1st_day_evry_month_dt{{$i}}" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_1st_date" type="date" />' data-date-today-highlight="true" autocomplete="off" @if($r['reminder_date_type']!='2') disabled @endif />
+                                                                </div>
+                                                                <div id="week_day_div{{$i}}" style={{($r['reminder_date_type']=='3') ? "display:block" : "display:none"}} class="reminder_date_div{{$i}}">
+                                                                    <select class="form-control input-sm" name="reminder_date[]" @if($r['reminder_date_type']!='3') disabled @endif >
+                                                                        <option value="Monday">Monday</option>
+                                                                        <option value="Tuesday">Tuesday</option>
+                                                                        <option value="Wednesday">Wednesday</option>
+                                                                        <option value="Thursday">Thursday</option>
+                                                                        <option value="Friday">Friday</option>
+                                                                        <option value="Saturday">Saturday</option>
+                                                                        <option value="Sunday">Sunday</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div id="30days_div{{$i}}" style={{($r['reminder_date_type']=='4') ? "display:block" : "display:none"}} class="reminder_date_div{{$i}}">
+                                                                    <input type="number" name="reminder_date[]" min="1" max="31" class="form-control input-sm" value="30" @if($r['reminder_date_type']!='4') disabled @endif/>
+                                                                </div>
+                                                                <div id="custom_div{{$i}}" class="reminder_date_div{{$i}}" style={{($r['reminder_date_type']=='5') ? "display:block" : "display:none"}} >
+                                                                    @if($r['reminder_date_type']=='5')
+                                                                        <span id="custom_summary{{$i}}">
+                                                                            Repeat every {{$r['repeat_every']}} {{$r['repeat_type']}} 
+                                                                            @if($r['repeat_type']=='month')
+                                                                                <br/>
+                                                                                {{str_replace('_',' ',$r['repeat_on'])}}
+                                                                            @elseif($r['repeat_type']=='week') 
+                                                                                <br/>
+                                                                                @php $week=json_decode($r['repeat_on'],1) @endphp
+                                                                                {{implode(', ',$week)}}
+                                                                            @endif
+                                                                        </span>
+                                                                    @endif
+                                                                    <input name="reminder_date[]" value="" @if($r['reminder_date_type']!='5') disabled @endif hidden/>
+                                                                </div>
+                                                                <input name="repeat_every[]" id="repeat_every_txt{{$i}}" value="{{$r['repeat_every']}}" hidden/>
+                                                                <input name="repeat_type[]" id="repeat_type{{$i}}" value="{{$r['repeat_type']}}" hidden/>
+                                                                <input name="repeat_on[]" id="repeat_on{{$i}}" value="{{$r['repeat_on']}}" hidden/>
+                                                            <div>
                                                         </td>
                                                         <td>
                                                             <div class="input-icon right">
-                                                                <input type="text" name="internal_reminder_subject[]" value="{{$r['email_subject']}}" maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder">
-                                                                <input type="hidden" name="reminder_type[]" value="before">
+                                                                <select class="form-control input-sm" id="end_date_type" onchange="showEndDateInput(this.value,{{$i}})" name="end_date_type[]">
+                                                                    <option @if($r['end_date_type']=='1') selected @endif value="1">Number of occurrences</option>
+                                                                    <option @if($r['end_date_type']=='2') selected @endif value="2">End date</option>
+                                                                </select>
                                                             </div>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-control" id="reminder_date_type">
-                                                                <option value="0">Last day of every month</option>
-                                                                <option value="1">1st of every month</option>
-                                                                <option value="2">Last weekday of every month</option>
-                                                                <option value="3">30 days from last invoice bill date</option>
-                                                                <option value="4">Custom</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-control" id="end_date_type" onchange="showEndDateInput()">
-                                                                <option value="0">Number of occurrences</option>
-                                                                <option value="1">End date</option>
-                                                            </select>
+                                                            <br>
+                                                            <div class="input-icon right">
+                                                                <div id="occurences_div{{$i}}" style={{($r['end_date_type']=='1') ? "display:block" : "display:none"}}>
+                                                                    <input type="number" name="end_date[]" min="1" max="100" class="form-control input-sm" placeholder="Enter occurrence" value="{{$r['end_date']}}" @if($r['end_date_type']!='1') disabled @endif/>
+                                                                </div>
+                                                                <div id="end_date_div{{$i}}" style={{($r['end_date_type']=='2') ? "display:block" : "display:none"}}>
+                                                                    <input type="text" name="end_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" @if ($r['end_date_type']=='2') value='<x-localize :date="$r['end_date']" type="date" />' @endif autocomplete="off" @if($r['end_date_type']!='2') disabled @endif />
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                         <td>
                                                             <a href="javascript:;" onclick="$(this).closest('tr').remove();
                                                     tableHead('new_internal_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                                         </td>
                                                     </tr>
+                                                    @php $i++ @endphp
                                                 @endforeach
                                             @else
                                                 <tr>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <div id="sub_user_drpdwn"></div>
+                                                            <div id="sub_user_drpdwn0"></div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -692,24 +773,24 @@
                                                     </td>
                                                     <td>
                                                         <div class="input-icon right">
-                                                            <select class="form-control input-sm" id="reminder_date_type" onchange="showReminderDateInput(this.value)" name="reminder_date_type[]">
-                                                                <option value="0">Last day of every month</option>
-                                                                <option value="1">1st of every month</option>
-                                                                <option value="2">Last weekday of every month</option>
-                                                                <option value="3">30 days from last invoice bill date</option>
-                                                                <option value="4">Custom</option>
+                                                            <select class="form-control input-sm" id="reminder_date_type" onchange="showReminderDateInput(this.value,0)" name="reminder_date_type[]">
+                                                                <option value="1">Last day of every month</option>
+                                                                <option value="2">1st of every month</option>
+                                                                <option value="3">Last weekday of every month</option>
+                                                                <option value="4">30 days from last invoice bill date</option>
+                                                                <option value="5">Custom</option>
                                                             </select>
                                                         </div>
                                                         <br>
                                                        
                                                         <div class="input-icon right">
-                                                            <div id="last_day_evry_month_div" style="display:none" class="reminder_date_div">
-                                                                <input type="text" id="last_day_evry_month_dt" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_last_date" type="date" />' data-date-today-highlight="true" autocomplete="off"/>
+                                                            <div id="last_day_evry_month_div" style="display:none" class="reminder_date_div0">
+                                                                <input type="text" id="last_day_evry_month_dt0" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_last_date" type="date" />' data-date-today-highlight="true" autocomplete="off"/>
                                                             </div>
-                                                            <div id="1st_day_evry_month_div" style="display:none" class="reminder_date_div">
-                                                                <input type="text" id="1st_day_evry_month_dt" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_1st_date" type="date" />' data-date-today-highlight="true" autocomplete="off" disabled/>
+                                                            <div id="1st_day_evry_month_div0" style="display:none" class="reminder_date_div0">
+                                                                <input type="text" id="1st_day_evry_month_dt0" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value='<x-localize :date="$current_month_1st_date" type="date" />' data-date-today-highlight="true" autocomplete="off" disabled/>
                                                             </div>
-                                                            <div id="week_day_div" style="display:none" class="reminder_date_div">
+                                                            <div id="week_day_div0" style="display:none" class="reminder_date_div0">
                                                                 <select class="form-control input-sm" name="reminder_date[]" disabled>
                                                                     <option value="Monday">Monday</option>
                                                                     <option value="Tuesday">Tuesday</option>
@@ -720,25 +801,31 @@
                                                                     <option value="Sunday">Sunday</option>
                                                                 </select>
                                                             </div>
-                                                            <div id="30days_div" style="display:none" class="reminder_date_div">
+                                                            <div id="30days_div0" style="display:none" class="reminder_date_div0">
                                                                 <input type="number" name="reminder_date[]" min="1" max="31" class="form-control input-sm" value="30" disabled/>
                                                             </div>
+                                                            <div id="custom_div0" class="reminder_date_div0" style="display:none">
+                                                                <span id="custom_summary0"></span><input name="reminder_date[]" value="" hidden/>
+                                                            </div>
+                                                            <input name="repeat_every[]" id="repeat_every_txt0" value="" hidden/>
+                                                            <input name="repeat_type[]" id="repeat_type0" value="" hidden/>
+                                                            <input name="repeat_on[]" id="repeat_on0" value="" hidden/>
                                                         <div>
                                                     </td>
                                                     <td>
                                                         
                                                         <div class="input-icon right">
-                                                            <select class="form-control input-sm" id="end_date_type" onchange="showEndDateInput(this.value)" name="end_date_type[]">
-                                                                <option value="0">Number of occurrences</option>
-                                                                <option value="1">End date</option>
+                                                            <select class="form-control input-sm" id="end_date_type" onchange="showEndDateInput(this.value,0)" name="end_date_type[]">
+                                                                <option value="1">Number of occurrences</option>
+                                                                <option value="2">End date</option>
                                                             </select>
                                                         </div>
                                                         <br>
                                                         <div class="input-icon right">
-                                                            <div id="occurences_div" style="display:block;">
+                                                            <div id="occurences_div0" style="display:block;">
                                                                 <input type="number" name="end_date[]" min="1" max="100" class="form-control input-sm" placeholder="Enter occurrence"/>
                                                             </div>
-                                                            <div id="end_date_div" style="display:none;">
+                                                            <div id="end_date_div0" style="display:none;">
                                                                 <input type="text" name="end_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" autocomplete="off" disabled/>
                                                             </div>
                                                         </div>
@@ -827,7 +914,7 @@
         </div>
 
 
-        <div class="modal  fade" id="new_covering" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal fade" id="new_covering" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -970,23 +1057,24 @@
         </div>
 
         <!--custom-reminder date modal for add reminder plugin -->
-        <div class="modal  fade" id="custom_date_reminder" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal fade" id="custom_date_reminder" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog modal-sm" style="width:fit-content;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                         <h4 class="modal-title">Custom recurrence</h4>
                     </div>
-                    <form action="/merchant/coveringnote/save" method="post" id="custom_date_reminder_frm" class="form-horizontal form-row-sepe">
+                    <form action="/merchant/contract/custom_internal_reminder" method="post" id="custom_date_reminder_frm" class="form-horizontal form-row-sepe">
                         <div class="form-body">
                             <!-- Start profile details -->
                             <div class="row">
                                 <div class="col-md-12">
                                     <br>
-                                    <div id="covering_error" class="alert alert-danger" style="display: none;">
+                                    <div id="custom_date_error" class="alert alert-danger" style="display: none;">
 
                                     </div>
                                     <div class="form-group">
+                                        <input name="rowId" id="custom_date_reminder_row" hidden/>
                                         <label class="control-label col-md-4">Repeat every <span class="required">*
                                             </span></label>
                                         <div class="col-md-3 pt-7">
@@ -1007,19 +1095,19 @@
                                         </label>
                                         <div class="col-md-8 pt-7" id="repeat_by_week">
                                             <div class="" style="display:flex">
-                                                <span><div id="day1" class="custom_chk @if($current_day=='Sunday')active-day @endif" title="Sunday" val="S">S</div></span>
-                                                <span><div id="day2" class="custom_chk @if($current_day=='Monday')active-day @endif" title="Monday" val="M">M</div></span>
-                                                <span><div id="day3" class="custom_chk @if($current_day=='Tuesday')active-day @endif" title="Tuesday" val="T">T</div></span>
-                                                <span><div id="day4" class="custom_chk @if($current_day=='Wednesday')active-day @endif" title="Wednesday" val="W">W</div></span>
-                                                <span><div id="day5" class="custom_chk @if($current_day=='Thursday')active-day @endif" title="Thursday" val="T">T</div></span>
-                                                <span><div id="day6" class="custom_chk @if($current_day=='Friday')active-day @endif" title="Friday" val="F">F</div></span>
-                                                <span><div id="day7" class="custom_chk @if($current_day=='Saturday')active-day @endif" title="Saturday" val="S">S</div></span>
+                                                <span><div id="day1" class="custom_chk @if($current_day=='Sunday')active-day @endif" title="Sunday" val="S">S <input type="text" id="chk1" name="week_days_selected[]" value="" hidden/> </div></span>
+                                                <span><div id="day2" class="custom_chk @if($current_day=='Monday')active-day @endif" title="Monday" val="M">M <input type="text" id="chk2" name="week_days_selected[]" value="" hidden/></div></span>
+                                                <span><div id="day3" class="custom_chk @if($current_day=='Tuesday')active-day @endif" title="Tuesday" val="T">T <input type="text" id="chk3" name="week_days_selected[]" value="" hidden/></div></span>
+                                                <span><div id="day4" class="custom_chk @if($current_day=='Wednesday')active-day @endif" title="Wednesday" val="W">W <input type="text" id="chk4" name="week_days_selected[]" value="" hidden/> </div></span>
+                                                <span><div id="day5" class="custom_chk @if($current_day=='Thursday')active-day @endif" title="Thursday" val="T">T <input type="text" id="chk5" name="week_days_selected[]" value="" hidden/></div></span>
+                                                <span><div id="day6" class="custom_chk @if($current_day=='Friday')active-day @endif" title="Friday" val="F">F <input type="text" id="chk6" name="week_days_selected[]" value="" hidden/> </div></span>
+                                                <span><div id="day7" class="custom_chk @if($current_day=='Saturday')active-day @endif" title="Saturday" val="S">S <input type="text" id="chk7" name="week_days_selected[]" value="" hidden/></div></span>
                                             </div>
                                         </div>
                                         <div class="col-md-7" id="repeat_by_month" style="display:none;">
                                             <select class="form-control" name="repeat_on">
-                                                <option value="">Montly on day {{$current_date}}</option>
-                                                <option value="">Monthly on the third {{$current_day}}</option>
+                                                <option value="monthly_on_day_{{$current_date}}">Montly on day {{$current_date}}</option>
+                                                <option value="monthly_on_third_{{$current_day}}">Monthly on the third {{$current_day}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1028,8 +1116,8 @@
                         </div>
                     </form>
                     <div class="modal-footer">
-                        <button type="button" id="cclosebutton" class="btn default" data-dismiss="modal">Cancel</button>
-                        <input type="button" onclick="return saveCovering('');" value="Done" class="btn blue">
+                        <button type="button" id="closeInternalReminder" class="btn default" data-dismiss="modal">Cancel</button>
+                        <input type="button" onclick="return saveCustomInternalReminder();" value="Done" class="btn blue">
                     </div>
                 </div>
             </div>
@@ -1041,13 +1129,7 @@
         <!-- /.Customize invoice output drawer -->
 
         <script>
-            @php
-                $sub_users_json=str_replace("\\",'\\\\', $sub_users); 
-                $sub_users_json=str_replace("'","\'",$sub_users_json);
-                $sub_users_json=str_replace('"','\\"',$sub_users_json);
-            @endphp
-
-            var sub_users = JSON.parse('{!! $sub_users_json !!}');
+            
             function closeCustomizeInvoiceOutputDrawer() {
                 document.getElementById("panelWrapInvoiceOutput").style.boxShadow = "none";
                 document.getElementById("panelWrapInvoiceOutput").style.transform = "translateX(100%)";
@@ -1064,7 +1146,10 @@
                     let day = d.getDay();
 
                     var id=$(this).attr('id');
+                    var valueOfId = $(this).attr('title');
                     var classExist = $('#'+id).hasClass('active-day');
+                   
+
                     if(classExist==false) {
                         $('#'+id).addClass('active-day');
                     } else if(classExist==true) {
@@ -1072,12 +1157,18 @@
                     }
                     var cnt = 0;
                     var lineItem = Array.from (document.querySelectorAll('.custom_chk'))
+                   
+
                     lineItem.forEach((arrayElement, index) => {
                         //lineItem[index].className  += " otherclass";
-                        
+                        chkId= index+1;
                         var classExist = $('#'+lineItem[index].id).hasClass('active-day');
                         if(classExist==true) {
+                            //console.log(lineItem[index].title);
+                            $("#chk"+chkId).val(lineItem[index].title);
                             cnt=cnt+1;
+                        } else {
+                            $("#chk"+chkId).val("");
                         }
                     });
                     
@@ -1086,18 +1177,16 @@
                         $('#day'+day).addClass('active-day');
                     }
                 });
-
-                virtualSelectInit();
-                
+                virtualSelectInit('0');
             });
             function virtualSelectInit(id='') {
-                id=(id!='') ? id : '';
+                id=(id!='') ? id : 0;
                 VirtualSelect.init({
                     ele: '#sub_user_drpdwn'+id,
                     options: sub_users,
                     dropboxWrapper: 'body',
                     multiple:true,
-                    name: 'reminder_user'+id
+                    name: 'reminder_user[]',
                 });
 
                 $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
@@ -1107,16 +1196,23 @@
             function AddInternalReminder(type='before') {
                 var cntInput = document.getElementsByName("internal_reminder_subject[]");
                 cntInputs=cntInput.length;
+                
+                try {
+                    while (document.getElementById('sub_user_drpdwn' + cntInputs)) {
+                        cntInputs = cntInputs + 1;
+                    }
+                } catch(o){}
+
                 var mainDiv = document.getElementById('new_internal_reminder_'+type);
                 var newDiv = document.createElement('tr');
                 newDiv.innerHTML = '<td><div class="input-icon right"><div id="sub_user_drpdwn'+cntInputs+'"></div></div></td>'+
                                     '<td><div class="input-icon right"><input type="text" name="internal_reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder"></div></td>'+
                                     '<td><div class="input-icon right"><select class="form-control input-sm" id="reminder_date_type" onchange="showReminderDateInput(this.value,'+cntInputs+')" name="reminder_date_type[]">'+
-                                                                        '<option value="0">Last day of every month</option>'+
-                                                                        '<option value="1">1st of every month</option>'+
-                                                                        '<option value="2">Last weekday of every month</option>'+
-                                                                        '<option value="3">30 days from last invoice bill date</option>'+
-                                                                        '<option value="4">Custom</option></select></div><br>'+
+                                                                        '<option value="1">Last day of every month</option>'+
+                                                                        '<option value="2">1st of every month</option>'+
+                                                                        '<option value="3">Last weekday of every month</option>'+
+                                                                        '<option value="4">30 days from last invoice bill date</option>'+
+                                                                        '<option value="5">Custom</option></select></div><br>'+
                                         '<div class="input-icon right">'+
                                             '<div id="last_day_evry_month_div" style="display:none" class="reminder_date_div'+cntInputs+'">'+
                                                 '<input type="text" id="last_day_evry_month_dt" name="reminder_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" value="<x-localize :date="$current_month_last_date" type="date" />" data-date-today-highlight="true" autocomplete="off"/></div>'+
@@ -1133,8 +1229,13 @@
                                                     '<option value="Sunday">Sunday</option></select></div>'+
                                             '<div id="30days_div'+cntInputs+'" style="display:none" class="reminder_date_div'+cntInputs+'">'+
                                                 '<input type="number" name="reminder_date[]" min="1" max="31" class="form-control input-sm" value="30" disabled/></div>'+
+                                            '<div id="custom_div'+cntInputs+'" class="reminder_date_div'+cntInputs+'" style="display:none"><span id="custom_summary'+cntInputs+'"></span><input name="reminder_date[]" value="" hidden/></div>'+
+                                                '<input name="repeat_every[]" id="repeat_every_txt'+cntInputs+'" value="" hidden/>'+
+                                                '<input name="repeat_type[]" id="repeat_type'+cntInputs+'" value="" hidden/>'+
+                                                '<input name="repeat_on[]" id="repeat_on'+cntInputs+'" value="" hidden/>'+    
+                                        '</div>'+
                                     '</td>'+
-                                    '<td><div class="input-icon right"><select class="form-control input-sm" id="end_date_type" onchange="showEndDateInput(this.value,'+cntInputs+')" name="end_date_type[]"><option value="0">Number of occurrences</option><option value="1">End date</option></select><br>'+
+                                    '<td><div class="input-icon right"><select class="form-control input-sm" id="end_date_type" onchange="showEndDateInput(this.value,'+cntInputs+')" name="end_date_type[]"><option value="1">Number of occurrences</option><option value="2">End date</option></select><br>'+
                                         '<div class="input-icon right"><div id="occurences_div'+cntInputs+'" style="display:block;"><input type="number" name="end_date[]" min="1" max="100" class="form-control input-sm" placeholder="Enter occurrence"/></div>'+
                                         '<div id="end_date_div'+cntInputs+'" style="display:none;"><input type="text" name="end_date[]" class="form-control date-picker input-sm" data-date-format="{{ Session::get('default_date_format')}}" autocomplete="off" disabled/></div></div></div></td>'+
                                     '<td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';

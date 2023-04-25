@@ -972,18 +972,28 @@ class InvoiceFormatController extends AppController
 
         if ($_POST['is_internal_reminder'] == 1) {
             $plugin['has_internal_reminder'] = $_POST['is_internal_reminder'];
-            if (!empty($_POST['internal_reminder_subject'])) {
-                foreach ($_POST['internal_reminder_subject'] as $key => $type) {
+            // if (!empty($_POST['internal_reminder_subject'])) {
+            //     foreach ($_POST['internal_reminder_subject'] as $key => $type) {
                     
-                    $plugin['reminders'][$key] = array(
-                        'email_subject' => $_POST['internal_reminder_subject'][$key], 
-                        'reminder_date_type' => $_POST['reminder_date_type'][$key],
-                        'reminder_date'=>$_POST['reminder_date'][$key],
-                        'end_date_type'=>$_POST['end_date_type'][$key],
-                        'end_date'=>$_POST['end_date'][$key],
-                        'reminder_user'=>$_POST['reminder_user'].$key);
-                }
-            }
+            //         $plugin['internal_reminders'][$key] = array(
+            //             'email_subject' => $_POST['internal_reminder_subject'][$key], 
+            //             'reminder_date_type' => $_POST['reminder_date_type'][$key],
+            //             'reminder_date'=>$_POST['reminder_date'][$key],
+            //             'end_date_type'=>$_POST['end_date_type'][$key],
+            //             'end_date'=>$_POST['end_date'][$key],
+            //             'reminder_user'=>$_POST['reminder_user'][$key]);
+
+            //         if($_POST['reminder_date_type'][$key]==4) {
+            //             $plugin['internal_reminders'][$key]['custom_reminder']=array(
+            //                 'repeat_every' => $_POST['repeat_every'][$key],
+            //                 'repeat_type' => $_POST['repeat_type'][$key],
+            //                 'repeat_on'=> $_POST['repeat_on'][$key]
+            //             );
+            //         }
+            //     }
+            // }
+            //save internal reminders data into internal_reminders table
+            $this->setInternalReminders();
         }
         
         if ($_POST['list_all_change_orders'] == 1) {
@@ -1069,5 +1079,33 @@ class InvoiceFormatController extends AppController
         $defaultReceiptFields['Mode of Payment'] = array('label' => 'Mode of Payment', 'default_value' => 'Cash', 'is_mandatory' => 0, 'parentNode' => 'billing');
 
         return $defaultReceiptFields;
+    }
+
+    function setInternalReminders() {
+        if (!empty($_POST['internal_reminder_subject'])) {
+            $contract_id = Encrypt::decode($_POST['contract_id']);
+           
+            //find if exist reminders in table for contract if yes then set as is_active 0
+            $this->formatModel->updateTable('internal_reminders','contract_id',$contract_id,'is_active',0);
+
+            foreach ($_POST['internal_reminder_subject'] as $key => $type) {
+                $internal_reminders['contract_id'] = $contract_id;
+                $internal_reminders['user_id']=$_POST['reminder_user'][$key];
+                $internal_reminders['subject'] = $_POST['internal_reminder_subject'][$key];
+                $internal_reminders['reminder_date_type'] = $_POST['reminder_date_type'][$key];
+                $internal_reminders['reminder_date'] = $_POST['reminder_date'][$key];
+                $internal_reminders['end_date_type'] = $_POST['end_date_type'][$key];
+                $internal_reminders['end_date'] = $_POST['end_date'][$key];
+                $internal_reminders['repeat_every'] = $_POST['repeat_every'][$key];
+                $internal_reminders['repeat_type'] =  $_POST['repeat_type'][$key];
+                $internal_reminders['repeat_on'] = $_POST['repeat_on'][$key];
+                
+                if(isset($_POST['internal_reminder_id']) && isset($_POST['internal_reminder_id'][$key])) {
+                    $this->formatModel->updateInternalReminder($internal_reminders,$_POST['internal_reminder_id'][$key],$this->user_id);
+                } else {
+                    $id=$this->formatModel->saveInternalReminder($internal_reminders,$this->user_id);
+                }
+            }
+        }
     }
 }

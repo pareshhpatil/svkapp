@@ -193,8 +193,14 @@ class ContractController extends Controller
             $data['template_id'] = $contract->template_id;
             $data['plugins'] = json_decode($plugins, 1);
 
+            //find internal reminders plugin data if plugin is on
+            if($data['plugins']['has_internal_reminder']==1) {
+                $internal_reminders = $this->contract_model->getTableList('internal_reminders','contract_id',$contract_id);
+                $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
+            }
+            
             $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id),1);
-            $data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
+            //$data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
             $data['current_day'] = now()->format('l');
             $data['current_date'] = now()->format('d');
             $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
@@ -280,7 +286,7 @@ class ContractController extends Controller
                     $plugins['has_schedule_value'] = "1";
                     $plugins = json_encode($plugins);
                 }
-
+               
                 $this->contract_model->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $plugins);
                 $step++;
                 break;
@@ -1090,5 +1096,38 @@ class ContractController extends Controller
                 return response()->json($this->apiController->APIResponse('ER02057'), 422);
             }
         }
+    }
+    public function custom_internal_reminder(Request $request) {
+        $response = array();
+        $response['status'] = 0;
+        if($request->all()) {
+            if($request->repeat_occurences!='') {
+                $response['row_id'] = $request->rowId;
+                $response['repeat_every'] = $request->repeat_occurences;
+                $response['repeat_type'] = $request->repeat_type;
+
+                $summary = 'Repeat every '. $request->repeat_occurences. ' '. $request->repeat_type;
+
+                if($request->repeat_type=='week') {
+                    $week=[];
+                    foreach($request->week_days_selected as $wk=>$val) {
+                        if($val!=null) {
+                            $week[]=$val;
+                        }
+                    }
+                    $response['repeat_on'] = json_encode($week,1);
+                    $summary.= '<br/>' .implode(",",$week);
+                } else if($request->repeat_type=='month') {
+                    $response['repeat_on'] = $request->repeat_on;
+                    $summary.= '<br/>'. str_replace('_',' ',$request->repeat_on);
+                }
+                $response['status'] = 1;
+                $response['summary'] = $summary;
+            } else {
+                $response['status'] = 0;
+            }
+        }
+        
+        return json_encode($response);
     }
 }

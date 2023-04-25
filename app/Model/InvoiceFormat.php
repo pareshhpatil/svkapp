@@ -170,4 +170,44 @@ class InvoiceFormat extends ParentModel
         );
         return $id;
     }
+
+    public function saveInternalReminder($data,$user_id) {
+        $id = DB::table('internal_reminders')->insertGetId(
+            [
+                'contract_id' => $data['contract_id'],
+                'user_id' => $data['user_id'],
+                'subject' => $data['subject'],
+                'reminder_date_type' => $data['reminder_date_type'],
+                'reminder_date' => $data['reminder_date'],
+                'end_date_type'=> $data['end_date_type'],
+                'end_date'=> $data['end_date'],
+                'repeat_every'=>$data['repeat_every'],
+                'repeat_type'=>$data['repeat_type'],
+                'repeat_on'=>$data['repeat_on'],
+                'is_active' => '1',
+                'created_by' => $user_id,
+                'created_date' => date("Y-m-d h:i:s")
+            ]
+        );
+        return $id;
+    }
+
+    public function updateInternalReminder($data,$id,$user_id) {
+        DB::table('internal_reminders')->where('id', $id)
+            ->update([
+                'contract_id' => $data['contract_id'],
+                'user_id' => $data['user_id'],
+                'subject' => $data['subject'],
+                'reminder_date_type' => $data['reminder_date_type'],
+                'reminder_date' => $data['reminder_date'],
+                'end_date_type'=> $data['end_date_type'],
+                'end_date'=> $data['end_date'],
+                'repeat_every'=>$data['repeat_every'],
+                'repeat_type'=>$data['repeat_type'],
+                'repeat_on'=>$data['repeat_on'],
+                'is_active' => '1',
+                'last_updated_by' => $user_id,
+                'last_updated_date' => date("Y-m-d h:i:s")
+            ]);
+    }
 }
