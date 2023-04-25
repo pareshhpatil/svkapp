@@ -139,3 +139,85 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<!--custom-reminder date modal for add reminder plugin -->
+<div class="modal fade" id="custom_date_reminder" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="width:fit-content;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Custom recurrence</h4>
+            </div>
+            <form action="/merchant/contract/custom_internal_reminder" method="post" id="custom_date_reminder_frm" class="form-horizontal form-row-sepe">
+                <div class="form-body">
+                    <!-- Start profile details -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <br>
+                            <div id="custom_date_error" class="alert alert-danger" style="display: none;">
+
+                            </div>
+                            <div class="form-group">
+                                <input name="rowId" id="custom_date_reminder_row" hidden />
+                                <label class="control-label col-md-4">Repeat every <span class="required">*
+                                    </span></label>
+                                <div class="col-md-3 pt-7">
+                                    <input type="number" required name="repeat_occurences" min="1" class="form-control" value="">
+                                </div>
+                                <div class="col-md-2 pt-7">
+                                    <select class="form-control" name="repeat_type" onchange="checkRepeatType(this.value)">
+                                        <option value="day">day</option>
+                                        <option value="week" selected>week</option>
+                                        <option value="month">month</option>
+                                        <option value="year">year</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="repeat_on_div">
+                                <label class="control-label col-md-4">Repeat on <span class="required">*
+                                    </span>
+                                </label>
+                                <div class="col-md-8 pt-7" id="repeat_by_week">
+                                    <div class="" style="display:flex">
+                                        <span>
+                                            <div id="day1" class="custom_chk @if($current_day=='Sunday')active-day @endif" title="Sunday" val="S">S <input type="text" id="chk1" name="week_days_selected[]" value="" hidden /> </div>
+                                        </span>
+                                        <span>
+                                            <div id="day2" class="custom_chk @if($current_day=='Monday')active-day @endif" title="Monday" val="M">M <input type="text" id="chk2" name="week_days_selected[]" value="" hidden /></div>
+                                        </span>
+                                        <span>
+                                            <div id="day3" class="custom_chk @if($current_day=='Tuesday')active-day @endif" title="Tuesday" val="T">T <input type="text" id="chk3" name="week_days_selected[]" value="" hidden /></div>
+                                        </span>
+                                        <span>
+                                            <div id="day4" class="custom_chk @if($current_day=='Wednesday')active-day @endif" title="Wednesday" val="W">W <input type="text" id="chk4" name="week_days_selected[]" value="" hidden /> </div>
+                                        </span>
+                                        <span>
+                                            <div id="day5" class="custom_chk @if($current_day=='Thursday')active-day @endif" title="Thursday" val="T">T <input type="text" id="chk5" name="week_days_selected[]" value="" hidden /></div>
+                                        </span>
+                                        <span>
+                                            <div id="day6" class="custom_chk @if($current_day=='Friday')active-day @endif" title="Friday" val="F">F <input type="text" id="chk6" name="week_days_selected[]" value="" hidden /> </div>
+                                        </span>
+                                        <span>
+                                            <div id="day7" class="custom_chk @if($current_day=='Saturday')active-day @endif" title="Saturday" val="S">S <input type="text" id="chk7" name="week_days_selected[]" value="" hidden /></div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-7" id="repeat_by_month" style="display:none;">
+                                    <select class="form-control" name="repeat_on">
+                                        <option value="monthly_on_day_{{$current_date}}">Montly on day {{$current_date}}</option>
+                                        <option value="monthly_on_third_{{$current_day}}">Monthly on the third {{$current_day}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" id="closeInternalReminder" class="btn default" data-dismiss="modal">Cancel</button>
+                <input type="button" onclick="return saveCustomInternalReminder();" value="Done" class="btn blue">
+            </div>
+        </div>
+    </div>
+</div>
+<!--end of custom-reminder date modal for add reminder plugin -->
