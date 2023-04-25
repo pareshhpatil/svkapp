@@ -516,6 +516,8 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   
 	//new invoice format 
   Route::any('template/invoice/format',  'InvoiceFormatController@format')->name("merchant.template.invoice.format");
+  Route::any('invoice/format/save',  'InvoiceFormatController@saveFormat')->name("merchant.template.invoice.format.save");
+  
 });
 
 Route::group(['prefix' => 'patron'], function () {
