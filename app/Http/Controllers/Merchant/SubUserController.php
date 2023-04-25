@@ -62,10 +62,6 @@ class SubUserController extends AppController
 
         $data['briqRoles'] = $this->subUserHelper->getRoles($this->merchant_id);
 
-        $admin = $this->subUserHelper->getAdminRole($this->merchant_id);
-
-        $data['adminID'] = $admin->id;
-
         return view('app/merchant/subuser/create', $data);
     }
 
@@ -86,47 +82,6 @@ class SubUserController extends AppController
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @author Nitish
-     */
-    public function storeAjax(Request $request)
-    {
-        $rules = [
-            'email_id' => 'required|max:255',
-            'first_name' => 'required|max:50',
-            'last_name' => 'required|max:50',
-            'role' => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'messages' => $validator->messages()
-            ]);
-        }
-
-        $status = $this->subUserHelper->storeUser($this->user_id, $request);
-
-        if(isset($status['email_exist']) && $status['email_exist'] === true) {
-            return response()->json([
-                'success' => false
-            ]);
-        }
-
-        $user = $status['user'] ?? [];
-
-        $user->user_id = Encrypt::encode($user->user_id);
-
-        return response()->json([
-            'success' => true,
-            'user' => $user
-        ]);
-    }
-
-    /**
      * Show the form for edit user.
      *
      * @return \Illuminate\Contracts\View\View
@@ -138,10 +93,6 @@ class SubUserController extends AppController
         $data = Helpers::setBladeProperties($title);
 
         $data['briqRoles'] = $this->subUserHelper->getRoles($this->merchant_id);
-
-        $admin = $this->subUserHelper->getAdminRole($this->merchant_id);
-
-        $data['adminID'] = $admin->id;
 
         /** @var \App\User $User */
         $User = \App\User::query()
@@ -182,36 +133,6 @@ class SubUserController extends AppController
         $this->subUserHelper->updateUser($this->user_id, $userID, $request);
 
         return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
-    }
-
-    /**
-     * @param $userID
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @author Nitish
-     */
-    public function updateAjax($userID, Request $request)
-    {
-        $rules = [
-            'first_name' => 'required|max:50',
-            'last_name' => 'required|max:50',
-            'role' => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'messages' => $validator->messages()
-            ]);
-        }
-
-        $this->subUserHelper->updateUser($this->user_id, $userID, $request);
-
-        return response()->json([
-            'success' => true
-        ]);
     }
 
     /**
@@ -706,6 +627,25 @@ class SubUserController extends AppController
             }
 
         }
+    }
+
+    public function getPrivilegesPage($userID)
+    {
+        $title = 'Edit Team Members';
+
+        $data = Helpers::setBladeProperties($title);
+
+        /** @var User $User */
+        $User = User::query()
+            ->where('user_id', Encrypt::decode($userID))
+            ->first();
+
+        $User->user_id = Encrypt::encode($User->user_id);
+
+        $data['user'] = $User;
+
+        return view('app/merchant/subuser/privileges', $data);
+
     }
 
     private function changeOrderTobeNotify($notifyChangeOrderPrivilegesTypeIDs, $userID)

@@ -82,12 +82,8 @@
         text-align: center;
     }
 
-    #update_user_form .select2-container, #create_user_form .select2-container {
-        z-index: 999;
-    }
-
     .select2-container {
-        z-index: 999999;
+        z-index: 999;
     }
 
     .form .form-actions {
@@ -597,16 +593,7 @@
                 data: data,
                 success: function(response) {
                     if(response.success == true) {
-                        let currentURL = window.location.href;
-                        let currentURLArr = currentURL.split('/');
-                        if(currentURLArr.at(-1) == 'edit' || currentURLArr.at(-1) == 'create') {
-                            toastr.success('User updated successfully', 'Message');
-                            setTimeout(() => {
-                                window.location.href = '/merchant/subusers';
-                            }, 500)
-                        } else {
-                            window.location.reload();
-                        }
+                        window.location.reload();
                     }
 
                 }

@@ -478,16 +478,16 @@ Breadcrumbs::for('merchant.subusers.create', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Manage Users');
-    $trail->push('Submerchant list', url('/merchant/subusers'));
-    $trail->push('Create sub-merchant');
+    $trail->push('Sub-user list', url('/merchant/subusers'));
+    $trail->push('Create sub-user');
 });
 
 Breadcrumbs::for('merchant.subusers.edit', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Manage Users');
-    $trail->push('Submerchant list', url('/merchant/subusers'));
-    $trail->push('Edit sub-merchant');
+    $trail->push('Sub-user list', url('/merchant/subusers'));
+    $trail->push('Edit sub-user');
 });
 
 Breadcrumbs::for('merchant.roles.index', function ($trail) {
@@ -539,4 +539,12 @@ Breadcrumbs::for('merchant.import.change-order', function ($trail) {
     $trail->parent('home');
     $trail->push('Imports', url('/merchant/imports'));
     $trail->push('Change Order');
+});
+
+Breadcrumbs::for('merchant.subusers.privileges', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', url('/merchant/profile/settings'));
+    $trail->push('Manage Users');
+    $trail->push('Sub-user list', url('/merchant/subusers'));
+    $trail->push('Edit sub-user');
 });
