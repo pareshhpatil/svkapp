@@ -197,7 +197,7 @@ function getSubGroupDropdown(defaultval, type, numrow = 1) {
         type = '';
     }
     var produ_text = '<td class="col-id-no">' +
-        '<select id="sub_group' +numrow+ '" ' +
+        '<select id="sub_group' + numrow + '" ' +
         'name="' + type + 'sub_group[]" >';
 
     produ_text = produ_text + '</select></td>';
@@ -500,60 +500,40 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     var row = '';
     read_cols = ["retainage_amount"];
     var numrow = Number($('input[name="particular_id[]"]').length + 1);
+    var co_type = _('co_type').value;
+    if (co_type == 1) {
+        ur_select = 'selected';
+        bd_select = '';
+        up = '';
+        bd = 'style="display:none;"'
+    } else {
+        ur_select = '';
+        bd_select = 'selected';
+        up = 'style="display:none;"';
+        bd = ''
+    }
     while (_('pint' + numrow)) {
         numrow = Number(numrow + 1);
     }
-    particular_col_array = {
-        "bill_code": "Bill Code",
-        "cost_type": "Cost Type",
-        "original_contract_amount": "Original Contract Amount",
-        "retainage_percent": "Retainage Percentage",
-        "unit": "Unit",
-        "rate": "Rate",
-        "change_order_amount": "Chnage Order Amount",
-        "order_description": "Description",
-        "group": "Group",
-        "sub_group": "Sub group",
-    };
-    $.each(particular_col_array, function (index, value) {
-        if (index != 'sr_no') {
-            readonly = '';
-            if (read_cols.includes(index)) {
-                readonly = 'readonly';
-            }
-            if (index == 'bill_code') {
-                product_text = getCGItextReturnsV2(defaultval, '', numrow);
-                row = row + product_text;
-            }
-            else if (index == 'cost_type') {
-                product_text = getCostTypeCode(defaultval, '', numrow);
-                row = row + product_text;
-            }
-            else if (index == 'original_contract_amount') {
-                row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm" value="0"></td>';
-            }
-            else if (index == 'unit' || index == 'rate' || index == 'retainage_percent') {
-                row = row + '<td><input id="' + index + numrow + '" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
-            }
-            else if (index == 'change_order_amount') {
-                row = row + '<td><input id="change_order_amount' + numrow + '" readonly type="text" name="' + index + '[]" data-cy="particular_' + index + numrow + '" class="form-control input-sm"></td>';
-            }
-            else if (index == 'order_description') {
-                row = row + '<td><input type="text" data-cy="particular_' + index + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="' + index + '[]" class="form-control input-sm"/></td>'
-            }
-            else if (index == 'group') {
-                product_text = getGroupDropdown(defaultval, '', numrow);
-                row = row + product_text;
-            }
-            else if (index == 'sub_group') {
-                product_text = getSubGroupDropdown(defaultval, '', numrow);
-                row = row + product_text;
-            }
-            else {
-                row = row + getParticularValue(index, numrow, readonly);
-            }
-        }
-    });
+    product_text = getCGItextReturnsV2(defaultval, '', numrow);
+    row = row + product_text;
+    product_text = getCostTypeCode(defaultval, '', numrow);
+    row = row + product_text;
+    row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option></select></td>';
+    row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="original_contract_amount[]" data-cy="particular_original_contract_amount' + numrow + '" class="form-control input-sm" value="0"></td>';
+    row = row + '<td><input id="retainage_percent' + numrow + '"  step=".00000000001" type="number" name="retainage_percent[]" data-cy="particular_retainage_percent' + numrow + '" class="form-control input-sm"></td>';
+
+    row = row + '<td ' + up + ' id="td_unit' + numrow + '"><input id="unit' + numrow + '" placeholder="Unit" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="unit[]" data-cy="particular_unit' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td ' + up + ' id="td_rate' + numrow + '"><input id="rate' + numrow + '" placeholder="Rate" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="rate[]" data-cy="particular_rate' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td ' + up + ' id="td_co_amount' + numrow + '"><input id="change_order_amount' + numrow + '" readonly type="text" name="change_order_amount[]" data-cy="particular_change_order_amount' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td colspan="3" ' + bd + ' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="Budget reallocation" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td ><input type="text" data-cy="particular_order_description' + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="order_description[]" class="form-control input-sm"/></td>'
+    product_text = getGroupDropdown(defaultval, '', numrow);
+    row = row + product_text;
+    product_text = getSubGroupDropdown(defaultval, '', numrow);
+    row = row + product_text;
+
+
     row = row + '<input type="hidden" value=0 id="calculated_perc' + numrow + '" name="calculated_perc[]">' +
         '<input type="hidden" value=0 id="calculated_row' + numrow + '" name="calculated_row[]">' +
         '<input type="hidden" id="description-hidden' + numrow + '" name="description[]" value="' + numrow + '">' +
@@ -1374,8 +1354,13 @@ function getInputArrayValue(name, int, input) {
 }
 
 function getamt(val) {
-    Str = val.toString();
-    return Number(Str.replaceAll(',', ''));
+    try {
+        Str = val.toString();
+        return Number(Str.replaceAll(',', ''));
+    } catch (o) {
+        return 0;
+    }
+
 }
 
 function calculateConstruction() {
@@ -1574,7 +1559,12 @@ function calculateChangeOrder(type = null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
+            if (_('co_type' + int).value == 2) {
+                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('budget' + int).value));
+            } else {
+                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
+
+            }
         });
     }
     catch (o) {
@@ -2704,7 +2694,7 @@ function setAdvanceDropdownOrder(numrow) {
 function setVirtualSelectDropdownOrder(numrow) {
     try {
         VirtualSelect.init({
-            ele: '#group_select'+numrow,
+            ele: '#group_select' + numrow,
             allowNewOption: true,
             dropboxWrapper: 'body',
             name: 'group[]',
@@ -2714,30 +2704,30 @@ function setVirtualSelectDropdownOrder(numrow) {
             search: true,
         });
 
-        
-        let groupSelector = document.querySelector('#group_select' +numrow);
+
+        let groupSelector = document.querySelector('#group_select' + numrow);
         groupSelector.setOptions(group_codes);
 
-        $('#group_select'+numrow).change(function() {
+        $('#group_select' + numrow).change(function () {
             var options = [
                 { label: this.value, value: this.value }
             ];
             if (!group_codes.includes(this.value) && this.value !== '') {
                 group_codes.push(this.value)
                 rows.push(this.value)
-            for (let g = 1; g < rows.length; g++) {
-                let groupSelector = document.querySelector('#group_select' +g);
+                for (let g = 1; g < rows.length; g++) {
+                    let groupSelector = document.querySelector('#group_select' + g);
 
-                if ('group_select' + numrow === 'group_select' + g)
-                    groupSelector.setOptions(group_codes, this.value);
-                else
-                    groupSelector.setOptions(group_codes,options);
+                    if ('group_select' + numrow === 'group_select' + g)
+                        groupSelector.setOptions(group_codes, this.value);
+                    else
+                        groupSelector.setOptions(group_codes, options);
+                }
             }
-        }
         });
 
         VirtualSelect.init({
-            ele: '#sub_group'+numrow,
+            ele: '#sub_group' + numrow,
             allowNewOption: true,
             dropboxWrapper: 'body',
             name: 'sub_group[]',
@@ -2747,8 +2737,8 @@ function setVirtualSelectDropdownOrder(numrow) {
             search: true,
         });
 
-        
-        let subgroupSelector = document.querySelector('#sub_group' +numrow);
+
+        let subgroupSelector = document.querySelector('#sub_group' + numrow);
         subgroupSelector.setOptions(sub_group_codes);
 
     } catch (o) {
@@ -3579,5 +3569,20 @@ function updateInvoiceStatus() {
             $('#status_error').html('');
         }
         return false;
+    }
+}
+
+
+function setCOType(value, id) {
+    if (value == 1) {
+        _('td_unit' + id).style.display = 'table-cell';
+        _('td_rate' + id).style.display = 'table-cell';
+        _('td_co_amount' + id).style.display = 'table-cell';
+        _('td_budget' + id).style.display = 'none';
+    } else {
+        _('td_unit' + id).style.display = 'none';
+        _('td_rate' + id).style.display = 'none';
+        _('td_co_amount' + id).style.display = 'none';
+        _('td_budget' + id).style.display = 'table-cell';
     }
 }

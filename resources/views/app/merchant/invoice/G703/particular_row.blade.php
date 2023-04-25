@@ -34,9 +34,21 @@
             <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
         </td>
     @else
+    @if($has_budget)
+    <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']-$rowArray['budget_reallocation']" /></p>
+        </td>
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['budget_reallocation']" /></p>
+        </td>
         <td class="border-r border-l td-703 text-right">
             <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
         </td>
+    @else
+        <td class="border-r border-l td-703 text-right">
+            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+        </td>
+    @endif
     @endif
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['previously_billed_amount']" /></p>

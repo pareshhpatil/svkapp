@@ -113,20 +113,20 @@ class InvoiceFormat extends ParentModel
         return $id;
     }
 
-    public function existInvoicePrefix($merchant_id, $prefix='', $separator='')
+    public function existInvoicePrefix($merchant_id, $prefix = '', $separator = '')
     {
         $retObj = DB::table('merchant_auto_invoice_number')
             ->select(DB::raw('*'))
             ->where('merchant_id', $merchant_id)
-            ->where('prefix',$prefix)
-            ->where('seprator',$separator)
+            ->where('prefix', $prefix)
+            ->where('seprator', $separator)
             ->where('is_active', 1)
             ->first();
         if (!empty($retObj)) {
             return $retObj;
         } else {
             return false;
-        }  
+        }
     }
 
     public function getInvoiceMetaDataColumnsDetails($template_id, $column_label)
@@ -171,7 +171,8 @@ class InvoiceFormat extends ParentModel
         return $id;
     }
 
-    public function saveInternalReminder($data,$user_id) {
+    public function saveInternalReminder($data, $user_id)
+    {
         $id = DB::table('internal_reminders')->insertGetId(
             [
                 'contract_id' => $data['contract_id'],
@@ -179,11 +180,11 @@ class InvoiceFormat extends ParentModel
                 'subject' => $data['subject'],
                 'reminder_date_type' => $data['reminder_date_type'],
                 'reminder_date' => $data['reminder_date'],
-                'end_date_type'=> $data['end_date_type'],
-                'end_date'=> $data['end_date'],
-                'repeat_every'=>$data['repeat_every'],
-                'repeat_type'=>$data['repeat_type'],
-                'repeat_on'=>$data['repeat_on'],
+                'end_date_type' => $data['end_date_type'],
+                'end_date' => $data['end_date'],
+                'repeat_every' => $data['repeat_every'],
+                'repeat_type' => $data['repeat_type'],
+                'repeat_on' => $data['repeat_on'],
                 'is_active' => '1',
                 'created_by' => $user_id,
                 'created_date' => date("Y-m-d h:i:s")
@@ -192,7 +193,24 @@ class InvoiceFormat extends ParentModel
         return $id;
     }
 
-    public function updateInternalReminder($data,$id,$user_id) {
+    public function saveGlobalPluginData($merchant_id, $user_id, $key, $value)
+    {
+        $id = DB::table('merchant_config_data')->insertGetId(
+            [
+                'merchant_id' => $merchant_id,
+                'user_id' => $user_id,
+                'key' => $key,
+                'value' => $value,
+                'is_active' => 1,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
+    public function updateInternalReminder($data, $id, $user_id)
+    {
         DB::table('internal_reminders')->where('id', $id)
             ->update([
                 'contract_id' => $data['contract_id'],
@@ -200,14 +218,46 @@ class InvoiceFormat extends ParentModel
                 'subject' => $data['subject'],
                 'reminder_date_type' => $data['reminder_date_type'],
                 'reminder_date' => $data['reminder_date'],
-                'end_date_type'=> $data['end_date_type'],
-                'end_date'=> $data['end_date'],
-                'repeat_every'=>$data['repeat_every'],
-                'repeat_type'=>$data['repeat_type'],
-                'repeat_on'=>$data['repeat_on'],
+                'end_date_type' => $data['end_date_type'],
+                'end_date' => $data['end_date'],
+                'repeat_every' => $data['repeat_every'],
+                'repeat_type' => $data['repeat_type'],
+                'repeat_on' => $data['repeat_on'],
                 'is_active' => '1',
                 'last_updated_by' => $user_id,
                 'last_updated_date' => date("Y-m-d h:i:s")
             ]);
+    }
+
+    public function updateGlobalPluginData($merchant_id, $key, $value)
+    {
+        DB::table('merchant_config_data')
+            ->where('merchant_id', $merchant_id)
+            ->where('key', $key)
+            ->where('is_active', 1)
+            ->update([
+                'value' => $value,
+                'last_update_date' => date('Y-m-d H:i:s')
+            ]);
+    }
+
+    static function getInvoiceFormatPluginData($merchant_id, $is_data = 0)
+    {
+        $retObj = DB::table('merchant_config_data')
+            ->where('merchant_id', $merchant_id)
+            ->where('is_active', 1)
+            ->where('key', 'INVOICE_FORMAT')
+            ->select(DB::raw('value'))
+            ->first();
+
+        if (!empty($retObj)) {
+            if ($is_data) {
+                return $retObj->value;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 }

@@ -9,30 +9,38 @@
         margin-bottom: 0px;
         margin-top: 5px;
     }
+
     table thead,
     table tfoot {
         position: sticky;
     }
+
     table thead {
-        inset-block-start: 0; /* "top" */
+        inset-block-start: 0;
+        /* "top" */
     }
+
     table tfoot {
-        inset-block-end: 0; /* "bottom" */
+        inset-block-end: 0;
+        /* "bottom" */
     }
 
     .tableFixHead {
         overflow: auto !important;
     }
+
     .table thead tr th {
         font-size: 12px;
         padding: 3px;
         font-weight: 400;
         color: #333;
-        background:#eee;
+        background: #eee;
     }
+
     .headFootZIndex {
         z-index: 3;
     }
+
     .col-id-no {
         position: sticky !important;
         left: 0;
@@ -68,7 +76,7 @@
         margin-bottom: 0px !important;
     }
 
-    .vscomp-toggle-button{
+    .vscomp-toggle-button {
         height: 28px;
 
     }
@@ -150,7 +158,7 @@
                         </div>
                         <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
-                            
+
                             <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
                         </h3>
                         <div class="table-scrollable tableFixHead">
@@ -164,18 +172,15 @@
                                             Cost Type
                                         </th>
                                         <th class="td-c">
+                                            CO Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
                                             Retainage percentage
                                         </th>
-                                        <th class="td-c">
-                                            Unit
-                                        </th>
-                                        <th class="td-c">
-                                            Rate
-                                        </th>
-                                        <th class="td-c">
+                                        <th colspan="3" class="td-c">
                                             Change order amount
                                         </th>
                                         <th class="td-c">
@@ -197,20 +202,34 @@
                                 <tbody id="new_particular">
                                     @foreach($detail->json_particulars as $key=>$row)
                                     @php
+                                    if(!isset($row['co_type']))
+                                    {
+                                        $row['co_type']=1;
+                                    }
+                                    if(!isset($row['budget_reallocation']))
+                                    {
+                                        $row['budget_reallocation']='';
+                                    }
+                                    if($row['co_type']==1)
+                                    {
+                                        $co_type=1;
+                                    $up='';
+                                    $bd='style=display:none;';
+                                    }else{
+                                    $bd='';
+                                    $up='style=display:none;';
+                                    $co_type=2;
+                                    }
+
                                     $is_calculated = false;
                                     @endphp
                                     <tr>
-                                        @foreach($default_particulars as $v=>$r)
-                                        @if ($v == 'original_contract_amount')
-                                        <td class="td-r">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
-                                        </td>
-                                        @elseif ($v == 'bill_code')
+
                                         <td class="col-id-no">
                                             <div class="text-center">
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
-                                                @if($row[$v]==$vk->id)
+                                                @if($row['bill_code']==$vk->id)
                                                 <label selected="" value="{{$vk->id}}">{{$vk->code}} | {{$vk->title}}</label>
                                                 <input type="hidden" id="bill_code{{$key+1}}" name="bill_code[]" value="{{$vk->id}}">
                                                 @endif
@@ -225,70 +244,69 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        @elseif ($v == 'unit' || $v == 'rate')
-                                        <td class="col-id-no">
-                                            <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
-                                        </td>
-                                        @elseif ($v == 'change_order_amount')
-                                        <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
-                                        </td>
-                                        @elseif ($v == 'retainage_percent')
-                                        <td class="col-id-no">
-                                            <input step=".00000000001" max='100' type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]){{$row[$v]}}@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
-                                        </td>
-                                        @elseif ($v == 'order_description')
-                                        <td class="col-id-no">
-                                            <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
-                                        </td>
-                                        @elseif ($v == 'group')
-                                        <td class="col-id-no">
-                                            <div class="text-center">
-                                                <select name="group[]"  id="group_select{{$key+1}}">
-                                                @if(!empty($group_codes))
-                                                @foreach($group_codes as $value)
-                                                @if($row[$v]==$value)
-                                                <option selected value="{{$value}}">{{$value}}</option>
+                                        <td class="col-id-no" scope="row">
+                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
+                                                @if(!empty($cost_type_list))
+                                                @foreach($cost_type_list as $pk=>$vk)
+                                                @if($row['cost_type']==$vk->id)
+                                                <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
                                                 @else
-                                                <option value="{{$value}}">{{$value}}</option>
+                                                <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
                                                 @endif
                                                 @endforeach
                                                 @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        @elseif ($v == 'sub_group')
-                                        <td class="col-id-no">
-                                            <div class="text-center">
-                                                <select name="sub_group[]"  id="sub_group{{$key+1}}">
-                                                @isset($row[$v])
-                                                <option value="{{$row[$v]}}">{{$row[$v]}}</option>
-                                                @endisset
-                                                </select>
-                                            </div>
-                                        </td>
-                                        @elseif ($v == 'cost_type')
-                                        <td class="col-id-no">
-                                            <select id="cost_type{{$key+1}}" name="cost_type[]">
-                                                <option value="">Type or Select</option>
-                                                @if(!empty($cost_type_list))
-                                                    @foreach($cost_type_list as $pk=>$vk)
-                                                        @if($row[$v]==$vk->id)
-                                                            <option selected value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @else
-                                                            <option value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
                                             </select>
                                         </td>
-                                        @else
-                                        <td>
-                                            <input type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        <td class="col-id-no" scope="row">
+                                            <select id="co_type{{$key+1}}" onchange="setCOType(this.value,{{$key+1}})" class="form-control input-sm" name="co_type[]">
+                                                <option @if($row['co_type']==1) selected @endif value="1">Unit / Price</option>
+                                                <option @if($row['co_type']==2) selected @endif value="2">Budget reallocation</option>
+                                            </select>
                                         </td>
-                                        @endif
-                                        @endforeach
-                                        <input type="hidden" id="description-hidden{{$key+1}}" name="description[]" value="{{$row['description']}}">
+                                        <td class="td-r">
+                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_original_contract_amount{{$key+1}}" class="form-control input-sm" value="{{number_format($row['original_contract_amount'],2)}}" id="original_contract_amount{{$key+1}}" name="original_contract_amount[]" readonly />
+                                        </td>
+                                        <td class="col-id-no">
+                                            <input step=".00000000001" max='100' type="number" data-cy="particular_retainage_percent{{$key+1}}" class="form-control input-sm" value="{{$row['retainage_percent']}}" id="retainage_percent{{$key+1}}" name="retainage_percent[]" />
+                                        </td>
+                                        <td class="col-id-no" {{$up}} id="td_unit{{$key+1}}">
+                                            <input step=".00000000001" type="number" data-cy="particular_unit{{$key+1}}" placeholder="Unit" class="form-control input-sm" value="{{$row['unit']}}" id="unit{{$key+1}}" name="unit[]" onblur="calculateChangeOrder()" />
+                                        </td>
+                                        <td class="col-id-no" {{$up}} id="td_rate{{$key+1}}">
+                                            <input step=".00000000001" type="number" data-cy="particular_rate{{$key+1}}" placeholder="Rate" class="form-control input-sm" value="{{$row['rate']}}" id="rate{{$key+1}}" name="rate[]" onblur="calculateChangeOrder()" />
+                                        </td>
+                                        <td class="col-id-no" {{$up}} id="td_co_amount{{$key+1}}">
+                                            <input type="text" readonly data-cy="particular_change_order_amount{{$key+1}}" class="form-control input-sm" value="{{$row['change_order_amount']}}" id="change_order_amount{{$key+1}}" name="change_order_amount[]" onblur="calculateChangeOrder()" />
+                                        </td>
+                                        <td class="col-id-no" colspan="3" {{$bd}} id="td_budget{{$key+1}}">
+                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" value="{{$row['budget_reallocation']}}" placeholder="Budget reallocation" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
+                                        </td>
+                                        <td class="col-id-no">
+                                            <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_order_description{{$key+1}}" class="form-control input-sm" value="" id="order_description{{$key+1}}" name="order_description[]" />
+                                        </td>
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <select name="group[]" id="group_select{{$key+1}}">
+                                                    @if(!empty($group_codes))
+                                                    @foreach($group_codes as $value)
+                                                    @if($row['group']==$value)
+                                                    <option selected value="{{$value}}">{{$value}}</option>
+                                                    @else
+                                                    <option value="{{$value}}">{{$value}}</option>
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="col-id-no">
+                                            <div class="text-center">
+                                                <div id="sub_group{{$key+1}}"></div>
+                                            </div>
+                                        </td>
+
+
+                                        <input type="hidden" id="description-hidden{{$key+1}}" name="description[]" value="@isset($row['description']){{$row['description']}}@endisset">
                                         <input type="hidden" id="pint{{$key+1}}" name="pint[]" value="{{$key+1}}">
                                         <td class="td-c">
                                             <button data-cy="particular-remove{{$key+1}}" onclick="$(this).closest('tr').remove();addLastRowAddButton();calculateChangeOrder();" type="button" class="btn btn-xs red">×</button>
@@ -359,8 +377,10 @@
                                     <div class="pull-right">
                                         <input type="hidden" value="{{$detail->total_original_contract_amount}}" id="contract_amount" name="contract_amount">
                                         <input type="hidden" value="{{$detail->contract_id}}" name="contract_id">
+                                        <input type="hidden" value="{{$co_type}}" id="co_type">
+
                                         <input type="hidden" value="{{$link}}" name="link">
-                                        <input type="hidden" value="{{$bulk_id}}" name="bulk_id">                                        
+                                        <input type="hidden" value="{{$bulk_id}}" name="bulk_id">
                                         <a href="/merchant/order/list" class="btn default">Cancel</a>
                                         <input type="submit" value="Update" class="btn blue" data-cy="order_save" />
                                     </div>

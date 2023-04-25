@@ -1013,6 +1013,15 @@ class Invoice extends ParentModel
         return $sum;
     }
 
+    public function getChangeOrderRow($ids)
+    {
+        $sum = DB::table('order')
+            ->wherein('order_id', $ids)
+            ->get()->toArray();
+
+        return $sum;
+    }
+
     public function updatePaymentRequestStatusAndNotifyPatron($payment_request_id, $status, $notifyPatron)
     {
         DB::table('payment_request')->where('payment_request_id', $payment_request_id)
