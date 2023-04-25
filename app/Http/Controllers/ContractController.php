@@ -194,7 +194,7 @@ class ContractController extends Controller
             $data['plugins'] = json_decode($plugins, 1);
 
             //find internal reminders plugin data if plugin is on
-            if($data['plugins']['has_internal_reminder']==1) {
+            if(isset($data['plugins']['has_internal_reminder']) && $data['plugins']['has_internal_reminder'] == 1) {
                 $internal_reminders = $this->contract_model->getTableList('internal_reminders','contract_id',$contract_id);
                 $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
             }
