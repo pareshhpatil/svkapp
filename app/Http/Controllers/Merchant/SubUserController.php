@@ -78,7 +78,9 @@ class SubUserController extends AppController
             return back()->with('error', "User email already exists")->withInput();
         }
 
-        return redirect()->to('merchant/subusers')->with('success', "Sub merchant has been created");
+        $user = $status['user'];
+
+        return redirect()->to('merchant/subusers/'. Encrypt::encode($user->user_id) .'/privileges');
     }
 
     /**
@@ -132,7 +134,7 @@ class SubUserController extends AppController
 
         $this->subUserHelper->updateUser($this->user_id, $userID, $request);
 
-        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
+        return redirect()->to('merchant/subusers/'. $userID .'/privileges');
     }
 
     /**
