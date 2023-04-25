@@ -1,5 +1,9 @@
 @extends('app.master')
-
+<style>
+    .ajax-request-error {
+        display: none;
+    }
+</style>
 @section('content')
     <div class="page-content">
         <div class="page-bar">
@@ -9,12 +13,18 @@
         <!-- BEGIN SEARCH CONTENT-->
         <div class="row">
             @include('layouts.alerts')
+            <div class="alert alert-danger ajax-request-error">
+                <button type="button" class="close close-ajax-request-error"></button>
+                <strong>Error!</strong>
+                <div class="media">
+                </div>
+            </div>
             <div class="col-md-12">
                 <!-- BEGIN PAYMENT TRANSACTION TABLE -->
                 <div class="portlet">
 
                     <div class="portlet-body">
-                        <form action="/merchant/subusers/create" method="post" id="submit_form" class="form-horizontal form-row-sepe">
+                        <form action="/merchant/subusers/create" method="post" id="create_user_form" class="form-horizontal form-row-sepe">
                             {{ csrf_field() }}
                             <div class="form-body">
                                 <!-- Start profile details -->
@@ -82,7 +92,8 @@
                                     <div class="col-md-12">
                                         <div class="pull-right">
                                             <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
-                                            <input type="submit" value="Save" class="btn blue"/>
+                                            <input type="button" value="Save" class="btn blue save-user-btn"/>
+                                            <input type="hidden" data-user-id="" data-user-name="" class="open-privileges-drawer-btn">
                                         </div>
                                     </div>
                                 </div>
@@ -144,11 +155,19 @@
             </div>
         </div>
     </div>
+
+    @include('app.merchant.subuser.privileges-modal')
+    <script src="/assets/admin/layout/scripts/invoiceformat.js?version={{time()}}" type="text/javascript"></script>
+
     <script>
         $(function () {
             let roleForm = $("#role-form");
             let saveRoleBtn = $("#save-role-btn");
             let selectRole = $("#role");
+            let userForm = $('#create_user_form');
+            let saveUserBtn = userForm.find('.save-user-btn');
+            let adminRoleID = {{$adminID}};
+            let ajaxReqError = $('.ajax-request-error');
 
             $.ajaxSetup({
                 headers: {
@@ -191,6 +210,53 @@
                     }
                 });
             });
+
+            saveUserBtn.on("click", function() {
+                let roleID = userForm.find("#role").val();
+                // let userID = userForm.find('input[name="user_id"]').val();
+                let openPrivilegesBtn = userForm.find('.open-privileges-drawer-btn');
+
+                if(roleID && roleID != adminRoleID) {
+                    let data = {
+                        first_name: userForm.find('input[name="first_name"]').val(),
+                        last_name: userForm.find('input[name="last_name"]').val(),
+                        email_id: userForm.find('input[name="email_id"]').val(),
+                        role: roleID
+                    };
+
+                    $.ajax({
+                        url: `/merchant/subusers/create/ajax`,
+                        type: 'POST',
+                        data: data,
+                        success: function(data) {
+                            if(data.success == true) {
+                                openPrivilegesBtn.attr('data-user-id', data.user.user_id)
+                                openPrivilegesBtn.attr('data-user-name', data.user.first_name)
+                                openPrivilegesBtn.click();
+                            }
+
+                            if(data.success == false) {
+
+                                let errors = Object.values(data.messages);
+
+                                errors.forEach(error => {
+                                    let html = `<p class="media-heading">${error.join('')}</p>`;
+                                    ajaxReqError.append(html);
+                                    ajaxReqError.css({display:'block'});
+                                })
+                            }
+
+                        }
+                    });
+                } else {
+                    userForm.submit();
+                }
+            })
+
+            $(".close-ajax-request-error").on("click", function () {
+                ajaxReqError.find('.media-heading').remove()
+                ajaxReqError.css({display:'none'})
+            })
         })
     </script>
 @endsection
