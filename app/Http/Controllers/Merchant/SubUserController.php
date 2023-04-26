@@ -80,6 +80,12 @@ class SubUserController extends AppController
 
         $user = $status['user'];
 
+        $AdminRole =  $this->subUserHelper->getAdminRole($this->merchant_id);
+
+        if($AdminRole->id == $request->get('role')) {
+            return redirect()->to('merchant/subusers')->with('success', 'User created successfully');
+        }
+
         return redirect()->to('merchant/subusers/'. Encrypt::encode($user->user_id) .'/privileges');
     }
 
@@ -133,6 +139,12 @@ class SubUserController extends AppController
         }
 
         $this->subUserHelper->updateUser($this->user_id, $userID, $request);
+
+        $AdminRole = $this->subUserHelper->getAdminRole($this->merchant_id);
+
+        if($AdminRole->id == $request->get('role')) {
+            return redirect()->to('merchant/subusers')->with('success', 'User updated successfully');
+        }
 
         return redirect()->to('merchant/subusers/'. $userID .'/privileges');
     }
