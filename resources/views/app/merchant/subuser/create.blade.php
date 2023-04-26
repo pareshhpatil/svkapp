@@ -174,12 +174,12 @@
                     data: data,
                     success: function(data) {
                         document.getElementById('loader').style.display = 'none';
-                        if(data.success == true) {
+                        if(data.success == 'true') {
                             selectRole.append(`<option value="${data.data.id}">${data.data.name}</option>`);
                             $('#add-role-modal').modal('hide')
                         }
 
-                        if(data.success == false) {
+                        if(data.success == 'false') {
                             let errors = data.messages;
                             errors.name.forEach((err, i) => {
                                 let html = `<div class="alert alert-danger validation-errors">${err}</div>`;
