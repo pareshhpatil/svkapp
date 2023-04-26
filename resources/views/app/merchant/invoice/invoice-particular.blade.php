@@ -245,8 +245,8 @@
         'value': 'No'
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
-    var billed_transactions_filter=[];
-    var billed_transactions_id_array=[];
+    var billed_transactions_filter = [];
+    var billed_transactions_id_array = [];
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
     @if($draft_particulars != '')
     var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
@@ -343,13 +343,47 @@
                         @csrf
                         <div>
 
+                            <!-- <div class="portlet light bordered">
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search Item No and Description of work">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <td class="col-id-no">
+                                                <div class="text-center">
+                                                    <label>Quick Filters</label>
+                                                    <div id="filter-dropdown"></div>
+                                                </div>
+                                            </td>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
                             <div class="portlet light bordered">
                                 <div class="portlet-body form">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h3 class="form-section">Add Particulars</h3>
                                         </div>
-                                        <div class="col-md-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <input type="text" id="search" class="form-control" placeholder="Search Item No and Description of work">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select id="dropdown_search" class='form-control'>
+                                                <option value="0" selected>All rows</option>
+                                                <option value="1">Items previously billed</option>
+                                                <option value="2">Items billed this period</option>
+                                                <option value="3">Items with a balance</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn green" type='button' onclick="return filterRows();">Search</button>
+                                        </div>
+                                        <div class="col-md-5">
                                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="addnewRow();" class="btn green pull-right mb-1"> Add new row </a>
                                         </div>
                                     </div>
@@ -447,14 +481,14 @@
                                                         <span id="add-calc-span{{$pint}}">
                                                         </span>
                                                         @endif
-                                                        
+
                                                         @else
                                                         <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
                                                             <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
                                                                 <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                             </span>
                                                         </span>
-                                                       
+
                                                         @if($k=='current_billed_amount')
                                                         <span id="add-cost-span{{$pint}}">
                                                         </span>
@@ -740,8 +774,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <a  href="/merchant/invoice/particular/{{$link}}/change-order" class="btn blue">Include COs</a>
-                <button type="button"  data-dismiss="modal" class="btn green">Skip COs</button>
+                <a href="/merchant/invoice/particular/{{$link}}/change-order" class="btn blue">Include COs</a>
+                <button type="button" data-dismiss="modal" class="btn green">Skip COs</button>
                 <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -778,6 +812,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<script src='/assets/admin/layout/scripts/plugin/virtual-select.min.js'></script>
 <script>
     $(window).load(function() {
         _('loader2').style.display = 'none';
@@ -788,6 +823,124 @@
         $("#new_cos").modal('show');
         @endif
     })
+
+    function filterRows() {
+        var input, filter, table, tr, td, i, txtValue;
+        table = document.getElementById("particular_body");
+        tr = table.getElementsByTagName("tr");
+
+        dropdown_search = document.getElementById("dropdown_search").value;
+        search = document.getElementById("search").value.toUpperCase();
+        if (search != '' && dropdown_search == 0) {
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(search) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+            calculateTotal();
+        } else if (search == '' && dropdown_search != 0) {
+            if (dropdown_search == 1) {
+                for (i = 1; i <= tr.length; i++) {
+                    td = parseFloat(document.getElementsByName('previously_billed_amount[]')[i - 1].value.replace(/,/g, ''))
+                    if (td != '') {
+                        if (td > 0) {
+                            try {
+                                tr[i - 1].style.display = "";
+                            } catch (o) {}
+                        } else {
+                            tr[i - 1].style.display = "none";
+                        }
+                    } else {
+                        tr[i - 1].style.display = "none";
+                    }
+                }
+
+                calculateTotal();
+            } else if (dropdown_search == 2) {
+                for (i = 1; i <= tr.length; i++) {
+                    td = parseFloat(document.getElementsByName('current_billed_amount[]')[i - 1].value.replace(/,/g, ''))
+                    if (td != '') {
+                        if (td > 0) {
+                            try {
+                                tr[i - 1].style.display = "";
+                            } catch (o) {}
+                        } else {
+                            tr[i - 1].style.display = "none";
+                        }
+                    } else {
+                        tr[i - 1].style.display = "none";
+                    }
+                }
+
+                calculateTotal();
+            } else {
+                // get logic for balance value 
+
+                calculateTotal();
+            }
+        } else if (search != '' && dropdown_search != 0) {
+            if (dropdown_search == 1) {
+                for (i = 1; i <= tr.length; i++) {
+                    search_td = tr[i - 1].getElementsByTagName("td")[0];
+                    td = parseFloat(document.getElementsByName('previously_billed_amount[]')[i - 1].value.replace(/,/g, ''))
+                    if (td != '' && search_td) {
+                        txtValue = search_td.textContent || search_td.innerText;
+                        if (td > 0 && txtValue.toUpperCase().indexOf(search) > -1) {
+                            try {
+                                tr[i - 1].style.display = "";
+                            } catch (o) {}
+                        } else {
+                            tr[i - 1].style.display = "none";
+                        }
+                    } else {
+                        tr[i - 1].style.display = "none";
+                    }
+                }
+
+                calculateTotal();
+            } else if (dropdown_search == 2) {
+                for (i = 1; i <= tr.length; i++) {
+
+                    search_td = tr[i - 1].getElementsByTagName("td")[0];
+                    td = parseFloat(document.getElementsByName('current_billed_amount[]')[i - 1].value.replace(/,/g, ''))
+                    if (td != '' && search_td) {
+                        txtValue = search_td.textContent || search_td.innerText;
+                        if (td > 0 && txtValue.toUpperCase().indexOf(search) > -1) {
+                            try {
+                                tr[i - 1].style.display = "";
+                            } catch (o) {}
+                        } else {
+                            tr[i - 1].style.display = "none";
+                        }
+                    } else {
+                        tr[i - 1].style.display = "none";
+                    }
+                    calculateTotal();
+                }
+
+                calculateTotal();
+            } else {
+                // get logic for balance value 
+
+                calculateTotal();
+            }
+        } else {
+            for (i = 1; i <= tr.length; i++) {
+                tr[i - 1].style.display = "";
+            }
+
+            calculateTotal();
+        }
+
+        return false;
+    }
 </script>
 @endsection
 
