@@ -1,5 +1,4 @@
 @extends('app.master')
-
 @section('content')
     <div class="page-content">
         <div class="page-bar">
@@ -11,9 +10,9 @@
             @include('layouts.alerts')
             <div class="col-md-12">
                 <!-- BEGIN PAYMENT TRANSACTION TABLE -->
-                <div class="portlet">
-                    <div class="portlet-body">
-                        <form action="{{ route('merchant.subusers.update', $user->user_id) }}" onsubmit="loader();" method="post" id="submit_form" class="form-horizontal form-row-sepe">
+                <div class="portlet light bordered">
+                    <div class="portlet-body form">
+                        <form action="{{ route('merchant.subusers.update', $user->user_id) }}" onsubmit="loader();" method="post" id="update_user_form" class="form-horizontal form-row-sepe">
                             {{ csrf_field() }}
                             <div class="form-body">
                                 <!-- Start profile details -->
@@ -64,7 +63,7 @@
                                     <div class="col-md-12">
                                         <div class="pull-right">
                                             <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
-                                            <input type="submit" value="Update" class="btn blue"/>
+                                            <input type="submit" value="Update" class="btn blue update-btn"/>
                                         </div>
                                     </div>
                                 </div>

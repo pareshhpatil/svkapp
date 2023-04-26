@@ -83,17 +83,11 @@ class SubUserHelper
 
         $this->addUserRole($SubUser, $request->get('role'));
 
-//        $emailSuccess = false;
-//        try {
-//            $this->sendVerifyMail($SubUser);
-//            $emailSuccess = true;
-//        } catch(\Exception $exception) {
-//        }
-
-        $this->addUserPrefrences($SubUser);
+//        $this->addUserPrefrences($SubUser);
 
         return [
-            'user_create' => true
+            'user_create' => true,
+            'user' => $SubUser
         ];
     }
 
@@ -251,5 +245,17 @@ class SubUserHelper
             ->where('merchant_id', $merchantID)
             ->get()
             ->toArray();
+    }
+
+    /**
+     * @param $merchantID
+     * @return array
+     */
+    public function getAdminRole($merchantID)
+    {
+        return DB::table(ITable::BRIQ_ROLES)
+            ->where('merchant_id', $merchantID)
+            ->where('name', 'Admin')
+            ->first();
     }
 }

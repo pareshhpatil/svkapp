@@ -78,7 +78,9 @@ class SubUserController extends AppController
             return back()->with('error', "User email already exists")->withInput();
         }
 
-        return redirect()->to('merchant/subusers')->with('success', "Sub merchant has been created");
+        $user = $status['user'];
+
+        return redirect()->to('merchant/subusers/'. Encrypt::encode($user->user_id) .'/privileges');
     }
 
     /**
@@ -132,7 +134,7 @@ class SubUserController extends AppController
 
         $this->subUserHelper->updateUser($this->user_id, $userID, $request);
 
-        return redirect()->to('merchant/subusers')->with('success', "Sub Merchant has been updated");
+        return redirect()->to('merchant/subusers/'. $userID .'/privileges');
     }
 
     /**
@@ -627,6 +629,25 @@ class SubUserController extends AppController
             }
 
         }
+    }
+
+    public function getPrivilegesPage($userID)
+    {
+        $title = 'Edit Team Members';
+
+        $data = Helpers::setBladeProperties($title);
+
+        /** @var User $User */
+        $User = User::query()
+            ->where('user_id', Encrypt::decode($userID))
+            ->first();
+
+        $User->user_id = Encrypt::encode($User->user_id);
+
+        $data['user'] = $User;
+
+        return view('app/merchant/subuser/privileges', $data);
+
     }
 
     private function changeOrderTobeNotify($notifyChangeOrderPrivilegesTypeIDs, $userID)

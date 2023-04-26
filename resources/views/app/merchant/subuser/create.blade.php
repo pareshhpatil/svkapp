@@ -1,5 +1,4 @@
 @extends('app.master')
-
 @section('content')
     <div class="page-content">
         <div class="page-bar">
@@ -11,10 +10,10 @@
             @include('layouts.alerts')
             <div class="col-md-12">
                 <!-- BEGIN PAYMENT TRANSACTION TABLE -->
-                <div class="portlet">
+                <div class="portlet light bordered">
 
-                    <div class="portlet-body">
-                        <form action="/merchant/subusers/create" method="post" id="submit_form" class="form-horizontal form-row-sepe">
+                    <div class="portlet-body form">
+                        <form action="/merchant/subusers/create" method="post" id="create_user_form" class="form-horizontal form-row-sepe">
                             {{ csrf_field() }}
                             <div class="form-body">
                                 <!-- Start profile details -->
@@ -82,7 +81,7 @@
                                     <div class="col-md-12">
                                         <div class="pull-right">
                                             <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
-                                            <input type="submit" value="Save" class="btn blue"/>
+                                            <input type="submit" value="Save" class="btn blue save-user-btn"/>
                                         </div>
                                     </div>
                                 </div>
@@ -144,6 +143,7 @@
             </div>
         </div>
     </div>
+
     <script>
         $(function () {
             let roleForm = $("#role-form");
@@ -174,23 +174,23 @@
                     data: data,
                     success: function(data) {
                         document.getElementById('loader').style.display = 'none';
-                        if(data.success == 'true') {
+                        if(data.success == true) {
                             selectRole.append(`<option value="${data.data.id}">${data.data.name}</option>`);
                             $('#add-role-modal').modal('hide')
                         }
 
-                        if(data.success == 'false') {
+                        if(data.success == false) {
                             let errors = data.messages;
                             errors.name.forEach((err, i) => {
                                 let html = `<div class="alert alert-danger validation-errors">${err}</div>`;
                                 roleForm.find(".modal-header").append(html);
-
                             })
                         }
 
                     }
                 });
             });
+
         })
     </script>
 @endsection

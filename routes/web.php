@@ -465,6 +465,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('register/verifyemail/new', 'Merchant\SubUserController@verifyMail');
   Route::get('subusers/privileges/{userID}', 'Merchant\SubUserController@getPrivileges');
   Route::post('subusers/privileges', 'Merchant\SubUserController@updatePrivileges');
+  Route::get('subusers/{id}/privileges', 'Merchant\SubUserController@getPrivilegesPage')->name('merchant.subusers.privileges');
 
   //Sub Merchants Roles
   Route::get('roles', 'Merchant\RolesController@index')->name('merchant.roles.index');
