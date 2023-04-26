@@ -32,10 +32,11 @@ class InvoiceFormatController extends AppController
     public function format()
     {
         $title = 'Invoice Format';
-        $data = Helpers::setBladeProperties(ucfirst($title) . ' contract', ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties(ucfirst($title), ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [14]);
 
         $data['template_id'] = '';
         $data['contract_id'] = '';
+        $data['show_sequence'] = false;
         
         $plugins = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
         $data['plugins'] = json_decode($plugins, 1);

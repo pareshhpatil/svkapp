@@ -1,5 +1,4 @@
 @extends('app.master')
-@section('content')
 <style>
     .customize-output-panel-wrap {
         position: fixed;
@@ -83,14 +82,14 @@
         vertical-align: text-bottom;
     }
 </style>
-
+@section('content')
 <script src="/assets/admin/layout/scripts/coveringnote.js" type="text/javascript"></script>
 
 <div class="page-content">
     <!-- BEGIN PAGE HEADER-->
     <div class="page-bar">
-        <span class="page-title" style="float: left;">{{$title}} contract</span>
-        {{ Breadcrumbs::render('home.contractcreate') }}
+        <span class="page-title" style="float: left;">{{$title}}</span>
+        {{ Breadcrumbs::render('settings.invoiceformat') }}
     </div>
     <!-- END PAGE HEADER-->
     <!-- BEGIN PAGE CONTENT-->
@@ -113,13 +112,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="pull-right">
+                                <a class="btn green" href="/merchant/profile/settings">Cancel</a>
                                 <button class="btn blue" type="submit" onclick="submitForm()">Save</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @include('app.merchant.contract.steps.plugin-modals');
+            @include('app.merchant.contract.steps.plugin-modals')
         </div>
     </div>
 </div>

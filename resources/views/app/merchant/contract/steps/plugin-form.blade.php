@@ -62,8 +62,6 @@
 
             </div>
 
-
-
             <div id="pgiswatermark">
                 <hr>
                 <div class="mb-2">
@@ -87,8 +85,6 @@
                     </div>
                 </div>
             </div>
-
-
 
             <div id="pgisrevision">
                 <hr>
@@ -136,17 +132,6 @@
                     </div>
                 </div>
             </div>
-            <!--
-                        <div id="pgissignature" >
-                            <hr>
-                            <div class="mb-2">
-                                <span class="form-section base-font"> Digital signature&nbsp; </span>
-                                <div class="pull-right ml-1">
-                                    <input type="checkbox" @isset($plugins['has_signature']) checked @endif id="issignature" onchange="disablePlugin(this.checked, 'plg16');" name="has_signature" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
-                                </div>
-                                <a href="/merchant/profile/digitalsignature/iframe" class="iframe btn btn-sm green pull-right"> Digital signature </a>
-                            </div>
-                        </div>-->
 
             <div id="pgispartial">
                 <hr>
@@ -171,6 +156,7 @@
                 </div>
             </div>
 
+            @if(!isset($show_sequence))
             <div id="invoiceSequence">
                 <!--add sequence modal-->
                 @include('app.merchant.project.add-sequence-modal')
@@ -234,6 +220,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
         <!-- Tab 2 -->
         <div class="tab-pane" id="tab2">
