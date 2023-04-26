@@ -83,7 +83,7 @@
     }
 
     .select2-container {
-        z-index: 999;
+        z-index: 9999;
     }
 
     .form .form-actions {
