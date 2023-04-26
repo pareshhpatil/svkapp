@@ -342,25 +342,6 @@
                         </div>
                         @csrf
                         <div>
-
-                            <!-- <div class="portlet light bordered">
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search Item No and Description of work">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <td class="col-id-no">
-                                                <div class="text-center">
-                                                    <label>Quick Filters</label>
-                                                    <div id="filter-dropdown"></div>
-                                                </div>
-                                            </td>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
-
                             <div class="portlet light bordered">
                                 <div class="portlet-body form">
                                     <div class="row">
@@ -824,40 +805,6 @@
         @endif
     })
 
-    function filterRows() {
-        var input, filter, table, tr, td, i, txtValue;
-        table = document.getElementById("particular_body");
-        tr = table.getElementsByTagName("tr");
-        dropdown_search = document.getElementById("dropdown_search").value;
-        search = document.getElementById("search").value.toUpperCase();
-        for (i = 0; i <= tr.length - 1; i++) {
-            display = "";
-            if (search != '') {
-                search_td = tr[i].getElementsByTagName("td")[0];
-                txtValue = search_td.textContent || search_td.innerText;
-                txtValue = txtValue.toUpperCase();
-                if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
-                    display = 'none';
-                }
-            }
-            if (dropdown_search > 0) {
-                if (dropdown_search == 1) {
-                    input_name = 'previously_billed_amount';
-                } else {
-                    input_name = 'current_billed_amount';
-                }
-
-                amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
-                if (amt_val > 0) {} else {
-                    display = 'none';
-                }
-            }
-            tr[i].style.display = display;
-        }
-        calculateTotal();
-
-        return false;
-    }
 </script>
 @endsection
 
