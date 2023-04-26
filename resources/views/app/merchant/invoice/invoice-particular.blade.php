@@ -793,7 +793,6 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<script src='/assets/admin/layout/scripts/plugin/virtual-select.min.js'></script>
 <script>
     $(window).load(function() {
         _('loader2').style.display = 'none';
@@ -804,7 +803,6 @@
         $("#new_cos").modal('show');
         @endif
     })
-
 </script>
 @endsection
 
