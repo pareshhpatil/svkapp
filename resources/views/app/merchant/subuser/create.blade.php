@@ -184,7 +184,6 @@
                             errors.name.forEach((err, i) => {
                                 let html = `<div class="alert alert-danger validation-errors">${err}</div>`;
                                 roleForm.find(".modal-header").append(html);
-
                             })
                         }
 

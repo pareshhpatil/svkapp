@@ -83,12 +83,8 @@
         text-align: center;
     }
 
-    #update_user_form .select2-container, #create_user_form .select2-container {
-        z-index: 999;
-    }
-
     .select2-container {
-        z-index: 999999;
+        z-index: 999;
     }
 
     .form .form-actions {
@@ -223,10 +219,6 @@
                         <div>
                             <h3 class="modal-title">
                                 Set Privileges for {{$user->first_name}}
-                                {{-- <button type="button" class="close close-privileges-drawer" aria-hidden="true">Cancel</button> --}}
-                                <a class="close close-privileges-drawer" data-toggle="modal">
-                                    <button type="button" class="close" aria-hidden="true"></button>
-                                </a>
                             </h3>
 
                         </div>
@@ -261,7 +253,7 @@
 
                             <form method="post" action="/merchant/subusers/privileges" class="privileges-form form" onsubmit="loader();" enctype="multipart/form-data">
                                 @csrf
-                                <input type="hidden" name="user_id" class="panel-user-id">
+                                <input type="hidden" name="user_id" class="panel-user-id" value="{{$user->user_id}}">
                                 <div class="tab-content" style="margin-top: 30px">
                                     <div class="tab-pane active" id="tab1">
                                         <div style="border-radius: 4px;border: 1px solid #e5e5e5;padding: 20px;">
@@ -276,7 +268,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="pull-right">
-                                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                                            <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                                             <button type="button" class="btn blue save-btn">Save</button>
                                                         </div>
                                                     </div>
@@ -297,7 +289,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="pull-right">
-                                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                                            <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                                             <button type="button" class="btn blue save-btn">Save</button>
                                                         </div>
                                                     </div>
@@ -339,7 +331,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="pull-right">
-                                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                                            <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                                             <button type="button" class="btn blue save-btn">Save</button>
                                                         </div>
                                                     </div>
@@ -360,8 +352,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="pull-right">
-                                                            {{-- <button type="button" class="btn cancel-btn" onclick="closePrivilegesDrawer()">Cancel</button> --}}
-                                                            <button type="button" class="btn cancel-btn close-privileges-drawer" aria-hidden="true">Cancel</button>
+                                                            <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                                             <button type="button" class="btn blue save-btn">Save</button>
                                                         </div>
                                                     </div>
@@ -450,8 +441,6 @@
                         if(ruleEngine) {
                             hasRuleEngine = ruleEngine.length > 0;
                         }
-
-                        let rule_engine = [];
 
                         let html = accessHTML(el.type_label, el.access, i, 'customer', hasRuleEngine, ruleEngine);
                         customerValArr.push({
@@ -590,7 +579,6 @@
                     success: function(response) {
                         if(response.success == true) {
                             window.location.href = '/merchant/subusers';
-                            // window.location.reload();
                         }
 
                     }
@@ -603,10 +591,9 @@
                     url: `/select/customer`,
                     dataType: 'json',
                     data: (params) => {
-                        let uid = $('input.panel-user-id').val();
                         return {
                             query: params.term,
-                            user_id: uid
+                            user_id: userID
                         }
                     },
                     processResults: (data, params) => {
@@ -654,10 +641,9 @@
                     url: "/select/project",
                     dataType: 'json',
                     data: (params) => {
-                        let uid = $('input.panel-user-id').val();
                         return {
                             query: params.term,
-                            user_id: uid
+                            user_id: userID
                         }
                     },
                     processResults: (data, params) => {
@@ -704,10 +690,9 @@
                     url: "/select/contract",
                     dataType: 'json',
                     data: (params) => {
-                        let uid = $('input.panel-user-id').val();
                         return {
                             query: params.term,
-                            user_id: uid
+                            user_id: userID
                         }
                     },
                     processResults: (data, params) => {
@@ -754,10 +739,9 @@
                     url: "/select/invoice",
                     dataType: 'json',
                     data: (params) => {
-                        let uid = $('input.panel-user-id').val();
                         return {
                             query: params.term,
-                            user_id: uid
+                            user_id: userID
                         }
                     },
                     processResults: (data, params) => {
@@ -805,10 +789,9 @@
                     url: "/select/change-order",
                     dataType: 'json',
                     data: (params) => {
-                        let uid = $('input.panel-user-id').val();
                         return {
                             query: params.term,
-                            user_id: uid
+                            user_id: userID
                         }
                     },
                     processResults: (data, params) => {

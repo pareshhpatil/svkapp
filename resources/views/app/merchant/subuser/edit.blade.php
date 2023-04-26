@@ -62,7 +62,6 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <input type="hidden" name="user_id" value="{{$user->user_id}}"/>
                                             <a href="{!! url('/merchant/subusers') !!}" class="btn default">Cancel</a>
                                             <input type="submit" value="Update" class="btn blue update-btn"/>
                                         </div>
