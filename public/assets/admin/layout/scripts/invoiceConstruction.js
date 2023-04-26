@@ -336,23 +336,25 @@ function calculateTotal() {
 
     $('input[name="pint[]"]').each(function (index, value) {
         pint = this.value;
-        total = Number(total) + getamt(ev('net_billed_amount' + pint));
-        total_oca = Number(total_oca) + getamt(ev('original_contract_amount' + pint));
-        total_acoa = Number(total_acoa) + getamt(ev('approved_change_order_amount' + pint));
-        total_cca = Number(total_cca) + getamt(ev('current_contract_amount' + pint));
-        total_pba = Number(total_pba) + getamt(ev('previously_billed_amount' + pint));
-        total_cba = Number(total_cba) + getamt(ev('current_billed_amount' + pint));
-        total_psm = Number(total_psm) + getamt(ev('previously_stored_materials' + pint));
-        total_csm = Number(total_csm) + getamt(ev('current_stored_materials' + pint));
-        total_sm = Number(total_sm) + getamt(ev('stored_materials' + pint));
-        total_tb = Number(total_tb) + getamt(ev('total_billed' + pint));
-        total_rapw = Number(total_rapw) + getamt(ev('retainage_amount_previously_withheld' + pint));
-        total_rad = Number(total_rad) + getamt(ev('retainage_amount_for_this_draw' + pint));
-        total_rra = Number(total_rra) + getamt(ev('retainage_release_amount' + pint));
-        total_tor = Number(total_tor) + getamt(ev('total_outstanding_retainage' + pint));
-        total_rasm = Number(total_rasm) + getamt(ev('retainage_amount_stored_materials' + pint));
-        total_rapsm = Number(total_rapsm) + getamt(ev('retainage_amount_previously_stored_materials' + pint));
-        total_rrasm = Number(total_rrasm) + getamt(ev('retainage_stored_materials_release_amount' + pint));
+        if (_(pint).style.display != 'none') {
+            total = Number(total) + getamt(ev('net_billed_amount' + pint));
+            total_oca = Number(total_oca) + getamt(ev('original_contract_amount' + pint));
+            total_acoa = Number(total_acoa) + getamt(ev('approved_change_order_amount' + pint));
+            total_cca = Number(total_cca) + getamt(ev('current_contract_amount' + pint));
+            total_pba = Number(total_pba) + getamt(ev('previously_billed_amount' + pint));
+            total_cba = Number(total_cba) + getamt(ev('current_billed_amount' + pint));
+            total_psm = Number(total_psm) + getamt(ev('previously_stored_materials' + pint));
+            total_csm = Number(total_csm) + getamt(ev('current_stored_materials' + pint));
+            total_sm = Number(total_sm) + getamt(ev('stored_materials' + pint));
+            total_tb = Number(total_tb) + getamt(ev('total_billed' + pint));
+            total_rapw = Number(total_rapw) + getamt(ev('retainage_amount_previously_withheld' + pint));
+            total_rad = Number(total_rad) + getamt(ev('retainage_amount_for_this_draw' + pint));
+            total_rra = Number(total_rra) + getamt(ev('retainage_release_amount' + pint));
+            total_tor = Number(total_tor) + getamt(ev('total_outstanding_retainage' + pint));
+            total_rasm = Number(total_rasm) + getamt(ev('retainage_amount_stored_materials' + pint));
+            total_rapsm = Number(total_rapsm) + getamt(ev('retainage_amount_previously_stored_materials' + pint));
+            total_rrasm = Number(total_rrasm) + getamt(ev('retainage_stored_materials_release_amount' + pint));
+        }
     });
 
 
@@ -784,7 +786,7 @@ function filterCost(type, id) {
     _('new_particular_cost').innerHTML = '';
     billed_transactions.forEach(function (field, index, arr) {
         var newDiv = document.createElement('tr');
-        csi_code=csi_codes_array[field.cost_code].label;
+        csi_code = csi_codes_array[field.cost_code].label;
         newDiv.innerHTML = '<td class="td-c"><input type="checkbox" ' + field.checked + ' name="cost-checkbox[]" value="' + field.id + '" onchange="costCalc();"></td><td class="td-c" >' + csi_code + '</td><td class="td-c" >' + field.cost_type_label + '</td><td class="td-c" >' + field.rate + '</td><td class="td-c" >' + field.unit + '</td><td class="td-c" id="costamt' + field.id + '">' + field.amount + '</td><td class="td-c" >' + field.description + '</td>';
         mainDiv.appendChild(newDiv);
     });
@@ -877,5 +879,40 @@ function closeSidePanelBillCodeAttachment() {
     $("#billcodeform").trigger("reset");
     $('.page-sidebar-wrapper').css('pointer-events', 'auto');
     $('.page-content-wrapper').css('pointer-events', 'auto');
+    return false;
+}
+
+function filterRows() {
+    var input, filter, table, tr, td, i, txtValue;
+    table = document.getElementById("particular_body");
+    tr = table.getElementsByTagName("tr");
+    dropdown_search = document.getElementById("dropdown_search").value;
+    search = document.getElementById("search").value.toUpperCase();
+    for (i = 0; i <= tr.length - 1; i++) {
+        display = "";
+        if (search != '') {
+            search_td = tr[i].getElementsByTagName("td")[0];
+            txtValue = search_td.textContent || search_td.innerText;
+            txtValue = txtValue.toUpperCase();
+            if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+                display = 'none';
+            }
+        }
+        if (dropdown_search > 0) {
+            if (dropdown_search == 1) {
+                input_name = 'previously_billed_amount';
+            } else {
+                input_name = 'current_billed_amount';
+            }
+
+            amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
+            if (amt_val > 0) {} else {
+                display = 'none';
+            }
+        }
+        tr[i].style.display = display;
+    }
+    calculateTotal();
+
     return false;
 }

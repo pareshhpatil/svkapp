@@ -245,8 +245,8 @@
         'value': 'No'
     }];
     var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
-    var billed_transactions_filter=[];
-    var billed_transactions_id_array=[];
+    var billed_transactions_filter = [];
+    var billed_transactions_id_array = [];
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
     @if($draft_particulars != '')
     var draft_particulars = JSON.parse('{!! $draft_particulars !!}');
@@ -342,14 +342,29 @@
                         </div>
                         @csrf
                         <div>
-
                             <div class="portlet light bordered">
                                 <div class="portlet-body form">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h3 class="form-section">Add Particulars</h3>
                                         </div>
-                                        <div class="col-md-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <input type="text" id="search" class="form-control" placeholder="Search Item No and Description of work">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select id="dropdown_search" class='form-control'>
+                                                <option value="0" selected>All rows</option>
+                                                <option value="1">Items previously billed</option>
+                                                <option value="2">Items billed this period</option>
+                                                <option value="3">Items with a balance</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn green" type='button' onclick="return filterRows();">Search</button>
+                                        </div>
+                                        <div class="col-md-5">
                                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="addnewRow();" class="btn green pull-right mb-1"> Add new row </a>
                                         </div>
                                     </div>
@@ -447,14 +462,14 @@
                                                         <span id="add-calc-span{{$pint}}">
                                                         </span>
                                                         @endif
-                                                        
+
                                                         @else
                                                         <span style="width: 100%;display: block;" id="span_{{$k}}{{$pint}}">
                                                             <span style="width: 100%;display: block;" onclick="setInput({{$pint}},'{{$k}}')">@isset($pv[$k]){{$pv[$k]}}@endisset&nbsp;
                                                                 <input type="hidden" id="{{$k}}{{$pint}}" name="{{$k}}[]" value="@isset($pv[$k]){{$pv[$k]}}@endisset">
                                                             </span>
                                                         </span>
-                                                       
+
                                                         @if($k=='current_billed_amount')
                                                         <span id="add-cost-span{{$pint}}">
                                                         </span>
@@ -740,8 +755,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <a  href="/merchant/invoice/particular/{{$link}}/change-order" class="btn blue">Include COs</a>
-                <button type="button"  data-dismiss="modal" class="btn green">Skip COs</button>
+                <a href="/merchant/invoice/particular/{{$link}}/change-order" class="btn blue">Include COs</a>
+                <button type="button" data-dismiss="modal" class="btn green">Skip COs</button>
                 <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
