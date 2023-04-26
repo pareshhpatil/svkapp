@@ -58,11 +58,11 @@
                                     <td class="td-c">
                                         @if($subUser->user_status == '20')
                                             <span class="label label-sm label-success">
-                                                {{$subUser->user_status_label}}
+                                                Verified sub user
                                             </span>
                                         @elseif($subUser->user_status == '19')
                                             <span class="label label-sm label-warning">
-                                                {{$subUser->user_status_label}}
+                                                Unverified sub user
                                             </span>
                                         @endif
                                     </td>

@@ -83,7 +83,7 @@ class SubUserHelper
 
         $this->addUserRole($SubUser, $request->get('role'));
 
-//        $this->addUserPrefrences($SubUser);
+        $this->addUserPrefrences($SubUser);
 
         return [
             'user_create' => true,
