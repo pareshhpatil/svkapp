@@ -828,116 +828,33 @@
         var input, filter, table, tr, td, i, txtValue;
         table = document.getElementById("particular_body");
         tr = table.getElementsByTagName("tr");
-
         dropdown_search = document.getElementById("dropdown_search").value;
         search = document.getElementById("search").value.toUpperCase();
-        if (search != '' && dropdown_search == 0) {
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(search) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
+        for (i = 0; i <= tr.length - 1; i++) {
+            display = "";
+            if (search != '') {
+                search_td = tr[i].getElementsByTagName("td")[0];
+                txtValue = search_td.textContent || search_td.innerText;
+                txtValue = txtValue.toUpperCase();
+                if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+                    display = 'none';
                 }
             }
-
-            calculateTotal();
-        } else if (search == '' && dropdown_search != 0) {
-            if (dropdown_search == 1) {
-                for (i = 1; i <= tr.length; i++) {
-                    td = parseFloat(document.getElementsByName('previously_billed_amount[]')[i - 1].value.replace(/,/g, ''))
-                    if (td != '') {
-                        if (td > 0) {
-                            try {
-                                tr[i - 1].style.display = "";
-                            } catch (o) {}
-                        } else {
-                            tr[i - 1].style.display = "none";
-                        }
-                    } else {
-                        tr[i - 1].style.display = "none";
-                    }
+            if (dropdown_search > 0) {
+                if (dropdown_search == 1) {
+                    input_name = 'previously_billed_amount';
+                } else {
+                    input_name = 'current_billed_amount';
                 }
 
-                calculateTotal();
-            } else if (dropdown_search == 2) {
-                for (i = 1; i <= tr.length; i++) {
-                    td = parseFloat(document.getElementsByName('current_billed_amount[]')[i - 1].value.replace(/,/g, ''))
-                    if (td != '') {
-                        if (td > 0) {
-                            try {
-                                tr[i - 1].style.display = "";
-                            } catch (o) {}
-                        } else {
-                            tr[i - 1].style.display = "none";
-                        }
-                    } else {
-                        tr[i - 1].style.display = "none";
-                    }
+                amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
+                if (amt_val > 0) {} else {
+                    display = 'none';
                 }
-
-                calculateTotal();
-            } else {
-                // get logic for balance value 
-
-                calculateTotal();
             }
-        } else if (search != '' && dropdown_search != 0) {
-            if (dropdown_search == 1) {
-                for (i = 1; i <= tr.length; i++) {
-                    search_td = tr[i - 1].getElementsByTagName("td")[0];
-                    td = parseFloat(document.getElementsByName('previously_billed_amount[]')[i - 1].value.replace(/,/g, ''))
-                    if (td != '' && search_td) {
-                        txtValue = search_td.textContent || search_td.innerText;
-                        if (td > 0 && txtValue.toUpperCase().indexOf(search) > -1) {
-                            try {
-                                tr[i - 1].style.display = "";
-                            } catch (o) {}
-                        } else {
-                            tr[i - 1].style.display = "none";
-                        }
-                    } else {
-                        tr[i - 1].style.display = "none";
-                    }
-                }
-
-                calculateTotal();
-            } else if (dropdown_search == 2) {
-                for (i = 1; i <= tr.length; i++) {
-
-                    search_td = tr[i - 1].getElementsByTagName("td")[0];
-                    td = parseFloat(document.getElementsByName('current_billed_amount[]')[i - 1].value.replace(/,/g, ''))
-                    if (td != '' && search_td) {
-                        txtValue = search_td.textContent || search_td.innerText;
-                        if (td > 0 && txtValue.toUpperCase().indexOf(search) > -1) {
-                            try {
-                                tr[i - 1].style.display = "";
-                            } catch (o) {}
-                        } else {
-                            tr[i - 1].style.display = "none";
-                        }
-                    } else {
-                        tr[i - 1].style.display = "none";
-                    }
-                    calculateTotal();
-                }
-
-                calculateTotal();
-            } else {
-                // get logic for balance value 
-
-                calculateTotal();
-            }
-        } else {
-            for (i = 1; i <= tr.length; i++) {
-                tr[i - 1].style.display = "";
-            }
-
-            calculateTotal();
+            tr[i].style.display = display;
         }
+        calculateTotal();
 
         return false;
     }
