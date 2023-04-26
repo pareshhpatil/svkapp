@@ -548,3 +548,9 @@ Breadcrumbs::for('merchant.subusers.privileges', function ($trail) {
     $trail->push('Sub-user list', url('/merchant/subusers'));
     $trail->push('Edit sub-user');
 });
+
+Breadcrumbs::for('settings.invoiceformat', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', '/merchant/profile/settings');
+    $trail->push('Invoice format', '/merchant/template/invoice/format');
+});
