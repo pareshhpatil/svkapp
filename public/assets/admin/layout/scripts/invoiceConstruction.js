@@ -901,6 +901,8 @@ function filterRows() {
         if (dropdown_search > 0) {
             if (dropdown_search == 1) {
                 input_name = 'previously_billed_amount';
+            } else if(dropdown_search == 3){
+                input_name = 'current_billed_percent';
             } else {
                 input_name = 'current_billed_amount';
             }
