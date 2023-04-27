@@ -482,6 +482,7 @@
                 </div>
             </div>
             <!--add reminder-->
+            @if(Session::get('user_role') == 'Admin')
             <div>
                 <script src='/assets/admin/layout/scripts/plugin/virtual-select.min.js'></script>
                 <script>
@@ -717,7 +718,7 @@
                     </table>
                 </div>
             </div>
-
+            @endif
             <!-- end of add reminder -->
         </div>
 

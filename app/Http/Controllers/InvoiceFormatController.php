@@ -543,7 +543,7 @@ class InvoiceFormatController extends AppController
         return redirect('/merchant/template/viewlist');
     }
 
-    function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null, $contract_id = null)
+    function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null)
     {
         $pcarray = [];
         if (isset($request->particular_col)) {
@@ -596,7 +596,6 @@ class InvoiceFormatController extends AppController
             $data['plugin'] = $this->getPlugins();
         } else {
             $data['plugin'] = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
-            $this->saveInternalReminder($data['plugin'], $contract_id);
         }
         $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
         $data['image_path'] = $logo;
@@ -613,12 +612,6 @@ class InvoiceFormatController extends AppController
         }
 
         return $template_id;
-    }
-
-
-    public function saveInternalReminder($plugin, $contract_id)
-    {
-        # code...
     }
 
     public function saveMetadata($request, $template_id)
@@ -1053,6 +1046,9 @@ class InvoiceFormatController extends AppController
             } else {
                 $this->setInternalReminders();
             }
+        } else if($_POST['is_internal_reminder'] == 0) {
+            $contract_id = Encrypt::decode($_POST['contract_id']);
+            $this->formatModel->updateTable('internal_reminders', 'contract_id', $contract_id, 'is_active', 0);
         }
 
         if ($_POST['list_all_change_orders'] == 1) {

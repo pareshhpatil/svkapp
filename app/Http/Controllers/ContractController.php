@@ -197,27 +197,10 @@ class ContractController extends Controller
 
             //find internal reminders plugin data if plugin is on
             if (isset($data['plugins']['has_internal_reminder']) && $data['plugins']['has_internal_reminder'] == 1) {
-                //check if default invoice foramt seeting is exist for this plugin into merchant config data table
-                if ($title == 'Create') {
-                    $existPluginData = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
-                    $existPluginData = json_decode($existPluginData, 1);
-
-                    if (isset($existPluginData['has_internal_reminder']) && $existPluginData['has_internal_reminder'] == 1) {
-                        if (!empty($existPluginData['internal_reminders'])) {
-                            foreach ($existPluginData['internal_reminders'] as $ik => $reminder) {
-                                $reminder['contract_id'] = $contract_id;
-                                $id = $this->formatModel->saveInternalReminder($reminder, $this->user_id);
-                            }
-                            unset($data['plugins']['internal_reminders']);
-                            $new_plugin_value = json_encode($data['plugins'], 1);
-                            $this->formatModel->updateTable('invoice_template', 'template_id', $contract->template_id, 'plugin', $new_plugin_value);
-                        }
-                    }
-                }
-                $internal_reminders = $this->contract_model->getTableList('internal_reminders', 'contract_id', $contract_id);
+                $internal_reminders = $this->contract_model->getTableListOrderby('internal_reminders', 'contract_id', $contract_id,'id');
                 $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
             }
-            //dd($data['plugins']['internal_reminders']);
+            
             $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id), 1);
             //$data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
             $data['current_day'] = now()->format('l');
@@ -293,7 +276,7 @@ class ContractController extends Controller
                 if ($request->template_id != '') {
                     $template_id = $request->template_id;
                 } else {
-                    $template_id = $this->saveInvoiceFormat($contract->contract_code, $contract->contract_id);
+                    $template_id = $this->saveInvoiceFormat($contract->contract_code);
                     $this->contract_model->updateTable('contract', 'contract_id', $contract->contract_id, 'template_id', $template_id);
                 }
                 if (isset($request->sequence_number)) {
@@ -343,6 +326,7 @@ class ContractController extends Controller
             $template_id = $this->saveInvoiceFormat($data['contract_code']);
             $data['template_id'] = $template_id;
             $contract = ContractParticular::create($data);
+            $this->saveInternalReminders($template_id,$contract->contract_id);
         } else {
             $data = $this->checkIfProjectIsChanged($data, $contract);
             $contract->update($data);
@@ -350,14 +334,32 @@ class ContractController extends Controller
         return $contract;
     }
 
-    private function saveInvoiceFormat($name, $contract_id = null)
+    function saveInternalReminders($template_id=null,$contract_id=null) {
+        //check plugin column in invoice template table -> if internal reminder plugin is on
+        $get_exist_plugin_value = $this->formatModel->getColumnValue('invoice_template', 'template_id', $template_id, 'plugin');
+        $plugin_value = json_decode($get_exist_plugin_value, 1);
+        //check if internal reminder data exist then save your internal data with this contract id
+        if(isset($plugin_value['has_internal_reminder']) && $plugin_value['has_internal_reminder']==1) {
+            if(isset($plugin_value['internal_reminders']) && !empty($plugin_value['internal_reminders'])) {
+                foreach($plugin_value['internal_reminders'] as $ik=>$reminder) {
+                    $reminder['contract_id'] = $contract_id;
+                    $id=$this->formatModel->saveInternalReminder($reminder,$this->user_id);
+                }
+                unset($plugin_value['internal_reminders']);
+                $new_plugin_value = json_encode($plugin_value, 1);
+                $this->formatModel->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $new_plugin_value);
+            }
+        }
+    }
+
+    private function saveInvoiceFormat($name)
     {
         $invoice_format_json = '{"design_name":null,"design_color":null,"template_name":"' . $name . '","billingProfile_id":"0","main_header_id":["5","6","7","8"],"main_header_datatype":["text","number","email","textarea"],"main_header_column_id":["0","0","0","0"],"main_header_name":["Company name","Merchant contact","Merchant email","Merchant address"],"hcheck":["0","1","2","3"],"cust_column_id":["0","0","0","0"],"customer_column_id":["1","2","3","4"],"customer_column_type":["customer","customer","customer","customer"],"customer_column_name":["Customer code","Contact person name","Email ID","Mobile no"],"customer_datatype":["primary","text","email","mobile"],"ccheck":["0","1","2","3"],"column_config":["{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"metadata\",\"headermandatory\":0,\"headercolumnposition\":1,\"function_id\":9,\"function_param\":\"system_generated\",\"function_val\":\"\",\"headerisdelete\":1,\"headerdatatype\":\"text\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":4,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"text\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":5,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"date\"}","{\"position\":\"R\",\"column_type\":\"H\",\"headertablesave\":\"request\",\"headermandatory\":1,\"headercolumnposition\":6,\"function_id\":0,\"function_param\":\"\",\"function_val\":\"\",\"headerisdelete\":0,\"headerdatatype\":\"date\"}"],"column_id":["0","0","0","0"],"headercolumn":["Invoice Number","Billing cycle name","Bill date","Due date"],"pc_sr_no":"#","particular_col":["item","description","total_amount"],"pc_item":"Item","pc_annual_recurring_charges":"Annual recurring charges","pc_sac_code":"Sac Code","pc_description":"Desc","pc_product_number":"Product number","pc_product_expiry_date":"Product Expiry date","pc_qty":"Quantity","pc_unit_type":"Unit type","pc_mrp":"MRP","pc_rate":"Rate","pc_gst":"GST","pc_tax_amount":"Tax amount","pc_discount_perc":"Discount %","pc_discount":"Discount","pc_total_amount":"Amount","pc_narrative":"Narrative","tax_total":"Tax total","tnc":null,"upload_file_label":"View document","has_upload":"1","partial_min_amount":"50","has_watermark":"1","watermark_text":"DRAFT","is_covering":"1","default_covering":"0","custom_subject":"Payment request from %COMPANY_NAME%","custom_sms":"You have received a payment request from %COMPANY_NAME% for amount %TOTAL_AMOUNT%. To make an online payment, access your bill via %SHORT_URL%","reminder":["3","1","0"],"reminder_subject":[null,null,null],"reminder_sms":[null,null,null],"has_online_payments":"0","enable_payments":"0","is_revision":"1","template_type":"construction","template_id":null,"custmized_receipt_fields":null}';
         $format_request = json_decode($invoice_format_json);
         $_POST = json_decode($invoice_format_json, 1);
         $invoice_format = new InvoiceFormatController();
 
-        $template_id = $invoice_format->saveInvoiceFormat($format_request, '',null,null,$contract_id);
+        $template_id = $invoice_format->saveInvoiceFormat($format_request, '',null,null);
         $invoice_format->saveMetadata($format_request, $template_id);
         return $template_id;
     }
