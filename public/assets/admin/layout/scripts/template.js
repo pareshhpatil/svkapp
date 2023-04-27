@@ -393,6 +393,12 @@ function AddReminder2(type='before') {
     newDiv.innerHTML = '<td><div class="input-icon right"><input type="hidden" name="reminder_type[]" value="'+type+'"><input type="number" name="reminder[]" class="form-control input-sm" placeholder="Add day"></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Reminder email subject "></div></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
     mainDiv.appendChild(newDiv);
 }
+function AddInternalReminder(type='before') {
+    var mainDiv = document.getElementById('new_internal_reminder_'+type);
+    var newDiv = document.createElement('tr');
+    newDiv.innerHTML = '<td><div class="input-icon right"><input type="hidden" name="reminder_type[]" value="'+type+'"><div id="sub_user_drpdwn"></div></div></td><td><div class="input-icon right"><input type="text" name="reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder"></div></td><td></td><td></td><td><a href="javascript:;" onClick="$(this).closest(' + "'tr'" + ').remove();tableHead(' + "'new_reminder_"+type+"'" + ');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
+    mainDiv.appendChild(newDiv);
+}
 
 function showDebit(id) {
     if ($('#is' + id).is(':checked')) {
@@ -1771,6 +1777,10 @@ function disablePlugin(val, id) {
     }
     else if (val == true && id == "plg10") {
         $("#pgiscovering").show();
+    } else if(val == false && id == "plg15") {
+        $("#pg_is_internal_reminder").hide();
+    } else if(val == true && id == "plg15") {
+        $("#pg_is_internal_reminder").show();
     }
 
 }
@@ -2379,4 +2389,114 @@ function setCheckbox(val, id) {
         _('document_attachment_div').style.display = 'block';
         _('document_attachment_button').style.display = 'block';
     }
+}
+
+function showEndDateInput(val,id='') {
+    if(val!='') {
+        id=(id!='') ? id : 0;
+        if(val=='2') {
+            document.getElementById("occurences_div"+id).style.display = 'none';
+            document.getElementById("end_date_div"+id).style.display = 'block';
+            $('#occurences_div'+id+' :input').attr('disabled', 'disabled');
+            $('#end_date_div'+id+' :input').attr('disabled', false);
+        } else if(val=='1') {
+            document.getElementById("end_date_div"+id).style.display = 'none';
+            document.getElementById("occurences_div"+id).style.display = 'block';
+            $('#end_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#occurences_div'+id+' :input').attr('disabled', false);
+        }
+    }
+}
+
+function showReminderDateInput(val,id='') {
+    if(val!='') {
+        id=(id!='') ? id : 0;
+        if(val==2) {
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("1st_day_evry_month_div"+id).style.display = 'block';
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#1st_day_evry_month_div'+id+' :input').attr('disabled', false);
+        } else if(val==3) {
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("week_day_div"+id).style.display = 'block';
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#week_day_div'+id+' :input').attr('disabled', false);
+        } else if(val==4) {
+            $('.reminder_date_div'+id).hide();
+            document.getElementById("30days_div"+id).style.display = 'block';
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#30days_div'+id+' :input').attr('disabled', false);
+        } else if(val==5) {
+            $('.reminder_date_div'+id).hide();
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#custom_div'+id+' :input').attr('disabled', false);
+            $('#custom_date_reminder').modal('show');
+            $("#custom_date_reminder_row").val(id);
+        } else if(val==1) {
+            $('.reminder_date_div'+id).hide();
+            $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
+            $('#last_day_evry_month_div'+id+' :input').attr('disabled', false);
+        }
+    }
+}
+
+function checkRepeatType(val){
+    if(val!='') {
+        if(val=='week') {
+            $('#repeat_on_div').show();
+            $('#repeat_by_month').hide();
+            $('#repeat_by_week').show();
+        } else if(val=='month') {
+            $('#repeat_on_div').show();
+            $('#repeat_by_month').show();
+            $('#repeat_by_week').hide();
+        } else {
+            $('#repeat_on_div').hide();
+        }
+    }
+}
+
+function saveCustomInternalReminder() {
+    document.getElementById('loader').style.display = 'block';
+    var data = $("#custom_date_reminder_frm").serialize();
+ 
+    $.ajax({
+        type: 'POST',
+        url: '/merchant/contract/custom_internal_reminder',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (data)
+        {
+            obj = JSON.parse(data);
+            console.log(obj);
+            if (obj.status == 1)
+            {
+                document.getElementById('closeInternalReminder').click();
+                try{
+                    document.getElementById('custom_div'+obj.row_id).style.display = 'block';
+                    document.getElementById('repeat_every_txt'+obj.row_id).value=obj.repeat_every;
+                    document.getElementById('repeat_type'+obj.row_id).value=obj.repeat_type;
+                    document.getElementById('repeat_on'+obj.row_id).value=obj.repeat_on;
+                    document.getElementById('custom_summary'+obj.row_id).innerHTML = obj.summary;
+                }catch(o)
+                {
+
+                }
+                
+                
+                document.getElementById('custom_date_error').style.display = 'none';
+                document.getElementById('custom_date_error').innerHTML = '';
+                
+            } else
+            {
+                document.getElementById('custom_date_error').style.display = 'block';
+                document.getElementById('custom_date_error').innerHTML = obj.error;
+            }
+            document.getElementById('loader').style.display = 'none';
+        }
+    });
+
+    return false;
 }

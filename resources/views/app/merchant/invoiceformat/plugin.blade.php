@@ -1,4 +1,5 @@
 @extends('app.master')
+
 <style>
     .customize-output-panel-wrap {
         position: fixed;
@@ -25,7 +26,27 @@
         box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
         margin-bottom: 0;
     }
-
+    .custom_chk {
+        justify-content: center;
+        box-sizing: border-box;
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+        font-weight: 500;
+        border-radius: 50%;
+        background-color: rgb(241,243,244);
+        color: rgb(128,134,139);
+        margin-right: 8px;
+        cursor: pointer;
+        align-items: center;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        display: -webkit-inline-box;
+    }
+    .active-day {
+        color: white !important;
+        background-color: rgb(26,115,232);
+    }
     @media screen and (min-width: 0px) and (max-width: 700px) {
         .mobile {
             display: block !important;

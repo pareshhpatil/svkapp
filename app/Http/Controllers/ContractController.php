@@ -40,6 +40,7 @@ class ContractController extends Controller
     private $user_id = null;
     private $apiController = null;
     private $costTypeModel = null;
+    private $formatModel = null;
     //    use ContractParticulars;
 
     public function __construct()
@@ -51,6 +52,7 @@ class ContractController extends Controller
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
         $this->apiController = new APIController();
+        $this->formatModel = new InvoiceFormat();
     }
 
     public function create($version = null)
@@ -192,6 +194,19 @@ class ContractController extends Controller
             $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
             $data['template_id'] = $contract->template_id;
             $data['plugins'] = json_decode($plugins, 1);
+
+            //find internal reminders plugin data if plugin is on
+            if (isset($data['plugins']['has_internal_reminder']) && $data['plugins']['has_internal_reminder'] == 1) {
+                $internal_reminders = $this->contract_model->getTableListOrderby('internal_reminders', 'contract_id', $contract_id,'id');
+                $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
+            }
+            
+            $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id), 1);
+            //$data['sub_users_array'] = $this->getKeyArrayJson(json_decode($data['sub_users'],1), 'value');
+            $data['current_day'] = now()->format('l');
+            $data['current_date'] = now()->format('d');
+            $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
+            $data['current_month_last_date'] = now()->lastOfMonth()->format('Y-m-d');
             //$data['plugins'] = json_decode('{"has_upload":1,"upload_file_label":"View document","has_signature":1,"has_cc":"1","cc_email":[],"has_partial":"1","partial_min_amount":"50","has_covering_note":"1","default_covering_note":0,"save_revision_history":"1","invoice_output":"1","has_aia_license":"1","has_watermark":"1","watermark_text":"DRAFT"}', 1);
         }
 
@@ -208,7 +223,7 @@ class ContractController extends Controller
             $data['total'] = $total;
             $data['bulk_id'] = $bulk_id;
         }
-        
+
         $data['post_url'] = '/merchant/contract/store';
 
         return view('app/merchant/contract/createv6', $data);
@@ -257,6 +272,7 @@ class ContractController extends Controller
                 $step++;
                 break;
             case 3:
+                //dd($request->all());
                 if ($request->template_id != '') {
                     $template_id = $request->template_id;
                 } else {
@@ -310,11 +326,30 @@ class ContractController extends Controller
             $template_id = $this->saveInvoiceFormat($data['contract_code']);
             $data['template_id'] = $template_id;
             $contract = ContractParticular::create($data);
+            $this->saveInternalReminders($template_id,$contract->contract_id);
         } else {
             $data = $this->checkIfProjectIsChanged($data, $contract);
             $contract->update($data);
         }
         return $contract;
+    }
+
+    function saveInternalReminders($template_id=null,$contract_id=null) {
+        //check plugin column in invoice template table -> if internal reminder plugin is on
+        $get_exist_plugin_value = $this->formatModel->getColumnValue('invoice_template', 'template_id', $template_id, 'plugin');
+        $plugin_value = json_decode($get_exist_plugin_value, 1);
+        //check if internal reminder data exist then save your internal data with this contract id
+        if(isset($plugin_value['has_internal_reminder']) && $plugin_value['has_internal_reminder']==1) {
+            if(isset($plugin_value['internal_reminders']) && !empty($plugin_value['internal_reminders'])) {
+                foreach($plugin_value['internal_reminders'] as $ik=>$reminder) {
+                    $reminder['contract_id'] = $contract_id;
+                    $id=$this->formatModel->saveInternalReminder($reminder,$this->user_id);
+                }
+                unset($plugin_value['internal_reminders']);
+                $new_plugin_value = json_encode($plugin_value, 1);
+                $this->formatModel->updateTable('invoice_template', 'template_id', $template_id, 'plugin', $new_plugin_value);
+            }
+        }
     }
 
     private function saveInvoiceFormat($name)
@@ -324,7 +359,7 @@ class ContractController extends Controller
         $_POST = json_decode($invoice_format_json, 1);
         $invoice_format = new InvoiceFormatController();
 
-        $template_id = $invoice_format->saveInvoiceFormat($format_request, '');
+        $template_id = $invoice_format->saveInvoiceFormat($format_request, '',null,null);
         $invoice_format->saveMetadata($format_request, $template_id);
         return $template_id;
     }
@@ -1085,5 +1120,39 @@ class ContractController extends Controller
                 return response()->json($this->apiController->APIResponse('ER02057'), 422);
             }
         }
+    }
+    public function custom_internal_reminder(Request $request)
+    {
+        $response = array();
+        $response['status'] = 0;
+        if ($request->all()) {
+            if ($request->repeat_occurences != '') {
+                $response['row_id'] = $request->rowId;
+                $response['repeat_every'] = $request->repeat_occurences;
+                $response['repeat_type'] = $request->repeat_type;
+
+                $summary = 'Repeat every ' . $request->repeat_occurences . ' ' . $request->repeat_type;
+
+                if ($request->repeat_type == 'week') {
+                    $week = [];
+                    foreach ($request->week_days_selected as $wk => $val) {
+                        if ($val != null) {
+                            $week[] = $val;
+                        }
+                    }
+                    $response['repeat_on'] = json_encode($week, 1);
+                    $summary .= '<br/>' . implode(",", $week);
+                } else if ($request->repeat_type == 'month') {
+                    $response['repeat_on'] = $request->repeat_on;
+                    $summary .= '<br/>' . str_replace('_', ' ', $request->repeat_on);
+                }
+                $response['status'] = 1;
+                $response['summary'] = $summary;
+            } else {
+                $response['status'] = 0;
+            }
+        }
+
+        return json_encode($response);
     }
 }
