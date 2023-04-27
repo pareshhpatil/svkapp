@@ -51,6 +51,7 @@ class SubUserHelper
 
         $checkEmail = DB::table('user')
             ->where('email_id', $request->get('email_id'))
+            ->where('group_id', '$groupID')
             ->where('user_status', '!=', '21')
             ->exists();
 
