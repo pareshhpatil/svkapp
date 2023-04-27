@@ -40,6 +40,7 @@ class ContractController extends Controller
     private $user_id = null;
     private $apiController = null;
     private $costTypeModel = null;
+    private $formatModel = null;
     //    use ContractParticulars;
 
     public function __construct()
@@ -51,6 +52,7 @@ class ContractController extends Controller
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
         $this->apiController = new APIController();
+        $this->formatModel = new InvoiceFormat();
     }
 
     public function create($version = null)
@@ -192,9 +194,26 @@ class ContractController extends Controller
             $plugins = $this->contract_model->getColumnValue('invoice_template', 'template_id', $contract->template_id, 'plugin');
             $data['template_id'] = $contract->template_id;
             $data['plugins'] = json_decode($plugins, 1);
-
+            
             //find internal reminders plugin data if plugin is on
             if(isset($data['plugins']['has_internal_reminder']) && $data['plugins']['has_internal_reminder'] == 1) {
+                //check if default invoice foramt seeting is exist for this plugin into merchant config data table
+                if($title=='Create') {
+                    $existPluginData = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
+                    $existPluginData = json_decode($existPluginData,1);
+                    
+                    if(isset($existPluginData['has_internal_reminder']) && $existPluginData['has_internal_reminder']==1) {
+                        if(!empty($existPluginData['internal_reminders'])) {
+                            foreach($existPluginData['internal_reminders'] as $ik=>$reminder) {
+                                $reminder['contract_id'] = $contract_id;
+                                $id=$this->formatModel->saveInternalReminder($reminder,$this->user_id);
+                            }
+                            unset($data['plugins']['internal_reminders']);
+                            $new_plugin_value = json_encode($data['plugins'], 1);
+                            $this->formatModel->updateTable('invoice_template', 'template_id', $contract->template_id, 'plugin', $new_plugin_value);
+                        }
+                    }
+                } 
                 $internal_reminders = $this->contract_model->getTableList('internal_reminders','contract_id',$contract_id);
                 $data['plugins']['internal_reminders'] = json_decode(json_encode($internal_reminders), 1);
             }
