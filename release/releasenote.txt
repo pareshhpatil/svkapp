@@ -18,3 +18,5 @@ CREATE TABLE `swipez_briq`.`internal_reminders` (
   PRIMARY KEY (`id`));
 
 
+ALTER TABLE `swipez_briq`.`merchant_config_data` 
+CHANGE COLUMN `value` `value` LONGTEXT NOT NULL ;

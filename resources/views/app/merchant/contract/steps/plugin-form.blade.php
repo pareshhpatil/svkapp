@@ -538,7 +538,7 @@
                             @foreach($plugins['internal_reminders'] as $day=>$r)
                             <tr>
                                 <td>
-                                    <input type="hidden" name="internal_reminder_id[]" value="{{$r['id']}}" />
+                                    <input type="hidden" name="internal_reminder_id[]" value="@isset($r['id']) {{$r['id']}} @endisset" />
                                     <div class="input-icon right">
                                         <div id="sub_user_drpdwn{{$i}}"></div>
                                         <script>

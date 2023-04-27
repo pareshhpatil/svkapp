@@ -134,7 +134,7 @@
             </div>
         </div>
 
-        @include('app.merchant.contract.steps.plugin-modals');
+        @include('app.merchant.contract.steps.plugin-modals')
     </div>
     @section('footer')
     <script src="/assets/global/plugins/summernote/summernote.min.js"></script>
