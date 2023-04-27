@@ -36,11 +36,11 @@ class InvoiceFormatController extends AppController
 
         $data['template_id'] = '';
         $data['contract_id'] = '';
-        
+
         $plugins = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
         $data['plugins'] = json_decode($plugins, 1);
-       
-        $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id),1);
+
+        $data['sub_users'] = json_encode($this->contract_model->getSubUsers($this->merchant_id), 1);
         $data['current_day'] = now()->format('l');
         $data['current_date'] = now()->format('d');
         $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
@@ -52,15 +52,15 @@ class InvoiceFormatController extends AppController
 
     public function saveFormat(Request $request)
     {
-        $plugins = $this->getPlugins($set_internal_plugin=1);
+        $plugins = $this->getPlugins($set_internal_plugin = 1);
         if (isset($request->has_schedule_value)) {
             $plugins = json_decode($plugins, 1);
             $plugins['has_schedule_value'] = "1";
             $plugins = json_encode($plugins);
         }
-       
+
         $plugin_data = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id);
-       
+
         if ($plugin_data) {
             $this->formatModel->updateGlobalPluginData($this->merchant_id, 'INVOICE_FORMAT', $plugins);
             return redirect('/merchant/profile/settings');
@@ -543,7 +543,7 @@ class InvoiceFormatController extends AppController
         return redirect('/merchant/template/viewlist');
     }
 
-    function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null)
+    function saveInvoiceFormat($request, $logo, $merchant_id = null, $user_id = null, $contract_id = null)
     {
         $pcarray = [];
         if (isset($request->particular_col)) {
@@ -594,9 +594,9 @@ class InvoiceFormatController extends AppController
         $data['footer_note'] = (isset($request->template_fooer_msg)) ? $request->template_fooer_msg : '';
         if ($type == 'update') {
             $data['plugin'] = $this->getPlugins();
-        }else{
+        } else {
             $data['plugin'] = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
-            // save plugins data int my table -> with contract id 
+            $this->saveInternalReminder($data['plugin'], $contract_id);
         }
         $data['profile_id'] = ($request->billingProfile_id > 0) ?  $request->billingProfile_id : 0;
         $data['image_path'] = $logo;
@@ -616,7 +616,10 @@ class InvoiceFormatController extends AppController
     }
 
 
-
+    public function saveInternalReminder($plugin, $contract_id)
+    {
+        # code...
+    }
 
     public function saveMetadata($request, $template_id)
     {
@@ -900,9 +903,9 @@ class InvoiceFormatController extends AppController
         }
     }
 
-    function getPlugins($set_internal_plugin=0)
+    function getPlugins($set_internal_plugin = 0)
     {
-        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark', 'include_store_materials','is_internal_reminder','list_all_change_orders'));
+        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark', 'include_store_materials', 'is_internal_reminder', 'list_all_change_orders'));
         $this->setEmptyArray(array('debit', 'debitdefaultValue', 'mandatory_document_name', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
@@ -1029,21 +1032,21 @@ class InvoiceFormatController extends AppController
         if ($_POST['is_internal_reminder'] == 1) {
             $plugin['has_internal_reminder'] = $_POST['is_internal_reminder'];
 
-            if($set_internal_plugin==1) {
+            if ($set_internal_plugin == 1) {
                 if (!empty($_POST['internal_reminder_subject'])) {
                     foreach ($_POST['internal_reminder_subject'] as $key => $type) {
-                        
+
                         $plugin['internal_reminders'][$key] = array(
-                            'contract_id'=>null,
-                            'user_id'=>$_POST['reminder_user'][$key],
-                            'subject' => $_POST['internal_reminder_subject'][$key], 
+                            'contract_id' => null,
+                            'user_id' => $_POST['reminder_user'][$key],
+                            'subject' => $_POST['internal_reminder_subject'][$key],
                             'reminder_date_type' => $_POST['reminder_date_type'][$key],
-                            'reminder_date'=>$_POST['reminder_date'][$key],
-                            'end_date_type'=>$_POST['end_date_type'][$key],
-                            'end_date'=>$_POST['end_date'][$key],
-                            'repeat_every'=>$_POST['repeat_every'][$key],
-                            'repeat_type'=>$_POST['repeat_type'][$key],
-                            'repeat_on'=>$_POST['repeat_on'][$key]
+                            'reminder_date' => $_POST['reminder_date'][$key],
+                            'end_date_type' => $_POST['end_date_type'][$key],
+                            'end_date' => $_POST['end_date'][$key],
+                            'repeat_every' => $_POST['repeat_every'][$key],
+                            'repeat_type' => $_POST['repeat_type'][$key],
+                            'repeat_on' => $_POST['repeat_on'][$key]
                         );
                     }
                 }
@@ -1051,7 +1054,7 @@ class InvoiceFormatController extends AppController
                 $this->setInternalReminders();
             }
         }
-        
+
         if ($_POST['list_all_change_orders'] == 1) {
             $plugin['list_all_change_orders'] = $_POST['list_all_change_orders'];
         }
@@ -1137,16 +1140,17 @@ class InvoiceFormatController extends AppController
         return $defaultReceiptFields;
     }
 
-    function setInternalReminders() {
+    function setInternalReminders()
+    {
         if (!empty($_POST['internal_reminder_subject'])) {
             $contract_id = Encrypt::decode($_POST['contract_id']);
-           
+
             //find if exist reminders in table for contract if yes then set as is_active 0
-            $this->formatModel->updateTable('internal_reminders','contract_id',$contract_id,'is_active',0);
+            $this->formatModel->updateTable('internal_reminders', 'contract_id', $contract_id, 'is_active', 0);
 
             foreach ($_POST['internal_reminder_subject'] as $key => $type) {
                 $internal_reminders['contract_id'] = $contract_id;
-                $internal_reminders['user_id']=$_POST['reminder_user'][$key];
+                $internal_reminders['user_id'] = $_POST['reminder_user'][$key];
                 $internal_reminders['subject'] = $_POST['internal_reminder_subject'][$key];
                 $internal_reminders['reminder_date_type'] = $_POST['reminder_date_type'][$key];
                 $internal_reminders['reminder_date'] = $_POST['reminder_date'][$key];
@@ -1155,11 +1159,11 @@ class InvoiceFormatController extends AppController
                 $internal_reminders['repeat_every'] = $_POST['repeat_every'][$key];
                 $internal_reminders['repeat_type'] =  $_POST['repeat_type'][$key];
                 $internal_reminders['repeat_on'] = $_POST['repeat_on'][$key];
-                
-                if(isset($_POST['internal_reminder_id']) && isset($_POST['internal_reminder_id'][$key])) {
-                    $this->formatModel->updateInternalReminder($internal_reminders,$_POST['internal_reminder_id'][$key],$this->user_id);
+
+                if (isset($_POST['internal_reminder_id']) && isset($_POST['internal_reminder_id'][$key])) {
+                    $this->formatModel->updateInternalReminder($internal_reminders, $_POST['internal_reminder_id'][$key], $this->user_id);
                 } else {
-                    $id=$this->formatModel->saveInternalReminder($internal_reminders,$this->user_id);
+                    $id = $this->formatModel->saveInternalReminder($internal_reminders, $this->user_id);
                 }
             }
         }
