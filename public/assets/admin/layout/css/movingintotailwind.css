@@ -865,7 +865,9 @@ i.apps {
     padding-right: 1rem;
     padding-left: 1rem;
 }
-
+.pt-7{
+    padding-top:7px;
+}
 .modal-title{
     font-size: 1.5rem;
     color: #5C6B6B;

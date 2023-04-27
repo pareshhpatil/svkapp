@@ -35,10 +35,9 @@ function confirmCovering(payment_request_id)
 
 function saveCovering(value)
 {
-
     document.getElementById('loader').style.display = 'block';
     var data = $("#"+value+"covering_frm").serialize();
-  
+ 
     $.ajax({
         type: 'POST',
         url: '/merchant/coveringnote/save/1',
