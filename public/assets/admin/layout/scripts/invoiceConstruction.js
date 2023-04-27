@@ -898,6 +898,7 @@ function filterRows() {
                 display = 'none';
             }
         }
+
         if (dropdown_search > 0) {
             if (dropdown_search == 1) {
                 input_name = 'previously_billed_amount';
@@ -907,13 +908,12 @@ function filterRows() {
                 input_name = 'current_billed_amount';
             }
 
+            amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
             if(dropdown_search == 3){
-                amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
-                if (amt_val <= 0) {} else {
+                if (amt_val > 0 || isNaN(amt_val)) {
                     display = 'none';
-                }
+                } 
             }else{
-                amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
                 if (amt_val > 0) {} else {
                     display = 'none';
                 }
