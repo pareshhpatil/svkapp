@@ -131,7 +131,7 @@
     }
 
     .headFootZIndex {
-        z-index: 2;
+        z-index: 3;
     }
 
     .biggerHead {
@@ -399,7 +399,7 @@
                                                                 </svg>
                                                             </span>
                                                             <input type="hidden" id="{{$k}}{{$pint}}" value="{{$pv['bill_code']}}" name="{{$k}}[]">
-                                                            <span id="span_{{$k}}{{$pint}}" style="width:80%">{{$csi_codes_list[$pv['bill_code']]['label']}}</span>
+                                                            <span id="span_{{$k}}{{$pint}}" style="width:80%"> @isset($csi_codes_list[$pv['bill_code']]['label']){{$csi_codes_list[$pv['bill_code']]['label']}} @else NA @endisset</span>
                                                             <span id="vspan_{{$k}}{{$pint}}" style="width:80%; display: none;">
                                                                 <div id="v_{{$k}}{{$pint}}"></div>
                                                             </span>
