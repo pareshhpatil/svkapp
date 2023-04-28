@@ -285,6 +285,7 @@
                     dropboxWrapper: 'body',
                     multiple:true,
                     name: 'reminder_user[]',
+                    additionalClasses : 'custom_valid',
                     required: true
                 });
 

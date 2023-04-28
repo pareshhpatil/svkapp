@@ -546,7 +546,8 @@
                                                         multiple: true,
                                                         name: 'reminder_user[]',
                                                         selectedValue: [{{$r['user_id']}}],
-                                                        required: true
+                                                        required: true,
+                                                        additionalClasses : 'custom_valid'
                                                     });
                                                     //virtualSelectInit({{$i}});
                                                 </script>
