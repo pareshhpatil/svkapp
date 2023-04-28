@@ -34,7 +34,7 @@
                         <a href="/merchant/profile/producttaxation" class="dc-link"> Product Taxation</a>
                     </p> 
                     <p>
-                        <a href="/merchant/template/invoice/format" class="dc-link"> Invoice format</a>
+                        <a href="/merchant/template/invoice/format" class="dc-link"> Invoice configuration</a>
                     </p>
                     {if $multi_currency==true}
                     <p>

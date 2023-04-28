@@ -31,7 +31,7 @@ class InvoiceFormatController extends AppController
 
     public function format()
     {
-        $title = 'Invoice Format';
+        $title = 'Invoice configuration';
         $data = Helpers::setBladeProperties(ucfirst($title), ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [14]);
 
         $data['template_id'] = '';
