@@ -754,6 +754,17 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Show Total change orders column in 703 -->
+                    <div>
+                        <hr>
+                        <div class="mb-2">
+                            <span class="form-section base-font">Show Total change orders column in 703</span>
+                            <div class="pull-right ml-1">
+                                <input type="checkbox" @isset($plugins['has_total_co_col']) checked @endif id="istotalcocol" name="has_total_co_col" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of Show Total change orders column in 703 -->
                 </div>
             </div>
         </div>
