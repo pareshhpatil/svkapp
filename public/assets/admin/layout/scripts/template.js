@@ -2416,16 +2416,19 @@ function showReminderDateInput(val,id='') {
             document.getElementById("1st_day_evry_month_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#1st_day_evry_month_div'+id+' :input').attr('disabled', false);
+            $('#1st_day_evry_month_div'+id+' :input').attr('required', true);
         } else if(val==3) {
             $('.reminder_date_div'+id).hide();
             document.getElementById("week_day_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#week_day_div'+id+' :input').attr('disabled', false);
+            $('#week_day_div'+id+' :input').attr('required', true);
         } else if(val==4) {
             $('.reminder_date_div'+id).hide();
             document.getElementById("30days_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#30days_div'+id+' :input').attr('disabled', false);
+            $('#30days_div'+id+' :input').attr('required', true);
         } else if(val==5) {
             $('.reminder_date_div'+id).hide();
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');

@@ -106,34 +106,9 @@
 
 <script src="/assets/admin/layout/scripts/coveringnote.js" type="text/javascript"></script>
 
-<div>
+<div class="row">
     <div class="col-md-12">
-        <div class="portlet light bordered">
-            <h3 class="form-section">Settings</h3>
-            <ul class="nav nav-tabs">
-                <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
-                <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
-                <li role="presentation"><a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">Invoice format</a></li>
-            </ul>
-            <div class="portlet-body">
-                @include('app.merchant.contract.steps.plugin-form')
-            </div>
-
-        </div>
-
-        <div class="portlet light bordered">
-            <div class="portlet-body form">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="pull-right">
-                            <a class="btn green" href="{{ route('contract.create.new', ['step' => 2, 'contract_id' => $contract_id]) }}">Back</a>
-                            <button class="btn blue" type="submit" fdprocessedid="tinkj">Preview contract</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        @include('app.merchant.contract.steps.plugin-form',['plugin_settings'=>$plugin_settings])
         @include('app.merchant.contract.steps.plugin-modals')
     </div>
     @section('footer')
