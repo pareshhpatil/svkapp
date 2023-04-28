@@ -178,7 +178,6 @@
                             @break
                         @endswitch
                     </form>
-
                 </div>
                 <!-- END PAGE CONTENT-->
             </div>

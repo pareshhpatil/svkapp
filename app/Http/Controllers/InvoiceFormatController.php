@@ -47,7 +47,7 @@ class InvoiceFormatController extends AppController
         $data['current_month_1st_date'] = now()->startOfMonth()->format('Y-m-d');
         $data['current_month_last_date'] = now()->lastOfMonth()->format('Y-m-d');
         $data['post_url'] = '/merchant/invoice/format/save';
-
+        $data['plugin_settings'] = 'settings';
         return view('app.merchant.invoiceformat.plugin', $data);
     }
 

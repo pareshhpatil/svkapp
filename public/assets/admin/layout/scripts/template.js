@@ -2399,11 +2399,13 @@ function showEndDateInput(val,id='') {
             document.getElementById("end_date_div"+id).style.display = 'block';
             $('#occurences_div'+id+' :input').attr('disabled', 'disabled');
             $('#end_date_div'+id+' :input').attr('disabled', false);
+            $('#end_date_div'+id+' :input').attr('required', true);
         } else if(val=='1') {
             document.getElementById("end_date_div"+id).style.display = 'none';
             document.getElementById("occurences_div"+id).style.display = 'block';
             $('#end_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#occurences_div'+id+' :input').attr('disabled', false);
+            $('#occurences_div'+id+' :input').attr('required', true);
         }
     }
 }
@@ -2416,16 +2418,19 @@ function showReminderDateInput(val,id='') {
             document.getElementById("1st_day_evry_month_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#1st_day_evry_month_div'+id+' :input').attr('disabled', false);
+            $('#1st_day_evry_month_div'+id+' :input').attr('required', true);
         } else if(val==3) {
             $('.reminder_date_div'+id).hide();
             document.getElementById("week_day_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#week_day_div'+id+' :input').attr('disabled', false);
+            $('#week_day_div'+id+' :input').attr('required', true);
         } else if(val==4) {
             $('.reminder_date_div'+id).hide();
             document.getElementById("30days_div"+id).style.display = 'block';
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#30days_div'+id+' :input').attr('disabled', false);
+            $('#30days_div'+id+' :input').attr('required', true);
         } else if(val==5) {
             $('.reminder_date_div'+id).hide();
             $('.reminder_date_div'+id+' :input').attr('disabled', 'disabled');
@@ -2457,9 +2462,7 @@ function checkRepeatType(val){
 }
 
 function saveCustomInternalReminder() {
-    document.getElementById('loader').style.display = 'block';
     var data = $("#custom_date_reminder_frm").serialize();
- 
     $.ajax({
         type: 'POST',
         url: '/merchant/contract/custom_internal_reminder',
@@ -2470,7 +2473,7 @@ function saveCustomInternalReminder() {
         success: function (data)
         {
             obj = JSON.parse(data);
-            console.log(obj);
+            //console.log(obj);
             if (obj.status == 1)
             {
                 document.getElementById('closeInternalReminder').click();

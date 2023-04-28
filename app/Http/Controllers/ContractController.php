@@ -225,7 +225,7 @@ class ContractController extends Controller
         }
 
         $data['post_url'] = '/merchant/contract/store';
-
+        $data['plugin_settings'] = 'contract';
         return view('app/merchant/contract/createv6', $data);
     }
 
