@@ -2399,11 +2399,13 @@ function showEndDateInput(val,id='') {
             document.getElementById("end_date_div"+id).style.display = 'block';
             $('#occurences_div'+id+' :input').attr('disabled', 'disabled');
             $('#end_date_div'+id+' :input').attr('disabled', false);
+            $('#end_date_div'+id+' :input').attr('required', true);
         } else if(val=='1') {
             document.getElementById("end_date_div"+id).style.display = 'none';
             document.getElementById("occurences_div"+id).style.display = 'block';
             $('#end_date_div'+id+' :input').attr('disabled', 'disabled');
             $('#occurences_div'+id+' :input').attr('disabled', false);
+            $('#occurences_div'+id+' :input').attr('required', true);
         }
     }
 }
@@ -2460,9 +2462,7 @@ function checkRepeatType(val){
 }
 
 function saveCustomInternalReminder() {
-    document.getElementById('loader').style.display = 'block';
     var data = $("#custom_date_reminder_frm").serialize();
- 
     $.ajax({
         type: 'POST',
         url: '/merchant/contract/custom_internal_reminder',
@@ -2473,7 +2473,7 @@ function saveCustomInternalReminder() {
         success: function (data)
         {
             obj = JSON.parse(data);
-            console.log(obj);
+            //console.log(obj);
             if (obj.status == 1)
             {
                 document.getElementById('closeInternalReminder').click();

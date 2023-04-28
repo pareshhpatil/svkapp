@@ -281,6 +281,7 @@
                     dropboxWrapper: 'body',
                     multiple:true,
                     name: 'reminder_user[]',
+                    required: true
                 });
 
                 $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function() {
@@ -300,7 +301,7 @@
                 var mainDiv = document.getElementById('new_internal_reminder_'+type);
                 var newDiv = document.createElement('tr');
                 newDiv.innerHTML = '<td><div class="input-icon right"><div id="sub_user_drpdwn'+cntInputs+'"></div></div></td>'+
-                                    '<td><div class="input-icon right"><input type="text" name="internal_reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder"></div></td>'+
+                                    '<td><div class="input-icon right"><input type="text" name="internal_reminder_subject[]"  maxlength="250" class="form-control input-sm" placeholder="Invoice creation reminder" required></div></td>'+
                                     '<td><div class="input-icon right"><select class="form-control input-sm" id="reminder_date_type" onchange="showReminderDateInput(this.value,'+cntInputs+')" name="reminder_date_type[]">'+
                                                                         '<option value="1">Last day of every month</option>'+
                                                                         '<option value="2">1st of every month</option>'+
