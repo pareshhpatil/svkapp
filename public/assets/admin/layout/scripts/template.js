@@ -1778,6 +1778,8 @@ function disablePlugin(val, id) {
     else if (val == true && id == "plg10") {
         $("#pgiscovering").show();
     } else if(val == false && id == "plg15") {
+        var mainDiv = document.getElementById('new_internal_reminder_before');
+        mainDiv.innerHTML='';
         $("#pg_is_internal_reminder").hide();
     } else if(val == true && id == "plg15") {
         $("#pg_is_internal_reminder").show();

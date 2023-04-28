@@ -546,7 +546,8 @@
                                                         multiple: true,
                                                         name: 'reminder_user[]',
                                                         selectedValue: [{{$r['user_id']}}],
-                                                        required: true
+                                                        required: true,
+                                                        additionalClasses : 'custom_valid'
                                                     });
                                                     //virtualSelectInit({{$i}});
                                                 </script>
@@ -765,7 +766,7 @@
                     <div class="col-md-12">
                         <div class="pull-right">
                             <a class="btn green" href="{{ route('contract.create.new', ['step' => 2, 'contract_id' => $contract_id]) }}">Back</a>
-                            <button class="btn blue" type="submit" onclick='btnClick();' @click="btnnext();" fdprocessedid="tinkj">Preview contract</button>
+                            <button class="btn blue" type="submit" onclick='btnClick();' @click="next();" fdprocessedid="tinkj">Preview contract</button>
                         </div>
                     </div>
                 </div>
