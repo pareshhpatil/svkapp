@@ -52,6 +52,7 @@ Route::get('404', 'HomeController@pagenotfound');
 // Route::get('invoice-template-pdf', 'DownloadInvoiceFormatsController@invoiceTemplatePDF')->name('home.pdfinvoicetemplates');
 // Route::get('payment-link', 'HomeController@paymentLink')->name('home.paymentlink');
 
+Route::redirect('/logout', env('BRIQ_APP_URL'), 301)->name('logout');
 Route::get('sitemap.xml', 'SitemapController@index');
 
 Route::get('download-isp-invoice-format', 'DownloadInvoiceFormatsController@IspInvoiceFormat')->name('home.ispinvoiceformat');
