@@ -1,7 +1,6 @@
 
 <form action="{{$post_url}}" method="post" id="plugin-form">
     <div class="portlet light bordered">
-        <h3 class="form-section">Settings</h3>
         <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
             <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
