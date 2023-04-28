@@ -223,7 +223,11 @@
 <!--end of custom-reminder date modal for add reminder plugin -->
 
 <script>
-            
+            function btnClick() {
+                document.getElementById('frm_expense').onsubmit = function() {
+                    document.getElementById('loader').style.display = 'none';
+                };
+            }
             function closeCustomizeInvoiceOutputDrawer() {
                 document.getElementById("panelWrapInvoiceOutput").style.boxShadow = "none";
                 document.getElementById("panelWrapInvoiceOutput").style.transform = "translateX(100%)";
