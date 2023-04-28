@@ -1048,8 +1048,10 @@ class InvoiceFormatController extends AppController
                 $this->setInternalReminders();
             }
         } else if($_POST['is_internal_reminder'] == 0) {
-            $contract_id = Encrypt::decode($_POST['contract_id']);
-            $this->formatModel->updateTable('internal_reminders', 'contract_id', $contract_id, 'is_active', 0);
+            if ($set_internal_plugin == 0) {
+                $contract_id = Encrypt::decode($_POST['contract_id']);
+                $this->formatModel->updateTable('internal_reminders', 'contract_id', $contract_id, 'is_active', 0);
+            }
         }
 
         if ($_POST['list_all_change_orders'] == 1) {
