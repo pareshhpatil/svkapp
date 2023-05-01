@@ -2616,6 +2616,12 @@ class InvoiceController extends AppController
         $data['has_aia_license'] = $hasAIALicense;
         $data['list_all_change_orders'] = $hasListAllChangeOrders;
 
+        $has_total_co_col = false;
+        if(isset($plugins['has_total_co_col'])) {
+            $has_total_co_col = true;
+        }
+        $data['has_total_co_col'] = $has_total_co_col;
+        
         $has_watermark = false;
         $data['watermark_text'] = '';
         if (isset($plugins['has_watermark'])) {
@@ -2710,6 +2716,12 @@ class InvoiceController extends AppController
             $start_date = date("Y-m-01", strtotime($data['bill_date']));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
             $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
+            
+            //show total co col in 703 plugin calculations
+            if(isset($data['has_total_co_col']) && $data['has_total_co_col']==true) {
+                $rowArray['total_change_order_col'] = $rowArray['change_from_previous_application'] + $rowArray['change_this_period'];
+            }
+            
             if ($data['has_schedule_value']) {
                 $rowArray['current_contract_amount'] = ($rowArray['current_contract_amount'] - $rowArray['approved_change_order_amount']);
             }
