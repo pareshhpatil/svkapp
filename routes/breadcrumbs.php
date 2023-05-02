@@ -554,3 +554,23 @@ Breadcrumbs::for('settings.invoiceformat', function ($trail) {
     $trail->push('Settings', '/merchant/profile/settings');
     $trail->push('Invoice format', '/merchant/template/invoice/format');
 });
+
+Breadcrumbs::for('merchant.subcontract.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sub contract');
+    $trail->push('Sub contract list', '/merchant/sub-contracts');
+});
+
+Breadcrumbs::for('merchant.subcontract.create', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sub Contract');
+    $trail->push('Sub contract list', '/merchant/sub-contracts');
+    $trail->push('Sub contract create', '/merchant/sub-contracts/create/1');
+});
+
+Breadcrumbs::for('merchant.subcontract.update', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sub Contract');
+    $trail->push('Sub contract list', '/merchant/sub-contracts');
+    $trail->push('Sub contract update');
+});
