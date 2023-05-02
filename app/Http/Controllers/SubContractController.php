@@ -3,25 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Constants\Models\IColumn;
-use App\Constants\Models\ITable;
-use App\ContractParticular;
 use App\CsiCode;
-use App\Helpers\Merchant\SubUserHelper;
-use App\Helpers\RuleEngine\RuleEngineManager;
 use App\Http\Controllers\API\APIController;
-use App\Http\Controllers\AppController;
-use App\Http\Requests\StoreUserRequest;
-use App\Jobs\ProcessInvoiceForApprove;
 use App\Libraries\Encrypt;
 use App\Libraries\Helpers;
-use App\Model\Contract;
-use App\Model\Invoice;
 use App\Model\Master;
 use App\Model\Merchant\CostType;
-use App\Model\Merchant\SubUser\SubUser;
 use App\Model\SubContract;
-use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -29,22 +17,15 @@ use Validator;
 
 class SubContractController extends Controller
 {
-    private $contract_model = null;
+    private $sub_contract_model = null;
     private $masterModel = null;
-    private $invoiceModel = null;
     private $merchant_id = null;
     private $user_id = null;
-    private $apiController = null;
-    private $costTypeModel = null;
-    //    use ContractParticulars;
 
     public function __construct()
     {
-        $this->contract_model = new Contract();
         $this->sub_contract_model = new SubContract();
         $this->masterModel = new Master();
-        $this->invoiceModel = new Invoice();
-        $this->costTypeModel = new CostType();
         $this->merchant_id = Encrypt::decode(Session::get('merchant_id'));
         $this->user_id = Encrypt::decode(Session::get('userid'));
         $this->apiController = new APIController();
@@ -88,6 +69,7 @@ class SubContractController extends Controller
 
         $data['step'] = $step;
         $data['sub_contract_id'] = $subContractID;
+        $data['project_id'] = '';
 
         $data['sub_contract'] = null;
 
@@ -101,7 +83,8 @@ class SubContractController extends Controller
             $SubContract = SubContract::find(Encrypt::decode($subContractID));
             $data['SubContract'] = $SubContract;
             $data = $this->step2Data($data, $SubContract, $SubContract->project_id ?? '', $step);
-
+            
+            $data['project_id'] = $SubContract->project_id;
             $data['project'] = $this->masterModel->getTableRow('project', 'id', $SubContract->project_id);
         }
 

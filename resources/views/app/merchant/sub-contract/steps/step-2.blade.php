@@ -253,9 +253,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-right">
-
-                        <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                        <a class="btn green" href="/merchant/invoice/create/">Back</a>
+                        <a href="/merchant/sub-contracts" class="btn green">Cancel</a>
+                        <a class="btn green" href="/merchant/sub-contracts/edit/1/{{$sub_contract_id}}">Back</a>
                         <input type="button" class="btn blue" @click="next()" value="Save">
                     </div>
                 </div>
