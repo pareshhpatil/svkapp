@@ -524,9 +524,6 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('sub-contracts/update-particulars', 'SubContractController@updateParticulars');
   Route::get('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@edit')->name('merchant.subcontract.update');
   Route::post('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@update')->name('merchant.subcontract.update');
-//  Route::post('subusers/create', 'Merchant\SubUserController@store');
-//  Route::get('subusers/{id}/edit ', 'Merchant\SubUserController@edit')->name('merchant.subusers.edit');
-//  Route::post('subusers/{id}/edit', 'Merchant\SubUserController@update')->name('merchant.subusers.update');
   Route::get('sub-contracts/delete/{id}', 'SubContractController@delete');
 });
 
