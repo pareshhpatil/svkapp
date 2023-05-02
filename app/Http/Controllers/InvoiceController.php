@@ -2474,8 +2474,11 @@ class InvoiceController extends AppController
                 }
 
                 if (is_numeric($valArray['budget_reallocation'])) {
-                    $has_budget = true;
-                    $grand_total_budget_reallocation = $grand_total_budget_reallocation + $valArray['budget_reallocation'];
+					if($valArray['budget_reallocation']!=0)
+					{
+						$has_budget = true;
+						$grand_total_budget_reallocation = $grand_total_budget_reallocation + $valArray['budget_reallocation'];
+					}
                 }
 
                 //calculate grand total
@@ -3139,9 +3142,12 @@ class InvoiceController extends AppController
                     if (!empty($findParticular)) {
                         if (isset($findParticular['budget_reallocation'])) {
                             if (is_numeric($findParticular['budget_reallocation'])) {
-                                $has_budget = true;
-                                $grand_total_budget_reallocation = $grand_total_budget_reallocation + $findParticular['budget_reallocation'];
-                                $findParticular['change_order_amount'] = $findParticular['change_order_amount'] - $findParticular['budget_reallocation'];
+								if($findParticular['budget_reallocation']!=0)
+								{
+									$has_budget = true;
+									$grand_total_budget_reallocation = $grand_total_budget_reallocation + $findParticular['budget_reallocation'];
+									$findParticular['change_order_amount'] = $findParticular['change_order_amount'] - $findParticular['budget_reallocation'];
+								}
                             }
                         }
                         $changeOrderValues[$changeOrderData->order_id] = $findParticular['change_order_amount'];

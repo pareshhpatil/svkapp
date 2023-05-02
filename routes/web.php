@@ -52,6 +52,7 @@ Route::get('404', 'HomeController@pagenotfound');
 // Route::get('invoice-template-pdf', 'DownloadInvoiceFormatsController@invoiceTemplatePDF')->name('home.pdfinvoicetemplates');
 // Route::get('payment-link', 'HomeController@paymentLink')->name('home.paymentlink');
 
+Route::redirect('/logout', env('BRIQ_APP_URL'), 301)->name('logout');
 Route::get('sitemap.xml', 'SitemapController@index');
 
 Route::get('download-isp-invoice-format', 'DownloadInvoiceFormatsController@IspInvoiceFormat')->name('home.ispinvoiceformat');
@@ -421,7 +422,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
 
   Route::any('/billcode/new', 'ContractController@newBillCode')->name('newBillCode.contract');
-
+  Route::any('/contract/custom_internal_reminder','ContractController@custom_internal_reminder');
   //order
   Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');

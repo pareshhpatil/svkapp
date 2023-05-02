@@ -81,7 +81,29 @@
     </style>
     <div class="portlet light bordered">
         <div class="portlet-body form">
-            <div class="row">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="form-section">Add Particulars</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" id="search" class="form-control" placeholder="Search Item No and Description of work">
+            </div>
+            <div class="col-md-1">
+                <button class="btn green" type='button' onclick="return filterRows();">Search</button>
+            </div>  
+            <div class="col-md-3">
+                <input type="hidden" id="dropdown_search" class="form-control" value="0">
+            </div>
+            <div class="col-md-5">
+            <a data-cy="add_particulars_btn" href="javascript:;"  @click="await addNewRow()"
+                       class="btn green pull-right mb-1"> Add new row </a>
+                    <a data-cy="add_particulars_btn" href="/merchant/contract/import/{{$contract_id}}"  
+                       class="btn green pull-right mb-1 mr-1"> Import </a>
+            </div>
+        </div>
+            <!-- <div class="row">
                 <div class="col-md-6">
                     <h3 class="form-section">Add Particulars</h3>
                 </div>
@@ -91,13 +113,13 @@
                     <a data-cy="add_particulars_btn" href="/merchant/contract/import/{{$contract_id}}"  
                        class="btn green pull-right mb-1 mr-1"> Import </a>
                 </div>
-            </div>
+            </div> -->
             <div class="table-scrollable tableFixHead">
                 <table class="table table-bordered table-hover" id="particular_table">
                     @php $particular_column = \App\ContractParticular::$particular_column @endphp
                     @include('app.merchant.contract.steps.step-2-head')
 
-                    <tbody>
+                    <tbody id="particular_body">
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
                                 @php

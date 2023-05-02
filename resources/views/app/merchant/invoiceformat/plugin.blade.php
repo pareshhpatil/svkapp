@@ -1,4 +1,5 @@
 @extends('app.master')
+
 <style>
     .customize-output-panel-wrap {
         position: fixed;
@@ -25,7 +26,27 @@
         box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
         margin-bottom: 0;
     }
-
+    .custom_chk {
+        justify-content: center;
+        box-sizing: border-box;
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+        font-weight: 500;
+        border-radius: 50%;
+        background-color: rgb(241,243,244);
+        color: rgb(128,134,139);
+        margin-right: 8px;
+        cursor: pointer;
+        align-items: center;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        display: -webkit-inline-box;
+    }
+    .active-day {
+        color: white !important;
+        background-color: rgb(26,115,232);
+    }
     @media screen and (min-width: 0px) and (max-width: 700px) {
         .mobile {
             display: block !important;
@@ -93,39 +114,11 @@
     </div>
     <!-- END PAGE HEADER-->
     <!-- BEGIN PAGE CONTENT-->
-    <div>
+    <div class="row">
         <div class="col-md-12">
-            <div class="portlet light bordered">
-                <h3 class="form-section">Settings</h3>
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active"><a href="#tab1" data-toggle="tab" class="step" aria-expanded="true">Properties</a></li>
-                    <li role="presentation"><a href="#tab2" data-toggle="tab" class="step" aria-expanded="true">Notifications</a></li>
-                    <li role="presentation"><a href="#tab3" data-toggle="tab" class="step" aria-expanded="true">Invoice format</a></li>
-                </ul>
-                <div class="portlet-body">
-                    @include('app.merchant.contract.steps.plugin-form')
-                </div>
-
-            </div>
-            <div class="portlet light bordered">
-                <div class="portlet-body form">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="pull-right">
-                                <a class="btn green" href="/merchant/profile/settings">Cancel</a>
-                                <button class="btn blue" type="submit" onclick="submitForm()">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('app.merchant.contract.steps.plugin-form',['plugin_settings'=>$plugin_settings])
             @include('app.merchant.contract.steps.plugin-modals')
         </div>
     </div>
 </div>
 @endsection
-<script>
-    function submitForm() {
-        document.getElementById('plugin-form').submit();
-    }
-</script>

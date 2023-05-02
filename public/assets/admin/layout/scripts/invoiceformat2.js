@@ -3703,3 +3703,49 @@ function addOptionIntoDropdown(id_of_drpdwn, obj_data) {
     option.selected = 1;
     x.add(option);
 }
+
+function filterRows() {
+    var input, filter, table, tr, td, i, txtValue;
+    table = document.getElementById("particular_body");
+    tr = table.getElementsByTagName("tr");
+    dropdown_search = document.getElementById("dropdown_search").value;
+    search = document.getElementById("search").value.toUpperCase();
+    for (i = 0; i <= tr.length - 1; i++) {
+        display = "";
+        if (search != '') {
+            search_td = tr[i].getElementsByTagName("td")[0];
+            txtValue = search_td.textContent || search_td.innerText;
+            txtValue = txtValue.toUpperCase();
+            if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+                display = 'none';
+            }
+        }
+        if (dropdown_search > 0) {
+            if (dropdown_search == 1) {
+                input_name = 'previously_billed_amount';
+            } else if(dropdown_search == 3){
+                input_name = 'previously_billed_amount';
+            } else {
+                input_name = 'current_billed_amount';
+            }
+
+            amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
+            if(dropdown_search == 3){
+                if (amt_val > 0 || isNaN(amt_val)) {
+                    display = 'none';
+                } 
+            }else{
+                if (amt_val > 0) {} else {
+                    display = 'none';
+                }
+            }
+            
+        }
+        tr[i].style.display = display;
+    }
+    try{
+        calculateTotal();
+    }catch(o){}
+
+    return false;
+}

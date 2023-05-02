@@ -553,6 +553,7 @@ Breadcrumbs::for('settings.invoiceformat', function ($trail) {
     $trail->parent('home');
     $trail->push('Settings', '/merchant/profile/settings');
     $trail->push('Invoice format', '/merchant/template/invoice/format');
+    $trail->push('Invoice configuration', '/merchant/template/invoice/format');
 });
 
 Breadcrumbs::for('merchant.subcontract.index', function ($trail) {

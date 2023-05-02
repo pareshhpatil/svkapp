@@ -1577,10 +1577,12 @@ function calculateChangeOrder(type = null) {
     var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
-        total = total + getamt(document.getElementById('change_order_amount' + int).value)
-        original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
-        unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
-        rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
+        if (_('pint'+int).style.display != 'none') {
+            total = total + getamt(document.getElementById('change_order_amount' + int).value)
+            original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
+            unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
+            rate_total = rate_total + getamt(document.getElementById('rate' + int).value)
+        }
     });
     try {
         document.getElementById('particulartotal1').value = updateTextView1(total);
@@ -3585,4 +3587,40 @@ function setCOType(value, id) {
         _('td_co_amount' + id).style.display = 'none';
         _('td_budget' + id).style.display = 'table-cell';
     }
+}
+
+function filterRows() {
+    var input, filter, table, tr, td, i, txtValue;
+    table = document.getElementById("new_particular");
+    tr = table.getElementsByTagName("tr");
+    dropdown_search = document.getElementById("dropdown_search").value;
+    search = document.getElementById("search").value.toUpperCase();
+    for (i = 0; i <= tr.length - 1; i++) {
+        display = "";
+        if (search != '') {
+            search_td = tr[i].getElementsByTagName("td")[0];
+            txtValue = search_td.textContent || search_td.innerText;
+            txtValue = txtValue.toUpperCase();
+            if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+                display = 'none';
+            }
+        }
+        if (dropdown_search > 0) {
+            if (dropdown_search == 1) {
+                input_name = 'previously_billed_amount';
+            } else if(dropdown_search == 3){
+                input_name = 'current_billed_percent';
+            } else {
+                input_name = 'current_billed_amount';
+            }
+
+            amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
+            if (amt_val > 0) {} else {
+                display = 'none';
+            }
+        }
+        tr[i].style.display = display;
+    }
+    calculateChangeOrder();
+    return false;
 }
