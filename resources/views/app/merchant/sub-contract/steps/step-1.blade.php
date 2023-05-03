@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-4">Attachments<span class="required">*</span></label>
+                    <label class="control-label col-md-4">Attachments</label>
                     <div class="col-md-8">
                         <div class="input-icon right">
                             @if(!empty($sub_contract->attachments))
