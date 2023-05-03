@@ -120,9 +120,7 @@ class OrderController extends Controller
                         }
                     }
                 }
-                if ($type == 'subcontract') {
-                    $row->json_particulars[$k]['original_contract_amount'] = $row_particular['amount'];
-                }
+                
             }
             $data['group_codes'] = $group_codes;
             $data['group_codes_json'] =  json_encode($data['group_codes']);
@@ -570,7 +568,7 @@ class OrderController extends Controller
             $InvoiceHelper = new ChangeOrderHelper();
             $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
         }
-        return redirect('merchant/order/list/' . $request->type)->with('success', "Change Order has been updated");
+        return redirect('merchant/order/list/' . $request->type )->with('success', "Change Order has been updated");
     }
 
     public function getprojectdetails($project_id)

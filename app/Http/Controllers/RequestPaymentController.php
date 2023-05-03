@@ -1397,7 +1397,6 @@ class RequestPaymentController extends AppController
 
             $int = 0;
             foreach ($particulars as $k => $row) {
-                $row['original_contract_amount']=$row['amount'];
                 $ocm = (is_numeric($row['original_contract_amount'])) ? $row['original_contract_amount'] : 0;
                 $acoa = (isset($row['approved_change_order_amount'])) ? (is_numeric($row['approved_change_order_amount']) ? $row['approved_change_order_amount'] : 0) : 0;
                 $particulars[$k]['current_contract_amount'] = $ocm + $acoa;
