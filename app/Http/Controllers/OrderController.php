@@ -120,7 +120,6 @@ class OrderController extends Controller
                         }
                     }
                 }
-                
             }
             $data['group_codes'] = $group_codes;
             $data['group_codes_json'] =  json_encode($data['group_codes']);
@@ -189,14 +188,15 @@ class OrderController extends Controller
             if (isset($request->import) && $request->import == 'Import') {
                 return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
             }
-            $link = 'merchant/order/list';
+            $link = '/merchant/order/list';
             if ($request->type == 'subcontract') {
-                $link = 'merchant/order/list/subcontract';
+                $link = '/merchant/order/list/subcontract';
+            } else {
+                $ChangeOrderHelper = new ChangeOrderHelper();
+                $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id, $request->type);
             }
 
-            $ChangeOrderHelper = new ChangeOrderHelper();
 
-            $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id, $request->type);
 
             return redirect($link)->with('success', "Change Order has been created");
         }
@@ -206,7 +206,11 @@ class OrderController extends Controller
     {
         $dates = Helpers::setListDates();
         $title = 'Change Order list';
-        $data = Helpers::setBladeProperties($title,  [],  [5, 180]);
+        $menu = [5, 180];
+        if ($type == 'subcontract') {
+            $menu = [5, 183];
+        }
+        $data = Helpers::setBladeProperties($title,  [], $menu);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;
         $data['contract_id'] = isset($request->contract_id) ? $request->contract_id : '';
         $userRole = Session::get('user_role');
@@ -568,7 +572,7 @@ class OrderController extends Controller
             $InvoiceHelper = new ChangeOrderHelper();
             $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
         }
-        return redirect('merchant/order/list/' . $request->type )->with('success', "Change Order has been updated");
+        return redirect('merchant/order/list/' . $request->type)->with('success', "Change Order has been updated");
     }
 
     public function getprojectdetails($project_id)

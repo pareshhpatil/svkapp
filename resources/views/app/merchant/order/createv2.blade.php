@@ -104,7 +104,7 @@
                                             <option @if($contract_id==$v->contract_id) selected @endif value="{{$v->contract_id}}">{{$v->project_name}} | {{$v->contract_code}}</option>
                                             @endforeach
                                         </select>
-                                        <small class="form-text text-muted">Contract</small>
+                                        <small class="form-text text-muted">@if($type=='subcontract')Sub @endif Contract</small>
                                         <div class="help-block"></div>
                                     </div>
                                     <div class="col-md-2 pl-1 pr-0">
