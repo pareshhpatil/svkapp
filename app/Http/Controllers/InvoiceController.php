@@ -2443,6 +2443,7 @@ class InvoiceController extends AppController
         $grand_total_budget_reallocation = 0;
         $grand_total_g_per = 0;
         $grand_total_retainge = 0;
+        $grand_total_co_col = 0;
         $has_budget = false;
         $particularRows = array();
         if (!empty($particular_details)) {
@@ -2510,7 +2511,9 @@ class InvoiceController extends AppController
                 }
 
                 $grand_total_retainge = $grand_total_retainge + $val['total_outstanding_retainage'];
-
+                if(isset($data['has_total_co_col']) && $data['has_total_co_col']==true) {
+                    $grand_total_co_col = $grand_total_co_col + $valArray['total_change_order_col'];
+                }
                 $int++;
             }
         }
@@ -2530,6 +2533,8 @@ class InvoiceController extends AppController
         $data['grand_total_retainge'] = $grand_total_retainge;
         $data['particularRows'] = $particularRows;
         $data['has_budget'] = $has_budget;
+        $data['grand_total_co_col']=$grand_total_co_col;
+        
         //dd($data['particularRows']);
         return $data;
     }
@@ -2619,6 +2624,12 @@ class InvoiceController extends AppController
         $data['has_aia_license'] = $hasAIALicense;
         $data['list_all_change_orders'] = $hasListAllChangeOrders;
 
+        $has_total_co_col = false;
+        if(isset($plugins['has_total_co_col'])) {
+            $has_total_co_col = true;
+        }
+        $data['has_total_co_col'] = $has_total_co_col;
+        
         $has_watermark = false;
         $data['watermark_text'] = '';
         if (isset($plugins['has_watermark'])) {
@@ -2713,11 +2724,17 @@ class InvoiceController extends AppController
             $start_date = date("Y-m-01", strtotime($data['bill_date']));
             $end_date = date("Y-m-d", strtotime("first day of next month"));
             $rowArray['change_this_period'] = $this->getChangeOrderSumRow($data['change_order_id'], $rowArray['bill_code'], $start_date,  $end_date);
+            
             if ($data['has_schedule_value']) {
                 $rowArray['current_contract_amount'] = ($rowArray['current_contract_amount'] - $rowArray['approved_change_order_amount']);
             }
             $rowArray['budget_reallocation'] =  $this->getBudgetSumRow($data['change_order_id'], $rowArray['bill_code']);
             $rowArray['current_total'] = $rowArray['current_contract_amount'] + $rowArray['change_from_previous_application'] +  $rowArray['change_this_period'];
+            //show total co col in 703 plugin calculations
+            $rowArray['total_change_order_col'] = 0;
+            if(isset($data['has_total_co_col']) && $data['has_total_co_col']==true) {
+                $rowArray['total_change_order_col'] = ($rowArray['change_from_previous_application'] + $rowArray['change_this_period']) - $rowArray['budget_reallocation'];
+            }
         }
         return $rowArray;
     }
@@ -2844,6 +2861,7 @@ class InvoiceController extends AppController
                     $pdf->save(storage_path('pdf\\' . $type . $name . '.pdf'));
                     return $name;
                 } else {
+                    //return view('mailer.invoice.format-' . $type.'-v2', $data);
                     if ($savepdf == 2) {
                         return  $pdf->stream();
                     } else {

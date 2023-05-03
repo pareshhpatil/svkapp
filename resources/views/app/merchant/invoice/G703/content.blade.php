@@ -70,18 +70,42 @@
                     <td class="border td-703 font-regular text-xs  text-center"> A </td>
                     <td class="border td-703 font-regular text-xs  text-center"> B </td>
                     @if($has_schedule_value)
-                    <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C2 </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C4 </td>
+                        <td class="border td-703 font-regular text-xs  text-center"> C1 </td> 
+                        @if($has_budget)
+                            <td class="border td-703 font-regular text-xs  text-center"> C2 </td> <!--budget val -->
+                            <td class="border td-703 font-regular text-xs  text-center"> C3 </td> <!-- change from prev app -->
+                            <td class="border td-703 font-regular text-xs text-center"> C4 </td> <!-- change this period -->
+                            @if($has_total_co_col)
+                                <td class="border td-703 font-regular text-xs text-center"> C5 </td> <!-- total Co col -->
+                                <td class="border td-703 font-regular text-xs text-center"> C6 </td> <!-- total of all -->
+                            @else
+                                <td class="border td-703 font-regular text-xs text-center"> C5 </td> <!-- total of all -->
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border td-703 font-regular text-xs  text-center"> C2 </td> <!-- change from prev app -->
+                            <td class="border td-703 font-regular text-xs  text-center"> C3 </td> <!-- change this period -->
+                            <td class="border td-703 font-regular text-xs text-center"> C4 </td> <!-- total co col -->
+                            <td class="border td-703 font-regular text-xs text-center"> C5 </td> <!-- total of all -->
+                        @else
+                            <td class="border td-703 font-regular text-xs  text-center"> C2 </td> <!-- change from prev app -->
+                            <td class="border td-703 font-regular text-xs  text-center"> C3 </td> <!-- change this period -->
+                            <td class="border td-703 font-regular text-xs  text-center"> C4 </td> <!-- total of all -->
+                        @endif
                     @else
-                    @if($has_budget)
-                    <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C2 </td>
-                    <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
-                    @else
-                    <td class="border td-703 font-regular text-xs  text-center"> C </td>
-                    @endif
+                        @if($has_budget)
+                            <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
+                            <td class="border td-703 font-regular text-xs  text-center"> C2 </td>
+                            <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
+                            @if($has_total_co_col)
+                                <td class="border td-703 font-regular text-xs text-center"> C4 </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border td-703 font-regular text-xs  text-center"> C1 </td>
+                            <td class="border td-703 font-regular text-xs  text-center"> C2 </td>
+                            <td class="border td-703 font-regular text-xs  text-center"> C3 </td>
+                        @else
+                            <td class="border td-703 font-regular text-xs  text-center"> C </td>
+                        @endif
                     @endif
                     <td class="border td-703 font-regular text-xs  text-center">D </td>
                     <td class="border td-703 font-regular text-xs  text-center"> E </td>
@@ -97,18 +121,44 @@
                     <td class="font-regular text-xs border-r border-l td-703 text-center">
                     </td>
                     @if($has_schedule_value)
-                    <td colspan="4" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
-                        SCHEDULED VALUE
-                    </td>
+                        @if($has_budget)
+                            @if($has_total_co_col)
+                                <td colspan="6" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                    SCHEDULED VALUE
+                                </td>
+                            @else
+                                <td colspan="5" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                    SCHEDULED VALUE
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td colspan="5" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                SCHEDULED VALUE
+                            </td>
+                        @else
+                            <td colspan="4" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                SCHEDULED VALUE
+                            </td>
+                        @endif
                     @else
-                    @if($has_budget)
-                    <td colspan="3" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
-                        SCHEDULED VALUE
-                    </td>
-                    @else
-                    <td class="font-regular text-xs border-r border-l td-703 text-center">
-                    </td>
-                    @endif
+                        @if($has_budget)
+                            @if($has_total_co_col)
+                                <td colspan="4" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                    SCHEDULED VALUE
+                                </td>
+                            @else
+                                <td colspan="3" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                    SCHEDULED VALUE
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td colspan="3" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
+                                SCHEDULED VALUE
+                            </td>
+                        @else
+                            <td class="font-regular text-xs border-r border-l td-703 text-center">
+                            </td>
+                        @endif
                     @endif
                     <td colspan="2" class="border-b border-r border-l td-703 font-regular text-xs  text-center">
                         WORK COMPLETED </td>
@@ -129,27 +179,71 @@
                         DESCRIPTION
                         OF WORK </td>
                     @if($has_schedule_value)
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        ORIGINAL </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        CHANGE FROM PREVIOUS APPLICATION </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        CHANGE THIS PERIOD </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        CURRENT (C1 + C2 + C3) </td>
+                        <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                            ORIGINAL </td>
+                        @if($has_budget)
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                BUDGET REALLOCATION</td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE FROM PREVIOUS APPLICATION </td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE THIS PERIOD </td>
+                            @if($has_total_co_col)
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                TOTAL CHANGE ORDERS (C3 + C4)</td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    CURRENT (C1 + C2 + C5) </td>
+                            @else
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    CURRENT (C1 + C2 + C3 + C4) </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE FROM PREVIOUS APPLICATION </td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE THIS PERIOD </td>        
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                TOTAL CHANGE ORDERS (C2 + C3)</td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CURRENT (C1 + C4) </td>
+                        @else
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE FROM PREVIOUS APPLICATION </td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CHANGE THIS PERIOD </td> 
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CURRENT (C1 + C2 + C3) </td>
+                        @endif
                     @else
-
-                    @if($has_budget)
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        SCHEDULE VALUE </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        BUDGET REALLOCATION </td>
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        CURRENT BUDGET </td>
-                    @else
-                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
-                        SCHEDULE VALUE </td>
-                    @endif
+                        @if($has_budget)
+                            @if($has_total_co_col) 
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    SCHEDULE VALUE</td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    BUDGET REALLOCATION</td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    TOTAL CHANGE ORDERS</td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    CURRENT BUDGET</td>
+                            @else
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    SCHEDULE VALUE </td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    BUDGET REALLOCATION </td>
+                                <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                    CURRENT BUDGET </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                SCHEDULE VALUE</td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                TOTAL CHANGE ORDERS</td>
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                CURRENT (C1 + C2) </td>
+                        @else
+                            <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
+                                SCHEDULE VALUE </td>
+                        @endif
                     @endif
                     <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         FROM
@@ -176,7 +270,7 @@
                         BALANCE TO
                         FINISH<br />
                         (C – G) </td>
-                    <td class="border-b border-r border-l font-regular text-xs text-center">
+                    <td class="border-b border-r border-l td-703 font-regular text-xs text-center">
                         RETAINAGE
                         <br />(If variable rate)
                     </td>
@@ -187,19 +281,29 @@
                 @if($key!='no-group~')
                 <tr>
                     @if($has_schedule_value)
-                    <td colspan="13" class="border td-703 text-left">
+                    <td colspan="14" class="border td-703 text-left">
                         <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
                     </td>
                     @else
-                    @if($has_budget)
-                    <td colspan="12" class="border td-703 text-left">
-                        <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
-                    </td>
-                    @else
-                    <td colspan="10" class="border td-703 text-left">
-                        <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
-                    </td>
-                    @endif
+                        @if($has_budget)
+                            @if($has_total_co_col) 
+                                <td colspan="13" class="border td-703 text-left">
+                                    <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
+                                </td>
+                            @else
+                                <td colspan="12" class="border td-703 text-left">
+                                    <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td colspan="13" class="border td-703 text-left">
+                                <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
+                            </td>    
+                        @else
+                            <td colspan="10" class="border td-703 text-left">
+                                <p class="text-sm" style="color: #6F8181;">{{$key}} </p>
+                            </td>
+                        @endif
                     @endif
                 </tr>
                 @endif
@@ -214,6 +318,7 @@
                 $group_total_completed = 0;
                 $group_total_retainage = 0;
                 $group_total_budget_reallocation = 0;
+                $group_total_co_col = 0;
                 @endphp
                 @if(isset($row['subgroup']) && $row['subgroup']!='')
                 @foreach ($row['subgroup'] as $sk => $subgroup)
@@ -224,18 +329,25 @@
                     </td>
                     <td class="px-2 py-2 text-left"></td>
                     @if($has_schedule_value)
-                    <td class="px-2 py-2 text-left"></td>
-                    <td class="px-2 py-2 text-left"></td>
-                    <td class="px-2 py-2 text-left"></td>
-                    <td class="px-2 py-2 text-left"></td>
+                        <td class="px-2 py-2 text-left"></td>
+                        <td class="px-2 py-2 text-left"></td>
+                        <td class="px-2 py-2 text-left"></td>
+                        <td class="px-2 py-2 text-left"></td>
                     @else
-                    @if($has_budget)
-                    <td class="px-2 py-2 text-left"></td>
-                    <td class="px-2 py-2 text-left"></td>
-                    <td class="px-2 py-2 text-left"></td>
-                    @else
-                    <td class="px-2 py-2 text-left"></td>
-                    @endif
+                        @if($has_budget)
+                            <td class="px-2 py-2 text-left"></td>
+                            <td class="px-2 py-2 text-left"></td>
+                            <td class="px-2 py-2 text-left"></td>
+                            @if($has_total_co_col) 
+                                <td class="px-2 py-2 text-left"></td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="px-2 py-2 text-left"></td>
+                            <td class="px-2 py-2 text-left"></td>
+                            <td class="px-2 py-2 text-left"></td>
+                        @else
+                            <td class="px-2 py-2 text-left"></td>
+                        @endif
                     @endif
                     <td class="px-2 py-2 text-left"></td>
                     <td class="px-2 py-2 text-left"></td>
@@ -255,6 +367,7 @@
                 $sub_total_completed = 0;
                 $sub_total_retainage = 0;
                 $sub_total_budget_reallocation = 0;
+                $sub_total_co_col = 0;
                 @endphp
                 @foreach ($subgroup as $ik => $item)
                 @include('app.merchant.invoice.G703.particular_row',array('rowArray'=>$item))
@@ -269,6 +382,7 @@
                 $sub_total_completed = $sub_total_completed + filter_var($item['total_completed'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $sub_total_retainage = $sub_total_retainage + filter_var($item['total_outstanding_retainage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $sub_total_budget_reallocation = $sub_total_budget_reallocation + filter_var($item['budget_reallocation'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $sub_total_co_col = $sub_total_co_col + filter_var($item['total_change_order_col'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 @endphp
                 @endforeach
                 @php
@@ -282,6 +396,7 @@
                 $group_total_completed = $group_total_completed + filter_var($sub_total_completed, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $group_total_retainage = $group_total_retainage + filter_var($sub_total_retainage, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $group_total_budget_reallocation = $group_total_budget_reallocation + filter_var($sub_total_budget_reallocation, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_co_col = $group_total_co_col + filter_var($sub_total_co_col, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 @endphp
                 <tr>
                     <td class="border td-703" style="border-right: none;">
@@ -291,36 +406,86 @@
                         <p class="text-sm" style="color: #6F8181;"> {{$sk . ' sub total'}}</p>
                     </td>
                     @if($has_schedule_value)
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_change_from_previous_application" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_change_this_period" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
-                    </td>
+                        <td class="border td-703 text-right">
+                            <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
+                        </td>
+                        @if($has_budget)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_budget_reallocation" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_this_period-$sub_total_budget_reallocation" /></p>
+                            </td>
+                            @if($has_total_co_col)
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_co_col" /></p>
+                                </td>
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
+                                </td>
+                            @else
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col) 
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_this_period" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_co_col" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
+                            </td>
+                        @else
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_change_this_period" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_current_total" /></p>
+                            </td>
+                        @endif
                     @else
-
-                    @if($has_budget)
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value-$sub_total_budget_reallocation" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_budget_reallocation" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
-                    </td>
-                    @else
-
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
-                    </td>
-                    @endif
+                        @if($has_budget)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value-$sub_total_budget_reallocation-$sub_total_co_col" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_budget_reallocation" /></p>
+                            </td>
+                            @if($has_total_co_col)
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$sub_total_co_col" /></p>
+                                </td>
+                            @endif
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
+                            </td>
+                        @elseif($has_total_co_col)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_co_col" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value+$sub_total_co_col" /></p>
+                            </td>
+                        @else
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$sub_total_schedule_value" /></p>
+                            </td>
+                        @endif
                     @endif
                     <td class="border td-703 text-right">
                         <p class="text-sm"><x-amount-format :amount="$sub_total_previously_billed_amt" /></p>
@@ -369,6 +534,7 @@
                 $group_total_completed = $group_total_completed + filter_var($group['total_completed'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $group_total_retainage = $group_total_retainage + filter_var($group['total_outstanding_retainage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $group_total_budget_reallocation = $group_total_budget_reallocation + filter_var($group['budget_reallocation'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_co_col =$group_total_co_col + filter_var($group['total_change_order_col'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 @endphp
                 @endforeach
                 @endif
@@ -378,9 +544,89 @@
                     <td colspan="2" class="border-r border-l td-703 text-left">
                         <p class="text-sm">{{$key}}</p>
                     </td>
-                    <td class="border-r border-l td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
-                    </td>
+                    @if($has_schedule_value)
+                        <td class="border-r border-l td-703 text-right">
+                            <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
+                        </td>
+                        @if($has_budget)
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['budget_reallocation']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_from_previous_application']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_this_period']-$val['budget_reallocation']" /></p>
+                            </td>
+                            @if($has_total_co_col) 
+                                <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['total_change_order_col']" /> </p>
+                                </td>
+                                <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['current_total']" /></p>
+                                </td>
+                            @else
+                                <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['current_total']" /></p>
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_from_previous_application']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_this_period']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['total_change_order_col']" /> </p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_total']" /></p>
+                            </td>
+                        @else
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_from_previous_application']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['change_this_period']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_total']" /></p>
+                            </td>
+                        @endif
+                    @else
+                        @if($has_budget)
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']-$val['budget_reallocation']-$val['total_change_order_col']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['budget_reallocation']" /></p>
+                            </td>
+                            @if($has_total_co_col) 
+                                <td class="border-r border-l td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$val['total_change_order_col']" /> </p>
+                                </td>
+                            @endif
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
+                            </td>
+                        @elseif($has_total_co_col)
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['total_change_order_col']" /> </p>
+                            </td>
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']+$val['total_change_order_col']" /> </p>
+                            </td>
+                        @else
+                            <td class="border-r border-l td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$val['current_contract_amount']" /></p>
+                            </td>
+                        @endif
+                    @endif
+
                     <td class="border-r border-l td-703 text-right">
                         <p class="text-sm"><x-amount-format :amount="$val['previously_billed_amount']" /></p>
                     </td>
@@ -403,6 +649,19 @@
                         <p class="text-sm"><x-amount-format :amount="$val['total_outstanding_retainage']" /></p>
                     </td>
                 </tr>
+                @php
+                $group_total_schedule_value = $group_total_schedule_value + filter_var($val['current_contract_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_change_from_previous_application = $group_total_change_from_previous_application + filter_var($val['change_from_previous_application'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_change_this_period = $group_total_change_this_period + filter_var($val['change_this_period'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_current_total = $group_total_current_total + filter_var($val['current_total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_previously_billed_amt = $group_total_previously_billed_amt + filter_var($val['previously_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_current_billed_amt = $group_total_current_billed_amt + filter_var($val['current_billed_amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_material_stored = $group_total_material_stored + filter_var($val['stored_materials'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_completed = $group_total_completed + filter_var($val['total_completed'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_retainage = $group_total_retainage + filter_var($val['total_outstanding_retainage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_budget_reallocation = $group_total_budget_reallocation + filter_var($val['budget_reallocation'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $group_total_co_col =$group_total_co_col + filter_var($val['total_change_order_col'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                @endphp
                 @endforeach
                 @endif
                 @if($key!='no-group~')
@@ -411,34 +670,86 @@
                         <p class="text-sm" style="color: #6F8181;"> {{$key. ' sub total'}}</p>
                     </td>
                     @if($has_schedule_value)
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_change_from_previous_application" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_change_this_period" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
-                    </td>
+                        <td class="border td-703 text-right">
+                            <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
+                        </td>
+                        @if($has_budget)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_budget_reallocation" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_this_period-$group_total_budget_reallocation" /></p>
+                            </td>
+                            @if($has_total_co_col) 
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$group_total_co_col" /> </p>
+                                </td>
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
+                                </td>
+                            @else
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_this_period" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_co_col" /> </p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
+                            </td>
+                        @else
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_from_previous_application" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_change_this_period" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_current_total" /></p>
+                            </td>
+                        @endif
                     @else
-                    @if($has_budget)
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value-$group_total_budget_reallocation" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_budget_reallocation" /></p>
-                    </td>
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
-                    </td>
-                    @else
-                    <td class="border td-703 text-right">
-                        <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
-                    </td>
-                    @endif
+                        @if($has_budget)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value-$group_total_budget_reallocation-$group_total_co_col" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_budget_reallocation" /></p>
+                            </td>
+                            @if($has_total_co_col) 
+                                <td class="border td-703 text-right">
+                                    <p class="text-sm"><x-amount-format :amount="$group_total_co_col" /> </p>
+                                </td>
+                            @endif
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
+                            </td>
+                        @elseif($has_total_co_col)
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_co_col" /> </p>
+                            </td>
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value+$group_total_co_col" /> </p>
+                            </td>
+                        @else
+                            <td class="border td-703 text-right">
+                                <p class="text-sm"><x-amount-format :amount="$group_total_schedule_value" /></p>
+                            </td>
+                        @endif
                     @endif
                     <td class="border td-703 text-right">
                         <p class="text-sm"><x-amount-format :amount="$group_total_previously_billed_amt" /></p>
@@ -485,35 +796,86 @@
                         <p class="text-xs"><b>GRAND TOTAL</b> </p>
                     </td>
                     @if($has_schedule_value)
-
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
-                    </td>
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_from_previous_application" /> </p>
-                    </td>
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_this_period" /> </p>
-                    </td>
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
-                    </td>
+                        <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                            <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                        </td>
+                        @if($has_budget)
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_budget_reallocation" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_from_previous_application" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_this_period-$grand_total_budget_reallocation" /> </p>
+                            </td>
+                            @if ($has_total_co_col)
+                                <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                    <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_co_col" /> </p>
+                                </td>
+                                <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                    <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
+                                </td>
+                            @else
+                                <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                    <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
+                                </td>
+                            @endif
+                        @elseif($has_total_co_col) 
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_from_previous_application" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_this_period" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_co_col" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
+                            </td>
+                        @else
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_from_previous_application" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_change_this_period" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_current_total" /> </p>
+                            </td>
+                        @endif
                     @else
-                    @if($has_budget)
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value-$grand_total_budget_reallocation" /> </p>
-                    </td>
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_budget_reallocation" /> </p>
-                    </td>
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
-                    </td>
-                    @else
-                    <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
-                        <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
-                    </td>
-                    @endif
+                        @if($has_budget)
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value-$grand_total_budget_reallocation-$grand_total_co_col" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_budget_reallocation" /> </p>
+                            </td>
+                            @if($has_total_co_col) 
+                                <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                    <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_co_col" /> </p>
+                                </td>
+                            @endif
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                            </td>
+                        @elseif($has_total_co_col)
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_co_col" /> </p>
+                            </td>
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value+$grand_total_co_col" /> </p>
+                            </td>
+                        @else
+                            <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
+                                <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_schedule_value" /> </p>
+                            </td>
+                        @endif
                     @endif
                     <td style="min-width: 70px" class="border-r border-t border-l td-703 text-right">
                         <p class="text-sm">{{ $currency_icon }}<x-amount-format :amount="$grand_total_previouly_billed_amt" /></p>

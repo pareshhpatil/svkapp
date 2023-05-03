@@ -24,31 +24,87 @@
         <td class="border-r border-l td-703 text-right">
             <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
         </td>
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
-        </td>
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']" /></p>
-        </td> 
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
-        </td>
+        @if($has_budget)
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['budget_reallocation']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']-$rowArray['budget_reallocation']" /></p>
+            </td>
+            @if($has_total_co_col)
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['total_change_order_col']" /></p>
+                </td>
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
+                </td>
+            @else
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
+                </td>
+            @endif
+        @elseif($has_total_co_col)
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['total_change_order_col']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
+            </td>
+        @else
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_total']" /></p>
+            </td>
+        @endif
     @else
-    @if($has_budget)
-    <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']-$rowArray['budget_reallocation']" /></p>
-        </td>
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['budget_reallocation']" /></p>
-        </td>
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
-        </td>
-    @else
-        <td class="border-r border-l td-703 text-right">
-            <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
-        </td>
-    @endif
+        @if($has_budget)
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']-$rowArray['budget_reallocation']-$rowArray['total_change_order_col']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['budget_reallocation']" /></p>
+            </td>
+            @if($has_total_co_col)
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['total_change_order_col']" /></p>
+                </td>
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+                </td>
+            @else
+                <td class="border-r border-l td-703 text-right">
+                    <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+                </td>
+            @endif
+        @elseif($has_total_co_col)
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['total_change_order_col']" /></p>
+            </td>
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']+$rowArray['total_change_order_col']" /></p>
+            </td>
+        @else
+            <td class="border-r border-l td-703 text-right">
+                <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>
+            </td>
+        @endif
     @endif
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['previously_billed_amount']" /></p>
