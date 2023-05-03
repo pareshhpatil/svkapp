@@ -635,7 +635,7 @@
                                     @php $i++ @endphp
                                     @endforeach
                                     @else
-                                    <tr>
+                                    {{-- <tr>
                                         <td>
                                             <div class="input-icon right">
                                                 <div id="sub_user_drpdwn0"></div>
@@ -709,7 +709,7 @@
                                             <a href="javascript:;" onclick="$(this).closest('tr').remove();
                                                         tableHead('new_internal_reminder_before');" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                     @endif
                                 </tbody>
                             </table>
