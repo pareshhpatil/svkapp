@@ -227,13 +227,14 @@
                             <th></th>
                             <th class="td-c">
                                 <span id="particulartotaldiv"></span>
-                                <input type="hidden" id="particulartotal" data-cy="particular-total1" name="sub_contract_amount" value="{{ $sub_contract->sub_contract_amount }}">
+                                <input type="hidden" id="particulartotal" data-cy="particular-total1" name="sub_contract_amount" value="{{ $sub_contract->sub_contract_amount ?? '' }}">
                             </th>
                             <th></th>
                             <th>
                                 <span id="retainagetotaldiv" x-text="totalretainage"></span>
                             </th>
                             {{--        <input type="hidden" id="retainagetotal" data-cy="particular-retainagetotal" name="retainage_totak" value="{{ $contract->contract_amount }}"></th>--}}
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -1028,7 +1029,6 @@
                     console.log(this.fields, particularsArray);
                     for(let p=0; p < this.fields.length; p++){
                         if(particularsArray[p] !== undefined) {
-                            this.fields[p].bill_code = particularsArray[p].bill_code;
                             this.fields[p].bill_code = particularsArray[p].bill_code;
                             this.fields[p].description = particularsArray[p].description;
                             this.fields[p].group = particularsArray[p].group;
