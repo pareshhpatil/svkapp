@@ -217,7 +217,7 @@ class SubContractController extends Controller
 
         $particulars = json_decode($formData, true);
         $particulars = json_decode($particulars, true);
-        $array = ['bill_code', 'bill_type', 'amount', 'retainage_percent', 'retainage_amount', 'project', 'project_code', 'cost_code', 'cost_type', 'task_number', 'group', 'bill_code_detail'];
+        $array = ['bill_code', 'bill_type', 'original_contract_amount', 'retainage_percent', 'retainage_amount', 'project', 'project_code', 'cost_code', 'cost_type', 'task_number', 'group', 'bill_code_detail'];
         foreach ($particulars as $k => $v) {
             foreach ($array as $a) {
                 if (isset($v['show' . $a])) {

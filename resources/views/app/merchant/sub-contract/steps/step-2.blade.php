@@ -114,7 +114,7 @@
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
                                 @php
-                                    $readonly_array=array('amount','retainage_amount');
+                                    $readonly_array=array('original_contract_amount','retainage_amount');
                                     $dropdown_array=array('bill_code_detail','group','cost_type','bill_code');
                                     $number_array=array('amount','retainage_percent');
                                   @endphp
@@ -178,7 +178,7 @@
                                                                             </span>
                                                     @break
 
-                                                @case('amount')
+                                                @case('original_contract_amount')
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                     @break
 
@@ -687,7 +687,6 @@
                     else  field.showoriginal_contract_amount = true
                 },
                 changeBillType(field, index) {
-                    console.log(field, particularsArray);
                     if(field.bill_type === 'Calculated') {
                         this.RemoveCaculated(field, index);
                     }
@@ -699,10 +698,10 @@
 
                         } catch (o) {}
                         try {
-                            field.amount = updateTextView1(field.unit * getamt(field.rate));
+                            field.original_contract_amount = updateTextView1(field.unit * getamt(field.rate));
                         } catch (o) {}
                         try {
-                            field.retainage_amount = updateTextView1(getamt(field.amount) *  getamt(field.retainage_percent) / 100) ;
+                            field.retainage_amount = updateTextView1(getamt(field.original_contract_amount) *  getamt(field.retainage_percent) / 100) ;
                         } catch (o) {}
 
                         try {
@@ -713,7 +712,7 @@
                         var totalretainage = 0;
 
                         this.fields.forEach(function(currentValue, index, arr) {
-                            let amount = Number(getamt(currentValue.amount));
+                            let amount = Number(getamt(currentValue.original_contract_amount));
                             let retainage_amount = Number(getamt(currentValue.retainage_amount));
 
                             // try {
@@ -889,7 +888,7 @@
                         'task_number' : null,
                         'unit' : null,
                         'rate' : null,
-                        'amount' : null,
+                        'original_contract_amount' : null,
                         'retainage_percent' : null,
                         'retainage_amount' : null,
                         'project' : this.project_code,
@@ -909,7 +908,7 @@
                         'task_number' : null,
                         'unit' : null,
                         'rate' : null,
-                        'amount' : null,
+                        'original_contract_amount' : null,
                         'retainage_percent' : null,
                         'retainage_amount' : null,
                         'project' : this.project_code,
@@ -1030,15 +1029,14 @@
                     for(let p=0; p < this.fields.length; p++){
                         if(particularsArray[p] !== undefined) {
                             this.fields[p].bill_code = particularsArray[p].bill_code;
-                            //this.fields[p].bill_type = particularsArray[p].bill_type;
                             this.fields[p].bill_code = particularsArray[p].bill_code;
                             this.fields[p].description = particularsArray[p].description;
                             this.fields[p].group = particularsArray[p].group;
                             this.fields[p].cost_type = particularsArray[p].cost_type;
                             this.fields[p].bill_code_detail = particularsArray[p].bill_code_detail;
 
-                            let oriContractAmt = this.fields[p].amount;
-                            this.fields[p].amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
+                            let oriContractAmt = this.fields[p].original_contract_amount;
+                            this.fields[p].original_contract_amount =  (oriContractAmt !== null && oriContractAmt !== '')? getamt(oriContractAmt) : 0;//  (oriContractAmt !== null && oriContractAmt !== '')? ( (typeof oriContractAmt === 'number') ? oriContractAmt : oriContractAmt.replace(',','')) : 0
 
                             let retainAmt = this.fields[p].retainage_amount;
                             this.fields[p].retainage_amount = (retainAmt !== null && retainAmt !== '')? getamt(retainAmt) : 0;// (retainAmt !== null && retainAmt !== '')? ( (typeof retainAmt == 'number') ? retainAmt : retainAmt.replace(',','')) : 0;
