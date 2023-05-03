@@ -227,7 +227,7 @@
                             <th></th>
                             <th class="td-c">
                                 <span id="particulartotaldiv"></span>
-                                <input type="hidden" id="particulartotal" data-cy="particular-total1" name="sub_contract_amount" value="{{ $SubContract->sub_contract_amount }}">
+                                <input type="hidden" id="particulartotal" data-cy="particular-total1" name="sub_contract_amount" value="{{ $sub_contract->sub_contract_amount }}">
                             </th>
                             <th></th>
                             <th>

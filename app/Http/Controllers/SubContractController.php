@@ -165,7 +165,7 @@ class SubContractController extends Controller
      * @param $step
      * @return mixed
      */
-    public function step2Data($data, $SubContract, $project_id, $step)
+    public function step2Data($data, SubContract $SubContract, $project_id, $step)
     {
         [$total, $groups, $particulars] = $SubContract->calculateTotal();
 
@@ -247,9 +247,10 @@ class SubContractController extends Controller
         $data = Helpers::setBladeProperties($title, ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
 
         if (!empty($subContractID)) {
-            $subContract = SubContract::find(Encrypt::decode($subContractID));
-
-            $data['sub_contract'] = $subContract;
+            /** @var SubContract $SubContract*/
+            $SubContract = SubContract::find(Encrypt::decode($subContractID));
+//            dd($SubContract, Encrypt::decode($subContractID));
+            $data['sub_contract'] = $SubContract;
         }
 
         $data['step'] = $step;
@@ -259,11 +260,9 @@ class SubContractController extends Controller
         $data['project_list'] = $this->masterModel->getProjectList($this->merchant_id, [], $userRole);
         $data['needValidationOnStep2'] = true;
         $data['particulars'] = [];
+        $data['project_id'] = $SubContract->project_id ?? '';
 
         if($step == 2) {
-            /** @var SubContract $SubContract*/
-            $SubContract = SubContract::find(Encrypt::decode($subContractID));
-            $data['SubContract'] = $SubContract;
             $data = $this->step2Data($data, $SubContract, $SubContract->project_id ?? '', $step);
 
             $data['project'] = $this->masterModel->getTableRow('project', 'id', $SubContract->project_id);

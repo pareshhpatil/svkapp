@@ -89,6 +89,9 @@ class SubContract extends Base
         return $particulars;
     }
 
+    /**
+     * @return array
+     */
     public function calculateTotal() {
         $total =0;
         $groups = [];
@@ -115,6 +118,7 @@ class SubContract extends Base
                         ->join('project', 'sub_contract.project_id', '=', 'project.id')
                         ->join('vendor', 'sub_contract.vendor_id', '=', 'vendor.vendor_id')
                         ->where('sub_contract.merchant_id', $merchant_id)
+                        ->where('sub_contract.is_active', 1)
                         ->select('sub_contract.*', 'project.project_name', 'project.project_id as project_code', 'vendor.vendor_name', 'vendor.vendor_code')
                         ->get();
 

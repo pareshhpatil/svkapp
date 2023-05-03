@@ -108,10 +108,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Delete Sub-Merchant</h4>
+                    <h4 class="modal-title">Delete Sub contract</h4>
                 </div>
                 <div class="modal-body">
-                    Are you sure you would not like to use this Merchant in the future?
+                    Are you sure you would not like to use this sub-contract in the future?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn default" data-dismiss="modal">Close</button>
