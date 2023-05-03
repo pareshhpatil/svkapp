@@ -406,7 +406,7 @@ class RequestPaymentController extends AppController
         $payment_request_id = Encrypt::decode($link);
 
         if (strlen($payment_request_id) == 10) {
-            $data = Helpers::setBladeProperties('Invoice', [], [5, 28]);
+            $data = Helpers::setBladeProperties('Invoice', [], [5, 181]);
             #get default billing profile
             //$info =  $this->invoiceModel->getInvoiceInfo($payment_request_id, 'customer');
             $userRole = Session::get('user_role');
@@ -1679,7 +1679,7 @@ class RequestPaymentController extends AppController
         $notificationID = $request->get('notification_id');
 
         if (is_numeric($payment_request_id)) {
-            $data = Helpers::setBladeProperties('Invoice', ['template'], [5, 28]);
+            $data = Helpers::setBladeProperties('Request payment', ['template'], [5, 181]);
             $data['gtype'] = $type;
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
@@ -1701,7 +1701,6 @@ class RequestPaymentController extends AppController
                 return redirect('/error/invalidlink');
             }
             $data = array_merge($data, $particular_details);
-
             return view('app/merchant/subcontractrequest/G' . $type . '/index', $data);
         } else {
             header('Location: /error/invalidlink');
@@ -1835,11 +1834,11 @@ class RequestPaymentController extends AppController
 
         $data["url"] =  Encrypt::encode($payment_request_id);
 
+        $data['invoice_number'] = $payment_request_data->request_number;
         $data['currency_icon'] = $currency_icon;
         $data['payment_request_status'] = $payment_request_data->payment_request_status;
         $data['absolute_cost'] = $payment_request_data->absolute_cost;
         $data['invoice_type'] = 1;
-        $data['invoice_number'] = '';
         $data['payment_request_id'] = $payment_request_data->request_id;
         $data['notify_patron'] = $payment_request_data->notify_patron;
         $data['payment_request_type'] = 1;
