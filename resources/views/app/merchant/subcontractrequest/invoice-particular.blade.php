@@ -190,6 +190,10 @@
         text-align: center;
         background-color: transparent !important;
     }
+
+    .vscomp-dropbox-container{
+        z-index: 5 !important;
+    }
 </style>
 
 <script>
@@ -244,7 +248,6 @@
         'label': 'No',
         'value': 'No'
     }];
-    var billed_transactions_array = JSON.parse('{!! json_encode($billed_transactions) !!}');
     var billed_transactions_filter = [];
     var billed_transactions_id_array = [];
     var particular_column_array = JSON.parse('{!! json_encode($particular_column) !!}');
@@ -320,13 +323,13 @@
             <!-- BEGIN PAGE HEADER-->
             <div class="page-bar">
                 <span class="page-title" style="float: left;">{{$title}}</span>
-                {{ Breadcrumbs::render('create.invoice','invoice') }}
+                {{ Breadcrumbs::render('create.requestpayment','Request for payment') }}
                 <span class=" pull-right badge badge-pill status steps" style="padding: 6px 16px 6px 16px !important;">Step 2 of 3</span>
             </div>
             <!-- END PAGE HEADER-->
             <!-- BEGIN PAGE CONTENT-->
             <div class="row">
-                <form action="/merchant/invoice/particularsave" id="frm_invoice" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
+                <form action="/merchant/subcontract/requestpayment/particularsave" id="frm_invoice" onsubmit="loader();" method="post" enctype="multipart/form-data" class="form-horizontal form-row-sepe">
                     <input type="hidden" id="request_id" name="link" value="{{$link}}"></th>
                     <input type="hidden" name="order_ids" value="{{$order_id_array}}">
 
@@ -422,8 +425,6 @@
                                                                 <i id="icon-{{$pint}}" class="fa fa-paperclip" data-placement="top" data-container="body" data-trigger="hover" data-content="0 file " aria-hidden="true" data-original-title="" title="0 file"></i>
                                                             </a>
                                                             <input type="hidden" name="attachments[]" value="{{$pv['attachments']}}" id="attach-{{$pint}}" />
-                                                            <input type="hidden" name="calculated_perc[]" value="{{$pv['calculated_perc']}}" id="calculated_perc{{$pint}}">
-                                                            <input type="hidden" name="calculated_row[]" value="{{$pv['calculated_row']}}" id="calculated_row{{$pint}}">
                                                             <input type="hidden" name="description[]" value="{{$pv['description']}}" id="description{{$pint}}">
                                                             <input type="hidden" name="billed_transaction_ids[]" value="@isset($pv['billed_transaction_ids']){{$pv['billed_transaction_ids']}}@endif" id="billed_transaction_ids{{$pint}}">
                                                             <input id="id{{$pint}}" value="@isset($pv['id']){{$pv['id']}}@endif" type="hidden" name="id[]">
@@ -558,6 +559,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -574,10 +576,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                        <input type="hidden" id="request_type" value="1">
-                                            <a href="/merchant/contract/list" class="btn green">Cancel</a>
-                                            <a class="btn green" href="/merchant/invoice/create/{{$link}}">Back</a>
-                                            <input type="submit" class="btn blue" value="{{$mode}} invoice">
+
+                                            <input type="hidden" id="request_type" value="2">
+                                            <a href="/merchant/collect-payments" class="btn green">Cancel</a>
+                                            <a class="btn green" href="/merchant/subcontract/requestpayment/create/{{$link}}">Back</a>
+                                            <input type="submit" class="btn blue" value="{{$mode}} request">
                                         </div>
                                     </div>
                                 </div>
@@ -704,28 +707,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-@if($draft_particulars!='')
-<div class="modal fade" id="draft" tabindex="-1" role="basic">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 id="poptitle" class="modal-title">Resume previous session</h4>
-            </div>
-            <div class="modal-body">
-                Unsaved changes were found in this invoice from the session on <x-localize :date="$draft_date" type="datetime" /> by user {{$draft_created_by}}. Would you like to continue with the previous changes or discard them?
-            </div>
-            <div class="modal-footer">
-                <button type="button" onclick="loadDraft()" class="btn blue">Resume session</button>
 
-                <button type="button" class="btn default" data-dismiss="modal">Discard changes</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-@endif
 
 @if(!empty($new_change_order_array))
 <div class="modal fade" id="new_cos" tabindex="-1" role="basic">

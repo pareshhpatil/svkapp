@@ -11,7 +11,7 @@
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.orderlist') }}
         @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
-            <a href="/merchant/order/create" class="btn blue pull-right"> Create Change Order </a>
+            <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>
         @endif
 
     </div>
@@ -90,7 +90,7 @@
                                     </td>
                                     <td class="td-c">
                                         @if($v->status == 0)
-                                        <a style="font-size: 1.2rem;" href="/merchant/order/update/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
+                                        <a style="font-size: 1.2rem;" href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         @else
                                         <span style="font-size: 1.2rem;">
                                             <a style="font-size: 1.2rem;" href="/merchant/order/approved/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
@@ -147,12 +147,12 @@
                                                         @endif
                                                         @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
                                                                 <li>
-                                                                    <a href="/merchant/order/update/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
+                                                                    <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
                                                                 </li>
                                                         @endif
                                                         @if($privileges['all'] == 'full')
                                                             <li>
-                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
                                                             </li>
                                                         @endif
                                                     </ul>
@@ -165,12 +165,12 @@
                                                         @endif
                                                         @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')
                                                             <li>
-                                                                <a href="/merchant/order/update/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>
+                                                                <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
                                                             </li>
                                                         @endif
                                                         @if($privileges[$v->order_id] == 'full')
                                                             <li>
-                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
                                                             </li>
                                                         @endif
                                                     </ul>
@@ -184,12 +184,12 @@
 {{--                                                @endif--}}
 {{--                                                @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')--}}
 {{--                                                    <li>--}}
-{{--                                                        <a href="/merchant/order/update/{{$v->encrypted_id}}"><i class="fa fa-edit"></i> Update</a>--}}
+{{--                                                        <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>--}}
 {{--                                                    </li>--}}
 {{--                                                @endif--}}
 {{--                                                @if($privileges[$v->order_id] == 'full')--}}
 {{--                                                    <li>--}}
-{{--                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>--}}
+{{--                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>--}}
 {{--                                                    </li>--}}
 {{--                                                @endif--}}
 {{--                                            </ul>--}}
@@ -266,7 +266,7 @@
 <div class="modal fade" id="basic2" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/merchant/order/approve" method="POST">
+            <form action="/merchant/order/approve/{{$type}}" method="POST">
                 <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -306,7 +306,7 @@
 <div class="modal fade" id="unapprove" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/merchant/order/unapprove/">
+            <form action="/merchant/order/unapprove/{{$type}}">
                 <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>

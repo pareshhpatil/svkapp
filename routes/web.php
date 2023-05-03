@@ -290,6 +290,17 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::redirect('subscription/create', '/merchant/invoice/create/subscription', 301);
 
 
+  Route::any('subcontract/requestpayment/create', 'RequestPaymentController@create')
+    ->middleware('PrivilegesAccess');
+  Route::any('subcontract/requestpayment/create/{link}', 'RequestPaymentController@create')
+    ->middleware('PrivilegesAccess');
+  Route::post('subcontract/requestpaymentsave', 'RequestPaymentController@save');
+  Route::post('requestpayment/saveinvoice', 'RequestPaymentController@saveInvoice');
+
+  Route::any('subcontract/requestpayment/particular/{link}', 'RequestPaymentController@particular');
+  Route::post('subcontract/requestpayment/particularsave', 'RequestPaymentController@particularsave');
+
+
   Route::get('unit-type/index', 'UnitTypeController@index')->name('merchant.unit-type.list');
   Route::post('unit-type/store', 'UnitTypeController@store');
   Route::get('unit-type/delete/{id}', 'UnitTypeController@destroy');
@@ -349,6 +360,9 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   Route::get('invoice/view/{type}/{link}', 'InvoiceController@invoiceView');  //new url for both 702 & 703 view
 
+  Route::get('subcontract/requestpayment/view/{type}/{link}', 'RequestPaymentController@invoiceView');  //new url for both 702 & 703 view
+
+  Route::any('subcontract/requestpayment/list', 'RequestPaymentController@list');
   //added by ganesh
   Route::get('invoice/view/{link}', 'InvoiceController_old@view');
   Route::get('invoice/viewg702/{link}', 'InvoiceController_old@view_g702');
@@ -422,19 +436,23 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('/billcode/create/', 'ContractController@billcodesave')->name('billcodesave.contract');
 
   Route::any('/billcode/new', 'ContractController@newBillCode')->name('newBillCode.contract');
-  Route::any('/contract/custom_internal_reminder','ContractController@custom_internal_reminder');
+  Route::any('/contract/custom_internal_reminder', 'ContractController@custom_internal_reminder');
   //order
-  Route::any('order/create', 'OrderController@create')->name('create.order');
   Route::any('order/create', 'OrderController@create')->name('create.orderv2')->middleware('PrivilegesAccess');
+  Route::any('order/create/{type}', 'OrderController@create')->name('create.orderv3')->middleware('PrivilegesAccess');
   Route::any('order/update/{link}/{bulk_id?}', 'OrderController@update')
     ->name('update.order')
     ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
   Route::any('order/save', 'OrderController@save')->name('save.order')->middleware('PrivilegesAccess');
   Route::any('order/list', 'OrderController@list')->name('list.order');
+  Route::any('order/list/{type}', 'OrderController@list');
   Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
+  Route::any('order/delete/{link}/{type}', 'OrderController@delete')->name('delete.order1');
   Route::any('order/approve/', 'OrderController@approve')->name('approve.order')->middleware('PrivilegesAccess');
+  Route::any('order/approve/{type}', 'OrderController@approve')->name('approve.order1')->middleware('PrivilegesAccess');
   Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order')->middleware('PrivilegesAccess');
+  Route::any('order/unapprove/{type}', 'OrderController@unapprove')->name('unapprove.order1')->middleware('PrivilegesAccess');
   Route::any('order/getProjectDetails/{project_id}', 'OrderController@getprojectdetails')->name('getprojectdetails.order');
   Route::any('order/updatesave/', 'OrderController@updatesave')
     ->name('updatesave.order')
@@ -513,11 +531,10 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
   Route::post('import/change-order/upload',  'ImportController@uploadChangeOrder')->name("merchant.import.change-order.upload");
 
-  
-	//new invoice format 
+
+  //new invoice format 
   Route::any('template/invoice/format',  'InvoiceFormatController@format')->name("merchant.template.invoice.format");
   Route::any('invoice/format/save',  'InvoiceFormatController@saveFormat')->name("merchant.template.invoice.format.save");
-  
 });
 
 Route::group(['prefix' => 'patron'], function () {

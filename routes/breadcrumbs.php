@@ -7,8 +7,15 @@ Breadcrumbs::for('home', function ($trail) {
 
 Breadcrumbs::for('create.invoice', function ($trail, $type) {
     $trail->parent('home');
-    $trail->push('Collect Payments');
+    $trail->push('Contract management');
     $trail->push('Create ' . $type);
+});
+
+Breadcrumbs::for('create.requestpayment', function ($trail, $type) {
+    $trail->parent('home');
+    $trail->push('Contract management');
+    $trail->push('Sub contract');
+    $trail->push($type);
 });
 
 Breadcrumbs::for('update.invoice', function ($trail, $type) {
@@ -331,7 +338,7 @@ Breadcrumbs::for('home.gstr2aDetails', function ($trail, $job_id, $supplier, $st
 });
 Breadcrumbs::for('collectlandingpage', function ($trail) {
     $trail->parent('home');
-    $trail->push('Collect payments');
+    $trail->push('Contract management');
 });
 Breadcrumbs::for('merchant.imports', function ($trail) {
     $trail->parent('home');
@@ -398,6 +405,12 @@ Breadcrumbs::for('home.contractlist', function ($trail) {
     $trail->push('Contract list', '/merchant/contract/list');
 });
 
+Breadcrumbs::for('home.requestpaymentlist', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sub contract');
+    $trail->push('Request payment list', '/merchant/subcontract/requestpayment/list');
+});
+
 Breadcrumbs::for('home.contractcreate', function ($trail) {
     $trail->parent('home');
     $trail->push('Contract');
@@ -416,6 +429,14 @@ Breadcrumbs::for('home.invoice.view', function ($trail) {
     $trail->push('Sales');
     $trail->push('Invoice / Estimate list', '/merchant/paymentrequest/viewlist');
     $trail->push('Invoice');
+   
+});
+
+Breadcrumbs::for('home.requestpayment.view', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Sales');
+    $trail->push('Subcontract', '/merchant/requestpayment/viewlist');
+    $trail->push('Request payment');
    
 });
 

@@ -19,7 +19,7 @@ use App\Model\ParentModel;
 use App\Constants\Models\ITable;
 use Illuminate\Support\Facades\Session;
 
-class Invoice extends ParentModel
+class SubcontractRequest extends ParentModel
 {
     protected $table = ITable::INVOICE;
 
@@ -137,7 +137,7 @@ class Invoice extends ParentModel
     public function getSubContract($merchant_id)
     {
         $retObj = DB::table('sub_contract as c')
-            ->select(DB::raw('*,c.sub_contract_id as contract_id, c.sub_contract_code as contract_code'))
+            ->select(DB::raw('*'))
             ->join('project as p', 'p.id', '=', 'c.project_id')
             ->where('c.is_active', 1)
             ->where('c.status', 1)
@@ -276,7 +276,7 @@ class Invoice extends ParentModel
 
     public function getOrderbyContract($contract_id, $date)
     {
-        $retObj = DB::table('order')
+        $retObj = DB::table('subcontract_change_order')
             ->select(DB::raw('*'))
             ->where('contract_id', $contract_id)
             ->where('status', 1)
@@ -320,14 +320,31 @@ class Invoice extends ParentModel
     }
     public function getProjectDeatils($payment_request_id)
     {
-        $retObj = DB::table('payment_request as p')
-            ->select(DB::raw('c.contract_id,c.project_address,c.owner_address,c.contractor_address,c.architect_address,c.contract_code,c.project_id,c.contract_date,c.bill_date,pro.project_id as project_code,pro.project_name,pro.start_date,pro.end_date'))
-            ->join('contract as c', 'p.contract_id', '=', 'c.contract_id')
+        $retObj = DB::table('subcontract_payment_request as p')
+            ->select(DB::raw('c.sub_contract_id,c.sub_contract_code as contract_code,c.project_id,p.bill_date,pro.project_id as project_code,pro.project_name,pro.start_date,pro.end_date'))
+            ->join('sub_contract as c', 'p.sub_contract_id', '=', 'c.sub_contract_id')
             ->join('project as pro', 'c.project_id', '=', 'pro.id')
             ->where('p.is_active', 1)
-            ->where('p.payment_request_id', $payment_request_id)
+            ->where('p.request_id', $payment_request_id)
             ->first();
         return $retObj;
+    }
+
+    public function getRequestPaymentList($merchant_id, $from_date,  $to_date, $project_id = 0)
+    {
+        $retObj = DB::table('subcontract_payment_request as p')
+            ->select(DB::raw('p.*,vendor_name,vendor_code,c.sub_contract_code as contract_code,pro.project_id as project_code,pro.project_name'))
+            ->join('sub_contract as c', 'p.sub_contract_id', '=', 'c.sub_contract_id')
+            ->join('vendor as v', 'p.vendor_id', '=', 'v.vendor_id')
+            ->join('project as pro', 'c.project_id', '=', 'pro.id')
+            ->whereDate('p.created_date', '>=', $from_date)
+            ->whereDate('p.created_date', '<=', $to_date)
+            ->where('p.merchant_id', $merchant_id);
+        if ($project_id > 0) {
+            $retObj = $retObj->where('c.project_id', $project_id);
+        }
+
+        return $retObj->get();
     }
 
     public function getSwipezInvoice($merchant_id, $from_date, $to_date)
@@ -395,7 +412,7 @@ class Invoice extends ParentModel
 
     public function getInvoiceConstructionParticularsSum($payment_request_id)
     {
-        $retObj = DB::table('invoice_construction_particular as icp')
+        $retObj = DB::table('subcontract_request_payment_particular as icp')
             ->select(DB::raw('SUM(icp.approved_change_order_amount) as approved_change_order_amount, 
             SUM(icp.original_contract_amount) as original_contract_amount, 
             SUM(icp.current_contract_amount ) as current_contract_amount, 
@@ -411,7 +428,7 @@ class Invoice extends ParentModel
             SUM(icp.retainage_amount_previously_withheld) as retainage_amount_previously_withheld, 
             csi_code.code'))
             ->join('csi_code', 'csi_code.id', '=', 'icp.bill_code')
-            ->where('payment_request_id', $payment_request_id)
+            ->where('subcontract_request_id', $payment_request_id)
             ->where('icp.is_active', 1)
             ->get();
         return $retObj;
@@ -1019,9 +1036,9 @@ class Invoice extends ParentModel
 
     public function getPaymentRequestData($payment_request_id, $merchant_id = 'customer')
     {
-        $retObj = DB::table('payment_request')
+        $retObj = DB::table('subcontract_payment_request')
             ->select(DB::raw('*,  DATE_FORMAT(bill_date, "%d %b %Y") as bill_date'))
-            ->where('payment_request_id', '=', $payment_request_id)
+            ->where('request_id', '=', $payment_request_id)
             ->where('payment_request_status', '<>', 3)
             ->orderBy('created_date', 'desc');
         if ($merchant_id != 'customer') {
@@ -1210,10 +1227,10 @@ class Invoice extends ParentModel
 
     public function getInvoiceConstructionParticularRows($payment_request_id)
     {
-        $retObj = DB::table('invoice_construction_particular as i')
+        $retObj = DB::table('subcontract_request_payment_particular as i')
             ->select(DB::raw('i.id,i.bill_code,i.description,i.previously_billed_amount,i.current_contract_amount,i.current_billed_amount,i.stored_materials,i.total_outstanding_retainage,i.group,i.sub_group,i.bill_code_detail,i.attachments,i.original_contract_amount,i.approved_change_order_amount,csi_code.code'))
             ->join('csi_code', 'csi_code.id', '=', 'i.bill_code')
-            ->where('i.payment_request_id', $payment_request_id)
+            ->where('i.subcontract_request_id', $payment_request_id)
             ->where('i.is_active', 1)
             ->orderBy('sort_order')
             ->get();

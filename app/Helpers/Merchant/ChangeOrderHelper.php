@@ -17,24 +17,36 @@ use Illuminate\Support\Facades\Session;
  */
 class ChangeOrderHelper
 {
-    public function sendChangeOrderForApprovalNotification($orderId)
+    public function sendChangeOrderForApprovalNotification($orderId, $type = null)
     {
         $merchantID = Encrypt::decode(Session::get('merchant_id'));
         $authUserID = Encrypt::decode(Session::get('userid'));
         $authUserRole = Session::get('user_role');
-
-        $orderDetail = DB::table('order')
+        $table = 'order';
+        if ($type == 'subcontract') {
+            $table = 'subcontract_change_order';
+        }
+        $orderDetail = DB::table($table)
             ->where('order_id', $orderId)
             ->first();
 
         if (!empty($orderDetail)) {
-            $Contract = DB::table('contract')
-                        ->where('is_active', 1)
-                        ->where('contract_id', $orderDetail->contract_id)
-                        ->first();
+            if ($type == 'subcontract') {
+                $Contract = DB::table('sub_contract')
+                    ->where('is_active', 1)
+                    ->where('sub_contract_id', $orderDetail->contract_id)
+                    ->first();
+                $Contract->contract_id = $Contract->sub_contract_id;
+            } else {
+                $Contract = DB::table('contract')
+                    ->where('is_active', 1)
+                    ->where('contract_id', $orderDetail->contract_id)
+                    ->first();
+            }
 
-            $contractID = $Contract->contract_id;
-            $customerID = $Contract->customer_id;
+
+            $contractID = $orderDetail->contract_id;
+
             $projectID = $Contract->project_id;
 
 
@@ -42,25 +54,24 @@ class ChangeOrderHelper
             $privilegesContractIDs = json_decode(Redis::get('contract_privileges_' . $authUserID), true);
             $privilegesChangeOrderIDs = json_decode(Redis::get('change_order_privileges_' . $authUserID), true);
 
-            if($authUserRole == 'Admin') {
+            if ($authUserRole == 'Admin') {
                 $privilegesChangeOrderIDs[$orderDetail->order_id] = 'full';
             } else {
-                if(isset($privilegesContractIDs[$contractID])) {
-                    if($privilegesContractIDs[$contractID] == 'full') {
+                if (isset($privilegesContractIDs[$contractID])) {
+                    if ($privilegesContractIDs[$contractID] == 'full') {
                         $privilegesChangeOrderIDs[$orderDetail->order_id] = 'full';
                     }
 
-                    if($privilegesContractIDs[$contractID] == 'approve') {
+                    if ($privilegesContractIDs[$contractID] == 'approve') {
                         $privilegesChangeOrderIDs[$orderDetail->order_id] = 'approve';
                     }
 
-                    if($privilegesContractIDs[$contractID] == 'edit') {
+                    if ($privilegesContractIDs[$contractID] == 'edit') {
                         $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
                     }
                 } else {
                     $privilegesChangeOrderIDs[$orderDetail->order_id] = 'edit';
                 }
-
             }
 
             Redis::set('change_order_privileges_' . $authUserID, json_encode($privilegesChangeOrderIDs));
@@ -70,13 +81,21 @@ class ChangeOrderHelper
                 ->where('merchant_id', $merchantID)
                 ->where('is_active', 1)
                 ->where('type', '!=', 'invoice')
-                ->whereIn('access', ['full','approve'])
+                ->whereIn('access', ['full', 'approve'])
                 ->get()->collect();
+            if ($type == 'subcontract') {
+                $customerID = $Contract->vendor_id;
+                $customerUsers = clone $data->where('type', 'customer')
+                    ->where('type_id', $customerID)->pluck('user_id');
+                $customerUsersWithFullAccess = [];
+            } else {
+                $customerID = $Contract->customer_id;
+                $customerUsers = clone $data->where('type', 'customer')
+                    ->where('type_id', $customerID)->pluck('user_id');
+                $customerUsersWithFullAccess = $customerUsers->toArray();
+            }
 
-            $customerUsers = clone $data->where('type', 'customer')
-                ->where('type_id', $customerID)->pluck('user_id');
 
-            $customerUsersWithFullAccess = $customerUsers->toArray();
 
             $contractUsers = clone $data->where('type', 'contract')
                 ->where('type_id', $contractID)->pluck('user_id');
@@ -91,14 +110,14 @@ class ChangeOrderHelper
             $ChangeOrderCollect = clone $data->where('type', 'change-order')
                 ->whereIn('type_id', [$orderDetail->order_id, 'all'])->values();
 
-            $changeOrderUsersWithFullAccess = $ChangeOrderCollect->map(function ($ChangeOrder) use($orderDetail) {
+            $changeOrderUsersWithFullAccess = $ChangeOrderCollect->map(function ($ChangeOrder) use ($orderDetail) {
 
-                if($ChangeOrder->type_id == $orderDetail->order_id || $ChangeOrder->type_id == 'all') {
-                    if(!empty($ChangeOrder->rule_engine_query)) {
+                if ($ChangeOrder->type_id == $orderDetail->order_id || $ChangeOrder->type_id == 'all') {
+                    if (!empty($ChangeOrder->rule_engine_query)) {
                         $ruleEngineQuery = json_decode($ChangeOrder->rule_engine_query, true);
                         $ids = (new RuleEngineManager('order_id', $ChangeOrder->type_id, $ruleEngineQuery))->run();
 
-                        if(!empty($ids)) {
+                        if (!empty($ids)) {
                             return $ChangeOrder->user_id;
                         }
                     } else {

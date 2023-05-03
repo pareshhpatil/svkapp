@@ -234,31 +234,33 @@ function addnewRow() {
 }
 
 function saveParticularRow(id, active = 1) {
-    json = '{';
-    $.each(particular_column_array, function (index, av) {
-        json = json + '"' + index + '":"' + ev(index + id) + '",';
-    });
-    json = json + '"request_id":"' + ev('request_id') + '",';
-    json = json + '"is_active":"' + active + '",';
-    json = json + '"dpid":"' + ev('dpid' + id) + '",';
-    json = json + '"id":"' + ev('id' + id) + '",';
-    json = json + '"sort_order":"' + ev('sort_order' + id) + '",';
-    json = json + '"sub_group":"' + ev('sub_group' + id) + '",';
-    json = json + '"calculated_perc":"' + ev('calculated_perc' + id) + '",';
-    json = json + '"calculated_row":"' + ev('calculated_row' + id) + '",';
-    json = json + '"billed_transaction_ids":"' + ev('billed_transaction_ids' + id) + '",';
-    json = json + '"attachments":"' + ev('attachments' + id) + '",';
-    json = json + '"pint":"' + ev('pint' + id) + '"}';
-    if (postJson != json) {
-        postJson = json;
-        $.ajax({
-            type: 'POST',
-            url: '/merchant/invoice/particulars/row',
-            data: { 'data': json },
-            success: function (data) {
-                _('dpid' + id).value = data;
-            }
+    if (_('request_type') == 1) {
+        json = '{';
+        $.each(particular_column_array, function (index, av) {
+            json = json + '"' + index + '":"' + ev(index + id) + '",';
         });
+        json = json + '"request_id":"' + ev('request_id') + '",';
+        json = json + '"is_active":"' + active + '",';
+        json = json + '"dpid":"' + ev('dpid' + id) + '",';
+        json = json + '"id":"' + ev('id' + id) + '",';
+        json = json + '"sort_order":"' + ev('sort_order' + id) + '",';
+        json = json + '"sub_group":"' + ev('sub_group' + id) + '",';
+        json = json + '"calculated_perc":"' + ev('calculated_perc' + id) + '",';
+        json = json + '"calculated_row":"' + ev('calculated_row' + id) + '",';
+        json = json + '"billed_transaction_ids":"' + ev('billed_transaction_ids' + id) + '",';
+        json = json + '"attachments":"' + ev('attachments' + id) + '",';
+        json = json + '"pint":"' + ev('pint' + id) + '"}';
+        if (postJson != json) {
+            postJson = json;
+            $.ajax({
+                type: 'POST',
+                url: '/merchant/invoice/particulars/row',
+                data: { 'data': json },
+                success: function (data) {
+                    _('dpid' + id).value = data;
+                }
+            });
+        }
     }
 }
 
@@ -894,7 +896,7 @@ function filterRows() {
             search_td = tr[i].getElementsByTagName("td")[0];
             txtValue = search_td.textContent || search_td.innerText;
             txtValue = txtValue.toUpperCase();
-            if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+            if (txtValue.toUpperCase().indexOf(search) > -1) { } else {
                 display = 'none';
             }
         }
@@ -902,19 +904,19 @@ function filterRows() {
         if (dropdown_search > 0) {
             if (dropdown_search == 1) {
                 input_name = 'previously_billed_amount';
-            } else if(dropdown_search == 3){
+            } else if (dropdown_search == 3) {
                 input_name = 'previously_billed_amount';
             } else {
                 input_name = 'current_billed_amount';
             }
 
             amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
-            if(dropdown_search == 3){
+            if (dropdown_search == 3) {
                 if (amt_val > 0 || isNaN(amt_val)) {
                     display = 'none';
-                } 
-            }else{
-                if (amt_val > 0) {} else {
+                }
+            } else {
+                if (amt_val > 0) { } else {
                     display = 'none';
                 }
             }

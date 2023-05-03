@@ -39,7 +39,7 @@ class OrderController extends Controller
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
 
-    public function create($version = '', $errors = null, $link = null, $type = null, Request $request)
+    public function create($type = null, Request $request)
     {
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -91,25 +91,37 @@ class OrderController extends Controller
                 $whereContractIDs[] = $key;
             }
         }
-
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        if ($type == 'subcontract') {
+            $data['contract'] = $this->invoiceModel->getSubContract($this->merchant_id);
+        } else {
+            $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        }
 
         $data['project_id'] = 0;
         if (isset($request->contract_id)) {
             $data['contract_id'] = $request->contract_id;
             $model = new Master();
-            $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
+            if ($type == 'subcontract') {
+                $row = $model->getTableRow('sub_contract', 'sub_contract_id', $request->contract_id);
+                $row->contract_code = $row->sub_contract_code;
+                $row->contract_amount = $row->sub_contract_amount;
+            } else {
+                $row = $model->getTableRow('contract', 'contract_id', $request->contract_id);
+            }
             $row->json_particulars = json_decode($row->particulars, true);
             $data['detail'] = $row;
 
             $group_codes = [];
-            foreach ($row->json_particulars as $row_particular) {
+            foreach ($row->json_particulars as $k => $row_particular) {
                 if (isset($row_particular['group'])) {
                     if (!in_array($row_particular['group'], $group_codes)) {
                         if ($row_particular['group'] != '') {
                             array_push($group_codes, $row_particular['group']);
                         }
                     }
+                }
+                if ($type == 'subcontract') {
+                    $row->json_particulars[$k]['original_contract_amount'] = $row_particular['amount'];
                 }
             }
             $data['group_codes'] = $group_codes;
@@ -129,6 +141,7 @@ class OrderController extends Controller
             $data['co_type'] = 1;
         }
 
+        $data['type'] = $type;
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
 
@@ -174,20 +187,24 @@ class OrderController extends Controller
             }
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
-            $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id);
+            $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id, $request->type);
             if (isset($request->import) && $request->import == 'Import') {
                 return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
+            }
+            $link = 'merchant/order/list';
+            if ($request->type == 'subcontract') {
+                $link = 'merchant/order/list/subcontract';
             }
 
             $ChangeOrderHelper = new ChangeOrderHelper();
 
-            $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id);
+            $ChangeOrderHelper->sendChangeOrderForApprovalNotification($id, $request->type);
 
-            return redirect('merchant/order/list')->with('success', "Change Order has been created");
+            return redirect($link)->with('success', "Change Order has been created");
         }
     }
 
-    public function list(Request $request)
+    public function list(Request $request, $type = '')
     {
         $dates = Helpers::setListDates();
         $title = 'Change Order list';
@@ -213,8 +230,11 @@ class OrderController extends Controller
             $privilegesIDs = json_decode(Redis::get('change_order_privileges_' . $this->user_id), true);
             $contractPrivilegesIDs = json_decode(Redis::get('contract_privileges_' . $this->user_id), true);
         }
-
-        $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs));
+        if ($type == 'subcontract') {
+            $list = $this->orderModel->getPrivilegesSubcontractOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs), $type);
+        } else {
+            $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs), $type);
+        }
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
             if ($row->approved_date == '0000-00-00') {
@@ -244,7 +264,7 @@ class OrderController extends Controller
         $data['customer_name'] = 'Contact person name';
         $data['customer_code'] = 'Customer code';
         $data['privileges'] = $privilegesIDs;
-
+        $data['type'] = $type;
         //contracts from privileges
         $whereContractIDs = [];
         foreach ($contractPrivilegesIDs as $key => $contractPrivilegesID) {
@@ -252,8 +272,11 @@ class OrderController extends Controller
                 $whereContractIDs[] = $key;
             }
         }
-
-        $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        if ($type == 'subcontract') {
+            $data['contract'] = $this->invoiceModel->getSubContract($this->merchant_id);
+        } else {
+            $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        }
 
         if (Session::has('customer_default_column')) {
             $default_column = Session::get('customer_default_column');
@@ -264,18 +287,22 @@ class OrderController extends Controller
         return view('app/merchant/order/list', $data);
     }
 
-    public function delete($link)
+    public function delete($link, $type = '')
     {
+        $table = 'order';
+        if ($type == 'subcontract') {
+            $table = 'subcontract_change_order';
+        }
         if ($link) {
             $id = Encrypt::decode($link);
-            $this->masterModel->deleteTableRow('order', 'order_id', $id, $this->merchant_id, $this->user_id);
-            return redirect('merchant/order/list')->with('success', "Record has been deleted");
+            $this->masterModel->deleteTableRow($table, 'order_id', $id, $this->merchant_id, $this->user_id);
+            return redirect('merchant/order/list/' . $type)->with('success', "Record has been deleted");
         } else {
-            return redirect('merchant/order/list')->with('error', "Record code can not be deleted");
+            return redirect('merchant/order/list/' . $type)->with('error', "Record code can not be deleted");
         }
     }
 
-    public function approve(Request $request)
+    public function approve(Request $request, $type = '')
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
@@ -304,14 +331,14 @@ class OrderController extends Controller
 
 
             $request->approved_date = Helpers::sqlDate($request->approved_date);
-            $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '');
-            return redirect('merchant/order/list')->with('success', "Change order has been Approved");
+            $this->orderModel->changeOrderApproveStatus($id, $request->approved_date, '1', '', $type);
+            return redirect('merchant/order/list/' . $type)->with('success', "Change order has been Approved");
         } else {
-            return redirect('merchant/order/list')->with('error', "Change order code can not be Approved");
+            return redirect('merchant/order/list/' . $type)->with('error', "Change order code can not be Approved");
         }
     }
 
-    public function unapprove(Request $request)
+    public function unapprove(Request $request, $type = '')
     {
         if (isset($request->link)) {
             $id = Encrypt::decode($request->link);
@@ -338,10 +365,10 @@ class OrderController extends Controller
                 return redirect('/merchant/no-permission');
             }
 
-            $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message);
-            return redirect('merchant/order/list')->with('success', "Change order has been Unapproved");
+            $this->orderModel->changeOrderApproveStatus($id, '', '0', $request->unapprove_message, $type);
+            return redirect('merchant/order/list/' . $type)->with('success', "Change order has been Unapproved");
         } else {
-            return redirect('merchant/order/list')->with('error', "Change order code can not be Unapproved");
+            return redirect('merchant/order/list/' . $type)->with('error', "Change order code can not be Unapproved");
         }
     }
 
@@ -352,7 +379,12 @@ class OrderController extends Controller
         $id = Encrypt::decode($link);
         if ($id != '') {
             $model = new Master();
-            $row = $model->getTableRow('order', 'order_id', $id);
+            if ($bulk_id == 'subcontract') {
+                $row = $model->getTableRow('subcontract_change_order', 'order_id', $id);
+            } else {
+                $row = $model->getTableRow('order', 'order_id', $id);
+            }
+
             $row->json_particulars = json_decode($row->particulars, true);
             foreach ($row->json_particulars as &$row_data) {
                 if (!isset($row_data["cost_type"])) {
@@ -394,9 +426,17 @@ class OrderController extends Controller
 
             $data["project_list"] = $this->masterModel->getProjectList($this->merchant_id, $whereProjectIDs, $userRole);
 
-            
 
-            $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
+            if ($bulk_id == 'subcontract') {
+                $row2 = $model->getTableRow('sub_contract', 'sub_contract_id', $row->contract_id);
+                $bulk_id = null;
+                $row2->contract_code = $row2->sub_contract_code;
+                $row2->contract_id = $row2->sub_contract_id;
+                $data['type'] = 'subcontract';
+            } else {
+                $row2 = $model->getTableRow('contract', 'contract_id', $row->contract_id);
+                $data['type'] = '';
+            }
             $data['csi_code'] = $model->getProjectCodeList($this->merchant_id, $row2->project_id);
             $data['csi_code_json'] = json_encode($data['csi_code']);
 
@@ -409,6 +449,7 @@ class OrderController extends Controller
             $data['detail'] = $row;
             $data['detail2'] = $row2;
             $data['link'] = $link;
+
             $data['mode'] = 'update';
             $data['bulk_id'] = 0;
 
@@ -517,7 +558,7 @@ class OrderController extends Controller
         }
         $request->particulars = json_encode($main_array);
         $request->order_date = Helpers::sqlDate($request->order_date);
-        $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id);
+        $this->orderModel->updateOrder($request, $this->merchant_id, $this->user_id, $id, $request->type);
 
         if (isset($request->import) && $request->import == 'Import') {
             return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
@@ -529,7 +570,7 @@ class OrderController extends Controller
             $InvoiceHelper = new ChangeOrderHelper();
             $InvoiceHelper->sendChangeOrderForApprovalNotification($id);
         }
-        return redirect('merchant/order/list')->with('success', "Change Order has been updated");
+        return redirect('merchant/order/list/' . $request->type)->with('success', "Change Order has been updated");
     }
 
     public function getprojectdetails($project_id)

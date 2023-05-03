@@ -257,31 +257,10 @@ class CompanyProfileController extends AppController
                             "link": "/merchant/order/create"
                         },
                         {
-                            "title": "Create estimate",
-                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                            "link": "/merchant/invoice/create/estimate"
-                        },
-                        {
-                            "title": "Bulk upload invoices / estimates",
-                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                            "link": "/merchant/bulkupload/newupload"
-                        },
-                        {
-                            "title": "Create subscription",
-                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                            "link": "/merchant/invoice/create/subscription"
+                            "title": "Create request for payment",
+                            "desc": "Create and send request for payment to your vendors. Customize your request as per your business needs and add online payment collection options to your request for payment",
+                            "link": "/merchant/subcontract/requestpayment/create"
                         }
-                    ]
-                },
-                {
-                    "name": "PAYMENT PAGES",
-                    "item_list": [
-                        {
-                            "title": "Quick link",
-                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
-                            "link": "/merchant/directpaylink"
-                        }
-                        
                     ]
                 }
             ]';
