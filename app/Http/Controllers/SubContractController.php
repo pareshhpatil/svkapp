@@ -118,7 +118,7 @@ class SubContractController extends Controller
         $rules = [
             'vendor_id' => 'required',
             'project_id' => 'required',
-            'title' => 'required',
+            'sub_contract_code' => 'required',
             'start_date' => 'required',
             'end_date' => 'required'
         ];
@@ -249,7 +249,6 @@ class SubContractController extends Controller
         if (!empty($subContractID)) {
             /** @var SubContract $SubContract*/
             $SubContract = SubContract::find(Encrypt::decode($subContractID));
-//            dd($SubContract, Encrypt::decode($subContractID));
             $data['sub_contract'] = $SubContract;
         }
 
@@ -298,7 +297,7 @@ class SubContractController extends Controller
         $rules = [
             'vendor_id' => 'required',
             'project_id' => 'required',
-            'title' => 'required',
+            'sub_contract_code' => 'required',
             'start_date' => 'required',
             'end_date' => 'required'
         ];
