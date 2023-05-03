@@ -1320,7 +1320,7 @@ class RequestPaymentController extends AppController
                     if ($req_type != null || $change_order_compare == false) {
                         $include_co = true;
                     } else {
-                        $co_detail = $this->invoiceModel->getTableRow('order', 'order_id', $change_order_id);
+                        $co_detail = $this->invoiceModel->getTableRow('subcontract_change_order', 'order_id', $change_order_id);
                         $new_change_order_array[] = array('order_no' => $co_detail->order_no, 'total_change_order_amount' => $co_detail->total_change_order_amount, 'approved_date' => $co_detail->approved_date);
                     }
                 }
