@@ -214,4 +214,14 @@ class Master extends ParentModel
         $retObj = DB::select("call `get_sub_userlist`('$user_id')");
         return $retObj;
     }
+
+    public function getVendorList($merchant_id)
+    {
+        return DB::table('vendor')
+                        ->where('is_active', 1)
+                        ->where('merchant_id', $merchant_id)
+                        ->whereNotNull('vendor_name')
+                        ->orderByDesc('last_update_date')
+                        ->get();
+    }
 }

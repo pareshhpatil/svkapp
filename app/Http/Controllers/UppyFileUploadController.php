@@ -26,6 +26,10 @@ class UppyFileUploadController extends Controller
             $folder = 'invoices';
         }
 
+        if($type == 'sub-contract') {
+            $folder = 'sub_contracts';
+        }
+
         $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';
 
         $dt = time();
@@ -78,7 +82,7 @@ class UppyFileUploadController extends Controller
         } else {
             $response['errors'] = "An error occurred. Please contact the administrator.";
         }
-        echo json_encode($response);
+        return $response;
     }
 
     public function uploadWCProductImage($filePath = null, $wc_post_id = null)
