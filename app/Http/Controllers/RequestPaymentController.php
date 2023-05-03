@@ -1320,7 +1320,7 @@ class RequestPaymentController extends AppController
                     if ($req_type != null || $change_order_compare == false) {
                         $include_co = true;
                     } else {
-                        $co_detail = $this->invoiceModel->getTableRow('order', 'order_id', $change_order_id);
+                        $co_detail = $this->invoiceModel->getTableRow('subcontract_change_order', 'order_id', $change_order_id);
                         $new_change_order_array[] = array('order_no' => $co_detail->order_no, 'total_change_order_amount' => $co_detail->total_change_order_amount, 'approved_date' => $co_detail->approved_date);
                     }
                 }
@@ -1679,7 +1679,7 @@ class RequestPaymentController extends AppController
         $notificationID = $request->get('notification_id');
 
         if (is_numeric($payment_request_id)) {
-            $data = Helpers::setBladeProperties('Request payment', ['template'], [5, 181]);
+            $data = Helpers::setBladeProperties('Request payment    ', ['template'], [5, 181]);
             $data['gtype'] = $type;
             $userRole = Session::get('user_role');
             $data['user_type'] = $user_type;
@@ -1701,6 +1701,7 @@ class RequestPaymentController extends AppController
                 return redirect('/error/invalidlink');
             }
             $data = array_merge($data, $particular_details);
+            $data['has_total_co_col'] = false;
             return view('app/merchant/subcontractrequest/G' . $type . '/index', $data);
         } else {
             header('Location: /error/invalidlink');

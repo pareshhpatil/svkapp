@@ -104,8 +104,8 @@ class SubContract extends Base
                             $groups[] = $row['group'];
                         }
                     }
-                    $total = $total + str_replace(',', '', $row['amount']);
-                    $particulars[$key]['amount'] = str_replace(',', '', $row['amount']);
+                    $total = $total + str_replace(',', '', $row['original_contract_amount']);
+                    $particulars[$key]['original_contract_amount'] = str_replace(',', '', $row['original_contract_amount']);
                 }
             }
         }
