@@ -531,10 +531,18 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('change-order/import/{order_id?}', 'ImportController@changeOrder')->name('merchant.import.change-order');
   Route::post('import/change-order/upload',  'ImportController@uploadChangeOrder')->name("merchant.import.change-order.upload");
 
-
-  //new invoice format 
+  //new invoice format
   Route::any('template/invoice/format',  'InvoiceFormatController@format')->name("merchant.template.invoice.format");
   Route::any('invoice/format/save',  'InvoiceFormatController@saveFormat')->name("merchant.template.invoice.format.save");
+
+  //SubContract
+  Route::get('sub-contracts', 'SubContractController@index')->name('merchant.subcontract.index');
+  Route::get('sub-contracts/create/{step?}/{subcontractID?}', 'SubContractController@create')->name('merchant.subcontract.create');
+  Route::post('sub-contracts/create', 'SubContractController@store');
+  Route::any('sub-contracts/update-particulars', 'SubContractController@updateParticulars');
+  Route::get('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@edit')->name('merchant.subcontract.update');
+  Route::post('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@update')->name('merchant.subcontract.update');
+  Route::get('sub-contracts/delete/{id}', 'SubContractController@delete');
 });
 
 Route::group(['prefix' => 'patron'], function () {

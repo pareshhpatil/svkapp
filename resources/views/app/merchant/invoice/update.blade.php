@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+
     <div class="page-content">
         <!-- BEGIN PAGE HEADER-->
         <div class="page-bar">
