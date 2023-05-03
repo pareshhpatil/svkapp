@@ -239,6 +239,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
+                            <th></th>
 
                         </tr>
                     </tfoot>
@@ -1028,7 +1029,6 @@
                     console.log(this.fields, particularsArray);
                     for(let p=0; p < this.fields.length; p++){
                         if(particularsArray[p] !== undefined) {
-                            this.fields[p].bill_code = particularsArray[p].bill_code;
                             this.fields[p].bill_code = particularsArray[p].bill_code;
                             this.fields[p].description = particularsArray[p].description;
                             this.fields[p].group = particularsArray[p].group;
