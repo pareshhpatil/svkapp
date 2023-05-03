@@ -39,7 +39,7 @@ class SubContractController extends Controller
     {
         $title = 'Sub Contracts List';
 
-        $data = Helpers::setBladeProperties($title,  [],  [5, 179]);
+        $data = Helpers::setBladeProperties($title,  [],  [5, 182]);
 
         $list = $this->sub_contract_model->getSubContractList($this->merchant_id);
         foreach ($list as $ck => $row) {
@@ -65,7 +65,7 @@ class SubContractController extends Controller
         
         $userRole = Session::get('user_role');
 
-        $data = Helpers::setBladeProperties($title, ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties($title, ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 182]);
 
         $data['step'] = $step;
         $data['sub_contract_id'] = $subContractID;
@@ -244,7 +244,7 @@ class SubContractController extends Controller
 
         $userRole = Session::get('user_role');
 
-        $data = Helpers::setBladeProperties($title, ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 179]);
+        $data = Helpers::setBladeProperties($title, ['expense', 'contract2', 'product', 'template', 'invoiceformat2'], [3, 182]);
 
         if (!empty($subContractID)) {
             /** @var SubContract $SubContract*/
