@@ -1034,50 +1034,51 @@ class InvoiceController extends AppController
                     $menus0['full'] = "Required documents";
                     $menus0['link'] = "";
                     $menus0['type'] = "required";
+                    if(isset($plugin_array['mandatory_data']) && !empty($plugin_array['mandatory_data'])) {
+                        foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
+                            $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
 
-                    foreach ($plugin_array['mandatory_data'] as $key => $mandatory_data) {
-                        $mandatory_files = $this->invoiceModel->getMandatoryDocumentByPaymentRequestID($payment_request_id, $mandatory_data['name']);
+                            $menus1 = array();
+                            $menus2 = array();
+                            $pos = 1;
 
-                        $menus1 = array();
-                        $menus2 = array();
-                        $pos = 1;
-
-                        foreach ($mandatory_files as $files) {
-                            if ($files->file_url != '') {
-                                $data['files'][] = $files->file_url;
-                                $nm = '';
-                                if (!empty($files->file_url)) {
-                                    $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
-                                }
-
-                                $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
-                                $menus1['full'] = basename($files->file_url);
-
-                                $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
-
-
-                                $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
-                                $menus1['menu'] = "";
-                                $menus1['type'] = "required";
-                                $menus2[$pos] = $menus1;
-                                if ($pos == 1) {
-                                    if (empty($docpath)) {
-                                        $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                            foreach ($mandatory_files as $files) {
+                                if ($files->file_url != '') {
+                                    $data['files'][] = $files->file_url;
+                                    $nm = '';
+                                    if (!empty($files->file_url)) {
+                                        $nm = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 10);
                                     }
+
+                                    $menus1['id'] = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                    $menus1['full'] = basename($files->file_url);
+
+                                    $menus1['title'] = strlen(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4)) < 10 ? substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4) : $nm . '...';
+
+
+                                    $menus1['link'] = substr(substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), 0, -4), 0, 7);
+                                    $menus1['menu'] = "";
+                                    $menus1['type'] = "required";
+                                    $menus2[$pos] = $menus1;
+                                    if ($pos == 1) {
+                                        if (empty($docpath)) {
+                                            $docpath  = str_replace(' ', '_', substr(substr(basename($files->file_url), 0, strrpos(basename($files->file_url), '.')), -10));
+                                        }
+                                    }
+                                    $pos++;
                                 }
-                                $pos++;
                             }
-                        }
-                        if (isset($mandatory_files[0]->file_url)) {
-                            if ($mandatory_files[0]->file_url != '') {
+                            if (isset($mandatory_files[0]->file_url)) {
+                                if ($mandatory_files[0]->file_url != '') {
 
-                                $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
-                                $menus['id'] = "required_document" . $key;
-                                $menus['full'] = $mandatory_data['name'];
-                                $menus['link'] = "";
+                                    $menus['title'] = strlen($mandatory_data['name']) > 10 ? substr($mandatory_data['name'], 0, 10) . "..." : $mandatory_data['name'];
+                                    $menus['id'] = "required_document" . $key;
+                                    $menus['full'] = $mandatory_data['name'];
+                                    $menus['link'] = "";
 
-                                $menus['menu'] = $menus2;
-                                $menus0['menu'][] = $menus;
+                                    $menus['menu'] = $menus2;
+                                    $menus0['menu'][] = $menus;
+                                }
                             }
                         }
                     }
