@@ -80,12 +80,18 @@ class SubContract extends Base
         'bill_code_detail' => [ 'title'=> 'Bill code detail', 'type' => 'select' ],
     ];
 
-    public static function initializeParticulars($project_id = ''): array
+    /**
+     * @param $project_id
+     * @param $retainage_percent
+     * @return array
+     */
+    public static function initializeParticulars($project_id = '', $retainage_percent = ''): array
     {
         $particulars = [];
         $particulars[] = self::$row;
         if ($project_id != '')
             $particulars[0]['project'] = $project_id;
+            $particulars[0]['retainage_percent'] = $retainage_percent;
         return $particulars;
     }
 
@@ -95,7 +101,7 @@ class SubContract extends Base
     public function calculateTotal() {
         $total =0;
         $groups = [];
-        $particulars = json_decode($this->particulars??[], true);
+        $particulars = json_decode($this->particulars ?? [], true);
         if(!empty($particulars)) {
             foreach ($particulars as $key => $row) {
                 if ($row['bill_code'] != '') {

@@ -6,6 +6,19 @@
         color: #18AEBF !important;
         width: auto !important;
     }
+
+    .subscription-info h3 {
+        text-align: center;
+        color: #000;
+        margin-bottom: 2px !important;
+    }
+
+    .subscription-info h2 {
+        font-weight: 600;
+        margin-bottom: 0 !important;
+        margin-top: 5px !important;
+        text-align: center;
+    }
 </style>
 @section('content')
     <div class="page-content">
@@ -31,6 +44,9 @@
                             @break
                         @case(2)
                             @include('app.merchant.sub-contract.steps.step-2')
+                            @break
+                        @case(3)
+                            @include('app.merchant.sub-contract.steps.step-3')
                             @break
                     @endswitch
                 </form>

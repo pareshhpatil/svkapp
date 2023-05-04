@@ -78,14 +78,15 @@ class SubContractController extends Controller
         $data['needValidationOnStep2'] = true;
         $data['particulars'] = [];
 
-        if($step == 2) {
+        if($step == 2 || $step == 3) {
             /** @var SubContract $SubContract*/
             $SubContract = SubContract::find(Encrypt::decode($subContractID));
-            $data['SubContract'] = $SubContract;
-            $data = $this->step2Data($data, $SubContract, $SubContract->project_id ?? '', $step);
-            
+            $data['sub_contract'] = $SubContract;
+
             $data['project_id'] = $SubContract->project_id;
             $data['project'] = $this->masterModel->getTableRow('project', 'id', $SubContract->project_id);
+
+            $data = $this->step2Data($data, $SubContract, $data['project']->project_id ?? '', $step);
         }
 
         return view('app/merchant/sub-contract/create', $data);
@@ -107,9 +108,12 @@ class SubContractController extends Controller
                 break;
             case 2:
                 break;
+            case 3:
+                return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
+                break;
         }
 
-        return redirect()->route('merchant.subcontract.create', ['step' => $step, 'subcontractID' => Encrypt::encode($data['sub_contract_id'])]);
+        return redirect()->route('merchant.subcontract.create', ['step' => $step, 'sub_contract_id' => Encrypt::encode($data['sub_contract_id'])]);
 
     }
 
@@ -171,8 +175,10 @@ class SubContractController extends Controller
 
         if ($step == 3) {
             $data['particulars'] = ($SubContract != null && !empty($particulars)) ? $particulars : [];
+            $data['vendor'] = $this->masterModel->getTableRow('vendor', 'vendor_id', $SubContract->vendor_id);
+
         } else {
-            $data['particulars'] = ($SubContract != null && !empty($particulars)) ? $particulars : SubContract::initializeParticulars($project_id);
+            $data['particulars'] = ($SubContract != null && !empty($particulars)) ? $particulars : SubContract::initializeParticulars($project_id, $SubContract->default_retainage);
         }
         $data['bill_codes'] = $this->getBillCodes($SubContract->project_id);
         $data['cost_types'] = $this->getCostTypes();
@@ -181,7 +187,7 @@ class SubContractController extends Controller
         $data['cost_types_array'] = $merchant_cost_types_array;
         $data['csi_codes_array'] = $this->getKeyArrayJson($data['bill_codes'], 'value');
 
-        $data['project_id'] = $SubContract->project_id;
+        $data['project_id'] = $project_id;
         $data['total'] = $total;
         $data['groups'] = $groups;
         $data['row'] = SubContract::$row;
@@ -261,7 +267,7 @@ class SubContractController extends Controller
         $data['particulars'] = [];
         $data['project_id'] = $SubContract->project_id ?? '';
 
-        if($step == 2) {
+        if($step == 2 || $step == 3) {
             $data = $this->step2Data($data, $SubContract, $SubContract->project_id ?? '', $step);
 
             $data['project'] = $this->masterModel->getTableRow('project', 'id', $SubContract->project_id);
@@ -286,9 +292,12 @@ class SubContractController extends Controller
                 break;
             case 2:
                 break;
+            case 3:
+                return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
+                break;
         }
 
-        return redirect()->route('merchant.subcontract.update', ['step' => $step, 'subcontractID' => $request->sub_contract_id]);
+        return redirect()->route('merchant.subcontract.update', ['step' => $step, 'sub_contract_id' => $request->sub_contract_id]);
 
     }
 

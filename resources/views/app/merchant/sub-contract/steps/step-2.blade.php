@@ -303,7 +303,6 @@
             $merchantCostTypeJsonArray=str_replace("\\",'\\\\', $cost_types_array);
             $merchantCostTypeJsonArray=str_replace("'","\'",$merchantCostTypeJsonArray);
             $merchantCostTypeJsonArray=str_replace('"','\\"',$merchantCostTypeJsonArray);
-
         @endphp
         var particularsArray = JSON.parse('{!! $particularJson !!}');
         csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
@@ -356,7 +355,7 @@
             $('#new_bill_description').val(null);
             $('#selectedBillCodeId').val(null);
         }
-        function handle_particulars(){
+        function handle_particulars() {
             return {
                 fields : JSON.parse('{!! $particularJson !!}'),
                 bill_code : null,
@@ -364,6 +363,7 @@
                 group_name : null,
                 count : {!! count($particulars) -1 !!},
                 project_code : '{{ $project->project_id }}',
+                default_retainage: '{{ $sub_contract->default_retainage }}',
                 totalretainage : null,
 
                 initializeDropdowns(){
@@ -817,7 +817,7 @@
                     }
                     return valid;
                 },
-                saveParticulars(back=0, submit=0) {
+                saveParticulars(back = 0, submit = 0) {
                     this.copyBillCodeGroups();
                     formfields = this.fields.filter(Boolean);
                     let data = JSON.stringify(formfields);
@@ -837,7 +837,7 @@
                             }
 
                             if(submit === 1) {
-                                window.location = '/merchant/sub-contracts';
+                                window.location = '{{ route(Route::getCurrentRoute()->getName(), ['step' => 3, 'sub_contract_id' => $sub_contract_id]) }}';
                             }
                         }
                     })
@@ -890,7 +890,7 @@
                         'unit' : null,
                         'rate' : null,
                         'original_contract_amount' : null,
-                        'retainage_percent' : null,
+                        'retainage_percent' : this.default_retainage,
                         'retainage_amount' : null,
                         'project' : this.project_code,
                         'project_code' : this.project_code,
@@ -910,7 +910,7 @@
                         'unit' : null,
                         'rate' : null,
                         'original_contract_amount' : null,
-                        'retainage_percent' : null,
+                        'retainage_percent' : this.default_retainage,
                         'retainage_amount' : null,
                         'project' : this.project_code,
                         'project_code' : this.project_code,

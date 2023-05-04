@@ -537,11 +537,11 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
 
   //SubContract
   Route::get('sub-contracts', 'SubContractController@index')->name('merchant.subcontract.index');
-  Route::get('sub-contracts/create/{step?}/{subcontractID?}', 'SubContractController@create')->name('merchant.subcontract.create');
+  Route::get('sub-contracts/create/{step?}/{sub_contract_id?}', 'SubContractController@create')->name('merchant.subcontract.create');
   Route::post('sub-contracts/create', 'SubContractController@store');
   Route::any('sub-contracts/update-particulars', 'SubContractController@updateParticulars');
-  Route::get('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@edit')->name('merchant.subcontract.update');
-  Route::post('sub-contracts/edit/{step?}/{subcontractID?}', 'SubContractController@update')->name('merchant.subcontract.update');
+  Route::get('sub-contracts/edit/{step?}/{sub_contract_id?}', 'SubContractController@edit')->name('merchant.subcontract.update');
+  Route::post('sub-contracts/edit/{step?}/{sub_contract_id?}', 'SubContractController@update')->name('merchant.subcontract.update');
   Route::get('sub-contracts/delete/{id}', 'SubContractController@delete');
 });
 
