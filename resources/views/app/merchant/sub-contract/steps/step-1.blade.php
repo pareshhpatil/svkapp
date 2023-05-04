@@ -62,13 +62,13 @@
                 <div class="form-group">
                     <label class="control-label col-md-4">Sub Contract Code<span class="required">*</span></label>
                     <div class="col-md-8">
-                        <input type="text" name="sub_contract_code" required id="subcontract_code" class="form-control" value="{{ $sub_contract->sub_contract_code ?? old('sub_contract_code') }}"  >
+                        <input type="text" name="sub_contract_code" maxlength="45" required id="subcontract_code" class="form-control" value="{{ $sub_contract->sub_contract_code ?? old('sub_contract_code') }}"  >
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-4">Default Retainage</label>
                     <div class="col-md-8">
-                        <input type="text" name="default_retainage" id="default_retainage" class="form-control" value="{{ $sub_contract->default_retainage ?? old('default_retainage') }}"  >
+                        <input type="number" name="default_retainage" id="default_retainage" class="form-control" value="{{ $sub_contract->default_retainage ?? old('default_retainage') }}"  >
                     </div>
                 </div>
 
@@ -77,19 +77,19 @@
                 <div class="form-group">
                     <label class="control-label col-md-4">Title</label>
                     <div class="col-md-8">
-                        <input type="text" name="title" id="title" class="form-control" value="{{ $sub_contract->title ?? old('title') }}">
+                        <input type="text" name="title" maxlength="45" id="title" class="form-control" value="{{ $sub_contract->title ?? old('title') }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-4">Sign</label>
                     <div class="col-md-8">
-                        <input type="text" name="sign" id="sign" class="form-control" value="{{ $sub_contract->sign ?? old('sign') }}">
+                        <input type="text" name="sign" maxlength="100" id="sign" class="form-control" value="{{ $sub_contract->sign ?? old('sign') }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-4">Description</label>
                     <div class="col-md-8">
-                        <textarea class="form-control" name="description" id="description" rows="3" placeholder="Description" >{{ $sub_contract->description ?? old('description') }}</textarea>
+                        <textarea class="form-control" maxlength="100" name="description" id="description" rows="3" placeholder="Description" >{{ $sub_contract->description ?? old('description') }}</textarea>
                     </div>
                 </div>
                 <div class="form-group">
