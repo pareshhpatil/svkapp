@@ -109,6 +109,15 @@ class SubContractController extends Controller
             case 2:
                 break;
             case 3:
+                $sub_contract_id = $request->get('sub_contract_id');
+
+                /** @var SubContract $SubContract */
+                $SubContract = SubContract::find(Encrypt::decode($sub_contract_id));
+
+                $SubContract->status = 1;
+
+                $SubContract->save();
+
                 return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
                 break;
         }
@@ -146,7 +155,6 @@ class SubContractController extends Controller
                                 'end_date' => Helpers::sqlDate($request->get('end_date')),
                                 'default_retainage' => $request->get('default_retainage'),
                                 'sub_contract_code' => $request->get('sub_contract_code'),
-                                'status' => 1,
                                 'sign' => $request->get('sign'),
                                 'description' => $request->get('description'),
                                 'attachments' => json_encode($request->get('file_upload')),
@@ -293,6 +301,15 @@ class SubContractController extends Controller
             case 2:
                 break;
             case 3:
+                $sub_contract_id = $request->get('sub_contract_id');
+
+                /** @var SubContract $SubContract */
+                $SubContract = SubContract::find(Encrypt::decode($sub_contract_id));
+
+                $SubContract->status = 1;
+
+                $SubContract->save();
+
                 return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
                 break;
         }
@@ -331,7 +348,6 @@ class SubContractController extends Controller
                 'end_date' => Helpers::sqlDate($request->get('end_date')),
                 'default_retainage' => $request->get('default_retainage'),
                 'sub_contract_code' => $request->get('sub_contract_code'),
-                'status' => $request->get('status'),
                 'sign' => $request->get('sign'),
                 'description' => $request->get('description'),
                 'attachments' => json_encode($request->get('file_upload')),

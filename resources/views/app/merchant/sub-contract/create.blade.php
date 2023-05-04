@@ -37,7 +37,7 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="step" value="{{ $step }}"/>
                     <input type="hidden" name="sub_contract_id" id="sub_contract_id" value="{{ $sub_contract_id }}">
-                    <input type="hidden" name="sub_contract_id" id="project_id" value="{{ $project_id }}">
+                    <input type="hidden" name="project_id" id="project_id" value="{{ $project_id }}">
                     @switch($step)
                         @case(1)
                             @include('app.merchant.sub-contract.steps.step-1')
