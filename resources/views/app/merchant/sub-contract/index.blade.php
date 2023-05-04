@@ -52,7 +52,7 @@
 {{--                                                {{ $v->created_date }}--}}
 {{--                                            </td>--}}
                                             <td class="td-c">
-                                                <a style="font-size: 1.2rem;" href="/merchant/contract/update/{{$v->encrypted_id}}">{{$v->vendor_name ? $v->vendor_name : $v->title}}</a>
+                                                <a style="font-size: 1.2rem;" href="/merchant/sub-contracts/edit/1/{{$v->encrypted_id}}">{{$v->vendor_name ? $v->vendor_name : $v->title}}</a>
                                                 <br>
                                                 <span class="text-gray-400 text-font-12">Vendor Code : <span class="text-gray-900"> {{$v->vendor_code}}</span></span>
                                             </td>
