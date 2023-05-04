@@ -161,11 +161,14 @@
 
     var newdocfileslist = [];
     const { Compressor } = Uppy;
-{{--    @if(isset($plugin['files']) && !empty($plugin['files'][0]))--}}
-{{--    @foreach ($plugin['files'] as $key=>$item)--}}
-{{--    newdocfileslist.push('{{$item}}');--}}
-{{--    @endforeach--}}
-{{--    @endif--}}
+    @if(isset($sub_contract->attachments) && !empty($sub_contract->attachments[0]))
+    @php
+        $attachments = explode(',', $sub_contract->attachments);
+    @endphp
+    @foreach ($attachments as $key=>$item)
+    newdocfileslist.push('{{$item}}');
+    @endforeach
+    @endif
     //uppy file upload code
     var uppy = new Uppy.Uppy({
         autoProceed: true,

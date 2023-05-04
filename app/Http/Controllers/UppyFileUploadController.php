@@ -28,6 +28,8 @@ class UppyFileUploadController extends Controller
 
         if($type == 'sub-contract') {
             $folder = 'sub_contracts';
+
+            $fileExtensionsAllowed = ['jpeg', 'png', 'jpg', 'pdf'];
         }
 
         $product_base_url = 'https://s3.' . env('S3REGION') . '.amazonaws.com/' . env('S3BUCKET_EXPENSE') . '/' . $folder . '/';

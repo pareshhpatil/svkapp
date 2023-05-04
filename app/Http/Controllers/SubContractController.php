@@ -157,7 +157,7 @@ class SubContractController extends Controller
                                 'sub_contract_code' => $request->get('sub_contract_code'),
                                 'sign' => $request->get('sign'),
                                 'description' => $request->get('description'),
-                                'attachments' => json_encode($request->get('file_upload')),
+                                'attachments' => $request->get('file_upload'),
                                 'created_by' => $this->user_id,
                                 'last_update_by' => $this->user_id,
                                 'created_date' => date('Y-m-d H:i:s'),
@@ -350,7 +350,7 @@ class SubContractController extends Controller
                 'sub_contract_code' => $request->get('sub_contract_code'),
                 'sign' => $request->get('sign'),
                 'description' => $request->get('description'),
-                'attachments' => json_encode($request->get('file_upload')),
+                'attachments' => $request->get('file_upload'),
                 'last_update_by' => $this->user_id,
                 'last_update_date' => date('Y-m-d H:i:s')
             ]);
