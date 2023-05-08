@@ -361,6 +361,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::get('invoice/view/{type}/{link}', 'InvoiceController@invoiceView');  //new url for both 702 & 703 view
 
   Route::get('subcontract/requestpayment/view/{type}/{link}', 'RequestPaymentController@invoiceView');  //new url for both 702 & 703 view
+  Route::get('subcontract/requestpayment/delete/{link}', 'RequestPaymentController@deleteRequest');  //new url for both 702 & 703 view
 
   Route::any('subcontract/requestpayment/list', 'RequestPaymentController@list');
   //added by ganesh
@@ -444,6 +445,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
     ->name('update.order')
     ->middleware('PrivilegesAccess');
   Route::any('order/approved/{link}', 'OrderController@approved')->name('approved.order');
+  Route::any('order/approved/{link}/{type}', 'OrderController@approved');
   Route::any('order/save', 'OrderController@save')->name('save.order')->middleware('PrivilegesAccess');
   Route::any('order/list', 'OrderController@list')->name('list.order');
   Route::any('order/list/{type}', 'OrderController@list');

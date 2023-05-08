@@ -170,7 +170,7 @@
                                 <label class="control-label col-md-4">Request No. <span class="required">* </span></label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" required="" value="{{$request_number}}" name="request_number" autocomplete="off" class="form-control">
+                                        <input type="text" required="" maxlength="45" value="{{$request_number}}" name="request_number" autocomplete="off" class="form-control">
                                     </div>
                                 </div>
                             </div>

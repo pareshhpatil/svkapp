@@ -467,14 +467,18 @@ class OrderController extends Controller
         }
     }
 
-    public function approved($link)
+    public function approved($link, $type = '')
     {
         $title = 'Approved';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
         if ($id != '') {
             $model = new Master();
-            $row = $model->getTableRow('order', 'order_id', $id);
+            if ($type == 'subcontract') {
+                $row = $model->getTableRow('subcontract_change_order', 'order_id', $id);
+            } else {
+                $row = $model->getTableRow('order', 'order_id', $id);
+            }
             $row->json_particulars = json_decode($row->particulars, true);
             $cust_list = $this->masterModel->getCustomerList($this->merchant_id, '', 0, '');
             foreach ($cust_list as $cust_data) {
@@ -521,6 +525,7 @@ class OrderController extends Controller
             $data['detail'] = $row;
             $data['detail2'] = $row2;
             $data['link'] = $link;
+            $data['type'] = $type;
             $data['mode'] = 'update';
             return view('app/merchant/order/approved', $data);
         } else {
