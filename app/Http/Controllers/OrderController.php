@@ -202,7 +202,7 @@ class OrderController extends Controller
         }
     }
 
-    public function list(Request $request, $type = '')
+    public function list(Request $request, $type = 'co')
     {
         $dates = Helpers::setListDates();
         $title = 'Change Order list';
