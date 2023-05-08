@@ -93,7 +93,7 @@
                                         <a style="font-size: 1.2rem;" href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         @else
                                         <span style="font-size: 1.2rem;">
-                                            <a style="font-size: 1.2rem;" href="/merchant/order/approved/{{$v->encrypted_id}}">{{$v->company_name?$v->company_name:$v->name}}</a>
+                                            <a style="font-size: 1.2rem;" href="/merchant/order/approved/{{$v->encrypted_id}}/{{$type}}">{{$v->company_name?$v->company_name:$v->name}}</a>
                                         </span>
                                         @endif
                                         <br>

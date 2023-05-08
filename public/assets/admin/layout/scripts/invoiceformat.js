@@ -3490,15 +3490,24 @@ function changerOrderAmountCheck() {
 
     try {
         billcodeNull = false
+        budgetRellocationTotal = 0;
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
             bill_code = document.getElementById('bill_code' + int).value;
+            co_type = document.getElementById('co_type' + int).value;
             if (bill_code == '') {
                 document.getElementById('change_order_amount_error').style.display = "block";
                 billcodeNull = true;
             }
+            if(co_type == 2){
+                budget = Number(document.getElementById('budget' + int).value);
+                budgetRellocationTotal = budgetRellocationTotal + budget;
+            }
         });
-        if (billcodeNull) {
+        if(budgetRellocationTotal != 0){
+            document.getElementById('budget_amount_error').style.display = "block";
+        }
+        if (billcodeNull || budgetRellocationTotal != 0) {
             return false;
         } else {
             return true;
