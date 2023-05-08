@@ -22,7 +22,7 @@
     .col-id-no {
         position: sticky !important;
         left: 0;
-        z-index: 2;
+        z-index: 991;
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
@@ -274,12 +274,11 @@
                                 <tbody id="new_particular">
                                     @foreach($detail->json_particulars as $key=>$row)
                                     @php
-
-                                    $is_calculated = false;
+                                        $is_calculated = false;
                                     @endphp
-                                    <tr id="pint{{$key+1}}" >
+                                    <tr id="pint{{$key+1}}">
                                         
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border col-id-no">
                                             <div class="text-center">
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
@@ -298,7 +297,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="col-id-no" scope="row">
+                                        <td class="td-c onhover-border" scope="row">
                                             <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 @if(!empty($cost_type_list))
                                                 @foreach($cost_type_list as $pk=>$vk)
@@ -311,7 +310,7 @@
                                                 @endif
                                             </select>
                                         </td>
-                                        <td class="col-id-no" scope="row">
+                                        <td class="td-c onhover-border" scope="row">
                                             <select id="co_type{{$key+1}}" onchange="setCOType(this.value,{{$key+1}})" class="form-control input-sm" name="co_type[]">
                                                 <option @if($co_type==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($co_type==2) selected @endif value="2">Budget reallocation</option>
@@ -320,25 +319,25 @@
                                         <td class="td-r">
                                             <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_original_contract_amount{{$key+1}}" class="form-control input-sm" value="{{number_format($row['original_contract_amount'],2)}}" id="original_contract_amount{{$key+1}}" name="original_contract_amount[]" readonly />
                                         </td>
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input step=".00000000001" max='100' type="number" data-cy="particular_retainage_percent{{$key+1}}" class="form-control input-sm" value="{{$row['retainage_percent']}}" id="retainage_percent{{$key+1}}" name="retainage_percent[]" />
                                         </td>
-                                        <td class="col-id-no" {{$up}} id="td_unit{{$key+1}}">
+                                        <td class="td-c onhover-border" {{$up}} id="td_unit{{$key+1}}">
                                             <input step=".00000000001" type="number" data-cy="particular_unit{{$key+1}}" placeholder="Unit" class="form-control input-sm" value="" id="unit{{$key+1}}" name="unit[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="col-id-no" {{$up}} id="td_rate{{$key+1}}">
                                             <input step=".00000000001" type="number" data-cy="particular_rate{{$key+1}}" placeholder="Rate" class="form-control input-sm" value="" id="rate{{$key+1}}" name="rate[]" onblur="calculateChangeOrder()" />
                                         </td>
-                                        <td class="col-id-no" {{$up}} id="td_co_amount{{$key+1}}">
+                                        <td class="td-c onhover-border" {{$up}} id="td_co_amount{{$key+1}}">
                                             <input type="text" readonly data-cy="particular_change_order_amount{{$key+1}}" class="form-control input-sm" value="" id="change_order_amount{{$key+1}}" name="change_order_amount[]" onblur="calculateChangeOrder()" />
                                         </td>
-                                        <td class="col-id-no" colspan="3" {{$bd}} id="td_budget{{$key+1}}" >
+                                        <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}" >
                                             <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" placeholder="Budget reallocation" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
                                         </td>
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_order_description{{$key+1}}" class="form-control input-sm" value="" id="order_description{{$key+1}}" name="order_description[]" />
                                         </td>
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <div class="text-center">
                                                 <select name="group[]" id="group_select{{$key+1}}">
                                                     @if(!empty($group_codes))
@@ -353,7 +352,7 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <div class="text-center">
                                                 <div id="sub_group{{$key+1}}"></div>
                                             </div>
