@@ -193,7 +193,16 @@
                                                                                 <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
                                                                             </span>
                                                     @break
-
+                                                @case('task_number')
+                                                    <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
+                                                    <span x-show="field.show{{$column}}">
+                                                    <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="number" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model.lazy="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm">
+                                                    @break
+                                                @case('cost_code')
+                                                    <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
+                                                    <span x-show="field.show{{$column}}">
+                                                    <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model.lazy="field.{{$column}}" value="" maxlength="45" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm">
+                                                    @break
                                                 @default
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                     <span x-show="field.show{{$column}}">
