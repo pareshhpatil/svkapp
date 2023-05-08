@@ -376,6 +376,9 @@ class OrderController extends Controller
 
     public function update($link, $bulk_id = null)
     {
+        if($bulk_id ==  'co'){
+            $bulk_id = null;
+        }
         $title = 'Update';
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3]);
         $id = Encrypt::decode($link);
@@ -386,7 +389,7 @@ class OrderController extends Controller
             } else {
                 $row = $model->getTableRow('order', 'order_id', $id);
             }
-
+            
             $row->json_particulars = json_decode($row->particulars, true);
             foreach ($row->json_particulars as &$row_data) {
                 if (!isset($row_data["cost_type"])) {
