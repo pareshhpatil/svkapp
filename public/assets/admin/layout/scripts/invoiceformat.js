@@ -3500,8 +3500,12 @@ function changerOrderAmountCheck() {
                 billcodeNull = true;
             }
             if(co_type == 2){
-                budget = Number(document.getElementById('budget' + int).value);
-                budgetRellocationTotal = budgetRellocationTotal + budget;
+				try{
+					budget =Number(document.getElementById('budget' + int).value);
+					budgetRellocationTotal = (getamt(budgetRellocationTotal) + getamt(budget)).toFixed(2);
+				}catch(o){
+					console.log(o)
+				}
             }
         });
         if(budgetRellocationTotal != 0){
