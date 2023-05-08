@@ -133,7 +133,7 @@
                                         @if(in_array($column, $number_array))
                                             @php $number='type=number step=0.00'; @endphp
                                         @endif
-                                        <td style="max-width: 120px;vertical-align: middle; @if($column=='retainage_amount' || $column=='amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`"
+                                        <td style="max-width: 120px;vertical-align: middle; word-wrap: break-word; @if($column=='retainage_amount' || $column=='original_contract_amount') background-color:#f5f5f5; @endif" :id="`cell_{{$column}}_${field.introw}`"
                                             @if(!$readonly) x-on:click="field.show{{$column}} = true; @if($column == 'original_contract_amount' ) checkBillType(field); @endif @if($dropdown==true) virtualSelectInit(`${field.pint}`, '{{$column}}',`${index}`)@endif" x-on:blur="field.show{{$column}} = false" @endif
                                             class="td-c onhover-border @if($column=='bill_code') col-id-no bill_code_td @endif">
                                             @switch($column)
@@ -193,7 +193,16 @@
                                                                                 <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
                                                                             </span>
                                                     @break
-
+                                                @case('task_number')
+                                                    <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
+                                                    <span x-show="field.show{{$column}}">
+                                                    <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="number" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model.lazy="field.{{$column}}" value="" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm">
+                                                    @break
+                                                @case('cost_code')
+                                                    <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
+                                                    <span x-show="field.show{{$column}}">
+                                                    <input :id="`{{$column}}${field.introw}`" @if($readonly) type="hidden" @else type="text" x-on:blur="field.show{{$column}} = false;calc(field);" @endif x-model.lazy="field.{{$column}}" value="" maxlength="45" name="{{$column}}[]" style="width: 100%;" class="form-control input-sm">
+                                                    @break
                                                 @default
                                                     <span x-show="! field.show{{$column}}" x-text="field.{{$column}}"> </span>
                                                     <span x-show="field.show{{$column}}">
