@@ -339,6 +339,7 @@ class SubcontractRequest extends ParentModel
             ->join('project as pro', 'c.project_id', '=', 'pro.id')
             ->whereDate('p.created_date', '>=', $from_date)
             ->whereDate('p.created_date', '<=', $to_date)
+            ->where('p.is_active', 1)
             ->where('p.merchant_id', $merchant_id);
         if ($project_id > 0) {
             $retObj = $retObj->where('c.project_id', $project_id);

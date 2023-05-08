@@ -285,7 +285,7 @@
                                         <input type="hidden" value="{{$detail->total_original_contract_amount}}" id="contract_amount" name="contract_amount">
                                         <input type="hidden" value="{{$detail->contract_id}}" name="contract_id">
                                         <input type="hidden" value="{{$link}}" name="link">
-                                        <a href="/merchant/order/list" class="btn default">Back</a>
+                                        <a href="/merchant/order/list/{{$type}}" class="btn default">Back</a>
                                     </div>
                                 </div>
                             </div>

@@ -2506,4 +2506,10 @@ class RequestPaymentController extends AppController
         }
         return $rowArray;
     }
+    public function deleteRequest($link)
+    {
+        $payment_request_id = Encrypt::decode($link);
+        $this->invoiceModel->deleteTableRow('subcontract_payment_request', 'request_id', $payment_request_id, $this->merchant_id, $this->user_id);
+        return redirect('/merchant/subcontract/requestpayment/list')->with('success', "Record has been deleted");
+    }
 }
