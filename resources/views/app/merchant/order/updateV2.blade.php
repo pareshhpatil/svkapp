@@ -36,7 +36,7 @@
     .col-id-no {
         position: sticky !important;
         left: 0;
-        z-index: 2;
+        z-index: 991;
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
@@ -206,7 +206,7 @@
                                     <tr>
                                         @foreach($default_particulars as $v=>$r)
                                         @if ($v == 'original_contract_amount')
-                                        <td class="td-r">
+                                        <td class="td-r onhover-border">
                                             <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" onblur="calculateRetainage();" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{number_format($row[$v],2)}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
                                         </td>
                                         @elseif ($v == 'bill_code')
@@ -230,23 +230,23 @@
                                             </div>
                                         </td>
                                         @elseif ($v == 'unit' || $v == 'rate')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input step=".00000000001" type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'change_order_amount')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         @elseif ($v == 'retainage_percent')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input step=".00000000001" max='100' type="number" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]){{$row[$v]}}@endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]"/>
                                         </td>
                                         @elseif ($v == 'order_description')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
                                         </td>
                                         @elseif ($v == 'group')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <div class="text-center">
                                                 <select name="group[]"  id="group_select{{$key+1}}">
                                                 @if(!empty($group_codes))
@@ -262,7 +262,7 @@
                                             </div>
                                         </td>
                                         @elseif ($v == 'sub_group')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <div class="text-center">
                                                 <select name="sub_group[]"  id="sub_group{{$key+1}}">
                                                 @isset($row[$v])
@@ -272,7 +272,7 @@
                                             </div>
                                         </td>
                                         @elseif ($v == 'cost_type')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border">
                                             <select id="cost_type{{$key+1}}" name="cost_type[]">
                                                 <option value="">Type or Select</option>
                                                 @if(!empty($cost_type_list))

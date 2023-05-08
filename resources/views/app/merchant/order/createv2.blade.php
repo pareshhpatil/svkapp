@@ -15,7 +15,7 @@
         font-size: 14px;
         line-height: 24px;
         color: #767676;
-        margin-bottom: 0px;
+        margin-bottom: 0;
         margin-top: 5px;
     }
 
