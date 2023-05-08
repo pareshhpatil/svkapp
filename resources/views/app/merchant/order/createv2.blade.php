@@ -145,6 +145,10 @@
                 <button type="button" class="close" data-dismiss="alert"></button>
                 <p>Error! Bill code cannot be blank!</p>
             </div>
+            <div id="budget_amount_error" class="alert alert-block alert-danger fade in" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert"></button>
+                <p>Error! Budget reallocation amount should be 0!</p>
+            </div>
             <div class="portlet light bordered">
                 <div class="portlet-body form">
                     <!--<h3 class="form-section">Profile details</h3>-->
