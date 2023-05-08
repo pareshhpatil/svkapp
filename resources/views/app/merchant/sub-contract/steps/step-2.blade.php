@@ -166,16 +166,16 @@
                                                     <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                     <span :id="`groupspan${field.pint}`" x-show="! field.showgroup" x-text="field.group"></span>
                                                     <span :id="`groupdropdown${field.pint}`" x-show="field.showgroup" >
-                                                                        <div  :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}" ></div>
-                                                                         </span>
+                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                    </span>
                                                     @break
 
                                                 @case('bill_code_detail')
                                                     <input  type="hidden" x-model="particularsArray[`${index}`].{{$k}}" name="{{$k}}[]">
                                                     <span x-show="! field.show{{$k}}" x-text="field.bill_code_detail"></span>
                                                     <span style="width:100%;" x-show="field.show{{$k}}">
-                                                                                <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
-                                                                            </span>
+                                                        <div :id="`{{$k}}${field.pint}`" x-model="field.{{$k}}"></div>
+                                                    </span>
                                                     @break
 
                                                 @case('original_contract_amount')
@@ -441,7 +441,6 @@
                                 groups.push(this.value)
                                 for (let g = 0; g < particularsArray.length; g++) {
                                     let groupSelector = document.querySelector('#group' + particularsArray[g].introw);
-
                                     if('group'+id === 'group' + particularsArray[g].introw)
                                         groupSelector.setOptions(groups, this.value);
                                     else
@@ -556,9 +555,9 @@
                         if (type === 'group') {
                             if (!groups.includes(this.value) && this.value !== '') {
                                 groups.push(this.value)
+                                particularsArray[index].group = this.value;
                                 for (let g = 0; g < particularsArray.length; g++) {
                                     let groupSelector = document.querySelector('#group' + particularsArray[g].pint);
-
                                     if ('group' + id === 'group' + particularsArray[g].pint)
                                         groupSelector.setOptions(groups, this.value);
                                     else

@@ -577,6 +577,7 @@
                         if (type === 'group') {
                             if (!groups.includes(this.value) && this.value !== '') {
                                 groups.push(this.value)
+                                particularsArray[index].group = this.value;
                                 for (let g = 0; g < particularsArray.length; g++) {
                                     let groupSelector = document.querySelector('#group' + particularsArray[g].pint);
 
