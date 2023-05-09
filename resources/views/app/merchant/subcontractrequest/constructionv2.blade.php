@@ -179,7 +179,7 @@
                                 <label class="control-label col-md-4">Bill date <span class="required">* </span></label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" required="" value="{{$bill_date}}" id="bill_date" name="bill_date" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
+                                        <input type="text" required="" value="<x-localize :date='$bill_date' type='date' />" id="bill_date" name="bill_date" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@
                                 <label class="control-label col-md-4">Due date <span class="required">* </span></label>
                                 <div class="col-md-8">
                                     <div class="input-icon right">
-                                        <input type="text" required="" value="{{$due_date}}" id="due_date" name="due_date" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
+                                        <input type="text" required="" value="<x-localize :date='$due_date' type='date' />" id="due_date" name="due_date" autocomplete="off" class="form-control date-picker" data-date-format="{{ Session::get('default_date_format')}}">
                                     </div>
                                 </div>
                             </div>

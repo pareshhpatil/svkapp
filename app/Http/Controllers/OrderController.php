@@ -39,7 +39,7 @@ class OrderController extends Controller
         $this->user_id = Encrypt::decode(Session::get('userid'));
     }
 
-    public function create($type = null, Request $request)
+    public function create($type = '', Request $request)
     {
         Helpers::hasRole(2, 27);
         $title = 'create';
@@ -93,8 +93,10 @@ class OrderController extends Controller
         }
         if ($type == 'subcontract') {
             $data['contract'] = $this->invoiceModel->getSubContract($this->merchant_id);
-        } else {
+        } elseif ($type == '') {
             $data['contract'] = $this->invoiceModel->getContract($this->merchant_id, $whereContractIDs, $userRole);
+        } else {
+            return redirect('/404');
         }
 
         $data['project_id'] = 0;
@@ -234,8 +236,10 @@ class OrderController extends Controller
         }
         if ($type == 'subcontract') {
             $list = $this->orderModel->getPrivilegesSubcontractOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs), $type);
-        } else {
+        } elseif ($type == 'co') {
             $list = $this->orderModel->getPrivilegesOrderList($this->merchant_id, $dates['from_date'],  $dates['to_date'],  $data['contract_id'], array_keys($privilegesIDs), $type);
+        } else {
+            return redirect('/404');
         }
         foreach ($list as $ck => $row) {
             $list[$ck]->encrypted_id = Encrypt::encode($row->order_id);
@@ -376,7 +380,7 @@ class OrderController extends Controller
 
     public function update($link, $bulk_id = null)
     {
-        if($bulk_id ==  'co'){
+        if ($bulk_id ==  'co') {
             $bulk_id = null;
         }
         $title = 'Update';
@@ -389,7 +393,7 @@ class OrderController extends Controller
             } else {
                 $row = $model->getTableRow('order', 'order_id', $id);
             }
-            
+
             $row->json_particulars = json_decode($row->particulars, true);
             foreach ($row->json_particulars as &$row_data) {
                 if (!isset($row_data["cost_type"])) {
