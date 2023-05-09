@@ -17,7 +17,7 @@
                 <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></div>
             </td>
             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']-$rowArray['budget_reallocation']" /></div>
+                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']" /></div>
             </td>
             @if($has_total_co_col)
                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
@@ -36,7 +36,7 @@
                 <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></div>
             </td>
             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']-$rowArray['budget_reallocation']" /></div>
+                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']" /></div>
             </td>
             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                 <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['total_change_order_col']" /></div>
@@ -49,7 +49,7 @@
                 <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></div>
             </td>
             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']-$rowArray['budget_reallocation']" /></div>
+                <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['change_this_period']" /></div>
             </td>
             <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                 <div style="font-size:{{$font_size}} 14px;"><x-amount-format :amount="$rowArray['current_total']" /></div>

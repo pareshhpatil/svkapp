@@ -32,7 +32,7 @@
                 <p class="text-sm"><x-amount-format :amount="$rowArray['change_from_previous_application']" /></p>
             </td>
             <td class="border-r border-l td-703 text-right">
-                <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']-$rowArray['budget_reallocation']" /></p>
+                <p class="text-sm"><x-amount-format :amount="$rowArray['change_this_period']" /></p>
             </td>
             @if($has_total_co_col)
                 <td class="border-r border-l td-703 text-right">

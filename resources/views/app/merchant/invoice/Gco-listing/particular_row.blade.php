@@ -38,7 +38,7 @@
     @endif
 
     <td class="border-r border-l td-703 text-right">
-        <p class="text-sm"><x-amount-format :amount="$rowArray['approved_change_order_amount']" /></p>
+        <p class="text-sm"><x-amount-format :amount="$rowArray['approved_change_order_amount']-$rowArray['budget_reallocation']" /></p>
     </td>
     <td class="border-r border-l td-703 text-right">
         <p class="text-sm"><x-amount-format :amount="$rowArray['current_contract_amount']" /></p>

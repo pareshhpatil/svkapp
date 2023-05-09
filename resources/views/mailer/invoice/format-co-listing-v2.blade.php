@@ -193,7 +193,7 @@
                                 @endforeach
                                 @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$item['approved_change_order_amount']" /></div>
+                                    <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$item['approved_change_order_amount']-$item['budget_reallocation']" /></div>
                                 </td>
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px;color: #6F8181;"><x-amount-format :amount="$item['current_contract_amount']" /></div>
@@ -233,7 +233,7 @@
                                 $approvedCOAmount = 0;
 
                                 foreach ($row['only-group~'] as $group) {
-                                $approvedCOAmount += $group['approved_change_order_amount'];
+                                $approvedCOAmount += $group['approved_change_order_amount']-$group['budget_reallocation'];
                                 }
 
                                 $changeOrdersGroupTotalAmount = [];
@@ -288,7 +288,7 @@
                                 @endforeach
                                 @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$group['approved_change_order_amount']" /></div>
+                                    <div style="font-size: 14px"><x-amount-format :amount="$group['approved_change_order_amount']-$group['budget_reallocation']" /></div>
                                 </td>
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$group['current_contract_amount']" /></div>
@@ -325,7 +325,7 @@
                                 @endforeach
                                 @endif
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$val['approved_change_order_amount']" /></div>
+                                    <div style="font-size: 14px"><x-amount-format :amount="$val['approved_change_order_amount']-$val['budget_reallocation']" /></div>
                                 </td>
                                 <td style="border-bottom:1px solid #313131;border-top:1px solid #313131;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
@@ -350,7 +350,7 @@
                                 $approvedCOAmount = 0;
 
                                 foreach ($row['only-group~'] as $group) {
-                                $approvedCOAmount += $group['approved_change_order_amount'];
+                                $approvedCOAmount += $group['approved_change_order_amount']-$group['budget_reallocation'];
                                 }
 
                                 $changeOrdersGroupTotalAmount = [];
@@ -402,7 +402,7 @@
                                 @endforeach
                                 @endif
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
-                                    <div style="font-size: 14px"><x-amount-format :amount="$val['approved_change_order_amount']" /></div>
+                                    <div style="font-size: 14px"><x-amount-format :amount="$val['approved_change_order_amount']-$val['budget_reallocation']" /></div>
                                 </td>
                                 <td style="border-bottom: solid 1px #A0ACAC;border-right:1px solid #313131; padding-left: 2px; padding-right: 2px; padding-top: 8px; padding-bottom: 8px; text-align: right">
                                     <div style="font-size: 14px"><x-amount-format :amount="$val['current_contract_amount']" /></div>
