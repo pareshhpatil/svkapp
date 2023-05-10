@@ -37,7 +37,7 @@ class SubContractController extends Controller
      */
     public function index(Request $request)
     {
-        $title = 'Sub Contracts List';
+        $title = 'Subcontracts List';
 
         $data = Helpers::setBladeProperties($title,  [],  [5, 182]);
 
@@ -118,7 +118,7 @@ class SubContractController extends Controller
 
                 $SubContract->save();
 
-                return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
+                return redirect()->route('merchant.subcontract.index')->with('success', 'Subcontract saved successfully');
                 break;
         }
 
@@ -310,7 +310,7 @@ class SubContractController extends Controller
 
                 $SubContract->save();
 
-                return redirect()->route('merchant.subcontract.index')->with('success', 'Sub contract saved successfully');
+                return redirect()->route('merchant.subcontract.index')->with('success', 'Subcontract saved successfully');
                 break;
         }
 

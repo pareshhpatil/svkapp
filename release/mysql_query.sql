@@ -415,4 +415,7 @@ INSERT INTO `swipez`.`menu` (`id`, `eng_title`, `parent_id`, `seq`, `icon`, `lin
 INSERT INTO `swipez`.`menu` (`id`, `eng_title`, `parent_id`, `seq`, `link`, `is_active`, `created_by`, `created_date`, `last_update_by`, `last_update_date`) VALUES ('183', 'Sub Contract Change Order', '5', '94', '/merchant/order/list/subcontract', '1', '1', '2013-12-31 18:30:00', '1', '2023-05-03 10:26:27');
 
 
+UPDATE `swipez`.`menu` SET `eng_title` = 'Subcontract' WHERE (`id` = '182');
+UPDATE `swipez`.`menu` SET `eng_title` = 'Subcontract Change Order' WHERE (`id` = '183');
+UPDATE `swipez`.`menu` SET `eng_title` = 'Subcontract COs' WHERE (`id` = '183');
 

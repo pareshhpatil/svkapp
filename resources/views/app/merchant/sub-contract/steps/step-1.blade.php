@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-4">Sub Contract Code<span class="required">*</span></label>
+                    <label class="control-label col-md-4">Subcontract Code<span class="required">*</span></label>
                     <div class="col-md-8">
                         <input type="text" name="sub_contract_code" maxlength="45" required id="subcontract_code" class="form-control" value="{{ $sub_contract->sub_contract_code ?? old('sub_contract_code') }}"  >
                     </div>

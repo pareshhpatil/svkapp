@@ -4,7 +4,7 @@
         <div class="page-bar">
             <span class="page-title" style="float: left;">{{$title}}</span>
             {{ Breadcrumbs::render() }}
-            <a href="{{ url('/merchant/sub-contracts/create/1') }}" class="btn blue pull-right">Create Sub Contract</a>
+            <a href="{{ url('/merchant/sub-contracts/create/1') }}" class="btn blue pull-right">Create Subcontract</a>
         </div>
         <!-- BEGIN SEARCH CONTENT-->
         <div class="row">
@@ -59,7 +59,7 @@
                                             <td class="td-c">
                                                 CONTRACT
                                                 <br>
-                                                <span class="text-gray-400 text-font-12">SUB CONTRACT NO : <span class="text-gray-900"> {{$v->sub_contract_code}}</span></span>
+                                                <span class="text-gray-400 text-font-12">SUBCONTRACT NO : <span class="text-gray-900"> {{$v->sub_contract_code}}</span></span>
                                             </td>
                                             <td class="td-c">
                                                 {{$v->project_name}}
@@ -108,7 +108,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Delete Sub contract</h4>
+                    <h4 class="modal-title">Delete Subcontract</h4>
                 </div>
                 <div class="modal-body">
                     Are you sure you would not like to use this sub-contract in the future?

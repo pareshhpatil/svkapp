@@ -66,7 +66,6 @@
 
     @foreach ($page_data as $item)
 
-    <h4 style="color: #abaaaa; padding-left: 10px; margin-bottom: 0px; margin-top: 20px;">{{ $item['name']}}</h4>
     <div class="row justify-content-md-center flex-container ">
         @foreach ($item['item_list'] as $item2)
         <a   href="{{$item2['link']}}" data-tour="collect-payments-{{str_replace(' ','-',strtolower($item2['title']))}}">

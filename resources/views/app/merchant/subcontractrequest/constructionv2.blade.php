@@ -74,14 +74,14 @@
                                             </div>
 
                                             <div class="col-md-3 pl-1 pr-0">
-                                                <select data-placeholder="Select Sub contract" required class="form-control select2me" name="sub_contract_id">
+                                                <select data-placeholder="Select Subcontract" required class="form-control select2me" name="sub_contract_id">
                                                     <option value=""></option>
                                                     @foreach($contract as $v)
                                                     <option @if($sub_contract_id==$v->sub_contract_id) selected @endif value="{{$v->sub_contract_id}}">{{$v->project_name}} | {{$v->sub_contract_code}}</option>
                                                     @endforeach
 
                                                 </select>
-                                                <small class="form-text text-muted">Sub Contract</small>
+                                                <small class="form-text text-muted">Subcontract</small>
                                                 <div class="help-block"></div>
                                             </div>
 

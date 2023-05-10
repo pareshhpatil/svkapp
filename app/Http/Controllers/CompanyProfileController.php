@@ -257,7 +257,7 @@ class CompanyProfileController extends AppController
                             "link": "/merchant/order/create"
                         },
                         {
-                            "title": "Create sub contract",
+                            "title": "Create subcontract",
                             "desc": "Create and send request for payment to your vendors. Customize your request as per your business needs and add online payment collection options to your request for payment",
                             "link": "/merchant/sub-contracts/create/1"
                         },
@@ -267,7 +267,7 @@ class CompanyProfileController extends AppController
                             "link": "/merchant/subcontract/requestpayment/create"
                         },
                         {
-                            "title": "Sub contract change order (CO)",
+                            "title": "Subcontract change order (CO)",
                             "desc": "Create and send request for payment to your vendors. Customize your request as per your business needs and add online payment collection options to your request for payment",
                             "link": "/merchant/order/create/subcontract"
                         }

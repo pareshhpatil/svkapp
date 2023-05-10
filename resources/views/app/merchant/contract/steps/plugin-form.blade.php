@@ -489,6 +489,7 @@
                             
                             var sub_users = JSON.parse('{!! $sub_users_json !!}');
                         </script>
+                        <!--
                         <hr>
                         <div class="mb-2">
                             <span class="form-section base-font">Add reminder
@@ -503,7 +504,7 @@
                                                 showDebit('_internal_reminder');" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                                 {{-- <input id="is_internal_reminder_txt" name="is_internal_reminder_txt" value="0" /> --}}
                             </div>
-                        </div>
+                        </div>-->
                         <div id="pg_is_internal_reminder" @isset($plugins['has_internal_reminder']) @else style="display: none;" @endif>
                             <a onclick="AddInternalReminder();
                                             tableHead('new_internal_reminder_before');" class="btn btn-sm green pull-left mb-1"> <i class="fa fa-plus"> </i> Add new row </a>
@@ -758,7 +759,14 @@
                     <div>
                         <hr>
                         <div class="mb-2">
-                            <span class="form-section base-font">Show Total change orders column in 703</span>
+                            <span class="form-section base-font">Display total change orders
+
+                            <span class="popovers" data-container="body" data-placement="top" data-trigger="hover" data-content='Show total change orders column in the G703 view. This will be visible if there are change orders applicable to your invoice' type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 18px;" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                    </svg>
+                                </span>
+                            </span>
                             <div class="pull-right ml-1">
                                 <input type="checkbox" @isset($plugins['has_total_co_col']) checked @endif id="istotalcocol" name="has_total_co_col" value="1" data-size="small" class="make-switch" data-on-text="&nbsp;ON&nbsp;&nbsp;" data-off-text="&nbsp;OFF&nbsp;">
                             </div>
