@@ -208,25 +208,24 @@
                             <div class="col-md-6">
                                 <h3 class="form-section">Add Particulars</h3>
                             </div>
-                            <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-7">
-                                <input type="text" id="search" class="form-control pull-right" placeholder="Search Item No and Description of work">
-                                </div>
-                                <div class="col-md-5">
-                                    <input type="hidden" id="dropdown_search" class="form-control" value="0">
-                                <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
-                                    @if($type!='subcontract')
-                                    <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
-                                    @endif
-                                <button class="btn green pull-left mb-1" type='button' onclick="return filterRows();">Search</button>
-                                
-                                </div>
-                            </div>
-                            </div>
-                            
                         </div>
-                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" id="search" class="form-control" placeholder="Search Item No and Description of work">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn green" type='button' onclick="return filterRows();">Search</button>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="hidden" id="dropdown_search" class="form-control" value="0">
+                            </div>
+                            <div class="col-md-5">
+                                <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
+                                @if($type!='subcontract')
+                                <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
+                                @endif
+                            </div>
+                        </div>
                         <!-- <h3 class="form-section">Add particulars
                             <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
                             
