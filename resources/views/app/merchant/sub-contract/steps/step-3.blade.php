@@ -115,8 +115,9 @@
                     @endphp
                     @if(!empty($particulars))
                         @foreach($particulars as $particular)
-                            @php $totalRetainageAmount += $particular['retainage_amount'];
-                        $billCodeArr = explode('|', $billTypeArr[$particular['bill_code']]);
+                            @php
+                                $totalRetainageAmount += $particular['retainage_amount'];
+                                $billCodeArr = explode('|', $billTypeArr[$particular['bill_code']]);
                             @endphp
                             <tr>
                                 <td class="td-c">{{ trim($billCodeArr[0]) }}</td>

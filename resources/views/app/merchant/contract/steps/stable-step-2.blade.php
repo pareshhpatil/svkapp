@@ -275,7 +275,7 @@
             </div>
             @include('app.merchant.contract.add-group-modal')
             @include('app.merchant.contract.add-calculation-modal-contract')
-            @include('app.merchant.contract.add-bill-code-modal-contract')
+            @include('app.merchant.contract.add-bill-code-modal-contract-new')
         </div>
     </div>
 
@@ -377,7 +377,10 @@
                     $('#description' + currentField.introw).val( newBillCode.description )
 
                 }
-                else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+                else {
+                    console.log(optionArray);
+                    // billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code)
+                }
 
             }
             closeSidePanelBillCode();

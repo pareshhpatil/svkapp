@@ -255,7 +255,7 @@
                 </table>
             </div>
         </div>
-        @include('app.merchant.contract.add-bill-code-modal-contract')
+        @include('app.merchant.contract.add-bill-code-modal-contract-new')
     </div>
 
     <div class="portlet light bordered">
@@ -354,8 +354,10 @@
                     particularsArray[v].description = newBillCode.description;
                     $('#description' + currentField.introw).val( newBillCode.description )
 
+                } else {
+                    console.log(optionArray, particularsArray[v].bill_code);
+                    // billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
                 }
-                else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
 
             }
             closeSidePanelBillCode();
@@ -545,7 +547,7 @@
                                 particularsArray[index].description = displayValue[1].trim();
                             }
                             if (this.value !== null && this.value !== '' && !only_bill_codes.includes(parseInt(this.value))) {
-                                console.log(particularsArray[index].pint);
+                                // console.log(particularsArray[index].pint);
                                 //  only_bill_codes.push(this.value)
                                 $('#new_bill_code').val(this.value)
                                 $('#selectedBillCodeId').val(type + id)
