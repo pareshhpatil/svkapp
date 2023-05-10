@@ -11,7 +11,11 @@
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.orderlist') }}
         @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
-            <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>
+            @if($type != 'co')
+                <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>
+            @else
+                <a href="/merchant/order/create" class="btn blue pull-right"> Create Change Order </a>
+            @endif
         @endif
 
     </div>
