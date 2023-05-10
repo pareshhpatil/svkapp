@@ -377,7 +377,11 @@
                     $('#description' + currentField.introw).val( newBillCode.description )
 
                 }
-                else billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+                else{
+                        try{
+                        billCodeSelector.setOptions(optionArray, particularsArray[v].bill_code);
+                        }catch(o){}
+                    }
 
             }
             closeSidePanelBillCode();
