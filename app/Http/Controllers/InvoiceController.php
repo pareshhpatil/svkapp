@@ -2748,6 +2748,7 @@ class InvoiceController extends AppController
             $co_data  = (array)$this->invoiceModel->getChangeOrderAmountRow($change_order_ids, $start_date, $end_date);
             foreach ($co_data as $co_row) {
                 foreach (json_decode($co_row->particulars, 1) as $row) {
+                    $row['co_type'] = (isset($row['co_type'])) ? $row['co_type'] : 1;
                     if ($billcode == $row['bill_code'] && $row['co_type'] != 2) {
                         if (is_numeric($row['change_order_amount'])) {
                             $total_co_amount =  $total_co_amount +  $row['change_order_amount'];
