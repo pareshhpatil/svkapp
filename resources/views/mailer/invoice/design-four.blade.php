@@ -55,6 +55,19 @@
         width: 100% !important;
     }
 }
+    @font-face {
+    font-family: 'Rubik';
+   
+  
+    src: url({{ storage_path('fonts\Roboto-Bold.ttf') }}) format("truetype");
+     font-weight:700;
+}
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0px;
+            line-height: 82%;
+        }
 </style></head>
 @php
 $last_payment=NULL;

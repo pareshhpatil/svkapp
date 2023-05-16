@@ -195,80 +195,9 @@
             </div>
         </div>
     </div>
-    <div class="row" id="manage_inventory_row" style="display:none">
-        @if($enable_inventory==1)
-        <div class="col-md-6">
-            <div class="form-group stock_keep_div_simple">
-                <label class="control-label col-md-5">Manage inventory <i class="popovers fa fa-info-circle support blue" data-placement="top" data-container="body" data-trigger="hover" data-content="Add stock keeping information" data-original-title="" title=""></i></label>
-                <div class="col-md-7">
-                    <input type="hidden" name="has_stock_keeping" value="0" id="has_stock_keeping" data-cy="has_stock_keeping">
-                    <input type="checkbox" name="is_stock_keeping" id="has_inventory" onchange="stockDivEnable(this.checked,'stock_details_simple','has_stock_keeping')" value="1" class="make-switch" data-on-text="&nbsp;On&nbsp;&nbsp;" data-off-text="&nbsp;Off&nbsp;" data-cy="is_stock_keeping">
-                    <br>
-                </div>
-            </div>
-        </div>
-        @else
-        <div class="col-md-10">
-            <div class="form-group">
-                <label class="control-label col-md-3">Manage inventory <i class="popovers fa fa-info-circle support blue" data-placement="top" data-container="body" data-trigger="hover" data-content="Add stock keeping information" data-original-title="" title=""></i></label>
-                <div class="col-md-9">
-                    @if($enable_inventory==0)
-                    <input type="checkbox" name="is_stock_keeping" id="has_inventory" onchange="enableInventoryCTA(this.checked)" class="make-switch form-control" data-on-text="&nbsp;On&nbsp;&nbsp;" data-off-text="&nbsp;Off&nbsp;" data-cy="is_stock_keeping">
-                    @endif
-                    <div class="alert alert-info mt-1" id="enable_service" {{($enable_inventory==2) ? 'style=display:block' : 'style=display:none'}}>
-                        <div class="">
-                            @if($enable_inventory==0)
-                            <p><strong>Inventory has not been enabled against your account. Would you like to enable it now?</strong></p>
-                            <p style="padding-bottom:20px"><a onclick="enableService('{{$service_id}}')" class="btn blue pull-left" data-cy="enable_inventory">Enable inventory</a></p>
-                            @elseif ($enable_inventory==2)
-                            <p><strong>Service activation request has been sent. Our support team will get in touch with you shortly.</strong></p>
-                            <p style="padding-bottom:20px"><button disabled="" class="btn pull-left mb-1">In Review</button></p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-    </div>
-    @if($enable_inventory==1)
-    <div class="stock_details_simple" style="display:none">
-        <h4 class="form-section mb-2">Stock keeping units</h4>
-        <div class="row">
-            <div class="col-md-6">
-                {{-- <div class="form-group">
-                        <label class="control-label col-md-5">Minimum Order </label>
-                        <div class="col-md-7">
-                            <input type="number" name="minimum_order" class="form-control" value="{{ old('minimum_order') }}">
-            </div>
-        </div> --}}
-        <div class="form-group">
-            <label class="control-label col-md-5">Available stock <span class="required">*
-                </span></label>
-            <div class="col-md-7">
-                <input type="number" step="0" name="available_stock" class="form-control" id="available_stock" value="" data-cy="available_stock">
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label col-md-5">Minimum stock </label>
-            <div class="col-md-7">
-                <input type="number" step="0" name="minimum_stock" class="form-control" value="" data-cy="minimum_stock">
-            </div>
-        </div>
-        {{-- <div class="form-group">
-                        <label class="control-label col-md-5">As of Date <span class="required">*
-                        </span></label>
-                        <div class="col-md-7">
-                            <input class="form-control form-control-inline date-picker" id="as_of_date" value="{{date('d-M-Y')}}" data-date-format="dd-M-yyyy" name="as_of_date" type="text" />
-    </div>
-</div> --}}
-</div>
-</div>
-</div>
-@endif
+    
+    
 <div id="variable_product_div" {{(old('goods_type') == 'variable') ? 'style=display:block' : 'style=display:none'}}>
-    @livewire('product.create-variation-row', ['enable_inventory'=>$enable_inventory,'product_id'=> null, 'var_rows'=> old('price')])
+    @livewire('product.create-variation-row', ['enable_inventory'=>false,'product_id'=> null, 'var_rows'=> old('price')])
 </div>
 </div>
