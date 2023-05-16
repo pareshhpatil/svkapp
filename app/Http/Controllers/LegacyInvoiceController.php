@@ -499,8 +499,8 @@ class LegacyInvoiceController extends AppController
             Session::put('paidMerchant_request', $paidMerchant_request);
             $data = $this->setdata($data, $info, $banklist, $payment_request_id, 'Invoice', 'patron');
 
-            $data['info']['gtype']='standard';
-            $data['has_watermark']=false;
+            $data['info']['gtype'] = 'standard';
+            $data['has_watermark'] = false;
             return view('app/merchant/invoice/view/invoice_view', $data);
         } else {
         }
@@ -532,7 +532,7 @@ class LegacyInvoiceController extends AppController
     public function download($link, $savepdf = 0)
     {
         $payment_request_id = Encrypt::decode($link);
-        
+
         if (strlen($payment_request_id) == 10) {
             $data = $this->setBladeProperties('Invoice view', [], [3]);
             #get default billing profile
@@ -543,7 +543,7 @@ class LegacyInvoiceController extends AppController
             $banklist = json_decode($banklist, 1);
             $info['logo'] = '';
             if (isset($info['image_path'])) {
-                $imgpath = 'http://www.swipez.prod' . '/uploads/images/logos/' . $info['image_path'];
+                $imgpath = env('APP_URL')  . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
                 }
