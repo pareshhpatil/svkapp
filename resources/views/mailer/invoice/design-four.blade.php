@@ -65,8 +65,7 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            letter-spacing: 0px;
-            line-height: 82%;
+            font-size: 14px;
         }
 </style></head>
 @php
