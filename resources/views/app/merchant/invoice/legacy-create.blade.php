@@ -55,7 +55,7 @@
                                             </div>
                                             
                                             <div class="col-md-3 pl-1 pr-0" >
-                                                    <select data-placeholder="Select Project"  class="form-control select2me" id="billing_profile_id" data-cy="billing_profile_id" name="project_id">
+                                                    <select data-placeholder="Select Project" required class="form-control select2me"  data-cy="billing_profile_id" name="project_id">
                                                     <option value=""></option>
                                                     @foreach($project as $v)
                                                     <option @if($project_id==$v->id) selected @endif value="{{$v->id}}">{{$v->project_id}} | {{$v->project_name}}</option>

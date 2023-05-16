@@ -353,7 +353,7 @@ class Invoice extends ParentModel
         $retObj = DB::table('invoice_template')
             ->select(DB::raw('*'))
             ->where('merchant_id', $merchant_id)
-            ->whereNotIn('template_type', $templateArray)
+            ->whereNotIn('template_type', ['construction'])
             ->where('is_active', 1)
             ->orderBy('template_id', 'DESC')
             ->get();
