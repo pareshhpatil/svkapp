@@ -543,7 +543,7 @@ class LegacyInvoiceController extends AppController
             $banklist = json_decode($banklist, 1);
             $info['logo'] = '';
             if (isset($info['image_path'])) {
-                $imgpath = env('APP_URL')  . '/uploads/images/logos/' . $info['image_path'];
+                $imgpath = env('ASSET_URL')  . '/uploads/images/logos/' . $info['image_path'];
                 if ($info['image_path'] != '') {
                     $info['logo'] = base64_encode(file_get_contents($imgpath));
                 }
