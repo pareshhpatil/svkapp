@@ -247,7 +247,7 @@ class CompanyProfileController extends AppController
                             "link": "/merchant/contract/create"
                         },
                         {
-                            "title": "Create invoice",
+                            "title": "Create 702-703 invoice",
                             "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
                             "link": "/merchant/invoice/create"
                         },
@@ -270,6 +270,11 @@ class CompanyProfileController extends AppController
                             "title": "Subcontract change order (CO)",
                             "desc": "Create and send request for payment to your vendors. Customize your request as per your business needs and add online payment collection options to your request for payment",
                             "link": "/merchant/order/create/subcontract"
+                        },
+                        {
+                            "title": "Create invoice",
+                            "desc": "Create and send invoices to your customers. Customize your invoice as per your business needs and add online payment collection options to your invoice",
+                            "link": "/merchant/bill/create"
                         }
                     ]
                 }
