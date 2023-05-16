@@ -111,6 +111,8 @@
                                         <select data-placeholder="Select type" required class="form-control" name="co_type">
                                             <option @if($co_type==1) selected @endif value="1">Unit / Price</option>
                                             <option @if($co_type==2) selected @endif value="2">Budget reallocation</option>
+                                            <option @if($co_type==3) selected @endif value="3">Fixed</option>
+                                            <option @if($co_type==4) selected @endif value="4">Subcontract</option>
                                         </select>
                                         <small class="form-text text-muted">CO type</small>
                                         <div class="help-block"></div>
@@ -227,7 +229,7 @@
                             </div>
                         </div>
                         <!-- <h3 class="form-section">Add particulars
-                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" class="btn green pull-right mb-1"> Add new row </a>
+                            <a data-cy="add_particulars_btn" href="javascript:;" onclick="AddInvoiceParticularRowOrderV2();" 0class="btn green pull-right mb-1"> Add new row </a>
                             
                             <input type="submit" value="Import" name="import" class="btn green pull-right mb-1 mr-1">
                         </h3> -->
@@ -314,6 +316,8 @@
                                             <select id="co_type{{$key+1}}" onchange="setCOType(this.value,{{$key+1}})" class="form-control input-sm" name="co_type[]">
                                                 <option @if($co_type==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($co_type==2) selected @endif value="2">Budget reallocation</option>
+                                                <option @if($co_type==3) selected @endif value="3">Fixed</option>
+                                                <option @if($co_type==4) selected @endif value="4">Subcontract</option>
                                             </select>
                                         </td>
                                         <td class="td-r">
@@ -332,7 +336,7 @@
                                             <input type="text" readonly data-cy="particular_change_order_amount{{$key+1}}" class="form-control input-sm" value="" id="change_order_amount{{$key+1}}" name="change_order_amount[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}" >
-                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" placeholder="Budget reallocation" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
+                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" placeholder="@if($co_type==2)Budget reallocation @else Change order amount @endif" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="td-c onhover-border">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_order_description{{$key+1}}" class="form-control input-sm" value="" id="order_description{{$key+1}}" name="order_description[]" />

@@ -285,6 +285,8 @@
                                             <select id="co_type{{$key+1}}" onchange="setCOType(this.value,{{$key+1}})" class="form-control input-sm" name="co_type[]">
                                                 <option @if($row['co_type']==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($row['co_type']==2) selected @endif value="2">Budget reallocation</option>
+                                                <option @if($row['co_type']==3) selected @endif value="3">Fixed</option>
+                                                <option @if($row['co_type']==4) selected @endif value="4">Subcontract</option>
                                             </select>
                                         </td>
                                         <td class="td-r onhover-border">
@@ -303,7 +305,7 @@
                                             <input type="text" readonly data-cy="particular_change_order_amount{{$key+1}}" class="form-control input-sm" value="{{$row['change_order_amount']}}" id="change_order_amount{{$key+1}}" name="change_order_amount[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}">
-                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" value="{{$row['budget_reallocation']}}" placeholder="Budget reallocation" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
+                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" value="{{$row['change_order_amount']}}" placeholder="@if($row['co_type']==2)Budget reallocation @else Change order amount @endif" class="form-control input-sm" value="" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="td-c onhover-border">
                                             <input type="text" maxlength="200" onkeypress="return limitMe(event, this)" data-cy="particular_order_description{{$key+1}}" class="form-control input-sm" value="" id="order_description{{$key+1}}" name="order_description[]" />
@@ -353,16 +355,11 @@
                                             <span id="original_contract_amount_total"></span>
                                         </th>
                                         <th></th>
-                                        <th class="td-c">
-                                            <span id="unit_total"></span>
-                                        </th>
-                                        <th class="td-c">
-                                            <span id="rate_total"></span>
-                                        </th>
-                                        <th class="td-c">
+                                        <th></th>
+                                       
+                                        <th colspan="3" class="text-right">
                                             <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
                                         </th>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>

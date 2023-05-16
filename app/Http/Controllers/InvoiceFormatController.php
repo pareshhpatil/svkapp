@@ -37,7 +37,7 @@ class InvoiceFormatController extends AppController
         $data['template_id'] = '';
         $data['contract_id'] = '';
         $data['show_sequence'] = false;
-        
+
         $plugins = $this->formatModel->getInvoiceFormatPluginData($this->merchant_id, 1);
         $data['plugins'] = json_decode($plugins, 1);
 
@@ -899,7 +899,7 @@ class InvoiceFormatController extends AppController
 
     function getPlugins($set_internal_plugin = 0)
     {
-        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark', 'include_store_materials', 'is_internal_reminder', 'list_all_change_orders','has_total_co_col'));
+        $this->setZeroValue(array('is_debit', 'has_mandatory_upload', 'has_upload', 'has_signature', 'is_supplier', 'is_coupon', 'is_cc', 'is_roundoff', 'has_acknowledgement', 'franchise_notify_email', 'franchise_notify_sms', 'franchise_name_invoice', 'is_franchise', 'is_vendor', 'is_prepaid', 'has_autocollect', 'partial_min_amount', 'is_partial', 'default_covering', 'is_covering', 'is_custom_notification', 'is_custom_reminder', 'has_online_payments', 'has_customized_payment_receipt', 'has_e_invoice', 'is_revision', 'invoice_output', 'has_aia_license', 'has_watermark', 'include_store_materials', 'is_internal_reminder', 'list_all_change_orders', 'has_total_co_col'));
         $this->setEmptyArray(array('debit', 'debitdefaultValue', 'mandatory_document_name', 'supplier', 'cc', 'reminder', 'reminder_subject', 'reminder_sms'));
         $plugin = array();
 
@@ -1047,9 +1047,12 @@ class InvoiceFormatController extends AppController
             } else {
                 $this->setInternalReminders();
             }
-        } else if($_POST['is_internal_reminder'] == 0) {
+        } else if ($_POST['is_internal_reminder'] == 0) {
             if ($set_internal_plugin == 0) {
-                $contract_id = Encrypt::decode($_POST['contract_id']);
+                $contract_id=0;
+                if (isset($_POST['contract_id'])) {
+                    $contract_id = Encrypt::decode($_POST['contract_id']);
+                }
                 $this->formatModel->updateTable('internal_reminders', 'contract_id', $contract_id, 'is_active', 0);
             }
         }

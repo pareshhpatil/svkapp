@@ -81,7 +81,7 @@ class InvoiceModel extends Model
         }
     }
 
-    public function saveInvoiceParticular($payment_request_id, $payment_request_status, $particular_id, $item, $arc, $sac_code, $description, $qty, $unit_type, $rate, $gst, $tax_amount, $discount_perc, $discount, $total_amount, $narrative, $user_id, $merchant_id, $staging = 0, $bulk_id = 0, $mrp, $product_expiry_date, $product_number)
+    public function saveInvoiceParticular($payment_request_id, $payment_request_status, $particular_id, $item, $arc, $sac_code, $description, $qty, $unit_type, $rate, $gst, $tax_amount, $discount_perc, $discount, $total_amount, $narrative, $user_id, $merchant_id, $staging = 0, $bulk_id = 0, $mrp, $product_expiry_date, $product_number, $previous_amount = null, $previous_percent = null, $current_percent = null, $total_percent = null)
     {
         try {
             $particular_id = implode('~', $particular_id);
@@ -101,7 +101,11 @@ class InvoiceModel extends Model
             $discount = implode('~', $discount);
             $total_amount = implode('~', $total_amount);
             $narrative = implode('~', $narrative);
-            $sql = "call `save_invoice_particular`(:payment_request_id,:payment_request_status,:particular_id,:item,:arc,:sac_code,:description,:qty,:unit_type,:rate,:mrp,:product_expiry_date,:product_number,:gst,:tax_amount,:discount_perc,:discount,:total_amount,:narrative,:user_id,:merchant_id ,:staging,:bulk_id);";
+            $previous_amount = implode('~', $previous_amount);
+            $previous_percent = implode('~', $previous_percent);
+            $current_percent = implode('~', $current_percent);
+            $total_percent = implode('~', $total_percent);
+            $sql = "call `save_invoice_particular`(:payment_request_id,:payment_request_status,:particular_id,:item,:arc,:sac_code,:description,:qty,:unit_type,:rate,:mrp,:product_expiry_date,:product_number,:gst,:tax_amount,:discount_perc,:discount,:total_amount,:narrative,:previous_amount,:previous_percent,:current_percent,:total_percent,:user_id,:merchant_id ,:staging,:bulk_id);";
             $params = array(
                 ':payment_request_id' => $payment_request_id, ':payment_request_status' => $payment_request_status,
                 ':particular_id' => $particular_id, ':item' => $item, ':arc' => $arc, ':sac_code' => $sac_code,
@@ -109,6 +113,7 @@ class InvoiceModel extends Model
                 ':product_expiry_date' => $product_expiry_date, ':product_number' => $product_number,
                 ':gst' => $gst, ':tax_amount' => $tax_amount, ':discount_perc' => $discount_perc,
                 ':discount' => $discount, ':total_amount' => $total_amount, ':narrative' => $narrative,
+                ':previous_amount' => $previous_amount, ':previous_percent' => $previous_percent, ':current_percent' => $current_percent, ':total_percent' => $total_percent,
                 ':user_id' => $user_id, ':merchant_id' => $merchant_id, ':staging' => $staging, ':bulk_id' => $bulk_id
             );
             $this->db->exec($sql, $params);
@@ -249,7 +254,7 @@ class InvoiceModel extends Model
 
     public function saveConstructionDetails($payment_request_id, $data, $int, $user_id)
     {
-        $array = array('current_contract_amount', 'original_contract_amount', 'approved_change_order_amount', 'previously_billed_percent', 'current_billed_amount','net_billed_amount', 'stored_materials', 'total_billed', 'retainage_amount_for_this_draw', 'total_outstanding_retainage', 'previously_billed_amount', 'current_billed_percent', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_release_amount');
+        $array = array('current_contract_amount', 'original_contract_amount', 'approved_change_order_amount', 'previously_billed_percent', 'current_billed_amount', 'net_billed_amount', 'stored_materials', 'total_billed', 'retainage_amount_for_this_draw', 'total_outstanding_retainage', 'previously_billed_amount', 'current_billed_percent', 'retainage_percent', 'retainage_amount_previously_withheld', 'retainage_release_amount');
         foreach ($data as $k => $v) {
             if (in_array($k, $array)) {
                 foreach ($data[$k] as $ki => $vi) {
@@ -258,15 +263,14 @@ class InvoiceModel extends Model
             }
         }
         try {
-            $array_attach='';
-            if($data['attach'][$int]!='')
-            {
-            $array_attach=explode(",",$data['attach'][$int]);
-            $array_attach=json_encode( $array_attach);
-            $array_attach=str_replace('\\', '',  $array_attach);
+            $array_attach = '';
+            if ($data['attach'][$int] != '') {
+                $array_attach = explode(",", $data['attach'][$int]);
+                $array_attach = json_encode($array_attach);
+                $array_attach = str_replace('\\', '',  $array_attach);
             }
-           
-            $params = array(':payment_request_id' => $payment_request_id, ':bill_code' => $data['bill_code'][$int], ':description' => $data['description'][$int], ':bill_type' => $data['bill_type'][$int], ':original_contract_amount' => $data['original_contract_amount'][$int], ':approved_change_order_amount' => $data['approved_change_order_amount'][$int], ':current_contract_amount' => $data['current_contract_amount'][$int], ':previously_billed_percent' => $data['previously_billed_percent'][$int], ':previously_billed_amount' => $data['previously_billed_amount'][$int], ':current_billed_percent' => $data['current_billed_percent'][$int], ':current_billed_amount' => $data['current_billed_amount'][$int],':net_billed_amount' => $data['net_billed_amount'][$int], ':stored_materials' => $data['stored_materials'][$int], ':total_billed' => $data['total_billed'][$int], ':retainage_percent' => $data['retainage_percent'][$int], ':retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'][$int], ':retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'][$int], ':retainage_release_amount' => $data['retainage_release_amount'][$int], ':total_outstanding_retainage' => $data['total_outstanding_retainage'][$int], ':project' => $data['project'][$int], ':cost_code' => $data['cost_code'][$int], ':cost_type' => $data['cost_type'][$int], ':group' => $data['group'][$int], ':bill_code_detail' => $data['bill_code_detail'][$int], ':calculated_perc' => $data['calculated_perc'][$int], ':calculated_row' => $data['calculated_row'][$int], ':user_id' => $user_id,':attach_files' => $array_attach);
+
+            $params = array(':payment_request_id' => $payment_request_id, ':bill_code' => $data['bill_code'][$int], ':description' => $data['description'][$int], ':bill_type' => $data['bill_type'][$int], ':original_contract_amount' => $data['original_contract_amount'][$int], ':approved_change_order_amount' => $data['approved_change_order_amount'][$int], ':current_contract_amount' => $data['current_contract_amount'][$int], ':previously_billed_percent' => $data['previously_billed_percent'][$int], ':previously_billed_amount' => $data['previously_billed_amount'][$int], ':current_billed_percent' => $data['current_billed_percent'][$int], ':current_billed_amount' => $data['current_billed_amount'][$int], ':net_billed_amount' => $data['net_billed_amount'][$int], ':stored_materials' => $data['stored_materials'][$int], ':total_billed' => $data['total_billed'][$int], ':retainage_percent' => $data['retainage_percent'][$int], ':retainage_amount_previously_withheld' => $data['retainage_amount_previously_withheld'][$int], ':retainage_amount_for_this_draw' => $data['retainage_amount_for_this_draw'][$int], ':retainage_release_amount' => $data['retainage_release_amount'][$int], ':total_outstanding_retainage' => $data['total_outstanding_retainage'][$int], ':project' => $data['project'][$int], ':cost_code' => $data['cost_code'][$int], ':cost_type' => $data['cost_type'][$int], ':group' => $data['group'][$int], ':bill_code_detail' => $data['bill_code_detail'][$int], ':calculated_perc' => $data['calculated_perc'][$int], ':calculated_row' => $data['calculated_row'][$int], ':user_id' => $user_id, ':attach_files' => $array_attach);
             if ($data['particular_id'][$int] > 0) {
                 $params['id'] = $data['particular_id'][$int];
                 $sql =  "update `invoice_construction_particular` set `payment_request_id`=:payment_request_id, `bill_code`=:bill_code, `description`=:description, `bill_type`=:bill_type, `original_contract_amount`=:original_contract_amount, `approved_change_order_amount`=:approved_change_order_amount, `current_contract_amount`=:current_contract_amount, `previously_billed_percent`=:previously_billed_percent, `previously_billed_amount`=:previously_billed_amount, `current_billed_percent`=:current_billed_percent, `current_billed_amount`=:current_billed_amount,`net_billed_amount`=:net_billed_amount,`stored_materials`=:stored_materials ,`total_billed`=:total_billed, `retainage_percent`=:retainage_percent, `retainage_amount_previously_withheld`=:retainage_amount_previously_withheld, `retainage_amount_for_this_draw`=:retainage_amount_for_this_draw, `retainage_release_amount`=:retainage_release_amount, `total_outstanding_retainage`=:total_outstanding_retainage, `project`=:project, `cost_code`=:cost_code, `cost_type`=:cost_type, `group`=:group, `bill_code_detail`=:bill_code_detail,`calculated_perc`=:calculated_perc,`calculated_row`=:calculated_row, `last_update_by`=:user_id,`attachments`=:attach_files,is_active=1

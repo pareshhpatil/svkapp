@@ -24,8 +24,8 @@ class ParticularDetail extends Component
 
     {
         $this->columns = json_decode($columns, 1);
+        
         $particularColumns = json_decode(json_encode($particularColumns), 1);
-
 
         $particularArray = [];
         foreach ($particularColumns as $key => $col) {

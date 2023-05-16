@@ -124,41 +124,41 @@ $validate=(array)$validate;
         <form class="form-horizontal invoice-preview-form" action="/merchant/invoice/saveInvoicePreview/{{$info['payment_request_id']}}" method="post" onsubmit="document.getElementById('loader').style.display = 'block';">
             <div class="col-md-4 pull-left btn-pl-0">
                 @if($invoice_access == 'full' || $invoice_access == 'approve')
-                    <div class="input-icon">
-                        <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
-                        <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
-                    </div>
+                <div class="input-icon">
+                    <label class="control-label pr-1">Notify customer </label> <input type="checkbox" data-cy="notify" id="notify_" onchange="notifyPatron('notify_');" value="1" @if($info['notify_patron']==1) checked @endif class="make-switch" data-size="small">
+                    <input type="hidden" id="is_notify_" name="notify_patron" value="{{($info['notify_patron']==1) ? 1 : 0}}" />
+                </div>
                 @endif
 
             </div>
             <input type="hidden" name="payment_request_id" value="{{$info['payment_request_id']}}" />
             <input type="hidden" name="payment_request_type" value="{{$info['payment_request_type']}}" />
             <input type="hidden" id="preview_invoice_status" name="payment_request_status" value="{{$info->payment_request_status??0}}" />
-                    
+
             <div class="view-footer-btn-rht-align">
                 @if(!empty($invoice_access))
-                    @if ($invoice_access != 'view-only')
-                        @if($info['payment_request_status'] == 14 && ($invoice_access == 'full' || $invoice_access == 'approve'))
-                            <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
-                        @elseif($invoice_access == 'full')
-                            @if($info['notify_patron'] == 1)
-                                <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                            @else
-                                <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
-                            @endif
-                            {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
-                        @elseif($invoice_access == 'edit')
-                            <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-5 view-footer-btn-rht-align" />
-                        @endif
-                    @endif
+                @if ($invoice_access != 'view-only')
+                @if($info['payment_request_status'] == 14 && ($invoice_access == 'full' || $invoice_access == 'approve'))
+                <input type="button" value="Approve" id="approvebtn" class="btn blue margin-bottom-5 margin-top-15 view-footer-btn-rht-align" />
+                @elseif($invoice_access == 'full')
+                @if($info['notify_patron'] == 1)
+                <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                @else
+                <input type="button" value="Save" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />
+                @endif
+                {{-- <input type="button" value="Save & Send" id="saveandsendbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" />--}}
+                @elseif($invoice_access == 'edit')
+                <input type="button" value="Save" id="subbtn" class="btn blue margin-bottom-5 margin-top-5 view-footer-btn-rht-align" />
+                @endif
+                @endif
 
                 @endif
 
-{{--                @if($info['notify_patron']==1)--}}
-{{--                <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
-{{--                @else--}}
-{{--                <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
-{{--                @endif--}}
+                {{-- @if($info['notify_patron']==1)--}}
+                {{-- <input type="submit" value="Save & Send" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
+                {{-- @else--}}
+                {{-- <input type="submit" value="Save" id="subbtn" class="btn blue margin-bottom-5 view-footer-btn-rht-align" onclick="saveInvoicePreview('{{$info['payment_request_id']}}',document.getElementById('is_notify_').value,'{{$info['invoice_number']}}','{{$info['payment_request_type']}}');" />--}}
+                {{-- @endif--}}
             </div>
         </form>
         @endif
@@ -222,6 +222,11 @@ $validate=(array)$validate;
         {{-- Save as PDF--}}
         {{-- </a>--}}
         <div class="btn-group pull-right">
+        @if($info['gtype']=='standard')
+            <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                Download
+            </a>
+            @else
             <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
                 Download <i class="fa fa-angle-down"></i>
             </button>
@@ -240,6 +245,7 @@ $validate=(array)$validate;
                 </li>
 
             </ul>
+            @endif
         </div>
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
             Print
@@ -252,6 +258,11 @@ $validate=(array)$validate;
             {{-- Save as PDF--}}
             {{-- </a>--}}
             <div class="btn-group pull-right">
+            @if($info['gtype']=='standard')
+            <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                Download
+            </a>
+            @else
                 <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
                     Download <i class="fa fa-angle-down"></i>
                 </button>
@@ -270,6 +281,7 @@ $validate=(array)$validate;
                     </li>
 
                 </ul>
+                @endif
             </div>
 
         </div>
@@ -288,6 +300,11 @@ $validate=(array)$validate;
     <div class="col-md-12">
         @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file']==1)
         <div class="btn-group pull-right">
+            @if($info['gtype']=='standard')
+            <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                Download
+            </a>
+            @else
             <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
                 Download <i class="fa fa-angle-down"></i>
             </button>
@@ -306,14 +323,21 @@ $validate=(array)$validate;
                 </li>
 
             </ul>
+            @endif
         </div>
 
         {{-- <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
         {{-- Save as PDF--}}
         {{-- </a>--}}
+        @if($info['gtype']=='standard')
+        <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}/2">
+            Print
+        </a>
+        @else
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/2/{{$info['gtype']}}@endif">
             Print
         </a>
+        @endif
         @else
         @if($info['payment_request_status'] == '2')
         <a class="btn blue hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;" data-toggle="modal" href="#respond">
@@ -321,6 +345,11 @@ $validate=(array)$validate;
         </a>
         @endif
         <div class="btn-group pull-right">
+            @if($info['gtype']=='standard')
+            <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                Download
+            </a>
+            @else
             <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
                 Download <i class="fa fa-angle-down"></i>
             </button>
@@ -339,6 +368,8 @@ $validate=(array)$validate;
                 </li>
 
             </ul>
+            @endif
+
         </div>
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">
             Print

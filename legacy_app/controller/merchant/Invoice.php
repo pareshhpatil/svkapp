@@ -231,7 +231,7 @@ class Invoice extends Controller
             $billdate = $this->generic->sqlDate($_POST['bill_date']);
             $duedate = $this->generic->sqlDate($_POST['due_date']);
 
-            $this->generic->setEmptyArray(array('newvalues', 'ids', 'deduct_tax', 'supplier', 'cc', 'reminders', 'particular_id', 'item', 'annual_recurring_charges', 'sac_code', 'description', 'qty', 'rate', 'gst', 'tax_amount', 'discount_perc', 'discount', 'total_amount', 'narrative', 'tax_id', 'tax_percent', 'tax_applicable', 'tax_amt', 'tax_detail_id'));
+            $this->generic->setEmptyArray(array('newvalues', 'ids', 'deduct_tax', 'supplier', 'cc', 'reminders', 'particular_id', 'item', 'annual_recurring_charges', 'sac_code', 'description', 'qty', 'rate', 'gst', 'tax_amount', 'discount_perc', 'discount', 'total_amount', 'narrative', 'tax_id', 'tax_percent', 'tax_applicable', 'tax_amt', 'tax_detail_id','previous_amount','previous_percent','current_percent','total_percent'));
             $this->generic->setZeroValue(array('commision_amount', 'commision_value', 'late_fee', 'coupon_id', 'franchise_id', 'vendor_id', 'totaltax', 'totalcost', 'previous_dues', 'last_payment', 'adjustment', 'advance', 'is_partial', 'partial_min_amount', 'autocollect_plan_id', 'has_custom_reminder', 'billing_profile_id'));
             $this->generic->setEmptyValue(array('invoice_narrative', 'invoice_number', 'invoice_title', 'einvoice_type'));
 
@@ -318,7 +318,7 @@ class Invoice extends Controller
                         }
                     }
                     $link = $this->encrypt->encode($payment_request_id);
-                    $this->model->saveInvoiceParticular($payment_request_id, $_POST['payment_request_status'], $_POST['particular_id'], $_POST['item'], $_POST['annual_recurring_charges'], $_POST['sac_code'], $_POST['description'], $_POST['qty'], $_POST['unit_type'], $_POST['rate'], $_POST['gst'], $_POST['tax_amount'], $_POST['discount_perc'], $_POST['discount'], $_POST['total_amount'], $_POST['narrative'], $this->session->get('system_user_id'), $this->merchant_id, $staging, 0, $_POST['mrp'], $_POST['product_expiry_date'], $_POST['product_number']);
+                    $this->model->saveInvoiceParticular($payment_request_id, $_POST['payment_request_status'], $_POST['particular_id'], $_POST['item'], $_POST['annual_recurring_charges'], $_POST['sac_code'], $_POST['description'], $_POST['qty'], $_POST['unit_type'], $_POST['rate'], $_POST['gst'], $_POST['tax_amount'], $_POST['discount_perc'], $_POST['discount'], $_POST['total_amount'], $_POST['narrative'], $this->session->get('system_user_id'), $this->merchant_id, $staging, 0, $_POST['mrp'], $_POST['product_expiry_date'], $_POST['product_number'],$_POST['previous_amount'],$_POST['previous_percent'],$_POST['current_percent'],$_POST['total_percent']);
                     $tax_det = $this->model->saveInvoiceTax($payment_request_id, $_POST['tax_id'], $_POST['tax_percent'], $_POST['tax_applicable'], $_POST['tax_amt'], $_POST['tax_detail_id'], $this->session->get('system_user_id'), $staging);
                     if ($post_type != 'insert') {
                         $this->common->genericupdate('invoice_vendor_commission', 'is_active', 0, 'payment_request_id', $payment_request_id, $this->user_id);

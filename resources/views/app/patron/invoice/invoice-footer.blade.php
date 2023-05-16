@@ -97,10 +97,21 @@
             <div class="row no-margin">
                 <div class="col-md-12 invoice-block">
                     @if(isset($metadata['plugin']['has_digital_certificate_file']) && $metadata['plugin']['has_digital_certificate_file']==1)
+                    @if($info['gtype']=='standard')
+                    <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}/2">
+                        Print
+                    </a>
+                    @else
                     <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/patron/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
                         Print
                     </a>
+                    @endif
                     <div class="btn-group margin-bottom-5">
+                        @if($info['gtype']=='standard')
+                        <a class="btn btn-link hidden-print margin-bottom-5"  style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                        Download
+                        </a>
+                        @else
                         <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right:  15px " data-toggle="dropdown" aria-expanded="true" fdprocessedid="0s2a8">
                             Download <i class="fa fa-angle-down"></i>
                         </button>
@@ -117,14 +128,25 @@
                             </li>
 
                         </ul>
+                        @endif
                     </div>
 
+                    @else
+                    @if($info['gtype']=='standard')
+                    <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}/2">
+                        Print
+                    </a>
                     @else
                     <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/patron/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
                         Print
                     </a>
-                    
+                    @endif
                     <div class="btn-group margin-bottom-5">
+                    @if($info['gtype']=='standard')
+                        <a class="btn btn-link hidden-print margin-bottom-5"  style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                        Download
+                        </a>
+                        @else
                         <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right:  15px " data-toggle="dropdown" aria-expanded="true" fdprocessedid="0s2a8">
                             Download <i class="fa fa-angle-down"></i>
                         </button>
@@ -141,6 +163,7 @@
                             </li>
 
                         </ul>
+                        @endif
                     </div>
                     @endif
                     @if( $info['document_url']!='')
@@ -231,6 +254,7 @@
 
 </div>
 @endif
+@isset($has_watermark)
 @if($has_watermark)
 <script>
     var offsetHeight = document.getElementById('main_div').offsetHeight;
@@ -246,6 +270,7 @@
     }    
 </script>
 @endif
+@endisset
 <!-- END PAGE CONTENT-->
 <div class="row" style="max-width: 909px;margin-top: 5px;padding-left: 25px;">
 

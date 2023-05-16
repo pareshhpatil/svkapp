@@ -166,15 +166,23 @@ class OrderController extends Controller
                     if ($request->original_contract_amount[$skey] == '') {
                         $request->original_contract_amount[$skey] = 0;
                     }
+                    $unit = $request->unit[$skey];
+                    $rate = $request->rate[$skey];
+                    $budget = $request->budget[$skey];
+                    if ($request->co_type[$skey] > 2) {
+                        $unit = 1;
+                        $rate = $budget;
+                        $budget = 0;
+                    }
                     $row_array = [];
                     $row_array["bill_code"] = $bill_code;
                     $row_array["description"] = $request->description[$skey];
                     $row_array["original_contract_amount"] = str_replace(',', '', $request->original_contract_amount[$skey]);
-                    $row_array["unit"] = str_replace(',', '', $request->unit[$skey]);
-                    $row_array["rate"] = str_replace(',', '', $request->rate[$skey]);
+                    $row_array["unit"] = str_replace(',', '', $unit);
+                    $row_array["rate"] = str_replace(',', '', $rate);
                     $row_array["change_order_amount"] = str_replace(',', '', $request->change_order_amount[$skey]);
                     $row_array["co_type"] = $request->co_type[$skey];
-                    $row_array["budget_reallocation"] = str_replace(',', '', $request->budget[$skey]);
+                    $row_array["budget_reallocation"] = str_replace(',', '', $budget);
                     $row_array["order_description"] = $request->order_description[$skey];
                     $row_array["cost_type"] = $request->cost_type[$skey];
                     $row_array["retainage_percent"] = $request->retainage_percent[$skey];

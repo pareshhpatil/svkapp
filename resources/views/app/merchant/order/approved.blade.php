@@ -17,18 +17,21 @@
         border-right: 2px solid #D9DEDE !important;
         background-color: #fff;
     }
+
     .table thead tr th {
         font-size: 12px !important;
         padding: 3px !important;
         font-weight: 400;
         color: #333;
     }
+
     .table tfoot tr th {
         font-size: 1rem !important;
         padding: 3px !important;
         font-weight: bold;
         color: #333;
     }
+
     .table>tbody>tr>td {
         font-size: 12px !important;
         padding: 3px !important;
@@ -37,6 +40,7 @@
         border-left: 0px;
         vertical-align: middle !important;
     }
+
     .table>tbody>tr>td>div>label {
         margin-bottom: 0px !important;
     }
@@ -103,9 +107,9 @@
                                         <label class="control-label col-md-4">Status<span class="required">
                                             </span></label>
                                         <div class="col-md-8">
-                                            <select class="form-control" readonly name="status">
-                                                <option seelcted value="1">Approved</option>
-                                            </select>
+                                        <input class="form-control form-control-inline" readonly type="text" required  value="Approved"  />
+
+                                           
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -121,8 +125,7 @@
 
                         <div class="table-scrollable">
                             <table class="table table-bordered table-hover" id="particular_table">
-
-                                <thead>
+                                <thead class="headFootZIndex">
                                     <tr>
                                         <th class="td-c col-id-no" scope="row">
                                             Bill code
@@ -131,18 +134,15 @@
                                             Cost Type
                                         </th>
                                         <th class="td-c">
+                                            CO Type
+                                        </th>
+                                        <th class="td-c">
                                             Original contract amount
                                         </th>
                                         <th class="td-c">
                                             Retainage percentage
                                         </th>
-                                        <th class="td-c">
-                                            Unit
-                                        </th>
-                                        <th class="td-c">
-                                            Rate
-                                        </th>
-                                        <th class="td-c">
+                                        <th colspan="3" class="td-c">
                                             Change order amount
                                         </th>
                                         <th class="td-c">
@@ -152,8 +152,9 @@
                                             Group level 1
                                         </th>
                                         <th class="td-c">
-                                        Group level 2
+                                            Group level 2
                                         </th>
+                                      
                                     </tr>
                                 </thead>
 
@@ -161,92 +162,114 @@
                                 <tbody id="new_particular">
                                     @foreach($detail->json_particulars as $key=>$row)
                                     @php
+                                    if(!isset($row['co_type']))
+                                    {
+                                    $row['co_type']=1;
+                                    }
+                                    if(!isset($row['budget_reallocation']))
+                                    {
+                                    $row['budget_reallocation']='';
+                                    }
+                                    if($row['co_type']==1)
+                                    {
+                                    $co_type=1;
+                                    $up='';
+                                    $bd='style=display:none;';
+                                    }else{
+                                    $bd='';
+                                    $up='style=display:none;';
+                                    $co_type=2;
+                                    }
+
                                     $is_calculated = false;
                                     @endphp
-                                    <tr>
-                                        @foreach($default_particulars as $v=>$r)
-                                        @if ($v == 'original_contract_amount' )
-                                        <td class="td-r">
-                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
-                                        </td>
-                                        @elseif ($v == 'retainage_percent')
-										@if(isset($row[$v]))
-										<td class="td-r">
-                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@if($row[$v] < 0)({{str_replace('-','',number_format($row[$v],2))}}) @else {{number_format($row[$v],2)}}@endif" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
-                                        </td>
-										@else
-										<td class="td-r">
-                                            <input numbercom="yes" type="text" data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="" id="{{$v}}{{$key+1}}" name="{{$v}}[]" readonly />
-                                        </td>
-										@endif
-                                        @elseif ($v == 'bill_code')
+                                    <tr id="pint{{$key+1}}">
+
                                         <td class="col-id-no">
                                             <div class="text-center">
                                                 @if(!empty($csi_code))
                                                 @foreach($csi_code as $pk=>$vk)
-                                                @if($row[$v]==$vk->id)
-                                                <label selected="" value="{{$vk->id}}">{{$vk->title}} | {{$vk->code}}</label>
-                                                <input type="hidden" name="bill_code[]" value="{{$vk->id}}">
+                                                @if($row['bill_code']==$vk->id)
+                                                {{$vk->code}} | {{$vk->title}}
                                                 @endif
                                                 @endforeach
                                                 @endif
                                                 <div class="text-center">
-                                                    <p id="description{{$key+1}}" style="display:none;" class="lable-heading">
+                                                    <p id="description{{$key+1}}" style="display: none;" class="lable-heading">
+                                                        @isset($row['description'])
                                                         {{$row['description']}}
+                                                        @endisset
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
-                                        @elseif ($v == 'unit' || $v == 'rate')
-                                        <td class="col-id-no">
-                                            <input numbercom="yes" onkeyup="updateTextView($(this));" type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]"  />
-                                        </td>
-                                        @elseif ($v == 'change_order_amount')
-                                        <td class="col-id-no">
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="{{$row[$v]}}" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
-                                        </td>
-                                        @elseif ($v == 'cost_type')
-                                        <td class="col-id-no">
+                                        <td class="td-c onhover-border" scope="row">
                                             <div class="text-center">
                                                 @if(!empty($cost_type_list))
                                                 @foreach($cost_type_list as $pk=>$vk)
-                                                @if($row[$v]==$vk->id)
-                                                <label selected="" value="{{$vk->id}}">{{$vk->abbrevation}} - {{$vk->name}}</label>
-                                                <input type="hidden" id="cost_type{{$key+1}}" name="cost_type[]" value="{{$vk->id}}">
+                                                @if($row['cost_type']==$vk->id)
+                                                {{$vk->abbrevation}} - {{$vk->name}}
                                                 @endif
                                                 @endforeach
                                                 @endif
                                             </div>
                                         </td>
-                                        @else
-                                        <td>
-                                            <input type="text" readonly data-cy="particular_{{$v}}{{$key+1}}" class="form-control input-sm" value="@isset($row[$v]) {{$row[$v]}} @endisset" id="{{$v}}{{$key+1}}" name="{{$v}}[]" />
+                                        <td class="td-c onhover-border" scope="row">
+                                            @if($row['co_type']==1) Unit / Price @endif
+                                            @if($row['co_type']==2) Budget reallocation @endif
+                                            @if($row['co_type']==3) Fixed @endif
+                                            @if($row['co_type']==4) Subcontract @endif
                                         </td>
-                                        @endif
-                                        @endforeach
-                                        <input type="hidden" id="description-hidden{{$key+1}}" name="description[]" value="{{$row['description']}}">
-                                        <input type="hidden" id="pint{{$key+1}}" name="pint[]" value="{{$key+1}}">
+                                        <td class="td-r onhover-border">
+                                            {{number_format($row['original_contract_amount'],2)}}
                                         </td>
+                                        <td class="td-c onhover-border">
+                                            {{$row['retainage_percent']}}
+                                        </td>
+                                        <td class="td-c onhover-border" {{$up}} id="td_unit{{$key+1}}">
+                                            {{$row['unit']}}
+                                        </td>
+                                        <td class="td-c onhover-border" {{$up}} id="td_rate{{$key+1}}">
+                                            {{$row['rate']}}
+                                        </td>
+                                        <td class="td-c onhover-border" {{$up}} id="td_co_amount{{$key+1}}">
+                                            {{$row['change_order_amount']}}
+                                        </td>
+                                        <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}">
+                                            {{$row['change_order_amount']}}
+                                        </td>
+                                        <td class="td-c onhover-border">
+                                            
+                                        </td>
+                                        <td class="td-c onhover-border">
+                                            <div class="text-center">
+                                                {{$row['group']}}
+                                            </div>
+                                        </td>
+                                        <td class="td-c onhover-border">
+                                            <div class="text-center">
+                                                <div id="sub_group{{$key+1}}"></div>
+                                            </div>
+                                        </td>
+
+
+                                        
                                     </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
+                                <tfoot class="headFootZIndex">
                                     <tr class="warning">
-                                    <th class="col-id-no">Grand total</th>
+                                        <th class="col-id-no">Grand total</th>
                                         <th></th>
                                         <th class="td-c">
-                                            <span id="original_contract_amount_total"></span>
-                                        </th>
-                                        <th class="td-c">
-                                            <span id="unit_total"></span>
-                                        </th>
-                                        <th class="td-c">
-                                            <span id="rate_total"></span>
-                                        </th>
-                                        <th class="td-c">
-                                            <input type="text" id="particulartotal1" data-cy="particular-total1" name="totalcost" value="{{$detail->total_change_order_amount}}" class="form-control input-sm" readonly>
+                                            
                                         </th>
                                         <th></th>
+                                        <th></th>
+
+                                        <th colspan="3" class="text-center">
+                                            {{$detail->total_change_order_amount}}
+                                        </th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -306,14 +329,18 @@
 <script>
     mode = '{{$mode}}';
     @if(isset($csi_code))
-    csi_codes = {!!$csi_code_json!!};
+    csi_codes = {
+        !!$csi_code_json!!
+    };
     @endif
     @if(isset($cost_type_list))
-    cost_type_list = {!!$cost_type_list_json!!};
+    cost_type_list = {
+        !!$cost_type_list_json!!
+    };
     @endif
 </script>
 @section('footer')
 <script>
-   calculateChangeOrder('approved');
+    calculateChangeOrder('approved');
 </script>
 @endsection

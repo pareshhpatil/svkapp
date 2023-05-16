@@ -258,7 +258,9 @@ function AddInvoiceParticularRow(defaultval) {
             }
 
             if (index == 'item') {
-                product_text = getProducttext(defaultval, '', numrow);
+                //product_text = getProducttext(defaultval, '', numrow);
+                product_text = '<td><input type="hidden" name="item[]" id="item' + numrow + '"> <div id="v_bill_code' + numrow + '">' +
+                    '</div></td>';
                 row = row + product_text;
             }
             else if (index == 'total_amount' && rate_exist == true) {
@@ -292,6 +294,7 @@ function AddInvoiceParticularRow(defaultval) {
     row = row + '<input type="hidden" id="pint' + numrow + '" name="pint[]" value="' + numrow + '"><input type="hidden" name="product_gst[]" value="" data-cy="product_gst' + numrow + '"> <input type="hidden" name="particular_id[]" value="0"><td class="td-c"><a data-cy="particular-remove' + numrow + '" href="javascript:;" onclick="setTaxApplicableAmt(' + numrow + ');$(this).closest(' + "'" + 'tr' + "'" + ').remove();calculateamt();calculatetax(undefined,undefined,1);" class="btn btn-sm red"> <i class="fa fa-times"> </i> </a></td>';
     newDiv.innerHTML = row;
     mainDiv.appendChild(newDiv);
+    virtualSelectInit(numrow, 'bill_code', numrow);
     setAdvanceDropdown();
     setdatepicker();
 }
@@ -501,6 +504,10 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     read_cols = ["retainage_amount"];
     var numrow = Number($('input[name="particular_id[]"]').length + 1);
     var co_type = _('co_type').value;
+    var plcaeholderbd = 'Change order amount';
+    fixed_select = '';
+    bd_select = '';
+    sub_select = '';
     if (co_type == 1) {
         ur_select = 'selected';
         bd_select = '';
@@ -508,9 +515,18 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
         bd = 'style="display:none;"'
     } else {
         ur_select = '';
-        bd_select = 'selected';
+
         up = 'style="display:none;"';
-        bd = ''
+        bd = '';
+        if (co_type == 2) {
+            plcaeholderbd = 'Budget reallocation';
+            bd_select = 'selected';
+        } else if (co_type == 3) {
+            fixed_select = 'selected';
+        }
+        else if (co_type == 4) {
+            sub_select = 'selected';
+        }
     }
     while (_('pint' + numrow)) {
         numrow = Number(numrow + 1);
@@ -519,14 +535,14 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     row = row + product_text;
     product_text = getCostTypeCode(defaultval, '', numrow);
     row = row + product_text;
-    row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option></select></td>';
+    row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option><option ' + fixed_select + ' value="3">Fixed</option><option ' + sub_select + ' value="4">Subcontract</option></select></td>';
     row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="original_contract_amount[]" data-cy="particular_original_contract_amount' + numrow + '" class="form-control input-sm" value="0"></td>';
     row = row + '<td><input id="retainage_percent' + numrow + '"  step=".00000000001" type="number" name="retainage_percent[]" data-cy="particular_retainage_percent' + numrow + '" class="form-control input-sm"></td>';
 
     row = row + '<td ' + up + ' id="td_unit' + numrow + '"><input id="unit' + numrow + '" placeholder="Unit" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="unit[]" data-cy="particular_unit' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ' + up + ' id="td_rate' + numrow + '"><input id="rate' + numrow + '" placeholder="Rate" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="rate[]" data-cy="particular_rate' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ' + up + ' id="td_co_amount' + numrow + '"><input id="change_order_amount' + numrow + '" readonly type="text" name="change_order_amount[]" data-cy="particular_change_order_amount' + numrow + '" class="form-control input-sm"></td>';
-    row = row + '<td colspan="3" ' + bd + ' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="Budget reallocation" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td colspan="3" ' + bd + ' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="' + plcaeholderbd + '" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ><input type="text" data-cy="particular_order_description' + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="order_description[]" class="form-control input-sm"/></td>'
     product_text = getGroupDropdown(defaultval, '', numrow);
     row = row + product_text;
@@ -1163,6 +1179,142 @@ function calculateDateUnit(id) {
 
 }
 
+function virtualSelectInit(id, type, index) {
+    allowNewOption = true;
+    search = true;
+    dropboxWrapper = 'body';
+    vs_class = 'vs-option1';
+    try {
+        _('span_' + type + id).style.display = 'none';
+        _('vspan_' + type + id).style.display = 'block';
+
+    } catch (o) { }
+
+    if (type == 'group') {
+        try {
+            selectedValue = ev('group' + id);
+        }
+        catch (o) {
+            selectedValue = '';
+        }
+
+        options = groups;
+    } else if (type == 'cost_type') {
+        options = merchant_cost_types;
+        try {
+            selectedValue = ev('cost_type' + id);
+        }
+        catch (o) {
+            selectedValue = '';
+        }
+    } else if (type == 'bill_code_detail') {
+        options = bill_code_details;
+        try {
+            selectedValue = ev('bill_code_detail' + id);
+        }
+        catch (o) {
+            selectedValue = '';
+        }
+        if (selectedValue == '') {
+            selectedValue = 'Yes';
+        }
+        search = false;
+    } else if (type == 'bill_code') {
+        vs_class = 'vs-option';
+        options = csi_codes;
+
+        try {
+            selectedValue = ev('bill_code' + id);
+        }
+        catch (o) {
+            selectedValue = '';
+        }
+    }
+
+    VirtualSelect.init({
+        ele: '#v_' + type + id,
+        options: options,
+        //name: type + '[]',
+        dropboxWrapper: dropboxWrapper,
+        allowNewOption: allowNewOption,
+        search: search,
+        multiple: false,
+        selectedValue: selectedValue,
+        additionalClasses: vs_class
+    });
+
+    $('.vscomp-toggle-button').not('.form-control, .input-sm').each(function () {
+        $(this).addClass('form-control input-sm mw-150');
+    })
+
+    $('#v_' + type + id).change(function () {
+        if (type === 'bill_code') {
+            let displayValue = this.getDisplayValue().split('|');
+            if (displayValue[0] !== undefined) {
+                _('item' + id).value = displayValue[0].trim();
+            }
+            if (displayValue[1] !== undefined) {
+                $('#description' + id).val(displayValue[1].trim())
+            }
+            if (this.value !== null && this.value !== '' && !only_bill_codes.includes(parseInt(this.value))) {
+                //  only_bill_codes.push(this.value)
+                // $('#new_bill_code').val(this.value)
+                //   $('#selectedBillCodeId').val(type + id)
+                try {
+                    billIndex(0, 0, 0)
+                } catch (o) { }
+
+            }
+        }
+        if (type === 'group') {
+            if (!groups.includes(this.value) && this.value !== '') {
+                groups.push(this.value)
+                for (let g = 0; g < particularray.length; g++) {
+                    try {
+                        let groupSelector = document.querySelector('#group' + particularray[g].pint);
+
+                        if ('group' + id === 'group' + particularray[g].pint)
+                            groupSelector.setOptions(groups, this.value);
+                        else
+                            groupSelector.setOptions(groups, particularray[g].group);
+
+                    } catch (o) { }
+                }
+            }
+            _('group' + id).value = this.value;
+        }
+
+        if (type === 'cost_type') {
+            _('cost_type' + id).value = this.value;
+        }
+
+        if (type === 'bill_code_detail') {
+            _('bill_code_detail' + id).value = this.value;
+        }
+
+        if (type === 'cost_codes' || type === 'cost_types') {
+            //_('filterbutton').click();
+        }
+    });
+
+
+
+    $('#v_' + type + id).on('beforeOpen', function () {
+        //console.log('#'+type+id)
+        let dropboxContainer = $('#' + type + id).find('.vscomp-ele-wrapper').attr('aria-controls');
+        $('#' + dropboxContainer).css('z-index', 4);
+    });
+    try {
+        $("#table-scroll").scroll(function () {
+            //  document.querySelector('#' + type + id).close();
+        });
+    } catch (o) {
+
+    }
+
+
+}
+
 function product_rate(productname, val, type) {
     if (typeof type === 'undefined') {
         type = '';
@@ -1302,7 +1454,7 @@ function getParticularValue(name, numrow = 1, readonly = '') {
         }
 
     }
-    if (name == 'rate' || name == 'qty' || name == 'taxin' || name == 'tax_amount' || name == 'discount_perc' || name == 'discount' || name == 'total_amount') {
+    if (name == 'rate' || name == 'qty' || name == 'taxin' || name == 'tax_amount' || name == 'discount_perc' || name == 'discount' || name == 'total_amount' || name == 'current_percent' || name == 'previous_percent' || name == 'previous_amount' || name == 'total_percent') {
         totalfunction = 'onblur="calculateamt();calculatetax();"';
         input_type = 'number" max="100000000" step="0.01';
     }
@@ -1559,10 +1711,10 @@ function calculateChangeOrder(type = null) {
     try {
         $('input[name="pint[]"]').each(function (indx, arr) {
             int = $(this).val();
-            if (_('co_type' + int).value == 2) {
-                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('budget' + int).value));
-            } else {
+            if (_('co_type' + int).value == 1) {
                 document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('unit' + int).value * document.getElementById('rate' + int).value));
+            } else {
+                document.getElementById('change_order_amount' + int).value = updateTextView1(getamt(document.getElementById('budget' + int).value));
 
             }
         });
@@ -1577,7 +1729,7 @@ function calculateChangeOrder(type = null) {
     var rate_total = 0;
     $('input[name="pint[]"]').each(function (indx, arr) {
         int = $(this).val();
-        if (_('pint'+int).style.display != 'none') {
+        if (_('pint' + int).style.display != 'none') {
             total = total + getamt(document.getElementById('change_order_amount' + int).value)
             original_contract_amount_total = original_contract_amount_total + getamt(document.getElementById('original_contract_amount' + int).value)
             unit_total = unit_total + getamt(document.getElementById('unit' + int).value)
@@ -1779,6 +1931,15 @@ function calculateamt(type) {
             tax_amount = getInputArrayValue(type + 'tax_amount', i, 'input');
             discount_perc = getInputArrayValue(type + 'discount_perc', i, 'input');
             discount = getInputArrayValue(type + 'discount', i, 'input');
+
+            try {
+                previous_percent = getInputArrayValue(type + 'previous_percent', i, 'input');
+                current_percent = getInputArrayValue(type + 'current_percent', i, 'input');
+                $('input[name="total_percent[]"]')[i].value = roundAmount(Number(previous_percent) + Number(current_percent));
+            } catch (o) {
+
+            }
+
             if (price) {
                 if (qty) {
                     amount = Number(price * qty);
@@ -2307,7 +2468,9 @@ function calculatetax(tax_applicable_val, tax_applicable_attr, is_update = '') {
         $('input[name="tax_amt[]"]')[i].value = roundAmount(tax_amount);
         total_amount = Number(total_amount + tax_amount);
     }
-    document.getElementById("totaltaxcost").value = roundAmount(total_amount);
+    try {
+        document.getElementById("totaltaxcost").value = roundAmount(total_amount);
+    } catch (o) { }
     calculategrandtotal();
     calculateVendorCommission();
 
@@ -3499,16 +3662,16 @@ function changerOrderAmountCheck() {
                 document.getElementById('change_order_amount_error').style.display = "block";
                 billcodeNull = true;
             }
-            if(co_type == 2){
-				try{
-					budget =Number(document.getElementById('budget' + int).value);
-					budgetRellocationTotal = (getamt(budgetRellocationTotal) + getamt(budget)).toFixed(2);
-				}catch(o){
-					console.log(o)
-				}
+            if (co_type == 2) {
+                try {
+                    budget = Number(document.getElementById('budget' + int).value);
+                    budgetRellocationTotal = (getamt(budgetRellocationTotal) + getamt(budget)).toFixed(2);
+                } catch (o) {
+                    console.log(o)
+                }
             }
         });
-        if(budgetRellocationTotal != 0){
+        if (budgetRellocationTotal != 0) {
             document.getElementById('budget_amount_error').style.display = "block";
         }
         if (billcodeNull || budgetRellocationTotal != 0) {
@@ -3614,21 +3777,21 @@ function filterRows() {
             search_td = tr[i].getElementsByTagName("td")[0];
             txtValue = search_td.textContent || search_td.innerText;
             txtValue = txtValue.toUpperCase();
-            if (txtValue.toUpperCase().indexOf(search) > -1) {} else {
+            if (txtValue.toUpperCase().indexOf(search) > -1) { } else {
                 display = 'none';
             }
         }
         if (dropdown_search > 0) {
             if (dropdown_search == 1) {
                 input_name = 'previously_billed_amount';
-            } else if(dropdown_search == 3){
+            } else if (dropdown_search == 3) {
                 input_name = 'current_billed_percent';
             } else {
                 input_name = 'current_billed_amount';
             }
 
             amt_val = parseFloat(document.getElementsByName(input_name + '[]')[i].value.replace(/,/g, ''));
-            if (amt_val > 0) {} else {
+            if (amt_val > 0) { } else {
                 display = 'none';
             }
         }

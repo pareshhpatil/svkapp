@@ -1,4 +1,4 @@
-@if(isset($template_info->template_type) && $template_info->template_type!='scan' && $template_info->template_type!='construction')
+@if(isset($template_info->template_type) && $template_info->template_type!='isp' && $template_info->template_type!='construction')
 <!-- add taxes label -->
 <h3 class="form-section mt-2">Add taxes
     <a data-cy="add_taxes_btn" href="javascript:;" onclick="AddInvoiceTax();" class="btn btn-sm green pull-right"> <i class="fa fa-plus"> </i> Add new row </a>

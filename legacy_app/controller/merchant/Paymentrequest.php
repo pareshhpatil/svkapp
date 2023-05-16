@@ -11,8 +11,9 @@ class Paymentrequest extends Controller
     function __construct()
     {
         parent::__construct();
-
+           
         $this->validateSession('merchant');
+        
         $this->view->selectedMenu = array(5, 28);
         $this->view->js = array('invoice');
         //find company column name from customer metadata
@@ -25,6 +26,7 @@ class Paymentrequest extends Controller
             $this->smarty->assign("company_column_name", $this->get_custom_company_col_name);
             $this->session->set('customer_company_label', $this->get_custom_company_col_name);
         }
+        
     }
 
     /**
@@ -208,6 +210,7 @@ class Paymentrequest extends Controller
 
     public function view($link)
     {
+        
 
         try {
             header('Content-Type: text/html; charset=UTF-8');
@@ -225,11 +228,13 @@ class Paymentrequest extends Controller
             if ($info['message'] != 'success' || $info['template_type'] == 'event') {
                 $this->setInvalidLinkError();
             }
+            
             if ($info['template_type'] == 'construction') {
-                header('Location: /merchant/invoice/view/703/' . $link);
+               // header('Location: /merchant/invoice/view/703/' . $link);
                 //header('Location: /merchant/invoice/viewg703/' . $link);
-                die();
+               // die();
             }
+            
             if (!empty($info['design_name'])) {
                 header('Location: /merchant/invoice/view/' . $link);
                 die();
@@ -237,6 +242,7 @@ class Paymentrequest extends Controller
 
             //remove non-printable characters from tnc
             $info['tnc'] = preg_replace('/[[:^print:]]/', '', $info['tnc']);
+            
 
             $banklist = $this->common->querylist("select config_key, config_value from config where config_type='Bank_name'");
             require_once CONTROLLER . 'InvoiceWrapper.php';
@@ -252,6 +258,8 @@ class Paymentrequest extends Controller
             } else {
                 $title_type = "estimate";
             }
+
+            
 
             $this->view->title = 'View ' . $title_type;
             $this->view->minwidth = '';
