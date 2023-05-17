@@ -1,95 +1,54 @@
+<!doctype html>
+<html lang="en">
 
-<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  <title>Siddhivinayak Travels House</title>
+  <meta name="description" content="Siddhivinayak Travels House">
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" sizes="32x32">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icon/192x192.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="manifest" href="__manifest.json">
+</head>
 
-<html
-  lang="en"
-  class="light-style customizer-hide"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="/assets/"
-  data-template="vertical-menu-template"
->
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
+<body style="background: #ffffff;">
 
-    <title>{{$title}} | Siddhivinayak Travels House</title>
+  <!-- loader -->
+  <div id="loader">
+    <img src="/assets/img/loading-icon.png" alt="icon" class="loading-icon">
+  </div>
+  <!-- * loader -->
 
-    <meta name="description" content="" />
+  <!-- App Header -->
+  <div class="appHeader no-border transparent position-absolute">
+    <div class="left">
+      <a href="#" class="headerButton goBack">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </a>
+    </div>
+    <div class="pageTitle">{{$title}}</div>
+    <div class="right">
+    </div>
+  </div>
+  <!-- * App Header -->
+  @yield('content')
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
+  <!-- ========= JS Files =========  -->
+  <!-- Bootstrap -->
+  <script src="/assets/js/lib/bootstrap.bundle.min.js"></script>
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <!-- Splide -->
+  <script src="/assets/js/plugins/splide/splide.min.js"></script>
+  <!-- Base Js File -->
+  <script src="/assets/js/base.js"></script>
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="/assets/vendor/fonts/tabler-icons.css" />
-    <link rel="stylesheet" href="/assets/vendor/fonts/flag-icons.css" />
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="/assets/css/demo.css" />
+</body>
 
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/typeahead-js/typeahead.css" />
-    <!-- Vendor -->
-    <link rel="stylesheet" href="/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
-
-    <!-- Page CSS -->
-    <!-- Page -->
-    <link rel="stylesheet" href="/assets/vendor/css/pages/page-auth.css" />
-    <!-- Helpers -->
-    <script src="/assets/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
-    <script src="/assets/vendor/js/template-customizer.js"></script>
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="/assets/js/config.js"></script>
-  </head>
-
-  <body>
-    <!-- Content -->
-            @yield('content')
-         <!-- / Content -->
-
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="/assets/vendor/libs/popper/popper.js"></script>
-    <script src="/assets/vendor/js/bootstrap.js"></script>
-    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
-
-    <script src="/assets/vendor/libs/hammer/hammer.js"></script>
-    <script src="/assets/vendor/libs/i18n/i18n.js"></script>
-    <script src="/assets/vendor/libs/typeahead-js/typeahead.js"></script>
-
-    <script src="/assets/vendor/js/menu.js"></script>
-    <!-- endbuild -->
-
-    <!-- Vendors JS -->
-    <script src="/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
-    <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
-    <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
-
-    <!-- Main JS -->
-    <script src="/assets/js/main.js"></script>
-
-    <!-- Page JS -->
-    <script src="/assets/js/pages-auth.js"></script>
-  </body>
 </html>

@@ -1,6 +1,8 @@
 @extends('layouts.web')
 @section('header')
 <link rel="stylesheet" href="/assets/vendor/libs/select2/select2.css" />
+<link rel="stylesheet" href="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+
 
 @endsection
 @section('content')
@@ -8,10 +10,7 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-6">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> Create</h4>
-            </div>
-            <div class="col-lg-6 pull-right">
-                <a class="btn btn-primary waves-effect waves-light pull-right" href="/passenger/import">Import</a>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span> Create</h4>
             </div>
         </div>
         <div class="card invoice-preview-card">
@@ -36,6 +35,15 @@
                             @endif
                         </select>
                     </div>
+                    <div class="col-lg-5">
+                        <label for="defaultFormControlInput" class="form-label">Date</label>
+                        <input
+                            type="text"
+                            id="bs-datepicker-autoclose"
+                            placeholder="DD MM YYYY"
+                            class="form-control"
+                          />
+                    </div>
                     <div class="mb-3" data-repeater-list="group-a">
                         <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>
                             <div class="d-flex border rounded position-relative pe-0">
@@ -43,8 +51,6 @@
                                     <div class="col-md-4 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Name</p>
                                         <input name="employee_name" type="text" class="form-control  mb-3" placeholder="Enter name" />
-                                        <p class="mb-2 repeater-title">Address</p>
-                                        <textarea name="address" class="form-control" rows="2" placeholder="Address"></textarea>
                                     </div>
                                     <div class="col-md-2 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Gender</p>
@@ -53,8 +59,6 @@
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
-                                        <p class="mb-2 repeater-title">Location</p>
-                                        <input type="text" name="location" class="form-control  mb-3" placeholder="Enter location" />
                                     </div>
                                     <div class="col-md-3 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Email</p>
@@ -103,5 +107,16 @@
 <script src="/assets/vendor/libs/select2/select2.js"></script>
 
 <script src="/assets/js/forms-selects.js"></script>
+<script src="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+<script>
+    $('#bs-datepicker-autoclose').datepicker({
+      todayHighlight: true,
+      autoclose: true,
+      format: 'dd MM yyyy',
+      orientation: isRtl ? 'auto right' : 'auto left'
+    });
+</script>
+
 
 @endsection

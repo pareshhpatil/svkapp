@@ -104,14 +104,14 @@ class ParentModel extends Model
             ->get();
         return $retObj;
     }
-    public function getTableListOrderby($table, $where, $value, $orderby)
+    public function getTableListOrderby($table, $where, $value, $orderby, $idcol = 'id')
     {
 
         $retObj = DB::table($table)
             ->select(DB::raw('*'))
             ->where('is_active', 1)
             ->where($where, $value)
-            ->orderBy($orderby)
+            ->orderBy($idcol, $orderby)
             ->get();
         return $retObj;
     }
@@ -135,6 +135,13 @@ class ParentModel extends Model
             ->update([
                 $col => $val
             ]);
+    }
+
+    public function updateTableData($table, $where, $whvalue, $array)
+    {
+        DB::table($table)
+            ->where($where, $whvalue)
+            ->update($array);
     }
 
 

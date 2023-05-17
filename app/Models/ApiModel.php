@@ -23,7 +23,7 @@ class ApiModel extends ParentModel
 {
     public function saveOtp($mobile, $otp, $user_id)
     {
-        DB::table('otp')->insertGetId(
+        $id = DB::table('otp')->insertGetId(
             [
                 'otp' => $otp,
                 'mobile' => $mobile,
@@ -31,6 +31,7 @@ class ApiModel extends ParentModel
                 'created_date' => date('Y-m-d H:i:s')
             ]
         );
+        return $id;
     }
 
     public function saveToken($token, $user_id)

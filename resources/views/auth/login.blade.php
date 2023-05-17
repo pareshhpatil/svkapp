@@ -1,64 +1,44 @@
-
 @extends('layouts.guest',['title'=>'Login'])
-    @section('content')
-    <div class="">
-      <div class="authentication-wrapper authentication-basic container-p-y">
-        <div class="authentication-inner py-4">
-          <!-- Login -->
-          <div class="card">
-            <div class="card-body">
-              <!-- Logo -->
-              <div class="app-brand justify-content-center mb-4 mt-2">
-                <a href="index.html" class="app-brand-link gap-2">
-                <img src="assets/img/svk/logo2.png" style="max-width: 100%;">           
-                  
-                </a>
-              </div>
-              <!-- /Logo -->
-              <p class="mb-4">Please sign-in to your account and start the adventure</p>
+@section('content')
+<div id="appCapsule" style="background-color: #ffffff;">
 
-              <form id="formAuthentication" class="mb-3" action="/login/verify" method="POST">
-                @csrf
-                <div class="mb-3">
-                  <label for="email" class="form-label">Mobile or Username</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    name="user_name"
-                    placeholder="Enter your mobile or username"
-                    autofocus
-                  />
-                </div>
-                <div class="mb-3 form-password-toggle">
-                  <div class="d-flex justify-content-between">
-                    <label class="form-label" for="password">Password</label>
-                  </div>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password"
-                    />
-                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  
-                </div>
-                <div class="mb-3">
-                  <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                </div>
-              </form>
-              
-            </div>
-          </div>
-          <!-- /Register -->
+  <img src="assets/img/login-page.png" style="max-width: 100%;">
+  <div class="section mt-2 text-center">
+    <h3 class="text-primary"> SIDDHIVINAYAK TRAVELS HOUSE</h3>
+
+  </div>
+  <div class="section mb-5 p-2">
+    @if($errors->any())
+
+    <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+      {{ $errors->first('mobile') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <form action="/login/sendotp" method="post">
+      @csrf
+      <div class="form-group boxed">
+        <div class="input-wrapper">
+          <label class="label" for="text4b">Enter your 10 digit mobile number</label>
+          <input type="text" name="mobile" class="form-control" pattern="[0-9]*" maxlength="10" minlength="10" placeholder="Mobile number">
+          <i class="clear-input">
+            <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+          </i>
         </div>
       </div>
-    </div>
+      <div class="form-links mt-2">
+        <div>
+          <a href="/contact-us">Register Now</a>
+        </div>
+      </div>
+
+      <div class=" transparent mt-2">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Verify</button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
 @endsection
-   

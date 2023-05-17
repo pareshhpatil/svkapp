@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Icons -->
     <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="/assets/vendor/fonts/tabler-icons.css" />
@@ -37,6 +38,7 @@
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css" />
+    
     <link rel="stylesheet" href="/assets/css/custom.css" />
 
     @yield('header')
@@ -178,7 +180,7 @@
                             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <i class="ti ti-bell ti-md"></i>
-                                    <span class="badge bg-danger rounded-pill badge-notifications">5</span>
+                                    <span class="badge bg-danger rounded-pill badge-notifications">0</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end py-0">
                                     <li class="dropdown-menu-header border-bottom">
@@ -187,7 +189,7 @@
                                             <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"><i class="ti ti-mail-opened fs-4"></i></a>
                                         </div>
                                     </li>
-                                    <li class="dropdown-notifications-list scrollable-container">
+                                    <!-- <li class="dropdown-notifications-list scrollable-container">
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item list-group-item-action dropdown-notifications-item">
                                                 <div class="d-flex">
@@ -208,7 +210,7 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                    </li>
+                                    </li> -->
                                     <li class="dropdown-menu-footer border-top">
                                         <a href="javascript:void(0);" class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1 align-items-center">
                                             View all notifications

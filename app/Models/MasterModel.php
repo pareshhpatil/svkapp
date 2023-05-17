@@ -31,4 +31,14 @@ class MasterModel extends ParentModel
             ->get();
         return $retObj;
     }
+
+    public function getImport()
+    {
+        $retObj = DB::table('project as a')
+            ->join('import as ea', 'ea.project_id', '=', 'a.project_id')
+            ->where('ea.is_active', 1)
+            ->select(DB::raw('ea.*,a.name as project_name'))
+            ->get();
+        return $retObj;
+    }
 }

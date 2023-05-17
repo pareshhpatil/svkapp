@@ -10,6 +10,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\ParentModel;
+use App\Models\ApiModel;
+use Validator;
+use App\Http\Lib\Encryption;
 
 class LoginController extends Controller
 {
@@ -40,7 +43,96 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
+    }
+
+    public function otp($link)
+    {
+        $model =  new ApiModel();
+        $otp_id = Encryption::decode($link);
+        $row = $model->getTableRow('otp', 'id', $otp_id, 1);
+        $data = json_decode(json_encode($row), 1);
+        $data['link'] = $link;
+        return view('auth.otp', $data);
+    }
+
+    public function resendotp($link)
+    {
+
+        $model =  new ApiModel();
+        $otp_id = Encryption::decode($link);
+        $row = $model->getTableRow('otp', 'id', $otp_id, 1);
+        if ($row != false) {
+            $otp = rand(1111, 9999);
+            $otp = '1234';
+            $id = $model->saveOtp($row->mobile, $otp, $row->user_id);
+            return redirect('/login/otp/' . Encryption::encode($id));
+        } else {
+            return back()->withErrors([
+                'mobile' => 'Mobile is not registered.'
+            ]);
+        }
+    }
+    public function sendotp(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|min:10|max:10'
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors([
+                $validator->errors()
+            ]);
+        }
+        $model =  new ApiModel();
+        $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+        if ($data != false) {
+            $otp = rand(1111, 9999);
+            $otp = '1234';
+            $id = $model->saveOtp($request->mobile, $otp, $data->id);
+            return redirect('/login/otp/' . Encryption::encode($id));
+        } else {
+            return back()->withErrors([
+                'mobile' => 'Mobile is not registered.'
+            ]);
+        }
+    }
+
+    public function validateOTP(Request $request)
+    {
+        $model =  new ApiModel();
+        #validate request
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|digits_between:10,10',
+            'otp' => 'required|digits_between:4,4'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        #check OTP is valid with mobile number
+        $data = $model->getTableRow('otp', 'mobile', $request->mobile, 1, ['otp' => $request->otp]);
+        if ($data != false) {
+            Auth::loginUsingId($data->user_id, true);
+            $user = Auth::user();
+            Session::put('user_id', $user->id);
+            Session::put('user_type', $user->user_type);
+            Session::put('name', $user->name);
+            Session::put('email', $user->email);
+            Session::put('mobile', $user->mobile);
+            Session::put('parent_id', $user->parent_id);
+            Session::put('project_id', $user->project_id);
+            Session::put('gender', $user->gender);
+            if ($user->icon == '') {
+                $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
+            }
+            Session::put('icon', $user->icon);
+            return redirect('/dashboard');
+        } else {
+            return back()->withErrors([
+                'otp' => 'Invalid OTP please try again',
+            ]);
+        }
     }
 
     public function verify(Request $request)
@@ -64,6 +156,12 @@ class LoginController extends Controller
             $this->setMenu($user->role_id);
             return redirect('/home');
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->to('/login');
     }
 
     public function setMenu($role_id)

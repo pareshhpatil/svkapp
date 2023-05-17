@@ -19,20 +19,30 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('/login/verify', [App\Http\Controllers\Auth\LoginController::class, 'verify']);
-Route::group(['middleware' => array('auth', 'access')], function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/passenger/create', [App\Http\Controllers\PassengerController::class, 'create']);
-    Route::get('/passenger/list', [App\Http\Controllers\PassengerController::class, 'list']);
-    Route::get('/project/list', [App\Http\Controllers\MasterController::class, 'projectList']);
-    Route::post('/passenger/save', [App\Http\Controllers\PassengerController::class, 'save']);
-    Route::get('/ajax/passenger', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
+Route::get('/login/otp/{link}', [App\Http\Controllers\Auth\LoginController::class, 'otp']);
+Route::get('/login/otp/resend/{link}', [App\Http\Controllers\Auth\LoginController::class, 'resendotp']);
+Route::post('/login/sendotp', [App\Http\Controllers\Auth\LoginController::class, 'sendotp']);
+Route::post('/login/validateotp', [App\Http\Controllers\Auth\LoginController::class, 'validateOTP']);
+Route::post('/contact/submit', [App\Http\Controllers\HomeController::class, 'contactus']);
+Route::get('/contact-us', function () {
+    return view('guest.contact');
+});
+Route::get('/thank-you', function () {
+    return view('guest.thankyou');
 });
 
-Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
+Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
 
 
-Route::get('/app/home/{token}', [App\Http\Controllers\HomeController::class, 'home']);
-Route::get('/app/trips/{token}', [App\Http\Controllers\HomeController::class, 'trips']);
-Route::get('/app/notification/{token}', [App\Http\Controllers\HomeController::class, 'notification']);
+Route::group(['middleware' => array('auth', 'access')], function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+    Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
+    Route::get('/book-ride', [App\Http\Controllers\HomeController::class, 'bookRide'])->name('book-ride');
+    Route::post('/ridesave', [App\Http\Controllers\HomeController::class, 'saveRide'])->name('save-ride');
+    Route::get('/notifications', [App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
+    Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
+    Route::get('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
+    Route::get('/setting/update/{col}/{val}', [App\Http\Controllers\HomeController::class, 'updateSetting']);
+    Route::post('/upload/file/{type}', [App\Http\Controllers\HomeController::class, 'uploadFile']);
+    Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
+});
