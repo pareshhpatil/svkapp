@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/app/notification/{type}', function () {
+    return redirect('/dashboard');
+});
 
 Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
