@@ -80,14 +80,15 @@
                     </div>
                 </a>
             </li>
-
-
             <li>
-                <a href="#" class="item">
+                <a href="#" onclick="document.getElementById('logout').submit();" class="item">
                     <div class="in">
                         <div>Log out</div>
                     </div>
                 </a>
+                <form id="logout" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                </form>
             </li>
         </ul>
 

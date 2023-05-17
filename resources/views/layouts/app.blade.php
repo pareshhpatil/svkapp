@@ -111,8 +111,8 @@
                             <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="imaged  w36">
                         </div>
                         <div class="in">
-                            <strong>Sebastian Doe</strong>
-                            <div class="text-muted">4029209</div>
+                            <strong>{{Session::get('name')}}</strong>
+                            <div class="text-muted">{{Session::get('mobile')}}</div>
                         </div>
                         <a href="#" class="btn btn-link btn-icon sidebar-close" data-bs-dismiss="modal">
                             <ion-icon name="close-outline" role="img" class="md hydrated" aria-label="close outline"></ion-icon>
@@ -127,7 +127,7 @@
                     <div class="listview-title mt-1">Menu</div>
                     <ul class="listview flush transparent no-line image-listview">
                         <li>
-                            <a href="app-settings.html" class="item">
+                            <a href="/settings" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="settings-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
                                 </div>
