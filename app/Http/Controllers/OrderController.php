@@ -135,6 +135,9 @@ class OrderController extends Controller
 
             $data['cost_type_list'] = $this->orderModel->getCostTypeList($this->merchant_id);
             $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
+
+            $data['subcontract'] = $model->getTableList('sub_contract', 'project_id', $row->project_id);
+           // dd($data['subcontract']);
         } else {
             $data['contract_id'] = '';
             $data['co_type'] = 1;
@@ -143,12 +146,13 @@ class OrderController extends Controller
         $data['type'] = $type;
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
-
+        $data['datatablejs'] = 'table-no-export';  //table-no-export old value
         return view('app/merchant/order/createv2', $data);
     }
 
     public function save(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'order_no' => 'required',
             'order_date' => 'required'
@@ -156,6 +160,7 @@ class OrderController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
         } else {
+            $model = new Master();
             $main_array = [];
             $request->totalcost = str_replace(',', '', $request->totalcost);
             $request->contract_amount = str_replace(',', '', $request->contract_amount);
@@ -189,12 +194,36 @@ class OrderController extends Controller
                     $row_array["pint"] = $request->pint[$skey];
                     $row_array["group"] = $request->group[$skey];
                     $row_array["sub_group"] = $request->sub_group[$skey];
+                    $row_array["subcontract_id"] = $request->subcontract_id[$skey];
+                    $row_array["subcontract_particulars"] = $request->subcontract_particulars[$skey];
+
+
+
                     array_push($main_array, $row_array);
                 }
             }
             $request->particulars = json_encode($main_array);
             $request->order_date = Helpers::sqlDate($request->order_date);
             $id = $this->orderModel->saveNewOrder($request, $this->merchant_id, $this->user_id, $request->type);
+
+            if (!empty($request->bill_code)) {
+                foreach ($request->bill_code as $skey => $bill_code) {
+                    if ($request->subcontract_id[$skey] > 0) {
+                        $subcontract_particulars = explode(',', $request->subcontract_particulars[$skey]);
+                        $particulars = $model->getColumnValue('sub_contract', 'sub_contract_id', $request->subcontract_id[$skey], 'particulars');
+                        $particulars = json_decode($particulars, 1);
+                        foreach ($particulars as $k => $p) {
+                            if (in_array($p['pint'], $subcontract_particulars)) {
+                                $particulars[$k]['co_created'] = 1;
+                                $particulars[$k]['co_id'] = $id;
+                            }
+                        }
+                        $model->updateTable('sub_contract', 'sub_contract_id', $request->subcontract_id[$skey], 'particulars', json_encode($particulars));
+                    }
+                }
+            }
+
+
             if (isset($request->import) && $request->import == 'Import') {
                 return redirect()->route('merchant.import.change-order', ['order_id' => Encrypt::encode($id)]);
             }

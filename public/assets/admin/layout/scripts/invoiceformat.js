@@ -3752,6 +3752,8 @@ function updateInvoiceStatus() {
 
 
 function setCOType(value, id) {
+    _('sub_contract_link' + id).style.display = 'none';
+    _('budget' + id).readOnly = false;
     if (value == 1) {
         _('td_unit' + id).style.display = 'table-cell';
         _('td_rate' + id).style.display = 'table-cell';
@@ -3763,6 +3765,13 @@ function setCOType(value, id) {
         _('td_co_amount' + id).style.display = 'none';
         _('td_budget' + id).style.display = 'table-cell';
     }
+
+    if (value == 4) {
+        _('sub_contract_link' + id).style.display = 'block';
+        _('budget' + id).readOnly = true;
+    }
+
+
 }
 
 function filterRows() {
