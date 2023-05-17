@@ -534,6 +534,9 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     product_text = getCGItextReturnsV2(defaultval, '', numrow);
     row = row + product_text;
     product_text = getCostTypeCode(defaultval, '', numrow);
+
+
+
     row = row + product_text;
     row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option><option ' + fixed_select + ' value="3">Fixed</option><option ' + sub_select + ' value="4">Subcontract</option></select></td>';
     row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="original_contract_amount[]" data-cy="particular_original_contract_amount' + numrow + '" class="form-control input-sm" value="0"></td>';
@@ -542,7 +545,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     row = row + '<td ' + up + ' id="td_unit' + numrow + '"><input id="unit' + numrow + '" placeholder="Unit" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="unit[]" data-cy="particular_unit' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ' + up + ' id="td_rate' + numrow + '"><input id="rate' + numrow + '" placeholder="Rate" onblur="calculateChangeOrder();" step=".00000000001" type="number" name="rate[]" data-cy="particular_rate' + numrow + '" class="form-control input-sm"></td>';
     row = row + '<td ' + up + ' id="td_co_amount' + numrow + '"><input id="change_order_amount' + numrow + '" readonly type="text" name="change_order_amount[]" data-cy="particular_change_order_amount' + numrow + '" class="form-control input-sm"></td>';
-    row = row + '<td colspan="3" ' + bd + ' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="' + plcaeholderbd + '" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"></td>';
+    row = row + '<td colspan="3" ' + bd + ' id="td_budget' + numrow + '"><input id="budget' + numrow + '" onblur="calculateChangeOrder();" placeholder="' + plcaeholderbd + '" type="text" name="budget[]" data-cy="particular_budget' + numrow + '" class="form-control input-sm"><input type="hidden" name="subcontract_id[]" value="" id="subcontract_id' + numrow + '"><input type="hidden" name="subcontract_particulars[]" value="" id="subcontract_particular' + numrow + '"><div id="sub_contract_link' + numrow + '" style=" display: none; "><a onclick="showbilltransaction(' + numrow + ');" class="pull-left"> Select subcontracts </a></div></td>';
     row = row + '<td ><input type="text" data-cy="particular_order_description' + numrow + '" className="form-control input-sm" value="" id="order_description' + numrow + '" name="order_description[]" class="form-control input-sm"/></td>'
     product_text = getGroupDropdown(defaultval, '', numrow);
     row = row + product_text;
