@@ -86,7 +86,6 @@ class ParentModel extends Model
             ->where($where, $value)
             ->where('is_active', $active)
             ->where('status', $status)
-
             ->first();
         if (!empty($retObj)) {
             return $retObj->value;
