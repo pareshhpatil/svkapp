@@ -3,7 +3,7 @@
 <div id="appCapsule" class="full-height">
 
     <div id="app">
-        <div class="card">
+        <div class="">
             <div class="card-body">
                 <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
                     @csrf
