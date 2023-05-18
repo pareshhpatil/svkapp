@@ -15,6 +15,13 @@
     <link rel="manifest" href="__manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            background-image: url("/assets/img/background.jpg");
+            background-repeat: no-repeat, repeat;
+            background-size: cover;
+        }
+    </style>
 </head>
 
 <body class="{{Session::get('mode')}}">
