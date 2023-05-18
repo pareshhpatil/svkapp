@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input" v-model="data.app_notification" :checked="data.app_notification=='1'" value="1" v-on:change="updateValue('app_notification',data.app_notification)" type="checkbox" id="app_notification">
+                            <input class="form-check-input" v-model="data.app_notification" :checked="data.app_notification==1 ? true: false" :value="data.app_notification" v-on:change="updateValue('app_notification',data.app_notification)" type="checkbox" id="app_notification">
                             <label class="form-check-label" for="app_notification"></label>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input" v-model="data.sms_notification" :checked="data.sms_notification=='1'" type="checkbox" value="1" v-on:change="updateValue('sms_notification',data.sms_notification)" id="sms_notification">
+                            <input class="form-check-input" v-model="data.sms_notification" :checked="data.sms_notification==1 ? true: false" type="checkbox" :value="data.sms_notification" v-on:change="updateValue('sms_notification',data.sms_notification)" id="sms_notification">
                             <label class="form-check-label" for="sms_notification"></label>
                         </div>
                     </div>
