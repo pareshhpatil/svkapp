@@ -27,7 +27,7 @@
                             Dark Mode
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input "  :checked="data.dark_mode" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="adarkmodeSwitch">
+                            <input class="form-check-input "  :checked="data.dark_mode==1" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="adarkmodeSwitch">
                             <label class="form-check-label" for="adarkmodeSwitch"></label>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input"  :checked="data.app_notification" value="1" v-on:change="updateValue('app_notification',data.app_notification)" type="checkbox" id="app_notification">
+                            <input class="form-check-input"  :checked="data.app_notification==1" value="1" v-on:change="updateValue('app_notification',data.app_notification)" type="checkbox" id="app_notification">
                             <label class="form-check-label" for="app_notification"></label>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input"  :checked="data.sms_notification" type="checkbox" value="1" v-on:change="updateValue('sms_notification',data.sms_notification)" id="sms_notification">
+                            <input class="form-check-input"  :checked="data.sms_notification==1" type="checkbox" value="1" v-on:change="updateValue('sms_notification',data.sms_notification)" id="sms_notification">
                             <label class="form-check-label" for="sms_notification"></label>
                         </div>
                     </div>
