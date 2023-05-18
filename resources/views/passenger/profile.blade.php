@@ -30,6 +30,12 @@
                     </div>
                     <div class="form-group basic">
                         <div class="input-wrapper">
+                            <label class="label" for="email4b">Gender</label>
+                            <input type="text" class="form-control" readonly name="mobile" v-model="data.gender" >
+                        </div>
+                    </div>
+                    <div class="form-group basic">
+                        <div class="input-wrapper">
                             <label class="label" for="email4b">Mobile</label>
                             <input type="text" class="form-control" readonly name="mobile" v-model="data.mobile" placeholder="Enter your name">
                         </div>
