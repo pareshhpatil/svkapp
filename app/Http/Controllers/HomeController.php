@@ -87,6 +87,13 @@ class HomeController extends Controller
     public function updateSetting($col, $val)
     {
         $val = ($val == 'true') ? 1 : 0;
+        if ($col == 'dark_mode') {
+            if ($val == 1) {
+                Session::put('mode', 'dark-mode');
+            } else {
+                Session::put('mode', '');
+            }
+        }
         $data['data'] = $this->model->updateTable('users', 'id', Session::get('user_id'), $col, $val);
     }
 

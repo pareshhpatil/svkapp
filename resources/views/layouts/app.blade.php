@@ -16,7 +16,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
-<body>
+<body class="{{Session::get('mode')}}">
 
     <!-- loader -->
     <div id="loader">
@@ -108,7 +108,7 @@
 
                     <div class="profileBox pt-2 pb-2">
                         <div class="image-wrapper">
-                            <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="imaged  w36">
+                            <img src="{{Session::get('icon')}}" alt="image" class="imaged  w36">
                         </div>
                         <div class="in">
                             <strong>{{Session::get('name')}}</strong>

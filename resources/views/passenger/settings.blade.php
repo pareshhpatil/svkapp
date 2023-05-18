@@ -27,7 +27,7 @@
                             Dark Mode
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input dark-mode-switch" type="checkbox" id="darkmodeSwitch">
+                            <input class="form-check-input dark-mode-switch" v-model="data.dark_mode" :checked="data.dark_mode" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="darkmodeSwitch">
                             <label class="form-check-label" for="darkmodeSwitch"></label>
                         </div>
                     </div>
@@ -118,6 +118,14 @@
         methods: {
             updateValue(col, val) {
                 axios.get('/setting/update/' + col + '/' + val);
+                if (col == 'dark_mode') {
+                    var pageBody = document.querySelector("body");
+                    if (val) {
+                        pageBody.classList.add("dark-mode");
+                    } else {
+                        pageBody.classList.remove("dark-mode");
+                    }
+                }
             },
             onImageChange(e) {
                 this.image = e.target.files[0];

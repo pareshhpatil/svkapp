@@ -123,6 +123,11 @@ class LoginController extends Controller
             Session::put('parent_id', $user->parent_id);
             Session::put('project_id', $user->project_id);
             Session::put('gender', $user->gender);
+            if ($user->dark_mode == 1) {
+                Session::put('mode', 'dark-mode');
+            } else {
+                Session::put('mode', '');
+            }
             if ($user->icon == '') {
                 $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
             }
