@@ -25,13 +25,13 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Name</label>
-                            <input type="text" class="form-control" name="name" v-model="data.name" placeholder="Enter your name">
+                            <input type="text" class="form-control" :onclick="updated=true" name="name" v-model="data.name" placeholder="Enter your name">
                         </div>
                     </div>
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Gender</label>
-                            <input type="text" class="form-control" readonly name="mobile" v-model="data.gender" >
+                            <input type="text" class="form-control" readonly name="mobile" v-model="data.gender">
                         </div>
                     </div>
                     <div class="form-group basic">
@@ -43,39 +43,36 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Email</label>
-                            <input type="text" class="form-control" name="email" v-model="data.email" placeholder="Enter your email">
+                            <input type="text" class="form-control" :onclick="updated=true" name="email" v-model="data.email" placeholder="Enter your email">
                         </div>
                     </div>
 
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Emergency contact</label>
-                            <input type="text" class="form-control" name="emergency_contact" v-model="data.emergency_contact" placeholder="Enter emergency contact">
+                            <input type="text" class="form-control" :onclick="updated=true" name="emergency_contact" v-model="data.emergency_contact" placeholder="Enter emergency contact">
                         </div>
                     </div>
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Location</label>
-                            <input type="text" name="location" class="form-control" v-model="data.location" placeholder="Enter your location eg. Kharghar">
+                            <input type="text" name="location" class="form-control" :onclick="updated=true" v-model="data.location" placeholder="Enter your location eg. Kharghar">
                         </div>
                     </div>
 
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="textarea4b">Address</label>
-                            <textarea id="textarea4b" name="address" rows="2" v-model="data.address" class="form-control" placeholder="Enter your full address"></textarea>
+                            <textarea id="textarea4b" name="address" :onclick="updated=true" rows="2" v-model="data.address" class="form-control" placeholder="Enter your full address"></textarea>
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
                             </i>
                         </div>
                     </div>
-                    <div class="mt-2">
+                    <div v-show="updated" class="mt-2">
                         <div class="row">
-                            <div class="col-6">
+                            <div  class="col-12">
                                 <button type="submit" class="btn btn-lg btn-primary btn-block">Update</button>
-                            </div>
-                            <div class="col-6">
-                                <a href="/dashboard" class="btn btn-lg btn-outline-secondary btn-block">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -94,7 +91,8 @@
         data() {
             return {
                 data: [],
-                image: ''
+                image: '',
+                updated: false
             }
         },
         mounted() {
@@ -102,6 +100,8 @@
             if (this.data.icon == '') {
                 this.data.icon = '/assets/img/sample/avatar/avatar1.jpg';
             }
+
+            this.updated= false;
         },
         methods: {
             updateValue(col, val) {
