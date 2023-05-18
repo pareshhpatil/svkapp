@@ -27,8 +27,8 @@
                             Dark Mode
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input " v-model="data.dark_mode" :checked="data.dark_mode=='1'" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="adarkmodeSwitch">
-                            <label class="form-check-label" for="adarkmodeSwitch"></label>
+                            <input class="form-check-input " @if($data->dark_mode==1) checked @endif value="1" v-on:change="updateValue('dark_mode')" type="checkbox" id="dark_mode">
+                            <label class="form-check-label" for="dark_mode"></label>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input" v-model="data.app_notification" :checked="data.app_notification==1 ? true: false" :value="data.app_notification" v-on:change="updateValue('app_notification',data.app_notification)" type="checkbox" id="app_notification">
+                            <input class="form-check-input" @if($data->app_notification==1) checked @endif value="1" v-on:change="updateValue('app_notification')" type="checkbox" id="app_notification">
                             <label class="form-check-label" for="app_notification"></label>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="form-check form-switch  ms-2">
 
-                            <input  class="form-check-input" v-model="data.sms_notification" type="checkbox" value="1" v-on:change="updateValue('sms_notification',data.sms_notification)" id="sms_notification">
+                            <input class="form-check-input" @if($data->sms_notification==1) checked @endif type="checkbox" value="1" v-on:change="updateValue('sms_notification')" id="sms_notification">
                             <label class="form-check-label" for="sms_notification"></label>
                         </div>
                     </div>
@@ -117,7 +117,8 @@
             }
         },
         methods: {
-            updateValue(col, val) {
+            updateValue(col) {
+                val = document.getElementById(col).checked;
                 axios.get('/setting/update/' + col + '/' + val);
                 if (col == 'dark_mode') {
                     var pageBody = document.querySelector("body");
