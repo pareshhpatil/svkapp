@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div id="app" class=" mt-5 ">
+<div id="app" class="extra-header-active full-height ">
     <div class="section-title"></div>
     <div class="card">
         <div class="card-body">
