@@ -27,8 +27,8 @@
                             Dark Mode
                         </div>
                         <div class="form-check form-switch  ms-2">
-                            <input class="form-check-input dark-mode-switch" v-model="data.dark_mode" :checked="data.dark_mode" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="darkmodeSwitch">
-                            <label class="form-check-label" for="darkmodeSwitch"></label>
+                            <input class="form-check-input " v-model="data.dark_mode" :checked="data.dark_mode" value="1" v-on:change="updateValue('dark_mode',data.dark_mode)" type="checkbox" id="adarkmodeSwitch">
+                            <label class="form-check-label" for="adarkmodeSwitch"></label>
                         </div>
                     </div>
                 </div>
