@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div id="appCapsule">
+<div id="appCapsule" class="extra-header-active full-height">
     <div id="app">
         <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
             @csrf
