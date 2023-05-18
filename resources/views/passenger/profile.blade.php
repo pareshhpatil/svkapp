@@ -1,9 +1,8 @@
 @extends('layouts.app')
 @section('content')
-<div id="appCapsule" class="extra-header-active full-height">
+<div id="appCapsule" class="full-height">
 
     <div id="app">
-        <div class="section-title"></div>
         <div class="card">
             <div class="card-body">
                 <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
