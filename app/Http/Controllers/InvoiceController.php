@@ -448,6 +448,11 @@ class InvoiceController extends AppController
                 return $data;
             }
 
+            $csi_codes = $this->invoiceModel->getBillCodes($info->project_id);
+
+            $data['csi_codes'] = json_decode(json_encode($csi_codes), 1);
+            $data['csi_codes_array'] = $this->getKeyArrayJson($data['csi_codes'], 'value');
+
             if ($info->template_type == 'construction') {
                 return view('app/merchant/invoice/construction_update', $data);
             }

@@ -123,7 +123,7 @@ $validate=(array)$validate;
                 </ul>
             </div>
             <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 pull-right" style="margin-right: 20px;" href="/merchant/invoice/download/{{$url}}@if(isset($gtype))/0/{{$gtype}}@endif">
-                Print
+                Print2
             </a>
             @endif
         </div>

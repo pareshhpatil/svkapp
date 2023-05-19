@@ -285,7 +285,7 @@
                                             <select id="co_type{{$key+1}}" onchange="setCOType(this.value,{{$key+1}})" class="form-control input-sm" name="co_type[]">
                                                 <option @if($row['co_type']==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($row['co_type']==2) selected @endif value="2">Budget reallocation</option>
-                                                <option @if($row['co_type']==3) selected @endif value="3">Fixed</option>
+                                                <option @if($row['co_type']==3) selected @endif value="3">Fixed amount</option>
                                                 <option @if($row['co_type']==4) selected @endif value="4">Subcontract</option>
                                             </select>
                                         </td>

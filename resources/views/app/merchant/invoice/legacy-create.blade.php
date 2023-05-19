@@ -170,6 +170,7 @@
                         <div class="col-md-6" data-tour="invoice-create-billing-information">
                             
                             <input type="hidden" name="billing_profile_id" value="{{$billing_profile_id}}">
+                            <input type="hidden" name="project_id" value="{{$project_id}}">
                             <input type="hidden" name="currency" value="{{$currency}}">
                             @php $is_carry=0; @endphp
                             @if(!empty($metadata['H']))
@@ -389,24 +390,24 @@
                 @section('footer')
                 @if($template_id!='')
                 @php
-    $billcodeJson = json_encode($csi_codes);
-    $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
-    $billcodeJson = str_replace("'", "\'", $billcodeJson);
-    $billcodeJson = str_replace('"', '\\"', $billcodeJson);
+                $billcodeJson = json_encode($csi_codes);
+                $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
+                $billcodeJson = str_replace("'", "\'", $billcodeJson);
+                $billcodeJson = str_replace('"', '\\"', $billcodeJson);
 
 
 
-    $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
-    $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
-    $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
-    $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
+                $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
+                $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
+                $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
+                $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
 
-    //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
-    $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
-    $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
-    $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
+                //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
+                $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
+                $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
 
-    @endphp
+                @endphp
     <script>
         selectCustomer('{{$customer_id}}');
     csi_codes = JSON.parse('{!! $billcodeJson !!}');

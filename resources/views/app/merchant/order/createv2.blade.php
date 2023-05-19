@@ -111,7 +111,7 @@
                                         <select data-placeholder="Select type" required class="form-control" name="co_type">
                                             <option @if($co_type==1) selected @endif value="1">Unit / Price</option>
                                             <option @if($co_type==2) selected @endif value="2">Budget reallocation</option>
-                                            <option @if($co_type==3) selected @endif value="3">Fixed</option>
+                                            <option @if($co_type==3) selected @endif value="3">Fixed amount</option>
                                             <option @if($co_type==4) selected @endif value="4">Subcontract</option>
                                         </select>
                                         <small class="form-text text-muted">CO type</small>

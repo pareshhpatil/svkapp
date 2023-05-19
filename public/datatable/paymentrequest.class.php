@@ -41,13 +41,12 @@ class SSP
                         $row[$column['dt']] = date('d/M/y h:i A', strtotime($data[$i][$column['db']]));
                     } elseif ($column['datatype'] == 'date') {
                         // $value = formatDateString($data[$i][$column['db']]);
-                        if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status']==0) {
+                        if ($data[$i][$column['db']] < date("Y-m-d") && $data[$i]['payment_request_status'] == 0) {
                             $value = formatDateString($data[$i][$column['db']]);
-                            $row[$column['dt']] = '<span style="color:#B82020;">'.$value.'</span>';
+                            $row[$column['dt']] = '<span style="color:#B82020;">' . $value . '</span>';
                         } else {
                             $row[$column['dt']] = formatDateString($data[$i][$column['db']]);
                         }
-                        
                     } elseif ($column['datatype'] == 'specialDate') {
                         //$row[$column['dt']] = formatTimeString($data[$i][$column['db']]);
 
@@ -82,7 +81,11 @@ class SSP
                     $value = $data[$i][$columns[$j]['db']];
                     $link = $encrypt->encode($data[$i]['payment_request_id']);
                     $estimatelink = $encrypt->encode($data[$i]['converted_request_id']);
-                    $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/702/' . $link . '/patron';
+                    if ($data[$i]['template_type'] == 'construction') {
+                        $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/702/' . $link . '/patron';
+                    } else {
+                        $copy_link = 'https://' . $_SERVER['SERVER_NAME'] . '/patron/invoice/view/' . $link;
+                    }
 
                     if (!empty($data[$i]['short_url'])) {
                         $copy_link = $data[$i]['short_url'];
@@ -162,13 +165,13 @@ class SSP
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SAVED';
                             $value = '<span class="badge badge-pill status unpaid">' . $custom_invoice_status . '</span>';
                             if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
-                                if($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
+                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'approve') {
                                     $value = '<span class="badge badge-pill status unpaid">IN REVIEW</span>';
                                 }
-                            } elseif($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                            } elseif ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
                                 $value = '<span class="badge badge-pill status unpaid">IN REVIEW</span>';
                             }
-                        } else if($status == '0') {
+                        } else if ($status == '0') {
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
                             $value = '<span class="badge badge-pill status overdue">' . $custom_invoice_status . '</span>';
                             //0 = unpaid, 4=failed ,5= initiated
@@ -177,7 +180,7 @@ class SSP
                             // } else {
                             //     $value = '<span class="badge badge-pill status unpaid">UNPAID</span>';
                             // }
-                        } else if($status == '5') {
+                        } else if ($status == '5') {
                             $status = '0';
                             $custom_invoice_status = (array_key_exists($status, $custom_invoice_status)) ? strtoupper($custom_invoice_status[$status]) : 'SUBMITTED';
                             $value = '<span class="badge badge-pill status overdue">' . $custom_invoice_status . '</span>';
@@ -190,9 +193,10 @@ class SSP
                                                     &nbsp;&nbsp;<i class="fa fa-ellipsis-v" style="font-size: 1.5rem;"></i>&nbsp;&nbsp;
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">';
-                        if ($data[$i]['template_type'] == 'construction') {
-                            if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
-                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
+
+                        if ($hasAllPrivileges && !in_array($data[$i]['payment_request_id'], array_keys($privilegesArray))) {
+                            if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'view-only' || $privilegesArray['all'] == 'approve') {
+                                if ($data[$i]['template_type'] == 'construction') {
                                     $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/view/702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
@@ -201,56 +205,62 @@ class SSP
                                                     <i class="fa fa-table"></i> View 703</a>
                                             </li>
                                             ';
+                                } else {
+                                    $row[$column['dt']] .= '<li>
+                                                    <a target="_BLANK" href="/merchant/invoice/view/' . $link . '">
+                                                        <i class="fa fa-table"></i> View</a>
+                                                </li>';
+                                }
 
-                                    if ($status == 6) {
-                                        $row[$column['dt']] .= '<li>
+                                if ($status == 6) {
+                                    $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/paymentrequest/view/' . $estimatelink . '">
                                                         <i class="fa fa-table"></i> View Invoice</a>
                                                 </li>';
-                                    }
                                 }
+                            }
 
-                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
-                                        if ($request_type == 1 && $status != 11) {
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
-                                        } elseif ($request_type == 2 && $status != 11) {
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
-                                        }
-                                    } else if ($status == 2) {
-                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                                    } else if ($status == 7) {
+                            if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'edit' || $privilegesArray['all'] == 'approve') {
+                                if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
+                                    if ($request_type == 1 && $status != 11) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                    } elseif ($request_type == 2 && $status != 11) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
                                     }
-
-                                    if (
-                                        $status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
-                                    ) {
-                                        $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
-                                    }
+                                } else if ($status == 2) {
+                                    $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
+                                } else if ($status == 7) {
+                                    $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
                                 }
 
-                                if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'comment') {
-                                    if ($status != 11) {
-                                        $row[$column['dt']] .= '<li>
+                                if (
+                                    $status == 0 ||
+                                    $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
+                                ) {
+                                    $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
+                                }
+                            }
+
+                            if ($privilegesArray['all'] == 'full' || $privilegesArray['all'] == 'comment') {
+                                if ($status != 11) {
+                                    $row[$column['dt']] .= '<li>
                                                         <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
                                                     </li>';
-                                    }
                                 }
+                            }
 
-                                if ($privilegesArray['all'] == 'full') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
-                                        $row[$column['dt']] .= '    <li>
+                            if ($privilegesArray['all'] == 'full') {
+                                if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                    $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
                                                            data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
                                                     </li>';
-                                    }
                                 }
-                            } else {
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
-                                    $row[$column['dt']] .= '<li>
+                            }
+                        } else {
+                            if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'view-only' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit') {
+                                $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/invoice/view/702/' . $link . '">
                                                         <i class="fa fa-table"></i> View 702</a>
                                                 </li><li>
@@ -259,51 +269,50 @@ class SSP
                                             </li>
                                             ';
 
-                                    if ($status == 6) {
-                                        $row[$column['dt']] .= '<li>
+                                if ($status == 6) {
+                                    $row[$column['dt']] .= '<li>
                                                     <a target="_BLANK" href="/merchant/paymentrequest/view/' . $estimatelink . '">
                                                         <i class="fa fa-table"></i> View Invoice</a>
                                                 </li>';
-                                    }
                                 }
+                            }
 
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
-                                        if ($request_type == 1 && $status != 11) {
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
-                                        } elseif ($request_type == 2 && $status != 11) {
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
-                                            $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
-                                        }
-                                    } else if ($status == 2) {
-                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
-                                    } else if ($status == 7) {
+                            if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'edit' || $privilegesArray[$data[$i]['payment_request_id']] == 'approve') {
+                                if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11) {
+                                    if ($request_type == 1 && $status != 11) {
                                         $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
+                                    } elseif ($request_type == 2 && $status != 11) {
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#convert" title="Convert to Invoice" ><i class="fa fa-exchange"></i> Convert to Invoice</a></li>';
+                                        $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#settleestimate" title="Settle" ><i class="fa fa-inr"></i> Settle</a></li>';
                                     }
-
-                                    if (
-                                        $status == 0 ||
-                                        $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
-                                    ) {
-                                        $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
-                                    }
+                                } else if ($status == 2) {
+                                    $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Update Transaction" ><i class="fa fa-inr"></i> Update Transaction</a></li>';
+                                } else if ($status == 7) {
+                                    $row[$column['dt']] .= '<li><a target="_BLANK" href="/merchant/paymentrequest/view/' . $link . '#respond" title="Settle request" ><i class="fa fa-inr"></i> Settle</a></li>';
                                 }
 
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'comment') {
-                                    if ($status != 11) {
-                                        $row[$column['dt']] .= '<li>
+                                if (
+                                    $status == 0 ||
+                                    $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14
+                                ) {
+                                    $row[$column['dt']] .= '<li><a href="/merchant/invoice/update/' . $link . '" title="Update request" ><i class="fa fa-edit"></i> Edit</a></li>';
+                                }
+                            }
+
+                            if ($privilegesArray[$data[$i]['payment_request_id']] == 'full' || $privilegesArray[$data[$i]['payment_request_id']] == 'comment') {
+                                if ($status != 11) {
+                                    $row[$column['dt']] .= '<li>
                                                         <a onclick="commentLink(this.id);" id="/merchant/comments/view/' . $link . '" ><i class="fa fa-comment"></i> Comments </a>
                                                     </li>';
-                                    }
                                 }
+                            }
 
-                                if ($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
-                                    if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
-                                        $row[$column['dt']] .= '    <li>
+                            if ($privilegesArray[$data[$i]['payment_request_id']] == 'full') {
+                                if ($status == 0 || $status == 4 || $status == 5 || $status == 8 || $status == 11 || $status == 2 || $status == 7 || $status == 14) {
+                                    $row[$column['dt']] .= '    <li>
                                                         <a title="Delete ' . $invoice_type . '" href="#basic" onclick="document.getElementById(' . "'" . 'deleteanchor' . "'" . ').href = ' . "'" . '/merchant/paymentrequest/delete/' . $link . "'" . '"
                                                            data-toggle="modal" ><i class="fa fa-remove"></i> Delete</a>  
                                                     </li>';
-                                    }
                                 }
                             }
                         }

@@ -395,6 +395,8 @@ class Invoice extends Controller
                         foreach ($_POST['bill_code'] as $k => $v) {
                             $this->model->saveConstructionDetails($payment_request_id, $_POST, $k, $this->user_id);
                         }
+                    }else{
+                        $this->common->genericupdate('payment_request', 'project_id', $_POST['project_id'], 'payment_request_id', $payment_request_id);
                     }
 
 

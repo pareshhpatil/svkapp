@@ -213,16 +213,22 @@ $validate=(array)$validate;
 
             </ul>
         </div>
+        @if($info['gtype']=='standard')
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/legacy/invoice/download/{{$info['Url']}}/2">
+            Print
+        </a>
+        @else
         <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}} @endif">
             Print
         </a>
+        @endif
         @else
 
         {{-- <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}@if(isset($info['gtype']))/0/{{$info['gtype']}}@endif">--}}
         {{-- Save as PDF--}}
         {{-- </a>--}}
         <div class="btn-group pull-right">
-        @if($info['gtype']=='standard')
+            @if($info['gtype']=='standard')
             <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
                 Download
             </a>
@@ -247,9 +253,16 @@ $validate=(array)$validate;
             </ul>
             @endif
         </div>
-        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}}@endif">
+
+        @if($info['gtype']=='standard')
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/legacy/invoice/download/{{$info['Url']}}/2">
             Print
         </a>
+        @else
+        <a target="_BLANK" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" href="/merchant/invoice/download/{{$info['Url']}}/2 @if(isset($info['gtype']))/{{$info['gtype']}} @endif">
+            Print
+        </a>
+        @endif
         @endif
         @else
         <div class=" view-footer-btn-rht-align btn-pl-0" style="margin-top: @if($info['payment_request_status']==11)-13px @else 0px;@endif">
@@ -258,11 +271,11 @@ $validate=(array)$validate;
             {{-- Save as PDF--}}
             {{-- </a>--}}
             <div class="btn-group pull-right">
-            @if($info['gtype']=='standard')
-            <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
-                Download
-            </a>
-            @else
+                @if($info['gtype']=='standard')
+                <a class="btn btn-link hidden-print margin-bottom-5" target="_BLANK" style="" href="/legacy/invoice/download/{{$info['Url']}}">
+                    Download
+                </a>
+                @else
                 <button id="btnGroupVerticalDrop7" type="button" class="btn btn-link hidden-print view-footer-btn-rht-align dropdown-toggle" style="margin-right: @if($info['invoice_type']==1) 15px @else 20px  @endif" data-toggle="dropdown" aria-expanded="true">
                     Download <i class="fa fa-angle-down"></i>
                 </button>

@@ -1457,7 +1457,7 @@ function getParticularValue(name, numrow = 1, readonly = '') {
         }
 
     }
-    if (name == 'rate' || name == 'qty' || name == 'taxin' || name == 'tax_amount' || name == 'discount_perc' || name == 'discount' || name == 'total_amount' || name == 'current_percent' || name == 'previous_percent' || name == 'previous_amount' || name == 'total_percent') {
+    if (name == 'rate' || name == 'qty' || name == 'taxin' || name == 'tax_amount' || name == 'discount_perc' || name == 'discount' || name == 'total_amount' || name == 'current_percent' || name == 'previous_percent' || name == 'previous_amount' || name == 'total_percent' || name == 'annual_recurring_charges') {
         totalfunction = 'onblur="calculateamt();calculatetax();"';
         input_type = 'number" max="100000000" step="0.01';
     }

@@ -558,7 +558,28 @@
 
                 <!-- add particulars label ends -->
                 @section('footer')
+                @php
+                $billcodeJson = json_encode($csi_codes);
+                $billcodeJson = str_replace("\\", '\\\\', $billcodeJson);
+                $billcodeJson = str_replace("'", "\'", $billcodeJson);
+                $billcodeJson = str_replace('"', '\\"', $billcodeJson);
+
+
+
+                $onlyBillCodeJson = json_encode(array_column($csi_codes, 'value'));
+                $onlyBillCodeJson = str_replace("\\", '\\\\', $onlyBillCodeJson);
+                $onlyBillCodeJson = str_replace("'", "\'", $onlyBillCodeJson);
+                $onlyBillCodeJson = str_replace('"', '\\"', $onlyBillCodeJson);
+
+                //$onlyBillCodeJson=json_encode(array_column($csi_codes, 'value'));
+                $ArrayBillCodeJson = str_replace("\\", '\\\\', $csi_codes_array);
+                $ArrayBillCodeJson = str_replace("'", "\'", $ArrayBillCodeJson);
+                $ArrayBillCodeJson = str_replace('"', '\\"', $ArrayBillCodeJson);
+
+                @endphp
                     <script>
+                        csi_codes = JSON.parse('{!! $billcodeJson !!}');
+                        csi_codes_array = JSON.parse('{!! $ArrayBillCodeJson !!}');
                         mode = '{{ $mode }}';
                         @if (!empty($invoice_particular))
                             exist_paricular_cnt = '{{ count($invoice_particular) }}';

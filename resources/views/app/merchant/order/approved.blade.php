@@ -217,7 +217,7 @@
                                         <td class="td-c onhover-border" scope="row">
                                             @if($row['co_type']==1) Unit / Price @endif
                                             @if($row['co_type']==2) Budget reallocation @endif
-                                            @if($row['co_type']==3) Fixed @endif
+                                            @if($row['co_type']==3) Fixed amount@endif
                                             @if($row['co_type']==4) Subcontract @endif
                                         </td>
                                         <td class="td-r onhover-border">

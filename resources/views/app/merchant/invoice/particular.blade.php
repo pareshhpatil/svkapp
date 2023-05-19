@@ -54,7 +54,7 @@
                 @if($k!='sr_no')
                 @php $value=$dp->{$k}; @endphp
                 <td>
-                    @if($k == 'rate' || $k == 'qty' || $k == 'discount_perc' || $k == 'discount' || $k == 'total_amount')
+                    @if($k == 'rate' || $k == 'qty' || $k == 'discount_perc' || $k == 'discount' || $k == 'total_amount' || $k == 'annual_recurring_charges' || $k == 'previous_percent' || $k == 'current_percent')
                     @if($k == 'amount' || $k == 'rate')
                     @php $rate=1; @endphp
                     @endif
@@ -67,7 +67,7 @@
                     @if($discount_perc==1 && $k == 'discount')
                     @php $readonly='readonly'; @endphp
                     @endif
-                    <input type="number" step="0.01" {{$readonly}} onblur="calculateamt();calculatetax(undefined,undefined,'1');" name="{{$k}}[]" data-cy="particular_{{$k}}{{$int}}" class="form-control " value="{{$value}}">
+                    <input type="number" step="0.01" {{$readonly}} onblur="calculateamt();" name="{{$k}}[]" data-cy="particular_{{$k}}{{$int}}" class="form-control " value="{{$value}}">
                     @elseif($k=='gst')
                     <select name="gst[]" data-cy="particular_gst{{$int}}" onchange="setTaxApplicableAmt({{$int}},this.value);calculateamt();calculatetax(undefined,undefined,'1');" style="min-width:80px;" class="form-control ">
                         <option value="">Select</option>
