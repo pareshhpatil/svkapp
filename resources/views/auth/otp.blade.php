@@ -21,7 +21,7 @@
       <label class="label" for="text4b">Enter 4 digit OTP number</label>
       <div class="form-group basic mt-1">
 
-        <input type="text" required class="form-control verification-input" inputmode="numeric" name="otp" pattern="[0-9]*" minlength="4" placeholder="••••" maxlength="4">
+        <input type="text" required class="form-control verification-input" id="otp" inputmode="numeric" name="otp" pattern="[0-9]*" minlength="4" placeholder="••••" maxlength="4">
       </div>
       <div class="form-links mt-2">
         <div id="counter">
@@ -53,6 +53,7 @@
         document.getElementById("resend").style.display = "block";
       }
     }, 1000);
+    document.getElementById("otp").focus();
   </script>
 
 </div>
