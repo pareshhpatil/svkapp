@@ -21,7 +21,7 @@
       <div class="form-group boxed">
         <div class="input-wrapper">
           <label class="label" for="text4b">Enter your 10 digit mobile number</label>
-          <input type="text" name="mobile" class="form-control" pattern="[0-9]*" maxlength="10" minlength="10" placeholder="Mobile number">
+          <input type="text" name="mobile" class="form-control" inputmode="numeric" pattern="[0-9]*" maxlength="10" minlength="10" placeholder="Mobile number">
           <i class="clear-input">
             <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
           </i>
