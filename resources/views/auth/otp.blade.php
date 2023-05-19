@@ -53,7 +53,7 @@
         document.getElementById("resend").style.display = "block";
       }
     }, 1000);
-    document.getElementById("otp").focus();
+    document.getElementById("otp").click();
   </script>
 
 </div>
