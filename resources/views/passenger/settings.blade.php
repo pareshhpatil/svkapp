@@ -94,8 +94,6 @@
 			
         </ul>
 		
-		<button onclick="start();" class="btn btn-primary">Start</button>
-		<button onclick="stop();" class="btn btn-secondary">Stop</button>
 
 
 

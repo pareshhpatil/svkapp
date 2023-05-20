@@ -34,7 +34,7 @@ class HomeController extends Controller
     public function index()
     {
 
-        
+
         $data['menu'] = 1;
         $data['title'] = 'dashboard';
         $data['data']['total_ride'] = '20';
@@ -169,6 +169,12 @@ class HomeController extends Controller
         $data['id'] = $id;
         $data['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toJson();
         return view('blog.index', $data);
+    }
+    public function blogs()
+    {
+        $data['menu'] = 0;
+        $data['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toJson();
+        return view('blog.list', $data);
     }
 
 

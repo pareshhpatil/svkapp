@@ -10,7 +10,7 @@
     <title>{{$title}}</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.png" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icon/192x192.png">
-    <link rel="stylesheet" href="/assets/css/style.css?v=6">
+    <link rel="stylesheet" href="/assets/css/style.css?v=7">
     <link rel="stylesheet" href="/assets/css/custom.css?v=3">
     <link rel="manifest" href="__manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
@@ -127,11 +127,6 @@
                         </a>
                     </div>
 
-
-
-
-
-
                     <div class="listview-title mt-1">Menu</div>
                     <ul class="listview flush transparent no-line image-listview">
                         <li>
@@ -151,6 +146,16 @@
                                 </div>
                                 <div class="in">
                                     Support
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/blogs" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="apps-outline" role="img" class="md hydrated" aria-label="apps outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Blogs
                                 </div>
                             </a>
                         </li>
