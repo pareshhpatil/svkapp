@@ -88,7 +88,7 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                    <div><input type="time"  required value="09:00 AM" name="time" class="form-control" id="time" placeholder="Select Date">
+                                    <div><input type="time"  required value="09:00" name="time" class="form-control" id="time" placeholder="Select Date">
                                         </div>
                                         <a onclick="document.getElementById('time').click();" ><span  class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
                                     </div>
