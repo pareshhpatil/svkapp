@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ApiModel;
 use Validator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as Req;
 
 class ApiController extends Controller
 {
@@ -97,5 +99,34 @@ class ApiController extends Controller
         } else {
             return response()->json(['error' => 'Invalid OTP'], 401);
         }
+    }
+
+
+    public function sendNotification($token, $title, $body, $image = '')
+    {
+        $token = 'd14m_-lORtS6MRy9EgoWVN:APA91bHqe4qLJRUrgI_Akmh2wSmpMO4nOiJEPYcggdnwbjW86gJ27pVn_7B5AyltZbpmIzpX3tGT8Pr6ok-DqzE7viFYSgcY9k77mC7k5GHEwshykrultulOf5KdERLMDc8vkCXJHOda';
+        $title = 'New API';
+        $body = 'Hello';
+        $image = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
+
+        $key = 'AAAAXjq4xaQ:APA91bEK5ZfKabDbLh_HNWVr1Q-CSSZ3_o_GLsEVUlHPhh465iuL-vlTiz4NIRoZTZPZOTCKHxoaElxR0HnhIuVqsomGIheuChEMGYXMApDK6EIhUCn-fQeswspBEXlP1H8YpSowKWci';
+        $array['registration_ids'] = array($token);
+        $array['notification']['body'] = $body;
+        $array['notification']['icon'] = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
+        $array['notification']['title'] = $title;
+        if ($image != '') {
+            $array['notification']['image'] = $image;
+        }
+        $array['notification']['content_available'] = true;
+        $array['notification']['priority'] = "normal";
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'key=' . $key,
+            'Content-Type' => 'application/json'
+        ];
+        $body = json_encode($array);
+
+        $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
+        $res = $client->sendAsync($request)->wait();
     }
 }

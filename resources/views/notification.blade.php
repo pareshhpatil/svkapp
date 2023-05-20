@@ -167,7 +167,7 @@ function successCallback(position) {
     details.innerHTML += "Speed: "+speed+"<br>";
     details.innerHTML += "reqcount: "+reqcount;
 map.innerHTML = '<iframe width="300" height="300" src="https://maps.google.com/maps?q='+latitude+','+longitude+'&amp;z=15&amp;output=embed"></iframe>';
-
+loadDoc();
 	
 }
 function errorCallback(error) {
@@ -178,6 +178,15 @@ var options = {
 	timeout: 10000,
 	maximumAge: 0
 };
+
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    
+  };
+  xhttp.open("GET", "https://app.svktrv.in/app/ping", true);
+  xhttp.send();
+}
 </script>
       </div>
     </div>

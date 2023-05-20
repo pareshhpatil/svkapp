@@ -9,6 +9,18 @@
             <div class="card-body">
                 <form action="/ridesave" method="post">
                     @csrf
+
+                    <div class="transfer-verification">
+                    
+                    <div class="from-to-block mb-5">
+                        <div class="item text-start">
+                        </div>
+                        <div class="item text-end">
+                            <img src="assets/img/swap.png" alt="avatar" class="imaged w48">
+                        </div>
+                        <div class="middle-line"></div>
+                    </div>
+                </div>
                     <div class="form-group boxed">
                         <div class="input-wrapper">
                             <label class="label" for="text4b">Pickup/Drop</label>

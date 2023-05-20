@@ -113,6 +113,9 @@ class LoginController extends Controller
         #check OTP is valid with mobile number
         $data = $model->getTableRow('otp', 'mobile', $request->mobile, 1, ['otp' => $request->otp]);
         if ($data != false) {
+            if ($request->token != '') {
+                $data = $model->updateTable('users', 'id', $data->user_id, 'token', $request->token);
+            }
             Auth::loginUsingId($data->user_id, true);
             $user = Auth::user();
             Session::put('user_id', $user->id);

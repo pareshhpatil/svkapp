@@ -33,6 +33,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+
+        
         $data['menu'] = 1;
         $data['title'] = 'dashboard';
         $data['data']['total_ride'] = '20';
@@ -45,7 +47,7 @@ class HomeController extends Controller
     public function rides($type = 'upcoming')
     {
         $data['menu'] = 2;
-        $data['title'] = 'My rides';
+        $data['title'] = 'My Rides';
         $data['type'] = $type;
         $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'));
         $data['data']['live'] = $this->model->passengerLiveRide(Session::get('parent_id'));
@@ -80,6 +82,7 @@ class HomeController extends Controller
     public function profileSave(Request $request)
     {
         $array = $request->all();
+        Session::put('name', $request->name);
         unset($array['_token']);
         $data['data'] = $this->model->updateTableData('users', 'id', Session::get('user_id'), $array);
         return redirect('/profile');
@@ -112,7 +115,7 @@ class HomeController extends Controller
             $img->save($compress);
             $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
             $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
-
+            Session::put('icon', '/' . $compress);
             return response()->json(['image' => '/' . $compress]);
         }
     }
@@ -120,7 +123,7 @@ class HomeController extends Controller
     public function bookRide()
     {
         $data['menu'] = 3;
-        $data['title'] = 'Book a ride';
+        $data['title'] = 'Book a Ride';
         $data['data'] = '';
         return view('passenger.book-ride', $data);
     }
@@ -162,7 +165,7 @@ class HomeController extends Controller
 
     public function blog($id, $title)
     {
-        $data['menu'] = 1;
+        $data['menu'] = 0;
         $data['id'] = $id;
         $data['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toJson();
         return view('blog.index', $data);

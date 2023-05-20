@@ -19,16 +19,18 @@
 
   <!-- loader -->
   <div id="loader">
-    <img src="/assets/img/loading-icon.png" alt="icon" class="loading-icon">
+  <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
   </div>
   <!-- * loader -->
 
   <!-- App Header -->
   <div class="appHeader no-border transparent position-absolute">
     <div class="left">
+      @if($title!='Login')
       <a href="#" class="headerButton goBack">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </a>
+      @endif
     </div>
     <div class="pageTitle">{{$title}}</div>
     <div class="right">

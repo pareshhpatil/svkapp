@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div id="appCapsule">
+<div id="appCapsule" class="full-height">
     <div id="app">
 
         <!-- Wallet Card -->

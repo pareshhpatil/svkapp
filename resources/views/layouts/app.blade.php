@@ -10,14 +10,14 @@
     <title>{{$title}}</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.png" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icon/192x192.png">
-    <link rel="stylesheet" href="/assets/css/style.css?v=2">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
     <link rel="stylesheet" href="/assets/css/custom.css?v=3">
     <link rel="manifest" href="__manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         body {
-            background-image: url("/assets/img/background.jpg");
+            background-image: url("/assets/img/bg.jpg");
             background-repeat: no-repeat, repeat;
             background-size: cover;
         }
@@ -28,7 +28,7 @@
 
     <!-- loader -->
     <div id="loader">
-        <img src="/assets/img/loading-icon.png" alt="icon" class="loading-icon">
+		 <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
     </div>
     <!-- * loader -->
 
@@ -87,7 +87,7 @@
         <a @if($menu==3) href="javascript:location.reload();" @else href="/book-ride" @endif class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="add-circle-outline"></ion-icon>
-                <strong>Book Ride</strong>
+                <strong>Book a Ride</strong>
             </div>
         </a>
         <a @if($menu==4) href="javascript:location.reload();" @else href="/notifications" @endif class="item @if($menu==4) active @endif">

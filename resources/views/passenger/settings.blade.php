@@ -91,7 +91,11 @@
                     @csrf
                 </form>
             </li>
+			
         </ul>
+		
+		<button onclick="start();" class="btn btn-primary">Start</button>
+		<button onclick="stop();" class="btn btn-secondary">Stop</button>
 
 
 
@@ -101,7 +105,42 @@
 @endsection
 
 @section('footer')
+<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
+
+
+
+
 <script>
+
+function start()
+{
+	window.WTN.backgroundLocation.start({
+ callback:false,
+ apiUrl:"https://app.svktrv.in/app/ping",
+ timeout:10,
+ data:"userid1",
+ backgroundIndicator:true,
+ pauseAutomatically: true,
+ distanceFilter: 0.0,
+ desiredAccuracy: "best",
+ activityType: "other",
+});
+}
+
+function stop()
+{
+	window.WTN.backgroundLocation.stop();
+}
+
+const { Messaging: FirebaseMessaging } = window.WTN.Firebase
+
+FirebaseMessaging.getFCMToken({
+    callback:function(data){
+        document.getElementById('token').innerHTML= data.token;
+        //store it in your backend to send notification
+    }
+})
+
     new Vue({
         el: '#app',
         data() {
@@ -157,5 +196,7 @@
 
 
     })
+	
+	
 </script>
 @endsection
