@@ -12,6 +12,15 @@
 .timeline .item {
     margin-bottom: 0px;
 }
+
+.form-group.boxed .form-control {
+    background: #fff;
+    box-shadow: none;
+    height: 42px;
+    border-radius: 10px;
+    padding: 0 40px 0 16px;
+    vertical-align: middle;
+}
 </style>
 <div id="appCapsule" class="extra-header-active full-height">
 
