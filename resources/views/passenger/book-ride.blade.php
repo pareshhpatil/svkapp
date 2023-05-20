@@ -79,7 +79,7 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                        <div><input type="date"  required name="date" class="form-control" id="date" placeholder="Select Date">
+                                        <div><input type="date" data-date-format="DD MMMM YYYY" required name="date" class="form-control" id="date" placeholder="Select Date">
                                         </div>
                                         <a onclick="document.getElementById('date').click();" ><span  class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
                                     </div>
@@ -160,6 +160,6 @@
     });
 
     var today = new Date().toISOString().split('T')[0];
-    //document.getElementById('date').setAttribute('min', today);
+    document.getElementById('date').setAttribute('min', today);
 </script>
 @endsection
