@@ -79,7 +79,7 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                        <div><input type="date" data-date-format="DD MMMM YYYY" required name="date" class="form-control" id="date" placeholder="Select Date">
+                                        <div><input type="date" value="{{$date}}" required name="date" class="form-control" id="date" placeholder="Select Date">
                                         </div>
                                         <a onclick="document.getElementById('date').click();" ><span  class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
                                     </div>
@@ -88,8 +88,9 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                        <div>Select Time</div>
-                                        <span onclick="document.getElementById('date').click();" class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span>
+                                    <div><input type="time"  required value="09:00 AM" name="time" class="form-control" id="time" placeholder="Select Date">
+                                        </div>
+                                        <a onclick="document.getElementById('time').click();" ><span  class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
                                     </div>
                                 </div>
                             </li>
@@ -105,7 +106,6 @@
                     <div class="mt-2">
                         <div class="row">
                             <div class="col-6">
-                                <input type="time" style="width: 0px;display: contents;" required name="time" class="form-control" id="time" placeholder="Select Date">
 
                                 <input type="hidden" name="type" :value="type" value="Pickup">
                                 <button type="submit" class="btn btn-lg btn-primary btn-block">Confirm</button>

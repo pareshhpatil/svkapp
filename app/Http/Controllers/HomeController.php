@@ -124,6 +124,7 @@ class HomeController extends Controller
     {
         $data['menu'] = 3;
         $data['title'] = 'Book a Ride';
+        $data['date'] = date('d/m/Y');
         $data['data'] = '';
         return view('passenger.book-ride', $data);
     }
