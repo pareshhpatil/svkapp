@@ -69,15 +69,7 @@
                             </i>
                         </div>
                     </div>
-					<div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="textarea4b">Token</label>
-                            <textarea id="token" name="token"  rows="2" v-model="data.token" class="form-control" placeholder="Enter Token"></textarea>
-                            <i class="clear-input">
-                                <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
-                            </i>
-                        </div>
-                    </div>
+					
                     <div v-show="updated" class="mt-2">
                         <div class="row">
                             <div  class="col-12">
@@ -94,18 +86,10 @@
 @endsection
 
 @section('footer')
-<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
 
 <script>
 
-const { Messaging: FirebaseMessaging } = window.WTN.Firebase
 
-FirebaseMessaging.getFCMToken({
-    callback:function(data){
-        document.getElementById('token').innerHTML= data.token;
-        //store it in your backend to send notification
-    }
-});
 
     new Vue({
         el: '#app',
