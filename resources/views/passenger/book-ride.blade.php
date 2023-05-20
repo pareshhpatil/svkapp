@@ -32,7 +32,6 @@
 </style>
 
 <div id="appCapsule" class="full-height">
-    <img class="imaged" style="width: 100%;" src="/assets/img/book.png">
 
     <div id="app" class="section tab-content mb-1">
 
