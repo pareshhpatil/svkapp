@@ -67,7 +67,7 @@
                     <div class="form-group boxed">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Date</label>
-                            <input type="date" required name="date" class="form-control" id="email4b" placeholder="Select Date">
+                            <input type="date" required name="date" class="form-control" id="date" placeholder="Select Date">
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
                             </i>
@@ -124,6 +124,9 @@
         methods: {
 
         }
-    })
+    });
+
+var today = new Date().toISOString().split('T')[0];
+document.getElementsByName("date")[0].setAttribute('min', today);
 </script>
 @endsection
