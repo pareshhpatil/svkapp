@@ -79,8 +79,9 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                        <div>Select date</div>
-                                        <span onclick="document.getElementById('date').click();" class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span>
+                                        <div><input type="date"  required name="date" class="form-control" id="date" placeholder="Select Date">
+                                        </div>
+                                        <a onclick="document.getElementById('date').click();" ><span  class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
                                     </div>
                                 </div>
                             </li>
@@ -96,7 +97,7 @@
                         </ul>
 
                     </div>
-                    
+
 
 
 
@@ -104,7 +105,6 @@
                     <div class="mt-2">
                         <div class="row">
                             <div class="col-6">
-                                <input type="date" style="width: 0px;display: contents;" required name="date" class="form-control" id="date" placeholder="Select Date">
                                 <input type="time" style="width: 0px;display: contents;" required name="time" class="form-control" id="time" placeholder="Select Date">
 
                                 <input type="hidden" name="type" :value="type" value="Pickup">
