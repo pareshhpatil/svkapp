@@ -67,6 +67,7 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Date</label>
+                            <button onclick="document.getElementById('date').click();">
                             <input type="date" required name="date" class="form-control" id="date" placeholder="Select Date">
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
