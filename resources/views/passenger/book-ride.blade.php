@@ -29,6 +29,16 @@
         height: 42px;
         min-width: 42px;
     }
+
+    .image-listview>li:after {
+        left: 0px;
+    }
+    .form-group.basic .form-control{
+        border-bottom: 0;
+    }
+    body.dark-mode .listview {
+        background: transparent;
+    }
 </style>
 
 <div id="appCapsule" class="full-height">
@@ -80,16 +90,16 @@
                                     <div class="in">
                                         <div><input type="date" value="{{$date}}" required name="date" class="form-control" id="date" placeholder="Select Date">
                                         </div>
-                                        <a onclick="document.getElementById('date').click();" ><span  class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
+                                        <a onclick="document.getElementById('date').click();"><span class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                    <div><input type="time"  required value="09:00" name="time" class="form-control" id="time" placeholder="Select Date">
+                                        <div><input type="time" required value="09:00" name="time" class="form-control" id="time" placeholder="Select Date">
                                         </div>
-                                        <a onclick="document.getElementById('time').click();" ><span  class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
+                                        <a onclick="document.getElementById('time').click();"><span class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
                                     </div>
                                 </div>
                             </li>
