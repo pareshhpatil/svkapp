@@ -64,7 +64,7 @@
 
                         </div>
                     </div>
-                    <div class="form-group boxed">
+                    <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Date</label>
                             <input type="date" required name="date" class="form-control" id="date" placeholder="Select Date">
@@ -73,7 +73,7 @@
                             </i>
                         </div>
                     </div>
-                    <div class="form-group boxed">
+                    <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Time</label>
                             <input type="time" required name="time" class="form-control" id="email5b" placeholder="Select Time">
