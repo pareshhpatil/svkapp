@@ -109,7 +109,7 @@ class ApiController extends Controller
         $body = 'Hello';
         $image = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
 
-        $key = 'AAAAXjq4xaQ:APA91bEK5ZfKabDbLh_HNWVr1Q-CSSZ3_o_GLsEVUlHPhh465iuL-vlTiz4NIRoZTZPZOTCKHxoaElxR0HnhIuVqsomGIheuChEMGYXMApDK6EIhUCn-fQeswspBEXlP1H8YpSowKWci';
+        $key = env('FIREBASE_KEY');
         $array['registration_ids'] = array($token);
         $array['notification']['body'] = $body;
         $array['notification']['icon'] = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
