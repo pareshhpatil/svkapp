@@ -36,7 +36,7 @@ Route::get('/thank-you', function () {
 
 Route::get('/blogs', [App\Http\Controllers\HomeController::class, 'blogs']);
 Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
-
+Route::any('/app/ping', [App\Http\Controllers\HomeController::class, 'ping']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
