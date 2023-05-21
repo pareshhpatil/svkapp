@@ -93,14 +93,14 @@
                             @isset($data['driver']['mobile'])
                             <li style="padding:0px;">
                                 <div class="item" style="padding: 0;">
-                                    <div class="icon-box text-black">
-                                    <a href="tel:{{$data['driver']['mobile']}}"> <ion-icon name="call-outline"></ion-icon></a>
+                                    <div onclick="window.open('tel:{{$data['driver']['mobile']}}');" class="icon-box text-black">
+                                        <ion-icon name="call-outline"></ion-icon>
                                     </div>
                                     <div class="in">
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
 
-                                           <a href="tel:{{$data['driver']['mobile']}}"> <strong v-html="data.driver.mobile"></strong></a>
+                                            <strong onclick="window.open('tel:{{$data['driver']['mobile']}}');" v-html="data.driver.mobile"></strong>
                                         </div>
 
                                     </div>
