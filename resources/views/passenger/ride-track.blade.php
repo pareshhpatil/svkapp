@@ -33,7 +33,7 @@
     }
 
     #map-canvas {
-        height: 400px;
+        height: 80%;
         width: 100%;
     }
 </style>
