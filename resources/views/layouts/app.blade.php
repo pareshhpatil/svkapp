@@ -71,6 +71,7 @@
 
 
     <!-- App Bottom Menu -->
+    @if(Session::has('name'))
     <div class="appBottomMenu">
         <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif class="item @if($menu==1) active @endif">
             <div class="col">
@@ -105,6 +106,7 @@
             </div>
         </a>
     </div>
+    @endif
     <!-- * App Bottom Menu -->
 
     <!-- App Sidebar -->

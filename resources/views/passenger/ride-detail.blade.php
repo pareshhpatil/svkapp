@@ -99,7 +99,6 @@
                                     <div class="in">
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
-
                                             <strong onclick="window.open('tel:{{$data['driver']['mobile']}}');" v-html="data.driver.mobile"></strong>
                                         </div>
 
@@ -192,7 +191,7 @@
                     <div class="item">
                         <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
                             <div class="icon-wrapper bg-info">
-                            <ion-icon name="logo-whatsapp"></ion-icon>
+                                <ion-icon name="logo-whatsapp"></ion-icon>
                             </div>
                             <strong>Share</strong>
                         </a>
