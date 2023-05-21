@@ -243,7 +243,7 @@
                 map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
                 marker = new google.maps.Marker({
                     position: new google.maps.LatLng(mylocation_lat, mylocation_long),
-                    icon: 'https://app.svktrv.in/assets/img/home.png',
+                    icon: 'https://app.svktrv.in/assets/img/sm-icon.png',
                     map: map
                 });
             const pos = {
