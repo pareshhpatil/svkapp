@@ -124,8 +124,6 @@
 
         }
     });
-
-
 </script>
 <script type="text/javascript">
     var k = 0;
@@ -135,6 +133,10 @@
 
     function initialize() {
 
+        const locationButton = document.createElement("button");
+        locationButton.textContent = "Current Location";
+        locationButton.classList.add("custom-map-control-button");
+
         var myLatLng = new google.maps.LatLng(lat, 73.7908489),
             myOptions = {
                 zoom: 18,
@@ -143,6 +145,9 @@
                 icon: 'https://app.svktrv.in/assets/img/sm-icon.png'
 
             },
+
+
+
             map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
 
             marker = new google.maps.Marker({
@@ -160,6 +165,40 @@
             });
 
 
+        // Add the button to the map's controls
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(locationButton);
+
+        // Handle button click event
+        locationButton.addEventListener("click", () => {
+            // Try to get the user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Get the user's coordinates
+                        const {
+                            latitude,
+                            longitude
+                        } = position.coords;
+                        const pos = {
+                            lat: latitude,
+                            lng: longitude
+                        };
+
+                        // Center the map on the user's location
+                        map.setCenter(pos);
+                    },
+                    (error) => {
+                        // Handle geolocation error
+                        console.error("Error getting current location:", error);
+                    }
+                );
+            } else {
+                // Geolocation is not supported by the browser
+                console.error("Geolocation is not supported by this browser.");
+            }
+        });
+
+
         marker.setMap(map);
         moveBus(map, marker);
 
@@ -171,7 +210,7 @@
 
         setInterval(function() {
             if (k < 50) {
-                lat=lat+0.00005;
+                lat = lat + 0.00005;
                 marker.setPosition(new google.maps.LatLng(lat, 73.7908489));
                 map.panTo(new google.maps.LatLng(lat, 73.7908489));
                 k = k + 1;
