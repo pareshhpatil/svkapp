@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                             <div class="item">
-                                <div class="dot bg-primary" style="background: #e8481e !important;"></div>
+                                <div class="dot bg-primary bg-red" ></div>
                                 <div class="content">
                                     <h2 class="title" v-html="drop">Home
                                     </h2>

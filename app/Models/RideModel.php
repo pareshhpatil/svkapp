@@ -33,7 +33,7 @@ class RideModel extends ParentModel
             ->where('p.status', 0)
             ->whereDate('r.date', '>=', date('Y-m-d'))
             ->where('p.passenger_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time'));
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time , p.id as pid'));
         if ($single == 1) {
             $array = $retObj->first();
         } else {

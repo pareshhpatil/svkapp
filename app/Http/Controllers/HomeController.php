@@ -9,6 +9,7 @@ use App\Models\RideModel;
 use Validator;
 use Intervention\Image\ImageManager;
 use Image;
+use App\Http\Lib\Encryption;
 
 class HomeController extends Controller
 {
@@ -41,7 +42,21 @@ class HomeController extends Controller
         $data['data']['total_review'] = '10';
         $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
         $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'), 1);
+        if (!empty($data['data']['upcoming'])) {
+            $data['data']['upcoming']['link'] = '/passenger/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
+        }
         return view('passenger.dashboard', $data);
+    }
+
+    public function passengerRideDetail($link)
+    {
+        $id = Encryption::decode($link);
+        $array = $this->model->getTableRow('ride_passenger', 'id', $id);
+        // $this->model->getTableRow('ride', 'id', $data->ride_id);
+        $data['data'] =json_decode(json_encode($array), 1);
+        $data['menu'] = 0;
+        $data['title'] = 'Ride detail';
+        return view('passenger.ride-detail', $data);
     }
 
     public function rides($type = 'upcoming')
