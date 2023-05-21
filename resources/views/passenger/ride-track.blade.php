@@ -232,7 +232,7 @@
     function getMylocation(posistion) {
         mylocation_lat = posistion.latitude;
         mylocation_long = posistion.longitude;
-
+        map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(mylocation_lat, mylocation_long),
             icon: 'https://app.svktrv.in/assets/img/home.png',
