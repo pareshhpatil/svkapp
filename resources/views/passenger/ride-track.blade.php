@@ -231,7 +231,7 @@
     function moveBus(map, marker) {
 
         setInterval(function() {
-            if (k < 50) {
+            if (k < 5) {
                 lat = lat + 0.00005;
                 marker.setPosition(new google.maps.LatLng(lat, 73.7908489));
                 map.panTo(new google.maps.LatLng(lat, 73.7908489));
