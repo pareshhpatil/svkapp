@@ -52,7 +52,7 @@ class RideModel extends ParentModel
             ->where('r.is_active', 1)
             ->where('p.status', 1)
             ->where('p.passenger_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time'))
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time, p.id as pid'))
             ->first();
         return json_decode(json_encode($retObj), 1);
     }
@@ -68,7 +68,7 @@ class RideModel extends ParentModel
             ->whereDate('p.pickup_time', '<', date('Y-m-d'))
             ->where('p.status', '>', 1)
             ->where('p.passenger_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time'))
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time, p.id as pid'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

@@ -38,6 +38,9 @@ Route::get('/blogs', [App\Http\Controllers\HomeController::class, 'blogs']);
 Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
 Route::any('/app/ping', [App\Http\Controllers\HomeController::class, 'ping']);
 Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
+Route::post('/passenger/sos', [App\Http\Controllers\HomeController::class, 'passengerSOS']);
+Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'passengerHelp']);
+Route::post('/passenger/ride/cancel', [App\Http\Controllers\HomeController::class, 'rideCancel']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

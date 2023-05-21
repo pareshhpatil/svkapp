@@ -63,9 +63,9 @@ class HomeController extends Controller
             $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
-        $ride_passenger['pickup_time']=$this->htmlDateTime($ride_passenger['pickup_time']);
-        $ride['start_time']=$this->htmlDateTime($ride['start_time']);
-        $ride['end_time']=$this->htmlDateTime($ride['end_time']);
+        $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
+        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;
@@ -78,17 +78,34 @@ class HomeController extends Controller
         return view('passenger.ride-detail', $data);
     }
 
+
     public function rides($type = 'upcoming')
     {
         $data['menu'] = 2;
         $data['title'] = 'My Rides';
         $data['type'] = $type;
-        $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'));
-        $data['data']['live'] = $this->model->passengerLiveRide(Session::get('parent_id'));
-        $data['data']['past'] = $this->model->passengerPastRides(Session::get('parent_id'));
-        $data['data']['booking'] = $this->model->passengerBookingRides(Session::get('parent_id'));
+        $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
+        $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
+        $data['data']['past'] = $this->EncryptList($this->model->passengerPastRides(Session::get('parent_id')));
+        $data['data']['booking'] = $this->EncryptList($this->model->passengerBookingRides(Session::get('parent_id')), 0, '/passenger/booking/', 'id');
         return view('passenger.my-rides', $data);
     }
+
+
+    public function EncryptList($array, $single = 0, $link = '/passenger/ride/', $key = 'pid')
+    {
+        if (!empty($array)) {
+            if ($single == 0) {
+                foreach ($array as $k => $v) {
+                    $array[$k]['link'] = $link . Encryption::encode($v[$key]);
+                }
+            } else {
+                $array['link'] = $link . Encryption::encode($array[$key]);
+            }
+        }
+        return $array;
+    }
+
 
     public function notifications()
     {
@@ -161,6 +178,57 @@ class HomeController extends Controller
         $data['date'] = date('Y-m-d');
         $data['data'] = '';
         return view('passenger.book-ride', $data);
+    }
+
+    public function passengerSOS(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ride_passenger_id' => 'required',
+            'ride_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors(), 422);
+        }
+        $array = $request->all();
+        unset($array['_token']);
+        $array['emergency'] = json_encode($request->emergency);
+        $array['created_by'] = $request->ride_passenger_id;
+        $array['last_update_by'] = $request->ride_passenger_id;
+        $this->model->saveTable('ride_emergency', $array);
+        return redirect('/thank-you');
+    }
+    public function passengerHelp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ride_passenger_id' => 'required',
+            'ride_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors(), 422);
+        }
+        $array = $request->all();
+        unset($array['_token']);
+        $array['created_by'] = $request->ride_passenger_id;
+        $array['last_update_by'] = $request->ride_passenger_id;
+        $this->model->saveTable('ride_help', $array);
+        return redirect('/thank-you');
+    }
+    public function rideCancel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ride_passenger_id' => 'required',
+            'ride_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors(), 422);
+        }
+        $array = $request->all();
+        unset($array['_token']);
+        $array['created_by'] = $request->ride_passenger_id;
+        $array['last_update_by'] = $request->ride_passenger_id;
+        $this->model->saveTable('ride_cancel', $array);
+        $this->model->updateTable('ride_passenger', 'id', $request->ride_passenger_id, 'status', 3);
+        return redirect('/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
     }
 
     public function saveRide(Request $request)

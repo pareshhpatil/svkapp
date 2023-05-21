@@ -29,7 +29,7 @@
         <!-- waiting tab -->
         <div class="tab-pane fade active show " id="upcoming" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-if="data.live" href="app-transaction-detail.html" class="item">
+                <a v-if="data.live" :href="item.link" class="item">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
@@ -42,7 +42,7 @@
                     </div>
                 </a>
                 <!-- item -->
-                <a v-for="item in data.upcoming" href="app-transaction-detail.html" class="item">
+                <a v-for="item in data.upcoming" :href="item.link" class="item">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
@@ -73,7 +73,7 @@
         <div class="tab-pane fade" id="past" role="tabpanel">
             <div class="transactions mt-2">
                 <!-- item -->
-                <a v-for="item in data.past" href="app-transaction-detail.html" class="item">
+                <a v-for="item in data.past" :href="item.link" class="item">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
@@ -120,7 +120,7 @@
 
         <div class="tab-pane fade show" id="live" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-for="item in data.booking" href="app-transaction-detail.html" class="item">
+                <a v-for="item in data.booking" :href="item.link" class="item">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>

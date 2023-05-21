@@ -43,6 +43,14 @@
                 &nbsp;
             </div>
         </div>
+        <div v-if="data.ride_passenger.status==3">
+            <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
+                <div class="pageTitle">Ride has been cancelled</div>
+            </div>
+            <div class="mt-2">
+                &nbsp;
+            </div>
+        </div>
         <div v-if="data.driver.name" class="listed-detail ">
             <div class="row" style="border-bottom: 1px solid lightgrey;">
                 <div class="col text-center">
@@ -143,7 +151,7 @@
         </div>
 
         <div class=" ">
-            <div class="wallet-card" style="box-shadow: none;padding: 0;">
+            <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
                 <!-- Balance -->
                 <!-- Wallet Footer -->
                 <div class="wallet-footer">
@@ -180,7 +188,7 @@
                         </a>
                     </div>
                     <div class="item">
-                        <a href="#" id="shareBtn">
+                        <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
                             <div class="icon-wrapper bg-info">
                                 <ion-icon name="share-social-outline"></ion-icon>
                             </div>
@@ -243,24 +251,25 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Cancel Ride</h5>
                     </div>
-                    <form>
+                    <form action="/passenger/ride/cancel" method="post">
+                        @csrf
                         <div class="modal-body text-start mb-2">
-
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label" for="text1">Enter Reason</label>
-                                    <input type="text" class="form-control" placeholder="Enter cancel reason" maxlength="100">
+                                    <input type="text" name="message" class="form-control" placeholder="Enter cancel reason" maxlength="100">
                                     <i class="clear-input">
                                         <ion-icon name="close-circle"></ion-icon>
                                     </i>
                                 </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <div class="btn-inline">
+                                <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
+                                <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="button" class="btn btn-text-primary" data-bs-dismiss="modal">CONFIRM</button>
+                                <button type="submit" class="btn btn-text-primary">CONFIRM</button>
                             </div>
                         </div>
                     </form>
@@ -274,12 +283,13 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Help</h5>
                     </div>
-                    <form>
+                    <form action="/passenger/help" method="post">
+                        @csrf
                         <div class="modal-body text-start mb-2">
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label" for="text1">Enter Message</label>
-                                    <input type="text" class="form-control" placeholder="Enter message" maxlength="100">
+                                    <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
                                     <i class="clear-input">
                                         <ion-icon name="close-circle"></ion-icon>
                                     </i>
@@ -288,8 +298,10 @@
                         </div>
                         <div class="modal-footer">
                             <div class="btn-inline">
+                                <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
+                                <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="button" class="btn btn-text-primary" data-bs-dismiss="modal">SEND</button>
+                                <button type="submit" class="btn btn-text-primary">SEND</button>
                             </div>
                         </div>
                     </form>
@@ -302,8 +314,8 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Emergency SOS</h5>
                     </div>
-                    <form>
-
+                    <form action="/passenger/sos" method="post">
+                        @csrf
                         <div class="modal-body text-start mb-2 mt-1">
                             <div class="">
                                 <div class="row">
@@ -361,7 +373,17 @@
 
                                 </div>
                             </div>
+                            <div class="form-group basic">
+                                <div class="input-wrapper">
+                                    <label class="label" for="text1">Message</label>
+                                    <input type="text" class="form-control" name="message" placeholder="Enter emergency details" maxlength="100">
+                                    <i class="clear-input">
+                                        <ion-icon name="close-circle"></ion-icon>
+                                    </i>
+                                </div>
+                            </div>
                             <div class="row">
+
                                 <div class="listview-title mt-1">Notification</div>
                                 <ul class="listview image-listview text">
                                     <li>
@@ -371,7 +393,7 @@
                                                     Notify Supervisor
                                                 </div>
                                                 <div class="form-check form-switch ms-2">
-                                                    <input class="form-check-input" checked type="checkbox" id="SwitchCheckDefault5">
+                                                    <input name="notify_supervisor" value="1" readonly class="form-check-input" checked type="checkbox" id="SwitchCheckDefault5">
                                                     <label class="form-check-label" for="SwitchCheckDefault5"></label>
                                                 </div>
                                             </div>
@@ -384,7 +406,7 @@
                                                     Notify your emergency contact
                                                 </div>
                                                 <div class="form-check form-switch ms-2">
-                                                    <input class="form-check-input" type="checkbox" id="SwitchCheckDefault2">
+                                                    <input name="notify_emergency_contact" value="1" class="form-check-input" type="checkbox" id="SwitchCheckDefault2">
                                                     <label class="form-check-label" for="SwitchCheckDefault2"></label>
                                                 </div>
                                             </div>
@@ -395,8 +417,10 @@
                         </div>
                         <div class="modal-footer">
                             <div class="btn-inline">
+                                <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
+                                <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SEND</button>
+                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">SEND</button>
                             </div>
                         </div>
                     </form>
