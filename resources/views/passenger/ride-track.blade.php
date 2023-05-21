@@ -233,6 +233,7 @@
         try {
             mylocation_lat = posistion.latitude;
             mylocation_long = posistion.longitude;
+            var myLatLng = new google.maps.LatLng(mylocation_lat, mylocation_long),
             myOptions = {
                     zoom: 18,
                     center: myLatLng,
