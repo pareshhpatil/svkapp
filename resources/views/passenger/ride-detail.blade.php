@@ -190,7 +190,7 @@
                     <div class="item">
                         <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
                             <div class="icon-wrapper bg-info">
-                                <ion-icon name="share-social-outline"></ion-icon>
+                            <ion-icon name="logo-whatsapp"></ion-icon>
                             </div>
                             <strong>Share</strong>
                         </a>
