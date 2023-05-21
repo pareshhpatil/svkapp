@@ -230,6 +230,7 @@
     }
 
     function getMylocation(posistion) {
+        try{
         mylocation_lat = posistion.latitude;
         mylocation_long = posistion.longitude;
         map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
@@ -243,6 +244,10 @@
             lng: mylocation_long
         };
         map.setCenter(pos);
+    }catch(o)
+    {
+        alert(o.message);
+    }
     }
 
 
