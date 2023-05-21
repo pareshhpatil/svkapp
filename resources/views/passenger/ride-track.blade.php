@@ -69,7 +69,7 @@
                         </a>
                     </div>
                     <div v-if="data.ride.status==1" class="item mb-1">
-                        <a href="#" onclick="document.getElementById('trackme').click();">
+                        <a href="#" onclick="start();">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="location-outline"></ion-icon>
                             </div>
