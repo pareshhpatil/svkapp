@@ -163,7 +163,7 @@
                     </div>
                     <div class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exchangeActionSheet">
-                            <div class="icon-wrapper bg-primary bg-red">
+                            <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
                                 <ion-icon name="accessibility-outline"></ion-icon>
                             </div>
                             <strong>SOS</strong>
