@@ -193,12 +193,12 @@
                     },
                     (error) => {
                         // Handle geolocation error
-                        console.error("Error getting current location:", error);
+                        alert("Error getting current location:", error);
                     }
                 );
             } else {
                 // Geolocation is not supported by the browser
-                console.error("Geolocation is not supported by this browser.");
+                alert("Geolocation is not supported by this browser.");
             }
         });
 
