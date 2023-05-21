@@ -167,7 +167,7 @@
 </script>
 <script type="text/javascript">
     var k = 0;
-    map = '';
+    var map = '';
     marker = '';
     lat = 18.6020798;
     mylocation_lat = '';
@@ -230,12 +230,12 @@
     }
 
     function getMylocation(posistion) {
-        alert(posistion.latitude);
         mylocation_lat = posistion.latitude;
         mylocation_long = posistion.longitude;
 
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(mylocation_lat, mylocation_long),
+            icon: 'https://app.svktrv.in/assets/img/home.png',
             map: map
         });
         const pos = {
