@@ -43,6 +43,28 @@ class ParentModel extends Model
         }
     }
 
+    public function getRowArray($table, $where, $value, $active = 0, $param = [])
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where($where, $value);
+        if ($active == 1) {
+            $retObj->where('is_active', 1);
+        }
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        $array = $retObj->first();
+        if (!empty($array)) {
+            return json_decode(json_encode($array), 1);
+        } else {
+            return false;
+        }
+    }
+
     public function getColumnValue($table, $where, $value, $column_name, $param = [], $orderby = null)
     {
 

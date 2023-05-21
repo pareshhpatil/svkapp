@@ -51,9 +51,23 @@ class HomeController extends Controller
     public function passengerRideDetail($link)
     {
         $id = Encryption::decode($link);
-        $array = $this->model->getTableRow('ride_passenger', 'id', $id);
-        // $this->model->getTableRow('ride', 'id', $data->ride_id);
-        $data['data'] =json_decode(json_encode($array), 1);
+        $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
+        $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
+        $driver = [];
+        $vehicle = [];
+        if ($ride['driver_id'] > 0) {
+            $driver = $this->model->getRowArray('driver', 'id', $ride['driver_id']);
+        }
+        if ($ride['vehicle_id'] > 0) {
+            $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
+        }
+        $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
+        $data['data']['ride_passenger'] = $ride_passenger;
+        $data['data']['ride'] = $ride;
+        $data['data']['driver'] = $driver;
+        $data['data']['vehicle'] = $vehicle;
+        $data['data']['ride_passengers'] = $ride_passengers;
+        $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
         return view('passenger.ride-detail', $data);

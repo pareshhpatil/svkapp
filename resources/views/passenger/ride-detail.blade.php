@@ -5,20 +5,28 @@
         bottom: 60px;
         top: 28px;
     }
+
     body.dark-mode .text-black {
-  color: #fff;
-  background: #20162a;
-} 
+        color: #fff;
+        background: #20162a;
+    }
 </style>
 <div id="appCapsule" class="full-height">
 
     <div id="app" class="section ">
-
-
-        <div class="listed-detail ">
+        <div v-if="!data.driver.name">
+            <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
+                <div class="pageTitle">Cab not assigned yet</div>
+            </div>
+            <div class="mt-2">
+                &nbsp;
+            </div>
+        </div>
+        <div v-if="data.driver.name" class="listed-detail ">
             <div class="row" style="border-bottom: 1px solid lightgrey;">
-                <div class="col ">
-                    <img class="mt-3" src="/assets/img/sample/avatar/avatar1.jpg">
+                <div class="col text-center">
+                    <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;">
+                    <img v-if="!data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;" src="/assets/img/driver.png">
                 </div>
                 <div class="col">
                     <div class="">
@@ -33,9 +41,8 @@
                                         <div>
                                             <div class="text-small text-secondary">Cab Number</div>
 
-                                            <strong>MH 02 9545</strong>
+                                            <strong v-html="data.vehicle.number"></strong>
                                         </div>
-
                                     </div>
                                 </div>
                             </li>
@@ -48,7 +55,7 @@
                                         <div>
                                             <div class="text-small text-secondary">Name</div>
 
-                                            <strong>Paresh Patil</strong>
+                                            <strong v-html="data.driver.name"></strong>
                                         </div>
 
                                     </div>
@@ -63,7 +70,7 @@
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
 
-                                            <strong>9730946150</strong>
+                                            <strong v-html="data.driver.mobile">9730946150</strong>
                                         </div>
 
                                     </div>
@@ -79,23 +86,41 @@
                 </div>
             </div>
 
-            <h4 class="text-center mt-1"><span class="badge badge-success btn btn-success"> OTP 5484</span></h4>
 
         </div>
+        <div class="">
+            <div class="splash-page  mt-2">
 
+                <div class="transfer-verification">
+                    <div class="transfer-amount">
+                        <span class="caption">Pickup Time</span>
+                        <h5 v-html="data.ride_passenger.pickup_time"></h5>
+                    </div>
+                    <div class="from-to-block ">
+                        <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
+                            <img src="/assets/img/home.png" alt="avatar" class="imaged w48">
+                            <strong>Home</strong>
+                        </div>
+                        <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
+                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
+                            <strong>Office</strong>
+                        </div>
+                        <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
+                            <img src="/assets/img/home.png" alt="avatar" class="imaged w48">
+                            <strong>Home</strong>
+                        </div>
+                        <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
+                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
+                            <strong>Office</strong>
+                        </div>
+                        <div class="arrow"></div>
+                    </div>
+                    <h2 class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
+                </div>
 
-        <ul class="listview flush transparent simple-listview no-space" style="padding: 10px;">
-            <li>
-                <strong><ion-icon name="location-outline"></ion-icon> Pickup
-                </strong>
-                <span>Office 09:30 AM</span>
-            </li>
-            <li>
-                <strong><ion-icon name="home-outline"></ion-icon> Drop
-                </strong>
-                <span>Home</span>
-            </li>
-        </ul>
+            </div>
+        </div>
+
         <div class=" ">
             <div class="wallet-card" style="box-shadow: none;padding: 0;">
                 <!-- Balance -->
@@ -275,36 +300,5 @@
     })
 </script>
 
-<script>
-    document.querySelector('#shareBtn')
-        .addEventListener('click', event => {
 
-            // Fallback, Tries to use API only
-            // if navigator.share function is
-            // available
-            if (navigator.share) {
-                navigator.share({
-
-                    // Title that occurs over
-                    // web share dialog
-                    title: 'GeeksForGeeks',
-
-                    // URL to share
-                    url: 'https://geeksforgeeks.org'
-                }).then(() => {
-                    console.log('Thanks for sharing!');
-                }).catch(err => {
-
-                    // Handle errors, if occurred
-                    console.log(
-                        "Error while using Web share API:");
-                    console.log(err);
-                });
-            } else {
-
-                // Alerts user if API not available
-                alert("Browser doesn't support this API !");
-            }
-        })
-</script>
 @endsection
