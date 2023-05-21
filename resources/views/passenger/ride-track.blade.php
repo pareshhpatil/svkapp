@@ -185,6 +185,10 @@
                         };
 
                         // Center the map on the user's location
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            map: map
+                        });
                         map.setCenter(pos);
                     },
                     (error) => {
