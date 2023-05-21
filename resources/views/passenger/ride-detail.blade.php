@@ -37,7 +37,7 @@
             <div class="row" style="border-bottom: 1px solid lightgrey;">
                 <div class="col text-center">
                     <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;">
-                    <img v-if="!data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;" src="/assets/img/driver.png">
+                    <img v-if="!data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;" src="/assets/img/driver.png?v-1">
                 </div>
                 <div class="col">
                     <div class="">
@@ -109,7 +109,7 @@
                     </div>
                     <div class="from-to-block ">
                         <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
-                            <img src="/assets/img/home.png" alt="avatar" class="imaged w48">
+                            <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
                             <strong>Home</strong>
                         </div>
                         <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
@@ -117,7 +117,7 @@
                             <strong>Office</strong>
                         </div>
                         <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
-                            <img src="/assets/img/home.png" alt="avatar" class="imaged w48">
+                            <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
                             <strong>Home</strong>
                         </div>
                         <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
