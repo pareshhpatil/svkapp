@@ -38,14 +38,12 @@
     }
 
     .custom-map-control-button {
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        bottom: 30px !important;
+        left: 10px !important;
+    }
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
 
@@ -148,24 +146,24 @@
     map = '';
     marker = '';
     lat = 18.6020798;
+    mylocation_lat = '';
+    mylocation_long = '';
+
 
     function initialize() {
 
         const locationButton = document.createElement("button");
-        locationButton.textContent = "Current Location";
-        locationButton.id ='trackme';
+        locationButton.textContent = "";
+        locationButton.id = 'trackme';
+        locationButton.innerHTML = '<img style="max-width:50px;" src="https://app.svktrv.in/assets/img/locate.png">';
         locationButton.classList.add("custom-map-control-button");
 
         var myLatLng = new google.maps.LatLng(lat, 73.7908489),
             myOptions = {
                 zoom: 18,
                 center: myLatLng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                icon: 'https://app.svktrv.in/assets/img/sm-icon.png'
-
+                mapTypeId: google.maps.MapTypeId.ROADMAP
             },
-
-
 
             map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
 
@@ -189,41 +187,54 @@
 
         // Handle button click event
         locationButton.addEventListener("click", () => {
-            // Try to get the user's current location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        // Get the user's coordinates
-                        const {
-                            latitude,
-                            longitude
-                        } = position.coords;
-                        const pos = {
-                            lat: latitude,
-                            lng: longitude
-                        };
-                        // Center the map on the user's location
-                        marker = new google.maps.Marker({
-                            position: new google.maps.LatLng(latitude, longitude),
-                            map: map
-                        });
-                        map.setCenter(pos);
-                    },
-                    (error) => {
-                        // Handle geolocation error
-                        alert("Error getting current location:", error);
-                    }
-                );
-            } else {
-                // Geolocation is not supported by the browser
-                alert("Geolocation is not supported by this browser.");
-            }
+
+            getMylocation();
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(mylocation_lat, mylocation_long),
+                map: map
+            });
+            map.setCenter(pos);
         });
 
 
         marker.setMap(map);
         moveBus(map, marker);
 
+    }
+
+    function getMylocation() {
+        const options = {
+            enableHighAccuracy: true, // Enable high accuracy
+            timeout: 5000, // Set a timeout (in milliseconds) to wait for the location
+            maximumAge: 0 // Force the browser to always get a fresh location
+        };
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // Get the user's coordinates
+                    const {
+                        latitude,
+                        longitude
+                    } = position.coords;
+                    const pos = {
+                        lat: latitude,
+                        lng: longitude
+                    };
+
+                    mylocation_lat = latitude;
+                    mylocation_long = longitude;
+                    // Center the map on the user's location
+
+                },
+                (error) => {
+                    // Handle geolocation error
+                    alert("Error getting current location:", error);
+                }, options
+            );
+        } else {
+            // Geolocation is not supported by the browser
+            alert("Geolocation is not supported by this browser.");
+        }
     }
 
 
@@ -233,8 +244,8 @@
         setInterval(function() {
             if (k < 5) {
                 lat = lat + 0.00005;
-                marker.setPosition(new google.maps.LatLng(lat, 73.7908489));
-                map.panTo(new google.maps.LatLng(lat, 73.7908489));
+                // marker.setPosition(new google.maps.LatLng(lat, 73.7908489));
+                //   map.panTo(new google.maps.LatLng(lat, 73.7908489));
                 k = k + 1;
                 console.log(k);
             }
