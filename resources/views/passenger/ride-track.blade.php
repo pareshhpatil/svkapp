@@ -193,6 +193,10 @@
                 position: new google.maps.LatLng(mylocation_lat, mylocation_long),
                 map: map
             });
+            const pos = {
+                        lat: mylocation_lat,
+                        lng: mylocation_long
+                    };
             map.setCenter(pos);
         });
 
@@ -216,10 +220,7 @@
                         latitude,
                         longitude
                     } = position.coords;
-                    const pos = {
-                        lat: latitude,
-                        lng: longitude
-                    };
+                    
 
                     mylocation_lat = latitude;
                     mylocation_long = longitude;
