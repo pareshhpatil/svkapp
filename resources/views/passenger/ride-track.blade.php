@@ -230,7 +230,7 @@
     }
 
     function getMylocation(posistion) {
-        alert(posistion);
+        alert(posistion.latitude);
         mylocation_lat = posistion.latitude;
         mylocation_long = posistion.longitude;
 
