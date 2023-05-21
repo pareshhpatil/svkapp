@@ -36,6 +36,16 @@
         height: 600px;
         width: 100%;
     }
+
+    .custom-map-control-button {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
 
@@ -58,6 +68,14 @@
                                 <ion-icon name="location-outline"></ion-icon>
                             </div>
                             <strong>Track</strong>
+                        </a>
+                    </div>
+                    <div v-if="data.ride.status==1" class="item mb-1">
+                        <a href="#" onclick="document.getElementById('trackme').click();">
+                            <div class="icon-wrapper bg-success">
+                                <ion-icon name="location-outline"></ion-icon>
+                            </div>
+                            <strong>Track Me</strong>
                         </a>
                     </div>
                     <div class="item">
@@ -135,6 +153,7 @@
 
         const locationButton = document.createElement("button");
         locationButton.textContent = "Current Location";
+        locationButton.id ='trackme';
         locationButton.classList.add("custom-map-control-button");
 
         var myLatLng = new google.maps.LatLng(lat, 73.7908489),
@@ -166,7 +185,7 @@
 
 
         // Add the button to the map's controls
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(locationButton);
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
         // Handle button click event
         locationButton.addEventListener("click", () => {
