@@ -12,11 +12,15 @@
     }
 
     body.dark-mode .listview {
-    color: #fff;
-     background: #030108; 
-     border-top-color: #030108; 
-     border-bottom-color: #030108; 
-}
+        color: #fff;
+        background: #030108;
+        border-top-color: #030108;
+        border-bottom-color: #030108;
+    }
+
+    .bg-red {
+        background: #e8481e !important;
+    }
 </style>
 <div id="appCapsule" class="full-height">
 
