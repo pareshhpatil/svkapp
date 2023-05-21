@@ -8,7 +8,7 @@
 
     body.dark-mode .text-black {
         color: #fff;
-        background: #20162a;
+        background: #20162a !important;
     }
 </style>
 <div id="appCapsule" class="full-height">
