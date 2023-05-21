@@ -183,10 +183,9 @@
                             lat: latitude,
                             lng: longitude
                         };
-
                         // Center the map on the user's location
                         marker = new google.maps.Marker({
-                            position: pos,
+                            position: new google.maps.LatLng(latitude, longitude),
                             map: map
                         });
                         map.setCenter(pos);
