@@ -24,7 +24,7 @@
     </style>-->
 </head>
 
-<body class="{{Session::get('mode')}}">
+<body @isset($onload) onload="{{$onload}}" @endisset class="{{Session::get('mode')}}">
 
     <!-- loader -->
     <div id="loader">

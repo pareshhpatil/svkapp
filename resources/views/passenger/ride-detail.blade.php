@@ -157,7 +157,7 @@
                 <!-- Wallet Footer -->
                 <div class="wallet-footer">
                     <div v-if="data.ride.status==1" class="item mb-1">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#withdrawActionSheet">
+                        <a href="{{$data['link']}}/track" data-bs-toggle="modal" data-bs-target="#withdrawActionSheet">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="location-outline"></ion-icon>
                             </div>
