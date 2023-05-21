@@ -134,7 +134,7 @@
 <script>
     function start() {
         window.WTN.backgroundLocation.start({
-            callback: 'getMylocation',
+            callback: getMylocation,
             apiUrl: "https://app.svktrv.in/app/ping",
             timeout: 10,
             data: "userid1",
