@@ -90,7 +90,7 @@ class RideModel extends ParentModel
             ->join('users as r', 'r.parent_id', '=', 'p.passenger_id')
             ->where('p.is_active', 1)
             ->where('p.ride_id', $ride_id)
-            ->select(DB::raw('p.pickup_time,p.drop_time,p.pickup_location,p.drop_location,r.icon,r.location,r.address,r.name,r.gender,r.mobile'))
+            ->select(DB::raw('TIME_FORMAT(p.pickup_time, "%H %i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%H %i %p") as drop_time ,p.pickup_location,p.drop_location,r.icon,r.location,r.address,r.name,r.gender,r.mobile'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

@@ -53,6 +53,7 @@ class HomeController extends Controller
         $id = Encryption::decode($link);
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
         $driver = [];
         $vehicle = [];
         if ($ride['driver_id'] > 0) {
@@ -62,8 +63,12 @@ class HomeController extends Controller
             $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
+        $ride_passenger['pickup_time']=$this->htmlDateTime($ride_passenger['pickup_time']);
+        $ride['start_time']=$this->htmlDateTime($ride['start_time']);
+        $ride['end_time']=$this->htmlDateTime($ride['end_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
+        $data['data']['project'] = $project;
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
         $data['data']['ride_passengers'] = $ride_passengers;
