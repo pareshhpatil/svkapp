@@ -33,7 +33,7 @@
     }
 
     #map-canvas {
-        height: auto;
+        height: 600px;
         width: 100%;
     }
 </style>
@@ -43,7 +43,7 @@
 
     <div id="app" class=" ">
 
-        <div class="full-height" id="map-canvas"></div>
+        <div id="map-canvas"></div>
 
 
 
