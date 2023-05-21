@@ -125,7 +125,31 @@
 @endsection
 
 @section('footer')
+
+<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
+
+
+
+
 <script>
+    function start() {
+        window.WTN.backgroundLocation.start({
+            callback: 'getMylocation',
+            apiUrl: "https://app.svktrv.in/app/ping",
+            timeout: 10,
+            data: "userid1",
+            backgroundIndicator: true,
+            pauseAutomatically: true,
+            distanceFilter: 0.0,
+            desiredAccuracy: "best",
+            activityType: "other",
+        });
+    }
+
+    function stop() {
+        window.WTN.backgroundLocation.stop();
+    }
+
     new Vue({
         el: '#app',
         data() {
@@ -188,15 +212,14 @@
         // Handle button click event
         locationButton.addEventListener("click", () => {
 
-            getMylocation();
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(mylocation_lat, mylocation_long),
                 map: map
             });
             const pos = {
-                        lat: mylocation_lat,
-                        lng: mylocation_long
-                    };
+                lat: mylocation_lat,
+                lng: mylocation_long
+            };
             map.setCenter(pos);
         });
 
@@ -206,36 +229,19 @@
 
     }
 
-    function getMylocation() {
-        const options = {
-            enableHighAccuracy: true, // Enable high accuracy
-            timeout: 5000, // Set a timeout (in milliseconds) to wait for the location
-            maximumAge: 0 // Force the browser to always get a fresh location
+    function getMylocation(posistion) {
+        mylocation_lat = posistion.latitude;
+        mylocation_long = posistion.longitude;
+
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(mylocation_lat, mylocation_long),
+            map: map
+        });
+        const pos = {
+            lat: mylocation_lat,
+            lng: mylocation_long
         };
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    // Get the user's coordinates
-                    const {
-                        latitude,
-                        longitude
-                    } = position.coords;
-                    
-
-                    mylocation_lat = latitude;
-                    mylocation_long = longitude;
-                    // Center the map on the user's location
-
-                },
-                (error) => {
-                    // Handle geolocation error
-                    alert("Error getting current location:", error);
-                }, options
-            );
-        } else {
-            // Geolocation is not supported by the browser
-            alert("Geolocation is not supported by this browser.");
-        }
+        map.setCenter(pos);
     }
 
 
