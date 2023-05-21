@@ -7,7 +7,7 @@
     }
 
     body.dark-mode .text-black {
-        color: #fff;
+        color: #fff !important;
         background: #20162a !important;
     }
 </style>
