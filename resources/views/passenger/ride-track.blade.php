@@ -185,8 +185,34 @@
         // Show a map centered at latitude / longitude.
         my_lat = latitude;
         my_long = longitude;
-       document.getElementById('mylat').innerHTML=my_lat;
+        document.getElementById('mylat').innerHTML = my_lat;
+        var myLatLng = new google.maps.LatLng(latitude, longitude);
+
+        marker = new google.maps.Marker({
+            icon: {
+                url: 'https://app.svktrv.in/assets/img/current-loc.png',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(60, 68),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(0, 32)
+            },
+            position: myLatLng,
+            label: {
+                text: "Paresh Patil",
+                className: 'marker-label'
+            },
+            map: map
+        });
+
+
+        // Add the button to the map's controls
+        // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
+
+        marker.setMap(map);
     }
+
     function errorCallback(error) {
 
     }
@@ -208,45 +234,44 @@
 </script>
 <script type="text/javascript">
     var k = 0;
-    var map = '';
     marker = '';
     lat = 18.6020798;
     mylocation_lat = '';
     mylocation_long = '';
 
+    var myLatLng = new google.maps.LatLng(lat, 73.7908489);
+        myOptions = {
+            zoom: 18,
+            center: myLatLng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+    var map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
+
 
     function initialize() {
 
-        var myLatLng = new google.maps.LatLng(lat, 73.7908489),
-            myOptions = {
-                zoom: 18,
-                center: myLatLng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
+        marker = new google.maps.Marker({
+            icon: {
+                url: 'https://app.svktrv.in/assets/img/sm-icon.png',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(60, 68),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(0, 32)
             },
-
-            map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
-
-            marker = new google.maps.Marker({
-                icon: {
-                    url: 'https://app.svktrv.in/assets/img/sm-icon.png',
-                    // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(60, 68),
-                    // The origin for this image is (0, 0).
-                    origin: new google.maps.Point(0, 0),
-                    // The anchor for this image is the base of the flagpole at (0, 32).
-                    anchor: new google.maps.Point(0, 32)
-                },
-                position: myLatLng,
-                label: {
-                    text: "Nitin Kamble",
-                    className: 'marker-label'
-                },
-                map: map
-            });
+            position: myLatLng,
+            label: {
+                text: "Nitin Kamble",
+                className: 'marker-label'
+            },
+            map: map
+        });
 
 
         // Add the button to the map's controls
-       // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
+        // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
         marker.setMap(map);
 
