@@ -289,23 +289,23 @@
 
     function initialize() {
 
-        driverMarker = new google.maps.Marker({
-            icon: {
-                url: 'https://app.svktrv.in/assets/img/sm-icon.png',
+      //  driverMarker = new google.maps.Marker({
+        //    icon: {
+          //      url: 'https://app.svktrv.in/assets/img/sm-icon.png',
                 // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(60, 68),
+          //      size: new google.maps.Size(60, 68),
                 // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
+         //       origin: new google.maps.Point(0, 0),
                 // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            },
-            position: myLatLng,
-            label: {
-                text: "Nitin Kamble",
-                className: 'marker-label'
-            },
-            map: map
-        });
+        //        anchor: new google.maps.Point(0, 32)
+        //    },
+         //   position: myLatLng,
+         //   label: {
+          //      text: "Nitin Kamble",
+          //      className: 'marker-label'
+          //  },
+         //   map: map
+       // });
 
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
