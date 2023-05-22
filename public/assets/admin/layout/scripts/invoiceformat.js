@@ -499,7 +499,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     var discount_amt_readonly = '';
     var mainDiv = document.getElementById('new_particular');
     var newDiv = document.createElement('tr');
-    type = _('type').value;
+    type=_('')
     var i;
     var row = '';
     read_cols = ["retainage_amount"];
@@ -1944,7 +1944,7 @@ function calculateamt(type) {
             try {
                 previous_percent = getInputArrayValue(type + 'previous_percent', i, 'input');
                 current_percent = getInputArrayValue(type + 'current_percent', i, 'input');
-                $('input[name="total_percent[]"]')[i].value = roundAmount(Number(previous_percent) + Number(current_percent));
+                $('input[name="total_percent[]"]')[i].value = roundAmount(Number(previous_percent) + Number(current_percent),2);
             } catch (o) {
 
             }
@@ -3700,7 +3700,7 @@ function limitMe(evt, txt) {
 }
 
 function roundAmount(amt) {
-    return (Math.round(amt)).toFixed(2);
+    return (Math.round(amt * 100) / 100).toFixed(2);
 }
 
 function showUpdateStatus(id, config_key, config_value) {
