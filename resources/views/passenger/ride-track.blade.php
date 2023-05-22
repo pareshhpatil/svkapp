@@ -188,7 +188,9 @@
 <script>
     var my_lat = '';
     var my_long = '';
-    var start = false;
+    var my_lat = 18.6020798;
+    var my_lat = 73.7908489;
+    var start = true;
     var options = {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -210,8 +212,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-        my_lat = latitude;
-        my_long = longitude;
+       // my_lat = latitude;
+       // my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -270,6 +272,7 @@
     mylocation_lat = '';
     mylocation_long = '';
 
+
     var myLatLng = new google.maps.LatLng(lat, lat_long);
     myOptions = {
         zoom: 18,
@@ -317,7 +320,12 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                try {
+                    array = JSON.parse(this.responseText);
+                    lat = array.latitude;
+                    lat_long = array.longitude;
+                } catch (o) {}
+
             }
         };
         xhttp.open("GET", "https://app.svktrv.in/ride/track/location/1", true);
