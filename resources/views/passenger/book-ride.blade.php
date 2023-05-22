@@ -33,11 +33,17 @@
     .image-listview>li:after {
         left: 0px;
     }
-    .form-group.basic .form-control{
+
+    .form-group.basic .form-control {
         border-bottom: 0;
     }
+
     body.dark-mode .listview {
         background: transparent;
+    }
+
+    .middle-line {
+        top: 20px;
     }
 </style>
 
@@ -73,7 +79,7 @@
                                 </div>
                             </div>
                             <div class="item">
-                                <div class="dot bg-primary bg-red" ></div>
+                                <div class="dot bg-primary bg-red"></div>
                                 <div class="content">
                                     <h2 class="title" v-html="drop">Home
                                     </h2>
