@@ -79,6 +79,24 @@
         font-weight: 400;
         background: #1DCC70 !important;
     }
+
+    .marker-label-user {
+        margin-top: 40px;
+        font-size: 12px;
+        line-height: 1em;
+        border-radius: 100px;
+        color: #ffffff !important;
+        letter-spacing: 0;
+        height: 22px;
+        min-width: 22px;
+        width: auto;
+        padding: 5px 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
+        background: #1DCC70 !important;
+    }
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
 
@@ -162,7 +180,6 @@
 
 <script>
     function startlocation() {
-        alert('start');
         window.WTN.backgroundLocation.start({
             callback: false,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
@@ -223,7 +240,7 @@
         if (start == false) {
             currentMarker = new google.maps.Marker({
                 icon: {
-                    url: 'https://app.svktrv.in/assets/img/current-loc.png',
+                    url: 'https://app.svktrv.in/assets/img/map-male.png',
                     // This marker is 20 pixels wide by 32 pixels high.
                     size: new google.maps.Size(20, 20),
                     // The origin for this image is (0, 0).
@@ -339,7 +356,7 @@
             position: new google.maps.LatLng(my_lat, my_long),
             map: map,
             icon: {
-                url: 'https://app.svktrv.in/assets/img/current-loc.png',
+                url: 'https://app.svktrv.in/assets/img/map-male.png',
                 // This marker is 20 pixels wide by 32 pixels high.
                 size: new google.maps.Size(30, 30),
                 // The origin for this image is (0, 0).
@@ -354,12 +371,12 @@
         });
         setInterval(function() {
 
-           // getData();
+            getData();
 
-            lat=lat-0.00005;
+            //lat=lat-0.00005;
             //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-            map.panTo(new google.maps.LatLng(lat, lat_long));
+            // map.panTo(new google.maps.LatLng(lat, lat_long));
 
 
 
