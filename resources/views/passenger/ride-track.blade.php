@@ -338,12 +338,7 @@
             driverMarker.setMap(null);
         } catch (o) {}
         setInterval(function() {
-            try {
-            currentMarker.setMap(null);
-        } catch (o) {}
-        try {
-            driverMarker.setMap(null);
-        } catch (o) {}
+            
             directionsService
                 .route({
                     origin: new google.maps.LatLng(lat, lat_long),
@@ -402,6 +397,13 @@
                 );
 
             getData();
+
+            try {
+            currentMarker.setMap(null);
+        } catch (o) {}
+        try {
+            driverMarker.setMap(null);
+        } catch (o) {}
 
         }, 1000);
 
