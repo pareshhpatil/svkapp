@@ -307,7 +307,7 @@
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
-        driverMarker.setMap(map);
+        //driverMarker.setMap(map);
 
         //moveBus(map, marker);
 
