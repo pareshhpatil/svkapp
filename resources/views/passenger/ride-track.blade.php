@@ -102,7 +102,6 @@
                             <div>
                                 <strong>Nitin Kamble</strong>
                                 <strong class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <span id="mylat"></span>
                                 <p>MH 02 545454</p>
                             </div>
                         </div>
@@ -190,7 +189,6 @@
         // Show a map centered at latitude / longitude.
         my_lat = latitude;
         my_long = longitude;
-        document.getElementById('mylat').innerHTML = my_lat;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -297,6 +295,7 @@
     function navigate() {
         start = true;
         driverMarker.setMap(null);
+        currentMarker.setMap(null);
         directionsService
             .route({
                 origin: new google.maps.LatLng(lat, lat_long),
@@ -353,11 +352,6 @@
             .catch((e) =>
                 window.alert("Directions request failed due to " + status)
             );
-
-
-        k = k + 1;
-        console.log(k);
-
 
     }
 
