@@ -396,7 +396,7 @@
                     window.alert("Directions request failed due to " + status)
                 );
 
-            getData();
+           // getData();
 
         }, 1000);
 
