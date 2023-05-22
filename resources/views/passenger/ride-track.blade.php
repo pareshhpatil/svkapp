@@ -349,7 +349,7 @@
             //getData();
 
             lat=lat-0.00005;
-            map.setCenter(new google.maps.LatLng(lat, lat_long));
+            //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
 
             
