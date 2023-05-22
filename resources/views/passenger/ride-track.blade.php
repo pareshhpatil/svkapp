@@ -334,11 +334,11 @@
 
     function navigate() {
         start = true;
-        // driverMarker.setMap(null);
-        // currentMarker.setMap(null);
+         driverMarker.setMap(null);
+         currentMarker.setMap(null);
         setInterval(function() {
 
-            getData();
+           // getData();
 
 
             directionsService
@@ -398,7 +398,7 @@
                     window.alert("Directions request failed due to " + status)
                 );
 
-        }, 1000);
+        }, 2000);
 
     }
 
