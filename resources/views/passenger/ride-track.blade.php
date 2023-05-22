@@ -310,7 +310,8 @@
 
                 // Customize the markers
                 var markerOptions = {
-                    icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png' // Set your desired marker icon
+                    icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png',
+                    suppressMarkers: true
                 };
                 directionsRenderer.setOptions({
                     markerOptions: markerOptions
