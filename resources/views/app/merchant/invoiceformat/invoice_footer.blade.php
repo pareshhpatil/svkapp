@@ -301,7 +301,7 @@ $validate=(array)$validate;
         @endif
 
         @if(isset($info['document_url']) && $info['document_url']!='')
-        <button onclick="showDocument(1);" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;">
+        <button onclick="showDocument(1);" class="btn btn-link hidden-print margin-bottom-5 view-footer-btn-rht-align" style="margin-right: 20px;margin-top: -13px ">
 
             {{$metadata['plugin']['upload_file_label']}}
         </button>
