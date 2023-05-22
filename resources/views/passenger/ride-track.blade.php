@@ -320,6 +320,9 @@
         driverMarker.setMap(null);
         currentMarker.setMap(null);
         setInterval(function() {
+
+            getData();
+
             directionsService
                 .route({
                     origin: new google.maps.LatLng(lat, lat_long),
@@ -377,7 +380,7 @@
                     window.alert("Directions request failed due to " + status)
                 );
                 console.log('hii');
-                getData();
+                
         }, 1000);
 
     }
