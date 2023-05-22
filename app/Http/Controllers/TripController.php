@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Lib\Encryption;
+use App\Models\ParentModel;
 
 class TripController extends Controller
 {
@@ -12,9 +13,10 @@ class TripController extends Controller
      *
      * @return void
      */
+    public $model;
     public function __construct()
     {
-        
+        $this->model = new ParentModel();
     }
 
     /**
@@ -22,8 +24,12 @@ class TripController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function tripDetails($type,$user_id,$link)
+    public function rideLiveTrack(Request $request, $ride_id)
     {
-        return view('home');
+        $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
+        if ($response == false) {
+            $array['live_location'] = json_encode($request->all());
+            $this->model->saveTable('ride_live_location', $array);
+        }
     }
 }

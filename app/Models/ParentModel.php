@@ -152,11 +152,12 @@ class ParentModel extends Model
 
     public function updateTable($table, $where, $whvalue, $col, $val)
     {
-        DB::table($table)
+        $result = DB::table($table)
             ->where($where, $whvalue)
             ->update([
                 $col => $val
             ]);
+        return $result;
     }
 
     public function updateTableData($table, $where, $whvalue, $array)

@@ -125,7 +125,7 @@
                             </div>
 
                             <div class="item">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
+                                <a href="#" onclick="start();">
                                     <div class="icon-wrapper bg-warning">
                                         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                                     </div>
@@ -155,8 +155,30 @@
 
 @section('footer')
 
+<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
 
 
+
+
+<script>
+    function start() {
+        window.WTN.backgroundLocation.start({
+            callback: false,
+            apiUrl: "https://app.svktrv.in//ride/track/{{$ride_id}}",
+            timeout: 10,
+            data: "userid1",
+            backgroundIndicator: true,
+            pauseAutomatically: true,
+            distanceFilter: 0.0,
+            desiredAccuracy: "best",
+            activityType: "other",
+        });
+    }
+
+    function stop() {
+        window.WTN.backgroundLocation.stop();
+    }
+</script>
 
 
 
@@ -296,62 +318,65 @@
         start = true;
         driverMarker.setMap(null);
         currentMarker.setMap(null);
-        directionsService
-            .route({
-                origin: new google.maps.LatLng(lat, lat_long),
-                destination: new google.maps.LatLng(my_lat, my_long),
-                travelMode: 'DRIVING'
-            })
-            .then((response) => {
-                const duration = response.routes[0].legs[0].duration.text;
-                document.getElementById("duration").innerHTML = duration;
-                // directionsRenderer.setOptions({
-                //    polylineOptions: {
-                //         strokeColor: '#FF0000' // Set your desired color
-                //     }
-                // });
+        setInterval(function() {
+            directionsService
+                .route({
+                    origin: new google.maps.LatLng(lat, lat_long),
+                    destination: new google.maps.LatLng(my_lat, my_long),
+                    travelMode: 'DRIVING'
+                })
+                .then((response) => {
+                    const duration = response.routes[0].legs[0].duration.text;
+                    document.getElementById("duration").innerHTML = duration;
+                    // directionsRenderer.setOptions({
+                    //    polylineOptions: {
+                    //         strokeColor: '#FF0000' // Set your desired color
+                    //     }
+                    // });
 
-                var originMarker = new google.maps.Marker({
-                    position: new google.maps.LatLng(lat, lat_long),
-                    map: map,
-                    icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
-                    label: {
-                        text: "Nitin Kamble",
-                        className: 'marker-label'
-                    }
-                });
+                    var originMarker = new google.maps.Marker({
+                        position: new google.maps.LatLng(lat, lat_long),
+                        map: map,
+                        icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
+                        label: {
+                            text: "Nitin Kamble",
+                            className: 'marker-label'
+                        }
+                    });
 
-                var destinationMarker = new google.maps.Marker({
-                    position: new google.maps.LatLng(my_lat, my_long),
-                    map: map,
-                    icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
-                    label: {
-                        text: "Paresh Patil",
-                        className: 'marker-label'
-                    }
-                });
+                    var destinationMarker = new google.maps.Marker({
+                        position: new google.maps.LatLng(my_lat, my_long),
+                        map: map,
+                        icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
+                        label: {
+                            text: "Paresh Patil",
+                            className: 'marker-label'
+                        }
+                    });
 
-                // Customize the markers
-                var markerOptions = {
-                    origin: originMarker,
-                    destination: destinationMarker,
-                };
-                directionsRenderer.setOptions({
-                    markerOptions: markerOptions,
-                    polylineOptions: {
-                        strokeColor: '#FF0000' // Set your desired color
-                    },
-                    suppressMarkers: true
+                    // Customize the markers
+                    var markerOptions = {
+                        origin: originMarker,
+                        destination: destinationMarker,
+                    };
+                    directionsRenderer.setOptions({
+                        markerOptions: markerOptions,
+                        polylineOptions: {
+                            strokeColor: '#FF0000' // Set your desired color
+                        },
+                        suppressMarkers: true
 
-                });
+                    });
 
-                //directionsDisplay.setDirections(response);
+                    //directionsDisplay.setDirections(response);
 
-                directionsRenderer.setDirections(response);
-            })
-            .catch((e) =>
-                window.alert("Directions request failed due to " + status)
-            );
+                    directionsRenderer.setDirections(response);
+                })
+                .catch((e) =>
+                    window.alert("Directions request failed due to " + status)
+                );
+
+        }, 1000);
 
     }
 
