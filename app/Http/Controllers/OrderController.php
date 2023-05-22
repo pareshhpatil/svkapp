@@ -248,6 +248,7 @@ class OrderController extends Controller
         $menu = [5, 180];
         if ($type == 'subcontract') {
             $menu = [5, 183];
+            $title = 'Subcontract change Order list';
         }
         $data = Helpers::setBladeProperties($title,  [], $menu);
         $data['cancel_status'] = isset($request->cancel_status) ? $request->cancel_status : 0;

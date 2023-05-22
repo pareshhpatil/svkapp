@@ -9,7 +9,7 @@
 <div class="page-content">
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('home.orderlist') }}
+        {{ Breadcrumbs::render('home.orderlist',$type) }}
         @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
             @if($type != 'co')
                 <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>

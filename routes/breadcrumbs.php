@@ -376,14 +376,12 @@ Breadcrumbs::for('home.billcodelist', function ($trail) {
     $trail->push('Project');
     $trail->push('Project List', '/merchant/project/list');
     $trail->push('Bill code list');
-    
 });
 Breadcrumbs::for('home.billtransaction', function ($trail) {
     $trail->parent('home');
     $trail->push('Project');
     $trail->push('Project List', '/merchant/project/list');
     $trail->push('Bill transaction');
-    
 });
 
 Breadcrumbs::for('home.projectcreate', function ($trail) {
@@ -429,7 +427,6 @@ Breadcrumbs::for('home.invoice.view', function ($trail) {
     $trail->push('Sales');
     $trail->push('Invoice / Estimate list', '/merchant/paymentrequest/viewlist');
     $trail->push('Invoice');
-   
 });
 
 Breadcrumbs::for('home.requestpayment.view', function ($trail) {
@@ -437,13 +434,17 @@ Breadcrumbs::for('home.requestpayment.view', function ($trail) {
     $trail->push('Sales');
     $trail->push('Subcontract', '/merchant/requestpayment/viewlist');
     $trail->push('Request payment');
-   
 });
 
-Breadcrumbs::for('home.orderlist', function ($trail) {
+Breadcrumbs::for('home.orderlist', function ($trail, $type) {
     $trail->parent('home');
-    $trail->push('Change order');
-    $trail->push('Change order List', '/merchant/order/list');
+    if ($type == 'subcontract') {
+        $trail->push('Subcontract change order');
+        $trail->push('Subcontract change order List', '/merchant/order/list/subcontract');
+    } else {
+        $trail->push('Change order');
+        $trail->push('Change order List', '/merchant/order/list');
+    }
 });
 
 Breadcrumbs::for('home.ordercreate', function ($trail) {
@@ -463,7 +464,6 @@ Breadcrumbs::for('merchant.region-setting.index', function ($trail) {
     $trail->push('Settings', url('/merchant/profile/settings'));
     $trail->push('Personal preferences');
     $trail->push('Region setting');
-
 });
 
 Breadcrumbs::for('merchant.cost-types.index', function ($trail) {
