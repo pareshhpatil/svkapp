@@ -348,7 +348,7 @@
 
             getData();
 
-
+            my_lat=my_lat+0.005;
             destinationMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
            
 
