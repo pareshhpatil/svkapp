@@ -197,7 +197,7 @@
             icon: {
                 url: 'https://app.svktrv.in/assets/img/current-loc.png',
                 // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(60, 68),
+                size: new google.maps.Size(40, 40),
                 // The origin for this image is (0, 0).
                 origin: new google.maps.Point(0, 0),
                 // The anchor for this image is the base of the flagpole at (0, 32).
