@@ -288,6 +288,7 @@
     function navigate() {
         var directionsService = new google.maps.DirectionsService();
         var directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
         setInterval(function() {
             if (k < 1) {
                 directionsService
