@@ -174,6 +174,8 @@
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
     var currentMarker;
 
+
+
     function successCallback(position) {
         const {
             accuracy,
@@ -253,6 +255,10 @@
 
     var map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
 
+    var directionsService = new google.maps.DirectionsService();
+    var directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
 
     function initialize() {
 
@@ -286,47 +292,41 @@
 
 
     function navigate() {
-        var directionsService = new google.maps.DirectionsService();
-        var directionsRenderer = new google.maps.DirectionsRenderer();
-        directionsRenderer.setMap(map);
-        setInterval(function() {
-            if (k < 1) {
-                directionsService
-                    .route({
-                        origin: new google.maps.LatLng(lat, lat_long),
-                        destination: new google.maps.LatLng(my_lat, my_long),
-                        travelMode: 'DRIVING'
-                    })
-                    .then((response) => {
-                        const duration = response.routes[0].legs[0].duration.text;
-                        document.getElementById("duration").innerHTML = duration;
-                        directionsRenderer.setOptions({
-                            polylineOptions: {
-                                strokeColor: '#FF0000' // Set your desired color
-                            }
-                        });
 
-                        // Customize the markers
-                        var markerOptions = {
-                            icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png' // Set your desired marker icon
-                        };
-                        directionsRenderer.setOptions({
-                            markerOptions: markerOptions
-                        });
+        directionsService
+            .route({
+                origin: new google.maps.LatLng(lat, lat_long),
+                destination: new google.maps.LatLng(my_lat, my_long),
+                travelMode: 'DRIVING'
+            })
+            .then((response) => {
+                const duration = response.routes[0].legs[0].duration.text;
+                document.getElementById("duration").innerHTML = duration;
+                directionsRenderer.setOptions({
+                    polylineOptions: {
+                        strokeColor: '#FF0000' // Set your desired color
+                    }
+                });
 
-                        //directionsDisplay.setDirections(response);
+                // Customize the markers
+                var markerOptions = {
+                    icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png' // Set your desired marker icon
+                };
+                directionsRenderer.setOptions({
+                    markerOptions: markerOptions
+                });
 
-                        directionsRenderer.setDirections(response);
-                    })
-                    .catch((e) =>
-                        window.alert("Directions request failed due to " + status)
-                    );
+                //directionsDisplay.setDirections(response);
+
+                directionsRenderer.setDirections(response);
+            })
+            .catch((e) =>
+                window.alert("Directions request failed due to " + status)
+            );
 
 
-                k = k + 1;
-                console.log(k);
-            }
-        }, 100000);
+        k = k + 1;
+        console.log(k);
 
 
     }
