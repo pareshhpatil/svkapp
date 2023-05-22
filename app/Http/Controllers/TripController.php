@@ -36,6 +36,6 @@ class TripController extends Controller
     public function rideLocation($ride_id)
     {
         $array = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_id, 'live_location');
-        return response()->json($array);
+        return $array;
     }
 }
