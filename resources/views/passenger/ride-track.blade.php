@@ -188,9 +188,7 @@
 <script>
     var my_lat = '';
     var my_long = '';
-    var my_lat = 18.6020798;
-    var my_lat = 73.7908489;
-    var start = true;
+    var start = false;
     var options = {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -212,8 +210,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-        // my_lat = latitude;
-        // my_long = longitude;
+        my_lat = latitude;
+        my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -272,7 +270,6 @@
     mylocation_lat = '';
     mylocation_long = '';
 
-
     var myLatLng = new google.maps.LatLng(lat, lat_long);
     myOptions = {
         zoom: 18,
@@ -316,37 +313,14 @@
 
     }
 
-    function getData() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                try {
-                    array = JSON.parse(this.responseText);
-                    lat = array.latitude;
-                    lat_long = array.longitude;
-                } catch (o) {}
 
-            }
-        };
-        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/1", true);
-        xhttp.send();
-    }
 
     function navigate() {
         start = true;
-        try {
-
-            currentMarker.setMap(null);
-            driverMarker.setMap(null);
-        } catch (o) {
-
-        }
-
+        driverMarker.setMap(null);
+        currentMarker.setMap(null);
         setInterval(function() {
-
-            // getData();
-
-
+            
             directionsService
                 .route({
                     origin: new google.maps.LatLng(lat, lat_long),
@@ -404,7 +378,7 @@
                     window.alert("Directions request failed due to " + status)
                 );
 
-        }, 2000);
+        }, 1000);
 
     }
 
