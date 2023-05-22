@@ -275,7 +275,7 @@
 
     var myLatLng = new google.maps.LatLng(lat, lat_long);
     myOptions = {
-        zoom: 18,
+        zoom: 15,
         center: myLatLng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -392,7 +392,7 @@
                 );
             console.log('hii');
 
-        }, 1000);
+        }, 500);
 
     }
 
