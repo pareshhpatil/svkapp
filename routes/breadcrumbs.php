@@ -468,7 +468,7 @@ Breadcrumbs::for('home.orderupdate', function ($trail, $type = '') {
         $trail->push('Create');
     } else {
         $trail->push('Change Order');
-        $trail->push('Change order list', '/merchant/order/list');
+        $trail->push('List', '/merchant/order/list');
         $trail->push('Create');
     }
 });
