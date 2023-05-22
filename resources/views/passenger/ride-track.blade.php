@@ -85,22 +85,11 @@
 <div id="appCapsule" class="full-height">
 
     <div id="app" class=" ">
-
         <div id="map-canvas"></div>
-
-
-
-
-
-
-
-
-
-
     </div>
 
 </div>
-<div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;">
+<div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
     <div class="modal-dialog" role="document" style="bottom: 50px;">
         <div class="modal-content">
 
@@ -109,12 +98,11 @@
                     <!-- item -->
                     <a href="app-transaction-detail.html" class="item">
                         <div class="detail">
-                            <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48">
+                            <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
                             <div>
                                 <strong>Nitin Kamble</strong>
                                 <strong class="text-primary">Arriving in 10 min</strong>
-
-                                <p>Shopping</p>
+                                <p>MH 02 545454</p>
                             </div>
                         </div>
                         <div class="right">
@@ -167,28 +155,39 @@
 
 @section('footer')
 
-<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
+
+
+
 
 
 
 
 <script>
-    function start() {
-        window.WTN.backgroundLocation.start({
-            callback: getMylocation,
-            apiUrl: "https://app.svktrv.in/app/ping",
-            timeout: 10,
-            data: "userid1",
-            backgroundIndicator: true,
-            pauseAutomatically: true,
-            distanceFilter: 0.0,
-            desiredAccuracy: "best",
-            activityType: "other",
-        });
-    }
+    var my_lat = '';
+    var my_long = '';
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    };
+    navigator.geolocation.watchPosition(successCallback, errorCallback, options);
 
-    function stop() {
-        window.WTN.backgroundLocation.stop();
+    function successCallback(position) {
+        const {
+            accuracy,
+            latitude,
+            longitude,
+            altitude,
+            heading,
+            speed
+        } = position.coords;
+        // Show a map centered at latitude / longitude.
+        my_lat = latitude;
+        my_long = longitude;
+        console.log(my_lat);
+    }
+    function errorCallback(error) {
+
     }
 
     new Vue({
@@ -216,12 +215,6 @@
 
 
     function initialize() {
-
-        const locationButton = document.createElement("button");
-        locationButton.textContent = "";
-        locationButton.id = 'trackme';
-        locationButton.innerHTML = '<img style="max-width:50px;" src="https://app.svktrv.in/assets/img/locate.png">';
-        locationButton.classList.add("custom-map-control-button");
 
         var myLatLng = new google.maps.LatLng(lat, 73.7908489),
             myOptions = {
@@ -254,23 +247,9 @@
         // Add the button to the map's controls
         map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
-        // Handle button click event
-        locationButton.addEventListener("click", () => {
-
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(mylocation_lat, mylocation_long),
-                map: map
-            });
-            const pos = {
-                lat: mylocation_lat,
-                lng: mylocation_long
-            };
-            map.setCenter(pos);
-        });
-
-
         marker.setMap(map);
-        moveBus(map, marker);
+
+        //moveBus(map, marker);
 
     }
 

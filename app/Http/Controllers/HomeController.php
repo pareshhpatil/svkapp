@@ -103,7 +103,7 @@ class HomeController extends Controller
         $data['data']['ride_passengers'] = $ride_passengers;
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
-        $data['title'] = 'Ride detail';
+        $data['title'] = 'Ride Tracking';
         $data['onload'] = 'initialize()';
         return view('passenger.ride-track', $data);
     }
