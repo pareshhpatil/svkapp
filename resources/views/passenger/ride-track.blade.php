@@ -337,7 +337,7 @@
           //  currentMarker.setMap(null);
           //  driverMarker.setMap(null);
       //  } catch (o) {}
-        setInterval(function() {
+     //   setInterval(function() {
             
             directionsService
                 .route({
@@ -398,7 +398,7 @@
 
            // getData();
 
-        }, 1000);
+      //  }, 1000);
 
     }
 
