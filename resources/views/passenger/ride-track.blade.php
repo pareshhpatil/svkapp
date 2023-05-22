@@ -350,6 +350,8 @@
 
             lat=lat-0.00005;
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+
+            map.setCenter(new google.maps.LatLng(lat, lat_long));
            
 
             directionsService
