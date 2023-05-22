@@ -413,7 +413,7 @@
 
                                         <input type="hidden" value="{{$link}}" name="link">
                                         <input type="hidden" value="{{$bulk_id}}" name="bulk_id">
-                                        <input type="hidden" value="{{$type}}" name="type">
+                                        <input type="hidden" id="type" value="{{$type}}" name="type">
                                         <a href="/merchant/order/list" class="btn default">Cancel</a>
                                         <input type="submit" value="Update" class="btn blue" data-cy="order_save" />
                                     </div>

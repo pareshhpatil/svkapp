@@ -499,6 +499,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     var discount_amt_readonly = '';
     var mainDiv = document.getElementById('new_particular');
     var newDiv = document.createElement('tr');
+    type = _('type').value;
     var i;
     var row = '';
     read_cols = ["retainage_amount"];
@@ -508,6 +509,9 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     fixed_select = '';
     bd_select = '';
     sub_select = '';
+    subcontract_option = '';
+
+
     if (co_type == 1) {
         ur_select = 'selected';
         bd_select = '';
@@ -535,10 +539,12 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     row = row + product_text;
     product_text = getCostTypeCode(defaultval, '', numrow);
 
-
+    if (type != 'subcontract') {
+        subcontract_option = '<option ' + sub_select + ' value="4">Subcontract</option>';
+    }
 
     row = row + product_text;
-    row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option><option ' + fixed_select + ' value="3">Fixed</option><option ' + sub_select + ' value="4">Subcontract</option></select></td>';
+    row = row + '<td class="col-id-no" scope="row"><select id="co_type' + numrow + '" onchange="setCOType(this.value,' + numrow + ')" class="form-control input-sm" name="co_type[]"><option ' + ur_select + ' value="1">Unit / Price</option><option ' + bd_select + ' value="2">Budget reallocation</option><option ' + fixed_select + ' value="3">Fixed</option>' + subcontract_option + '</select></td>';
     row = row + '<td class="td-r"><input readonly id="original_contract_amount' + numrow + '" numbercom="yes" name="original_contract_amount[]" data-cy="particular_original_contract_amount' + numrow + '" class="form-control input-sm" value="0"></td>';
     row = row + '<td><input id="retainage_percent' + numrow + '"  step=".00000000001" type="number" name="retainage_percent[]" data-cy="particular_retainage_percent' + numrow + '" class="form-control input-sm"></td>';
 

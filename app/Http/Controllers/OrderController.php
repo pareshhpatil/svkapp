@@ -147,7 +147,7 @@ class OrderController extends Controller
         $data['mode'] = 'create';
         $data['title'] = 'Change Order';
         $data['datatablejs'] = 'table-no-export';  //table-no-export old value
-        return view('app/merchant/order/createv2', $data);
+        return view('app/merchant/order/create', $data);
     }
 
     public function save(Request $request)
