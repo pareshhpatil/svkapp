@@ -348,7 +348,7 @@
 
             getData();
 
-            lat=lat-0.00005;
+            lat=lat-0.0005;
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
            
 
