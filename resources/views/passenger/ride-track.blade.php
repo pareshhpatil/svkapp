@@ -324,17 +324,33 @@
         currentMarker.setMap(null);
         var originMarker;
         var destinationMarker;
+
+        originMarker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat, lat_long),
+            map: map,
+            icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
+            label: {
+                text: "Nitin Kamble",
+                className: 'marker-label'
+            }
+        });
+
+        destinationMarker = new google.maps.Marker({
+            position: new google.maps.LatLng(my_lat, my_long),
+            map: map,
+            icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
+            label: {
+                text: "Paresh Patil",
+                className: 'marker-label'
+            }
+        });
         setInterval(function() {
 
             getData();
-            try {
-                originMarker.setMap(null);
 
-            } catch (o) {}
-            try {
-                destinationMarker.setMap(null);
 
-            } catch (o) {}
+            destinationMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
+           
 
             directionsService
                 .route({
@@ -351,25 +367,7 @@
                     //     }
                     // });
 
-                    originMarker = new google.maps.Marker({
-                        position: new google.maps.LatLng(lat, lat_long),
-                        map: map,
-                        icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
-                        label: {
-                            text: "Nitin Kamble",
-                            className: 'marker-label'
-                        }
-                    });
 
-                    destinationMarker = new google.maps.Marker({
-                        position: new google.maps.LatLng(my_lat, my_long),
-                        map: map,
-                        icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
-                        label: {
-                            text: "Paresh Patil",
-                            className: 'marker-label'
-                        }
-                    });
 
                     // Customize the markers
                     var markerOptions = {
