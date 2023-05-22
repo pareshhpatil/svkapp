@@ -213,8 +213,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-        //  my_lat = latitude;
-        //  my_long = longitude;
+        my_lat = latitude;
+        my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -225,7 +225,7 @@
                 icon: {
                     url: 'https://app.svktrv.in/assets/img/current-loc.png',
                     // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(40, 40),
+                    size: new google.maps.Size(20, 20),
                     // The origin for this image is (0, 0).
                     origin: new google.maps.Point(0, 0),
                     // The anchor for this image is the base of the flagpole at (0, 32).
@@ -338,7 +338,15 @@
         destinationMarker = new google.maps.Marker({
             position: new google.maps.LatLng(my_lat, my_long),
             map: map,
-            icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
+            icon: {
+                url: 'https://app.svktrv.in/assets/img/current-loc.png',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(20, 20),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(0, 32)
+            }, // Path to your custom marker icon
             label: {
                 text: "Paresh Patil",
                 className: 'marker-label'
@@ -352,8 +360,8 @@
             //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
 
-            
-           
+
+
 
             directionsService
                 .route({
@@ -393,9 +401,8 @@
                 .catch((e) =>
                     window.alert("Directions request failed due to " + status)
                 );
-            console.log('hii');
 
-        }, 500);
+        }, 10000);
 
     }
 
