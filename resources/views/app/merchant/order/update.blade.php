@@ -244,7 +244,6 @@
                                     $up='style=display:none;';
                                     $co_type=2;
                                     }
-
                                     $is_calculated = false;
                                     @endphp
                                     <tr id="pint{{$key+1}}" >
@@ -286,7 +285,9 @@
                                                 <option @if($row['co_type']==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($row['co_type']==2) selected @endif value="2">Budget reallocation</option>
                                                 <option @if($row['co_type']==3) selected @endif value="3">Fixed amount</option>
+                                                @if($type!='subcontract')
                                                 <option @if($row['co_type']==4) selected @endif value="4">Subcontract</option>
+                                                @endif
                                             </select>
                                         </td>
                                         <td class="td-r onhover-border">
@@ -305,14 +306,10 @@
                                             <input type="text" readonly data-cy="particular_change_order_amount{{$key+1}}" class="form-control input-sm" value="{{$row['change_order_amount']}}" id="change_order_amount{{$key+1}}" name="change_order_amount[]" onblur="calculateChangeOrder()" />
                                         </td>
                                         <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}">
-                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" value="{{$row['change_order_amount']}}" placeholder="@if($row['co_type']==2)Budget reallocation @else Change order amount @endif" class="form-control input-sm" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
-                                        </td>
-
-                                        <td class="td-c onhover-border" colspan="3" {{$bd}} id="td_budget{{$key+1}}">
-                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" @if($co_type==4) readonly @endif placeholder="@if($co_type==2)Budget reallocation @else Change order amount @endif" class="form-control input-sm" value="{{$row['change_order_amount']}}" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
+                                            <input step=".00000000001" type="number" data-cy="particular_budget{{$key+1}}" @if($row['co_type']==4) readonly @endif placeholder="@if($row['co_type']==2)Budget reallocation @else Change order amount @endif" class="form-control input-sm" value="{{$row['change_order_amount']}}" id="budget{{$key+1}}" name="budget[]" onblur="calculateChangeOrder()" />
                                             <input type="hidden" name="subcontract_id[]" @isset($row['subcontract_id']) value="{{$row['subcontract_id']}}" @endisset id="subcontract_id{{$key+1}}">
                                             <input type="hidden" name="subcontract_particulars[]" @isset($row['subcontract_particulars']) value="{{$row['subcontract_particulars']}}" @endisset  id="subcontract_particular{{$key+1}}">
-                                            <div id="sub_contract_link{{$key+1}}" style="@if($co_type!=4) display: none; @endif">
+                                            <div id="sub_contract_link{{$key+1}}" style="@if($row['co_type']!=4) display: none; @endif">
 
                                                 <a onclick="showbilltransaction('{{$key+1}}');" class="pull-left"> Select subcontracts </a>
 
