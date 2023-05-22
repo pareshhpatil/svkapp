@@ -308,10 +308,26 @@
                     }
                 });
 
+                var originMarker = new google.maps.Marker({
+                    icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
+                    label: {
+                        text: "Nitin Kamble",
+                        className: 'marker-label'
+                    }
+                });
+
+                var destinationMarker = new google.maps.Marker({
+                    icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
+                    label: {
+                        text: "Paresh Patil",
+                        className: 'marker-label'
+                    }
+                });
+
                 // Customize the markers
                 var markerOptions = {
-                    icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png',
-                    suppressMarkers: true
+                    origin: originMarker,
+                    destination: destinationMarker
                 };
                 directionsRenderer.setOptions({
                     markerOptions: markerOptions
