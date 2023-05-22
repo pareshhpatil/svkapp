@@ -398,12 +398,7 @@
 
             getData();
 
-            try {
-            currentMarker.setMap(null);
-        } catch (o) {}
-        try {
-            driverMarker.setMap(null);
-        } catch (o) {}
+           
 
         }, 1000);
 
