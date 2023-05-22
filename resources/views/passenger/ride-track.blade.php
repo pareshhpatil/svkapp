@@ -81,7 +81,7 @@
     }
 
     .marker-label-user {
-        margin-top: 40px;
+        margin-top: 60px;
         font-size: 12px;
         line-height: 1em;
         border-radius: 100px;
