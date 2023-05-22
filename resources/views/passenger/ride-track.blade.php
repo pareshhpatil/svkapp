@@ -101,7 +101,7 @@
                             <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
                             <div>
                                 <strong>Nitin Kamble</strong>
-                                <strong class="text-primary">Arriving in 10 min</strong>
+                                <strong class="text-primary">Arriving in <span id="duration"></span> </strong>
                                 <span id="mylat"></span>
                                 <p>MH 02 545454</p>
                             </div>
@@ -117,7 +117,7 @@
                         <!-- Wallet Footer -->
                         <div class="wallet-footer" style="padding-top: 10px;">
                             <div v-if="data.ride.status==1" class="item mb-1">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#withdrawActionSheet">
+                                <a href="#" onclick="navigate();">
                                     <div class="icon-wrapper bg-success">
                                         <ion-icon name="navigate-outline"></ion-icon>
                                     </div>
@@ -211,7 +211,6 @@
             map: map
         });
 
-
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
@@ -241,10 +240,11 @@
     var k = 0;
     marker = '';
     lat = 18.6020798;
+    lat_long = 73.7908489;
     mylocation_lat = '';
     mylocation_long = '';
 
-    var myLatLng = new google.maps.LatLng(lat, 73.7908489);
+    var myLatLng = new google.maps.LatLng(lat, lat_long);
     myOptions = {
         zoom: 18,
         center: myLatLng,
@@ -274,7 +274,6 @@
             map: map
         });
 
-
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
@@ -284,34 +283,52 @@
 
     }
 
-    function getMylocation(posistion) {
-        try {
-            mylocation_lat = posistion.latitude;
-            mylocation_long = posistion.longitude;
-            var myLatLng = new google.maps.LatLng(mylocation_lat, mylocation_long),
-                myOptions = {
-                    zoom: 18,
-                    center: myLatLng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                },
 
-                map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
-                marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(mylocation_lat, mylocation_long),
-                    icon: 'https://app.svktrv.in/assets/img/sm-icon.png',
-                    map: map
-                });
-            const pos = {
-                lat: mylocation_lat,
-                lng: mylocation_long
-            };
-            map.setCenter(pos);
-        } catch (o) {
-            alert(o.message);
-        }
+
+    function navigate() {
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        setInterval(function() {
+            if (k < 1) {
+                directionsService
+                    .route({
+                        origin: new google.maps.LatLng(lat, lat_long),
+                        destination: new google.maps.LatLng(my_lat, my_long),
+                        travelMode: 'DRIVING'
+                    })
+                    .then((response) => {
+                        const duration = response.routes[0].legs[0].duration.text;
+                        document.getElementById("duration").innerHTML = duration;
+                        directionsRenderer.setOptions({
+                            polylineOptions: {
+                                strokeColor: '#FF0000' // Set your desired color
+                            }
+                        });
+
+                        // Customize the markers
+                        var markerOptions = {
+                            icon: 'https://maps.google.com/mapfiles/ms/micons/blue.png' // Set your desired marker icon
+                        };
+                        directionsRenderer.setOptions({
+                            markerOptions: markerOptions
+                        });
+
+                        //directionsDisplay.setDirections(response);
+
+                        directionsRenderer.setDirections(response);
+                    })
+                    .catch((e) =>
+                        window.alert("Directions request failed due to " + status)
+                    );
+
+
+                k = k + 1;
+                console.log(k);
+            }
+        }, 100000);
+
+
     }
-
-
 
     function moveBus(map, marker) {
 
@@ -326,7 +343,7 @@
         }, 1000);
 
 
-    };
+    }
 </script>
 
 @endsection
