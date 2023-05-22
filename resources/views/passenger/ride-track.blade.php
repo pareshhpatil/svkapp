@@ -358,7 +358,7 @@
             icon: {
                 url: 'https://app.svktrv.in/assets/img/map-male.png',
                 // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(30, 30),
+                size: new google.maps.Size(40, 40),
                 // The origin for this image is (0, 0).
                 origin: new google.maps.Point(0, 0),
                 // The anchor for this image is the base of the flagpole at (0, 32).
@@ -366,61 +366,62 @@
             }, // Path to your custom marker icon
             label: {
                 text: "Paresh Patil",
-                className: 'marker-label'
+                className: 'marker-label-user'
             }
         });
         setInterval(function() {
-
+            ex_lat = lat;
             getData();
-
-            //lat=lat-0.00005;
-            //map.setCenter(new google.maps.LatLng(lat, lat_long));
-            originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-            // map.panTo(new google.maps.LatLng(lat, lat_long));
-
-
-
-
-            directionsService
-                .route({
-                    origin: new google.maps.LatLng(lat, lat_long),
-                    destination: new google.maps.LatLng(my_lat, my_long),
-                    travelMode: 'DRIVING'
-                })
-                .then((response) => {
-                    const duration = response.routes[0].legs[0].duration.text;
-                    document.getElementById("duration").innerHTML = duration;
-                    // directionsRenderer.setOptions({
-                    //    polylineOptions: {
-                    //         strokeColor: '#FF0000' // Set your desired color
-                    //     }
-                    // });
+            if (lat != ex_lat) {
+                //lat=lat-0.00005;
+                //map.setCenter(new google.maps.LatLng(lat, lat_long));
+                originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+                // map.panTo(new google.maps.LatLng(lat, lat_long));
 
 
 
-                    // Customize the markers
-                    var markerOptions = {
-                        origin: originMarker,
-                        destination: destinationMarker,
-                    };
-                    directionsRenderer.setOptions({
-                        markerOptions: markerOptions,
-                        polylineOptions: {
-                            strokeColor: '#FF0000' // Set your desired color
-                        },
-                        suppressMarkers: true
 
-                    });
+                directionsService
+                    .route({
+                        origin: new google.maps.LatLng(lat, lat_long),
+                        destination: new google.maps.LatLng(my_lat, my_long),
+                        travelMode: 'DRIVING'
+                    })
+                    .then((response) => {
+                        const duration = response.routes[0].legs[0].duration.text;
+                        document.getElementById("duration").innerHTML = duration;
+                        // directionsRenderer.setOptions({
+                        //    polylineOptions: {
+                        //         strokeColor: '#FF0000' // Set your desired color
+                        //     }
+                        // });
 
-                    //directionsDisplay.setDirections(response);
 
-                    directionsRenderer.setDirections(response);
-                })
-                .catch((e) =>
-                    window.alert("Directions request failed due to " + status)
-                );
 
-        }, 10000);
+                        // Customize the markers
+                        var markerOptions = {
+                            origin: originMarker,
+                            destination: destinationMarker,
+                        };
+                        directionsRenderer.setOptions({
+                            markerOptions: markerOptions,
+                            polylineOptions: {
+                                strokeColor: '#FF0000' // Set your desired color
+                            },
+                            suppressMarkers: true
+
+                        });
+
+                        //directionsDisplay.setDirections(response);
+
+                        directionsRenderer.setDirections(response);
+                    })
+                    .catch((e) =>
+                        window.alert("Directions request failed due to " + status)
+                    );
+            }
+
+        }, 1000);
 
     }
 
