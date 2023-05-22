@@ -102,6 +102,7 @@
                             <div>
                                 <strong>Nitin Kamble</strong>
                                 <strong class="text-primary">Arriving in 10 min</strong>
+                                <span id="mylat"></span>
                                 <p>MH 02 545454</p>
                             </div>
                         </div>
@@ -184,7 +185,7 @@
         // Show a map centered at latitude / longitude.
         my_lat = latitude;
         my_long = longitude;
-        console.log(my_lat);
+       document.getElementById('mylat').innerHTML=my_lat;
     }
     function errorCallback(error) {
 
@@ -245,7 +246,7 @@
 
 
         // Add the button to the map's controls
-        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
+       // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
         marker.setMap(map);
 
