@@ -49,6 +49,11 @@ class OrderController extends Controller
         Session::put('valid_ajax', 'expense');
         $userRole = Session::get('user_role');
 
+        if ($type == 'subcontract') {
+            $menu = [5, 183];
+            $title = 'Create subcontract';
+        }
+
         $data = Helpers::setBladeProperties(ucfirst($title) . ' change order', ['expense', 'contract', 'product', 'template', 'invoiceformat'], [3, 180]);
         $data['gst_type'] = 'intra';
         $data['button'] = 'Save';
@@ -145,7 +150,6 @@ class OrderController extends Controller
 
         $data['type'] = $type;
         $data['mode'] = 'create';
-        $data['title'] = 'Change Order';
         $data['datatablejs'] = 'table-no-export';  //table-no-export old value
         return view('app/merchant/order/create', $data);
     }

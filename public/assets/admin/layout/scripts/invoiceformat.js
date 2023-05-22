@@ -499,7 +499,7 @@ function AddInvoiceParticularRowOrderV2(defaultval) {
     var discount_amt_readonly = '';
     var mainDiv = document.getElementById('new_particular');
     var newDiv = document.createElement('tr');
-    type=_('')
+    type=_('type').value;
     var i;
     var row = '';
     read_cols = ["retainage_amount"];

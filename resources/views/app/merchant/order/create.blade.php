@@ -83,7 +83,7 @@
     <!-- BEGIN PAGE HEADER-->
     <div class="page-bar">
         <span class="page-title" style="float: left;">{{$title}}</span>
-        {{ Breadcrumbs::render('home.orderupdate') }}
+        {{ Breadcrumbs::render('home.orderupdate',$type) }}
     </div>
     <!-- END PAGE HEADER-->
     <!-- BEGIN PAGE CONTENT-->
@@ -319,7 +319,9 @@
                                                 <option @if($co_type==1) selected @endif value="1">Unit / Price</option>
                                                 <option @if($co_type==2) selected @endif value="2">Budget reallocation</option>
                                                 <option @if($co_type==3) selected @endif value="3">Fixed</option>
-                                                <option @if($co_type==4) selected @endif value="4">Subcontract</option>
+                                                @if($type!='subcontract')
+                                                <option @if($row['co_type']==4) selected @endif value="4">Subcontract</option>
+                                                @endif
                                             </select>
                                         </td>
                                         <td class="td-r">

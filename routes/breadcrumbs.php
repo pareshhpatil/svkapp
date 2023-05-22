@@ -447,17 +447,30 @@ Breadcrumbs::for('home.orderlist', function ($trail, $type) {
     }
 });
 
-Breadcrumbs::for('home.ordercreate', function ($trail) {
+Breadcrumbs::for('home.ordercreate', function ($trail, $type = '') {
     $trail->parent('home');
-    $trail->push('Change order');
-    $trail->push('Change order list', '/merchant/order/list');
-    $trail->push('Change order create', '/merchant/order/create');
+    if ($type == 'subcontract') {
+        $trail->push('Subcontract change order');
+        $trail->push('Subcontract change order list', '/merchant/order/list/subcontract');
+        $trail->push('Subcontract change order create', '/merchant/order/create/subcontract');
+    } else {
+        $trail->push('Change order');
+        $trail->push('Change order list', '/merchant/order/list');
+        $trail->push('Change order create', '/merchant/order/create');
+    }
 });
 
-Breadcrumbs::for('home.orderupdate', function ($trail) {
+Breadcrumbs::for('home.orderupdate', function ($trail, $type = '') {
     $trail->parent('home');
-    $trail->push('Change Order');
-    $trail->push('Change order list', '/merchant/order/list');
+    if ($type == 'subcontract') {
+        $trail->push('Subcontract change Order');
+        $trail->push('List', '/merchant/order/list/subcontract');
+        $trail->push('Create');
+    } else {
+        $trail->push('Change Order');
+        $trail->push('Change order list', '/merchant/order/list');
+        $trail->push('Create');
+    }
 });
 Breadcrumbs::for('merchant.region-setting.index', function ($trail) {
     $trail->parent('home');
