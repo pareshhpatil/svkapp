@@ -186,8 +186,11 @@
 
 
 <script>
-    var my_lat = '';
-    var my_long = '';
+   // var my_lat = '';
+   // var my_long = '';
+
+    var my_lat = 18.6020798;
+    var my_long = 73.7908489;
     var start = false;
     var options = {
         enableHighAccuracy: true,
@@ -210,8 +213,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-        my_lat = latitude;
-        my_long = longitude;
+      //  my_lat = latitude;
+      //  my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
