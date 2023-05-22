@@ -341,7 +341,7 @@
             icon: {
                 url: 'https://app.svktrv.in/assets/img/current-loc.png',
                 // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(20, 20),
+                size: new google.maps.Size(30, 30),
                 // The origin for this image is (0, 0).
                 origin: new google.maps.Point(0, 0),
                 // The anchor for this image is the base of the flagpole at (0, 32).
@@ -354,11 +354,12 @@
         });
         setInterval(function() {
 
-            getData();
+           // getData();
 
-            //lat=lat-0.00005;
+            lat=lat-0.00005;
             //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+            map.panTo(new google.maps.LatLng(lat, lat_long));
 
 
 
@@ -414,12 +415,11 @@
                     array = JSON.parse(this.responseText);
                     lat = array.latitude;
                     lat_long = array.longitude;
-                    console.log(lat);
                 } catch (o) {}
 
             }
         };
-        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/1", true);
+        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
     }
 
