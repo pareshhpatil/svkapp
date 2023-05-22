@@ -186,8 +186,8 @@
 
 
 <script>
-   // var my_lat = '';
-   // var my_long = '';
+    // var my_lat = '';
+    // var my_long = '';
 
     var my_lat = 18.6020798;
     var my_long = 73.7908489;
@@ -213,8 +213,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-      //  my_lat = latitude;
-      //  my_long = longitude;
+        //  my_lat = latitude;
+        //  my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -322,9 +322,19 @@
         start = true;
         driverMarker.setMap(null);
         currentMarker.setMap(null);
+        var originMarker;
+        var destinationMarker;
         setInterval(function() {
 
             getData();
+            try {
+                originMarker.setMap(null);
+
+            } catch (o) {}
+            try {
+                destinationMarker.setMap(null);
+
+            } catch (o) {}
 
             directionsService
                 .route({
@@ -341,7 +351,7 @@
                     //     }
                     // });
 
-                    var originMarker = new google.maps.Marker({
+                    originMarker = new google.maps.Marker({
                         position: new google.maps.LatLng(lat, lat_long),
                         map: map,
                         icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
@@ -351,7 +361,7 @@
                         }
                     });
 
-                    var destinationMarker = new google.maps.Marker({
+                    destinationMarker = new google.maps.Marker({
                         position: new google.maps.LatLng(my_lat, my_long),
                         map: map,
                         icon: 'https://app.svktrv.in/assets/img/current-loc.png', // Path to your custom marker icon
@@ -382,8 +392,8 @@
                 .catch((e) =>
                     window.alert("Directions request failed due to " + status)
                 );
-                console.log('hii');
-                
+            console.log('hii');
+
         }, 1000);
 
     }
