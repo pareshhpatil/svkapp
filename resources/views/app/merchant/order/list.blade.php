@@ -11,11 +11,11 @@
         <span class="page-title" style="float: left;">{{$title}}</span>
         {{ Breadcrumbs::render('home.orderlist',$type) }}
         @if(in_array('all', array_keys($privileges)) && $privileges['all'] == 'full')
-            @if($type != 'co')
-                <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>
-            @else
-                <a href="/merchant/order/create" class="btn blue pull-right"> Create Change Order </a>
-            @endif
+        @if($type != 'co')
+        <a href="/merchant/order/create/{{$type}}" class="btn blue pull-right"> Create Change Order </a>
+        @else
+        <a href="/merchant/order/create" class="btn blue pull-right"> Create Change Order </a>
+        @endif
         @endif
 
     </div>
@@ -131,8 +131,12 @@
                                     <td class="td-c">
                                         @if($v->status == 0)
                                         <span class="badge badge-pill status draft">PENDING</span>
-                                        @else
+                                        @elseif($v->status == 1)
                                         <span class="badge badge-pill status paid_online">APPROVED</span>
+                                        @elseif($v->status == 2)
+                                        <span class="badge badge-pill status draft">PRE PENDING</span>
+                                        @elseif($v->status == 3)
+                                        <span class="badge badge-pill status overdue">REJECTED</span>
                                         @endif
                                     </td>
                                     <td class="td-c">
@@ -142,92 +146,98 @@
                                                 &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
                                             </button>
                                             @if(!empty($privileges))
-                                                @if(in_array('all', array_keys($privileges)) && !in_array($v->contract_id, array_keys($privileges)))
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'approve')
-                                                            <li>
-                                                                <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>
-                                                            </li>
-                                                        @endif
-                                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
-                                                                <li>
-                                                                    <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
-                                                                </li>
-                                                        @endif
-                                                        @if($privileges['all'] == 'full')
-                                                            <li>
-                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
-                                                            </li>
-                                                        @endif
-                                                    </ul>
-                                                @else
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')
-                                                            <li>
-                                                                <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>
-                                                            </li>
-                                                        @endif
-                                                        @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')
-                                                            <li>
-                                                                <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
-                                                            </li>
-                                                        @endif
-                                                        @if($privileges[$v->order_id] == 'full')
-                                                            <li>
-                                                                <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
-                                                            </li>
-                                                        @endif
-                                                    </ul>
+                                            @if(in_array('all', array_keys($privileges)) && !in_array($v->contract_id, array_keys($privileges)))
+                                            <ul class="dropdown-menu" role="menu">
+                                                @if($privileges['all'] == 'full' || $privileges['all'] == 'approve')
+                                                <li>
+                                                    <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>
+                                                </li>
                                                 @endif
+                                                @if($privileges['all'] == 'full' || $privileges['all'] == 'edit')
+                                                <li>
+                                                    <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
+                                                </li>
+                                                @endif
+                                                @if($privileges['all'] == 'full')
+                                                <li>
+                                                    <a href="#reject" onclick="document.getElementById('rejectanchor').href = '/merchant/order/reject/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Reject</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                            @elseif($v->status == 1)
+                                            <ul class="dropdown-menu" role="menu">
+                                                @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')
+                                                <li>
+                                                    <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>
+                                                </li>
+                                                @endif
+                                                @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')
+                                                <li>
+                                                    <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>
+                                                </li>
+                                                @endif
+                                                @if($privileges[$v->order_id] == 'full')
+                                                <li>
+                                                    <a href="#reject" onclick="document.getElementById('rejectanchor').href = '/merchant/order/reject/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Reject</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>
+                                                </li>
+                                                @endif
+                                            </ul>
                                             @endif
-{{--                                            <ul class="dropdown-menu" role="menu">--}}
-{{--                                                @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')--}}
-{{--                                                    <li>--}}
-{{--                                                        <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>--}}
-{{--                                                    </li>--}}
-{{--                                                @endif--}}
-{{--                                                @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')--}}
-{{--                                                    <li>--}}
-{{--                                                        <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>--}}
-{{--                                                    </li>--}}
-{{--                                                @endif--}}
-{{--                                                @if($privileges[$v->order_id] == 'full')--}}
-{{--                                                    <li>--}}
-{{--                                                        <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>--}}
-{{--                                                    </li>--}}
-{{--                                                @endif--}}
-{{--                                            </ul>--}}
+                                            @endif
+                                            {{-- <ul class="dropdown-menu" role="menu">--}}
+                                            {{-- @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')--}}
+                                            {{-- <li>--}}
+                                            {{-- <a href="#basic2" onclick="document.getElementById('encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Approve</a>--}}
+                                            {{-- </li>--}}
+                                            {{-- @endif--}}
+                                            {{-- @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'edit')--}}
+                                            {{-- <li>--}}
+                                            {{-- <a href="/merchant/order/update/{{$v->encrypted_id}}/{{$type}}"><i class="fa fa-edit"></i> Update</a>--}}
+                                            {{-- </li>--}}
+                                            {{-- @endif--}}
+                                            {{-- @if($privileges[$v->order_id] == 'full')--}}
+                                            {{-- <li>--}}
+                                            {{-- <a href="#basic" onclick="document.getElementById('deleteanchor').href = '/merchant/order/delete/{{$v->encrypted_id}}/{{$type}}'" data-toggle="modal"><i class="fa fa-times"></i> Delete</a>--}}
+                                            {{-- </li>--}}
+                                            {{-- @endif--}}
+                                            {{-- </ul>--}}
                                         </div>
                                         @elseif($v->status == 1 && $v->invoice_status==0)
-                                            @if(!empty($privileges))
-                                                @if(in_array('all', array_keys($privileges)) && !in_array($v->order_id, array_keys($privileges)))
-                                                    @if($privileges['all'] == 'full' || $privileges['all'] == 'approve')
-                                                        <div class="btn-group dropup">
-                                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
-                                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
-                                                            </button>
-                                                            <ul class="dropdown-menu" role="menu">
-                                                                <li>
-                                                                    <a href="#unapprove" onclick="document.getElementById('un_encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Unapprove</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')
-                                                        <div class="btn-group dropup">
-                                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
-                                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
-                                                            </button>
-                                                            <ul class="dropdown-menu" role="menu">
-                                                                <li>
-                                                                    <a href="#unapprove" onclick="document.getElementById('un_encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Unapprove</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    @endif
-                                                @endif
-                                            @endif
+                                        @if(!empty($privileges))
+                                        @if(in_array('all', array_keys($privileges)) && !in_array($v->order_id, array_keys($privileges)))
+                                        @if($privileges['all'] == 'full' || $privileges['all'] == 'approve')
+                                        <div class="btn-group dropup">
+                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="#unapprove" onclick="document.getElementById('un_encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Unapprove</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        @endif
+                                        @else
+                                        @if($privileges[$v->order_id] == 'full' || $privileges[$v->order_id] == 'approve')
+                                        <div class="btn-group dropup">
+                                            <button class="btn btn-xs btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+                                                &nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;&nbsp;
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="#unapprove" onclick="document.getElementById('un_encrypt_id').value = '{{$v->encrypted_id}}'" data-toggle="modal"><i class="fa fa-check"></i> Unapprove</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        @endif
+                                        @endif
+                                        @endif
 
                                         @endif
                                     </td>
@@ -259,6 +269,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn default" data-dismiss="modal">Close</button>
                 <a href="" id="deleteanchor" class="btn delete">Confirm</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="reject" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Reject Order</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to reject this order?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <a href="" id="rejectanchor" class="btn delete">Confirm</a>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -363,12 +393,12 @@
 
         let orderID = getUrlParameter('order_id');
 
-        if(orderID) {
+        if (orderID) {
             $('#basic2').modal('show');
             $('#basic2').find("#encrypt_id").val(orderID)
 
         }
     })
- </script>
+</script>
 
 @endsection

@@ -453,6 +453,7 @@ Route::group(['prefix' => 'merchant', 'middleware' => 'auth'], function () {
   Route::any('order/list/{type}', 'OrderController@list');
   Route::any('order/delete/{link}', 'OrderController@delete')->name('delete.order');
   Route::any('order/delete/{link}/{type}', 'OrderController@delete')->name('delete.order1');
+  Route::any('order/reject/{link}/{type?}', 'OrderController@reject');
   Route::any('order/approve/', 'OrderController@approve')->name('approve.order')->middleware('PrivilegesAccess');
   Route::any('order/approve/{type}', 'OrderController@approve')->name('approve.order1')->middleware('PrivilegesAccess');
   Route::any('order/unapprove/', 'OrderController@unapprove')->name('unapprove.order')->middleware('PrivilegesAccess');

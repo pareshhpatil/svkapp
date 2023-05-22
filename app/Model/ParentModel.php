@@ -43,7 +43,7 @@ class ParentModel extends Model
         }
     }
 
-    public function getColumnValue($table, $where, $value, $column_name, $param = [],$orderby=null)
+    public function getColumnValue($table, $where, $value, $column_name, $param = [], $orderby = null)
     {
 
         $retObj = DB::table($table)
@@ -54,8 +54,7 @@ class ParentModel extends Model
                 $retObj->where($k, $v);
             }
         }
-        if($orderby!=null)
-        {
+        if ($orderby != null) {
             $retObj->orderByDesc($orderby);
         }
         $array = $retObj->first();
@@ -136,13 +135,17 @@ class ParentModel extends Model
         return $retObj->get();
     }
 
-    public function updateTable($table, $where, $whvalue, $col, $val)
+    public function updateTable($table, $where, $whvalue, $col, $val, $user_id = null)
     {
+        $array = [
+            $col => $val
+        ];
+        if ($user_id != null) {
+            $array['last_update_by'] = $user_id;
+        }
         DB::table($table)
             ->where($where, $whvalue)
-            ->update([
-                $col => $val
-            ]);
+            ->update($array);
     }
 
     public function getConfigList($type)

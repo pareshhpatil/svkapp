@@ -137,7 +137,7 @@ class OrderController extends Controller
             $data['cost_type_list_json'] = json_encode($data['cost_type_list']);
 
             $data['subcontract'] = $model->getTableList('sub_contract', 'project_id', $row->project_id);
-           // dd($data['subcontract']);
+            // dd($data['subcontract']);
         } else {
             $data['contract_id'] = '';
             $data['co_type'] = 1;
@@ -343,6 +343,20 @@ class OrderController extends Controller
             return redirect('merchant/order/list/' . $type)->with('success', "Record has been deleted");
         } else {
             return redirect('merchant/order/list/' . $type)->with('error', "Record code can not be deleted");
+        }
+    }
+    public function reject($link, $type = '')
+    {
+        $table = 'order';
+        if ($type == 'subcontract') {
+            $table = 'subcontract_change_order';
+        }
+        if ($link) {
+            $id = Encrypt::decode($link);
+            $this->masterModel->updateTable($table, 'order_id', $id, 'status', '3', $this->user_id);
+            return redirect('merchant/order/list/' . $type)->with('success', "Record has been rejected");
+        } else {
+            return redirect('merchant/order/list/' . $type)->with('error', "Record code can not be rejected");
         }
     }
 
