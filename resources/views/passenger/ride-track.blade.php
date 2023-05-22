@@ -309,6 +309,8 @@
                 });
 
                 var originMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(lat, lat_long),
+                    map: map,
                     icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
                     label: {
                         text: "Nitin Kamble",
