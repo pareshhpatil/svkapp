@@ -188,7 +188,7 @@
 <script>
     var my_lat = '';
     var my_long = '';
-    var start = false;
+    var start = true;
     var options = {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -210,8 +210,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-        my_lat = latitude;
-        my_long = longitude;
+       // my_lat = latitude;
+       // my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -338,7 +338,12 @@
             driverMarker.setMap(null);
         } catch (o) {}
         setInterval(function() {
-
+            try {
+            currentMarker.setMap(null);
+        } catch (o) {}
+        try {
+            driverMarker.setMap(null);
+        } catch (o) {}
             directionsService
                 .route({
                     origin: new google.maps.LatLng(lat, lat_long),
