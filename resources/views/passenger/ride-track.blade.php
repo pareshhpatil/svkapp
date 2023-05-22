@@ -376,7 +376,7 @@
                 .catch((e) =>
                     window.alert("Directions request failed due to " + status)
                 );
-
+                console.log('hii');
         }, 1000);
 
     }
