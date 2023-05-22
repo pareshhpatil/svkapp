@@ -162,6 +162,7 @@
 
 <script>
     function start() {
+        alert('start');
         window.WTN.backgroundLocation.start({
             callback: false,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
