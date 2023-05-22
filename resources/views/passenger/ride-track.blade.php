@@ -387,6 +387,7 @@
                     })
                     .then((response) => {
                         const duration = response.routes[0].legs[0].duration.text;
+                        console.log(response);
                         document.getElementById("duration").innerHTML = duration;
                         // directionsRenderer.setOptions({
                         //    polylineOptions: {
