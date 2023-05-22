@@ -212,8 +212,8 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-       // my_lat = latitude;
-       // my_long = longitude;
+        // my_lat = latitude;
+        // my_long = longitude;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
         try {
@@ -334,11 +334,17 @@
 
     function navigate() {
         start = true;
-         driverMarker.setMap(null);
-         currentMarker.setMap(null);
+        try {
+
+            currentMarker.setMap(null);
+            driverMarker.setMap(null);
+        } catch (o) {
+
+        }
+
         setInterval(function() {
 
-           // getData();
+            // getData();
 
 
             directionsService
