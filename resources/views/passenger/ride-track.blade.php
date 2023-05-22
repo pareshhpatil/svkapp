@@ -125,7 +125,7 @@
                             </div>
 
                             <div class="item">
-                                <a href="#" onclick="start();">
+                                <a href="#" onclick="startlocation();">
                                     <div class="icon-wrapper bg-warning">
                                         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                                     </div>
@@ -161,7 +161,7 @@
 
 
 <script>
-    function start() {
+    function startlocation() {
         alert('start');
         window.WTN.backgroundLocation.start({
             callback: false,
