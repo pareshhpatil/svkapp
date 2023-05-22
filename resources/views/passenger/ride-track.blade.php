@@ -370,9 +370,7 @@
             }
         });
         setInterval(function() {
-            ex_lat = lat;
             getData();
-            if (lat != ex_lat) {
                 //lat=lat-0.00005;
                 //map.setCenter(new google.maps.LatLng(lat, lat_long));
                 originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
@@ -419,7 +417,6 @@
                     .catch((e) =>
                         window.alert("Directions request failed due to " + status)
                     );
-            }
 
         }, 1000);
 
