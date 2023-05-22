@@ -825,10 +825,10 @@ class UserController extends Controller
                 $verifiedIdToken = $auth->verifyIdToken($decrypt_token["result"]["token"]);
             } catch (InvalidToken $e) {
                 log::error('BRIQ login error: The token is invalid: ' . $e->getMessage());
-                return view('errors/briq-register');
+                return redirect(env('BRIQ_APP_URL'),301);
             } catch (\InvalidArgumentException $e) {
                 log::error('BRIQ login error: The token could not be parsed:' . $e->getMessage());
-                return view('errors/briq-register');
+                return redirect(env('BRIQ_APP_URL'),301);
             }
 
             $uid = $verifiedIdToken->claims()->get('sub');
@@ -880,21 +880,21 @@ class UserController extends Controller
                     }
                 } else {
                     log::error('BRIQ login error: email recieved from firebase is not a valid email: ' . $email);
-                    return view('errors/briq-register');
+                    return redirect(env('BRIQ_APP_URL'),301);
                 }
             } else {
                 log::error('BRIQ login error: email recieved from firebase is blank : ' . $email . "checking UID....");
                 $exist_uid = $this->user_model->getTableRow('user', 'briq_user_id', $user_uid);
                 if (empty($exist_uid)) {
                     log::error('BRIQ login error: UID recieved from firebase is blank : ' . $user_uid);
-                    return view('errors/briq-register');
+                    return redirect(env('BRIQ_APP_URL'),301);
                 } else {
                     $redirect_url =  $this->setTokenLoginDetails($exist_uid->user_id, null);
                     return redirect($redirect_url);
                 }
             }
         } else {
-            return view('errors/briq-register');
+            return redirect(env('BRIQ_APP_URL'),301);
         }
     }
 
@@ -942,7 +942,7 @@ class UserController extends Controller
             return $response;
         } else {
             log::error('BRIQ token decrypt error');
-            return view('errors/briq-register');
+            return redirect(env('BRIQ_APP_URL'),301);
         }
     }
 }
