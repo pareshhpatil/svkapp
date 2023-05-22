@@ -313,14 +313,32 @@
 
     }
 
+    function getData() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                try {
+                    array = JSON.parse(this.responseText);
+                    lat = array.latitude;
+                    lat_long = array.longitude;
+                } catch (o) {}
+
+            }
+        };
+        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/1", true);
+        xhttp.send();
+    }
+
 
 
     function navigate() {
         start = true;
-        driverMarker.setMap(null);
-        currentMarker.setMap(null);
+        try {
+            currentMarker.setMap(null);
+            driverMarker.setMap(null);
+        } catch (o) {}
         setInterval(function() {
-            
+
             directionsService
                 .route({
                     origin: new google.maps.LatLng(lat, lat_long),
@@ -377,6 +395,8 @@
                 .catch((e) =>
                     window.alert("Directions request failed due to " + status)
                 );
+
+            getData();
 
         }, 1000);
 
