@@ -333,10 +333,10 @@
 
     function navigate() {
         start = true;
-        try {
-            currentMarker.setMap(null);
-            driverMarker.setMap(null);
-        } catch (o) {}
+      //  try {
+          //  currentMarker.setMap(null);
+          //  driverMarker.setMap(null);
+      //  } catch (o) {}
         setInterval(function() {
             
             directionsService
