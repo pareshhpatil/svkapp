@@ -306,11 +306,11 @@
             .then((response) => {
                 const duration = response.routes[0].legs[0].duration.text;
                 document.getElementById("duration").innerHTML = duration;
-                directionsRenderer.setOptions({
-                    polylineOptions: {
-                        strokeColor: '#FF0000' // Set your desired color
-                    }
-                });
+                // directionsRenderer.setOptions({
+                //    polylineOptions: {
+                //         strokeColor: '#FF0000' // Set your desired color
+                //     }
+                // });
 
                 var originMarker = new google.maps.Marker({
                     position: new google.maps.LatLng(lat, lat_long),
@@ -335,10 +335,15 @@
                 // Customize the markers
                 var markerOptions = {
                     origin: originMarker,
-                    destination: destinationMarker
+                    destination: destinationMarker,
                 };
                 directionsRenderer.setOptions({
-                    markerOptions: markerOptions
+                    markerOptions: markerOptions,
+                    polylineOptions: {
+                        strokeColor: '#FF0000' // Set your desired color
+                    },
+                    suppressMarkers: true
+
                 });
 
                 //directionsDisplay.setDirections(response);
