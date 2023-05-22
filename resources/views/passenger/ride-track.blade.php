@@ -172,6 +172,7 @@
         maximumAge: 0
     };
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+    var currentMarker;
 
     function successCallback(position) {
         const {
@@ -188,7 +189,11 @@
         document.getElementById('mylat').innerHTML = my_lat;
         var myLatLng = new google.maps.LatLng(latitude, longitude);
 
-        marker = new google.maps.Marker({
+        try {
+            currentMarker.setMap(null);
+        } catch (o) {}
+
+        currentMarker = new google.maps.Marker({
             icon: {
                 url: 'https://app.svktrv.in/assets/img/current-loc.png',
                 // This marker is 20 pixels wide by 32 pixels high.
@@ -240,11 +245,11 @@
     mylocation_long = '';
 
     var myLatLng = new google.maps.LatLng(lat, 73.7908489);
-        myOptions = {
-            zoom: 18,
-            center: myLatLng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
+    myOptions = {
+        zoom: 18,
+        center: myLatLng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
 
     var map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
 
