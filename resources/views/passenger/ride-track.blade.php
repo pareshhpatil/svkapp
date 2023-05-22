@@ -377,8 +377,26 @@
                     window.alert("Directions request failed due to " + status)
                 );
                 console.log('hii');
+                getData();
         }, 1000);
 
+    }
+
+    function getData() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                try {
+                    array = JSON.parse(this.responseText);
+                    lat = array.latitude;
+                    lat_long = array.longitude;
+                    console.log(lat);
+                } catch (o) {}
+
+            }
+        };
+        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/1", true);
+        xhttp.send();
     }
 
     function moveBus(map, marker) {
