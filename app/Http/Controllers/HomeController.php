@@ -173,7 +173,7 @@ class HomeController extends Controller
             $row['driver_image'] = ($v['photo'] != '') ? $v['photo'] : '/assets/img/driver.png';
             $row['pickup_time'] = $v['pickup_time'];
             $row['link'] = $v['link'];
-            $row['text'] = $v['link'];
+            $row['type'] = $v['type'];
             $row['location'] = $v['pickup_location'] . ' - ' . $v['drop_location'];
             $all_rides[$this->sqlDate($v['date'], 'Y')][ltrim($this->sqlDate($v['date'], 'm'), "0")][ltrim($this->sqlDate($v['date'], 'd'), "0")][] = $row;
         }
