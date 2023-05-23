@@ -77,4 +77,14 @@
       </div>
     </div>
 @endsection
-   
+  <br>
+   <br>
+    <br>
+ <a href="#" onclick="logout()">Logout</a>
+
+<script>
+function logout() {
+  // Call the "logout" method in Flutter code
+  window.flutter_inappwebview.callHandler('logout');
+}
+</script>

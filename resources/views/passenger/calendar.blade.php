@@ -94,10 +94,10 @@
             3 // maximum length of the calendar labels
         ],
         [
-            "#E91E63", // primary color
-            "#C2185B", // primary dark color
+            "#e8481e", // primary color
+            "#161129", // primary dark color
             "#FFFFFF", // text color
-            "#F8BBD0" // text dark color
+            "#FFFFFF" // text dark color
         ]
     );
 
