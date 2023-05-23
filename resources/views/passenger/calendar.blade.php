@@ -35,6 +35,9 @@
     <div id="app" class="section tab-content mb-1">
         <div id="calendarContainer"></div>
     </div>
+    <div id="app" class="section tab-content mb-1">
+    <div id="organizerContainer"></div>
+    </div>
 
 </div>
 
@@ -84,6 +87,7 @@
 
     // creating the dummy static data
     var data = createDummyData();
+    console.log(data);
 
     // initializing a new calendar object, that will use an html container to create itself
     var calendar = new Calendar(
