@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<link rel='stylesheet' href='/assets/css/calendar.css'>
+<link rel='stylesheet' href='/assets/css/calendar.css?v=2'>
 
 <style>
     body {
@@ -38,12 +38,7 @@
     background-color: #e8481e !important;
 }
 
-.cjslib-calendar.cjslib-size-small .cjslib-day>.cjslib-day-indicator {
-    width: 15px;
-    height: 15px;
-    bottom: 7px;
-    right: 7px;
-}
+
 </style>
 
 
@@ -61,7 +56,7 @@
 @endsection
 
 @section('footer')
-<script src='/assets/js/calendar.js'></script>
+<script src='/assets/js/calendar.js?v=1'></script>
 
 <script>
     "use strict";
