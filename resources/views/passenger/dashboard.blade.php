@@ -1,18 +1,19 @@
 @extends('layouts.app')
 @section('content')
+
 <div id="appCapsule" class="full-height">
     <div id="app">
 
         <!-- Wallet Card -->
         <div class="section wallet-card-section pt-1">
-            <div class="wallet-card">
+            <div class="wallet-card" style="padding: 0px 0px;border-radius: 20px;">
                 <!-- Balance -->
                 <div class=" text-center">
-                    <h3 class="text-primary">SIDDHIVINAYAK TRAVELS HOUSE</h3>
+
 
                 </div>
                 <div class="">
-                    <img src="/assets/img/slider1.png" style="max-width:100%">
+                    <img src="/assets/img/banner.png?v=5"  style="max-width:100%">
                 </div>
                 <!-- * Balance -->
                 <!-- Wallet Footer -->

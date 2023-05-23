@@ -215,7 +215,7 @@
         maximumAge: 0
     };
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
-    var currentMarker;
+    var currentMarker =null;
     var driverMarker;
 
 
@@ -230,19 +230,20 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
+		
         my_lat = latitude;
         my_long = longitude;
-        var myLatLng = new google.maps.LatLng(latitude, longitude);
+       
 
-        try {
-            currentMarker.setMap(null);
-        } catch (o) {}
-        if (start == false) {
+       
+		
+        if (currentMarker == null) {
+			 var myLatLng = new google.maps.LatLng(latitude, longitude);
             currentMarker = new google.maps.Marker({
                 icon: {
                     url: 'https://app.svktrv.in/assets/img/map-male.png',
                     // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(20, 20),
+                    size: new google.maps.Size(40, 40),
                     // The origin for this image is (0, 0).
                     origin: new google.maps.Point(0, 0),
                     // The anchor for this image is the base of the flagpole at (0, 32).
@@ -259,8 +260,11 @@
             // Add the button to the map's controls
             // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
-            marker.setMap(map);
-        }
+            currentMarker.setMap(map);
+        }else
+		{
+			//currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
+		}
     }
 
     function errorCallback(error) {
@@ -337,8 +341,13 @@
 
     function navigate() {
         start = true;
+		try{
         driverMarker.setMap(null);
+		}catch(o){}
+		try{
         currentMarker.setMap(null);
+		}catch(o){}
+        
         var originMarker;
         var destinationMarker;
 

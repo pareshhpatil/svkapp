@@ -15,6 +15,13 @@
     <link rel="manifest" href="__manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+.profile-img{
+	border-radius: 100%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.09);
+}
+</style>
     <!-- <style>
         body {
             background-image: url("/assets/img/bg.jpg");
@@ -46,7 +53,7 @@
         <div class="right">
 
             <a href="/profile" class="headerButton">
-                <img src="{{Session::get('icon')}}" alt="image" class="imaged w32">
+                <img src="{{Session::get('icon')}}?v=3" alt="image" class="imaged w32 profile-img">
             </a>
         </div>
     </div>
@@ -158,6 +165,16 @@
                                 </div>
                                 <div class="in">
                                     Blogs
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/calendar" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="apps-outline" role="img" class="md hydrated" aria-label="apps outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Calendar
                                 </div>
                             </a>
                         </li>

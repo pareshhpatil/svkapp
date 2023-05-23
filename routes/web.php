@@ -44,6 +44,7 @@ Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'pas
 Route::post('/passenger/ride/cancel', [App\Http\Controllers\HomeController::class, 'rideCancel']);
 Route::get('/passenger/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
+Route::get('/calendar', [App\Http\Controllers\TripController::class, 'calendar']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

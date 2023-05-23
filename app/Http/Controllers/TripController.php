@@ -38,4 +38,11 @@ class TripController extends Controller
         $array = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_id, 'live_location');
         return $array;
     }
+    public function calendar()
+    {
+        $data['menu'] = 5;
+        $data['title'] = 'Settings';
+        $data['data'] = [];
+        return view('passenger.calendar', $data);
+    }
 }
