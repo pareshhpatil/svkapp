@@ -52,8 +52,7 @@
 
     body.dark-mode .cjslib-day {
         background-color: #161129 !important;
-        border-bottom: 1px solid grey;
-        border-right: 1px solid grey;
+
     }
 
     body.dark-mode .cjslib-day>.cjslib-day-num {
