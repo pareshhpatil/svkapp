@@ -42,7 +42,18 @@
         padding: 10px;
     }
 
- </style>
+    body.dark-mode .cjslib-rows {
+        background-color: #161129 !important;
+    }
+
+    body.dark-mode .cjslib-day {
+        background-color: #161129 !important;
+    }
+
+    body.dark-mode .cjslib-day>.cjslib-day-num {
+        color: #ffffff;
+    }
+</style>
 
 
 <div id="appCapsule" class="full-height">
