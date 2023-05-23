@@ -43,7 +43,7 @@
     }
 
     body.dark-mode .cjslib-rows {
-        background-color: #161129 !important;
+        background-color: #030108 !important;
     }
 
     body.dark-mode .cjslib-day {
