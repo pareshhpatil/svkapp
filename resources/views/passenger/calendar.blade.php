@@ -77,14 +77,16 @@
                         data[date.getFullYear() + i][j + 1][l].push({
                             startTime: "10:00",
                             endTime: "12:00",
-                            text: "Some Event Here"
+                            text: "Some Event Here <a >Hello</a>",
+                            link: "/calendar",
                         });
                     } catch (e) {
                         data[date.getFullYear() + i][j + 1][l] = [];
                         data[date.getFullYear() + i][j + 1][l].push({
                             startTime: "10:00",
                             endTime: "12:00",
-                            text: "Some Event Here"
+                            text: "Some Event Here",
+                            link: "/calendar",
                         });
                     }
                 }
