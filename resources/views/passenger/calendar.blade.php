@@ -56,7 +56,7 @@
 @endsection
 
 @section('footer')
-<script src='/assets/js/calendar.js?v=1'></script>
+<script src='/assets/js/calendar.js?v=2'></script>
 
 <script>
     "use strict";
