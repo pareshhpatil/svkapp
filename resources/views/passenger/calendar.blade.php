@@ -33,6 +33,10 @@
     .cjslib-events.cjslib-size-small {
     height: 250px;
 }
+
+.cjslib-day-indicator {
+    background-color: #e8481e;
+}
 </style>
 
 
