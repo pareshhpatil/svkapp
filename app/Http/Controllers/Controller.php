@@ -14,9 +14,9 @@ class Controller extends BaseController
 
     public $user_id = null;
 
-    public function sqlDate($date)
+    public function sqlDate($date, $format = 'Y-m-d')
     {
-        return date('Y-m-d', strtotime($date));
+        return date($format, strtotime($date));
     }
     public function sqlTime($time)
     {

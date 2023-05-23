@@ -161,6 +161,26 @@ class HomeController extends Controller
         $data['data'] = $this->model->getTableRow('users', 'id', Session::get('user_id'));
         return view('passenger.profile', $data);
     }
+
+    public function calendar()
+    {
+        $data['menu'] = 4;
+        $data['title'] = 'Calendar';
+        $rides = $this->model->passengerAllRides(Session::get('parent_id'));
+        $array = $this->EncryptList($rides);
+        $all_rides = [];
+        foreach ($array as $v) {
+            $row['driver_image'] = ($v['photo'] != '') ? $v['photo'] : '/assets/img/driver.png';
+            $row['pickup_time'] = $v['pickup_time'];
+            $row['link'] = $v['link'];
+            $row['text'] = $v['link'];
+            $row['location'] = $v['pickup_location'] . ' - ' . $v['drop_location'];
+            $all_rides[$this->sqlDate($v['date'], 'Y')][ltrim($this->sqlDate($v['date'], 'm'), "0")][ltrim($this->sqlDate($v['date'], 'd'), "0")][] = $row;
+        }
+        $data['rides'] = $all_rides;
+        return view('passenger.calendar', $data);
+    }
+
     public function profileSave(Request $request)
     {
         $array = $request->all();

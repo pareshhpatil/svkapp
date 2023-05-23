@@ -37,6 +37,13 @@
 .cjslib-day-indicator {
     background-color: #e8481e !important;
 }
+
+.cjslib-calendar.cjslib-size-small .cjslib-day>.cjslib-day-indicator {
+    width: 15px;
+    height: 15px;
+    bottom: 7px;
+    right: 7px;
+}
 </style>
 
 
@@ -77,7 +84,7 @@
                         data[date.getFullYear() + i][j + 1][l].push({
                             startTime: "10:00",
                             endTime: "12:00",
-                            text: "Some Event Here <a >Hello</a>",
+                            text: "<button >Some Event Here</button>",
                             link: "/calendar",
                         });
                     } catch (e) {
@@ -85,7 +92,7 @@
                         data[date.getFullYear() + i][j + 1][l].push({
                             startTime: "10:00",
                             endTime: "12:00",
-                            text: "Some Event Here",
+                            text: "<button >Some Event Here</button>",
                             link: "/calendar",
                         });
                     }
@@ -97,7 +104,9 @@
     }
 
     // creating the dummy static data
-    var data = createDummyData();
+    //var data = createDummyData();
+   // console.log(data);
+    var data = JSON.parse('{!!json_encode($rides)!!}');
     console.log(data);
 
     // initializing a new calendar object, that will use an html container to create itself

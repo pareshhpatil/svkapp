@@ -15,13 +15,13 @@
     <link rel="manifest" href="__manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<style>
-.profile-img{
-	border-radius: 100%;
-    border: 2px solid #fff;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.09);
-}
-</style>
+    <style>
+        .profile-img {
+            border-radius: 100%;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.09);
+        }
+    </style>
     <!-- <style>
         body {
             background-image: url("/assets/img/bg.jpg");
@@ -35,7 +35,7 @@
 
     <!-- loader -->
     <div id="loader">
-		 <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
+        <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
     </div>
     <!-- * loader -->
 
@@ -98,11 +98,10 @@
                 <strong>Book a Ride</strong>
             </div>
         </a>
-        <a @if($menu==4) href="javascript:location.reload();" @else href="/notifications" @endif class="item @if($menu==4) active @endif">
+        <a @if($menu==4) href="javascript:location.reload();" @else href="/calendar" @endif class="item @if($menu==4) active @endif">
             <div class="col">
-                <ion-icon name="notifications-outline"></ion-icon>
-                <span class="badge badge-danger">0</span>
-                <strong>Notifications</strong>
+                <ion-icon name="calendar-number-outline"></ion-icon>
+                <strong>Calendar</strong>
             </div>
         </a>
 
