@@ -31,14 +31,31 @@
     }
 
     .cjslib-events.cjslib-size-small {
-    height: 250px;
+        height: 250px;
+    }
+
+    .cjslib-day-indicator {
+        background-color: #e8481e !important;
+    }
+
+    .cjslib-rows {
+        padding: 10px;
+    }
+
+    .cjslib-calendar.cjslib-size-small {
+        width: 100%;
+        height: 60vh;
+    }
+
+    .cjslib-events.cjslib-size-small {
+        height: 40vh;
+    }
+
+    #calendarContainer, #organizerContainer {
+    float: left;
+    margin: 0px;
+    width: 100%;
 }
-
-.cjslib-day-indicator {
-    background-color: #e8481e !important;
-}
-
-
 </style>
 
 
@@ -47,7 +64,7 @@
         <div id="calendarContainer"></div>
     </div>
     <div id="app" class="section tab-content mb-1">
-    <div id="organizerContainer"></div>
+        <div id="organizerContainer"></div>
     </div>
 
 </div>
@@ -100,7 +117,7 @@
 
     // creating the dummy static data
     //var data = createDummyData();
-   // console.log(data);
+    // console.log(data);
     var data = JSON.parse('{!!json_encode($rides)!!}');
     console.log(data);
 
