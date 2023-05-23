@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('content')
+<link rel='stylesheet' href='/assets/css/calendar.css'>
+
 <style>
     body {
         display: -webkit-box;
@@ -27,8 +29,11 @@
         float: left;
         margin: 5px;
     }
+
+    .cjslib-events.cjslib-size-small {
+    height: 250px;
+}
 </style>
-<link rel='stylesheet' href='/assets/css/calendar.css'>
 
 
 <div id="appCapsule" class="full-height">
