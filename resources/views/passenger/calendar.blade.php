@@ -35,7 +35,7 @@
 }
 
 .cjslib-day-indicator {
-    background-color: #e8481e;
+    background-color: #e8481e !important;
 }
 </style>
 
