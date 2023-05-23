@@ -42,6 +42,9 @@
         padding: 10px;
     }
 
+   .cjslib-rows {
+        background-color: transparent !important;
+    }
     body.dark-mode .cjslib-rows {
         background-color: #030108 !important;
     }
