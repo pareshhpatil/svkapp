@@ -42,21 +42,7 @@
         padding: 10px;
     }
 
-    .cjslib-calendar.cjslib-size-small {
-        width: 100%;
-        height: 60vh;
-    }
-
-    .cjslib-events.cjslib-size-small {
-        height: 40vh;
-    }
-
-    #calendarContainer, #organizerContainer {
-    float: left;
-    margin: 0px;
-    width: 100%;
-}
-</style>
+ </style>
 
 
 <div id="appCapsule" class="full-height">
