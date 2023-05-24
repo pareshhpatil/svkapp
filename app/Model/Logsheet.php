@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class Logsheet extends Model {
 
-    public function saveLogsheetbill($vehicle_id, $company_id, $date, $start_km, $end_km, $start_time, $close_time, $daynight, $remark, $toll, $type, $pick_drop, $from, $to, $user_id, $admin_id, $status) {
+    public function saveLogsheetbill($vehicle_id, $company_id, $date, $start_km, $end_km, $start_time, $close_time, $daynight, $remark, $toll, $type, $pick_drop, $from, $to, $user_id, $admin_id, $status,$holiday=0) {
         $id = DB::table('logsheet_bill')->insertGetId(
                 [
                     'admin_id' => $admin_id,
@@ -38,6 +38,7 @@ class Logsheet extends Model {
                     'from' => $from,
                     'to' => $to,
                     'pick_drop' => $pick_drop,
+                    'holiday' => $holiday,
                     'type' => $type,
                     'status' => $status,
                     'created_by' => $user_id,

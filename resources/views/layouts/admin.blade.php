@@ -99,7 +99,7 @@
 
                             <ul class="treeview-menu">
                                 <li>
-                                    <a href="/admin/logsheet">
+                                    <a href="/admin/logsheet/month">
                                         <i class="fa fa-circle-o"></i> Create</a>
                                 </li>
                                 <li>
@@ -108,6 +108,7 @@
                                 </li>
                             </ul>
                         </li>
+                        @if(Session::get('admin_id')==1)
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>MIS</span>
@@ -133,6 +134,7 @@
 
                             </ul>
                         </li>
+                        @endif
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>Masters</span>

@@ -411,23 +411,17 @@ class LogsheetController extends Controller
                 $extra_time = $total_time - 12;
                 if (substr($total_time, -2) == '.5') {
                     $total_time = substr($total_time, 0, -2) . ':30';
-                } 
-				elseif(substr($total_time, -3) == '.75')
-					{
-						$total_time = substr($total_time, 0, -3)+1 . ':15';
-					}
-				else {
+                } elseif (substr($total_time, -3) == '.75') {
+                    $total_time = substr($total_time, 0, -3) + 1 . ':15';
+                } else {
                     $total_time = $total_time . ':00';
                 }
 
                 if (substr($extra_time, -2) == '.5') {
                     $extra_time = substr($extra_time, 0, -2) . ':30';
-                } 
-				elseif(substr($extra_time, -3) == '.75')
-					{
-						$extra_time = substr($extra_time, 0, -3)+1 . ':15';
-					}
-				else {
+                } elseif (substr($extra_time, -3) == '.75') {
+                    $extra_time = substr($extra_time, 0, -3) + 1 . ':15';
+                } else {
                     $extra_time = $extra_time . ':00';
                 }
                 $list[$int]->total_time = $total_time;
@@ -556,8 +550,8 @@ class LogsheetController extends Controller
         if ($data['vehicle_id'] > 0) {
             $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
             $int = 0;
-            foreach ($list as $k=>$item) {
-								
+            foreach ($list as $k => $item) {
+
                 $type = $item->type;
                 $link2 = $this->encrypt->encode($item->logsheet_id);
                 if (substr($item->total_time, 0, 1) == '-') {
@@ -567,27 +561,23 @@ class LogsheetController extends Controller
                     $interval = $datetime2 - $datetime1;
 
                     $total_time = round($interval / 60 / 60, 2);
-					
+
                     $extra_time = $total_time - 12;
-					
+
                     if (substr($total_time, -2) == '.5') {
                         $total_time = substr($total_time, 0, -2) . ':30';
-                    }elseif(substr($total_time, -3) == '.75')
-					{
-						$total_time = substr($total_time, 0, -3)+1 . ':15';
-					}else {
+                    } elseif (substr($total_time, -3) == '.75') {
+                        $total_time = substr($total_time, 0, -3) + 1 . ':15';
+                    } else {
                         $total_time = $total_time . ':00';
                     }
-					
+
 
                     if (substr($extra_time, -2) == '.5') {
                         $extra_time = substr($extra_time, 0, -2) . ':30';
-                    }
-						elseif(substr($extra_time, -3) == '.75')
-					{
-						$extra_time = substr($extra_time, 0, -3)+1 . ':15';
-					}
-					else {
+                    } elseif (substr($extra_time, -3) == '.75') {
+                        $extra_time = substr($extra_time, 0, -3) + 1 . ':15';
+                    } else {
                         $extra_time = $extra_time . ':00';
                     }
                     $list[$int]->total_time = $total_time;
@@ -599,7 +589,7 @@ class LogsheetController extends Controller
                 $list[$int]->link = $link2;
                 $int++;
             }
-						
+
 
             $sequence = $this->master_model->getMaster('sequence', $this->admin_id);
             $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
@@ -641,7 +631,7 @@ class LogsheetController extends Controller
         $expense_list = array();
         if ($link == null) {
             $bill_model = new Bill();
-            $expense_list = $bill_model->getPendingRequest();
+           // $expense_list = $bill_model->getPendingRequest();
         }
         //dd($expense_list);
 
@@ -791,5 +781,141 @@ class LogsheetController extends Controller
         $date = date('Y-m-d', strtotime($request->date));
         $result = $this->logsheet_model->saveLogsheetbill($request->vehicle_id, $request->company_id, $date, $request->start_km, $request->end_km, $start_time, $close_time, $day_night, $_POST['remark'], $_POST['toll_amount'], $type, $pick_drop, $_POST['from'], $_POST['to'], $this->user_id, $this->admin_id, $status);
         echo 'Logsheet has been saved successfully';
+    }
+
+
+
+    public function generateLogsheetMonth($link = null)
+    {
+        $this->validateSession(array(1));
+        $id = 0;
+        $data['admin_id'] = $this->admin_id;
+        $data['user_id'] = $this->user_id;
+        $data['work_order_no'] = '';
+        if (isset($_POST['vehicle_id'])) {
+            $data['vehicle_id'] = $_POST['vehicle_id'];
+            $data['company_id'] = $_POST['company_id'];
+            $data['month'] = $_POST['date'];
+            $date = date('Y-m-d', strtotime('01-' . $_POST['date']));
+            //$id = $this->logsheet_model->getInvoiceId($_POST['company_id'], $_POST['vehicle_id'], $date, $this->admin_id);
+        } else {
+            $data['vehicle_id'] = 0;
+            $data['company_id'] = 0;
+            $data['month'] = '';
+        }
+
+        if ($link != null) {
+            $id = $this->encrypt->decode($link);
+        }
+        if ($id > 0) {
+            $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
+            $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
+            $data['invoice'] = $invoice;
+            $data['vehicle_id'] = $invoice->vehicle_id;
+            $data['company_id'] = $invoice->company_id;
+            $data['work_order_no'] = $invoice->work_order_no;
+            $data['month'] = date('M-Y', strtotime($invoice->date));
+            $date = $invoice->date;
+        }
+
+        $type = 1;
+        if ($data['vehicle_id'] > 0) {
+            $list = $this->logsheet_model->getBillData($date, $data['company_id'], $data['vehicle_id']);
+            $int = 0;
+
+
+
+            $sequence = $this->master_model->getMaster('sequence', $this->admin_id);
+            $vehicle = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $data['vehicle_id']);
+            $company = $this->master_model->getMasterDetail('company', 'company_id', $data['company_id']);
+
+
+            //$data['logsheet_detail'] = $logsheet_detail;
+            $data['vehicle'] = $vehicle;
+            $data['sequence'] = $sequence;
+            $data['company'] = $company;
+            if (count($list) == 0) {
+
+                $lastday = date('t', strtotime($date));
+                for ($i = 1; $i <= $lastday; $i++) {
+                    $array['date'] = date('Y-m-' . $i);
+                    $array['holiday'] = $this->isWeekend($array['date']);
+                    $array['start_km'] = '';
+                    $array['end_km'] = '';
+                    $array['total_km'] = '';
+                    $array['start_time'] = '09:00';
+                    $array['close_time'] = '21:00';
+                    $array['total_time'] = '12:00';
+                    $array['extra_time'] = '00:00';
+                    $array['toll'] = '0';
+                    $array['remark'] = ($array['holiday'] == 1) ? 'Sunday' : '';
+                    $list[] = $array;
+                }
+
+                $data['list'] = json_decode(json_encode($list));
+            } else {
+                $data['list'] = $list;
+            }
+        }
+        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
+        $company_list = $this->master_model->getMaster('company', $this->admin_id);
+        $expense_list = array();
+        if ($link == null) {
+            $bill_model = new Bill();
+            $expense_list = $bill_model->getPendingRequest();
+        }
+
+        $data['title'] = 'Generate Monthly Logsheet';
+        $data['vehicle_list'] = $vehicle_list;
+        $data['company_list'] = $company_list;
+        $data['expense_list'] = $expense_list;
+        $data['type'] = $type;
+        return view('logsheet.month_logsheet', $data);
+    }
+
+    public function monthsave(Request $request)
+    {
+        $data = $request->all();
+
+        foreach ($data['date'] as $key => $a) {
+            $row['date'] = $data['date'][$key];
+            $row['start_km'] = $data['start_km'][$key];
+            $row['end_km'] = $data['end_km'][$key];
+            $row['start_time'] = $data['start_time'][$key];
+            $row['close_time'] = $data['close_time'][$key];
+            $row['total_time'] = $data['total_time'][$key];
+            $row['extra_time'] = $data['extra_time'][$key];
+            $row['toll'] = $data['toll'][$key];
+            $row['remark'] = $data['remark'][$key];
+            $row['holiday'] = $data['holiday'][$key];
+            $this->saveLogsheetMonth($row);
+        }
+    }
+
+    public function saveLogsheetMonth($data)
+    {
+        $request = json_decode(json_encode($data));
+        $type = '1';
+        $pick_drop = '';
+        $vehicle_id = isset($_POST['vehicle_id']) ? $_POST['vehicle_id'] : 0;
+        $company_id = isset($_POST['company_id']) ? $_POST['company_id'] : 0;
+        $holiday = isset($request->holiday) ? $request->holiday : 0;
+        $toll_amount = ($request->toll > 0) ? $request->toll : 0;
+        $start_time = date('H:i:s', strtotime($request->start_time));
+        $close_time = date('H:i:s', strtotime($request->close_time));
+
+        $day_night = (isset($request->day_night)) ? $request->day_night : 'Day';
+        $status = 1;
+        $date = date('Y-m-d', strtotime($request->date));
+
+        $result = $this->logsheet_model->saveLogsheetbill($vehicle_id, $company_id, $date, $request->start_km, $request->end_km, $start_time, $close_time, $day_night, $request->remark, $toll_amount, $type, $pick_drop, '', '', $_POST['user_id'], $_POST['admin_id'], $status, $holiday);
+        echo 'Logsheet has been saved successfully';
+    }
+
+
+
+    function isWeekend($date)
+    {
+        return (date('N', strtotime($date)) >= 7);
     }
 }

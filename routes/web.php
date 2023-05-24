@@ -121,6 +121,9 @@ Route::any('/admin/logsheet/approve', 'LogsheetController@approve');
 Route::post('/admin/logsheet/confirmlogsheet', 'LogsheetController@confirmlogsheet');
 Route::post('/admin/logsheet/savelogsheet', 'LogsheetController@savelogsheet');
 Route::any('/admin/logsheet/generatebill/{id?}', 'LogsheetController@generatebill');
+
+Route::any('/admin/logsheet/month/{id?}', 'LogsheetController@generateLogsheetMonth');
+
 Route::get('/admin/logsheet/deletebill/{id}', 'LogsheetController@logsheetdelete');
 Route::get('/admin/logsheet/printlogsheet/{id}', 'LogsheetController@printlogsheet');
 Route::get('/admin/logsheet/printbill/{id}', 'LogsheetController@printbill');
@@ -167,6 +170,7 @@ Route::get('/trip/{id}', 'TripController@trip');
 Route::get('/admin/paymentsource/credit', 'BillController@credit');
 Route::get('/admin/paymentsource/creditlist', 'BillController@creditlist');
 Route::get('/admin/paymentsource/statement/{id}', 'BillController@statement');
+Route::post('/admin/logsheet/monthsave', 'LogsheetController@monthsave');
 
 
 

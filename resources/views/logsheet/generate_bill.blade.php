@@ -12,7 +12,7 @@
         <div class="panel panel-primary">
             <div class="panel-body" style="overflow: auto;">
                 <div class="row">
-                    <form action="/admin/logsheet/generatebill" method="post" class="form-horizontal">
+                    <form action="" method="post" class="form-horizontal">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="col-md-12">
                             <div class="col-md-3">
