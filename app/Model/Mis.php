@@ -48,13 +48,16 @@ class Mis extends Model
 
     public function saveCompanyMIS($request, $det, $date, $pickup_time, $drop_time, $user_id)
     {
+		$pickup_location=($request->pickup!='')? $request->pickup : $det->from;
+		$drop_location=($request->drop!='')? $request->drop : $det->to;
+
         $id = DB::table('company_mis')->insertGetId(
             [
                 'date' => $date,
                 'pickup_time' => $pickup_time,
                 'drop_time' => $drop_time,
-                'pickup_location' => $det->from,
-                'drop_location' => $det->to,
+                'pickup_location' => $pickup_location,
+                'drop_location' => $drop_location,
                 'company_id' => $request->company_id,
                 'office_location' => $request->office_location,
                 'vendor' => $request->vendor,

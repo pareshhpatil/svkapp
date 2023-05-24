@@ -88,7 +88,7 @@
 							<td>{{$item->employee_name}}</td>
 							<td>{{$item->remark}}</td>
                             <td>
-                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/mis/deletecompanymis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+                                <a href="#"  onclick="$(this).closest('tr').remove();deletelink = '/admin/mis/deletecompanymis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
 
                         </tr>
@@ -117,11 +117,24 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>
-                <a id="deleteanchor" href="" class="btn btn-outline">Delete</a>
+                <a id="deleteanchor" href="#" onclick="deleteMIS();" data-dismiss="modal" class="btn btn-outline">Delete</a>
             </div>
         </div>
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<script>
+var deletelink='';
+function deleteMIS() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    
+  };
+  xhttp.open("GET", deletelink, true);
+  xhttp.send();
+}
+</script>
+
 @endsection
