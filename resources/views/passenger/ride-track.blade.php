@@ -302,29 +302,17 @@
 
     }
 
-    new Vue({
-        el: '#app',
-        data() {
-            return {
-                data: [],
-            }
-        },
-        mounted() {
-            this.data = JSON.parse('{!!json_encode($data)!!}');
-        },
-        methods: {
-
-        }
-    });
+   
 </script>
 <script type="text/javascript">
     var k = 0;
     marker = '';
-    // lat = 18.6020798;
-    // lat_long = 73.7908489;
-    
+     lat = 0;
+     lat_long = 0;
+    @if(isset($live_location['latitude']))
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
+    @endif
     //speed = loc_array.speed;
 
     mylocation_lat = '';
@@ -432,8 +420,6 @@
                 })
                 .then((response) => {
                     const duration = response.routes[0].legs[0].duration.text;
-                    console.log(response.routes[0]);
-                    console.log(response.routes[0].legs[0].distance);
                     document.getElementById("arr").style.display = 'block';
                     document.getElementById("duration").innerHTML = duration;
                     // directionsRenderer.setOptions({
