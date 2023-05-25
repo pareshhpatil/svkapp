@@ -42,6 +42,7 @@ Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class
 Route::post('/passenger/sos', [App\Http\Controllers\HomeController::class, 'passengerSOS']);
 Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'passengerHelp']);
 Route::post('/passenger/ride/cancel', [App\Http\Controllers\HomeController::class, 'rideCancel']);
+Route::post('/passenger/booking/cancel', [App\Http\Controllers\HomeController::class, 'bookingCancel']);
 Route::get('/passenger/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
 

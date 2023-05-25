@@ -13,7 +13,7 @@
 
                 </div>
                 <div class="">
-                    <img src="/assets/img/banner.png?v=5"  style="max-width:100%">
+                    <img src="/assets/img/banner.png?v=5" style="max-width:100%">
                 </div>
                 <!-- * Balance -->
                 <!-- Wallet Footer -->
@@ -29,15 +29,17 @@
             <div class="row mt-2">
                 <template>
                     <div class="col-6">
-                        <div class="stat-box">
-                            <div class="title text-center">Total Rides </div>
-                            <div class="value text-success text-center" v-html="data.total_ride"></div>
-                        </div>
+                        <a href="/my-rides">
+                            <div class="stat-box">
+                                <div class="title text-center">Total Rides </div>
+                                <div class="value text-success text-center" v-html="data.total_ride"></div>
+                            </div>
+                        </a>
                     </div>
                     <div class="col-6">
                         <div class="stat-box">
-                            <div class="title text-center">Total Reviews </div>
-                            <div class="value text-warning text-center" v-html="data.total_review"></div>
+                            <div class="title text-center">Completed </div>
+                            <div class="value text-warning text-center" v-html="data.completed_ride"></div>
                         </div>
                     </div>
                 </template>
@@ -101,6 +103,43 @@
 
     </div>
 </div>
+
+@if(!empty($live_ride))
+    @php 
+    $photo=($live_ride['photo']!='')? $live_ride['photo'] : '/assets/img/driver.png';
+    @endphp
+    <div id="notification-1" class="notification-box show">
+        <div class="notification-dialog android-style" style="padding: 10px 16px 10px 16px;">
+            <div class="notification-header">
+                <div class="in">
+                    <strong class="text-primary">Live Ride</strong>
+                    <span>{{$live_ride['only_time']}}</span>
+                </div>
+               
+            </div>
+            <div class="notification-content" style="margin-top: 5px;">
+            <div class="transactions" style="width: 100%;">
+                    <a href="{{$live_ride['link']}}" class="item">
+                        <div class="detail">
+                            <img src="{{$photo}}" alt="img" class="image-block imaged w48">
+                            <div>
+                                <strong>{{$live_ride['driver_name']}}</strong>
+                                <p><span >{{$live_ride['number']}}</span> </p>
+                                <p><span >OTP: {{$live_ride['otp']}}</span> </p>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
+                        </div>
+                    </a>
+
+                    <!-- * item -->
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
 @endsection
 
 @section('footer')

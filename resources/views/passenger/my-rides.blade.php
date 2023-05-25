@@ -4,19 +4,19 @@
     <ul class="nav nav-tabs lined" role="tablist">
 
         <li class="nav-item">
-            <a class="nav-link active" id="tab-upcoming" data-bs-toggle="tab" href="#upcoming" role="tab">
+            <a class="nav-link @if($type=='upcoming') active @endif" id="tab-upcoming" data-bs-toggle="tab" href="#upcoming" role="tab">
                 <ion-icon name="pulse-outline"></ion-icon>
                 Upcoming
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="tab-past" data-bs-toggle="tab" href="#past" role="tab">
+            <a class="nav-link @if($type=='past') active @endif" id="tab-past" data-bs-toggle="tab" href="#past" role="tab">
                 <ion-icon name="calendar-outline"></ion-icon>
                 Past
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " id="tab-booking" data-bs-toggle="tab" href="#live" role="tab">
+            <a class="nav-link @if($type=='booking') active @endif" id="tab-booking" data-bs-toggle="tab" href="#booking" role="tab">
                 <ion-icon name="add-circle-outline"></ion-icon>
                 Booking
             </a>
@@ -24,14 +24,14 @@
     </ul>
 </div>
 <div id="appCapsule" class="extra-header-active full-height">
-
     <div id="app" class="section tab-content mt-2 mb-1">
         <!-- waiting tab -->
-        <div class="tab-pane fade active show " id="upcoming" role="tabpanel">
+        <div class="tab-pane fade @if($type=='upcoming') active show @endif  " id="upcoming" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-if="data.live" :href="item.link" class="item">
+                <a v-if="data.live" :href="data.live.link" class="item">
                     <div class="detail">
-                        <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="!data.live.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="data.live.photo" :src="data.live.photo" alt="img" class="image-block imaged w48">
                         <div>
                             <strong v-html="data.live.pickup_time"></strong>
                             <p><span v-html="data.live.pickup_location"></span> - <span v-html="data.live.drop_location"></span></p>
@@ -42,9 +42,10 @@
                     </div>
                 </a>
                 <!-- item -->
-                <a v-for="item in data.upcoming" :href="item.link" class="item">
+                <a v-if="data.upcoming.length" v-for="item in data.upcoming" :href="item.link" class="item">
                     <div class="detail">
-                        <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="!item.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="item.photo" :src="item.photo" alt="img" class="image-block imaged w48">
                         <div>
                             <strong v-html="item.pickup_time"></strong>
                             <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
@@ -70,12 +71,13 @@
                 <a href="#" class="btn btn-primary btn-block btn-lg">Load More</a>
             </div>-->
         </div>
-        <div class="tab-pane fade" id="past" role="tabpanel">
+        <div class="tab-pane fade @if($type=='past') active show @endif" id="past" role="tabpanel">
             <div class="transactions mt-2">
                 <!-- item -->
-                <a v-for="item in data.past" :href="item.link" class="item">
+                <a v-if="data.past.length" v-for="item in data.past" :href="item.link" class="item">
                     <div class="detail">
-                        <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="!item.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="item.photo" :src="item.photo" alt="img" class="image-block imaged w48">
                         <div>
                             <strong v-html="item.pickup_time"></strong>
                             <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
@@ -118,19 +120,21 @@
         </div>
         <!-- * waiting tab -->
 
-        <div class="tab-pane fade show" id="live" role="tabpanel">
+        <div class="tab-pane fade @if($type=='booking') active show @endif" id="booking" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-for="item in data.booking" :href="item.link" class="item">
+                <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item" >
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
-                            <strong v-html="item.pickup_time"></strong>
+                            <h5 v-html="item.pickup_time"></h5>
                             <p><span v-html="item.type"></span></p>
                             <p><span class="badge badge-warning">Pending</span></p>
                         </div>
                     </div>
                     <div class="right">
-                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
+                        <div data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="chip chip-outline chip-danger" style="padding: 5px;font-size: 25px;box-shadow: none !important;">
+                            <ion-icon name="close-circle-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
+                        </div>
                     </div>
                 </a>
 
@@ -146,12 +150,36 @@
             </div>
         </div>
 
-
-
+        <div class="modal fade dialogbox" id="cancelride" data-bs-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cancel Booking</h5>
+                    </div>
+                    <form action="/passenger/booking/cancel" method="post">
+                        @csrf
+                        <div class="modal-body text-start mb-2">
+                            You want to cancel?
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-inline">
+                                <input type="hidden" id="cancel_booking_id" name="booking_id">
+                                <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
+                                <button type="submit" class="btn btn-text-primary">CONFIRM</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
     </div>
 
+
+
 </div>
+
+
 @endsection
 
 @section('footer')
@@ -161,15 +189,24 @@
         data() {
             return {
                 data: [],
+                cancel_booking_id: 0
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
         },
         methods: {
-
+            acancel(id) {
+                alert(id);
+                //  document.getElementById('cancel_booking_id').value = id;
+            }
         }
     })
-    document.getElementById('tab-{{$type}}').click();
+     document.getElementById('tab-{{$type}}').click();
+
+    function cancel(id) {
+        document.getElementById('cancel_booking_id').value = id;
+    }
 </script>
+
 @endsection

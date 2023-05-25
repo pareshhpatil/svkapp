@@ -35,11 +35,11 @@ class HomeController extends Controller
     public function index()
     {
 
-
         $data['menu'] = 1;
         $data['title'] = 'dashboard';
-        $data['data']['total_ride'] = '20';
-        $data['data']['total_review'] = '10';
+        $data['data']['total_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1);
+        $data['data']['completed_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1, ['status' => 2]);
+        $data['live_ride'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
         $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
         $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'), 1);
         if (!empty($data['data']['upcoming'])) {
@@ -91,10 +91,13 @@ class HomeController extends Controller
         if ($ride['vehicle_id'] > 0) {
             $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
         }
+        $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
+        $data['live_location'] = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_passenger['ride_id'], 'live_location');
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $data['data']['passenger'] = $passenger;
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;
@@ -104,6 +107,7 @@ class HomeController extends Controller
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['ride_id'] = $ride_passenger['ride_id'];
+        $data['live_location'] = json_decode($data['live_location'], 1);
         $data['title'] = 'Ride Tracking';
         $data['onload'] = 'initialize()';
         return view('passenger.ride-track', $data);
@@ -280,6 +284,12 @@ class HomeController extends Controller
         $this->model->saveTable('ride_cancel', $array);
         $this->model->updateTable('ride_passenger', 'id', $request->ride_passenger_id, 'status', 3);
         return redirect('/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
+    }
+
+    public function bookingCancel(Request $request)
+    {
+        $this->model->updateTable('ride_request', 'id', $request->booking_id, 'is_active', 0);
+        return redirect('/my-rides/booking');
     }
 
     public function saveRide(Request $request)

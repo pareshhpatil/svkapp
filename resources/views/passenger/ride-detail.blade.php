@@ -164,7 +164,7 @@
                             <strong>Track</strong>
                         </a>
                     </div>
-                    <div class="item">
+                    <div v-if="data.ride.status==0" class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#cancelride">
                             <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
                                 <ion-icon name="close-circle-outline"></ion-icon>

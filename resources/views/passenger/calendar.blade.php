@@ -58,6 +58,11 @@
     body.dark-mode .cjslib-day>.cjslib-day-num {
         color: #ffffff;
     }
+
+    #calendarContainer, #organizerContainer {
+        float: left;
+        margin-top: 0px;
+    }
 </style>
 
 

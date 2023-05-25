@@ -118,13 +118,13 @@
                         <div class="detail">
                             <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
                             <div>
-                                <strong>Nitin Kamble</strong>
-                                <strong class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <p>MH 02 545454</p>
+                                <strong>{{$data['driver']['name']}}</strong>
+                                <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
+                                <p>{{$data['vehicle']['number']}}</p>
                             </div>
                         </div>
                         <div class="right">
-                            <div class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
+                            <div onclick="window.open('tel:{{$data['driver']['mobile']}}');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
                         </div>
                     </a>
                 </div>
@@ -143,7 +143,7 @@
                             </div>
 
                             <div class="item">
-                                <a href="#" onclick="startlocation();">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
                                     <div class="icon-wrapper bg-warning">
                                         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                                     </div>
@@ -165,6 +165,38 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Help</h5>
+            </div>
+            <form action="/passenger/help" method="post">
+                @csrf
+                <div class="modal-body text-start mb-2">
+                    <div class="form-group basic">
+                        <div class="input-wrapper">
+                            <label class="label" for="text1">Enter Message</label>
+                            <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
+                            <i class="clear-input">
+                                <ion-icon name="close-circle"></ion-icon>
+                            </i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <input type="hidden" :value="{{$data['ride_passenger']['id']}}" name="ride_passenger_id">
+                        <input type="hidden" :value="{{$data['ride_passenger']['ride_id']}}" name="ride_id">
+                        <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
+                        <button type="submit" class="btn btn-text-primary">SEND</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -215,7 +247,7 @@
         maximumAge: 0
     };
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
-    var currentMarker =null;
+    var currentMarker = null;
     var driverMarker;
 
 
@@ -230,18 +262,18 @@
             speed
         } = position.coords;
         // Show a map centered at latitude / longitude.
-		
+
         my_lat = latitude;
         my_long = longitude;
-       
 
-       
-		
+
+
+
         if (currentMarker == null) {
-			 var myLatLng = new google.maps.LatLng(latitude, longitude);
+            var myLatLng = new google.maps.LatLng(latitude, longitude);
             currentMarker = new google.maps.Marker({
                 icon: {
-                    url: 'https://app.svktrv.in/assets/img/map-male.png',
+                    url: "{{$data['passenger']['icon'],'https://app.svktrv.in/assets/img/map-male.png'}}",
                     // This marker is 20 pixels wide by 32 pixels high.
                     size: new google.maps.Size(40, 40),
                     // The origin for this image is (0, 0).
@@ -251,7 +283,7 @@
                 },
                 position: myLatLng,
                 label: {
-                    text: "Paresh Patil",
+                    text: "{{$data['passenger']['name']}}",
                     className: 'marker-label'
                 },
                 map: map
@@ -261,10 +293,9 @@
             // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
             currentMarker.setMap(map);
-        }else
-		{
-			//currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
-		}
+        } else {
+            //currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
+        }
     }
 
     function errorCallback(error) {
@@ -289,8 +320,13 @@
 <script type="text/javascript">
     var k = 0;
     marker = '';
-    lat = 18.6020798;
-    lat_long = 73.7908489;
+    // lat = 18.6020798;
+    // lat_long = 73.7908489;
+    
+    lat = {{$live_location['latitude']}};
+    lat_long = {{$live_location['longitude']}};
+    //speed = loc_array.speed;
+
     mylocation_lat = '';
     mylocation_long = '';
 
@@ -322,7 +358,7 @@
             },
             position: myLatLng,
             label: {
-                text: "Nitin Kamble",
+                text: "{{$data['driver']['name']}}",
                 className: 'marker-label'
             },
             map: map
@@ -341,13 +377,13 @@
 
     function navigate() {
         start = true;
-		try{
-        driverMarker.setMap(null);
-		}catch(o){}
-		try{
-        currentMarker.setMap(null);
-		}catch(o){}
-        
+        try {
+            driverMarker.setMap(null);
+        } catch (o) {}
+        try {
+            currentMarker.setMap(null);
+        } catch (o) {}
+
         var originMarker;
         var destinationMarker;
 
@@ -356,7 +392,7 @@
             map: map,
             icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
             label: {
-                text: "Nitin Kamble",
+                text: "{{$data['driver']['name']}}",
                 className: 'marker-label'
             }
         });
@@ -374,60 +410,59 @@
                 anchor: new google.maps.Point(0, 32)
             }, // Path to your custom marker icon
             label: {
-                text: "Paresh Patil",
+                text: "{{$data['passenger']['name']}}",
                 className: 'marker-label-user'
             }
         });
         setInterval(function() {
             getData();
-                //lat=lat-0.00005;
-                //map.setCenter(new google.maps.LatLng(lat, lat_long));
-                originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-                // map.panTo(new google.maps.LatLng(lat, lat_long));
+            //lat=lat-0.00005;
+            //map.setCenter(new google.maps.LatLng(lat, lat_long));
+            originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+            // map.panTo(new google.maps.LatLng(lat, lat_long));
 
 
 
 
-                directionsService
-                    .route({
-                        origin: new google.maps.LatLng(lat, lat_long),
-                        destination: new google.maps.LatLng(my_lat, my_long),
-                        travelMode: 'DRIVING'
-                    })
-                    .then((response) => {
-                        const duration = response.routes[0].legs[0].duration.text;
-                        console.log(response.routes[0]);
-                        console.log(response.routes[0].legs[0].distance);
-                        document.getElementById("duration").innerHTML = duration;
-                        // directionsRenderer.setOptions({
-                        //    polylineOptions: {
-                        //         strokeColor: '#FF0000' // Set your desired color
-                        //     }
-                        // });
+            directionsService
+                .route({
+                    origin: new google.maps.LatLng(lat, lat_long),
+                    destination: new google.maps.LatLng(my_lat, my_long),
+                    travelMode: 'DRIVING'
+                })
+                .then((response) => {
+                    const duration = response.routes[0].legs[0].duration.text;
+                    console.log(response.routes[0]);
+                    console.log(response.routes[0].legs[0].distance);
+                    document.getElementById("arr").style.display = 'block';
+                    document.getElementById("duration").innerHTML = duration;
+                    // directionsRenderer.setOptions({
+                    //    polylineOptions: {
+                    //         strokeColor: '#FF0000' // Set your desired color
+                    //     }
+                    // });
 
+                    // Customize the markers
+                    var markerOptions = {
+                        origin: originMarker,
+                        destination: destinationMarker,
+                    };
+                    directionsRenderer.setOptions({
+                        markerOptions: markerOptions,
+                        polylineOptions: {
+                            strokeColor: '#FF0000' // Set your desired color
+                        },
+                        suppressMarkers: true
 
+                    });
 
-                        // Customize the markers
-                        var markerOptions = {
-                            origin: originMarker,
-                            destination: destinationMarker,
-                        };
-                        directionsRenderer.setOptions({
-                            markerOptions: markerOptions,
-                            polylineOptions: {
-                                strokeColor: '#FF0000' // Set your desired color
-                            },
-                            suppressMarkers: true
+                    //directionsDisplay.setDirections(response);
 
-                        });
-
-                        //directionsDisplay.setDirections(response);
-
-                        directionsRenderer.setDirections(response);
-                    })
-                    .catch((e) =>
-                        window.alert("Directions request failed due to " + status)
-                    );
+                    directionsRenderer.setDirections(response);
+                })
+                .catch((e) =>
+                    window.alert("Directions request failed due to " + status)
+                );
 
         }, 1000);
 
@@ -447,21 +482,6 @@
         };
         xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
-    }
-
-    function moveBus(map, marker) {
-
-        setInterval(function() {
-            if (k < 5) {
-                lat = lat + 0.00005;
-                // marker.setPosition(new google.maps.LatLng(lat, 73.7908489));
-                //   map.panTo(new google.maps.LatLng(lat, 73.7908489));
-                k = k + 1;
-                console.log(k);
-            }
-        }, 1000);
-
-
     }
 </script>
 
