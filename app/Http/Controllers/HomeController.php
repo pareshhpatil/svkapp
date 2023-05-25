@@ -45,6 +45,7 @@ class HomeController extends Controller
         if (!empty($data['data']['upcoming'])) {
             $data['data']['upcoming']['link'] = '/passenger/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
         }
+        //dd($data['live_ride']);
         return view('passenger.dashboard', $data);
     }
 

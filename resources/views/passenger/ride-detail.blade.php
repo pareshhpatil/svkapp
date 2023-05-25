@@ -278,37 +278,7 @@
             </div>
         </div>
 
-        <div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Help</h5>
-                    </div>
-                    <form action="/passenger/help" method="post">
-                        @csrf
-                        <div class="modal-body text-start mb-2">
-                            <div class="form-group basic">
-                                <div class="input-wrapper">
-                                    <label class="label" for="text1">Enter Message</label>
-                                    <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
-                                    <i class="clear-input">
-                                        <ion-icon name="close-circle"></ion-icon>
-                                    </i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-inline">
-                                <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
-                                <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
-                                <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="submit" class="btn btn-text-primary">SEND</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        
         <div class="modal fade modalbox  dialogbox" id="sosmodel" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
