@@ -135,7 +135,7 @@ $photo=($live_ride['photo']!='')? $live_ride['photo'] : '/assets/img/driver.png'
                         <!-- Wallet Footer -->
                         <div class="wallet-footer" style="padding-top: 10px;">
                             <div  class="item mb-1">
-                                <a href="{{$live_ride['driver_name']}}">
+                                <a href="{{$live_ride['link']}}">
                                     <div class="icon-wrapper bg-primary">
                                         <ion-icon name="eye-outline"></ion-icon>
                                     </div>
