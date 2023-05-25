@@ -125,7 +125,7 @@ $photo=($live_ride['photo']!='')? $live_ride['photo'] : '/assets/img/driver.png'
                             </div>
                         </div>
                         <div class="right">
-                            <div onclick="window.location'tel:{{$live_ride['mobile']}}'" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated" aria-label="call outline"></ion-icon></div>
+                            <div onclick="window.open('tel:{{$live_ride['mobile']}}');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated" aria-label="call outline"></ion-icon></div>
                         </div>
                     </a>
                 </div>
