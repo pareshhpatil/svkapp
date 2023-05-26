@@ -1,7 +1,7 @@
 {
     "name": "Siddhivinayak Travels House",
     "short_name": "SVK Travels",
-    "start_url": "index.html",
+    "start_url": "/dashboard",
     "display": "standalone",
     "scope" : "/",
     "background_color": "#000000",

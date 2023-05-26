@@ -60,3 +60,6 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
 
 });
+
+
+URL::forceScheme('https');
