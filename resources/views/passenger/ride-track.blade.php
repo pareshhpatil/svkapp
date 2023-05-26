@@ -108,7 +108,7 @@
 
 </div>
 <div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
-    <div class="modal-dialog" role="document" style="bottom: 50px;">
+    <div class="modal-dialog" role="document" style="bottom: 60px;">
         <div class="modal-content">
 
             <div class="modal-body">
