@@ -450,7 +450,7 @@
                     window.alert("Directions request failed due to " + status)
                 );
 
-        }, 1000);
+        }, 30000);
 
     }
 

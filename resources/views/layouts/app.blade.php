@@ -195,7 +195,7 @@
                     </ul>
 
 
-                    <div class="listview-title mt-1">Developed by Paresh</div>
+                    <div class="listview-title mt-1">Developed by Ride Track</div>
 
 
                 </div>
