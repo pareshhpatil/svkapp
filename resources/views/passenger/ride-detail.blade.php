@@ -156,7 +156,7 @@
                 <!-- Balance -->
                 <!-- Wallet Footer -->
                 <div class="wallet-footer">
-                    <div v-if="data.ride.status==1" class="item mb-1">
+                    <div v-if="data.ride.status==2" class="item mb-1">
                         <a href="{{$data['link']}}/track" >
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="location-outline"></ion-icon>
@@ -164,7 +164,7 @@
                             <strong>Track</strong>
                         </a>
                     </div>
-                    <div v-if="data.ride.status==0" class="item">
+                    <div v-if="data.ride.status<2" class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#cancelride">
                             <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
                                 <ion-icon name="close-circle-outline"></ion-icon>

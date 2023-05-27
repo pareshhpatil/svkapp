@@ -3,6 +3,14 @@
 <div class="extraHeader pe-0 ps-0">
     <ul class="nav nav-tabs lined" role="tablist">
 
+        @if(Session::get('user_type')==3)
+        <li class="nav-item">
+            <a class="nav-link @if($type=='booking') active @endif" id="tab-booking" data-bs-toggle="tab" href="#live" role="tab">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                Live
+            </a>
+        </li>
+        @endif
         <li class="nav-item">
             <a class="nav-link @if($type=='upcoming') active @endif" id="tab-upcoming" data-bs-toggle="tab" href="#upcoming" role="tab">
                 <ion-icon name="pulse-outline"></ion-icon>
@@ -28,21 +36,47 @@
 <div id="appCapsule" class="extra-header-active full-height">
     <div id="app" class="section tab-content mt-2 mb-1">
         <!-- waiting tab -->
-        <div class="tab-pane fade @if($type=='upcoming') active show @endif  " id="upcoming" role="tabpanel">
+        @if(Session::get('user_type')==3)
+        <div class="tab-pane fade @if($type=='live') active show @endif  " id="live" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-if="data.live" :href="data.live.link" class="item">
+                <a v-if="data.live.length" v-for="item in data.live" :href="item.link" class="item">
                     <div class="detail">
-                        <img v-if="!data.live.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
-                        <img v-if="data.live.photo" :src="data.live.photo" alt="img" class="image-block imaged w48">
+                        <img v-if="!item.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="item.photo" :src="item.photo" alt="img" class="image-block imaged w48">
                         <div>
-                            <strong v-html="data.live.pickup_time"></strong>
-                            <p><span v-html="data.live.pickup_location"></span> - <span v-html="data.live.drop_location"></span></p>
+                            <strong v-html="item.pickup_time"></strong>
+                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
                         </div>
                     </div>
                     <div class="right">
-                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
+                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
                     </div>
                 </a>
+                <div v-if="!data.live">
+                    <img src="/assets/img/no-record.png" alt="img" style="max-width: 100%;" class="">
+                    <h3 class="text-center">No live rides</h3>
+                    <p class="text-center">Time to book your next ride </p>
+                </div>
+            </div>
+        </div>
+        @endif
+        <div class="tab-pane fade @if($type=='upcoming') active show @endif  " id="upcoming" role="tabpanel">
+            <div class="transactions mt-2">
+                @if(Session::get('user_type')!=3)
+                <a v-if="data.live.length" v-for="item in data.live" :href="item.link" class="item">
+                    <div class="detail">
+                        <img v-if="!item.photo" src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                        <img v-if="item.photo" :src="item.photo" alt="img" class="image-block imaged w48">
+                        <div>
+                            <strong v-html="item.pickup_time"></strong>
+                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
+                    </div>
+                </a>
+                @endif
                 <!-- item -->
                 <a v-if="data.upcoming.length" v-for="item in data.upcoming" :href="item.link" class="item">
                     <div class="detail">

@@ -102,31 +102,46 @@ class ApiController extends Controller
     }
 
 
-    public function sendNotification($token, $title, $body, $image = '')
+    public function sendSMS($number_, $message_)
     {
-        $token = 'd14m_-lORtS6MRy9EgoWVN:APA91bHqe4qLJRUrgI_Akmh2wSmpMO4nOiJEPYcggdnwbjW86gJ27pVn_7B5AyltZbpmIzpX3tGT8Pr6ok-DqzE7viFYSgcY9k77mC7k5GHEwshykrultulOf5KdERLMDc8vkCXJHOda';
-        $title = 'New API';
-        $body = 'Hello';
-        $image = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
-
-        $key = env('FIREBASE_KEY');
-        $array['registration_ids'] = array($token);
-        $array['notification']['body'] = $body;
-        $array['notification']['icon'] = 'https://www.siddhivinayaktravelshouse.in/apple-touch-icon.png';
-        $array['notification']['title'] = $title;
-        if ($image != '') {
-            $array['notification']['image'] = $image;
-        }
-        $array['notification']['content_available'] = true;
-        $array['notification']['priority'] = "normal";
+        $message_ = str_replace(" ", "%20", $message_);
+        $message_ = str_replace("&", "%26", $message_);
+        $message_ = preg_replace("/\r|\n/", "%0a", $message_);
+        $invokeURL = env('SMS_URL');
+        $invokeURL = str_replace("__MESSAGE__", $message_, $invokeURL);
+        $invokeURL = str_replace("__NUM__", $number_, $invokeURL);
         $client = new Client();
-        $headers = [
-            'Authorization' => 'key=' . $key,
-            'Content-Type' => 'application/json'
-        ];
-        $body = json_encode($array);
-
-        $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
+        $request = new Req('GET', $invokeURL);
         $res = $client->sendAsync($request)->wait();
+    }
+
+
+    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = '')
+    {
+        $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
+        if ($token != '') {
+            $key = env('FIREBASE_KEY');
+            $array['registration_ids'] = array($token);
+            $array['notification']['body'] = $body;
+            $array['notification']['title'] = $title;
+            if ($image != '') {
+                $array['notification']['image'] = $image;
+            }
+            $array['notification']['content_available'] = true;
+            $array['notification']['priority'] = "normal";
+            if ($url != '') {
+                $array['notification']['link'] = $url;
+            }
+
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'key=' . $key,
+                'Content-Type' => 'application/json'
+            ];
+            $body = json_encode($array);
+
+            $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
+            $res = $client->sendAsync($request)->wait();
+        }
     }
 }

@@ -13,6 +13,7 @@ use App\Models\ParentModel;
 use App\Models\ApiModel;
 use Validator;
 use App\Http\Lib\Encryption;
+use App\Http\Controllers\ApiController;
 
 class LoginController extends Controller
 {
@@ -58,13 +59,14 @@ class LoginController extends Controller
 
     public function resendotp($link)
     {
-
+        $apicontroller = new ApiController();
         $model =  new ApiModel();
         $otp_id = Encryption::decode($link);
         $row = $model->getTableRow('otp', 'id', $otp_id, 1);
         if ($row != false) {
             $otp = rand(1111, 9999);
-            $otp = '1234';
+            $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+            $apicontroller->sendSMS($row->mobile, $message);
             $id = $model->saveOtp($row->mobile, $otp, $row->user_id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {
@@ -75,7 +77,7 @@ class LoginController extends Controller
     }
     public function sendotp(Request $request)
     {
-
+        $apicontroller = new ApiController();
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|min:10|max:10'
         ]);
@@ -86,9 +88,55 @@ class LoginController extends Controller
         }
         $model =  new ApiModel();
         $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+        if ($data == false) {
+            $passenger = $model->getTableRow('passenger', 'mobile', $request->mobile, 1);
+            if ($passenger != false) {
+                $array['user_type'] = 5;
+                $array['role_id'] = 1;
+                $array['admin_id'] = 1;
+                $array['name'] = $passenger->employee_name;
+                $array['gender'] = $passenger->gender;
+                $array['email'] = $passenger->email;
+                $array['mobile'] = $passenger->mobile;
+                $array['user_name'] = $passenger->mobile;
+                $array['address'] = $passenger->address;
+                $array['location'] = $passenger->location;
+                $array['project_id'] = $passenger->project_id;
+                $array['parent_id'] = $passenger->id;
+                $array['password'] = 'napasswe';
+                $array['company_name'] = 'Siddhivinayak Travels';
+                $passenger = $model->saveTable('users', $array, 0);
+                $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+            }
+
+
+            if ($data != false) {
+                $driver = $model->getTableRow('driver', 'mobile', $request->mobile, 1);
+                if ($driver != false) {
+                    $array['user_type'] = 4;
+                    $array['role_id'] = 1;
+                    $array['admin_id'] = 1;
+                    $array['name'] = $driver->name;
+                    $array['gender'] = 'Male';
+                    $array['email'] = $driver->email;
+                    $array['mobile'] = $driver->mobile;
+                    $array['user_name'] = $driver->mobile;
+                    $array['address'] = $driver->address;
+                    $array['location'] = $driver->location;
+                    $array['project_id'] = 0;
+                    $array['parent_id'] = $driver->id;
+                    $array['password'] = 'napassweq';
+                    $array['company_name'] = 'Siddhivinayak Travels';
+                    $passenger = $model->saveTable('users', $array, 0);
+                    $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+                }
+            }
+        }
         if ($data != false) {
             $otp = rand(1111, 9999);
-            $otp = '1234';
+            //  $otp = '1234';
+            $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+            $apicontroller->sendSMS($request->mobile, $message);
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {

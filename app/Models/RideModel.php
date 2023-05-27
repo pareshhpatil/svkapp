@@ -58,17 +58,23 @@ class RideModel extends ParentModel
     }
 
 
-    public function driverLiveRide($id)
+    public function driverLiveRide($id, $single = 1)
     {
         $retObj = DB::table('ride as r')
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->where('r.status', 2)
-            ->where('r.driver_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(start_time, "%l:%i %p") as only_time,d.name as driver_name, r.id as pid , start_location as pickup_location ,end_location as drop_location'))
-            ->first();
-        return json_decode(json_encode($retObj), 1);
+            ->where('r.status', 2);
+        if ($id > 0) {
+            $retObj->where('r.driver_id', $id);
+        }
+        $retObj->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(start_time, "%l:%i %p") as only_time,d.name as driver_name, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+        if ($single == 1) {
+            $array = $retObj->first();
+        } else {
+            $array = $retObj->get();
+        }
+        return json_decode(json_encode($array), 1);
     }
 
     public function driverUpcomingRides($id, $single = 0)
@@ -77,10 +83,12 @@ class RideModel extends ParentModel
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->whereIn('r.status', [1,2])
-            ->where('r.driver_id', $id)
-            ->whereDate('r.date', '>=', date('Y-m-d'))
-            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+            ->whereIn('r.status', [1, 2])
+            ->whereDate('r.date', '>=', date('Y-m-d'));
+        if ($id > 0) {
+            $retObj->where('r.driver_id', $id);
+        }
+        $retObj->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
         if ($single == 1) {
             $array = $retObj->first();
         } else {
@@ -96,10 +104,12 @@ class RideModel extends ParentModel
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
             ->where('r.status', 5)
-            ->where('r.driver_id', $id)
             ->whereDate('r.date', '<=', date('Y-m-d'))
-            ->orderBy('r.id', 'desc')
-            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
+            ->orderBy('r.id', 'desc');
+        if ($id > 0) {
+            $retObj->where('r.driver_id', $id);
+        }
+        $retObj->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }
@@ -108,9 +118,11 @@ class RideModel extends ParentModel
         $retObj = DB::table('ride as r')
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
-            ->where('r.is_active', 1)
-            ->where('r.driver_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
+            ->where('r.is_active', 1);
+        if ($id > 0) {
+            $retObj->where('r.driver_id', $id);
+        }
+        $retObj->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }

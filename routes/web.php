@@ -77,6 +77,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
 
     Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
+    Route::get('/admin/ride/{link}', [App\Http\Controllers\HomeController::class, 'adminRideDetail']);
+
     Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
 });

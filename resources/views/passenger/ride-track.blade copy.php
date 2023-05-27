@@ -168,7 +168,7 @@
         </div>
     </div>
 </div>
-@if(Session::get('user_type')!=3)
+
 <div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -200,7 +200,7 @@
         </div>
     </div>
 </div>
-@endif
+
 @endsection
 
 @section('footer')
@@ -356,7 +356,7 @@
 				 driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
 			}
 
-        }, 10000);
+        }, 30000);
 
     }
 	

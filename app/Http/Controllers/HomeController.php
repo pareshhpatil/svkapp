@@ -54,6 +54,12 @@ class HomeController extends Controller
             if (!empty($data['data']['upcoming'])) {
                 $data['data']['upcoming']['link'] = '/driver/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
             }
+        } else if (Session::get('user_type') == 3) {
+            $data['data']['total_ride'] = $this->model->getTableCount('ride', 'is_active',  1);
+            $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'is_active', 1, 0, ['status' => 5]);
+
+            $data['live_ride'] = [];
+            $data['data']['upcoming'] = false;
         }
 
 
@@ -79,6 +85,35 @@ class HomeController extends Controller
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
+        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $data['data']['ride_passenger'] = $ride_passenger;
+        $data['data']['ride'] = $ride;
+        $data['data']['project'] = $project;
+        $data['data']['driver'] = $driver;
+        $data['data']['vehicle'] = $vehicle;
+        $data['data']['ride_passengers'] = $ride_passengers;
+        $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
+        $data['menu'] = 0;
+        $data['title'] = 'Ride detail';
+        return view('passenger.ride-detail', $data);
+    }
+
+    public function adminRideDetail($link)
+    {
+        $ride_id = Encryption::decode($link);
+        $ride = $this->model->getRowArray('ride', 'id', $ride_id);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+        $driver = [];
+        $vehicle = [];
+        if ($ride['driver_id'] > 0) {
+            $driver = $this->model->getRowArray('driver', 'id', $ride['driver_id']);
+        }
+        if ($ride['vehicle_id'] > 0) {
+            $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
+        }
+        $ride_passengers = $this->model->getRidePassenger($ride_id);
+        $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
@@ -121,8 +156,12 @@ class HomeController extends Controller
         $data['title'] = 'Ride detail';
         return view('driver.ride-detail', $data);
     }
+
     public function rideTrack($link)
     {
+        if (Session::get('user_type') == 3) {
+            return $this->adminrideTrack($link);
+        }
         $id = Encryption::decode($link);
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
@@ -141,6 +180,7 @@ class HomeController extends Controller
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+
         $data['data']['passenger'] = $passenger;
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
@@ -157,6 +197,43 @@ class HomeController extends Controller
         return view('passenger.ride-track', $data);
     }
 
+    public function adminrideTrack($link)
+    {
+        $ride_id = Encryption::decode($link);
+        $ride = $this->model->getRowArray('ride', 'id', $ride_id);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+        $driver = [];
+        $vehicle = [];
+        if ($ride['driver_id'] > 0) {
+            $driver = $this->model->getRowArray('driver', 'id', $ride['driver_id']);
+        }
+        if ($ride['vehicle_id'] > 0) {
+            $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
+        }
+        // $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
+        $ride_passengers = $this->model->getRidePassenger($ride_id);
+        $data['live_location'] = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_id, 'live_location');
+        $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $data['data']['passenger'] = [];
+        $data['data']['passenger']['icon'] = '';
+        $data['data']['passenger']['name'] = Session::get('name');
+        $data['data']['ride_passenger'] = $ride_passenger;
+        $data['data']['ride'] = $ride;
+        $data['data']['project'] = $project;
+        $data['data']['driver'] = $driver;
+        $data['data']['vehicle'] = $vehicle;
+        $data['data']['ride_passengers'] = $ride_passengers;
+        $data['data']['link'] = env('APP_URL') . '/admin/ride/' . $link;
+        $data['menu'] = 0;
+        $data['ride_id'] = $ride_id;
+        $data['live_location'] = json_decode($data['live_location'], 1);
+        $data['title'] = 'Ride Tracking';
+        $data['onload'] = 'initialize()';
+        return view('passenger.ride-track', $data);
+    }
+
 
     public function rides($type = 'upcoming')
     {
@@ -165,13 +242,17 @@ class HomeController extends Controller
         $data['type'] = $type;
         if (Session::get('user_type') == 5) {
             $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
-            $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
+            $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id'), 0), 1);
             $data['data']['past'] = $this->EncryptList($this->model->passengerPastRides(Session::get('parent_id')));
             $data['data']['booking'] = $this->EncryptList($this->model->passengerBookingRides(Session::get('parent_id')), 0, '/passenger/booking/', 'id');
         } else if (Session::get('user_type') == 4) {
             $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/driver/ride/');
-            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id')), 1, '/driver/ride/');
+            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0), 1, '/driver/ride/');
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/driver/ride/');
+        } else if (Session::get('user_type') == 3) {
+            $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/admin/ride/');
+            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0), 0, '/admin/ride/');
+            $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/admin/ride/');
         }
         return view('passenger.my-rides', $data);
     }
@@ -226,6 +307,9 @@ class HomeController extends Controller
         } else if (Session::get('user_type') == 4) {
             $rides = $this->model->driverAllRides(Session::get('parent_id'));
             $array = $this->EncryptList($rides, 0, '/driver/ride/');
+        } else if (Session::get('user_type') == 3) {
+            $rides = $this->model->driverAllRides(Session::get('parent_id'));
+            $array = $this->EncryptList($rides, 0, '/admin/ride/');
         }
 
         $all_rides = [];
@@ -277,6 +361,10 @@ class HomeController extends Controller
             $img->save($compress);
             $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
             $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
+            if (Session::get('user_type') == 4) {
+                $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo', '/' . $compress);
+            }
+
             Session::put('icon', '/' . $compress);
             return response()->json(['image' => '/' . $compress]);
         }
