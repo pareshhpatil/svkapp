@@ -49,7 +49,7 @@ class HomeController extends Controller
             $data['data']['total_ride'] = $this->model->getTableCount('ride', 'driver_id', Session::get('parent_id'), 1);
             $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'driver_id', Session::get('parent_id'), 1, ['status' => 5]);
 
-            $data['live_ride'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id')), 1, '/driver/ride/');
+            $data['live_ride'] = [];
             $data['data']['upcoming'] = $this->model->driverUpcomingRides(Session::get('parent_id'), 1);
             if (!empty($data['data']['upcoming'])) {
                 $data['data']['upcoming']['link'] = '/driver/ride/' . Encryption::encode($data['data']['upcoming']['pid']);

@@ -77,7 +77,7 @@ class RideModel extends ParentModel
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->where('r.status', 1)
+            ->whereIn('r.status', [1,2])
             ->where('r.driver_id', $id)
             ->whereDate('r.date', '>=', date('Y-m-d'))
             ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
