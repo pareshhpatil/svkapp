@@ -128,7 +128,8 @@
                         <div class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
 
-                                <a :href="'http://maps.google.com/?q='+item.address" > <span style="text-align: right;float: right;"><ion-icon class="navigate-icon" name="navigate-outline"></ion-icon></span></a>
+                            <span style="text-align: right;float: right;"><a :href="'https://www.google.com/maps/place/'+item.address" > <ion-icon class="navigate-icon" name="navigate-outline"></ion-icon>
+                            </a></span>
 
                                 <div class="dropdown">
                                     <button v-if="item.status==0 || item.status==5" v-on:click="setId(index)" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-success text-center dropdown-toggle">
