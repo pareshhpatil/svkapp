@@ -175,37 +175,10 @@
     marker = '';
     lat = 0;
     lat_long = 0;
-    @if(isset($live_location['latitude']))
-    lat = {
-        {
-            $live_location['latitude']
-        }
-    };
-    lat_long = {
-        {
-            $live_location['longitude']
-        }
-    };
-    @endif
+   
     //speed = loc_array.speed;
 
-    mylocation_lat = '';
-    mylocation_long = '';
-
-    var myLatLng = new google.maps.LatLng(lat, lat_long);
-    myOptions = {
-        zoom: 15,
-        center: myLatLng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    var map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
-
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer();
-    var originMarker;
-    var destinationMarker;
-    directionsRenderer.setMap(map);
+    
 
 
     function initialize() {
@@ -225,122 +198,20 @@
             if (start == true) {
                 document.getElementById('maplink').src = 'https://www.google.com/maps/dir/' + lat + ',' + lat_long + '/' + my_lat + ',' + my_long;
             } else {
-                driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+                document.getElementById('maplink').src = 'https://www.google.com/maps/dir/' + lat + ',' + lat_long + '/' + my_lat + ',' + my_long;
             }
 
-        }, 30000);
+        }, 3000);
 
     }
 
-    function setDriverLocation() {
-        driverMarker = new google.maps.Marker({
-            icon: {
-                url: 'https://app.svktrv.in/assets/img/sm-icon.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(60, 68),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            },
-            position: myLatLng,
-            label: {
-                text: "{{$data['driver']['name']}}",
-                className: 'marker-label'
-            },
-            map: map
-        });
-    }
+    
 
 
 
-    function navigate() {
-        start = true;
-        try {
-            driverMarker.setMap(null);
-        } catch (o) {}
-        try {
-            currentMarker.setMap(null);
-        } catch (o) {}
+    
 
-
-
-        originMarker = new google.maps.Marker({
-            position: new google.maps.LatLng(lat, lat_long),
-            map: map,
-            icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
-            label: {
-                text: "{{$data['driver']['name']}}",
-                className: 'marker-label'
-            }
-        });
-
-        destinationMarker = new google.maps.Marker({
-            position: new google.maps.LatLng(my_lat, my_long),
-            map: map,
-            icon: {
-                url: 'https://app.svktrv.in/assets/img/map-male.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(40, 40),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            }, // Path to your custom marker icon
-            label: {
-                text: "{{$data['passenger']['name']}}",
-                className: 'marker-label-user'
-            }
-        });
-        direction();
-
-
-    }
-
-    function direction() {
-
-        //lat=lat-0.00005;
-        //map.setCenter(new google.maps.LatLng(lat, lat_long));
-        originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-        // map.panTo(new google.maps.LatLng(lat, lat_long));
-
-
-
-
-        directionsService
-            .route({
-                origin: new google.maps.LatLng(lat, lat_long),
-                destination: new google.maps.LatLng(my_lat, my_long),
-                travelMode: 'DRIVING'
-            })
-            .then((response) => {
-                const duration = response.routes[0].legs[0].duration.text;
-                document.getElementById("arr").style.display = 'block';
-                document.getElementById("duration").innerHTML = duration;
-
-
-                // Customize the markers
-                var markerOptions = {
-                    origin: originMarker,
-                    destination: destinationMarker,
-                };
-                directionsRenderer.setOptions({
-                    markerOptions: markerOptions,
-                    polylineOptions: {
-                        strokeColor: '#FF0000' // Set your desired color
-                    },
-                    suppressMarkers: true
-
-                });
-
-                //directionsDisplay.setDirections(response);
-
-                directionsRenderer.setDirections(response);
-            })
-            .catch((e) =>
-                window.alert("Directions request failed due to " + status)
-            );
-    }
+    
 
 
 
