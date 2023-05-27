@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 Auth::routes(['register' => false]);
@@ -42,6 +42,12 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/ajax/roster/{project_id}/{date?}/{status?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
 
     Route::any('/roster/assign/{ride_id}/{driver_id}/{cab_id}', [App\Http\Controllers\RosterController::class, 'assignCab']);
+
+
+    Route::get('/master/{type}/create', [App\Http\Controllers\MasterController::class, 'create']);
+    Route::get('/master/{type}/list', [App\Http\Controllers\MasterController::class, 'list']);
+    Route::post('/master/{type}/save', [App\Http\Controllers\MasterController::class, 'save']);
+    Route::get('/master/{type}/ajax', [App\Http\Controllers\MasterController::class, 'Ajax']);
 });
 
 Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
