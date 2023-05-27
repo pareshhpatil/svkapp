@@ -92,12 +92,14 @@
                 <strong>My Rides</strong>
             </div>
         </a>
+        @if(Session::get('user_type')==5)
         <a @if($menu==3) href="javascript:location.reload();" @else href="/book-ride" @endif class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="add-circle-outline"></ion-icon>
                 <strong>Book a Ride</strong>
             </div>
         </a>
+        @endif
         <a @if($menu==4) href="javascript:location.reload();" @else href="/calendar" @endif class="item @if($menu==4) active @endif">
             <div class="col">
                 <ion-icon name="calendar-number-outline"></ion-icon>
@@ -115,7 +117,7 @@
     @endif
     <!-- * App Bottom Menu -->
 
-    
+
 
     <!-- App Sidebar -->
     @if($title=='dashboard')
@@ -202,7 +204,7 @@
             </div>
         </div>
     </div>
-    
+
     @endif
     <!-- * App Sidebar -->
 

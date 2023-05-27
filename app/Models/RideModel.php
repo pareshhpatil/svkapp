@@ -57,6 +57,63 @@ class RideModel extends ParentModel
         return json_decode(json_encode($retObj), 1);
     }
 
+
+    public function driverLiveRide($id)
+    {
+        $retObj = DB::table('ride as r')
+            ->join('driver as d', 'd.id', '=', 'r.driver_id')
+            ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
+            ->where('r.is_active', 1)
+            ->where('r.status', 2)
+            ->where('r.driver_id', $id)
+            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(start_time, "%l:%i %p") as only_time,d.name as driver_name, r.id as pid , start_location as pickup_location ,end_location as drop_location'))
+            ->first();
+        return json_decode(json_encode($retObj), 1);
+    }
+
+    public function driverUpcomingRides($id, $single = 0)
+    {
+        $retObj = DB::table('ride as r')
+            ->join('driver as d', 'd.id', '=', 'r.driver_id')
+            ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
+            ->where('r.is_active', 1)
+            ->where('r.status', 1)
+            ->where('r.driver_id', $id)
+            ->whereDate('r.date', '>=', date('Y-m-d'))
+            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+        if ($single == 1) {
+            $array = $retObj->first();
+        } else {
+            $array = $retObj->get();
+        }
+        return json_decode(json_encode($array), 1);
+    }
+
+    public function driverPastRides($id)
+    {
+        $retObj = DB::table('ride as r')
+            ->join('driver as d', 'd.id', '=', 'r.driver_id')
+            ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
+            ->where('r.is_active', 1)
+            ->where('r.status', 5)
+            ->where('r.driver_id', $id)
+            ->whereDate('r.date', '<', date('Y-m-d'))
+            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
+    public function driverAllRides($id)
+    {
+        $retObj = DB::table('ride as r')
+            ->join('driver as d', 'd.id', '=', 'r.driver_id')
+            ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
+            ->where('r.is_active', 1)
+            ->where('r.driver_id', $id)
+            ->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
+
     public function passengerPastRides($id)
     {
         $retObj = DB::table('ride_passenger as p')
@@ -74,6 +131,7 @@ class RideModel extends ParentModel
     }
 
 
+
     public function passengerAllRides($id)
     {
         $retObj = DB::table('ride_passenger as p')
@@ -82,7 +140,6 @@ class RideModel extends ParentModel
             ->leftJoin('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
-            ->where('p.status', 0)
             ->where('p.passenger_id', $id)
             ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%l:%i %p") as pickup_time , p.id as pid'));
         $array = $retObj->get();
@@ -104,9 +161,10 @@ class RideModel extends ParentModel
     {
         $retObj = DB::table('ride_passenger as p')
             ->join('users as r', 'r.parent_id', '=', 'p.passenger_id')
+            ->where('r.user_type', 5)
             ->where('p.is_active', 1)
             ->where('p.ride_id', $ride_id)
-            ->select(DB::raw('TIME_FORMAT(p.pickup_time, "%H %i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%H %i %p") as drop_time ,p.pickup_location,p.drop_location,r.icon,r.location,r.address,r.name,r.gender,r.mobile'))
+            ->select(DB::raw('p.id ,p.status,p.otp,TIME_FORMAT(p.pickup_time, "%H %i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%H %i %p") as drop_time ,p.pickup_location,p.drop_location,r.icon,r.location,r.address,r.name,r.gender,r.mobile'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

@@ -108,7 +108,7 @@
 
 </div>
 <div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
-    <div class="modal-dialog" role="document" style="bottom: 10px;">
+    <div class="modal-dialog" role="document" style="bottom: 60px;">
         <div class="modal-content">
 
             <div class="modal-body">
@@ -265,12 +265,11 @@
 
         my_lat = latitude;
         my_long = longitude;
-       
-    }
-	
-	function setMyPosition()
-	{
-		if (currentMarker == null) {
+
+
+
+
+        if (currentMarker == null) {
             var myLatLng = new google.maps.LatLng(latitude, longitude);
             currentMarker = new google.maps.Marker({
                 icon: {
@@ -297,7 +296,7 @@
         } else {
             //currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
         }
-	}
+    }
 
     function errorCallback(error) {
 
@@ -330,39 +329,12 @@
 
     var directionsService = new google.maps.DirectionsService();
     var directionsRenderer = new google.maps.DirectionsRenderer();
-	 var originMarker;
-	var destinationMarker;
     directionsRenderer.setMap(map);
 
 
     function initialize() {
 
-        
-
-        // Add the button to the map's controls
-        // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
-
-        //driverMarker.setMap(map);
-
-        //moveBus(map, marker);
-		setDriverLocation();
-		
-		setInterval(function() {
-			getData();
-			if(start==true)
-			{
-            direction();
-			}else{
-				 driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-			}
-
-        }, 30000);
-
-    }
-	
-	function setDriverLocation()
-	{
-		driverMarker = new google.maps.Marker({
+        driverMarker = new google.maps.Marker({
             icon: {
                 url: 'https://app.svktrv.in/assets/img/sm-icon.png',
                 // This marker is 20 pixels wide by 32 pixels high.
@@ -379,7 +351,15 @@
             },
             map: map
         });
-	}
+
+        // Add the button to the map's controls
+        // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
+
+        //driverMarker.setMap(map);
+
+        //moveBus(map, marker);
+
+    }
 
 
 
@@ -392,7 +372,8 @@
             currentMarker.setMap(null);
         } catch (o) {}
 
-       
+        var originMarker;
+        var destinationMarker;
 
         originMarker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, lat_long),
@@ -421,14 +402,8 @@
                 className: 'marker-label-user'
             }
         });
-		direction();
-        
-
-    }
-	
-	function direction()
-	{
-		
+        setInterval(function() {
+            getData();
             //lat=lat-0.00005;
             //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
@@ -447,7 +422,11 @@
                     const duration = response.routes[0].legs[0].duration.text;
                     document.getElementById("arr").style.display = 'block';
                     document.getElementById("duration").innerHTML = duration;
-                    
+                    // directionsRenderer.setOptions({
+                    //    polylineOptions: {
+                    //         strokeColor: '#FF0000' // Set your desired color
+                    //     }
+                    // });
 
                     // Customize the markers
                     var markerOptions = {
@@ -470,9 +449,10 @@
                 .catch((e) =>
                     window.alert("Directions request failed due to " + status)
                 );
-	}
-	
-	
+
+        }, 30000);
+
+    }
 
     function getData() {
         var xhttp = new XMLHttpRequest();

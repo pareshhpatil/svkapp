@@ -15,12 +15,14 @@
                 Past
             </a>
         </li>
+        @if(Session::get('user_type')==5)
         <li class="nav-item">
             <a class="nav-link @if($type=='booking') active @endif" id="tab-booking" data-bs-toggle="tab" href="#booking" role="tab">
                 <ion-icon name="add-circle-outline"></ion-icon>
                 Booking
             </a>
         </li>
+        @endif
     </ul>
 </div>
 <div id="appCapsule" class="extra-header-active full-height">
@@ -119,10 +121,10 @@
             </div>
         </div>
         <!-- * waiting tab -->
-
+        @if(Session::get('user_type')==5)
         <div class="tab-pane fade @if($type=='booking') active show @endif" id="booking" role="tabpanel">
             <div class="transactions mt-2">
-                <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item" >
+                <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
@@ -149,7 +151,6 @@
 
             </div>
         </div>
-
         <div class="modal fade dialogbox" id="cancelride" data-bs-backdrop="static" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -172,6 +173,9 @@
                 </div>
             </div>
         </div>
+        @endif
+
+
 
     </div>
 
@@ -202,7 +206,7 @@
             }
         }
     })
-     document.getElementById('tab-{{$type}}').click();
+    document.getElementById('tab-{{$type}}').click();
 
     function cancel(id) {
         document.getElementById('cancel_booking_id').value = id;

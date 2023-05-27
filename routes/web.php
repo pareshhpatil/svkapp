@@ -13,8 +13,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/store-data', function () {
+    $data = [
+        'name' => 'John Doe',
+        'email' => 'johndoe@example.com',
+        'age' => 30
+    ];
+
+    $json = json_encode($data);
+
+    Storage::disk('local')->put('data.json', $json);
+
+    return 'Data stored successfully.';
+});
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 Route::get('/app/notification/{type}', function () {
     return redirect('/dashboard');
@@ -59,7 +76,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
 
+    Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
+    Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
+    Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
 });
 
-
-URL::forceScheme('https');
+if (env('APP_ENV') != 'local') {
+    URL::forceScheme('https');
+}

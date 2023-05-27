@@ -37,14 +37,28 @@ class HomeController extends Controller
 
         $data['menu'] = 1;
         $data['title'] = 'dashboard';
-        $data['data']['total_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1);
-        $data['data']['completed_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1, ['status' => 2]);
-        $data['live_ride'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
-        $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
-        $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'), 1);
-        if (!empty($data['data']['upcoming'])) {
-            $data['data']['upcoming']['link'] = '/passenger/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
+        if (Session::get('user_type') == 5) {
+            $data['data']['total_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1);
+            $data['data']['completed_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1, ['status' => 2]);
+            $data['live_ride'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
+            $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'), 1);
+            if (!empty($data['data']['upcoming'])) {
+                $data['data']['upcoming']['link'] = '/passenger/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
+            }
+        } else if (Session::get('user_type') == 4) {
+            $data['data']['total_ride'] = $this->model->getTableCount('ride', 'driver_id', Session::get('parent_id'), 1);
+            $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'driver_id', Session::get('parent_id'), 1, ['status' => 5]);
+
+            $data['live_ride'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id')), 1, '/driver/ride/');
+            $data['data']['upcoming'] = $this->model->driverUpcomingRides(Session::get('parent_id'), 1);
+            if (!empty($data['data']['upcoming'])) {
+                $data['data']['upcoming']['link'] = '/driver/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
+            }
         }
+
+
+        $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
+
         //dd($data['live_ride']);
         return view('passenger.dashboard', $data);
     }
@@ -77,6 +91,36 @@ class HomeController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
         return view('passenger.ride-detail', $data);
+    }
+
+    public function driverRideDetail($link)
+    {
+        $ride_id = Encryption::decode($link);
+        $ride = $this->model->getRowArray('ride', 'id', $ride_id);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+        $driver = [];
+        $vehicle = [];
+        if ($ride['driver_id'] > 0) {
+            $driver = $this->model->getRowArray('driver', 'id', $ride['driver_id']);
+        }
+        if ($ride['vehicle_id'] > 0) {
+            $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
+        }
+        $ride_passengers = $this->model->getRidePassenger($ride_id);
+        $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlTime($ride['end_time']);
+        $data['data']['ride'] = $ride;
+        $data['data']['project'] = $project;
+        $data['data']['driver'] = $driver;
+        $data['data']['vehicle'] = $vehicle;
+        $data['data']['ride_passengers'] = $ride_passengers;
+        $data['data']['link'] = env('APP_URL') . '/driver/ride/' . $link;
+        $data['ride_id'] = $ride_id;
+        $data['menu'] = 0;
+        $data['title'] = 'Ride detail';
+       
+        return view('driver.ride-detail', $data);
     }
     public function rideTrack($link)
     {
@@ -120,10 +164,16 @@ class HomeController extends Controller
         $data['menu'] = 2;
         $data['title'] = 'My Rides';
         $data['type'] = $type;
-        $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
-        $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
-        $data['data']['past'] = $this->EncryptList($this->model->passengerPastRides(Session::get('parent_id')));
-        $data['data']['booking'] = $this->EncryptList($this->model->passengerBookingRides(Session::get('parent_id')), 0, '/passenger/booking/', 'id');
+        if (Session::get('user_type') == 5) {
+            $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
+            $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
+            $data['data']['past'] = $this->EncryptList($this->model->passengerPastRides(Session::get('parent_id')));
+            $data['data']['booking'] = $this->EncryptList($this->model->passengerBookingRides(Session::get('parent_id')), 0, '/passenger/booking/', 'id');
+        } else if (Session::get('user_type') == 4) {
+            $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/driver/ride/');
+            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id')), 1, '/driver/ride/');
+            $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/driver/ride/');
+        }
         return view('passenger.my-rides', $data);
     }
 
@@ -171,8 +221,14 @@ class HomeController extends Controller
     {
         $data['menu'] = 4;
         $data['title'] = 'Calendar';
-        $rides = $this->model->passengerAllRides(Session::get('parent_id'));
-        $array = $this->EncryptList($rides);
+        if (Session::get('user_type') == 5) {
+            $rides = $this->model->passengerAllRides(Session::get('parent_id'));
+            $array = $this->EncryptList($rides);
+        } else if (Session::get('user_type') == 4) {
+            $rides = $this->model->driverAllRides(Session::get('parent_id'));
+            $array = $this->EncryptList($rides, 0, '/driver/ride/');
+        }
+
         $all_rides = [];
         foreach ($array as $v) {
             $row['driver_image'] = ($v['photo'] != '') ? $v['photo'] : '/assets/img/driver.png';
@@ -351,5 +407,28 @@ class HomeController extends Controller
         unset($array['_token']);
         $model->saveTable('contactus', $array);
         return redirect('/thank-you');
+    }
+
+    public function driverRideStatus($ride_id, $status)
+    {
+        $model =  new ParentModel();
+        $model->updateTable('ride', 'id', $ride_id, 'status', $status);
+        if ($status == 5) {
+            return redirect('/my-rides/past');
+        }
+        return redirect('/driver/ride/' . Encryption::encode($ride_id));
+    }
+
+    public function driverPassengerRideStatus($ride_passenger_id, $status)
+    {
+        $model =  new ParentModel();
+        if ($status == 5 || $status == 1) {
+            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
+        }
+        if ($status == 2) {
+            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
+        }
+
+        $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'status', $status);
     }
 }
