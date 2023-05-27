@@ -106,100 +106,14 @@
         <div id="map-canvas"></div>
     </div>
 
-</div>
-<div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
-    <div class="modal-dialog" role="document" style="bottom: 10px;">
-        <div class="modal-content">
-
-            <div class="modal-body">
-                <div class="transactions">
-                    <!-- item -->
-                    <a href="app-transaction-detail.html" class="item">
-                        <div class="detail">
-                            <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
-                            <div>
-                                <strong>{{$data['driver']['name']}}</strong>
-                                <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <p>{{$data['vehicle']['number']}}</p>
-                            </div>
-                        </div>
-                        <div class="right">
-                            <div onclick="window.open('tel:{{$data['driver']['mobile']}}');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
-                        </div>
-                    </a>
-                </div>
-                <div class=" ">
-                    <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
-                        <!-- Balance -->
-                        <!-- Wallet Footer -->
-                        <div class="wallet-footer" style="padding-top: 10px;">
-                            <div v-if="data.ride.status==1" class="item mb-1">
-                                <a href="#" onclick="navigate();">
-                                    <div class="icon-wrapper bg-success">
-                                        <ion-icon name="navigate-outline"></ion-icon>
-                                    </div>
-                                    <strong>Navigate</strong>
-                                </a>
-                            </div>
-
-                            <div class="item">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
-                                    <div class="icon-wrapper bg-warning">
-                                        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                                    </div>
-                                    <strong>Help</strong>
-                                </a>
-                            </div>
-
-                            <div class="item">
-                                <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
-                                    <div class="icon-wrapper bg-info">
-                                        <ion-icon name="logo-whatsapp"></ion-icon>
-                                    </div>
-                                    <strong>Share</strong>
-                                </a>
-                            </div>
-
-                        </div>
-                        <!-- * Wallet Footer -->
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="map">
+        <iframe width="700" height="300" id="maplink" src=""></iframe>
     </div>
+
 </div>
 
-<div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Help</h5>
-            </div>
-            <form action="/passenger/help" method="post">
-                @csrf
-                <div class="modal-body text-start mb-2">
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="text1">Enter Message</label>
-                            <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
-                            <i class="clear-input">
-                                <ion-icon name="close-circle"></ion-icon>
-                            </i>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-inline">
-                        <input type="hidden" :value="{{$data['ride_passenger']['id']}}" name="ride_passenger_id">
-                        <input type="hidden" :value="{{$data['ride_passenger']['ride_id']}}" name="ride_id">
-                        <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                        <button type="submit" class="btn btn-text-primary">SEND</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+
 
 @endsection
 
@@ -210,25 +124,7 @@
 
 
 
-<script>
-    function startlocation() {
-        window.WTN.backgroundLocation.start({
-            callback: false,
-            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
-            timeout: 10,
-            data: "userid1",
-            backgroundIndicator: true,
-            pauseAutomatically: true,
-            distanceFilter: 0.0,
-            desiredAccuracy: "best",
-            activityType: "other",
-        });
-    }
 
-    function stop() {
-        window.WTN.backgroundLocation.stop();
-    }
-</script>
 
 
 
@@ -265,54 +161,31 @@
 
         my_lat = latitude;
         my_long = longitude;
-       
+
     }
-	
-	function setMyPosition()
-	{
-		if (currentMarker == null) {
-            var myLatLng = new google.maps.LatLng(latitude, longitude);
-            currentMarker = new google.maps.Marker({
-                icon: {
-                    url: "{{$data['passenger']['icon'],'https://app.svktrv.in/assets/img/map-male.png'}}",
-                    // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(40, 40),
-                    // The origin for this image is (0, 0).
-                    origin: new google.maps.Point(0, 0),
-                    // The anchor for this image is the base of the flagpole at (0, 32).
-                    anchor: new google.maps.Point(0, 32)
-                },
-                position: myLatLng,
-                label: {
-                    text: "{{$data['passenger']['name']}}",
-                    className: 'marker-label'
-                },
-                map: map
-            });
 
-            // Add the button to the map's controls
-            // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
 
-            currentMarker.setMap(map);
-        } else {
-            //currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
-        }
-	}
 
     function errorCallback(error) {
 
     }
-
-   
 </script>
 <script type="text/javascript">
     var k = 0;
     marker = '';
-     lat = 0;
-     lat_long = 0;
+    lat = 0;
+    lat_long = 0;
     @if(isset($live_location['latitude']))
-    lat = {{$live_location['latitude']}};
-    lat_long = {{$live_location['longitude']}};
+    lat = {
+        {
+            $live_location['latitude']
+        }
+    };
+    lat_long = {
+        {
+            $live_location['longitude']
+        }
+    };
     @endif
     //speed = loc_array.speed;
 
@@ -330,14 +203,14 @@
 
     var directionsService = new google.maps.DirectionsService();
     var directionsRenderer = new google.maps.DirectionsRenderer();
-	 var originMarker;
-	var destinationMarker;
+    var originMarker;
+    var destinationMarker;
     directionsRenderer.setMap(map);
 
 
     function initialize() {
 
-        
+
 
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
@@ -345,24 +218,22 @@
         //driverMarker.setMap(map);
 
         //moveBus(map, marker);
-		setDriverLocation();
-		
-		setInterval(function() {
-			getData();
-			if(start==true)
-			{
-            direction();
-			}else{
-				 driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-			}
+        //setDriverLocation();
+
+        setInterval(function() {
+            getData();
+            if (start == true) {
+                document.getElementById('maplink').src = 'https://www.google.com/maps/dir/' + lat + ',' + lat_long + '/' + my_lat + ',' + my_long;
+            } else {
+                driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+            }
 
         }, 30000);
 
     }
-	
-	function setDriverLocation()
-	{
-		driverMarker = new google.maps.Marker({
+
+    function setDriverLocation() {
+        driverMarker = new google.maps.Marker({
             icon: {
                 url: 'https://app.svktrv.in/assets/img/sm-icon.png',
                 // This marker is 20 pixels wide by 32 pixels high.
@@ -379,7 +250,7 @@
             },
             map: map
         });
-	}
+    }
 
 
 
@@ -392,7 +263,7 @@
             currentMarker.setMap(null);
         } catch (o) {}
 
-       
+
 
         originMarker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, lat_long),
@@ -421,58 +292,57 @@
                 className: 'marker-label-user'
             }
         });
-		direction();
-        
+        direction();
+
 
     }
-	
-	function direction()
-	{
-		
-            //lat=lat-0.00005;
-            //map.setCenter(new google.maps.LatLng(lat, lat_long));
-            originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-            // map.panTo(new google.maps.LatLng(lat, lat_long));
+
+    function direction() {
+
+        //lat=lat-0.00005;
+        //map.setCenter(new google.maps.LatLng(lat, lat_long));
+        originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+        // map.panTo(new google.maps.LatLng(lat, lat_long));
 
 
 
 
-            directionsService
-                .route({
-                    origin: new google.maps.LatLng(lat, lat_long),
-                    destination: new google.maps.LatLng(my_lat, my_long),
-                    travelMode: 'DRIVING'
-                })
-                .then((response) => {
-                    const duration = response.routes[0].legs[0].duration.text;
-                    document.getElementById("arr").style.display = 'block';
-                    document.getElementById("duration").innerHTML = duration;
-                    
+        directionsService
+            .route({
+                origin: new google.maps.LatLng(lat, lat_long),
+                destination: new google.maps.LatLng(my_lat, my_long),
+                travelMode: 'DRIVING'
+            })
+            .then((response) => {
+                const duration = response.routes[0].legs[0].duration.text;
+                document.getElementById("arr").style.display = 'block';
+                document.getElementById("duration").innerHTML = duration;
 
-                    // Customize the markers
-                    var markerOptions = {
-                        origin: originMarker,
-                        destination: destinationMarker,
-                    };
-                    directionsRenderer.setOptions({
-                        markerOptions: markerOptions,
-                        polylineOptions: {
-                            strokeColor: '#FF0000' // Set your desired color
-                        },
-                        suppressMarkers: true
 
-                    });
+                // Customize the markers
+                var markerOptions = {
+                    origin: originMarker,
+                    destination: destinationMarker,
+                };
+                directionsRenderer.setOptions({
+                    markerOptions: markerOptions,
+                    polylineOptions: {
+                        strokeColor: '#FF0000' // Set your desired color
+                    },
+                    suppressMarkers: true
 
-                    //directionsDisplay.setDirections(response);
+                });
 
-                    directionsRenderer.setDirections(response);
-                })
-                .catch((e) =>
-                    window.alert("Directions request failed due to " + status)
-                );
-	}
-	
-	
+                //directionsDisplay.setDirections(response);
+
+                directionsRenderer.setDirections(response);
+            })
+            .catch((e) =>
+                window.alert("Directions request failed due to " + status)
+            );
+    }
+
+
 
     function getData() {
         var xhttp = new XMLHttpRequest();
