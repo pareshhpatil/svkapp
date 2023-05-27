@@ -119,7 +119,6 @@ class HomeController extends Controller
         $data['ride_id'] = $ride_id;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
-       
         return view('driver.ride-detail', $data);
     }
     public function rideTrack($link)
