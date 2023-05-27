@@ -35,6 +35,14 @@
     .timeline.timed:before {
         left: 60px;
     }
+
+    .navigate-icon {
+        font-size: 25px;
+        background: #196FE1;
+        color: #ffffff;
+        border-radius: 20%;
+        padding: 5px;
+    }
 </style>
 <div id="appCapsule" class="full-height">
 
@@ -102,6 +110,8 @@
                         </div>
                     </h4>
                     <div class="text" v-html="data.project.location"></div>
+
+
                 </div>
             </div>
             <div v-for="(item, index) in data.ride_passengers" class="item">
@@ -118,6 +128,8 @@
                         <div class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
 
+                                <a :href="'http://maps.google.com/?q='+item.address" > <span style="text-align: right;float: right;"><ion-icon class="navigate-icon" name="navigate-outline"></ion-icon></span></a>
+
                                 <div class="dropdown">
                                     <button v-if="item.status==0 || item.status==5" v-on:click="setId(index)" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-success text-center dropdown-toggle">
                                         IN
@@ -133,12 +145,19 @@
                                 <button v-if="item.status==1" v-on:click="setId(index);" data-bs-toggle="modal" data-bs-target="#outmodal" class="btn btn-danger text-center">
                                     OUT
                                 </button>
+
                             </div>
                         </div>
+
                     </h4>
                     <div v-html="item.mobile" class="text text-danger"></div>
-                    <div v-html="item.location" class="text"></div>
+                    <div class="text">
+                        <span style="float: left;" v-html="item.location"></span>
+
+                    </div>
+
                 </div>
+                <br>
             </div>
             <div class="item" v-if="data.ride.type=='Pickup'">
                 <span class="time">
@@ -206,6 +225,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Confirm?</h5>
                     </div>
+                    <div class="modal-body text-start mb-2">
+                        <p>Do you want to continue?</p>
+                    </div>
 
                     <div class="modal-footer">
                         <div class="btn-inline">
@@ -222,7 +244,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Confirm?</h5>
                     </div>
-
+                    <div class="modal-body text-start mb-2">
+                        <p>Do you want to continue?</p>
+                    </div>
                     <div class="modal-footer">
                         <div class="btn-inline">
                             <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
@@ -238,7 +262,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Confirm?</h5>
                     </div>
-
+                    <div class="modal-body text-start mb-2">
+                        <p>Do you want to continue?</p>
+                    </div>
                     <div class="modal-footer">
                         <div class="btn-inline">
                             <button type="button" id="closeout" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
