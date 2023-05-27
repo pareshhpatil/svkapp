@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
+use App\Http\Controllers\ApiController;
+use App\Http\Lib\Encryption;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell_DataType;
@@ -107,6 +109,16 @@ class RosterController extends Controller
         $array['vehicle_id'] = $vehicle_id;
         $array['status'] = 1;
         $this->model->updateArray('ride', 'id', $ride_id, $array);
+        $apiController = new ApiController();
+        $link = Encryption::encode($ride_id);
+        $url = 'https://app.svktrv.in/driver/ride/' . $link;
+        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned to you. Here are the details', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
+        $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
+        foreach ($passengers as $row) {
+            $link = Encryption::encode($row->id);
+            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+            $apiController->sendNotification($row->passenger_id, 5, 'Cab has been assigned for your next ride', 'Please be ready at your pickup location. Have a safe and pleasant journey.', $url);
+        }
     }
 
     public function ajaxRoster($project_id = 0,  $date = 'na', $status = 'na')

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ApiModel;
 use Validator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as Req;
 
 class ApiController extends Controller
 {
@@ -96,6 +98,37 @@ class ApiController extends Controller
             return response()->json(['success' => $success], 200);
         } else {
             return response()->json(['error' => 'Invalid OTP'], 401);
+        }
+    }
+
+
+
+    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = '')
+    {
+        $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
+        if ($token != '') {
+            $key = env('FIREBASE_KEY');
+            $array['registration_ids'] = array($token);
+            $array['notification']['body'] = $body;
+            $array['notification']['title'] = $title;
+            if ($image != '') {
+                $array['notification']['image'] = $image;
+            }
+            $array['notification']['content_available'] = true;
+            $array['notification']['priority'] = "normal";
+            if ($url != '') {
+                $array['notification']['link'] = $url;
+            }
+
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'key=' . $key,
+                'Content-Type' => 'application/json'
+            ];
+            $body = json_encode($array);
+
+            $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
+            $res = $client->sendAsync($request)->wait();
         }
     }
 }
