@@ -266,7 +266,7 @@ class HomeController extends Controller
     public function uploadFile(Request $request, $type)
     {
         $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png|max:2048'
+            'file' => 'required|mimes:jpg,jpeg,png|max:8048'
         ]);
 
         if ($request->file()) {
