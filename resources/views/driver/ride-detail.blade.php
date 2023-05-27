@@ -127,9 +127,6 @@
                     <h4 class="title"><span v-html="item.name"></span>
                         <div class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
-
-                            
-
                                 <div class="dropdown">
                                     <button v-if="item.status==0 || item.status==5" v-on:click="setId(index)" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-success text-center dropdown-toggle">
                                         IN

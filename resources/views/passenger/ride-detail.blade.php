@@ -145,7 +145,7 @@
                         </div>
                         <div class="arrow"></div>
                     </div>
-                    <h2 class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
+                    <h2 v-if="data.ride_passenger.otp" class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
                 </div>
 
             </div>
@@ -164,6 +164,7 @@
                             <strong>Track</strong>
                         </a>
                     </div>
+                    @if(Session::get('user_type')!=3)
                     <div v-if="data.ride.status<2" class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#cancelride">
                             <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
@@ -188,6 +189,7 @@
                             <strong>SOS</strong>
                         </a>
                     </div>
+                    @endif
                     <div class="item">
                         <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
                             <div class="icon-wrapper bg-info">
@@ -224,10 +226,11 @@
                 <div class="content">
                     <h4 class="title"><span v-html="item.name"></span>
                         <div class="text-end" style="right: 10px;float: right;">
-                            <img v-if="item.icon==''" src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w24 rounded right">
-                            <img v-if="item.icon!=''" :src="item.icon" alt="avatar" class="imaged w24 rounded right">
+                            <img v-if="item.icon==''" src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w48 rounded right">
+                            <img v-if="item.icon!=''" :src="item.icon" alt="avatar" class="imaged w48 rounded right">
                         </div>
                     </h4>
+                    <div v-html="item.mobile" class="text text-danger"></div>
                     <div v-html="item.location" class="text"></div>
                 </div>
             </div>
@@ -237,9 +240,10 @@
                 <div class="content">
                     <h4 class="title">Office
                         <div class="text-end" style="right: 10px;float: right;">
-                            <img src="/assets/img/office.png" alt="avatar" class="imaged w24 rounded right">
+                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
                     </h4>
+                    
                     <div class="text" v-html="data.project.location"></div>
                 </div>
             </div>

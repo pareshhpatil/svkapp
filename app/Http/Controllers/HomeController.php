@@ -122,7 +122,7 @@ class HomeController extends Controller
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
         $data['data']['ride_passengers'] = $ride_passengers;
-        $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
+        $data['data']['link'] = env('APP_URL') . '/admin/ride/' . $link;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
         return view('passenger.ride-detail', $data);
@@ -225,6 +225,7 @@ class HomeController extends Controller
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
         $data['data']['ride_passengers'] = $ride_passengers;
+        die('hii');
         $data['data']['link'] = env('APP_URL') . '/admin/ride/' . $link;
         $data['menu'] = 0;
         $data['ride_id'] = $ride_id;
