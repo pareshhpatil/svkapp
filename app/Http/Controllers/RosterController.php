@@ -53,6 +53,7 @@ class RosterController extends Controller
         $array['project_id'] = $request->project_id;
         $array['date'] = $this->sqlDate($request->date);
         $array['type'] = $request->type;
+        $array['title'] = $request->title;
         $array['start_location'] = $request->start_location;
         $array['end_location'] = $request->end_location;
         $array['total_passengers'] = count($request->passengers);
@@ -90,7 +91,25 @@ class RosterController extends Controller
         return view('web.roster.list', $data);
     }
 
-    public function ajaxRoster($project_id = 0,  $date = 'na')
+    public function assign()
+    {
+        $data['selectedMenu'] = [7, 10];
+        $data['menus'] = Session::get('menus');
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        $data['vehicle_list'] = $this->model->getTableList('vehicle', 'is_active', 1);
+        $data['driver_list'] = $this->model->getTableList('driver', 'is_active', 1);
+        return view('web.roster.assign', $data);
+    }
+
+    public function assignCab($ride_id, $driver_id, $vehicle_id)
+    {
+        $array['driver_id'] = $driver_id;
+        $array['vehicle_id'] = $vehicle_id;
+        $array['status'] = 1;
+        $this->model->updateArray('ride', 'id', $ride_id, $array);
+    }
+
+    public function ajaxRoster($project_id = 0,  $date = 'na', $status = 'na')
     {
         if (strlen($date) < 5) {
             $date = 'na';
@@ -98,7 +117,7 @@ class RosterController extends Controller
         if ($date != 'na') {
             $date = $this->sqlDate($date);
         }
-        $data['data'] = $this->model->getRoster($project_id, $date);
+        $data['data'] = $this->model->getRoster($project_id, $date, $status);
         return json_encode($data);
     }
 }

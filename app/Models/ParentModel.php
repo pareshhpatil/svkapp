@@ -141,6 +141,14 @@ class ParentModel extends Model
             ]);
     }
 
+    public function updateArray($table, $where, $whvalue, $array)
+    {
+        DB::table($table)
+            ->where($where, $whvalue)
+            ->update($array);
+    }
+
+
 
 
     public function isExistData($merchant_id, $table, $key, $value)

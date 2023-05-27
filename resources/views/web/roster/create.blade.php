@@ -64,6 +64,10 @@
                             <label for="defaultFormControlInput" class="form-label">End Time</label>
                             <input type="time" name="end_time" class="form-control" />
                         </div>
+                        <div class="col-lg-5">
+                            <label for="defaultFormControlInput" class="form-label">Title</label>
+                            <input type="text" maxlength="45" name="title" placeholder="Enter title eg. Slab 1" class="form-control" />
+                        </div>
                     </div>
                     <div class="mb-3" data-repeater-list="passengers">
                         <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>

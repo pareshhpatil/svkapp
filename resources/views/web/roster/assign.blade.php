@@ -11,7 +11,7 @@
         <form action="" id="frm" method="post">
             <div class="row">
                 <div class="col-lg-4">
-                    <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span> List</h4>
+                    <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span> Assign</h4>
                 </div>
                 <div class="col-lg-4 pull-right">
                     <input type="text" name="date" onchange="reloadDate(this.value)" required id="bs-datepicker-autoclose" placeholder="Select Date" class="form-control" />
@@ -22,7 +22,7 @@
                         <option value="0">All</option>
                         @if(!empty($project_list))
                         @foreach($project_list as $v)
-                        <option @if($project_id==$v->project_id) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
+                        <option value="{{$v->project_id}}">{{$v->name}}</option>
                         @endforeach
                         @endif
                     </select>
@@ -42,6 +42,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Project Name</th>
+                                <th>Title</th>
                                 <th>Type</th>
                                 <th>Date</th>
                                 <th>Start Location</th>
@@ -59,18 +60,66 @@
 </div>
 
 
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Assign Cab</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="nameWithTitle" class="form-label">Driver</label>
+                        <select name="driver_id" id="driver_id" class="select2 form-select form-select-lg input-sm" data-allow-clear="true">
+                            <option value=""></option>
+                            @if(!empty($driver_list))
+                            @foreach($driver_list as $v)
+                            <option value="{{$v->id}}">{{$v->name}}</option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col mb-0">
+                        <label for="emailWithTitle" class="form-label">Cab Number</label>
+                        <select name="vehicle_id" id="vehicle_id" class="select2 form-select form-select-lg input-sm" data-allow-clear="true">
+                            <option value=""></option>
+                            @if(!empty($vehicle_list))
+                            @foreach($vehicle_list as $v)
+                            <option value="{{$v->vehicle_id}}">{{$v->number}}</option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closemodal" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" onclick="assignRide();" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 @section('footer')
 
 
 <script src="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-
+<script src="/assets/vendor/libs/select2/select2.js"></script>
+<script src="/assets/js/forms-selects.js"></script>
 
 <script>
     var dt_basic;
     var project_id = 0;
     var date = 'na';
+    var ride_id = 0;
 
     function reload(id) {
         project_id = id;
@@ -92,6 +141,22 @@
 
     });
 
+    function setRide(id) {
+        ride_id = id;
+    }
+
+    function assignRide() {
+        driver_id = document.getElementById('driver_id').value;
+        cab_id = document.getElementById('vehicle_id').value;
+        if (driver_id > 0 && cab_id > 0) {
+            $.get("/roster/assign/" + ride_id + "/" + driver_id + "/" + cab_id + "", function(data, status) {
+                document.getElementById('closemodal').click();
+                dt_basic.destroy();
+                datatable();
+            });
+        }
+    }
+
 
     function datatable() {
         var dt_basic_table = $('#datatable');
@@ -101,12 +166,15 @@
         // --------------------------------------------------------------------
         if (dt_basic_table.length) {
             dt_basic = dt_basic_table.DataTable({
-                ajax: '/ajax/roster/' + project_id + '/' + date + '',
+                ajax: '/ajax/roster/' + project_id + '/' + date + '/0',
                 columns: [{
                         data: 'id'
                     },
                     {
                         data: 'project_name'
+                    },
+                    {
+                        data: 'title'
                     },
                     {
                         data: 'type'
@@ -121,7 +189,7 @@
                         data: 'total_passengers'
                     },
                     {
-                        data: 'description'
+                        data: 'status'
                     },
                     {
                         data: ''
@@ -135,14 +203,7 @@
                     searchable: false,
                     render: function(data, type, full, meta) {
                         return (
-                            '<div class="d-inline-block">' +
-                            '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>' +
-                            '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-                            '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a></li>' +
-                            '</ul>' +
-                            '</div>'
+                            '<button type="button" onclick="setRide(' + full.id + ')" data-bs-toggle="modal" data-bs-target="#modalCenter" class="btn btn-success waves-effect waves-light">Assign</button>'
                         );
                     }
                 }],

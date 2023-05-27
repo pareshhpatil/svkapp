@@ -37,9 +37,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/roster/create', [App\Http\Controllers\RosterController::class, 'create']);
     Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
     Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
+    Route::any('/roster/assign', [App\Http\Controllers\RosterController::class, 'assign']);
 
-    Route::get('/ajax/roster/{project_id}/{date?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
+    Route::get('/ajax/roster/{project_id}/{date?}/{status?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
 
+    Route::any('/roster/assign/{ride_id}/{driver_id}/{cab_id}', [App\Http\Controllers\RosterController::class, 'assignCab']);
 });
 
 Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
