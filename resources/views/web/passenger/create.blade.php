@@ -6,7 +6,14 @@
 @section('content')
 <div class="row">
     <div class="col-lg-12">
-        <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> Create</h4>
+        <div class="row">
+            <div class="col-lg-6">
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> Create</h4>
+            </div>
+            <div class="col-lg-6 pull-right">
+                <a class="btn btn-primary waves-effect waves-light pull-right" href="/passenger/import">Import</a>
+            </div>
+        </div>
         <div class="card invoice-preview-card">
 
             <div class="card-body">
@@ -20,7 +27,7 @@
                     @csrf
                     <div class="col-lg-5">
                         <label for="defaultFormControlInput" class="form-label">Project</label>
-                        <select name="project_id" id="select2Basic"  class="select2 form-select form-select-lg input-sm" data-allow-clear="true">
+                        <select name="project_id" id="select2Basic" class="select2 form-select form-select-lg input-sm" data-allow-clear="true">
                             <option value=""></option>
                             @if(!empty($project_list))
                             @foreach($project_list as $v)
@@ -43,7 +50,7 @@
                                         <p class="mb-2 repeater-title">Gender</p>
                                         <select required name="gender" class="form-select  mb-3">
                                             <option selected value="">Select</option>
-                                            <option  value="Male">Male</option>
+                                            <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
                                         <p class="mb-2 repeater-title">Location</p>
@@ -72,8 +79,8 @@
                     </div>
                     <hr class="my-3 mx-n4">
                     <div class="row pb-4">
-                        <div class="col-12 pull-right" >
-                            <button type="submit"  class="btn btn-primary">Submit</button>
+                        <div class="col-12 pull-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>

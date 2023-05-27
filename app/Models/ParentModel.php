@@ -94,7 +94,7 @@ class ParentModel extends Model
         }
     }
 
-    public function getTableList($table, $where, $value)
+    public function getTableList($table, $where, $value, $array = 0)
     {
 
         $retObj = DB::table($table)
@@ -102,8 +102,12 @@ class ParentModel extends Model
             ->where('is_active', 1)
             ->where($where, $value)
             ->get();
+        if ($array == 1) {
+            return json_decode(json_encode($retObj), 1);
+        }
         return $retObj;
     }
+
     public function getTableListOrderby($table, $where, $value, $orderby)
     {
 
@@ -171,7 +175,7 @@ class ParentModel extends Model
             $array['created_by'] =  $user_id;
             $array['last_update_by'] =  $user_id;
         }
-        DB::table($table)->insertGetId(
+        return DB::table($table)->insertGetId(
             $array
         );
     }

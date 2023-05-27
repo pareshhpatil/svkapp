@@ -45,7 +45,7 @@ class User extends Authenticatable
     {
         $retObj = DB::table('users')
             ->select(DB::raw('*'))
-            ->where('mobile', $user_name)
+            ->where('user_name', $user_name)
             ->where('password', $password)
             ->where('is_active', 1)
             ->first();

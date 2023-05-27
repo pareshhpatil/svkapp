@@ -24,10 +24,22 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/passenger/create', [App\Http\Controllers\PassengerController::class, 'create']);
-    Route::get('/passenger/list', [App\Http\Controllers\PassengerController::class, 'list']);
+    Route::any('/passenger/list', [App\Http\Controllers\PassengerController::class, 'list']);
+    Route::any('/passenger/list/{bulk_id}/{type}', [App\Http\Controllers\PassengerController::class, 'list']);
+    Route::get('/passenger/import/format', [App\Http\Controllers\PassengerController::class, 'format']);
+    Route::get('/passenger/import', [App\Http\Controllers\PassengerController::class, 'import']);
+    Route::post('/passenger/importsave', [App\Http\Controllers\PassengerController::class, 'importsave']);
     Route::get('/project/list', [App\Http\Controllers\MasterController::class, 'projectList']);
     Route::post('/passenger/save', [App\Http\Controllers\PassengerController::class, 'save']);
-    Route::get('/ajax/passenger', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
+    Route::get('/ajax/passenger/{project_id}/{type}/{bulk_id}', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
+    Route::get('/passenger/import/{type}/{link}', [App\Http\Controllers\PassengerController::class, 'changeStatus']);
+
+    Route::get('/roster/create', [App\Http\Controllers\RosterController::class, 'create']);
+    Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
+    Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
+
+    Route::get('/ajax/roster/{project_id}/{date?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
+
 });
 
 Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);

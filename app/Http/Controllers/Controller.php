@@ -13,5 +13,35 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public $user_id = null;
-    
+
+
+    public function sqlDate($date, $format = 'Y-m-d')
+    {
+        return date($format, strtotime($date));
+    }
+    public function sqlTime($time)
+    {
+        return date('H:i:s', strtotime($time));
+    }
+    public function htmlTime($time)
+    {
+        if ($time != '') {
+            return date('H:i:A', strtotime($time));
+        }
+    }
+    public function htmlDate($time)
+    {
+        $w = substr(date("l", strtotime($time)), 0, 3);
+        if ($time != '') {
+            return $w . date(' d M Y', strtotime($time));
+        }
+    }
+
+    public function htmlDateTime($time)
+    {
+        $w = substr(date("l", strtotime($time)), 0, 3);
+        if ($time != '') {
+            return $w . date(' d M y H:i:A', strtotime($time));
+        }
+    }
 }

@@ -1,18 +1,22 @@
 @extends('layouts.web')
 @section('header')
 <link rel="stylesheet" href="/assets/vendor/libs/select2/select2.css" />
+<link rel="stylesheet" href="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+
 
 @endsection
 @section('content')
 <div class="row">
     <div class="col-lg-12">
-        <div class="row">
-            <div class="col-lg-8">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> List</h4>
-            </div>
-            @if($bulk_id==0)
-            <div class="col-lg-4 pull-right">
-                <form action="" id="frm" method="post">
+        <form action="" id="frm" method="post">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span> List</h4>
+                </div>
+                <div class="col-lg-4 pull-right">
+                    <input type="text" name="date" onchange="reloadDate(this.value)" required id="bs-datepicker-autoclose" placeholder="Select Date" class="form-control" />
+                </div>
+                <div class="col-lg-4 pull-right">
                     @csrf
                     <select name="project_id" id="select2Basic" onchange="reload(this.value)" class="select2 form-select input-sm" data-allow-clear="true">
                         <option value="0">All</option>
@@ -21,12 +25,12 @@
                         <option @if($project_id==$v->project_id) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
                         @endforeach
                         @endif
-
                     </select>
-                </form>
+
+                </div>
+
             </div>
-            @endif
-        </div>
+        </form>
         <div class="card invoice-preview-card">
 
             <div class="card-body">
@@ -37,12 +41,12 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Gender</th>
-                                <th>Email</th>
-                                <th>Mobile</th>
-                                <th>Location</th>
-                                <th>Address</th>
+                                <th>Project Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Start Location</th>
+                                <th>Total Passenger</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -60,14 +64,24 @@
 @section('footer')
 
 
+<script src="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+
 <script>
     var dt_basic;
     var project_id = 0;
+    var date = 'na';
 
     function reload(id) {
         project_id = id;
 
 
+        dt_basic.destroy();
+        datatable();
+    }
+
+    function reloadDate(id) {
+        date = id;
         dt_basic.destroy();
         datatable();
     }
@@ -87,27 +101,27 @@
         // --------------------------------------------------------------------
         if (dt_basic_table.length) {
             dt_basic = dt_basic_table.DataTable({
-                ajax: '/ajax/passenger/' + project_id + '/{{$bulk_id}}/{{$type}}',
+                ajax: '/ajax/roster/' + project_id + '/' + date + '',
                 columns: [{
                         data: 'id'
                     },
                     {
-                        data: 'employee_name'
+                        data: 'project_name'
                     },
                     {
-                        data: 'gender'
+                        data: 'type'
                     },
                     {
-                        data: 'email'
+                        data: 'date'
                     },
                     {
-                        data: 'mobile'
+                        data: 'start_location'
                     },
                     {
-                        data: 'location'
+                        data: 'total_passengers'
                     },
                     {
-                        data: 'address'
+                        data: 'status'
                     },
                     {
                         data: ''
@@ -141,6 +155,13 @@
         }
     }
 </script>
-
+<script>
+    $('#bs-datepicker-autoclose').datepicker({
+        todayHighlight: true,
+        autoclose: true,
+        format: 'dd MM yyyy',
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+</script>
 
 @endsection

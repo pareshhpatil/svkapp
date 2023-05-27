@@ -72,6 +72,7 @@ class LoginController extends Controller
         if ($role_id == 1) {
             $list = $model->getTableListOrderby('menu', 'is_active', 1, 'seq');
         }
+        
         $list = json_decode(json_encode($list), 1);
         $array = array();
         foreach ($list as $row) {
