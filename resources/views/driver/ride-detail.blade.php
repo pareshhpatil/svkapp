@@ -128,14 +128,15 @@
                         <div class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
 
-                            <span style="text-align: right;float: right;"><a :href="'https://www.google.com/maps/place/'+item.address" > <ion-icon class="navigate-icon" name="navigate-outline"></ion-icon>
-                            </a></span>
+                            
 
                                 <div class="dropdown">
                                     <button v-if="item.status==0 || item.status==5" v-on:click="setId(index)" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-success text-center dropdown-toggle">
                                         IN
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" style="">
+                                        <a v-if="item.status==0"  class="dropdown-item" :href="'https://www.google.com/maps/place/'+item.address">Navigate</a>
+                                        <div class="dropdown-divider"></div>
                                         <a v-if="item.status!=5" class="dropdown-item" v-on:click="reach(index);">Reached at Location</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" v-on:click="setId(index);" data-bs-target="#inmodal" data-bs-toggle="modal" href="#">Passenger Entry</a>
