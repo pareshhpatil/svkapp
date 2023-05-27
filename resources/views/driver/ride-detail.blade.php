@@ -135,7 +135,7 @@
                                         IN
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" style="">
-                                        <a v-if="item.status==0"  class="dropdown-item" :href="'https://www.google.com/maps/place/'+item.address">Navigate</a>
+                                        <a v-if="item.status==0"  class="dropdown-item" v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');" >Navigate</a>
                                         <div class="dropdown-divider"></div>
                                         <a v-if="item.status!=5" class="dropdown-item" v-on:click="reach(index);">Reached at Location</a>
                                         <div class="dropdown-divider"></div>
