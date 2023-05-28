@@ -112,7 +112,7 @@ class RosterController extends Controller
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
-        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned to you. Here are the details', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
+        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned for Bytedance', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
