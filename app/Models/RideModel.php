@@ -51,6 +51,7 @@ class RideModel extends ParentModel
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
             ->where('p.status', 1)
+            ->where('r.status','<', 3)
             ->where('p.passenger_id', $id)
             ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid'))
             ->first();
