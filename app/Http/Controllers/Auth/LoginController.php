@@ -110,7 +110,7 @@ class LoginController extends Controller
             }
 
 
-            if ($data != false) {
+            if ($data == false) {
                 $driver = $model->getTableRow('driver', 'mobile', $request->mobile, 1);
                 if ($driver != false) {
                     $array['user_type'] = 4;
