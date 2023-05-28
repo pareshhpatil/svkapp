@@ -295,10 +295,10 @@
         window.WTN.backgroundLocation.start({
             callback: false,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
-            timeout: 10,
+            timeout: 30,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
-            pauseAutomatically: true,
+            pauseAutomatically: false,
             distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
