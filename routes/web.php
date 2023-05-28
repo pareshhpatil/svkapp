@@ -61,6 +61,7 @@ Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'pas
 Route::post('/passenger/ride/cancel', [App\Http\Controllers\HomeController::class, 'rideCancel']);
 Route::post('/passenger/booking/cancel', [App\Http\Controllers\HomeController::class, 'bookingCancel']);
 Route::get('/passenger/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
+Route::get('/admin/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
