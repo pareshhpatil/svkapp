@@ -155,7 +155,7 @@
             <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
                 <!-- Balance -->
                 <!-- Wallet Footer -->
-                <div v-if="data.ride_passenger.status==2" class="wallet-footer mt-1" style="    padding: 10px;">
+                <div v-if="data.ride_passenger.status==2" class="wallet-footer mt-1" style="    padding: 10px;border: none;">
                     <div class="full-star-ratings jq-ry-container" data-rateyo-full-star="true">
                         <div class="jq-ry-group-wrapper">
                             <div class="jq-ry-rated-group jq-ry-group" style="width: 100%;">
