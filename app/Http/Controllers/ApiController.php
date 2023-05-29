@@ -129,6 +129,7 @@ class ApiController extends Controller
             }
             $array['notification']['content_available'] = true;
             $array['notification']['priority'] = "normal";
+            $array['notification']['sound'] = "default";
             if ($url != '') {
                 $array['notification']['link'] = $url;
             }
