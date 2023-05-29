@@ -243,7 +243,7 @@ class HomeController extends Controller
         $data['type'] = $type;
         if (Session::get('user_type') == 5) {
             $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
-            $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id'), 0), 1);
+            $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id'), 0), 0);
             $data['data']['past'] = $this->EncryptList($this->model->passengerPastRides(Session::get('parent_id')));
             $data['data']['booking'] = $this->EncryptList($this->model->passengerBookingRides(Session::get('parent_id')), 0, '/passenger/booking/', 'id');
         } else if (Session::get('user_type') == 4) {

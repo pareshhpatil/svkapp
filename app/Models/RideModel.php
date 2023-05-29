@@ -42,7 +42,7 @@ class RideModel extends ParentModel
         return json_decode(json_encode($array), 1);
     }
 
-    public function passengerLiveRide($id)
+    public function passengerLiveRide($id, $single = 1)
     {
         $retObj = DB::table('ride_passenger as p')
             ->join('ride as r', 'r.id', '=', 'p.ride_id')
@@ -50,12 +50,16 @@ class RideModel extends ParentModel
             ->leftJoin('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
-            ->where('p.status','<', 2)
+            ->where('p.status', '<', 2)
             ->where('r.status', '<', 3)
             ->where('p.passenger_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid'))
-            ->first();
-        return json_decode(json_encode($retObj), 1);
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid'));
+        if ($single == 1) {
+            $array = $retObj->first();
+        } else {
+            $array = $retObj->get();
+        }
+        return json_decode(json_encode($array), 1);
     }
 
 
