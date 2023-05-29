@@ -176,7 +176,7 @@ class RideModel extends ParentModel
     public function getRidePassenger($ride_id)
     {
         $retObj = DB::table('ride_passenger as p')
-            ->join('passenger as pr', 'pr.id', '=', 'r.passenger_id')
+            ->join('passenger as pr', 'pr.id', '=', 'p.passenger_id')
             ->leftJoin('users as r', 'r.parent_id', '=', 'p.passenger_id')
             ->where('r.user_type', 5)
             ->where('p.is_active', 1)
