@@ -111,6 +111,7 @@ class ApiController extends Controller
             $array['registration_ids'] = array($token);
             $array['notification']['body'] = $body;
             $array['notification']['title'] = $title;
+            $array['notification']['sound'] = "default";
             if ($image != '') {
                 $array['notification']['image'] = $image;
             }
