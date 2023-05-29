@@ -357,7 +357,11 @@ class HomeController extends Controller
             $file_name = time() . rand(1, 999) . '.' . $request->file->extension();
             $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
             $path = '/storage/' . $file_path;
-            $img = Image::make('storage/uploads/' . $file_name)->resize(100,100);
+            if (Session::get('user_type') == 4) {
+                $img = Image::make('storage/uploads/' . $file_name)->resize(120, 120);
+            } else {
+                $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
+            }
             $compress = 'storage/uploads/compres-' . $file_name;
             $img->save($compress);
             $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
