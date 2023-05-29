@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="right">
-                            <a onclick="window.open('tel:{{$live_ride['mobile']}}');" href="#" > <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated text-danger" aria-label="call outline"></ion-icon></a>
+                            <div onclick="window.open('tel:{{$live_ride['mobile']}}');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated" aria-label="call outline"></ion-icon></div>
                         </div>
                     </a>
                 </div>
