@@ -358,7 +358,7 @@ class HomeController extends Controller
             $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
             $path = '/storage/' . $file_path;
             if (Session::get('user_type') == 4) {
-                $img = Image::make('storage/uploads/' . $file_name)->resize(120, 120);
+                $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
             } else {
                 $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
             }
