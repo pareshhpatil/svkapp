@@ -231,7 +231,7 @@
                     <div class="modal-footer">
                         <div class="btn-inline">
                             <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                            <button type="button" v-on:click="noshow()" class="btn btn-primary bg-red">NO SHOW</button>
+                            <button type="button" v-on:click="noshow()" data-bs-dismiss="modal" class="btn btn-primary bg-red">NO SHOW</button>
                         </div>
                     </div>
                 </div>
