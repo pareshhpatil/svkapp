@@ -12,6 +12,7 @@
                         <span class="button" class="custom-file-upload" onclick="document.getElementById('fileuploadInput').click();">
                             <ion-icon name="camera-outline"></ion-icon>
                         </span>
+                        <div class="text-info" id="loder" role="status"></div>
                     </a>
 
                 </div>
@@ -91,9 +92,9 @@
                     @csrf
                 </form>
             </li>
-			
+
         </ul>
-		
+
 
 
 
@@ -109,35 +110,34 @@
 
 
 <script>
-
-function start()
-{
-	window.WTN.backgroundLocation.start({
- callback:false,
- apiUrl:"https://app.svktrv.in/app/ping",
- timeout:10,
- data:"userid1",
- backgroundIndicator:true,
- pauseAutomatically: true,
- distanceFilter: 0.0,
- desiredAccuracy: "best",
- activityType: "other",
-});
-}
-
-function stop()
-{
-	window.WTN.backgroundLocation.stop();
-}
-
-const { Messaging: FirebaseMessaging } = window.WTN.Firebase
-
-FirebaseMessaging.getFCMToken({
-    callback:function(data){
-        document.getElementById('token').innerHTML= data.token;
-        //store it in your backend to send notification
+    function start() {
+        window.WTN.backgroundLocation.start({
+            callback: false,
+            apiUrl: "https://app.svktrv.in/app/ping",
+            timeout: 10,
+            data: "userid1",
+            backgroundIndicator: true,
+            pauseAutomatically: true,
+            distanceFilter: 0.0,
+            desiredAccuracy: "best",
+            activityType: "other",
+        });
     }
-})
+
+    function stop() {
+        window.WTN.backgroundLocation.stop();
+    }
+
+    const {
+        Messaging: FirebaseMessaging
+    } = window.WTN.Firebase
+
+    FirebaseMessaging.getFCMToken({
+        callback: function(data) {
+            document.getElementById('token').innerHTML = data.token;
+            //store it in your backend to send notification
+        }
+    })
 
     new Vue({
         el: '#app',
@@ -171,6 +171,7 @@ FirebaseMessaging.getFCMToken({
                 this.formSubmit();
             },
             formSubmit(e) {
+                lo(true);
                 let currentObj = this;
 
                 const config = {
@@ -185,16 +186,16 @@ FirebaseMessaging.getFCMToken({
                 axios.post('/upload/file/image', formData, config)
                     .then(function(response) {
                         currentObj.data.icon = response.data.image;
+                        lo(false);
                     })
                     .catch(function(error) {
                         currentObj.output = error;
+                        lo(false);
                     });
             }
         }
 
 
     })
-	
-	
 </script>
 @endsection
