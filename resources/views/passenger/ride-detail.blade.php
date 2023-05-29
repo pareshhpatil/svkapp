@@ -145,7 +145,7 @@
                         </div>
                         <div class="arrow"></div>
                     </div>
-                    <h2 v-if="data.ride_passenger.otp" class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
+                    <h2 v-if="data.ride_passenger.otp && data.ride_passenger.status!=2" class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
                 </div>
 
             </div>
@@ -155,9 +155,30 @@
             <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
                 <!-- Balance -->
                 <!-- Wallet Footer -->
-                <div class="wallet-footer">
+                <div v-if="data.ride_passenger.status==2" class="wallet-footer mt-1" style="    padding: 10px;">
+                    <div class="full-star-ratings jq-ry-container" data-rateyo-full-star="true">
+                        <div class="jq-ry-group-wrapper">
+                            <div class="jq-ry-rated-group jq-ry-group" style="width: 100%;">
+                                <div class="row" style="padding: 10px;">
+                                    <p>Review</p>
+                                    <div v-for="count in 5" class="col">
+                                        <svg v-on:click="rating(count)" v-if="count<=data.ride_passenger.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" xml:space="preserve" width="30px" height="30px" fill="#e8481e">
+                                            <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                            </polygon>
+                                        </svg>
+                                        <svg v-on:click="rating(count)" v-if="count>data.ride_passenger.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" xml:space="preserve" width="30px" height="30px" fill="#dbdade">
+                                            <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                            </polygon>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="data.ride_passenger.status!=2" class="wallet-footer">
                     <div v-if="data.ride.status==2" class="item mb-1">
-                        <a href="{{$data['link']}}/track" >
+                        <a href="{{$data['link']}}/track">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="location-outline"></ion-icon>
                             </div>
@@ -243,7 +264,7 @@
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
                     </h4>
-                    
+
                     <div class="text" v-html="data.project.location"></div>
                 </div>
             </div>
@@ -282,7 +303,7 @@
             </div>
         </div>
 
-        
+
         <div class="modal fade modalbox  dialogbox" id="sosmodel" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -403,14 +424,27 @@
             </div>
         </div>
 
-
+        <div id="toast-11" class="toast-box toast-center">
+            <div class="in">
+                <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
+                <div class="text">
+                    Thank you for Review
+                </div>
+            </div>
+            <button type="button" onclick="closeT();" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
+        </div>
     </div>
 
 </div>
 @endsection
 
 @section('footer')
+
+
 <script>
+    function closeT() {
+        document.getElementById('toast-11').classList.remove("show");
+    }
     new Vue({
         el: '#app',
         data() {
@@ -422,7 +456,12 @@
             this.data = JSON.parse('{!!json_encode($data)!!}');
         },
         methods: {
-
+            rating(rating) {
+                this.data.ride_passenger.rating = rating;
+                id = this.data.ride_passenger.id;
+                axios.get('/passenger/ride/rating/' + id + '/' + rating);
+                toastbox('toast-11');
+            }
         }
     })
 </script>

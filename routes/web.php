@@ -63,6 +63,7 @@ Route::post('/passenger/booking/cancel', [App\Http\Controllers\HomeController::c
 Route::get('/passenger/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/admin/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
+Route::get('/passenger/ride/rating/{ride_id}/{rating}', [App\Http\Controllers\TripController::class, 'rating']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

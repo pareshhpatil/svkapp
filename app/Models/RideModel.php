@@ -145,7 +145,7 @@ class RideModel extends ParentModel
             ->where('p.passenger_id', $id)
             ->orderBy('p.id', 'desc')
 
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time, p.id as pid'))
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time, p.id as pid,p.rating'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

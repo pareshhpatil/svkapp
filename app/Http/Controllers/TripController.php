@@ -40,4 +40,8 @@ class TripController extends Controller
         $array = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_id, 'live_location');
         return $array;
     }
+    public function rating($id, $rating)
+    {
+        $array = $this->model->updateTable('ride_passenger', 'id', $id, 'rating', $rating);
+    }
 }
