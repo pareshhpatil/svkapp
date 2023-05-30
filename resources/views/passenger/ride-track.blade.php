@@ -312,16 +312,8 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     lat = 0;
     lat_long = 0;
     @if(isset($live_location['latitude']))
-    lat = {
-        {
-            $live_location['latitude']
-        }
-    };
-    lat_long = {
-        {
-            $live_location['longitude']
-        }
-    };
+    lat = {{$live_location['latitude']}};
+    lat_long = {{$live_location['longitude']}};
     @endif
     //speed = loc_array.speed;
 
