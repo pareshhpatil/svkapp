@@ -50,6 +50,9 @@ Route::get('/contact-us', function () {
 Route::get('/thank-you', function () {
     return view('guest.thankyou');
 });
+Route::get('/demo', function () {
+    return view('guest.demo');
+});
 
 Route::get('/blogs', [App\Http\Controllers\HomeController::class, 'blogs']);
 Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
