@@ -99,7 +99,7 @@
 
         <div v-if="data.ride_passenger.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
-                <div class="pageTitle">Ride has been cancelled</div>
+                <div class="pageTitle" v-html="rcmsg"></div>
             </div>
             <div class="mt-2">
                 &nbsp;
@@ -507,10 +507,12 @@
         data() {
             return {
                 data: [],
+                rcmsg: ''
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
+            this.rcmsg = 'Ride has been cancelled';
         },
         methods: {
             rating(rating) {
