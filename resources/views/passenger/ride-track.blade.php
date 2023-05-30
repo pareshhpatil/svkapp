@@ -33,7 +33,7 @@
     }
 
     #map-canvas {
-        height: 600px;
+        height: 630px;
         width: 100%;
     }
 
