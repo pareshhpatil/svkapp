@@ -57,7 +57,7 @@
                     <a :href="data.upcoming.link" class="item">
                         <div class="detail">
                             <img v-if="data.upcoming.photo" :src="data.upcoming.photo" class="img-circle imaged w48" style="margin-right: 10px;">
-                            <img v-if="!data.upcoming.photo" class="img-circle imaged w48"  src="/assets/img/driver.png?v-1" style="margin-right: 10px;">
+                            <img v-if="!data.upcoming.photo" class="img-circle imaged w48" src="/assets/img/driver.png?v-1" style="margin-right: 10px;">
                             <div>
                                 <strong v-html="data.upcoming.pickup_time"></strong>
                                 <p><span v-html="data.upcoming.pickup_location"></span> - <span v-html="data.upcoming.drop_location"></span></p>
@@ -83,7 +83,7 @@
                     <!-- item -->
                     <a href="{{$live_ride['link']}}" class="item">
                         <div class="detail">
-                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle"  style="margin-right: 10px;">
+                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle" style="margin-right: 10px;">
                             <div>
                                 <strong>{{$live_ride['driver_name']}}</strong>
                                 <strong class="text-primary">OTP: {{$live_ride['otp']}} </strong>
@@ -176,6 +176,72 @@
             </div>
         </div>
         @endif
+
+
+
+        @if(!empty($last_ride))
+        @php
+        $photo=($last_ride['photo']!='')? $last_ride['photo'] : '/assets/img/driver.png';
+        @endphp
+        <div class="mt-2">
+            <div class="section">
+                <div class="transactions">
+                    <!-- item -->
+                    <a href="{{$last_ride['link']}}" class="item">
+                        <div class="detail">
+                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle" style="margin-right: 10px;">
+                            <div>
+                                <strong>{{$last_ride['driver_name']}}</strong>
+                                <p>{{$last_ride['number']}}</p>
+                            </div>
+                        </div>
+                        
+                    </a>
+                </div>
+                <div class=" ">
+                    <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
+                        <!-- Balance -->
+                        <!-- Wallet Footer -->
+                        <div class="wallet-footer mt-1" style="    padding: 10px;border: none;">
+                            <div class="full-star-ratings jq-ry-container" data-rateyo-full-star="true">
+                                <div class="jq-ry-group-wrapper">
+                                    <div class="jq-ry-rated-group jq-ry-group" style="width: 100%;">
+                                        <div class="row" style="padding: 10px;">
+                                            <p>Give rating for last ride</p>
+                                            <div v-for="count in 5" class="col">
+                                                <svg v-on:click="rating(count,'{{$last_ride['pid']}}')" v-if="count<=current_rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" xml:space="preserve" width="30px" height="30px" fill="#e8481e">
+                                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                                    </polygon>
+                                                </svg>
+                                                <svg v-on:click="rating(count,'{{$last_ride['pid']}}')" v-if="count>current_rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" xml:space="preserve" width="30px" height="30px" fill="#dbdade">
+                                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                                    </polygon>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- * Wallet Footer -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="toast-11" class="toast-box toast-center">
+            <div class="in">
+                <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
+                <div class="text">
+                    Thank you for Review
+                </div>
+            </div>
+            <a type="button" href="/dashboard" class="btn btn-sm  btn-text-light bg-red">CLOSE</a>
+        </div>
+
+
+
+
+        @endif
         <!-- * Stats -->
 
         <!-- Transactions -->
@@ -223,13 +289,18 @@
         data() {
             return {
                 data: [],
+                current_rating: 0
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
         },
         methods: {
-
+            rating(rating, id) {
+                this.current_rating = rating;
+                axios.get('/passenger/ride/rating/' + id + '/' + rating);
+                toastbox('toast-11');
+            }
         }
     })
 </script>
