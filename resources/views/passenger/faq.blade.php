@@ -6,7 +6,7 @@
   <div class="section mt-2 text-center">
     <div class="card">
       <div class="card-body pt-3 pb-3">
-        <img src="assets/img/faq.png" alt="image" class="imaged w-50 ">
+        <img src="assets/img/faq.png?v=2" alt="image" class="imaged w-50 ">
         <h2 class="mt-2">Frequently Asked <br> Questions</h2>
       </div>
     </div>
