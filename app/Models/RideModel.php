@@ -33,7 +33,7 @@ class RideModel extends ParentModel
             ->where('p.status', 0)
             ->whereDate('r.date', '>=', date('Y-m-d'))
             ->where('p.passenger_id', $id)
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time , p.id as pid'));
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time ,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo'));
         if ($single == 1) {
             $array = $retObj->first();
         } else {
@@ -52,6 +52,7 @@ class RideModel extends ParentModel
             ->where('r.is_active', 1)
             ->where('p.status', '<', 2)
             ->where('r.status', '<', 3)
+            ->where('r.status', '>', 1)
             ->where('p.passenger_id', $id)
             ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo'));
         if ($single == 1) {
@@ -156,7 +157,7 @@ class RideModel extends ParentModel
             ->where('p.passenger_id', $id)
             ->orderBy('p.id', 'desc')
 
-            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time, p.id as pid,p.rating'))
+            ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,p.rating'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }
