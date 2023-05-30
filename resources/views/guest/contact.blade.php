@@ -59,7 +59,7 @@
           <div class="text-center">
             <h2 class="text-primary">Our Contact</h2>
             <p class="card-text">
-              contact@siddhivinayaktravelshouse.in<br>
+              contact@ridetrack.in<br>
               Mobile: 9730946150
             </p>
           </div>
@@ -75,21 +75,16 @@
           <div class="text-center">
             <h2 class="text-primary mb-2">Social Profiles</h2>
 
-            <a href="https://www.facebook.com/SiddhivinayakTravelsHouse" target="_blank" class="btn btn-facebook btn-icon me-05">
+            <a href="https://www.facebook.com/RideTrack" target="_blank" class="btn btn-facebook btn-icon me-05">
               <ion-icon name="logo-facebook"></ion-icon>
             </a>
 
-            <a href="https://www.linkedin.com/company/siddhivinayak-travels-house/" target="_blank" class="btn btn-linkedin btn-icon me-05">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-
+          
             <a href="https://api.whatsapp.com/send?phone=9730946150&text=Message from booking app" class="btn btn-whatsapp btn-icon me-05">
               <ion-icon name="logo-whatsapp"></ion-icon>
             </a>
 
-            <a href="https://www.instagram.com/svktrv/" target="_blank" class="btn btn-instagram btn-icon me-05">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
+          
 
             
           </div>
