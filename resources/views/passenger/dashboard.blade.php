@@ -56,8 +56,8 @@
                 <div class="transactions">
                     <a :href="data.upcoming.link" class="item">
                         <div class="detail">
-                            <img v-if="data.driver.photo" :src="data.driver.photo" class="img-circle w48" >
-                            <img v-if="!data.driver.photo" class="img-circle w48e"  src="/assets/img/driver.png?v-1">
+                            <img v-if="data.upcoming.photo" :src="data.driver.photo" class="img-circle imaged w48" >
+                            <img v-if="!data.upcoming.photo" class="img-circle imaged w48"  src="/assets/img/driver.png?v-1">
                             <div>
                                 <strong v-html="data.upcoming.pickup_time"></strong>
                                 <p><span v-html="data.upcoming.pickup_location"></span> - <span v-html="data.upcoming.drop_location"></span></p>
