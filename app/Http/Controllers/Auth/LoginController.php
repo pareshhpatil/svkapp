@@ -187,7 +187,7 @@ class LoginController extends Controller
                 $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
             }
             Session::put('icon', $user->icon);
-            return redirect('/dashboard');
+            return redirect('/demo');
         } else {
             return back()->withErrors([
                 'otp' => 'Invalid OTP please try again',
