@@ -112,7 +112,7 @@ $photo=($data['driver']['photo']!='')? $data['driver']['photo'] : '/assets/img/d
 $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets/img/map-female.png' : 'https://app.svktrv.in/assets/img/map-male.png';
 @endphp
 <div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
-    <div class="modal-dialog" role="document" style="bottom: 60px;">
+    <div class="modal-dialog" role="document" style="bottom: 0px;">
         <div class="modal-content">
 
             <div class="modal-body">
