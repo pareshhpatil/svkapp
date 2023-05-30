@@ -114,7 +114,7 @@
             <div class="modal-body">
                 <div class="transactions">
                     <!-- item -->
-                    <a href="app-transaction-detail.html" class="item">
+                    <a href="#" class="item">
                         <div class="detail">
                             <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
                             <div>

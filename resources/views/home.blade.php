@@ -9,7 +9,7 @@
             <div class="card-body">
               <!-- Logo -->
               <div class="app-brand justify-content-center mb-4 mt-2">
-                <a href="index.html" class="app-brand-link gap-2">
+                <a href="/dashboard" class="app-brand-link gap-2">
                 <img src="/assets/img/svk/logo2.png" style="max-width: 100%;">           
                   
                 </a>

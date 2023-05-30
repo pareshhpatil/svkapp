@@ -166,7 +166,7 @@
                                                 <span class="dropdown-shortcuts-icon rounded-circle mb-2">
                                                     <i class="ti ti-file-invoice fs-4"></i>
                                                 </span>
-                                                <a href="app-invoice-list.html" class="stretched-link">Invoice App</a>
+                                                <a href="#" class="stretched-link">Invoice App</a>
                                                 <small class="text-muted mb-0">Manage Accounts</small>
                                             </div>
                                         </div>
@@ -229,7 +229,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                                        <a class="dropdown-item" href="#">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">

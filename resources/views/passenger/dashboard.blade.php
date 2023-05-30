@@ -56,7 +56,8 @@
                 <div class="transactions">
                     <a :href="data.upcoming.link" class="item">
                         <div class="detail">
-                            <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
+                            <img v-if="data.driver.photo" :src="data.driver.photo" class="img-circle w48" >
+                            <img v-if="!data.driver.photo" class="img-circle w48e"  src="/assets/img/driver.png?v-1">
                             <div>
                                 <strong v-html="data.upcoming.pickup_time"></strong>
                                 <p><span v-html="data.upcoming.pickup_location"></span> - <span v-html="data.upcoming.drop_location"></span></p>
@@ -80,7 +81,7 @@
             <div class="section">
                 <div class="transactions">
                     <!-- item -->
-                    <a href="app-transaction-detail.html" class="item">
+                    <a href="{{$live_ride['link']}}" class="item">
                         <div class="detail">
                             <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle">
                             <div>

@@ -107,6 +107,9 @@
     </div>
 
 </div>
+@php
+$photo=($data['driver']['photo']!='')? $data['driver']['photo'] : '/assets/img/driver.png';
+@endphp
 <div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
     <div class="modal-dialog" role="document" style="bottom: 60px;">
         <div class="modal-content">
@@ -114,9 +117,9 @@
             <div class="modal-body">
                 <div class="transactions">
                     <!-- item -->
-                    <a href="app-transaction-detail.html" class="item">
+                    <a href="#" class="item">
                         <div class="detail">
-                            <img src="/assets/img/driver.png?v-1" alt="img" class="image-block imaged w48 img-circle">
+                            <img src="{{$photo" alt="img" class="image-block imaged w48 img-circle">
                             <div>
                                 <strong>{{$data['driver']['name']}}</strong>
                                 <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
