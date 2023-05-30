@@ -109,7 +109,7 @@
 </div>
 @php
 $photo=($data['driver']['photo']!='')? $data['driver']['photo'] : '/assets/img/driver.png';
-$user_photo=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets/img/map-female.png' : 'https://app.svktrv.in/assets/img/map-male.png';
+$user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets/img/map-female.png' : 'https://app.svktrv.in/assets/img/map-male.png';
 @endphp
 <div class="modal fade action-sheet show" id="actionSheet" tabindex="-1" role="dialog" aria-modal="true" style="display: block;top: inherit;">
     <div class="modal-dialog" role="document" style="bottom: 60px;">
@@ -192,7 +192,6 @@ $user_photo=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/asset
                         </div>
                     </div>
                 </div>
-                {{dd($data['passenger'])}}
                 <div class="modal-footer">
                     <div class="btn-inline">
                         <input type="hidden" :value="{{$data['ride_passenger']['id']}}" name="ride_passenger_id">
