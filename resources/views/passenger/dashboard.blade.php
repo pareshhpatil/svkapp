@@ -56,7 +56,7 @@
                 <div class="transactions">
                     <a :href="data.upcoming.link" class="item">
                         <div class="detail">
-                            <img v-if="data.upcoming.photo" :src="data.driver.photo" class="img-circle imaged w48" style="margin-right: 10px;">
+                            <img v-if="data.upcoming.photo" :src="data.upcoming.photo" class="img-circle imaged w48" style="margin-right: 10px;">
                             <img v-if="!data.upcoming.photo" class="img-circle imaged w48"  src="/assets/img/driver.png?v-1" style="margin-right: 10px;">
                             <div>
                                 <strong v-html="data.upcoming.pickup_time"></strong>
