@@ -116,7 +116,7 @@ class ApiController extends Controller
     }
 
 
-    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = '')
+    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png')
     {
         $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
         if ($token != '') {
@@ -124,6 +124,7 @@ class ApiController extends Controller
             $array['registration_ids'] = array($token);
             $array['notification']['body'] = $body;
             $array['notification']['title'] = $title;
+            $array['notification']['sound'] = "default";
             if ($image != '') {
                 $array['notification']['image'] = $image;
             }

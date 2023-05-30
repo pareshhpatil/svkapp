@@ -5,8 +5,14 @@
 
         @if(Session::get('user_type')==3)
         <li class="nav-item">
+            <a class="nav-link @if($type=='booking') active @endif" id="tab-pending" data-bs-toggle="tab" href="#pending" role="tab">
+                <ion-icon name="reader-outline"></ion-icon>
+                Pen
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link @if($type=='booking') active @endif" id="tab-booking" data-bs-toggle="tab" href="#live" role="tab">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="speedometer-outline"></ion-icon>
                 Live
             </a>
         </li>
@@ -57,6 +63,35 @@
                     <h3 class="text-center">No live rides</h3>
                     <p class="text-center">Time to book your next ride </p>
                 </div>
+            </div>
+        </div>
+        <div class="tab-pane fade @if($type=='pending') active show @endif  " id="pending" role="tabpanel">
+            <div class="appHeader" style="    top: auto;    margin-top: -10px;position: relative;border-radius: 10px;">
+                <div class="left">
+                    <a href="#" v-on:click="fetchDate(0)" class="headerButton">
+                        <ion-icon name="chevron-back-outline" role="img" class="md hydrated" aria-label="chevron back outline"></ion-icon>
+                    </a>
+                </div>
+                <div class="pageTitle" v-html="current_date">
+                </div>
+                <div class="right">
+                    <a v-on:click="fetchDate(1)" href="#" class="headerButton">
+                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
+                    </a>
+                </div>
+            </div>
+            <div class="transactions mt-2">
+                <a v-if="data.pending.length && item.date==current_date" v-for="item in data.pending" :href="item.link" class="item">
+                    <div class="detail">
+                        <div>
+                            <strong v-html="item.pickup_time"></strong>
+                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
+                    </div>
+                </a>
             </div>
         </div>
         @endif
@@ -121,16 +156,16 @@
                                 <div class="jq-ry-group-wrapper">
                                     <div class="jq-ry-rated-group jq-ry-group" style="width: 80%;">
                                         <span v-for="count in 5">
-                                        <svg v-if="count<=item.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="15px" height="15px" fill="#e8481e">
-                                            <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
-                                            </polygon>
-                                        </svg>
-                                        <svg v-if="count>item.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="15px" height="15px" fill="#dbdade">
-                                            <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
-                                            </polygon>
-                                        </svg>
+                                            <svg v-if="count<=item.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="15px" height="15px" fill="#e8481e">
+                                                <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                                </polygon>
+                                            </svg>
+                                            <svg v-if="count>item.rating" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="15px" height="15px" fill="#dbdade">
+                                                <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 ">
+                                                </polygon>
+                                            </svg>
                                         </span>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -222,16 +257,19 @@
         data() {
             return {
                 data: [],
-                cancel_booking_id: 0
+                cancel_booking_id: 0,
+                current_date: '{{$current_date}}'
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
         },
         methods: {
-            acancel(id) {
-                alert(id);
-                //  document.getElementById('cancel_booking_id').value = id;
+            async  fetchDate(type) {
+                // var date = '';
+                let res = await axios.get('/date/fetch/' + this.current_date + '/' + type);
+                this.current_date=res.data;
+
             }
         }
     })

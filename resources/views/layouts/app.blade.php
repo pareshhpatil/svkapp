@@ -141,6 +141,28 @@
 
                     <div class="listview-title mt-1">Menu</div>
                     <ul class="listview flush transparent no-line image-listview">
+                        @if(Session::get('user_type')==3)
+                        <li>
+                            <a href="/master/add/driver" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="person-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Add Driver
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/master/add/vehicle" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="car-sport-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Add Vehicle
+                                </div>
+                            </a>
+                        </li>
+                        @endif
                         <li>
                             <a href="/settings" class="item">
                                 <div class="icon-box bg-primary">
@@ -174,7 +196,7 @@
                         <li>
                             <a href="/calendar" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="apps-outline" role="img" class="md hydrated" aria-label="apps outline"></ion-icon>
+                                    <ion-icon name="calendar-number-outline"></ion-icon>
                                 </div>
                                 <div class="in">
                                     Calendar

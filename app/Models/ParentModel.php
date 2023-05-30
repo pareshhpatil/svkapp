@@ -133,11 +133,18 @@ class ParentModel extends Model
         }
     }
 
-    public function getTableList($table, $where, $value)
+    public function updateArray($table, $where, $whvalue, $array)
+    {
+        DB::table($table)
+            ->where($where, $whvalue)
+            ->update($array);
+    }
+
+    public function getTableList($table, $where, $value,$col='*')
     {
 
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
+            ->select(DB::raw($col))
             ->where('is_active', 1)
             ->where($where, $value)
             ->get();

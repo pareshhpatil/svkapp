@@ -64,6 +64,7 @@ Route::get('/passenger/ride/{link}/track', [App\Http\Controllers\HomeController:
 Route::get('/admin/ride/{link}/track', [App\Http\Controllers\HomeController::class, 'rideTrack']);
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
 Route::get('/passenger/ride/rating/{ride_id}/{rating}', [App\Http\Controllers\TripController::class, 'rating']);
+Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::class, 'dateFetch']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
@@ -75,11 +76,19 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
     Route::get('/setting/update/{col}/{val}', [App\Http\Controllers\HomeController::class, 'updateSetting']);
     Route::post('/upload/file/{type}', [App\Http\Controllers\HomeController::class, 'uploadFile']);
+
     Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
 
     Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
     Route::get('/admin/ride/{link}', [App\Http\Controllers\HomeController::class, 'adminRideDetail']);
+    Route::get('/admin/ride/assign/{link}', [App\Http\Controllers\HomeController::class, 'adminRideAssign']);
+
+    Route::post('/admin/assign/cab', [App\Http\Controllers\TripController::class, 'assignCab']);
+
+    Route::get('/master/add/{type}', [App\Http\Controllers\MasterController::class, 'masterAdd']);
+    Route::post('/master/save/{type}', [App\Http\Controllers\MasterController::class, 'masterSave']);
+
 
     Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);

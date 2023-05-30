@@ -102,6 +102,17 @@ class RideModel extends ParentModel
         return json_decode(json_encode($array), 1);
     }
 
+    public function adminPendingRides()
+    {
+        $retObj = DB::table('ride as r')
+            ->where('r.is_active', 1)
+            ->where('r.status', 0)
+            ->whereDate('r.date', '>=', date('Y-m-d'));
+        $retObj->select(DB::raw('*,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(date, "%a %d %b %Y") as date, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
+
     public function driverPastRides($id)
     {
         $retObj = DB::table('ride as r')

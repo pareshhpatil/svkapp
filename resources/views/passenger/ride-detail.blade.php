@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <style>
     .timeline:before {
         bottom: 60px;
@@ -36,13 +38,65 @@
 
     <div id="app" class="section ">
         <div v-if="!data.driver.name">
+            @if(Session::get('user_type')!=3)
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Cab not assigned yet</div>
             </div>
             <div class="mt-2">
                 &nbsp;
             </div>
+            @else
+            @if(empty($data['driver']))
+            @if($title=='Assign cab')
+            <div class="section mt-2 mb-2">
+                <div class="section-title">Assign Cab</div>
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/admin/assign/cab" method="post">
+                            @csrf
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="text4b">Select Driver</label>
+                                    <select name="driver_id" class="form-control custom-select select2">
+                                        <option value="">Select..</option>
+                                        @if(!empty($driver_list))
+                                        @foreach($driver_list as $v)
+                                        <option value="{{$v->id}}">{{$v->name}} - {{$v->location}}</option>
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="email4b">Select Vehicle</label>
+                                    <select name="vehicle_id" class="form-control custom-select select2">
+                                        <option value="">Select..</option>
+                                        @if(!empty($vehicle_list))
+                                        @foreach($vehicle_list as $v)
+                                        <option value="{{$v->vehicle_id}}">{{$v->number}}</option>
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group boxed">
+                                <input type="hidden" name="ride_id" value="{{$ride_id}}">
+                                <button type="submit" class="btn btn-primary btn-block ">Submit</button>
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            @endif
+            @endif
+            @endif
         </div>
+
         <div v-if="data.ride_passenger.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Ride has been cancelled</div>
@@ -210,6 +264,7 @@
                             <strong>SOS</strong>
                         </a>
                     </div>
+
                     @endif
                     <div class="item">
                         <a href="whatsapp://send?text=Hey, Please track my ride {{$data['link']}}" data-action="share/whatsapp/share" id="shareBtn">
@@ -439,6 +494,8 @@
 @endsection
 
 @section('footer')
+<script src="https://admin.ridetrack.in/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 <script>
@@ -464,6 +521,11 @@
             }
         }
     })
+
+
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
 </script>
 
 
