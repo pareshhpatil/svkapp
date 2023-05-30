@@ -56,8 +56,8 @@
                 <div class="transactions">
                     <a :href="data.upcoming.link" class="item">
                         <div class="detail">
-                            <img v-if="data.upcoming.photo" :src="data.driver.photo" class="img-circle imaged w48" >
-                            <img v-if="!data.upcoming.photo" class="img-circle imaged w48"  src="/assets/img/driver.png?v-1">
+                            <img v-if="data.upcoming.photo" :src="data.driver.photo" class="img-circle imaged w48" style="margin-right: 10px;">
+                            <img v-if="!data.upcoming.photo" class="img-circle imaged w48"  src="/assets/img/driver.png?v-1" style="margin-right: 10px;">
                             <div>
                                 <strong v-html="data.upcoming.pickup_time"></strong>
                                 <p><span v-html="data.upcoming.pickup_location"></span> - <span v-html="data.upcoming.drop_location"></span></p>
@@ -83,7 +83,7 @@
                     <!-- item -->
                     <a href="{{$live_ride['link']}}" class="item">
                         <div class="detail">
-                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle">
+                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle"  style="margin-right: 10px;">
                             <div>
                                 <strong>{{$live_ride['driver_name']}}</strong>
                                 <strong class="text-primary">OTP: {{$live_ride['otp']}} </strong>
