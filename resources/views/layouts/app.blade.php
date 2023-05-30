@@ -194,6 +194,16 @@
                             </a>
                         </li>
                         <li>
+                            <a href="/faq" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="help-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    FAQ
+                                </div>
+                            </a>
+                        </li>
+                        <li>
                             <a href="/calendar" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="calendar-number-outline"></ion-icon>
