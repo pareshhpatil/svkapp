@@ -242,8 +242,8 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     // var my_lat = '';
     // var my_long = '';
 
-    var my_lat = 18.6020798;
-    var my_long = 73.7908489;
+    var my_lat = 0;
+    var my_long = 0;
     var start = false;
     var options = {
         enableHighAccuracy: true,
