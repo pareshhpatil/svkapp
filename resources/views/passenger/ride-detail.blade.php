@@ -147,13 +147,13 @@
                             @isset($data['driver']['mobile'])
                             <li style="padding:0px;">
                                 <div class="item" style="padding: 0;">
-                                    <div onclick="window.open('tel:{{$data['driver']['mobile']}}');" class="icon-box text-black">
+                                    <div onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" class="icon-box text-black">
                                         <ion-icon name="call-outline"></ion-icon>
                                     </div>
                                     <div class="in">
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
-                                            <strong onclick="window.open('tel:{{$data['driver']['mobile']}}');" v-html="data.driver.mobile"></strong>
+                                            <strong onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" v-html="data.driver.mobile"></strong>
                                         </div>
 
                                     </div>

@@ -124,7 +124,7 @@
                             </div>
                         </div>
                         <div class="right">
-                            <div onclick="window.open('tel:{{$data['driver']['mobile']}}');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
+                            <div onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
                         </div>
                     </a>
                 </div>
