@@ -56,6 +56,7 @@ class HomeController extends Controller
             if (!empty($data['data']['upcoming'])) {
                 $data['data']['upcoming']['link'] = '/driver/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
             }
+            Session::put('token','aa');
         } else if (Session::get('user_type') == 3) {
             $data['data']['total_ride'] = $this->model->getTableCount('ride', 'is_active',  1);
             $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'is_active', 1, 0, ['status' => 5]);

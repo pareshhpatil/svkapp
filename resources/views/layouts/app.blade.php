@@ -130,10 +130,10 @@
                     <div class="action-sheet-content text-center">
                         <div class="row mb-1">
                             <div class="col">
-                                <a href="https://apps.apple.com/in/app/ride-track-app/id6449589190"><img src="/assets/img/ios.png" alt="image" class="imaged w64"></a>
+                                <a href="https://apps.apple.com/in/app/ride-track-app/id6449589190"><img src="/assets/img/ios2.png" alt="image" class="imaged w100"></a>
                             </div>
                             <div class="col mb-1">
-                                <a href="https://play.google.com/store/apps/details?id=com.sidhivinayak.travel.house"> <img src="/assets/img/android.png" alt="image" class="imaged  w64"></a>
+                                <a href="https://play.google.com/store/apps/details?id=com.sidhivinayak.travel.house"> <img src="/assets/img/android2.png" alt="image" class="imaged  w100"></a>
                             </div>
                         </div>
 
@@ -293,7 +293,7 @@
     @yield('footer')
     @if(!Session::has('token'))
     <script>
-        var AddHomeStatus = localStorage.getItem("DownloadApp");
+        var AddHomeStatus = localStorage.getItem("DownloadApp1");
         if (AddHomeStatus === "1" || AddHomeStatus === 1) {
             // already showed up
         } else {
@@ -304,9 +304,9 @@
 
         function dontShow(val) {
             if (val == true) {
-                localStorage.setItem("DownloadApp", 1);
+                localStorage.setItem("DownloadApp1", 1);
             } else {
-                localStorage.setItem("DownloadApp", 0);
+                localStorage.setItem("DownloadApp1", 0);
             }
         }
     </script>
