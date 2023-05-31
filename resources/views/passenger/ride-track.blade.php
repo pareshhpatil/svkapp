@@ -353,7 +353,9 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             if (start == true) {
                 direction();
             } else {
-                driverMarker.setPosition(new google.maps.LatLng(lat, lat_long));
+                dvmarker = new google.maps.LatLng(lat, lat_long);
+                driverMarker.setPosition(dvmarker);
+                map.setCenter(dvmarker);
             }
 
         }, 10000);
