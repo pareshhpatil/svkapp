@@ -25,7 +25,7 @@ class Controller extends BaseController
     public function htmlTime($time)
     {
         if ($time != '') {
-            return date('H:i:A', strtotime($time));
+            return date('h:i:A', strtotime($time));
         }
     }
     public function htmlDate($time)
@@ -40,7 +40,7 @@ class Controller extends BaseController
     {
         $w = substr(date("l", strtotime($time)), 0, 3);
         if ($time != '') {
-            return $w . date(' d M y H:i:A', strtotime($time));
+            return $w . date(' d M y h:i:A', strtotime($time));
         }
     }
 }
