@@ -56,7 +56,7 @@ class HomeController extends Controller
             if (!empty($data['data']['upcoming'])) {
                 $data['data']['upcoming']['link'] = '/driver/ride/' . Encryption::encode($data['data']['upcoming']['pid']);
             }
-            Session::put('token','aa');
+            Session::put('token', 'aa');
         } else if (Session::get('user_type') == 3) {
             $data['data']['total_ride'] = $this->model->getTableCount('ride', 'is_active',  1);
             $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'is_active', 1, 0, ['status' => 5]);
@@ -525,9 +525,11 @@ class HomeController extends Controller
         $model =  new ParentModel();
         $model->updateTable('ride', 'id', $ride_id, 'status', $status);
         if ($status == 5) {
+            $model->updateTable('ride', 'id', $ride_id, 'ride_ended', date('Y-m-d H:i:s'));
             return redirect('/my-rides/past');
         }
 
+        $model->updateTable('ride', 'id', $ride_id, 'ride_started', date('Y-m-d H:i:s'));
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
@@ -538,6 +540,8 @@ class HomeController extends Controller
                 $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been started', 'Our driver is en route to your pickup location. Enjoy your journey with us.', $url);
             }
         }
+
+
 
 
         return redirect('/driver/ride/' . Encryption::encode($ride_id));

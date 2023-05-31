@@ -305,7 +305,8 @@
                 <div class="content">
                     <h4 class="title"><span v-html="item.name"></span>
                         <div class="text-end" style="right: 10px;float: right;">
-                            <img v-if="!item.icon" src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w48 rounded right">
+                            <img v-if="!item.icon && item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
+                            <img v-if="!item.icon && item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="item.icon" :src="item.icon" alt="avatar" class="imaged w48 rounded right">
                         </div>
                     </h4>
