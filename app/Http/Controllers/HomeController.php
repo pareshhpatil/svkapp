@@ -106,6 +106,9 @@ class HomeController extends Controller
     {
         $ride_id = Encryption::decode($link);
         $ride = $this->model->getRowArray('ride', 'id', $ride_id);
+        if ($ride_id == false) {
+            return redirect('/my-rides');
+        }
         $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
         $driver = [];
         $vehicle = [];
