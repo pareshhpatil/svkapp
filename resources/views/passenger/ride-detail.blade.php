@@ -384,8 +384,8 @@
                         </div>
                         <div class="modal-footer">
                             <div class="btn-inline">
-                                <input type="hidden" value="{{$live_ride['passenger_id']}}" name="ride_passenger_id">
-                                <input type="hidden" value="{{$live_ride['ride_id']}}" name="ride_id">
+                                <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
+                                <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
                                 <button type="submit" class="btn btn-text-primary">SEND</button>
                             </div>
