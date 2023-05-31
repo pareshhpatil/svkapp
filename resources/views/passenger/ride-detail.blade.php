@@ -311,6 +311,9 @@
                     </h4>
                     <div v-html="item.mobile" class="text text-danger"></div>
                     <div v-html="item.location" class="text"></div>
+                    @if(Session::get('user_type')==3)
+                    <div v-html="'Otp: '+item.otp" class="text text-info"></div>
+                    @endif
                 </div>
             </div>
             <div class="item" v-if="data.ride.type=='Pickup'">
