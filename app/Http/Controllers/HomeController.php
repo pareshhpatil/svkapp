@@ -10,6 +10,7 @@ use Validator;
 use Intervention\Image\ImageManager;
 use Image;
 use App\Http\Lib\Encryption;
+use App\Http\Controllers\ApiController;
 
 class HomeController extends Controller
 {
@@ -525,6 +526,20 @@ class HomeController extends Controller
         if ($status == 5) {
             return redirect('/my-rides/past');
         }
+
+        $apiController = new ApiController();
+        $link = Encryption::encode($ride_id);
+        $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
+        foreach ($passengers as $row) {
+            if ($row->status == 0) {
+                $link = Encryption::encode($row->id);
+                $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+                $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been started', 'Our driver is en route to your pickup location. Enjoy your journey with us.', $url);
+            }
+        }
+
+        return redirect('/my-rides/pending');
+
         return redirect('/driver/ride/' . Encryption::encode($ride_id));
     }
 
@@ -536,6 +551,10 @@ class HomeController extends Controller
         }
         if ($status == 2) {
             $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
+            $apiController = new ApiController();
+            $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
+            $url = 'https://app.svktrv.in/dashboard';
+            $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been completed', 'We hope you had a pleasant journey with us. Please rate your ride experience', $url);
         }
 
         $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'status', $status);
