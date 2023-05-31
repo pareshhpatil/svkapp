@@ -102,6 +102,23 @@ class ApiController extends Controller
     }
 
 
+    public function sendSMS($user_id, $user_type, $message_, $template_id)
+    {
+        $number_ = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type]);
+
+        $message_ = str_replace(" ", "%20", $message_);
+        $message_ = str_replace("&", "%26", $message_);
+        $message_ = preg_replace("/\r|\n/", "%0a", $message_);
+        $invokeURL = env('SMS_URL');
+        $invokeURL = str_replace("__MESSAGE__", $message_, $invokeURL);
+        $invokeURL = str_replace("__NUM__", $number_, $invokeURL);
+        $invokeURL = str_replace("__TEMPLATE_ID__", $template_id, $invokeURL);
+        $client = new Client();
+        $request = new Req('GET', $invokeURL);
+        $res = $client->sendAsync($request)->wait();
+    }
+
+
 
     public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png')
     {

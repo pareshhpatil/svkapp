@@ -112,12 +112,18 @@ class RosterController extends Controller
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
-        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned for Bytedance', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
+        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
+        $ride = $this->model->getTableRow('ride', 'ride_id', $ride_id);
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
             $url = 'https://app.svktrv.in/passenger/ride/' . $link;
             $apiController->sendNotification($row->passenger_id, 5, 'Cab has been assigned for your next ride', 'Please be ready at your pickup location. Have a safe and pleasant journey.', $url);
+            $short_url = $this->random();
+            $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+            $url = 'app.svktrv.in/l/' . $short_url;
+            $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
+            $apiController->sendSMS($row->passenger_id, 5, $message_, '1107168138570499675');
         }
     }
 
@@ -131,5 +137,22 @@ class RosterController extends Controller
         }
         $data['data'] = $this->model->getRoster($project_id, $date, $status);
         return json_encode($data);
+    }
+
+    function random($length_of_string = 4)
+    {
+        // String of all alphanumeric character
+        $str_result = '0123456789bcdfghjklmnpqrstvwxyz';
+        // Shuffle the $str_result and returns substring
+        // of specified length
+        $exist = true;
+        while ($exist == true) {
+            $short = substr(
+                str_shuffle($str_result),
+                0,
+                $length_of_string
+            );
+            $exist = $this->model->getTableRow('short_url', 'short_url', $short);
+        }
     }
 }
