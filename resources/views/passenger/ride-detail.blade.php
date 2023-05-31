@@ -37,6 +37,9 @@
 <div id="appCapsule" class="full-height">
 
     <div id="app" class="section ">
+        <div id="loader" v-if="notloded">
+            <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
+        </div>
         <div v-if="!data.driver.name">
             @if(Session::get('user_type')!=3)
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
@@ -507,12 +510,14 @@
         data() {
             return {
                 data: [],
-                rcmsg: ''
+                rcmsg: '',
+                notloded: true
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
             this.rcmsg = 'Ride has been cancelled';
+            this.notloded = false;
         },
         methods: {
             rating(rating) {

@@ -47,6 +47,9 @@
 <div id="appCapsule" class="full-height">
 
     <div id="app" class="section ">
+        <div id="loader" v-if="notloded">
+            <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
+        </div>
         <div v-if="!data.driver.name">
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Cab not assigned yet</div>
@@ -124,7 +127,7 @@
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
-                    <h4 class="title"><span v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');"  v-html="item.name"></span>
+                    <h4 class="title"><span v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');" v-html="item.name"></span>
                         <div class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
                                 <div class="dropdown">
@@ -132,7 +135,7 @@
                                         IN
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" style="">
-                                        <a v-if="item.status==0"  class="dropdown-item" v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');" >Navigate</a>
+                                        <a v-if="item.status==0" class="dropdown-item" v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');">Navigate</a>
                                         <div class="dropdown-divider"></div>
                                         <a v-if="item.status!=5" class="dropdown-item" v-on:click="reach(index);">Reached at Location</a>
                                         <div class="dropdown-divider"></div>
@@ -181,7 +184,7 @@
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
                 Start Ride
             </button>
-            <button v-if="data.ride.status==2" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
+            <button v-if="data.ride.status==2 && alldone==true" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
                 End Ride
             </button>
         </div>
@@ -321,10 +324,13 @@
                 data: [],
                 selected_id: 0,
                 verror: '',
+                alldone: false,
+                notloded: true
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
+            this.notloded = false;
         },
         methods: {
             setId(id) {
@@ -347,6 +353,7 @@
                 array = this.data.ride_passengers[this.selected_id];
                 this.data.ride_passengers[this.selected_id].status = 4;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/4');
+                this.endStatus();
             },
             reach(id) {
                 array = this.data.ride_passengers[id];
@@ -358,6 +365,18 @@
                 this.data.ride_passengers[this.selected_id].status = 2;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/2');
                 document.getElementById('closeout').click();
+                this.endStatus();
+            },
+            endStatus() {
+                var done = true;
+                for (let i = 0; i < this.data.ride_passengers.length; i++) {
+                    pstatus = this.data.ride_passengers[i].status;
+                    if (pstatus == 0 || pstatus == 1 || pstatus == 5) {
+                        console.log(pstatus);
+                        done = false;
+                    }
+                }
+                this.alldone = done;
             }
         }
     })

@@ -37,10 +37,12 @@
                         </a>
                     </div>
                     <div class="col-6">
-                        <div class="stat-box">
-                            <div class="title text-center">Completed </div>
-                            <div class="value text-warning text-center" v-html="data.completed_ride"></div>
-                        </div>
+                        <a href="/my-rides/past">
+                            <div class="stat-box">
+                                <div class="title text-center">Completed </div>
+                                <div class="value text-warning text-center" v-html="data.completed_ride"></div>
+                            </div>
+                        </a>
                     </div>
                 </template>
             </div>
@@ -195,7 +197,7 @@
                                 <p>{{$last_ride['number']}}</p>
                             </div>
                         </div>
-                        
+
                     </a>
                 </div>
                 <div class=" ">

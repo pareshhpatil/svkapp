@@ -2,7 +2,7 @@
 @section('content')
 <div id="appCapsule" style="background-color: #ffffff;">
 
-  <img src="assets/img/login-page.png" style="max-width: 100%;">
+  <img src="/assets/img/banner.png?v=5" style="max-width: 100%;">
   <div class="section mt-2 text-center">
     <h3 class="text-primary"> SIDDHIVINAYAK TRAVELS HOUSE</h3>
 
