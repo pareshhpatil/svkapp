@@ -75,4 +75,13 @@ class TripController extends Controller
 
         return redirect('/my-rides/pending');
     }
+
+
+    public function shortUrl($short)
+    {
+        $url = $this->model->getColumnValue('short_url', 'short_url', $short, 'long_url');
+        if ($url != false) {
+            return redirect($url, 301);
+        }
+    }
 }

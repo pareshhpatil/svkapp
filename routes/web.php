@@ -71,6 +71,7 @@ Route::get('/admin/ride/{link}/track', [App\Http\Controllers\HomeController::cla
 Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripController::class, 'rideLocation']);
 Route::get('/passenger/ride/rating/{ride_id}/{rating}', [App\Http\Controllers\TripController::class, 'rating']);
 Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::class, 'dateFetch']);
+Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
