@@ -154,5 +154,6 @@ class RosterController extends Controller
             );
             $exist = $this->model->getTableRow('short_url', 'short_url', $short);
         }
+        return $short;
     }
 }
