@@ -102,7 +102,7 @@ class ApiController extends Controller
     }
 
 
-    public function sendSMS($number_, $message_)
+    public function sendSMS($number_, $message_, $template_id)
     {
         $message_ = str_replace(" ", "%20", $message_);
         $message_ = str_replace("&", "%26", $message_);
@@ -110,6 +110,7 @@ class ApiController extends Controller
         $invokeURL = env('SMS_URL');
         $invokeURL = str_replace("__MESSAGE__", $message_, $invokeURL);
         $invokeURL = str_replace("__NUM__", $number_, $invokeURL);
+        $invokeURL = str_replace("__TEMPLATE_ID__", $template_id, $invokeURL);
         $client = new Client();
         $request = new Req('GET', $invokeURL);
         $res = $client->sendAsync($request)->wait();

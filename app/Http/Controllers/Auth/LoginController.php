@@ -66,7 +66,7 @@ class LoginController extends Controller
         if ($row != false) {
             $otp = rand(1111, 9999);
             $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-            $apicontroller->sendSMS($row->mobile, $message);
+            $apicontroller->sendSMS($row->mobile, $message, '1107168138576339315');
             $id = $model->saveOtp($row->mobile, $otp, $row->user_id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {
@@ -139,7 +139,7 @@ class LoginController extends Controller
                 $otp = '1234';
             } else {
                 $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-                $apicontroller->sendSMS($request->mobile, $message);
+                $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
