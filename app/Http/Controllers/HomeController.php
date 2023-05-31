@@ -538,7 +538,6 @@ class HomeController extends Controller
             }
         }
 
-        return redirect('/my-rides/pending');
 
         return redirect('/driver/ride/' . Encryption::encode($ride_id));
     }
