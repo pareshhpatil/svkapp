@@ -115,7 +115,43 @@
         </a>
     </div>
     @endif
+
+    @if(!Session::has('token'))
+    <div class="modal inset fade action-sheet ios-add-to-home" id="ios-add-to-home-screen" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Download Mobile App</h5>
+                    <a href="#" class="close-button" data-bs-dismiss="modal">
+                        <ion-icon name="close"></ion-icon>
+                    </a>
+                </div>
+                <div class="modal-body">
+                    <div class="action-sheet-content text-center">
+                        <div class="row mb-1">
+                            <div class="col">
+                                <a href="https://apps.apple.com/in/app/ride-track-app/id6449589190"><img src="/assets/img/ios.png" alt="image" class="imaged w64"></a>
+                            </div>
+                            <div class="col mb-1">
+                                <a href="https://play.google.com/store/apps/details?id=com.sidhivinayak.travel.house"> <img src="/assets/img/android.png" alt="image" class="imaged  w64"></a>
+                            </div>
+                        </div>
+
+                        <div>
+                            Install App to track your cab driver, ride history and book a new ride.
+                        </div>
+                        <div class="mt-2">
+                            <label class="mb-1"><input type="checkbox" onchange="dontShow(this.checked)"> Don't show me again</label>
+                            <button class="btn btn-primary btn-block" data-bs-dismiss="modal">CLOSE</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- * App Bottom Menu -->
+    @endif
 
 
 
@@ -227,11 +263,7 @@
                             </form>
                         </li>
                     </ul>
-
-
-                    <div class="listview-title mt-1">Developed by Ride Track</div>
-
-
+                    <div class="listview-title mt-1">Developed by <a href="https://www.ridetrack.in"> Ride Track</a></div>
                 </div>
             </div>
         </div>
@@ -259,6 +291,26 @@
     <script src="/assets/js/base.js?v=3"></script>
 
     @yield('footer')
+    @if(!Session::has('token'))
+    <script>
+        var AddHomeStatus = localStorage.getItem("DownloadApp");
+        if (AddHomeStatus === "1" || AddHomeStatus === 1) {
+            // already showed up
+        } else {
+            setTimeout(() => {
+                iosAddtoHome()
+            }, 5000);
+        }
+
+        function dontShow(val) {
+            if (val == true) {
+                localStorage.setItem("DownloadApp", 1);
+            } else {
+                localStorage.setItem("DownloadApp", 0);
+            }
+        }
+    </script>
+    @endif
 
 </body>
 
