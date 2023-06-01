@@ -485,7 +485,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                     array = JSON.parse(this.responseText);
                     lat = array.latitude;
                     lat_long = array.longitude;
-                    speedshow = array.speed;
+                    speedshow = Math.round(array.speed * 3.6);
                 } catch (o) {}
 
             }
