@@ -124,7 +124,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                             <div>
                                 <strong>{{$data['driver']['name']}}</strong>
                                 <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <p id="speed"></p>
+                                <strong class="text-info">Speed : <span id="speed"></span></strong>
                                 <p>{{$data['vehicle']['number']}}</p>
                             </div>
                         </div>
@@ -483,7 +483,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             if (this.readyState == 4 && this.status == 200) {
                 try {
                     array = JSON.parse(this.responseText);
-                    console.log(array);
                     lat = array.latitude;
                     lat_long = array.longitude;
                     speedshow = array.speed;
