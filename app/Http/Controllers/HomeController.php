@@ -74,6 +74,9 @@ class HomeController extends Controller
 
     public function passengerRideDetail($link)
     {
+        if ($link == '__manifest.json') {
+            return false;
+        }
         $id = Encryption::decode($link);
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
