@@ -126,17 +126,20 @@ class HomeController extends Controller
             $data['driver_list'] = $this->model->getTableList('driver', 'is_active', 1, 'id,name,location');
             $data['vehicle_list'] = $this->model->getTableList('vehicle', 'is_active', 1, 'vehicle_id,number');
             $data['title'] = 'Assign cab';
+            $data['passenger_list'] = $this->model->getTableList('passenger', 'project_id', $ride['project_id'], "concat(employee_name,' - ', location) as title,id");
         }
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $data['data']['ride_start_time'] = $this->sqlTime($ride['start_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
         $data['data']['ride_passengers'] = $ride_passengers;
+        $data['enc_link'] = $link;
         $data['data']['link'] = env('APP_URL') . '/admin/ride/' . $link;
         $data['type'] = $type;
         $data['menu'] = 0;
@@ -571,5 +574,35 @@ class HomeController extends Controller
         }
 
         $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'status', $status);
+    }
+
+
+    public function passengerAdd($ride_id, $passenger_id, $time)
+    {
+        $ride = $this->model->getRowArray('ride', 'id', $ride_id);
+        $passenger = $this->model->getRowArray('passenger', 'id', $passenger_id);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+        $array['ride_id'] = $ride_id;
+        $array['passenger_id'] = $passenger_id;
+        $array['otp'] = rand(1111, 9999);
+        $array['pickup_time'] = $ride['date'] . ' ' . $this->sqlTime($time);
+        if ($ride['type'] == 'Drop') {
+            $array['pickup_location'] = $project['location'];
+            $array['drop_location'] = $passenger['location'];
+        } else {
+            $array['pickup_location'] = $passenger['location'];
+            $array['drop_location'] = $project['location'];
+        }
+        $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
+        $ride_passengers = $this->model->getRidePassenger($ride_id);
+        return json_encode($ride_passengers);
+    }
+
+    public function passengerRemove($id)
+    {
+        $detail = $this->model->getRowArray('ride_passenger', 'id', $id);
+        $this->model->updateTable('ride_passenger', 'id', $id, 'is_active', 0);
+       // $ride_passengers = $this->model->getRidePassenger($detail['ride_id']);
+       // return json_encode($ride_passengers);
     }
 }

@@ -96,6 +96,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/master/add/{type}', [App\Http\Controllers\MasterController::class, 'masterAdd']);
     Route::post('/master/save/{type}', [App\Http\Controllers\MasterController::class, 'masterSave']);
 
+    Route::get('/ride/passenger/add/{ride_id}/{p_id}/{time}', [App\Http\Controllers\HomeController::class, 'passengerAdd']);
+    Route::get('/ride/passenger/remove/{id}', [App\Http\Controllers\HomeController::class, 'passengerRemove']);
 
     Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);

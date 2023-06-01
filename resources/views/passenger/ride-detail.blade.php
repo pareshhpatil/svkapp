@@ -35,12 +35,11 @@
     }
 </style>
 <div id="appCapsule" class="full-height">
-
     <div id="app" class="section ">
         <div id="loader" v-if="notloded">
             <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
         </div>
-        <div v-if="!data.driver.name">
+        <div @if($title!='Assign cab' ) v-if="!data.driver.name" @endif>
             @if(Session::get('user_type')!=3)
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Cab not assigned yet</div>
@@ -49,7 +48,6 @@
                 &nbsp;
             </div>
             @else
-            @if(empty($data['driver']))
             @if($title=='Assign cab')
             <div class="section mt-2 mb-2">
                 <div class="section-title">Assign Cab</div>
@@ -95,7 +93,6 @@
                     </div>
                 </div>
             </div>
-            @endif
             @endif
             @endif
         </div>
@@ -278,11 +275,31 @@
                         </a>
                     </div>
 
+                    @if(Session::get('user_type')==3)
+                    <div class="item">
+                        <a href="/admin/ride/assign/{{$enc_link}}">
+                            <div class="icon-wrapper bg-primary bg-red">
+                                <ion-icon name="create-outline"></ion-icon>
+                            </div>
+                            <strong>Update</strong>
+                        </a>
+                    </div>
+                    @endif
+
                 </div>
                 <!-- * Wallet Footer -->
             </div>
         </div>
-        <div class="mt-1">Route</div>
+        <div class="mt-1">Route
+
+            @if($title=='Assign cab')
+            <a href="#" data-bs-toggle="modal" data-bs-target="#addpassenger" class="btn btn-info btn-sm pull-right">
+                <ion-icon name="person-add-outline"></ion-icon>
+                Add
+            </a>
+            @endif
+        </div>
+
         <div class="timeline timed ms-1 me-2">
 
             <div class="item" v-if="data.ride.type=='Drop'">
@@ -302,18 +319,27 @@
                 <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time" class="time"></span>
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
+                @if($title=='Assign cab')
+                <span class="time">
+                    <a href="#" data-bs-toggle="modal" v-on:click="remove_id=item.id" data-bs-target="#removepassenger" class="btn btn-primary btn-sm">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </a>
+                </span>
+                @endif
                 <div class="content">
                     <h4 class="title"><span v-html="item.name"></span>
                         <div class="text-end" style="right: 10px;float: right;">
                             <img v-if="!item.icon && item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="!item.icon && item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="item.icon" :src="item.icon" alt="avatar" class="imaged w48 rounded right">
+
                         </div>
                     </h4>
                     <div v-html="item.mobile" class="text text-danger"></div>
                     <div v-html="item.location" class="text"></div>
                     @if(Session::get('user_type')==3)
                     <div v-html="'Otp: '+item.otp" class="text text-info"></div>
+
                     @endif
                 </div>
             </div>
@@ -525,6 +551,107 @@
             </div>
             <button type="button" onclick="closeT();" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
         </div>
+
+
+
+
+
+        @if($title=='Assign cab')
+        <div class="modal fade dialogbox" id="removepassenger" data-bs-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Remove Passenger</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure about that?
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="#" class="btn btn-text-danger" data-bs-dismiss="modal">
+                                <ion-icon name="close-outline"></ion-icon>
+                                CANCEL
+                            </a>
+                            <a href="#" class="btn btn-text-primary" v-on:click="removePassenger" data-bs-dismiss="modal">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+                                Confirm
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade dialogbox" id="addpassenger" data-bs-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Passenger</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="search-form">
+                            <div class="form-group searchbox mb-1">
+                                <input type="time" v-model="start_time" class="form-control" placeholder="Time">
+                                <i class="input-icon icon ion-ios-clock-outline"><ion-icon name="input-icon alarm-outline"></ion-icon></i>
+                            </div>
+                            <div class="form-group searchbox">
+                                <input type="text" v-model="search" class="form-control" placeholder="Search...">
+                                <i class="input-icon icon ion-ios-search"></i>
+                            </div>
+                        </form>
+
+                        <div class="extra-header-active">
+                            <div class="mt-2 mb-2">
+                                <div class="card" v-if="passenger_id>0">
+                                    <ul class="listview media transparent flush">
+                                        <li>
+                                            <a href="#" v-on:click="passenger_id=0" class="item text-primary">
+                                                <div class="">
+                                                    <span class="text-primary" v-html="emp_title">
+                                                    </span> &nbsp;&nbsp;
+                                                    <ion-icon class="pull-right" name="close-outline"></ion-icon>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card" v-if="passenger_id==0">
+                                    <ul class="listview image-listview media transparent flush">
+                                        <li v-for="emp in filteredAndSorted">
+                                            <a href="#" v-on:click="selectPassenger(emp);" class="item">
+                                                <div class="">
+                                                    <div v-html="emp.title">
+                                                    </div>
+
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="#" class="btn btn-text-danger" data-bs-dismiss="modal">
+                                <ion-icon name="close-outline"></ion-icon>
+                                CANCEL
+                            </a>
+                            <a href="#" v-if="passenger_id>0 && start_time!=''" v-on:click="addEmployee()" class="btn btn-text-primary" data-bs-dismiss="modal">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+                                Confirm
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @endif
+
+
+
     </div>
 
 </div>
@@ -545,13 +672,39 @@
             return {
                 data: [],
                 rcmsg: '',
-                notloded: true
+                search: '',
+                notloded: true,
+                passenger_id: 0,
+                emp_title: '',
+                start_time: '',
+                remove_id: 0,
+                filter_passengers: [],
+                passengers: []
             }
         },
+
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
+            @if($title == 'Assign cab')
+            this.passengers = JSON.parse('{!!json_encode($passenger_list)!!}');
+            @endif
             this.rcmsg = 'Ride has been cancelled';
+            this.start_time = this.data.ride_start_time;
             this.notloded = false;
+        },
+        computed: {
+            filteredAndSorted() {
+                // function to compare names
+                function compare(a, b) {
+                    if (a.title < b.title) return -1;
+                    if (a.title > b.title) return 1;
+                    return 0;
+                }
+
+                return this.passengers.filter(emp => {
+                    return emp.title.toLowerCase().includes(this.search.toLowerCase())
+                }).sort(compare)
+            }
         },
         methods: {
             rating(rating) {
@@ -559,6 +712,22 @@
                 id = this.data.ride_passenger.id;
                 axios.get('/passenger/ride/rating/' + id + '/' + rating);
                 toastbox('toast-11');
+            },
+            selectPassenger(emp) {
+                this.passenger_id = emp.id;
+                this.emp_title = emp.title;
+            },
+            async addEmployee() {
+                let res = await axios.get('/ride/passenger/add/' + this.data.ride.id + '/' + this.passenger_id + '/' + this.start_time);
+                this.data.ride_passengers = JSON.parse(res);
+                this.passenger_id = 0;
+            },
+            async removePassenger() {
+                this.notloded = true;
+                let res = await axios.get('/ride/passenger/remove/' + this.remove_id);
+                location.reload();
+               // this.data.ride_passengers = JSON.parse(res);
+               // this.remove_id = 0;
             }
         }
     })
