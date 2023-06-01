@@ -153,6 +153,9 @@ class HomeController extends Controller
 
     public function driverRideDetail($link)
     {
+        if ($link == '__manifest.json') {
+            return false;
+        }
         $ride_id = Encryption::decode($link);
         $ride = $this->model->getRowArray('ride', 'id', $ride_id);
         $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
