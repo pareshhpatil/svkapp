@@ -208,7 +208,7 @@
             </div>
         </div>
 
-        <div class=" ">
+        <div v-if="data.ride_passenger.status!=3" class=" ">
             <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
                 <!-- Balance -->
                 <!-- Wallet Footer -->

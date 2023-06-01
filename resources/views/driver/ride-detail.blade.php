@@ -128,7 +128,7 @@
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
                     <h4 class="title"><span v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');" v-html="item.name"></span>
-                        <div class="text-end" style="right: 10px;float: right;">
+                        <div v-if="item.status!=3" class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
                                 <div class="dropdown">
                                     <button v-if="item.status==0 || item.status==5" v-on:click="setId(index)" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-success text-center dropdown-toggle">
@@ -153,6 +153,8 @@
 
                     </h4>
                     <div v-html="item.mobile" class="text text-danger"></div>
+                    <div v-if="item.status==3" class="text text-danger">Cancelled</div>
+
                     <div class="text">
                         <span style="float: left;" v-html="item.location"></span>
 
