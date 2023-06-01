@@ -341,6 +341,11 @@
     <script src="/assets/js/main.js"></script>
 
     @yield('footer')
+    <script>
+        $('form').submit(function() {
+            $(this).find('button[type=submit]').prop('disabled', true);
+        });
+    </script>
 
 
     <!-- Page JS -->

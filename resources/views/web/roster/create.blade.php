@@ -22,7 +22,7 @@
                 <!--/ Earning Reports -->
 
                 <!-- Support Tracker -->
-                <form class="source-item pt-4 px-0 px-sm-4" id="frm" action="/roster/save" method="post">
+                <form class="source-item pt-4 px-0 px-sm-4"  id="frm" action="/roster/save" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-lg-5">
@@ -103,7 +103,7 @@
                     <hr class="my-3 mx-n4">
                     <div class="row pb-4">
                         <div class="col-12 pull-right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" id="subbtn" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -136,6 +136,8 @@
         format: 'dd MM yyyy',
         orientation: isRtl ? 'auto right' : 'auto left'
     });
+
+
 </script>
 
 
