@@ -202,7 +202,7 @@ class HomeController extends Controller
         }
         $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
-        $data['live_location'] = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_passenger['ride_id'], 'live_location');
+        $data['live_location'] = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_passenger['ride_id'], 'live_location', [], 'id');
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
@@ -238,7 +238,7 @@ class HomeController extends Controller
         }
         // $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
         $ride_passengers = $this->model->getRidePassenger($ride_id);
-        $data['live_location'] = $this->model->getColumnValue('ride_live_location', 'ride_id', $ride_id, 'live_location');
+        $data['live_location'] = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_id, 'live_location', [], 'id');
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
