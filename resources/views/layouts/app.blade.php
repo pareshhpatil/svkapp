@@ -80,34 +80,34 @@
     <!-- App Bottom Menu -->
     @if(Session::has('name'))
     <div class="appBottomMenu">
-        <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif class="item @if($menu==1) active @endif">
+        <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif onclick="lod(true);" class="item @if($menu==1) active @endif">
             <div class="col">
                 <ion-icon name="home-outline"></ion-icon>
                 <strong>Home</strong>
             </div>
         </a>
-        <a @if($menu==2) href="javascript:location.reload();" @else href="/my-rides" @endif class="item @if($menu==2) active @endif">
+        <a @if($menu==2) href="javascript:location.reload();" @else href="/my-rides" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
             <div class="col">
                 <ion-icon name="car-sport-outline"></ion-icon>
                 <strong>My Rides</strong>
             </div>
         </a>
         @if(Session::get('user_type')==5)
-        <a @if($menu==3) href="javascript:location.reload();" @else href="/book-ride" @endif class="item @if($menu==3) active @endif">
+        <a @if($menu==3) href="javascript:location.reload();" @else href="/book-ride" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="add-circle-outline"></ion-icon>
                 <strong>Book a Ride</strong>
             </div>
         </a>
         @endif
-        <a @if($menu==4) href="javascript:location.reload();" @else href="/calendar" @endif class="item @if($menu==4) active @endif">
+        <a @if($menu==4) href="javascript:location.reload();" @else href="/calendar" @endif onclick="lod(true);" class="item @if($menu==4) active @endif">
             <div class="col">
                 <ion-icon name="calendar-number-outline"></ion-icon>
                 <strong>Calendar</strong>
             </div>
         </a>
 
-        <a @if($menu==5) href="javascript:location.reload();" @else href="/settings" @endif class="item @if($menu==5) active @endif">
+        <a @if($menu==5) href="javascript:location.reload();" @else href="/settings" @endif onclick="lod(true);" class="item @if($menu==5) active @endif">
             <div class="col">
                 <ion-icon name="settings-outline"></ion-icon>
                 <strong>Settings</strong>
