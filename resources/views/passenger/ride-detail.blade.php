@@ -615,7 +615,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="card" v-if="passenger_id==0">
+                                <div class="card" v-if="passenger_id==0" style="overflow-y: auto;">
                                     <ul class="listview image-listview media transparent flush">
                                         <li v-for="emp in filteredAndSorted">
                                             <a href="#" v-on:click="selectPassenger(emp);" class="item">
