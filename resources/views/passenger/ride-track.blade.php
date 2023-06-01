@@ -312,7 +312,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     marker = '';
     lat = 0;
     lat_long = 0;
-    speed = 0;
+    speedshow = '';
     @if(isset($live_location['latitude']))
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
@@ -352,7 +352,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         setInterval(function() {
             getData();
-            document.getElementById("speed").innerHTML=speed;
+            document.getElementById("speed").innerHTML=speedshow;
             if (start == true) {
                 direction();
             } else {
@@ -483,9 +483,10 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             if (this.readyState == 4 && this.status == 200) {
                 try {
                     array = JSON.parse(this.responseText);
+                    console.log(array);
                     lat = array.latitude;
                     lat_long = array.longitude;
-                    speed = Number(array.speed) * 3.6;
+                    speedshow = array.speed;
                 } catch (o) {}
 
             }
