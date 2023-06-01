@@ -339,7 +339,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Cancel Ride</h5>
                     </div>
-                    <form action="/passenger/ride/cancel" method="post">
+                    <form onsubmit="lod(true);" action="/passenger/ride/cancel" method="post">
                         @csrf
                         <div class="modal-body text-start mb-2">
                             <div class="form-group basic">
@@ -370,7 +370,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Help</h5>
                     </div>
-                    <form action="/passenger/help" method="post">
+                    <form onsubmit="lod(true);" action="/passenger/help" method="post">
                         @csrf
                         <div class="modal-body text-start mb-2">
                             <div class="form-group basic">
@@ -402,7 +402,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Emergency SOS</h5>
                     </div>
-                    <form action="/passenger/sos" method="post">
+                    <form onsubmit="lod(true);" action="/passenger/sos" method="post">
                         @csrf
                         <div class="modal-body text-start mb-2 mt-1">
                             <div class="">

@@ -297,6 +297,7 @@
 
 <script>
     function startlocation() {
+        lod(true);
         window.WTN.backgroundLocation.start({
             callback: false,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
@@ -313,6 +314,7 @@
     }
 
     function stoplocation() {
+        lod(true);
         window.WTN.backgroundLocation.stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
