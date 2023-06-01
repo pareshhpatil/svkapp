@@ -124,6 +124,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                             <div>
                                 <strong>{{$data['driver']['name']}}</strong>
                                 <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
+                                <p id="speed"></p>
                                 <p>{{$data['vehicle']['number']}}</p>
                             </div>
                         </div>
@@ -311,6 +312,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     marker = '';
     lat = 0;
     lat_long = 0;
+    speed = 0;
     @if(isset($live_location['latitude']))
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
@@ -350,6 +352,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         setInterval(function() {
             getData();
+            document.getElementById("speed").innerHTML=speed;
             if (start == true) {
                 direction();
             } else {
@@ -482,6 +485,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                     array = JSON.parse(this.responseText);
                     lat = array.latitude;
                     lat_long = array.longitude;
+                    speed = Number(array.speed) * 3.6;
                 } catch (o) {}
 
             }
