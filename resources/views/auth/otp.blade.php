@@ -16,7 +16,7 @@
     </div>
     @endif
 
-    <form action="/login/validateotp" method="post">
+    <form action="/login/validateotp" onsubmit="lod(true);" method="post">
       @csrf
       <label class="label" for="text4b">Enter 4 digit OTP number</label>
       <div class="form-group basic mt-1">

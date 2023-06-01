@@ -48,7 +48,7 @@
   <!-- Splide -->
   <script src="/assets/js/plugins/splide/splide.min.js"></script>
   <!-- Base Js File -->
-  <script src="/assets/js/base.js"></script>
+  <script src="/assets/js/base.js?v=3"></script>
 
 
 </body>

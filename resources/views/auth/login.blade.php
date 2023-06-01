@@ -16,7 +16,7 @@
     </div>
     @endif
 
-    <form action="/login/sendotp" method="post">
+    <form action="/login/sendotp" onsubmit="lod(true);" method="post">
       @csrf
       <div class="form-group boxed">
         <div class="input-wrapper">
