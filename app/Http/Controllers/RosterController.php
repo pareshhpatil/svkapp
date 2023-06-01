@@ -49,6 +49,11 @@ class RosterController extends Controller
         return view('web.roster.create', $data);
     }
 
+    public function delete($id)
+    {
+        $this->model->updateTable('ride', 'id', $id, 'is_active', 0);
+    }
+
     public function save(Request $request)
     {
         $user_id = Session::get('user_id');

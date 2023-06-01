@@ -80,6 +80,16 @@
         datatable();
     }
 
+    function deleteride(id) {
+        response = confirm('Are you sure you want to delete this item?');
+        if (response == true) {
+            $.get("/roster/delete/" + id, function(data, status) {
+                dt_basic.destroy();
+                datatable();
+            });
+        }
+    }
+
     function reloadDate(id) {
         date = id;
         dt_basic.destroy();
@@ -140,7 +150,7 @@
                             '<ul class="dropdown-menu dropdown-menu-end m-0">' +
                             '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
                             '<li><a href="javascript:;" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a></li>' +
+                            '<li><a href="javascript:;" onclick="' + "deleteride(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
                             '</ul>' +
                             '</div>'
                         );
