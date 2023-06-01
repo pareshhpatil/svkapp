@@ -99,7 +99,7 @@
                 <button type="button" id="closemodal" class="btn btn-label-secondary" data-bs-dismiss="modal">
                     Close
                 </button>
-                <button type="button" onclick="assignRide();" class="btn btn-primary">Save changes</button>
+                <button type="button" id="assignride" onclick="assignRide();" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -149,6 +149,7 @@
         driver_id = document.getElementById('driver_id').value;
         cab_id = document.getElementById('vehicle_id').value;
         if (driver_id > 0 && cab_id > 0) {
+            $('#assignride').prop('disabled', true);
             $.get("/roster/assign/" + ride_id + "/" + driver_id + "/" + cab_id + "", function(data, status) {
                 document.getElementById('closemodal').click();
                 dt_basic.destroy();
