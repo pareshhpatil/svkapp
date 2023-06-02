@@ -143,22 +143,25 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
+                           
                                 <li>
-                                    <a href="/admin/employee/list">
-                                        <i class="fa fa-circle-o"></i> Employee</a>
+                                    <a href="/admin/company/list">
+                                        <i class="fa fa-circle-o"></i> Company</a>
                                 </li>
                                 <li>
                                     <a href="/admin/vehicle/list">
                                         <i class="fa fa-circle-o"></i> Vehicle</a>
                                 </li>
+                                @if(Session::get('admin_id')==1)
+                                <li>
+                                    <a href="/admin/employee/list">
+                                        <i class="fa fa-circle-o"></i> Employee</a>
+                                </li>
                                 <li>
                                     <a href="/admin/vendor/list">
                                         <i class="fa fa-circle-o"></i> Vendor</a>
                                 </li>
-                                <li>
-                                    <a href="/admin/company/list">
-                                        <i class="fa fa-circle-o"></i> Company</a>
-                                </li>
+                                
                                 <li>
                                     <a href="/admin/zone/list">
                                         <i class="fa fa-circle-o"></i> Zone</a>
@@ -171,10 +174,13 @@
                                     <a href="/admin/paymentsource/list">
                                         <i class="fa fa-circle-o"></i> Payment Source</a>
                                 </li>
+                                @endif
+                                
 
 
                             </ul>
                         </li>
+                        @if(Session::get('admin_id')==1)
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-users"></i> <span>Employee</span>
@@ -263,6 +269,7 @@
 
                             </ul>
                         </li>
+                        @endif
                         @endif
 
                         @if($login_type=='vendor')
@@ -363,7 +370,7 @@
                 </section>
             </div>
             <footer class="main-footer hidden-print">
-                <small>Copyright &copy; 2018 Siddhivinayak travels All rights reserved.</small>
+                <small>Copyright &copy; 2023 Ride Track All rights reserved.</small>
             </footer>
             <div class="control-sidebar-bg"></div>
         </div>
