@@ -126,6 +126,7 @@ class RosterController extends Controller
             $short_url = $this->random();
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
             $url = 'https://app.svktrv.in/l/' . $short_url;
+            
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $apiController->sendSMS($row->passenger_id, 5, $message_, '1107168138570499675');
         }
