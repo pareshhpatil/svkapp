@@ -291,7 +291,7 @@
                                 </li>
                             </ul>
                         </li>
-                        @endif
+                        
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-car"></i> <span>Trips</span>
@@ -315,6 +315,7 @@
 
                             </ul>
                         </li>
+                        @endif
                     </ul>
                 </section>
             </aside>
