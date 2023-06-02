@@ -718,9 +718,9 @@
                 this.emp_title = emp.title;
             },
             async addEmployee() {
+                this.notloded = true;
                 let res = await axios.get('/ride/passenger/add/' + this.data.ride.id + '/' + this.passenger_id + '/' + this.start_time);
-                this.data.ride_passengers = JSON.parse(res);
-                this.passenger_id = 0;
+                location.reload();
             },
             async removePassenger() {
                 this.notloded = true;
