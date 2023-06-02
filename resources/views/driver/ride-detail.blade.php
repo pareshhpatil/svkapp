@@ -348,6 +348,7 @@
                     this.verror = 'Invalid OTP';
                     document.getElementById('otp').value = '';
                 } else {
+                    document.getElementById('otp').value = '';
                     this.data.ride_passengers[this.selected_id].status = 1;
                     axios.get('/driver/ride/passenger/status/' + array.id + '/1');
                     document.getElementById('closeotp').click();
