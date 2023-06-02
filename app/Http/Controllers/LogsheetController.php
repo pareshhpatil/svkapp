@@ -631,7 +631,7 @@ class LogsheetController extends Controller
         $expense_list = array();
         if ($link == null) {
             $bill_model = new Bill();
-           // $expense_list = $bill_model->getPendingRequest();
+            // $expense_list = $bill_model->getPendingRequest();
         }
         //dd($expense_list);
 
@@ -838,7 +838,7 @@ class LogsheetController extends Controller
 
                 $lastday = date('t', strtotime($date));
                 for ($i = 1; $i <= $lastday; $i++) {
-                    $array['date'] = date('Y-m-' . $i);
+                    $array['date'] = date("Y-m-" . $i, strtotime($date));
                     $array['holiday'] = $this->isWeekend($array['date']);
                     $array['start_km'] = '';
                     $array['end_km'] = '';
