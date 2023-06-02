@@ -888,11 +888,15 @@ class LogsheetController extends Controller
             $row['toll'] = $data['toll'][$key];
             $row['remark'] = $data['remark'][$key];
             $row['holiday'] = $data['holiday'][$key];
-            $this->saveLogsheetMonth($row);
+            $this->saveLogsheetMonth($row,1);
         }
+
+        $this->setSuccess('Logsheet Bill has been save successfully');
+        header('Location: /admin/logsheet/getlogsheet');
+        exit;
     }
 
-    public function saveLogsheetMonth($data)
+    public function saveLogsheetMonth($data, $noresponse = 0)
     {
         $request = json_decode(json_encode($data));
         $type = '1';
@@ -909,7 +913,9 @@ class LogsheetController extends Controller
         $date = date('Y-m-d', strtotime($request->date));
 
         $result = $this->logsheet_model->saveLogsheetbill($vehicle_id, $company_id, $date, $request->start_km, $request->end_km, $start_time, $close_time, $day_night, $request->remark, $toll_amount, $type, $pick_drop, '', '', $_POST['user_id'], $_POST['admin_id'], $status, $holiday);
-        echo 'Logsheet has been saved successfully';
+        if ($noresponse == 0) {
+            echo 'Logsheet has been saved successfully';
+        }
     }
 
 
