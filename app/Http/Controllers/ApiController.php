@@ -116,6 +116,12 @@ class ApiController extends Controller
         $res = $client->sendAsync($request)->wait();
     }
 
+    public function userSMS($user_id, $user_type, $message_, $template_id)
+    {
+        $number_ = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type]);
+        $this->sendSMS($number_, $message_, $template_id);
+    }
+
 
     public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png')
     {
