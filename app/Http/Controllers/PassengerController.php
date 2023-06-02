@@ -169,7 +169,10 @@ class PassengerController extends Controller
         $this->user_id = Session::get('user_id');
         foreach ($_POST['group-a'] as $row) {
             $row['project_id'] = $request->project_id;
-            $this->model->saveTable('passenger', $row, $this->user_id);
+            $exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
+            if ($exist == false) {
+                $this->model->saveTable('passenger', $row, $this->user_id);
+            }
         }
 
         return redirect()->back()->withSuccess('Passengers added successfully');
