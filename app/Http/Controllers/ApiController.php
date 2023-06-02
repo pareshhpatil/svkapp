@@ -136,6 +136,7 @@ class ApiController extends Controller
             $array['notification']['priority'] = "normal";
             if ($url != '') {
                 $array['notification']['link'] = $url;
+                $array['data']['deepLink'] = $url;
             }
 
             $client = new Client();
