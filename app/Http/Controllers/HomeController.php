@@ -580,20 +580,23 @@ class HomeController extends Controller
     public function passengerAdd($ride_id, $passenger_id, $time)
     {
         $ride = $this->model->getRowArray('ride', 'id', $ride_id);
-        $passenger = $this->model->getRowArray('passenger', 'id', $passenger_id);
-        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
-        $array['ride_id'] = $ride_id;
-        $array['passenger_id'] = $passenger_id;
-        $array['otp'] = rand(1111, 9999);
-        $array['pickup_time'] = $ride['date'] . ' ' . $this->sqlTime($time);
-        if ($ride['type'] == 'Drop') {
-            $array['pickup_location'] = $project['location'];
-            $array['drop_location'] = $passenger['location'];
-        } else {
-            $array['pickup_location'] = $passenger['location'];
-            $array['drop_location'] = $project['location'];
+        $exist = $this->model->isExistData('ride_passenger', 'passenger', $passenger_id);
+        if ($exist == false) {
+            $passenger = $this->model->getRowArray('passenger', 'id', $passenger_id);
+            $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+            $array['ride_id'] = $ride_id;
+            $array['passenger_id'] = $passenger_id;
+            $array['otp'] = rand(1111, 9999);
+            $array['pickup_time'] = $ride['date'] . ' ' . $this->sqlTime($time);
+            if ($ride['type'] == 'Drop') {
+                $array['pickup_location'] = $project['location'];
+                $array['drop_location'] = $passenger['location'];
+            } else {
+                $array['pickup_location'] = $passenger['location'];
+                $array['drop_location'] = $project['location'];
+            }
+            $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
         }
-        $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         return json_encode($ride_passengers);
     }
@@ -602,7 +605,7 @@ class HomeController extends Controller
     {
         $detail = $this->model->getRowArray('ride_passenger', 'id', $id);
         $this->model->updateTable('ride_passenger', 'id', $id, 'is_active', 0);
-       // $ride_passengers = $this->model->getRidePassenger($detail['ride_id']);
-       // return json_encode($ride_passengers);
+        // $ride_passengers = $this->model->getRidePassenger($detail['ride_id']);
+        // return json_encode($ride_passengers);
     }
 }

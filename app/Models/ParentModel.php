@@ -193,14 +193,13 @@ class ParentModel extends Model
 
 
 
-    public function isExistData($merchant_id, $table, $key, $value)
+    public function isExistData($table, $key, $value)
     {
 
         $retObj = DB::table($table)
             ->select(DB::raw('*'))
             ->where($key, $value)
             ->where('is_active', 1)
-            ->where('merchant_id', $merchant_id)
             ->first();
         if (!empty($retObj)) {
             return true;
