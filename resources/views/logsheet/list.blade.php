@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="row">
+<div class="">
     <div class="col-lg-12">
         @isset($success_message)
         <div class="alert alert-success alert-dismissible">

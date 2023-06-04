@@ -52,7 +52,7 @@
 							<div class="form-group">
                                 <label class="control-label col-md-4">Logsheet no<span class="required"> * </span></label>
                                 <div class="col-md-7">
-                                    <input type="text" required=""  name="logsheet_no" class="form-control">
+                                    <input type="text" required="" @if(!empty($det)) value="{{$det->logsheet_no}}" @endif name="logsheet_no" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -61,7 +61,7 @@
                                     <div class="bootstrap-timepicker">
                                         <div class="">
                                             <div class="input-group">
-                                                <input type="text" required="" readonly="" value="08:00 AM" name="pickup_time" class="form-control timepicker">
+                                                <input type="text" required="" readonly="" @if(!empty($det)) value="{{$pickup_time}}" @else  value="08:00 AM" @endif  name="pickup_time" class="form-control timepicker">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-clock-o"></i>
                                                 </div>
@@ -76,7 +76,7 @@
                                     <div class="bootstrap-timepicker">
                                         <div class="">
                                             <div class="input-group">
-                                                <input type="text" required="" readonly="" value="08:00 AM" name="drop_time" class="form-control timepicker">
+                                                <input type="text" required="" readonly=""  @if(!empty($det)) value="{{$drop_time}}" @else  value="08:00 AM" @endif name="drop_time" class="form-control timepicker">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-clock-o"></i>
                                                 </div>
@@ -94,6 +94,9 @@
                                         @foreach ($vehicle_list as $item)
                                         <option value="{{$item->number}}">{{$item->number}}</option>
                                         @endforeach
+                                        @if(!empty($det))
+                                        <option selected value="{{$car_no}}">{{$car_no}}</option>
+                                        @endif  
                                     </select>
                                 </div>
                             </div>
@@ -103,7 +106,7 @@
                                     <select name="zone_id" required class="form-control select2" data-placeholder="Select...">
                                         <option value="">Select package</option>
                                         @foreach ($zone as $item)
-                                        <option value="{{$item->zone_id}}">{{$item->zone}} {{$item->car_type}}</option>
+                                        <option @if($cab_zone==$item->zone) selected @endif  value="{{$item->zone_id}}">{{$item->zone}} {{$item->car_type}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -112,19 +115,19 @@
 							<div class="form-group">
                                 <label class="control-label col-md-4">Toll<span class="required">  </span></label>
                                 <div class="col-md-7">
-                                    <input type="number"  pattern="[0-9]*" name="toll" class="form-control">
+                                    <input type="number" @if(!empty($det)) value="{{$det->toll}}" @endif   pattern="[0-9]*" name="toll" class="form-control">
                                 </div>
                             </div>
 							<div class="form-group">
                                 <label class="control-label col-md-4">Employee name<span class="required">  </span></label>
                                 <div class="col-md-7">
-                                    <input type="text"   name="employee_name" class="form-control">
+                                    <input type="text" @if(!empty($det)) value="{{$det->employee_name}}" @endif   name="employee_name" class="form-control">
                                 </div>
                             </div>
 							<div class="form-group">
                                 <label class="control-label col-md-4">User count<span class="required"> * </span></label>
                                 <div class="col-md-7">
-                                    <input type="number" required="" pattern="[0-9]*" name="user_count" class="form-control">
+                                    <input type="number" required="" @if(!empty($det)) value="{{$det->user_count}}" @endif pattern="[0-9]*" name="user_count" class="form-control">
                                 </div>
                             </div>
 							
@@ -132,8 +135,8 @@
                                 <label class="control-label col-md-4">Pickup/Drop<span class="required"> * </span></label>
                                 <div class="col-md-7">
                                     <select name="pickup_drop"  class="form-control select2" data-placeholder="Select...">
-                                        <option value="Pickup">Pickup</option>
-										<option value="Drop">Drop</option>
+                                        <option @if($pickup_drop=='Pickup') selected @endif value="Pickup">Pickup</option>
+										<option @if($pickup_drop=='Drop') selected @endif value="Drop">Drop</option>
                                     </select>
                                 </div>
                             </div>
@@ -141,13 +144,13 @@
 							<div class="form-group">
                                 <label class="control-label col-md-4">Pickup<span class="required"> * </span></label>
                                 <div class="col-md-7">
-                                    <input type="text" required=""  name="pickup" class="form-control">
+                                    <input type="text" required="" @if(!empty($det)) value="{{$det->pickup_location}}" @endif   name="pickup" class="form-control">
                                 </div>
                             </div>
 							<div class="form-group">
                                 <label class="control-label col-md-4">Drop<span class="required"> * </span></label>
                                 <div class="col-md-7">
-                                    <input type="text" required=""  name="drop" class="form-control">
+                                    <input type="text" required="" @if(!empty($det)) value="{{$det->drop_location}}" @endif  name="drop" class="form-control">
                                 </div>
                             </div>
                             @if($company_type==3)
@@ -159,20 +162,23 @@
                                         @foreach ($location as $item)
                                         <option value="{{$item->name}}">{{$item->name}}</option>
                                         @endforeach
+                                        @if(!empty($det))
+                                        <option value="{{$det->office_location}}">{{$det->office_location}}</option>
+                                        @endif  
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">Vendor<span class="required">  </span></label>
                                 <div class="col-md-7">
-                                    <input type="text"   name="vendor" class="form-control">
+                                    <input type="text" @if(!empty($det)) value="{{$det->vendor}}" @endif   name="vendor" class="form-control">
                                 </div>
                             </div>
                             @endif
 							<div class="form-group">
                                 <label class="control-label col-md-4">Remark<span class="required">  </span></label>
                                 <div class="col-md-7">
-                                    <input type="text"   name="remark" class="form-control">
+                                    <input type="text" @if(!empty($det)) value="{{$det->remark}}" @endif   name="remark" class="form-control">
                                 </div>
                             </div>
 
@@ -187,6 +193,7 @@
                                     <p id="loaded_n_total"></p>
                                     <a href="" class="btn btn-default pull-right">Close</a>
                                     <input type="hidden" name="company_id" value="{{$company_id}}">
+                                    <input type="hidden" @if(!empty($det)) value="{{$det->id}}" @else value="0" @endif   name="id" class="form-control">
                                     <button id="savebutton" type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                                     <a id="conf" data-toggle="modal" href="#modal-confirm"></a>
                                 </div>

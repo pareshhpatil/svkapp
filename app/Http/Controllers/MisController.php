@@ -51,9 +51,25 @@ class MisController extends Controller
         return view('mis.create', $data);
     }
 
-    public function createcompanymis()
+    public function createcompanymis($id = null)
     {
         $this->validateSession(array(1, 2));
+        $det = [];
+        $data['current_date'] = date('d-m-Y');
+        $data['pickup_drop'] = 'Drop';
+        $data['car_no'] = '0';
+        $data['cab_zone'] = '';
+        if ($id > 0) {
+            $det = $this->master_model->getMasterDetail('company_mis', 'id', $id);
+            $_POST['company_id'] = $det->company_id;
+            $data['current_date'] = date('d-m-Y', strtotime($det->date));
+            $data['pickup_time'] = date('h:i A', strtotime($det->pickup_time));
+            $data['drop_time'] = date('h:i A', strtotime($det->drop_time));
+            $data['pickup_drop'] = $det->pickup_drop;
+            $data['car_no'] = $det->car_no;
+            $data['cab_zone'] = $det->zone;
+            $data['det'] = $det;
+        }
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $mis_employee = $this->master_model->getMaster('mis_employee', 0);
         $location = $this->master_model->getMaster('location', 0);
@@ -70,7 +86,6 @@ class MisController extends Controller
         }
 
         $data['title'] = 'MIS';
-        $data['current_date'] = date('d-m-Y');
         $data['vehicle_list'] = $vehicle_list;
         $data['mis_employee'] = $mis_employee;
         $data['user_type'] = $this->user_type;
@@ -269,21 +284,20 @@ class MisController extends Controller
             $array = json_decode(json_encode($invoice_list), True);
             foreach ($array as $key => $row) {
                 $export[$key]['Date'] = date('d/m/Y', strtotime($row['date']));
-				$export[$key]['Package'] = $row['zone'];
-				$export[$key]['Logsheet number'] = $row['logsheet_no'];
+                $export[$key]['Package'] = $row['zone'];
+                $export[$key]['Logsheet number'] = $row['logsheet_no'];
                 $export[$key]['Company name'] = $row['company_name'];
-				$export[$key]['Car Type'] = $row['car_type'];
-				$export[$key]['Car Number'] = $row['car_no'];
-				$export[$key]['Pickup/Drop'] = $row['pickup_drop'];
-				$export[$key]['Pickup location'] = $row['pickup_location'];
-				$export[$key]['Drop location'] = $row['drop_location'];
-				$export[$key]['Pickup time'] = date('h:i', strtotime($row['pickup_time']));
-				$export[$key]['Drop time'] = date('h:i', strtotime($row['drop_time']));
-				$export[$key]['Toll'] = $row['toll'];
-                
+                $export[$key]['Car Type'] = $row['car_type'];
+                $export[$key]['Car Number'] = $row['car_no'];
+                $export[$key]['Pickup/Drop'] = $row['pickup_drop'];
+                $export[$key]['Pickup location'] = $row['pickup_location'];
+                $export[$key]['Drop location'] = $row['drop_location'];
+                $export[$key]['Pickup time'] = date('h:i', strtotime($row['pickup_time']));
+                $export[$key]['Drop time'] = date('h:i', strtotime($row['drop_time']));
+                $export[$key]['Toll'] = $row['toll'];
+
                 $export[$key]['Employee name'] = $row['employee_name'];
                 $export[$key]['Remark'] = $row['remark'];
-                
             }
             $this->exportExcel($export, 'MIS');
         }

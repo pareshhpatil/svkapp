@@ -48,41 +48,51 @@ class Mis extends Model
 
     public function saveCompanyMIS($request, $det, $date, $pickup_time, $drop_time, $user_id)
     {
-		$pickup_location=($request->pickup!='')? $request->pickup : $det->from;
-		$drop_location=($request->drop!='')? $request->drop : $det->to;
+        $pickup_location = ($request->pickup != '') ? $request->pickup : $det->from;
+        $drop_location = ($request->drop != '') ? $request->drop : $det->to;
 
-        $id = DB::table('company_mis')->insertGetId(
-            [
-                'date' => $date,
-                'pickup_time' => $pickup_time,
-                'drop_time' => $drop_time,
-                'pickup_location' => $pickup_location,
-                'drop_location' => $drop_location,
-                'company_id' => $request->company_id,
-                'office_location' => $request->office_location,
-                'vendor' => $request->vendor,
-                'user_count' => $request->user_count,
-                'car_no' => $request->car_no,
-                'car_type' => $det->car_type,
-                'zone' => $det->zone,
-                'svk_km' => $det->svk_km,
-                'vendor_km' => $det->vendor_km,
-                'admin_km' => $det->admin_km,
-                'company_km' => $det->company_km,
-                'svk_amount' => $det->svk_amount,
-                'vendor_amount' => $det->vendor_amount,
-                'admin_amount' => $det->admin_amount,
-                'company_amount' => $det->company_amount,
-				'logsheet_no' => $request->logsheet_no,
-				'toll' => $request->toll,
-				'pickup_drop' => $request->pickup_drop,
-				'remark' => $request->remark,
-				'employee_name' => $request->employee_name,
-                'created_by' => $user_id,
-                'created_date' => date('Y-m-d H:i:s'),
-                'last_update_by' => $user_id
-            ]
-        );
+        $array = [
+            'date' => $date,
+            'pickup_time' => $pickup_time,
+            'drop_time' => $drop_time,
+            'pickup_location' => $pickup_location,
+            'drop_location' => $drop_location,
+            'company_id' => $request->company_id,
+            'office_location' => $request->office_location,
+            'vendor' => $request->vendor,
+            'user_count' => $request->user_count,
+            'car_no' => $request->car_no,
+            'car_type' => $det->car_type,
+            'zone' => $det->zone,
+            'svk_km' => $det->svk_km,
+            'vendor_km' => $det->vendor_km,
+            'admin_km' => $det->admin_km,
+            'company_km' => $det->company_km,
+            'svk_amount' => $det->svk_amount,
+            'vendor_amount' => $det->vendor_amount,
+            'admin_amount' => $det->admin_amount,
+            'company_amount' => $det->company_amount,
+            'logsheet_no' => $request->logsheet_no,
+            'toll' => $request->toll,
+            'pickup_drop' => $request->pickup_drop,
+            'remark' => $request->remark,
+            'employee_name' => $request->employee_name,
+            'created_by' => $user_id,
+            'created_date' => date('Y-m-d H:i:s'),
+            'last_update_by' => $user_id
+        ];
+
+        if ($request->id > 0) {
+            $id = $request->id;
+            DB::table('company_mis')
+                ->where('id', $request->id)
+                ->update($array);
+        } else {
+            $id = DB::table('company_mis')->insertGetId(
+                $array
+            );
+        }
+
         return $id;
     }
 

@@ -109,6 +109,7 @@ Route::get('/admin/mis/deletemis/{id}', 'MisController@deletemis');
 Route::get('/admin/mis/deletecompanymis/{id}', 'MisController@deletecompanymis');
 
 Route::any('/admin/mis/createcompanymis', 'MisController@createcompanymis');
+Route::any('/admin/mis/updatecompanymis/{id}', 'MisController@createcompanymis');
 
 Route::get('/admin/mis/updatekm/{from_date}/{to_date}', 'MisController@updatekm');
 
