@@ -10,7 +10,7 @@
                     </tr>
                     <tr>
                         <td colspan="11" class="td-c " style="font-size: 15px;font-weight: bold;">
-                            {{$company->name}} {{$company->address}}
+                            {{$company->name}} 
                             <br>
                             Logsheet Entry for the month of {{$month}}
                         </td>
@@ -18,6 +18,10 @@
                     <tr>
                         <td colspan="11" class="td-c" style="font-size: 15px;font-weight: bold;">
                             Summery of Car No: ({{$vehicle->car_type}}){{$vehicle->number}}
+							@if($invoice->narrative!='')
+							<br>
+							{{$invoice->narrative}}
+							@endif
                         </td>
                     </tr>
                     <tr>

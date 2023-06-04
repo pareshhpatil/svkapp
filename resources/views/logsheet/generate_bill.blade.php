@@ -225,6 +225,11 @@
                                         <th><span class="pull-right">
                                                 <input type="text" name="work_order_no" value="{{$work_order_no}}" class="form-control"></span></th>
                                     </tr>
+									<tr>
+                                        <td colspan="4" style="vertical-align: middle;"><span class="pull-right"><b>Description</b></span></td>
+                                        <th><span class="pull-right">
+                                                <input type="text" name="narrative" value="{{$narrative}}" class="form-control"></span></th>
+                                    </tr>
                                 </tbody>
 
                             </table>

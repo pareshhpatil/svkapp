@@ -468,6 +468,8 @@ class LogsheetController extends Controller
             $invoice_number = $this->logsheet_model->getInvoiceNumber($request->invoice_seq);
             $invoice_id = $this->logsheet_model->saveLogsheetInvoice($invoice_number, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $this->user_id, $this->admin_id);
         }
+		
+		$this->master_model->updateTableColumn('logsheet_invoice', 'narrative', $_POST['narrative'], 'invoice_id', $invoice_id, $this->user_id);
         $int = 0;
         foreach ($_POST['int'] as $row) {
             if ($_POST['detail_id'][$int] > 0) {
@@ -520,6 +522,7 @@ class LogsheetController extends Controller
         $id = 0;
         $data['admin_id'] = $this->admin_id;
         $data['work_order_no'] = '';
+		$data['narrative'] = '';
         if (isset($_POST['vehicle_id'])) {
             $data['vehicle_id'] = $_POST['vehicle_id'];
             $data['company_id'] = $_POST['company_id'];
@@ -530,6 +533,7 @@ class LogsheetController extends Controller
             $data['vehicle_id'] = 0;
             $data['company_id'] = 0;
             $data['month'] = '';
+			
         }
 
         if ($link != null) {
@@ -542,6 +546,7 @@ class LogsheetController extends Controller
             $data['vehicle_id'] = $invoice->vehicle_id;
             $data['company_id'] = $invoice->company_id;
             $data['work_order_no'] = $invoice->work_order_no;
+			$data['narrative'] = $invoice->narrative;
             $data['month'] = date('M-Y', strtotime($invoice->date));
             $date = $invoice->date;
         }

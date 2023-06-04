@@ -170,6 +170,12 @@
         let h, m;
         h = Math.floor(timeInMiliseconds / 1000 / 60 / 60);
         m = Math.floor((timeInMiliseconds / 1000 / 60 / 60 - h) * 60);
+		
+		if(e<t)
+		{
+			
+			h=24+h;
+		}
 
         _('total_time' + id).value = h + ':' + m;
 

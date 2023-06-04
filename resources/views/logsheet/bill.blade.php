@@ -47,7 +47,7 @@
                                         <div class="col-md-12" >
                                             <p><b>Address:</b> {{$admin->address}}</p>
                                         </div>
-										@if($company->company_id==24)
+										@if($company->rcm==1)
 										<div class="col-md-12" >
                                             <p><b>RCM Applicable :</b> Yes</p>
                                         </div>
@@ -72,6 +72,7 @@
                                             <p><b>Work Order No:</b>  {{$invoice->work_order_no}}</p>
                                         </div>
 										@endif
+										
                                     </td>
                                 </tr>
 								@if($company->company_id==1 || $company->company_id==5 || $company->company_id==8)
@@ -95,6 +96,11 @@
                                         <div class="col-md-12" >
                                             <p><b>Address:</b> {{$company->address}}</p>
                                         </div>
+										@if($invoice->narrative!='')
+										<div class="col-md-12" >
+                                            <p>{{$invoice->narrative}}</p>
+                                        </div>
+										@endif
                                     </td>
                                 </tr>
                                 <tr>
