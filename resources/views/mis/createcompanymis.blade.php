@@ -193,7 +193,7 @@
                                     <p id="loaded_n_total"></p>
                                     <a href="" class="btn btn-default pull-right">Close</a>
                                     <input type="hidden" name="company_id" value="{{$company_id}}">
-                                    <input type="hidden" @if(!empty($det)) value="{{$det->id}}" @else value="0" @endif   name="id" class="form-control">
+                                    <input type="hidden" @if(!empty($det)) value="{{$det->id}}" @else value="0" @endif id="id"  name="id" class="form-control">
                                     <button id="savebutton" type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                                     <a id="conf" data-toggle="modal" href="#modal-confirm"></a>
                                 </div>

@@ -11,16 +11,16 @@
         @endisset
         <div class="panel panel-primary">
             <div class="panel-body" style="overflow: auto;">
-                <div class="row"  >
+                <div class="row">
                     <form action="" method="post" class="form-horizontal">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="col-md-12">
                             <div class="col-md-3">
-                                <input type="text" name="from_date" readonly="" required="" value="{{$from_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy" >
+                                <input type="text" name="from_date" readonly="" required="" value="{{$from_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy">
                                 <div class="help-block"></div>
                             </div>
                             <div class="col-md-3">
-                                <input type="text" name="to_date" readonly="" required="" value="{{$to_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy" >
+                                <input type="text" name="to_date" readonly="" required="" value="{{$to_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy">
                                 <div class="help-block"></div>
                             </div>
                             <div class="col-md-3">
@@ -39,7 +39,7 @@
                             </div>
 
                             <div class="col-md-1">
-                                <button  type="submit" class="btn btn-primary">Submit </button>
+                                <button type="submit" class="btn btn-primary">Submit </button>
                             </div>
                             <div class="col-md-1">
                                 <button name="export" type="submit" class="btn btn-success">Export </button>
@@ -87,6 +87,7 @@
                             <td>{{$item->shift_time}}</td>
                             <td>{{$item->toll}}</td>
                             <td>
+
                                 <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/mis/deletemis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
 

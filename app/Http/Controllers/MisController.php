@@ -51,7 +51,7 @@ class MisController extends Controller
         return view('mis.create', $data);
     }
 
-    public function createcompanymis($id = null)
+    public function createcompanymis($link = null)
     {
         $this->validateSession(array(1, 2));
         $det = [];
@@ -59,7 +59,8 @@ class MisController extends Controller
         $data['pickup_drop'] = 'Drop';
         $data['car_no'] = '0';
         $data['cab_zone'] = '';
-        if ($id > 0) {
+        if ($link != null) {
+            $id = $this->encrypt->decode($link);
             $det = $this->master_model->getMasterDetail('company_mis', 'id', $id);
             $_POST['company_id'] = $det->company_id;
             $data['current_date'] = date('d-m-Y', strtotime($det->date));

@@ -88,6 +88,8 @@
 							<td>{{$item->employee_name}}</td>
 							<td>{{$item->remark}}</td>
                             <td>
+                            <a href="/admin/mis/updatecompanymis/{{$item->link}}" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
+
                                 <a href="#"  onclick="$(this).closest('tr').remove();deletelink = '/admin/mis/deletecompanymis/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
                             </td>
 
