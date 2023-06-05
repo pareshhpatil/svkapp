@@ -171,6 +171,7 @@ class PassengerController extends Controller
             $row['project_id'] = $request->project_id;
             $exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
             if ($exist == false) {
+                $row['address'] = str_replace(array("\r", "\n", "'"), '', $row['address']);
                 $this->model->saveTable('passenger', $row, $this->user_id);
             }
         }
