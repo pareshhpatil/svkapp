@@ -119,6 +119,9 @@ class ApiController extends Controller
     public function userSMS($user_id, $user_type, $message_, $template_id)
     {
         $number_ = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type]);
+        if ($number_ == false && $user_type == 5) {
+            $number_ = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+        }
         $this->sendSMS($number_, $message_, $template_id);
     }
 
