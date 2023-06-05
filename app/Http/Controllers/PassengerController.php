@@ -169,7 +169,11 @@ class PassengerController extends Controller
         $this->user_id = Session::get('user_id');
         foreach ($_POST['group-a'] as $row) {
             $row['project_id'] = $request->project_id;
-            $exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
+            $exist = false;
+			if($row['mobile']!='')
+			{
+				$exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
+			}
             if ($exist == false) {
                 $row['address'] = str_replace(array("\r", "\n", "'"), '', $row['address']);
                 $this->model->saveTable('passenger', $row, $this->user_id);
