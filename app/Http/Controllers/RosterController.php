@@ -106,9 +106,9 @@ class RosterController extends Controller
             }
         }
         if ($request->ride_id > 0) {
-            return redirect()->back()->withSuccess('Roster added successfully');
-        } else {
             return redirect('/roster/list')->withSuccess('Roster updated successfully');
+        } else {
+            return redirect()->back()->withSuccess('Roster added successfully');
         }
     }
 
