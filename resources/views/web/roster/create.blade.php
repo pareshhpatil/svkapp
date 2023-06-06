@@ -10,7 +10,13 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-6">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span> Create</h4>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span>
+                    @if(!empty($det))
+                    Update
+                    @else
+                    Create
+                    @endif
+                </h4>
             </div>
         </div>
         <div class="card invoice-preview-card">
@@ -31,45 +37,74 @@
                                 <option value=""></option>
                                 @if(!empty($project_list))
                                 @foreach($project_list as $v)
-                                <option value="{{$v->project_id}}">{{$v->name}}</option>
+                                <option @if(!empty($det)) @if($det->project_id==$v->project_id) selected @endif @endif value="{{$v->project_id}}">{{$v->name}}</option>
                                 @endforeach
                                 @endif
                             </select>
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Date</label>
-                            <input type="text" name="date" required id="bs-datepicker-autoclose" placeholder="DD MM YYYY" class="form-control" />
+                            <input type="text" autocomplete="off" name="date" @if(!empty($det)) value="{{$det->date}}" @endif required id="bs-datepicker-autoclose" placeholder="DD MM YYYY" class="form-control" />
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Type</label>
                             <select required name="type" class="form-select  mb-3">
                                 <option selected value="">Select</option>
-                                <option value="Pickup">Pickup</option>
-                                <option value="Drop">Drop</option>
+                                <option @if(!empty($det)) @if($det->type=='Pickup') selected @endif @endif value="Pickup">Pickup</option>
+                                <option @if(!empty($det)) @if($det->type=='Drop') selected @endif @endif value="Drop">Drop</option>
                             </select>
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Start Location</label>
-                            <input type="text" name="start_location" class="form-control" />
+                            <input @if(!empty($det)) value="{{$det->start_location}}" @endif type="text" name="start_location" class="form-control" />
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">End Location</label>
-                            <input type="text" name="end_location" class="form-control" />
+                            <input type="text" @if(!empty($det)) value="{{$det->end_location}}" @endif name="end_location" class="form-control" />
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Start Time</label>
-                            <input type="time" name="start_time" class="form-control" />
+                            <input type="time" @if(!empty($det)) value="{{$det->start_time}}" @endif name="start_time" class="form-control" />
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">End Time</label>
-                            <input type="time" name="end_time" class="form-control" />
+                            <input type="time" @if(!empty($det)) value="{{$det->end_time}}" @endif name="end_time" class="form-control" />
                         </div>
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Title</label>
-                            <input type="text" maxlength="45" name="title" placeholder="Enter title eg. Slab 1" class="form-control" />
+                            <input type="text" maxlength="45" @if(!empty($det)) value="{{$det->title}}" @endif name="title" placeholder="Enter title eg. Slab 1" class="form-control" />
                         </div>
                     </div>
                     <div class="mb-3" data-repeater-list="passengers">
+                        @if(!empty($passengers))
+                        @foreach($passengers as $rp)
+                        <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>
+                            <div class="d-flex border rounded position-relative pe-0">
+                                <div class="row w-100 p-3">
+                                    <div class="col-md-4 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">Name</p>
+                                        <select name="passenger_id" class="select2 form-select form-select-lg input-sm" data-allow-clear="true">
+                                            <option value=""></option>
+                                            @if(!empty($passenger_list))
+                                            @foreach($passenger_list as $v)
+                                            <option @if($rp->passenger_id==$v->id) selected @endif value="{{$v->id}}">{{$v->location}} - {{$v->employee_name}}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">Pickup time</p>
+                                        <input type="time" name="pickup_time" value="{{date('H:i:s', strtotime($rp->pickup_time))}}" class="form-control" />
+                                        <input type="hidden" name="pid" value="{{$rp->id}}" />
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column align-items-center justify-content-between border-start p-2">
+                                    <i class="ti ti-x cursor-pointer" data-repeater-delete></i>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        @else
                         <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>
                             <div class="d-flex border rounded position-relative pe-0">
                                 <div class="row w-100 p-3">
@@ -87,6 +122,7 @@
                                     <div class="col-md-2 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Pickup time</p>
                                         <input type="time" name="pickup_time" class="form-control" />
+                                        <input type="hidden" name="pid" value="0" />
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column align-items-center justify-content-between border-start p-2">
@@ -94,6 +130,8 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
+
                     </div>
                     <div class="row pb-4">
                         <div class="col-12">
@@ -103,6 +141,7 @@
                     <hr class="my-3 mx-n4">
                     <div class="row pb-4">
                         <div class="col-12 pull-right">
+                            <input type="hidden" name="ride_id" @if(!empty($det)) value="{{$det->id}}" @else value="0" @endif>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>

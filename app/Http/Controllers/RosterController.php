@@ -33,12 +33,20 @@ class RosterController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function create()
+    public function create($id = null)
     {
         $data['selectedMenu'] = [7, 8];
         $data['menus'] = Session::get('menus');
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
         $data['passenger_list'] = $this->model->getTableList('passenger', 'is_active', 1);
+        $data['det'] = [];
+        if ($id > 0) {
+            $data['det'] = $this->model->getTableRow('ride', 'id', $id);
+            $data['det']->date = $this->htmlDate($data['det']->date, 1);
+            $data['det']->start_time = $this->sqlTime($data['det']->start_time);
+            $data['det']->end_time = $this->sqlTime($data['det']->end_time);
+            $data['passengers'] = $this->model->getTableList('ride_passenger', 'ride_id', $id);
+        }
         $passenger_list = [];
         //  if (!empty($data['passenger_list'])) {
         //  foreach ($data['passenger_list'] as $p) {
@@ -66,7 +74,14 @@ class RosterController extends Controller
         $array['total_passengers'] = count($request->passengers);
         $array['start_time'] = $array['date'] . ' ' . $this->sqlTime($request->start_time);
         $array['end_time'] = $array['date'] . ' ' . $this->sqlTime($request->end_time);
-        $ride_id = $this->model->saveTable('ride', $array, $user_id);
+        if ($request->ride_id > 0) {
+            $ride_id = $request->ride_id;
+            $this->model->updateArray('ride', 'id', $ride_id, $array);
+            $this->model->updateTable('ride_passenger', 'ride_id', $ride_id, 'is_active', 0);
+        } else {
+            $ride_id = $this->model->saveTable('ride', $array, $user_id);
+        }
+
         foreach ($request->passengers as $row) {
             $row['pickup_time'] = $array['date'] . ' ' . $this->sqlTime($row['pickup_time']);
             $row['ride_id'] = $ride_id;
@@ -79,10 +94,22 @@ class RosterController extends Controller
                 $row['pickup_location'] = $array['start_location'];
                 $row['drop_location'] = $emp_location;
             }
-            $row['otp'] = rand(1111, 9999);
-            $this->model->saveTable('ride_passenger', $row, $user_id);
+            if ($row['pid'] > 0) {
+                $pid = $row['pid'];
+                unset($row['pid']);
+                $row['is_active'] = 1;
+                $this->model->updateArray('ride_passenger', 'id', $pid, $row);
+            } else {
+                unset($row['pid']);
+                $row['otp'] = rand(1111, 9999);
+                $this->model->saveTable('ride_passenger', $row, $user_id);
+            }
         }
-        return redirect()->back()->withSuccess('Roster added successfully');
+        if ($request->ride_id > 0) {
+            return redirect()->back()->withSuccess('Roster added successfully');
+        } else {
+            return redirect('/roster/list')->withSuccess('Roster updated successfully');
+        }
     }
 
 
@@ -126,7 +153,7 @@ class RosterController extends Controller
             $short_url = $this->random();
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
             $url = 'https://app.svktrv.in/l/' . $short_url;
-            
+
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $apiController->sendSMS($row->passenger_id, 5, $message_, '1107168138570499675');
         }

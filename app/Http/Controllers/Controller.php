@@ -29,8 +29,11 @@ class Controller extends BaseController
             return date('h:i:A', strtotime($time));
         }
     }
-    public function htmlDate($time)
+    public function htmlDate($time, $dateonly = 0)
     {
+        if ($dateonly == 1) {
+            return date('d M Y', strtotime($time));
+        }
         $w = substr(date("l", strtotime($time)), 0, 3);
         if ($time != '') {
             return $w . date(' d M Y', strtotime($time));

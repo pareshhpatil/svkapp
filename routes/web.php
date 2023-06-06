@@ -39,6 +39,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
     Route::any('/roster/assign', [App\Http\Controllers\RosterController::class, 'assign']);
     Route::get('/roster/delete/{id}', [App\Http\Controllers\RosterController::class, 'delete']);
+    Route::get('/roster/update/{id}', [App\Http\Controllers\RosterController::class, 'create']);
 
 
     Route::get('/ajax/roster/{project_id}/{date?}/{status?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
