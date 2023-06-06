@@ -78,7 +78,7 @@
                     <div class="mb-3" data-repeater-list="passengers">
                         @if(!empty($passengers))
                         @foreach($passengers as $rp)
-                        <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>
+                        <div id="div{{$rp->id}}" class="repeater-wrapper pt-0 pt-md-4" data-repeater-item>
                             <div class="d-flex border rounded position-relative pe-0">
                                 <div class="row w-100 p-3">
                                     <div class="col-md-4 col-12 mb-md-0 mb-3">
@@ -99,7 +99,7 @@
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column align-items-center justify-content-between border-start p-2">
-                                    <i class="ti ti-x cursor-pointer" data-repeater-delete></i>
+                                    <i class="ti ti-x cursor-pointer" onclick="document.getElementById('div{{$rp->id}}').remove();" data-repeater-delete></i>
                                 </div>
                             </div>
                         </div>
