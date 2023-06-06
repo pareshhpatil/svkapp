@@ -78,6 +78,16 @@
 
     });
 
+    function deletePassenger(id) {
+        response = confirm('Are you sure you want to delete this item?');
+        if (response == true) {
+            $.get("/passenger/delete/" + id, function(data, status) {
+                dt_basic.destroy();
+                datatable();
+            });
+        }
+    }
+
 
     function datatable() {
         var dt_basic_table = $('#datatable');
@@ -125,8 +135,8 @@
                             '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>' +
                             '<ul class="dropdown-menu dropdown-menu-end m-0">' +
                             '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a></li>' +
+                            '<li><a href="/passenger/update/'+ full.id +'" class="dropdown-item">Edit</a></li>' +
+                            '<li><a href="javascript:;" onclick="' + "deletePassenger(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
                             '</ul>' +
                             '</div>'
                         );

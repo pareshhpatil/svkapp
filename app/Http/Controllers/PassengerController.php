@@ -29,11 +29,15 @@ class PassengerController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function create()
+    public function create($id = null)
     {
         $data['selectedMenu'] = [2, 3];
         $data['menus'] = Session::get('menus');
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        $data['det'] = [];
+        if ($id > 0) {
+            $data['det'] = $this->model->getTableRow('passenger', 'id', $id);
+        }
 
         return view('web.passenger.create', $data);
     }
@@ -164,22 +168,34 @@ class PassengerController extends Controller
         return json_encode($data);
     }
 
+    public function delete($id)
+    {
+        $this->model->updateTable('passenger', 'id', $id, 'is_active', 0);
+    }
+
     public function save(Request $request)
     {
         $this->user_id = Session::get('user_id');
         foreach ($_POST['group-a'] as $row) {
             $row['project_id'] = $request->project_id;
             $exist = false;
-			if($row['mobile']!='')
-			{
-				$exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
-			}
-            if ($exist == false) {
-                $row['address'] = str_replace(array("\r", "\n", "'"), '', $row['address']);
-                $this->model->saveTable('passenger', $row, $this->user_id);
+            $row['address'] = str_replace(array("\r", "\n", "'"), '', $row['address']);
+            if ($request->passenger_id) {
+                $this->model->updateArray('passenger', 'id', $request->passenger_id, $row);
+            } else {
+                if ($row['mobile'] != '') {
+                    $exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
+                }
+                if ($exist == false) {
+                    $this->model->saveTable('passenger', $row, $this->user_id);
+                }
             }
         }
 
-        return redirect()->back()->withSuccess('Passengers added successfully');
+        if ($request->passenger_id > 0) {
+            return redirect('/passenger/list')->withSuccess('Passenger updated successfully');
+        } else {
+            return redirect()->back()->withSuccess('Passengers added successfully');
+        }
     }
 }

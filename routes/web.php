@@ -33,12 +33,16 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/passenger/save', [App\Http\Controllers\PassengerController::class, 'save']);
     Route::get('/ajax/passenger/{project_id}/{type}/{bulk_id}', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
     Route::get('/passenger/import/{type}/{link}', [App\Http\Controllers\PassengerController::class, 'changeStatus']);
+    Route::get('/passenger/update/{id}', [App\Http\Controllers\PassengerController::class, 'create']);
 
     Route::get('/roster/create', [App\Http\Controllers\RosterController::class, 'create']);
     Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
     Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
     Route::any('/roster/assign', [App\Http\Controllers\RosterController::class, 'assign']);
+    
+    Route::get('/passenger/delete/{id}', [App\Http\Controllers\PassengerController::class, 'delete']);
     Route::get('/roster/delete/{id}', [App\Http\Controllers\RosterController::class, 'delete']);
+
     Route::get('/roster/update/{id}', [App\Http\Controllers\RosterController::class, 'create']);
 
 
