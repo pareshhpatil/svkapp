@@ -318,16 +318,6 @@
         lod(true);
         start();
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
-
-        setInterval(function() {
-            try {
-                stop();
-                start();
-            } catch (o) {
-                alert(o.Message);
-            }
-
-        }, 30000);
     }
 
     function stoplocation() {
@@ -335,6 +325,12 @@
         stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
+    @if($data['ride']['status']==1)
+    setInterval(function() {
+                stop();
+                start();
+        }, 60000);
+    @endif
 </script>
 
 <script>
