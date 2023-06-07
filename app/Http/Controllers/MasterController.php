@@ -25,6 +25,9 @@ class MasterController extends Controller
 
     public function masterAdd($type)
     {
+        if ($type == '__manifest.json') {
+            return false;
+        }
         $data['menu'] = 0;
         $data['title'] = 'Add ' . $type;
         return view('master.' . $type . '-add', $data);
