@@ -49,6 +49,9 @@ class LoginController extends Controller
 
     public function otp($link)
     {
+        if ($link == '__manifest.json') {
+            return false;
+        }
         $model =  new ApiModel();
         $otp_id = Encryption::decode($link);
         $row = $model->getTableRow('otp', 'id', $otp_id, 1);
