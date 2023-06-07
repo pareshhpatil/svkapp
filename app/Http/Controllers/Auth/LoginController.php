@@ -55,6 +55,9 @@ class LoginController extends Controller
         $model =  new ApiModel();
         $otp_id = Encryption::decode($link);
         $row = $model->getTableRow('otp', 'id', $otp_id, 1);
+        if ($row == false) {
+            return redirect('/login');
+        }
         $data = json_decode(json_encode($row), 1);
         $data['link'] = $link;
         return view('auth.otp', $data);
