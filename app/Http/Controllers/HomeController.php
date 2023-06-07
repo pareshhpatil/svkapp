@@ -78,7 +78,9 @@ class HomeController extends Controller
             return false;
         }
         $id = Encryption::decode($link);
+        
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
+        
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
         $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
         $driver = [];

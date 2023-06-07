@@ -127,7 +127,7 @@
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
-                    <h4 class="title"><span v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');" v-html="item.name"></span>
+                    <h4 class="title"><span v-on:click="window.open('https://www.google.com/maps/search/?api=1&query='+item.address, '_system');" v-html="item.name"></span>
                         <div v-if="item.status!=3" class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
                                 <div class="dropdown">
@@ -135,7 +135,7 @@
                                         IN
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" style="">
-                                        <a v-if="item.status==0" class="dropdown-item" v-on:click="window.open('https://www.google.com/maps/place/'+item.address, '_system');">Navigate</a>
+                                        <a v-if="item.status==0" class="dropdown-item" v-on:click="window.open('https://www.google.com/maps/search/?api=1&query='+item.address, '_system');">Navigate</a>
                                         <div class="dropdown-divider"></div>
                                         <a v-if="item.status!=5" class="dropdown-item" v-on:click="reach(index);">Reached at Location</a>
                                         <div class="dropdown-divider"></div>
