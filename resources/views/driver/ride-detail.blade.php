@@ -320,8 +320,13 @@
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
 
         setInterval(function() {
-            stop();
-            start();
+            try {
+                stop();
+                start();
+            } catch (o) {
+                alert(o.Message);
+            }
+
         }, 30000);
     }
 
