@@ -446,6 +446,8 @@ class HomeController extends Controller
         $array['created_by'] = $request->ride_passenger_id;
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_help', $array);
+        $ApiController = new ApiController();
+        $ApiController->sendSMS('9730946150', 'HELP is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
     }
     public function rideCancel(Request $request)
@@ -529,6 +531,8 @@ class HomeController extends Controller
         $array = $request->all();
         unset($array['_token']);
         $model->saveTable('contactus', $array);
+        $ApiController = new ApiController();
+        $ApiController->sendSMS('9730946150', 'CONTACTUS is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
     }
 

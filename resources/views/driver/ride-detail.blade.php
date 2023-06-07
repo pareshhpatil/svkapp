@@ -344,7 +344,7 @@
             verifyotp() {
                 var otp = document.getElementById('otp').value;
                 array = this.data.ride_passengers[this.selected_id];
-                if (array.otp != otp && array.mobile!='') {
+                if (array.otp != otp && array.mobile != '') {
                     this.verror = 'Invalid OTP';
                     document.getElementById('otp').value = '';
                 } else {
@@ -380,6 +380,9 @@
                         console.log(pstatus);
                         done = false;
                     }
+                }
+                if (done == true) {
+                    stoplocation();
                 }
                 this.alldone = done;
             }
