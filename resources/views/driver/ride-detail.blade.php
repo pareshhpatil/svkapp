@@ -296,8 +296,7 @@
 
 
 <script>
-    function startlocation() {
-        lod(true);
+    function start() {
         window.WTN.backgroundLocation.start({
             callback: false,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
@@ -309,13 +308,26 @@
             desiredAccuracy: "best",
             activityType: "other",
         });
+    }
 
+    function stop() {
+        window.WTN.backgroundLocation.stop();
+    }
+
+    function startlocation() {
+        lod(true);
+        start();
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+
+        setInterval(function() {
+            stop();
+            start();
+        }, 60000);
     }
 
     function stoplocation() {
         lod(true);
-        window.WTN.backgroundLocation.stop();
+        stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
 </script>
