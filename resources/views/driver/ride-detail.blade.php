@@ -322,7 +322,7 @@
         setInterval(function() {
             stop();
             start();
-        }, 60000);
+        }, 30000);
     }
 
     function stoplocation() {
