@@ -28,6 +28,8 @@ class TripController extends Controller
     public function rideLiveTrack(Request $request, $ride_id)
     {
         // $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
+        $seq = rand(0, 5);
+        sleep($seq);
         $array['live_location'] = json_encode($request->all());
         $array['ride_id'] = $ride_id;
         //  if ($response == false) {
