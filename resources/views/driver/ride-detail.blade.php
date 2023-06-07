@@ -325,7 +325,7 @@
         stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
-    @if($data['ride']['status']==1)
+    @if($data['ride']['status']==2)
     setInterval(function() {
                 stop();
                 start();
