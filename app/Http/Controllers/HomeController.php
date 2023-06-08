@@ -573,9 +573,11 @@ class HomeController extends Controller
         $model =  new ParentModel();
         if ($status == 5 || $status == 1) {
             $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
-            $link = Encryption::encode($ride_passenger_id);
-            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-            $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
+            if ($status == 5) {
+                $link = Encryption::encode($ride_passenger_id);
+                $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+                $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
+            }
         }
         if ($status == 2) {
             $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
