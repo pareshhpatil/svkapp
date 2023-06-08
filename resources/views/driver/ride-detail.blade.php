@@ -329,7 +329,7 @@
     setInterval(function() {
                 stop();
                 start();
-        }, 60000);
+        }, 120000);
     @endif
 </script>
 
