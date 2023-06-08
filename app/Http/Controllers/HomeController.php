@@ -78,9 +78,9 @@ class HomeController extends Controller
             return false;
         }
         $id = Encryption::decode($link);
-        
+
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
-        
+
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
         $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
         $driver = [];
@@ -104,7 +104,7 @@ class HomeController extends Controller
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
-        $data['enc_link']=$link;
+        $data['enc_link'] = $link;
         return view('passenger.ride-detail', $data);
     }
 
@@ -568,14 +568,17 @@ class HomeController extends Controller
 
     public function driverPassengerRideStatus($ride_passenger_id, $status)
     {
+        $apiController = new ApiController();
+        $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         $model =  new ParentModel();
         if ($status == 5 || $status == 1) {
             $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
+            $link = Encryption::encode($ride_passenger_id);
+            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+            $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
         }
         if ($status == 2) {
             $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
-            $apiController = new ApiController();
-            $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
             $url = 'https://app.svktrv.in/dashboard';
             $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been completed', 'We hope you had a pleasant journey with us. Please rate your ride experience', $url);
         }
