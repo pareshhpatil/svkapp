@@ -111,3 +111,14 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 if (env('APP_ENV') != 'local') {
     URL::forceScheme('https');
 }
+
+
+
+
+Route::get('chat', [App\Http\Controllers\RosterController::class, 'chat'])->name('chat');
+
+Route::get('messages', [App\Http\Controllers\RosterController::class, 'messages'])
+            ->name('messages');
+
+Route::post('messages', [App\Http\Controllers\RosterController::class, 'messageStore'])
+            ->name('messageStore');

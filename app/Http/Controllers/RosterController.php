@@ -8,6 +8,9 @@ use App\Models\MasterModel;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell_DataType;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
+use App\Events\SendMessage;
 
 class RosterController extends Controller
 {
@@ -47,6 +50,28 @@ class RosterController extends Controller
         $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
         return view('web.passenger.list', $data);
+    }
+
+
+
+    public function chat(){
+        return view('chat');
+    }
+
+    public function messages(){
+        return Message::with('user')->get();
+    }
+
+    public function messageStore(Request $request){
+        $user = Auth::user();
+
+        $messages = $user->messages()->create([
+            'message' => $request->message
+        ]);
+
+        broadcast(new SendMessage($user, $messages))->toOthers();
+
+        return 'message sent';
     }
     
 }
