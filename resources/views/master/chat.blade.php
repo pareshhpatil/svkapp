@@ -1,5 +1,22 @@
 @extends('layouts.app')
 @section('content')
+<style>
+    #img-loader {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+    }
+</style>
+<div id="img-loader" style="display: none;">
+    <h2 class="loading-icon">Uploading..</h2>
+</div>
 <div id="app">
     <div id="appCapsule" class="full-height" ref="scrollContainer">
         <div class="message-divider">
@@ -36,9 +53,9 @@
         </div>
     </div>
     <div class="chatFooter">
-    <div class="text-info"  id="loder" role="status"></div>
+        <div class="text-info" id="loder" role="status"></div>
 
-        
+
         <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
             @csrf
             <input type="file" id="fileuploadInput" style="display: none;" name="file" v-on:change="onImageChange" accept=".png, .jpg, .jpeg">
@@ -80,6 +97,7 @@
                 user_id: '',
                 message: '',
                 group_id: '',
+                message_type: 1,
                 image: ''
             }
         },
@@ -95,35 +113,36 @@
         },
         methods: {
             onImageChange(e) {
-                lo(true);
+                document.getElementById('img-loader').style.display = 'flex';
                 this.image = e.target.files[0];
+                this.message_type = 2;
                 this.formSubmit();
-                lo(false);
+                document.getElementById('img-loader').style.display = 'none';
             },
             async formSubmit(e) {
-                try{
+                try {
                     e.preventDefault();
-                }catch(o){}
-                
+                } catch (o) {}
+
                 let currentObj = this;
                 var msgs = [];
-
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data'
+                if (this.message != '' && this.message_type == 1) {
+                    const config = {
+                        headers: {
+                            'content-type': 'multipart/form-data'
+                        }
                     }
+                    let formData = new FormData();
+                    formData.append('file', this.image);
+                    formData.append('message', this.message);
+                    formData.append('group_id', this.group_id);
+                    let res = await axios.post('/ajax/chat/submit', formData, config);
+                    this.messages = res.data;
                 }
 
-                let formData = new FormData();
-                formData.append('file', this.image);
-                formData.append('message', this.message);
-                formData.append('group_id', this.group_id);
-
-                let res = await axios.post('/ajax/chat/submit', formData, config);
-
-                this.messages = res.data;
+                this.message_type = 1;
                 this.message = '';
-                this.image=null;
+                this.image = null;
                 this.scrollToBottom();
             },
 
