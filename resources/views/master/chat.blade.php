@@ -14,10 +14,11 @@
         user-select: none;
     }
 </style>
-<div id="img-loader" style="display: none;">
-    <h2 class="loading-icon text-primary">Uploading..</h2>
-</div>
+
 <div id="app">
+    <div id="img-loader" v-if="loader==true">
+        <h2 class="loading-icon text-primary">Uploading..</h2>
+    </div>
     <div id="appCapsule" class="full-height" ref="scrollContainer">
         <div class="message-divider">
             {{$created_date}}
@@ -97,6 +98,7 @@
                 user_id: '',
                 message: '',
                 group_id: '',
+                loader: false,
                 message_type: 1,
                 image: ''
             }
@@ -113,11 +115,11 @@
         },
         methods: {
             onImageChange(e) {
-                document.getElementById('img-loader').style.display = 'flex';
+                this.loader = true;
                 this.image = e.target.files[0];
                 this.message_type = 2;
                 this.formSubmit();
-                document.getElementById('img-loader').style.display = 'none';
+
             },
             async formSubmit(e) {
                 try {
@@ -144,6 +146,7 @@
                 this.message = '';
                 this.image = null;
                 this.scrollToBottom();
+                this.loader = false;
             },
 
             async fetchData() {
