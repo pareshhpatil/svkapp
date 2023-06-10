@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Lib\Encryption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
@@ -47,5 +48,105 @@ class MasterController extends Controller
         }
 
         return redirect()->back()->with('message', 'Added successfully');
+    }
+
+    public function chat($link)
+    {
+        $id = Encryption::decode($link);
+        $group = $this->model->getTableRow('chat_group', 'id', $id);
+        $messages = $this->model->getChatMessages($id);
+        $data['menu'] = 0;
+        $data['created_date'] = $this->htmlDateTime($group->created_date);
+        $data['user_id'] = Session::get('user_id');
+        $data['group_id'] = $id;
+        $data['link'] = $link;
+        $data['messages'] = $messages;
+        $data['title'] = $group->name;
+        $data['hide_menu'] = true;
+        return view('master.chat', $data);
+    }
+
+    public function chatMessage($link)
+    {
+        $id = Encryption::decode($link);
+        $messages = $this->model->getChatMessages($id);
+        
+        return json_encode($messages);
+    }
+
+    public function chatSubmit(Request $request)
+    {
+
+
+        $array['type'] = 1;
+        $array['message'] = $request->message;
+        if ($request->file()) {
+            $file_name = time() . rand(1, 999) . '_chat.' . $request->file->extension();
+            $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
+            $path = '/storage/' . $file_path;
+            $array['message'] = $path;
+            $array['type'] = 2;
+        }
+
+        $array['group_id'] = $request->group_id;
+        $array['user_id'] = Session::get('user_id');
+        $array['name'] = Session::get('name');
+
+
+        $this->model->saveTable('chat_message', $array, Session::get('user_id'));
+        $messages = $this->model->getChatMessages($request->group_id);
+        return json_encode($messages);
+    }
+
+    public function chatCreate($user_type, $ride_id, $type, $passenger_id, $requested_passenger_id)
+    {
+        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        if ($user_type == 5) {
+            $passenger = $this->model->getTableRow('users', 'parent_id', $passenger_id, 1, ['user_type' => 5]);
+            $user_id = $passenger->id;
+            $users[] = array('id' => $user_id, 'name' => $passenger->name);
+            $array['ride_id'] = $ride_id;
+            $array['project_id'] = $ride->project_id;
+            switch ($type) {
+                case 1:
+                    $array['name'] = $passenger->name . ' - Supervisor';
+                    $rows = $this->model->getList('users', ['user_type' => 3, 'is_active' => 1]);
+                    foreach ($rows as $row) {
+                        $users[] = array('id' => $row->id, 'name' => $row->name);
+                    }
+                    break;
+                case 2:
+                    $array['name'] = $passenger->name . ' - Driver';
+                    $driver = $this->model->getTableRow('users', 'parent_id', $ride->driver_id, 1, ['user_type' => 4]);
+                    $users[] = array('id' => $driver->id, 'name' => $driver->name);
+                    break;
+                case 3:
+                    $array['name'] = 'Co Passengers Group';
+                    $rows = $this->model->getRidePassengers($ride_id, $passenger_id);
+                    foreach ($rows as $row) {
+                        $users[] = array('id' => $row->id, 'name' => $row->name);
+                    }
+                    break;
+                case 4:
+                    $copassenger = $this->model->getTableRow('users', 'parent_id', $requested_passenger_id, 1, ['user_type' => 5]);
+                    $array['name'] = $passenger->name . ' - Co Passenger';
+                    if (!empty($copassenger)) {
+                        $users[] = array('id' => $copassenger->id, 'name' => $copassenger->name);
+                        $array['name'] = $passenger->name . ' - ' . $copassenger->name;
+                    }
+                    break;
+            }
+            $group_id = $this->model->saveTable('chat_group', $array, Session::get('user_id'));
+            foreach ($users as $user) {
+                $array = [];
+                $array['group_id'] = $group_id;
+                $array['ride_id'] = $ride_id;
+                $array['ride_id'] = $ride_id;
+                $array['user_id'] = $user['id'];
+                $array['name'] = $user['name'];
+                $this->model->saveTable('chat_group_member', $array, Session::get('user_id'));
+            }
+        }
+        return redirect('/chat/' . Encryption::encode($group_id));
     }
 }

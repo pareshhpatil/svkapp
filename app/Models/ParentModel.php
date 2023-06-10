@@ -140,7 +140,7 @@ class ParentModel extends Model
             ->update($array);
     }
 
-    public function getTableList($table, $where, $value,$col='*')
+    public function getTableList($table, $where, $value, $col = '*')
     {
 
         $retObj = DB::table($table)
@@ -224,9 +224,10 @@ class ParentModel extends Model
             $array['created_by'] =  $user_id;
             $array['last_update_by'] =  $user_id;
         }
-        DB::table($table)->insertGetId(
+        $id = DB::table($table)->insertGetId(
             $array
         );
+        return $id;
     }
 
     public function deleteTableRow($table, $column, $id, $merchant_id, $user_id)

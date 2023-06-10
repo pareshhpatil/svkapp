@@ -394,18 +394,58 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Help</h5>
+                        <h5 class="modal-title">Chat</h5>
                     </div>
                     <form onsubmit="lod(true);" action="/passenger/help" method="post">
                         @csrf
                         <div class="modal-body text-start mb-2">
-                            <div class="form-group basic">
-                                <div class="input-wrapper">
-                                    <label class="label" for="text1">Enter Message</label>
-                                    <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
-                                    <i class="clear-input">
-                                        <ion-icon name="close-circle"></ion-icon>
-                                    </i>
+                            <div class="">
+                                <div class="">
+
+                                    <a href="/chat/create/5/{{$data['ride']['id']}}/1/{{$data['ride_passenger']['passenger_id']}}/0">
+                                        <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
+                                            <div class="icon-wrap">
+                                                <ion-icon name="person-circle-outline"></ion-icon>
+                                            </div>
+                                            <div>
+                                                <strong>Supervisor</strong>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/chat/create/5/{{$data['ride']['id']}}/2/{{$data['ride_passenger']['passenger_id']}}/0">
+                                        <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
+                                            <div class="icon-wrap">
+                                                <ion-icon name="car-outline"></ion-icon>
+                                            </div>
+                                            <div>
+                                                <strong>Driver</strong>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/chat/create/5/{{$data['ride']['id']}}/3/{{$data['ride_passenger']['passenger_id']}}/0">
+                                        <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
+                                            <div class="icon-wrap">
+                                                <ion-icon name="people-outline"></ion-icon>
+                                            </div>
+                                            <div>
+                                                <strong>Co Passengers Group</strong>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <a :href="'/chat/create/5/{{$data['ride']['id']}}/4/{{$data['ride_passenger']['passenger_id']}}/'+item.passenger_id" v-if="item.id!=data.ride_passenger.id" v-for="item in data.ride_passengers">
+                                        <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
+                                            <div class="icon-wrap">
+                                                <ion-icon name="person-outline"></ion-icon>
+                                            </div>
+
+                                            <div>
+                                                <strong v-html="item.name"></strong>
+                                            </div>
+
+                                        </div>
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
@@ -414,7 +454,6 @@
                                 <input type="hidden" :value="data.ride_passenger.id" name="ride_passenger_id">
                                 <input type="hidden" :value="data.ride_passenger.ride_id" name="ride_id">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="submit" class="btn btn-text-primary">SEND</button>
                             </div>
                         </div>
                     </form>
@@ -726,8 +765,8 @@
                 this.notloded = true;
                 let res = await axios.get('/ride/passenger/remove/' + this.remove_id);
                 location.reload();
-               // this.data.ride_passengers = JSON.parse(res);
-               // this.remove_id = 0;
+                // this.data.ride_passengers = JSON.parse(res);
+                // this.remove_id = 0;
             }
         }
     })

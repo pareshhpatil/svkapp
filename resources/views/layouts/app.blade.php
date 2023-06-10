@@ -79,6 +79,7 @@
 
     <!-- App Bottom Menu -->
     @if(Session::has('name'))
+    @if(!isset($hide_menu))
     <div class="appBottomMenu">
         <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif onclick="lod(true);" class="item @if($menu==1) active @endif">
             <div class="col">
@@ -114,6 +115,7 @@
             </div>
         </a>
     </div>
+    @endif
     @endif
 
     @if(!Session::has('token'))

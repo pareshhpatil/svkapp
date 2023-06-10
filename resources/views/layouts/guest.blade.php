@@ -13,6 +13,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icon/192x192.png">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="manifest" href="__manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body style="background: #ffffff;">
@@ -24,7 +26,7 @@
   <!-- * loader -->
 
   <!-- App Header -->
-  <div class="appHeader no-border transparent position-absolute">
+  <div class="appHeader no-border">
     <div class="left">
       @if($title!='Login')
       <a href="#" class="headerButton goBack">

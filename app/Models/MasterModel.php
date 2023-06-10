@@ -41,4 +41,28 @@ class MasterModel extends ParentModel
             ->get();
         return $retObj;
     }
+
+    public function getRidePassengers($ride_id, $passenger_id)
+    {
+        $retObj = DB::table('ride_passenger as a')
+            ->join('users as u', 'u.parent_id', '=', 'a.passenger_id')
+            ->where('a.ride_id', $ride_id)
+            ->where('a.is_active', 1)
+            ->where('u.user_type', 5)
+            ->where('a.passenger_id', '<>', $passenger_id)
+            ->select(DB::raw('u.id,u.name'))
+            ->get();
+        return $retObj;
+    }
+
+    public function getChatMessages($group_id)
+    {
+        $retObj = DB::table('chat_message as c')
+            ->join('users as u', 'c.user_id', '=', 'u.id')
+            ->where('c.is_active', 1)
+            ->where('c.group_id', $group_id)
+            ->select(DB::raw('c.*,u.gender,DATE_FORMAT(c.created_date, "%l:%i %p") as time'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
 }

@@ -99,6 +99,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/ride/passenger/add/{ride_id}/{p_id}/{time}', [App\Http\Controllers\HomeController::class, 'passengerAdd']);
     Route::get('/ride/passenger/remove/{id}', [App\Http\Controllers\HomeController::class, 'passengerRemove']);
 
+    Route::get('/chat/create/{user_type}/{ride_id}/{type}/{user_id}/{request_id}', [App\Http\Controllers\MasterController::class, 'chatCreate']);
+    Route::get('/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chat']);
+    Route::get('/ajax/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chatMessage']);
+    Route::post('/ajax/chat/submit', [App\Http\Controllers\MasterController::class, 'chatSubmit']);
+
     Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
 });
