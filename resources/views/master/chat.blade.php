@@ -15,7 +15,7 @@
     }
 </style>
 <div id="img-loader" style="display: none;">
-    <h2 class="loading-icon">Uploading..</h2>
+    <h2 class="loading-icon text-primary">Uploading..</h2>
 </div>
 <div id="app">
     <div id="appCapsule" class="full-height" ref="scrollContainer">
