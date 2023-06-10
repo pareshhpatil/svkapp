@@ -126,7 +126,7 @@
 
                 let currentObj = this;
                 var msgs = [];
-                if (this.message != '' && this.message_type == 1) {
+                if (this.message != '' || this.message_type == 2) {
                     const config = {
                         headers: {
                             'content-type': 'multipart/form-data'
