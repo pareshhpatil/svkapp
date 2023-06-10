@@ -126,12 +126,18 @@ class ApiController extends Controller
     }
 
 
-    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png')
+    public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png', $tokens = [])
     {
-        $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
-        if ($token != '') {
+        if (empty($tokens)) {
+            $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
+            if ($token != '') {
+                $tokens[] = $token;
+            }
+        }
+
+        if (!empty($tokens)) {
             $key = env('FIREBASE_KEY');
-            $array['registration_ids'] = array($token);
+            $array['registration_ids'] = $tokens;
             $array['notification']['body'] = $body;
             $array['notification']['title'] = $title;
             $array['notification']['sound'] = "default";

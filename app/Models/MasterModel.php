@@ -65,4 +65,16 @@ class MasterModel extends ParentModel
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }
+
+    public function getChatMembers($group_id, $user_id)
+    {
+        $retObj = DB::table('chat_group_member as c')
+            ->join('users as u', 'c.user_id', '=', 'u.id')
+            ->where('c.is_active', 1)
+            ->where('u.id', '<>', $user_id)
+            ->where('c.group_id', $group_id)
+            ->select(DB::raw('u.token'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
 }
