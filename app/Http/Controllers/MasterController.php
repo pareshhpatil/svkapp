@@ -90,7 +90,7 @@ class MasterController extends Controller
             $image = env('APP_URL') . $path;
             $body = 'Image received';
         }
-        $url = env('APP_URL') . 'chat/' . Encryption::encode($request->group_id);
+        $url = env('APP_URL') . '/chat/' . Encryption::encode($request->group_id);
         $array['group_id'] = $request->group_id;
         $array['user_id'] = Session::get('user_id');
         $array['name'] = Session::get('name');
