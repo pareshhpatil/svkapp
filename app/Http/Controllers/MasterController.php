@@ -89,6 +89,10 @@ class MasterController extends Controller
             $image = env('APP_URL') . $path;
             $body = 'Image received';
         }
+        if ($array['type'] == 3) {
+            $image = env('APP_URL') . '/assets/img/navigation.png';
+            $body = 'Location received';
+        }
         $url = env('APP_URL') . '/chat/' . Encryption::encode($request->group_id);
         $array['group_id'] = $request->group_id;
         $array['user_id'] = Session::get('user_id');
