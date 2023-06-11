@@ -174,7 +174,7 @@
             this.user_id = '{{$user_id}}';
             this.group_id = '{{$group_id}}';
             setInterval(this.fetchData, 3000);
-            this.scrollToBottom();
+            setTimeout(() =>  this.scrollToBottom(), 1000);
         },
         methods: {
             onImageChange(e) {
