@@ -250,10 +250,10 @@
                     </div>
                     <div class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
-                            <div class="icon-wrapper bg-warning">
+                            <div class="icon-wrapper bg-success">
                                 <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                             </div>
-                            <strong>Help</strong>
+                            <strong>Chat</strong>
                         </a>
                     </div>
                     <div class="item">
