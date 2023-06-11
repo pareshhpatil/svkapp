@@ -16,9 +16,6 @@
 </style>
 
 <div id="app">
-    <div id="img-loader" v-if="loader==true">
-        <h2 class="loading-icon text-primary">Uploading..</h2>
-    </div>
     <div id="appCapsule" class="full-height" ref="scrollContainer">
         <div class="message-divider">
             {{$created_date}}
@@ -36,6 +33,9 @@
                             <img :src="item.message" alt="photo" class="imaged w160">
                         </a>
                     </div>
+                    <div v-if="item.type==3" v-on:click="window.open(item.message, '_system');">
+                        <img src="/assets/img/navigation.png" alt="photo" class="imaged w100">
+                    </div>
                     <div class="footer" v-html="item.time"></div>
                 </div>
             </div>
@@ -48,10 +48,22 @@
                             <img :src="item.message" alt="photo" class="imaged w160">
                         </a>
                     </div>
+                    <div v-if="item.type==3" v-on:click="window.open(item.message, '_system');">
+                        <img src="/assets/img/location.png" alt="photo" class="imaged w100">
+                    </div>
+
                     <div class="footer" v-html="item.time"></div>
                 </div>
             </div>
         </div>
+        <div v-if="loader==true" class="message-item user">
+            <div class="content">
+                <div class="bubble">
+                    <img src="/assets/img/loading.gif" alt="photo" class="imaged w160">
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="chatFooter">
         <div class="text-info" id="loder" role="status"></div>
@@ -60,8 +72,8 @@
         <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
             @csrf
             <input type="file" id="fileuploadInput" style="display: none;" name="file" v-on:change="onImageChange" accept=".png, .jpg, .jpeg">
-            <a href="javascript:void(0);" class="btn btn-icon btn-text-secondary rounded">
-                <ion-icon name="camera" role="img" class="md hydrated" onclick="document.getElementById('fileuploadInput').click();" aria-label="camera"></ion-icon>
+            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#DialogIconedButton" class="btn btn-icon btn-text-secondary rounded">
+                <ion-icon name="add-outline"></ion-icon>
             </a>
             <div class="form-group basic">
                 <div class="input-wrapper">
@@ -76,7 +88,34 @@
             </button>
         </form>
     </div>
+
+
+    <div class="modal fade dialogbox" id="DialogIconedButton" data-bs-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-footer">
+                    <div class="btn-list">
+                        <a href="javascript:void(0);" onclick="document.getElementById('fileuploadInput').click();" class="btn btn-text-primary btn-block" data-bs-dismiss="modal">
+                            <ion-icon name="image-outline"></ion-icon>
+                            Photo
+                        </a>
+                        <a href="javascript:void(0);" v-on:click="sendLocation" class="btn btn-text-primary btn-block" data-bs-dismiss="modal">
+                            <ion-icon name="navigate-outline"></ion-icon>
+                            Location
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-text-danger btn-block" data-bs-dismiss="modal">
+                            <ion-icon name="close-outline"></ion-icon>
+                            CANCEL
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
 
 
 
@@ -88,6 +127,30 @@
 
 
 <script>
+    var mylatitude = '';
+    var mylongitude = '';
+
+    function success(pos) {
+        const crd = pos.coords;
+        mylatitude = crd.latitude;
+        mylongitude = crd.longitude;
+    }
+
+    function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+
+    function startLocation() {
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        };
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+    }
+
+
     var height = 900;
     new Vue({
         el: '#app',
@@ -121,6 +184,12 @@
                 this.formSubmit();
 
             },
+            sendLocation() {
+                this.loader = true;
+                this.message_type = 3;
+                // startLocation();
+                setTimeout(() => this.formSubmit(), 5000);
+            },
             async formSubmit(e) {
                 try {
                     e.preventDefault();
@@ -128,6 +197,11 @@
 
                 let currentObj = this;
                 var msgs = [];
+
+                if (this.message_type == 3 && mylatitude != '') {
+                    this.message = 'https://www.google.com/maps/search/?api=1&query=' + mylatitude + ',' + mylongitude;
+                }
+
                 if (this.message != '' || this.message_type == 2) {
                     const config = {
                         headers: {
