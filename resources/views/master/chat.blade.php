@@ -187,7 +187,7 @@
             sendLocation() {
                 this.loader = true;
                 this.message_type = 3;
-                // startLocation();
+                startLocation();
                 setTimeout(() => this.formSubmit(), 5000);
             },
             async formSubmit(e) {
