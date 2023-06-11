@@ -49,7 +49,7 @@
                         </a>
                     </div>
                     <div v-if="item.type==3" v-on:click="window.location.assign(item.message, '_system');">
-                        <img src="/assets/img/location.png" alt="photo" class="imaged w100">
+                        <img src="/assets/img/navigation.png" alt="photo" class="imaged w100">
                     </div>
 
                     <div class="footer" v-html="item.time"></div>
