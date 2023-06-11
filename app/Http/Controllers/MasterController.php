@@ -77,7 +77,7 @@ class MasterController extends Controller
 
     public function chatSubmit(Request $request)
     {
-        $array['type'] = 1;
+        $array['type'] = $request->message_type;
         $array['message'] = $request->message;
         $body = $request->message;
         $image = '';
@@ -86,7 +86,6 @@ class MasterController extends Controller
             $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
             $path = '/storage/' . $file_path;
             $array['message'] = $path;
-            $array['type'] = 2;
             $image = env('APP_URL') . $path;
             $body = 'Image received';
         }

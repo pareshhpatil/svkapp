@@ -211,6 +211,7 @@
                         }
                     }
                     let formData = new FormData();
+                    formData.append('message_type', this.message_type);
                     formData.append('file', this.image);
                     formData.append('message', this.message);
                     formData.append('group_id', this.group_id);
