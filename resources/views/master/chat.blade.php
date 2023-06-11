@@ -178,6 +178,7 @@
         },
         methods: {
             onImageChange(e) {
+                this.scrollToBottom();
                 this.loader = true;
                 this.image = e.target.files[0];
                 this.message_type = 2;
@@ -185,6 +186,7 @@
 
             },
             sendLocation() {
+                this.scrollToBottom();
                 this.loader = true;
                 this.message_type = 3;
                 startLocation();
