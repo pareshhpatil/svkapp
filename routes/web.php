@@ -78,7 +78,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
     Route::get('/book-ride', [App\Http\Controllers\HomeController::class, 'bookRide'])->name('book-ride');
     Route::post('/ridesave', [App\Http\Controllers\HomeController::class, 'saveRide'])->name('save-ride');
-    Route::get('/notifications', [App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
+    Route::get('/chats', [App\Http\Controllers\HomeController::class, 'chats'])->name('chats');
     Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
     Route::get('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
     Route::get('/setting/update/{col}/{val}', [App\Http\Controllers\HomeController::class, 'updateSetting']);

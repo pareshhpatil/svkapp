@@ -126,8 +126,11 @@ class MasterController extends Controller
         if ($group_id != false) {
             return redirect('/chat/' . Encryption::encode($group_id));
         }
-
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        if ($ride_id > 0) {
+            $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        }else{
+            $ride = $this->model->getTableRow('passenger', 'id', $passenger_id);
+        }
         if ($user_type == 5) {
             $passenger = $this->model->getTableRow('users', 'parent_id', $passenger_id, 1, ['user_type' => 5]);
             $user_id = $passenger->id;
@@ -166,7 +169,6 @@ class MasterController extends Controller
             foreach ($users as $user) {
                 $array = [];
                 $array['group_id'] = $group_id;
-                $array['ride_id'] = $ride_id;
                 $array['ride_id'] = $ride_id;
                 $array['user_id'] = $user['id'];
                 $array['name'] = $user['name'];
