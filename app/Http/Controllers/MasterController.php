@@ -53,6 +53,9 @@ class MasterController extends Controller
 
     public function chat($link)
     {
+        if ($link == '__manifest.json') {
+            return false;
+        }
         $id = Encryption::decode($link);
         $group = $this->model->getTableRow('chat_group', 'id', $id);
         $messages = $this->model->getChatMessages($id);
@@ -128,7 +131,7 @@ class MasterController extends Controller
         }
         if ($ride_id > 0) {
             $ride = $this->model->getTableRow('ride', 'id', $ride_id);
-        }else{
+        } else {
             $ride = $this->model->getTableRow('passenger', 'id', $passenger_id);
         }
         if ($user_type == 5) {
