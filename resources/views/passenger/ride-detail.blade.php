@@ -147,13 +147,13 @@
                             @isset($data['driver']['mobile'])
                             <li style="padding:0px;">
                                 <div class="item" style="padding: 0;">
-                                    <div onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" class="icon-box text-black">
+                                    <div onclick="window.location.assign('tel:{{$data['driver']['mobile']}}', '_system');" class="icon-box text-black">
                                         <ion-icon name="call-outline"></ion-icon>
                                     </div>
                                     <div class="in">
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
-                                            <strong onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" v-html="data.driver.mobile"></strong>
+                                            <strong onclick="window.location.assign('tel:{{$data['driver']['mobile']}}', '_system');" v-html="data.driver.mobile"></strong>
                                         </div>
 
                                     </div>
@@ -250,10 +250,10 @@
                     </div>
                     <div class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
-                            <div class="icon-wrapper bg-warning">
+                            <div class="icon-wrapper bg-success">
                                 <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                             </div>
-                            <strong>Help</strong>
+                            <strong>Chat</strong>
                         </a>
                     </div>
                     <div class="item">

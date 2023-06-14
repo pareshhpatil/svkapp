@@ -221,4 +221,17 @@ class RideModel extends ParentModel
             ->get();
         return json_decode(json_encode($retObj), 1);
     }
+
+
+    public function chatList($id)
+    {
+        $retObj = DB::table('chat_group_member as p')
+            ->join('chat_group as r', 'r.id', '=', 'p.group_id')
+            ->where('p.is_active', 1)
+            ->where('p.user_id', $id)
+            ->orderBy('r.id', 'desc')
+            ->select(DB::raw('distinct r.id,r.name,r.status,DATE_FORMAT(r.created_date, "%a %d %b %y %l:%i %p") as datetime'))
+            ->get();
+        return json_decode(json_encode($retObj), 1);
+    }
 }

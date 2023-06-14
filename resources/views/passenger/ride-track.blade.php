@@ -129,7 +129,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                             </div>
                         </div>
                         <div class="right">
-                            <div onclick="window.open('tel:{{$data['driver']['mobile']}}', '_system');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
+                            <div onclick="window.location.assign('tel:{{$data['driver']['mobile']}}', '_system');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon></div>
                         </div>
                     </a>
                 </div>

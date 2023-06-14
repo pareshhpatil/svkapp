@@ -133,6 +133,7 @@ class HomeController extends Controller
         }
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride_passenger['passenger_id'] = 0;
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
         $data['data']['ride_start_time'] = $this->sqlTime($ride['start_time']);
@@ -308,13 +309,13 @@ class HomeController extends Controller
     }
 
 
-    public function notifications()
+    public function chats()
     {
-        $data['menu'] = 4;
-        $data['title'] = 'Notifications';
-        $notifications = $this->model->getTableListOrderby('notification', 'user_id', Session::get('user_id'), 'DESC');
-        $data['data']['notification'] = json_decode(json_encode($notifications, true), 1);
-        return view('passenger.notifications', $data);
+        $data['menu'] = 0;
+        $data['title'] = 'Chats';
+        $chats = $this->model->chatList(Session::get('user_id'));
+        $data['chats'] = $this->EncryptList($chats, 0,'/chat/', 'id');
+        return view('master.chats', $data);
     }
 
     public function settings()

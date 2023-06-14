@@ -212,12 +212,22 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/contact-us" class="item">
+                            <a href="/chats" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="chatbubble-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
-                                    Support
+                                    Chats
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/chat/create/{{Session::get('user_type')}}/0/1/{{Session::get('parent_id')}}/0" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="chatbubble-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Contact us
                                 </div>
                             </a>
                         </li>

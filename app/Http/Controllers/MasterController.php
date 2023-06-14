@@ -6,6 +6,7 @@ use App\Http\Lib\Encryption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
+use App\Http\Controllers\ApiController;
 
 class MasterController extends Controller
 {
@@ -52,6 +53,9 @@ class MasterController extends Controller
 
     public function chat($link)
     {
+        if ($link == '__manifest.json') {
+            return false;
+        }
         $id = Encryption::decode($link);
         $group = $this->model->getTableRow('chat_group', 'id', $id);
         $messages = $this->model->getChatMessages($id);
@@ -70,28 +74,44 @@ class MasterController extends Controller
     {
         $id = Encryption::decode($link);
         $messages = $this->model->getChatMessages($id);
-        
+
         return json_encode($messages);
     }
 
     public function chatSubmit(Request $request)
     {
-
-
-        $array['type'] = 1;
+        $array['type'] = $request->message_type;
         $array['message'] = $request->message;
+        $body = $request->message;
+        $image = '';
         if ($request->file()) {
             $file_name = time() . rand(1, 999) . '_chat.' . $request->file->extension();
             $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
             $path = '/storage/' . $file_path;
             $array['message'] = $path;
-            $array['type'] = 2;
+            $image = env('APP_URL') . $path;
+            $body = 'Image received';
         }
-
+        if ($array['type'] == 3) {
+            $image = env('APP_URL') . '/assets/img/navigation.png';
+            $body = 'Location received';
+        }
+        $url = env('APP_URL') . '/chat/' . Encryption::encode($request->group_id);
         $array['group_id'] = $request->group_id;
         $array['user_id'] = Session::get('user_id');
         $array['name'] = Session::get('name');
 
+        $ApiController = new ApiController();
+        $usertokens = $this->model->getChatMembers($request->group_id, $array['user_id']);
+        $tokens = [];
+        foreach ($usertokens as $ut) {
+            if ($ut['token'] != '') {
+                $tokens[] = $ut['token'];
+            }
+        }
+        if (!empty($tokens)) {
+            $ApiController->sendNotification($array['user_id'], 5, 'Message from ' . $array['name'], $body, $url, $image, $tokens);
+        }
 
         $this->model->saveTable('chat_message', $array, Session::get('user_id'));
         $messages = $this->model->getChatMessages($request->group_id);
@@ -100,12 +120,24 @@ class MasterController extends Controller
 
     public function chatCreate($user_type, $ride_id, $type, $passenger_id, $requested_passenger_id)
     {
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        $array['ride_id'] = $ride_id;
+        $array['user_type'] = $user_type;
+        $array['type'] = $type;
+        $array['passenger_id'] = $passenger_id;
+        $array['requested_passenger_id'] = $requested_passenger_id;
+        $group_id = $this->model->getColumnValue('chat_group', 'ride_id', $ride_id, 'id', $array);
+        if ($group_id != false) {
+            return redirect('/chat/' . Encryption::encode($group_id));
+        }
+        if ($ride_id > 0) {
+            $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        } else {
+            $ride = $this->model->getTableRow('passenger', 'id', $passenger_id);
+        }
         if ($user_type == 5) {
             $passenger = $this->model->getTableRow('users', 'parent_id', $passenger_id, 1, ['user_type' => 5]);
             $user_id = $passenger->id;
             $users[] = array('id' => $user_id, 'name' => $passenger->name);
-            $array['ride_id'] = $ride_id;
             $array['project_id'] = $ride->project_id;
             switch ($type) {
                 case 1:
@@ -140,7 +172,6 @@ class MasterController extends Controller
             foreach ($users as $user) {
                 $array = [];
                 $array['group_id'] = $group_id;
-                $array['ride_id'] = $ride_id;
                 $array['ride_id'] = $ride_id;
                 $array['user_id'] = $user['id'];
                 $array['name'] = $user['name'];
