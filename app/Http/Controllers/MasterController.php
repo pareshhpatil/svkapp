@@ -35,6 +35,20 @@ class MasterController extends Controller
         return view('master.' . $type . '-add', $data);
     }
 
+    public function callIVR($to)
+    {
+        $from = Session::get('mobile');
+        $ApiController = new ApiController();
+        $result = $ApiController->ivrCall($from, $to);
+        $array['from'] = $from;
+        $array['to'] = $to;
+        $array['user_id'] = Session::get('user_id');
+        $array['response'] = $result;
+        $this->model->saveTable('call_ivr', $array, $array['user_id']);
+        $tokens[] = env('MY_TOKEN');
+        $ApiController->sendNotification(1, 3, 'Call Initiated ', $from . ' to ' . $to,  '', '', $tokens);
+    }
+
     public function masterSave(Request $request, $type)
     {
         $array = $request->all();

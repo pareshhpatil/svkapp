@@ -66,9 +66,18 @@ class HomeController extends Controller
         }
 
 
+        $data['data']['ride'] = $data['live_ride'];
+        if (!empty($data['live_ride'])) {
+            $ride_passengers = $this->model->getRidePassenger($data['live_ride']['ride_id']);
+            $data['data']['ride_passengers'] = $ride_passengers;
+            $data['data']['ride_passenger']['passenger_id'] = $data['live_ride']['passenger_id'];
+            $data['data']['ride_passenger']['id'] = $data['live_ride']['pid'];
+            $data['data']['ride_passenger']['ride_id'] = $data['live_ride']['ride_id'];
+        }
+
         $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
 
-        //dd($data['live_ride']);
+        //dd($data);
         return view('passenger.dashboard', $data);
     }
 
@@ -93,6 +102,7 @@ class HomeController extends Controller
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
+        $data['data']['ride_passengers'] = $ride_passengers;
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
@@ -100,7 +110,7 @@ class HomeController extends Controller
         $data['data']['project'] = $project;
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
-        $data['data']['ride_passengers'] = $ride_passengers;
+
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
@@ -314,7 +324,7 @@ class HomeController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'Chats';
         $chats = $this->model->chatList(Session::get('user_id'));
-        $data['chats'] = $this->EncryptList($chats, 0,'/chat/', 'id');
+        $data['chats'] = $this->EncryptList($chats, 0, '/chat/', 'id');
         return view('master.chats', $data);
     }
 
@@ -421,6 +431,7 @@ class HomeController extends Controller
 
     public function passengerSOS(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'ride_passenger_id' => 'required',
             'ride_id' => 'required',

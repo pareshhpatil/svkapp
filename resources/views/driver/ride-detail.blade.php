@@ -128,6 +128,10 @@
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
                     <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+item.address, '_system');" v-html="item.name"></span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
+                            <ion-icon name="call-outline"></ion-icon>
+                        </span>
                         <div v-if="item.status!=3" class="text-end" style="right: 10px;float: right;">
                             <div v-if="data.ride.status==2">
                                 <div class="dropdown">
@@ -139,7 +143,8 @@
                                         <div class="dropdown-divider"></div>
                                         <a v-if="item.status!=5" class="dropdown-item" v-on:click="reach(index);">Reached at Location</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" v-on:click="setId(index);" data-bs-target="#inmodal" data-bs-toggle="modal" href="#">Passenger Entry</a>
+                                        <a class="dropdown-item" v-if="item.mobile!=''" v-on:click="setId(index);" data-bs-target="#inmodal" data-bs-toggle="modal" href="#">Passenger Entry</a>
+                                        <a class="dropdown-item" v-if="item.mobile==''" v-on:click="directverify(index);" href="#">Passenger Entry</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" v-on:click="setId(index);" data-bs-target="#noshowmodal" data-bs-toggle="modal" href="#">No Show</a>
                                     </div>
@@ -152,7 +157,6 @@
                         </div>
 
                     </h4>
-                    <div v-html="item.mobile" class="text text-danger"></div>
                     <div v-if="item.status==3" class="text text-danger">Cancelled</div>
 
                     <div class="text">
@@ -325,11 +329,11 @@
         stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
-    @if($data['ride']['status']==2)
+    @if($data['ride']['status'] == 2)
     setInterval(function() {
-                stop();
-                start();
-        }, 120000);
+        stop();
+        start();
+    }, 120000);
     @endif
 </script>
 
@@ -366,6 +370,11 @@
                     axios.get('/driver/ride/passenger/status/' + array.id + '/1');
                     document.getElementById('closeotp').click();
                 }
+            },
+            directverify(selected_id) {
+                array = this.data.ride_passengers[selected_id];
+                this.data.ride_passengers[selected_id].status = 1;
+                axios.get('/driver/ride/passenger/status/' + array.id + '/1');
             },
             noshow() {
                 array = this.data.ride_passengers[this.selected_id];

@@ -321,8 +321,15 @@
                 localStorage.setItem("DownloadApp1", 0);
             }
         }
+
+        
     </script>
     @endif
+    <script>
+        function closeT(num = 11) {
+            document.getElementById('toast-' + num).classList.remove("show");
+        }
+    </script>
 
 </body>
 

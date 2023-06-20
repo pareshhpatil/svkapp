@@ -106,6 +106,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
+
+    Route::get('/call/{mobile}', [App\Http\Controllers\MasterController::class, 'callIVR']);
 });
 
 if (env('APP_ENV') != 'local') {

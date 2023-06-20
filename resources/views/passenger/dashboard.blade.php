@@ -1,6 +1,37 @@
 @extends('layouts.app')
 @section('content')
+<style>
+    .timeline:before {
+        bottom: 60px;
+        top: 28px;
+    }
 
+    body.dark-mode .text-black {
+        color: #fff !important;
+        background: #20162a !important;
+    }
+
+    body.dark-mode .listview {
+        color: #fff;
+        background: #030108;
+        border-top-color: #030108;
+        border-bottom-color: #030108;
+    }
+
+    .bg-red {
+        background: #e8481e !important;
+    }
+
+    .dialogbox .modal-dialog .modal-content {
+        max-width: inherit;
+        max-height: inherit;
+    }
+
+    .custom-control-input {
+        position: absolute;
+        border: none;
+    }
+</style>
 <div id="appCapsule" class="full-height">
     <div id="app">
 
@@ -83,19 +114,22 @@
             <div class="section">
                 <div class="transactions">
                     <!-- item -->
-                    <a href="{{$live_ride['link']}}" class="item">
-                        <div class="detail">
-                            <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle" style="margin-right: 10px;">
-                            <div>
-                                <strong>{{$live_ride['driver_name']}}</strong>
-                                <strong class="text-primary">OTP: {{$live_ride['otp']}} </strong>
-                                <p>{{$live_ride['number']}}</p>
+                    <div class="item">
+                        <a href="{{$live_ride['link']}}">
+                            <div class="detail">
+                                <img src="{{$photo}}" alt="img" class="image-block imaged w48 img-circle" style="margin-right: 10px;">
+                                <div>
+                                    <strong>{{$live_ride['driver_name']}}</strong>
+                                    <strong class="text-primary">OTP: {{$live_ride['otp']}} </strong>
+                                    <p>{{$live_ride['number']}}</p>
+                                </div>
                             </div>
-                        </div>
+
+                        </a>
                         <div class="right">
-                            <div onclick="window.location.assign('tel:{{$live_ride['mobile']}}', '_system');" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated" aria-label="call outline"></ion-icon></div>
+                            <div v-on:click="call('{{$live_ride['mobile']}}')" class="text-danger"> <ion-icon name="call-outline" style="font-size: 25px;" role="img" class="md hydrated" aria-label="call outline"></ion-icon></div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class=" ">
                     <div class="wallet-card" style="box-shadow: none;padding: 0;padding-bottom: 10px;">
@@ -119,21 +153,28 @@
                                 </a>
                             </div>
 
-                            <div class="item">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
-                                    <div class="icon-wrapper bg-warning">
-                                        <ion-icon name="chatbubble-ellipses-outline" role="img" class="md hydrated" aria-label="chatbubble ellipses outline"></ion-icon>
+                            <div v-if="data.ride.status<2" class="item">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#cancelride">
+                                    <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
+                                        <ion-icon name="close-circle-outline"></ion-icon>
                                     </div>
-                                    <strong>Help</strong>
+                                    <strong>Cancel</strong>
                                 </a>
                             </div>
-
                             <div class="item">
-                                <a href="whatsapp://send?text=Hey, Please track my ride {{env('APP_URL')}}{{$live_ride['link']}}" data-action="share/whatsapp/share" id="shareBtn">
-                                    <div class="icon-wrapper bg-info">
-                                        <ion-icon name="logo-whatsapp" role="img" class="md hydrated" aria-label="logo whatsapp"></ion-icon>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
+                                    <div class="icon-wrapper bg-success">
+                                        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                                     </div>
-                                    <strong>Share</strong>
+                                    <strong>Chat</strong>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#sosmodel">
+                                    <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
+                                        <ion-icon name="accessibility-outline"></ion-icon>
+                                    </div>
+                                    <strong>SOS</strong>
                                 </a>
                             </div>
 
@@ -143,44 +184,8 @@
                 </div>
             </div>
         </div>
-
-
-
-        <div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Help</h5>
-                    </div>
-                    <form action="/passenger/help" method="post">
-                        @csrf
-                        <div class="modal-body text-start mb-2">
-                            <div class="form-group basic">
-                                <div class="input-wrapper">
-                                    <label class="label" for="text1">Enter Message</label>
-                                    <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
-                                    <i class="clear-input">
-                                        <ion-icon name="close-circle"></ion-icon>
-                                    </i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-inline">
-                                <input type="hidden" value="{{$live_ride['passenger_id']}}" name="ride_passenger_id">
-                                <input type="hidden" value="{{$live_ride['ride_id']}}" name="ride_id">
-                                <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                                <button type="submit" class="btn btn-text-primary">SEND</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        @include('passenger.ride-options')
         @endif
-
-
-
         @if(!empty($last_ride))
         @php
         $photo=($last_ride['photo']!='')? $last_ride['photo'] : '/assets/img/driver.png';
@@ -239,10 +244,6 @@
             </div>
             <a type="button" href="/dashboard" class="btn btn-sm  btn-text-light bg-red">CLOSE</a>
         </div>
-
-
-
-
         @endif
         <!-- * Stats -->
 
@@ -302,7 +303,14 @@
                 this.current_rating = rating;
                 axios.get('/passenger/ride/rating/' + id + '/' + rating);
                 toastbox('toast-11');
+            },
+            call(mobile)
+            {
+                axios.get('/call/' + mobile);
+                toastbox('toast-15');
             }
+
+
         }
     })
 </script>

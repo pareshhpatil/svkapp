@@ -116,6 +116,16 @@ class ApiController extends Controller
         $res = $client->sendAsync($request)->wait();
     }
 
+    public function ivrCall($from, $to)
+    {
+        $body['form_params']['authkey'] = env('IVR_KEY');
+        $body['form_params']['agentmobile'] = $from;
+        $body['form_params']['customermobile'] =  $to;
+        $client = new Client();
+        $response = $client->request('POST', 'https://beta.teleforce.in/api/tfapi/clicktocall', $body);
+        return $response->getBody()->getContents();
+    }
+
     public function userSMS($user_id, $user_type, $message_, $template_id)
     {
         $number_ = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type]);
