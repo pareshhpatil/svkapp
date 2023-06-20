@@ -445,6 +445,8 @@ class HomeController extends Controller
         $array['created_by'] = $request->ride_passenger_id;
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_emergency', $array);
+        $ApiController = new ApiController();
+        $ApiController->sendSMS('9730946150', 'SOS is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
     }
     public function passengerHelp(Request $request)
