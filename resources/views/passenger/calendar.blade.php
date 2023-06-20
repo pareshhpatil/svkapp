@@ -126,7 +126,6 @@
     //var data = createDummyData();
     // console.log(data);
     var data = JSON.parse('{!!json_encode($rides)!!}');
-    console.log(data);
 
     // initializing a new calendar object, that will use an html container to create itself
     var calendar = new Calendar(
