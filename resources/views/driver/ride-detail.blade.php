@@ -286,7 +286,15 @@
 
 </div>
 
-
+<div id="toast-15" class="toast-box toast-center">
+    <div class="in">
+        <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
+        <div class="text">
+            You will receive call shortly
+        </div>
+    </div>
+    <button type="button" onclick="closeT(15);" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
+</div>
 
 @endsection
 
@@ -407,6 +415,10 @@
                     stoplocation();
                 }
                 this.alldone = done;
+            },
+            call(mobile) {
+                axios.get('/call/' + mobile);
+                toastbox('toast-15');
             }
         }
     })
