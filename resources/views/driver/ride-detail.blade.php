@@ -308,9 +308,24 @@
 
 
 <script>
+
+function successCallback(position) {
+        const {
+            latitude,
+            longitude,
+            altitude,
+            speed
+        } = position;
+        // Show a map centered at latitude / longitude.
+
+        alert(latitude);
+
+    }
+
+
     function start() {
         window.WTN.backgroundLocation.start({
-            callback: false,
+            callback: successCallback,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 30,
             data: "ride_id-{{$ride_id}}",
@@ -341,7 +356,7 @@
     setInterval(function() {
         stop();
         start();
-    }, 120000);
+    }, 300000);
     @endif
 </script>
 
