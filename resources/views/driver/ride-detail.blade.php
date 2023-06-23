@@ -317,9 +317,6 @@ function successCallback(position) {
             speed
         } = position;
         // Show a map centered at latitude / longitude.
-
-        alert(latitude);
-
     }
 
 
