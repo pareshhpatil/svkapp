@@ -11,6 +11,7 @@ use Intervention\Image\ImageManager;
 use Image;
 use App\Http\Lib\Encryption;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -395,29 +396,35 @@ class HomeController extends Controller
     public function uploadFile(Request $request, $type)
     {
         $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png|max:8048'
+            'image' => 'required'
         ]);
 
-        if ($request->file()) {
-            $file_name = time() . rand(1, 999) . '.' . $request->file->extension();
-            $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
-            $path = '/storage/' . $file_path;
-            if (Session::get('user_type') == 4) {
-                $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
-            } else {
-                $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
-            }
-            $compress = 'storage/uploads/compres-' . $file_name;
-            $img->save($compress);
-            $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
-            $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
-            if (Session::get('user_type') == 4) {
-                $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo', '/' . $compress);
-            }
+        $croped_image = $request->image;
+        list($type, $croped_image) = explode(';', $croped_image);
+        list(, $croped_image)      = explode(',', $croped_image);
+        $croped_image = base64_decode($croped_image);
 
-            Session::put('icon', '/' . $compress);
-            return response()->json(['image' => '/' . $compress]);
+        $file_name = time() . rand(1, 999) . '.png';
+        Storage::disk('public')->put('uploads/' . $file_name, $croped_image);
+        //$file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
+        $file_path = 'uploads/' . $file_name;
+
+        $path = '/storage/' . $file_path;
+        if (Session::get('user_type') == 4) {
+            $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
+        } else {
+            $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
         }
+        $compress = 'storage/uploads/compres-' . $file_name;
+        $img->save($compress);
+        $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
+        $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
+        if (Session::get('user_type') == 4) {
+            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo', '/' . $compress);
+        }
+
+        Session::put('icon', '/' . $compress);
+        return response()->json(['image' => '/' . $compress]);
     }
 
     public function bookRide()

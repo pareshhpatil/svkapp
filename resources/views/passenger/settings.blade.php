@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('content')
+<script src="https://unpkg.com/vue-croppie/dist/vue-croppie.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/croppie/croppie.css">
+
 <div id="appCapsule" class="extra-header-active full-height">
     <div id="app">
         <form id="frm" @submit="formSubmit" enctype="multipart/form-data">
@@ -8,7 +11,8 @@
                 <div class="avatar-section">
                     <a href="#">
                         <img :src="data.icon" id="imgsrc" alt="avatar" class="imaged w100 rounded">
-                        <input type="file" id="fileuploadInput" style="display: none;" name="file" v-on:change="onImageChange" accept=".png, .jpg, .jpeg">
+                        <input type="file" id="fileuploadInput" style="display: none;" name="file" v-on:change="croppie" accept=".png, .jpg, .jpeg">
+                        <input type="hidden" name="image" id="img">
                         <span class="button" class="custom-file-upload" onclick="document.getElementById('fileuploadInput').click();">
                             <ion-icon name="camera-outline"></ion-icon>
                         </span>
@@ -17,7 +21,21 @@
 
                 </div>
             </div>
+
+            <!-- the result -->
+            <div v-if="showcropper==true" class="mt-2">
+                <vue-croppie ref="croppieRef" :enableOrientation="true" :boundary="{ width: 300, height: 300}" :viewport="{ width:300, height:300, 'type':'square' }">
+                </vue-croppie>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <a href="#" v-on:click="crop" class="btn btn-lg btn-primary btn-block">Upload</a>
+                    </div>
+                </div>
+            </div>
         </form>
+
+
 
         <div class="listview-title mt-1">Theme</div>
         <ul class="listview image-listview text inset no-line">
@@ -144,7 +162,10 @@
         data() {
             return {
                 data: [],
-                image: ''
+                image: '',
+                croppieImage: '',
+                cropped: null,
+                showcropper: false
             }
         },
         mounted() {
@@ -154,6 +175,62 @@
             }
         },
         methods: {
+
+            croppie(e) {
+                this.showcropper = true;
+                var files = e.target.files || e.dataTransfer.files;
+                if (!files.length) return;
+
+                var reader = new FileReader();
+                reader.onload = e => {
+                    this.$refs.croppieRef.bind({
+                        url: e.target.result
+                    });
+                };
+
+                reader.readAsDataURL(files[0]);
+            },
+            crop() {
+                // Options can be updated.
+                // Current option will return a base64 version of the uploaded image with a size of 600px X 450px.
+                let options = {
+                    type: 'base64',
+                    size: {
+                        width: 300,
+                        height: 300
+                    },
+                    format: 'jpeg'
+                };
+
+                lo(true);
+                let currentObj = this;
+
+                this.$refs.croppieRef.result(options, output => {
+                    image = this.croppieImage = output;
+
+                    let formData = new FormData();
+                    // image = document.getElementById('img').value;
+                    formData.append('image', image);
+
+                    const config = {
+                        headers: {
+                            'content-type': 'multipart/form-data'
+                        }
+                    }
+
+                    axios.post('/upload/file/image', formData, config)
+                        .then(function(response) {
+                            currentObj.data.icon = response.data.image;
+                            lo(false);
+                        })
+                        .catch(function(error) {
+                            currentObj.output = error;
+                            lo(false);
+                        });
+                });
+                // alert(this.image);
+                this.showcropper = false;
+            },
             updateValue(col) {
                 val = document.getElementById(col).checked;
                 axios.get('/setting/update/' + col + '/' + val);
@@ -181,7 +258,9 @@
                 }
 
                 let formData = new FormData();
-                formData.append('file', this.image);
+                image = document.getElementById('img').value;
+                alert(image);
+                // formData.append('image', image);
 
                 axios.post('/upload/file/image', formData, config)
                     .then(function(response) {
