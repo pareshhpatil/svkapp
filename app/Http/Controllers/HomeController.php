@@ -64,6 +64,8 @@ class HomeController extends Controller
 
             $data['live_ride'] = [];
             $data['data']['upcoming'] = false;
+        }else{
+            return redirect('/login');
         }
 
 
