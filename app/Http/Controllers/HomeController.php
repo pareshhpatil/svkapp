@@ -606,7 +606,7 @@ class HomeController extends Controller
             }
         }
         if ($status == 2) {
-            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'out_time', date('Y-m-d H:i:s'));
+            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
             $url = 'https://app.svktrv.in/dashboard';
             $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been completed', 'We hope you had a pleasant journey with us. Please rate your ride experience', $url);
         }
