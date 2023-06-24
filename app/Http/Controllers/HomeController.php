@@ -593,15 +593,20 @@ class HomeController extends Controller
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         $model =  new ParentModel();
         if ($status == 5 || $status == 1) {
-            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
             if ($status == 5) {
+                $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
                 $link = Encryption::encode($ride_passenger_id);
                 $url = 'https://app.svktrv.in/passenger/ride/' . $link;
                 $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
+            } else {
+                $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'in_time', date('Y-m-d H:i:s'));
+                if ($row->cab_time == '') {
+                    $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
+                }
             }
         }
         if ($status == 2) {
-            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'drop_time', date('Y-m-d H:i:s'));
+            $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'out_time', date('Y-m-d H:i:s'));
             $url = 'https://app.svktrv.in/dashboard';
             $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been completed', 'We hope you had a pleasant journey with us. Please rate your ride experience', $url);
         }
