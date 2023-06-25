@@ -39,7 +39,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
     Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
     Route::any('/roster/assign', [App\Http\Controllers\RosterController::class, 'assign']);
-    
+
+    Route::get('/ride/details/{id}', [App\Http\Controllers\RideController::class, 'details']);
+
     Route::get('/passenger/delete/{id}', [App\Http\Controllers\PassengerController::class, 'delete']);
     Route::get('/roster/delete/{id}', [App\Http\Controllers\RosterController::class, 'delete']);
 
