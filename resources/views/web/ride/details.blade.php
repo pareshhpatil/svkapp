@@ -319,58 +319,82 @@
 
 
 @endsection
-<script>
-  // Initialize and display the map
-  function initMap() {
-    // Create a map object
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 11,
-      center: { location: '{{$company_address}}' } // Provide the initial map center coordinates
-    });
+  <script>
+    function initMap() {
+      // Map initialization
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 13
+      });
 
-    // Create a directions service object
-    var directionsService = new google.maps.DirectionsService();
+      // Directions service
+      var directionsService = new google.maps.DirectionsService();
+      var directionsDisplay = new google.maps.DirectionsRenderer();
+      directionsDisplay.setMap(map);
 
-    // Create a directions renderer object to display the route on the map
-    var directionsDisplay = new google.maps.DirectionsRenderer({ map: map });
-
-    // Define the waypoints (stops)
-    var waypoints = [
-		@if($det->type=='Drop')
-		{ location: '{{$company_address}}' , title:'Office' },
-        @endif
+      // Define the waypoints (stops) with titles
+      var waypoints = [
+	  @if($det->type=='Drop')
+		{
+          location: '{{$company_address}}',
+          stopover: true,
+          title: 'Office'
+        },
+      @endif
       @foreach($ride_passengers as $v)
       @if($v->status!=3 && $v->status!=4)
-        { location: '{{$v->address}}' , title:'{{$v->name}}'  },
+        {
+          location: '{{$v->address}}',
+          stopover: true,
+          title: '{{$v->name}}'
+        },
       @endif
       @endforeach
       @if($det->type=='Pickup')
-		{ location: '{{$company_address}}' , title:'Office'},
+		{
+          location: '{{$company_address}}',
+          stopover: true,
+          title: 'Office'
+        }
      @endif
-    ];
+        
+      ];
+	  
+	 var origin = waypoints[0].location;
+     var destination = waypoints[waypoints.length - 1].location;
 
-    // Define the origin and destination
-    var origin = waypoints[0].location;
-    var destination = waypoints[waypoints.length - 1].location;
-
-    // Request the directions with the waypoints
-    directionsService.route(
-      {
+      // Calculate the directions
+      var request = {
         origin: origin,
         destination: destination,
-        waypoints: waypoints,
+        waypoints: waypoints.map(function(waypoint) {
+          return {
+            location: waypoint.location,
+            stopover: waypoint.stopover
+          };
+        }),
+        optimizeWaypoints: true,
         travelMode: 'DRIVING'
-      },
-      function (response, status) {
-        if (status === 'OK') {
-          // Display the directions on the map
-          directionsDisplay.setDirections(response);
-        } else {
-          //window.alert('Directions request failed due to ' + status);
+      };
+
+      directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+          directionsDisplay.setDirections(result);
+
+          // Add markers with titles for each waypoint
+          var route = result.routes[0];
+          var waypointsOrder = result.routes[0].waypoint_order;
+          for (var i = 0; i < waypointsOrder.length; i++) {
+            var waypointIndex = waypointsOrder[i];
+            var waypoint = waypoints[waypointIndex];
+            var marker = new google.maps.Marker({
+              position: route.legs[i].end_location,
+              map: map,
+              title: waypoint.title
+            });
+          }
         }
-      }
-    );
-  }
+      });
+    }
 </script>
 
 
