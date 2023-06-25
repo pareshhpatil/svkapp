@@ -4,7 +4,12 @@
 <link rel="stylesheet" href="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
-
+<style>
+    #map {
+      height: 550px;
+      width: 100%;
+    }
+  </style>
 @endsection
 @section('content')
 <div class="row">
@@ -292,7 +297,7 @@
             <div class="tab-pane fade" id="navs-top-map" role="tabpanel">
                 <div class="card mb-4">
                     <h5 class="card-header">Locations</h5>
-                    <div class="" style="margin-left: 20px;">
+                    <div class="" >
                         
                         <div id="map"></div>
 
@@ -314,17 +319,13 @@
 
 
 @endsection
-
-@section('footer')
-
-
 <script>
   // Initialize and display the map
   function initMap() {
     // Create a map object
     var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 10,
-     // center: { lat: 37.7749, lng: -122.4194 } // Provide the initial map center coordinates
+      zoom: 11,
+      center: { location: '{{$company_address}}' } // Provide the initial map center coordinates
     });
 
     // Create a directions service object
@@ -335,9 +336,17 @@
 
     // Define the waypoints (stops)
     var waypoints = [
-        @foreach($ride_passengers as $v)
+		@if($det->type=='Drop')
+		{ location: '{{$company_address}}' },
+        @endif
+      @foreach($ride_passengers as $v)
+      @if($v->status!=3 && $v->status!=4)
         { location: '{{$v->address}}' },
-        @endforeach
+      @endif
+      @endforeach
+      @if($det->type=='Pickup')
+		{ location: '{{$company_address}}' },
+     @endif
     ];
 
     // Define the origin and destination
@@ -357,13 +366,18 @@
           // Display the directions on the map
           directionsDisplay.setDirections(response);
         } else {
-          window.alert('Directions request failed due to ' + status);
+          //window.alert('Directions request failed due to ' + status);
         }
       }
     );
   }
- 
 </script>
+
+
+@section('footer')
+
+
+
 
 
 <script src="/assets/vendor/libs/cleavejs/cleave.js"></script>

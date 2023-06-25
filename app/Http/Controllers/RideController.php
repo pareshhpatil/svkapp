@@ -41,6 +41,7 @@ class RideController extends Controller
         $data['det']->end_time = $this->htmlTime($data['det']->end_time);
 
         $data['driver'] = $this->model->getTableRow('driver', 'id', $data['det']->driver_id);
+        $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
         $data['vehicle'] = $this->model->getTableRow('vehicle', 'vehicle_id', $data['det']->vehicle_id);
         $data['ride_passengers'] = $this->model->getRidePassenger($id);
         if ($data['driver']->photo == '') {
@@ -60,7 +61,7 @@ class RideController extends Controller
                 $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . $row->icon;
             }
         }
-      //  dd($data);
+        //  dd($data);
         return view('web.ride.details', $data);
     }
 }
