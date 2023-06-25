@@ -337,15 +337,15 @@
     // Define the waypoints (stops)
     var waypoints = [
 		@if($det->type=='Drop')
-		{ location: '{{$company_address}}' },
+		{ location: '{{$company_address}}' , title:'Office' },
         @endif
       @foreach($ride_passengers as $v)
       @if($v->status!=3 && $v->status!=4)
-        { location: '{{$v->address}}' },
+        { location: '{{$v->address}}' , title:'{{$v->name}}'  },
       @endif
       @endforeach
       @if($det->type=='Pickup')
-		{ location: '{{$company_address}}' },
+		{ location: '{{$company_address}}' , title:'Office'},
      @endif
     ];
 
