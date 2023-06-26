@@ -61,7 +61,6 @@ Route::get('/blogs', [App\Http\Controllers\HomeController::class, 'blogs']);
 Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
 Route::any('/ride/track/{id}', [App\Http\Controllers\TripController::class, 'rideLiveTrack']);
 Route::any('/app/ping', [App\Http\Controllers\HomeController::class, 'ping']);
-Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
 Route::post('/passenger/sos', [App\Http\Controllers\HomeController::class, 'passengerSOS']);
 Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'passengerHelp']);
 Route::post('/passenger/ride/cancel', [App\Http\Controllers\HomeController::class, 'rideCancel']);
@@ -74,6 +73,7 @@ Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::cl
 Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
+    Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
     Route::get('/book-ride', [App\Http\Controllers\HomeController::class, 'bookRide'])->name('book-ride');
