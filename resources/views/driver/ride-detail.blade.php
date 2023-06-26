@@ -215,6 +215,8 @@
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
                                 <p v-if="verror!=''" class="text-primary text-center" v-html="verror"></p>
+                                <br>
+                                <a v-on:click="resendotp()" class="text-primary text-center">Re-Send OTP</a>
                             </div>
                         </div>
                     </div>
@@ -286,11 +288,11 @@
 
 </div>
 
-<div id="toast-15" class="toast-box toast-center">
+<div id="toast-15" class="toast-box toast-center" style="z-index: 5000;">
     <div class="in">
         <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
         <div class="text">
-            You will receive call shortly
+            Request sent successfully wait for 30 sec
         </div>
     </div>
     <button type="button" onclick="closeT(15);" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
@@ -308,8 +310,7 @@
 
 
 <script>
-
-function successCallback(position) {
+    function successCallback(position) {
         const {
             latitude,
             longitude,
@@ -395,6 +396,11 @@ function successCallback(position) {
                 array = this.data.ride_passengers[selected_id];
                 this.data.ride_passengers[selected_id].status = 1;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/1');
+            },
+            resendotp(selected_id) {
+                array = this.data.ride_passengers[this.selected_id];
+                axios.get('/driver/ride/passenger/resendotp/' + array.id);
+                toastbox('toast-15');
             },
             noshow() {
                 array = this.data.ride_passengers[this.selected_id];

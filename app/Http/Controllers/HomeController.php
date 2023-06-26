@@ -64,7 +64,7 @@ class HomeController extends Controller
 
             $data['live_ride'] = [];
             $data['data']['upcoming'] = false;
-        }else{
+        } else {
             return redirect('/login');
         }
 
@@ -615,6 +615,22 @@ class HomeController extends Controller
 
         $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'status', $status);
     }
+
+    public function resendOTP($ride_passenger_id)
+    {
+        $apiController = new ApiController();
+        $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
+        $mobile = $this->model->getColumnValue('passenger', 'id', $row->passenger_id, 'mobile');
+        $message = $row->otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+        $apiController->sendSMS($mobile, $message, '1107168138576339315');
+        $link = Encryption::encode($ride_passenger_id);
+        $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+        $apiController->sendNotification($row->passenger_id, 5, $row->otp . ' is OTP to verify your mobile number', $url);
+        $tokens[] = env('MY_TOKEN');
+        $apiController->sendNotification(1, 3, 'Resend otp ', $ride_passenger_id . ' to ' . $mobile,  '', '', $tokens);
+    }
+
+
 
 
     public function passengerAdd($ride_id, $passenger_id, $time)
