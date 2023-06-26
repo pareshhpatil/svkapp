@@ -16,7 +16,15 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PZW6G05662"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-PZW6G05662');
+</script>
 <body style="background: #ffffff;">
 
   <!-- loader -->
