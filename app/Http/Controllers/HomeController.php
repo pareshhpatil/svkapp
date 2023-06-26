@@ -64,7 +64,7 @@ class HomeController extends Controller
 
             $data['live_ride'] = [];
             $data['data']['upcoming'] = false;
-        } else {
+        }else{
             return redirect('/login');
         }
 
@@ -412,13 +412,14 @@ class HomeController extends Controller
         $file_path = 'uploads/' . $file_name;
 
         $path = '/storage/' . $file_path;
-        if (Session::get('user_type') == 4) {
-            $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
-        } else {
-            $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
-        }
-        $compress = 'storage/uploads/compres-' . $file_name;
-        $img->save($compress);
+       // if (Session::get('user_type') == 4) {
+          //  $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
+      //  } else {
+       //     $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
+       // }
+		//echo '3';
+        $compress = 'storage/uploads/' . $file_name;
+        //$img->save($compress);
         $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
         $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
         if (Session::get('user_type') == 4) {
@@ -629,9 +630,6 @@ class HomeController extends Controller
         $tokens[] = env('MY_TOKEN');
         $apiController->sendNotification(1, 3, 'Resend otp ', $ride_passenger_id . ' to ' . $mobile,  '', '', $tokens);
     }
-
-
-
 
     public function passengerAdd($ride_id, $passenger_id, $time)
     {
