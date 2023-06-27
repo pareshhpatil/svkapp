@@ -183,7 +183,7 @@ class RosterController extends Controller
         }
         if ($status != 'na') {
             if ($status == 'ride') {
-                $statusarray = array(1, 2, 5);
+                $statusarray = array(5);
             } else {
                 $statusarray[] = $status;
             }
