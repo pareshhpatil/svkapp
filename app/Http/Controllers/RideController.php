@@ -29,10 +29,10 @@ class RideController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function details($link)
+    public function details($id)
     {
-        //$id = Encryption::decode($link);
-        $id = 508;
+       // $id = Encryption::decode($link);
+        //$id = 508;
         $data['selectedMenu'] = [7, 8];
         $data['menus'] = Session::get('menus');
         $data['det'] = $this->model->getTableRow('ride', 'id', $id);
