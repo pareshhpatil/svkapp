@@ -113,7 +113,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-bs-toggle="tab"  data-bs-target="#navs-top-toll" aria-controls="navs-top-toll" aria-selected="true" href="javascript:void(0);">
-                    <i class="ti ti-location ti-xs me-1"></i>Toll & Parking</a>
+                    <i class="ti ti-file ti-xs me-1"></i>Toll & Parking</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-bs-toggle="tab" onclick="initMap();" data-bs-target="#navs-top-map" aria-controls="navs-top-map" aria-selected="true" href="javascript:void(0);">
@@ -303,8 +303,8 @@
             <div class="tab-pane fade" id="navs-top-toll" role="tabpanel">
                 <div class="card mb-4">
                     <h5 class="card-header">Toll & Parking Details</h5>
-                    <div class="" style="margin-left: 20px;">
-                        <h5>No Records Found</h5>
+                    <div class="" style="margin-left: 30px;">
+                        <p>No Records Found</p>
                     </div>
                 </div>
             </div>
