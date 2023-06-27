@@ -119,6 +119,19 @@ class RosterController extends Controller
         $data['menus'] = Session::get('menus');
         $data['bulk_id'] = $bulk_id;
         $data['type'] = $type;
+        $data['status'] = 'na';
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        return view('web.roster.list', $data);
+    }
+
+    public function rideList(Request $request, $bulk_id = 0, $type = 0)
+    {
+        $data['selectedMenu'] = [14, 15];
+        $data['menus'] = Session::get('menus');
+        $data['bulk_id'] = $bulk_id;
+        $data['type'] = $type;
+        $data['status'] = 'ride';
         $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
         return view('web.roster.list', $data);
@@ -159,15 +172,24 @@ class RosterController extends Controller
         }
     }
 
-    public function ajaxRoster($project_id = 0,  $date = 'na', $status = 'na')
+    public function ajaxRoster($project_id = 0,  $date = 'na', $status = 'na', $type = 'na')
     {
+        $statusarray = [];
         if (strlen($date) < 5) {
             $date = 'na';
         }
         if ($date != 'na') {
             $date = $this->sqlDate($date);
         }
-        $data['data'] = $this->model->getRoster($project_id, $date, $status);
+        if ($status != 'na') {
+            if ($status == 'ride') {
+                $statusarray = array(1, 2, 5);
+            } else {
+                $statusarray[] = $status;
+            }
+        }
+
+        $data['data'] = $this->model->getRoster($project_id, $date, $statusarray);
         return json_encode($data);
     }
 

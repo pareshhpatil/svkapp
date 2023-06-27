@@ -56,8 +56,8 @@ class MasterModel extends ParentModel
         if ($date != 'na') {
             $retObj->where('a.date', $date);
         }
-        if ($status != 'na') {
-            $retObj->where('a.status', $status);
+        if (!empty($status)) {
+            $retObj->whereIn('a.status', $status);
         }
 
         $array =   $retObj->get();

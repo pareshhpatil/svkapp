@@ -33,7 +33,7 @@ class RideController extends Controller
     {
        // $id = Encryption::decode($link);
         //$id = 508;
-        $data['selectedMenu'] = [7, 8];
+        $data['selectedMenu'] = [14, 15];
         $data['menus'] = Session::get('menus');
         $data['det'] = $this->model->getTableRow('ride', 'id', $id);
         $data['det']->date = $this->htmlDate($data['det']->date, 1);
