@@ -53,9 +53,9 @@ class RideController extends Controller
         foreach ($data['ride_passengers'] as $k => $row) {
             if ($row->icon == '') {
                 if ($row->gender == 'Female') {
-                    $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
-                } else {
                     $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-female.png';
+                } else {
+                    $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
                 }
             } else {
                 $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . $row->icon;
