@@ -206,7 +206,7 @@
                                     <div class="timeline-header mb-1">
                                         <h6 class="mb-0">
 
-                                            @if($v->status==5)
+                                            @if($v->status==2)
                                             {{$v->name}} dropped
                                             @elseif($v->status==3)
                                             {{$v->name}} Canceled ride
