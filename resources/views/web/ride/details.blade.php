@@ -218,7 +218,7 @@
 
                                         </h6>
                                         <small class="text-muted">
-                                            @if($v->status==5)
+                                            @if($v->status==2)
                                             {{$v->drop_time}}
                                             @elseif($v->status!=3 && $v->status!=4)
                                             {{$v->drop_time}}
