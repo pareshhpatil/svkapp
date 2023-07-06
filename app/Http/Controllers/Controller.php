@@ -19,6 +19,10 @@ class Controller extends BaseController
     {
         return date($format, strtotime($date));
     }
+    public function sqlDateTime($date, $format = 'Y-m-d H:i:s')
+    {
+        return date($format, strtotime($date));
+    }
     public function sqlTime($time)
     {
         return date('H:i:s', strtotime($time));

@@ -8,10 +8,10 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-8">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> Import</h4>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">{{ucfirst($type)}}s /</span> Import</h4>
             </div>
             <div class="col-lg-4 pull-right">
-                <a class="btn btn-primary waves-effect waves-light pull-right" href="/passenger/import/format">Download format</a>
+                <a class="btn btn-primary waves-effect waves-light pull-right" href="/{{$type}}/import/format">Download format</a>
             </div>
         </div>
         <div class="card invoice-preview-card">
@@ -23,7 +23,7 @@
                 <!--/ Earning Reports -->
 
                 <!-- Support Tracker -->
-                <form class="source-item px-0 px-sm-4" id="frm" action="/passenger/importsave" enctype="multipart/form-data" method="post">
+                <form class="source-item px-0 px-sm-4" id="frm" action="/{{$type}}/importsave" enctype="multipart/form-data" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-md-4">
@@ -31,7 +31,7 @@
                                 <option value="">Select project</option>
                                 @if(!empty($project_list))
                                 @foreach($project_list as $v)
-                                <option value="{{$v->project_id}}">{{$v->name}}</option>
+                                <option @if(count($project_list)==1) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
                                 @endforeach
                                 @endif
                             </select>
@@ -40,6 +40,7 @@
                             <input type="file" name="file" class="form-control">
                         </div>
                         <div class="col-md-3">
+                            <input type="hidden" name="bulk_type" value="{{$type}}">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
@@ -88,13 +89,13 @@
                                     <div class="d-inline-block"><a href="javascript:;" class="btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                         <ul class="dropdown-menu dropdown-menu-end m-0">
                                             @if($v->status==3)
-                                            <li><a href="/passenger/list/{{$v->id}}/2" class="dropdown-item">Details</a></li>
-                                            <li><a href="javascript:;" onclick="document.getElementById('approve').href = '/passenger/import/approve/{{$v->id}}'" data-bs-toggle="modal" data-bs-target="#modalToggle" class="dropdown-item">Approve</a></li>
+                                            <li><a href="/{{$type}}/list/{{$v->id}}/2" class="dropdown-item">Details</a></li>
+                                            <li><a href="javascript:;" onclick="document.getElementById('approve').href = '/{{$type}}/import/approve/{{$v->id}}'" data-bs-toggle="modal" data-bs-target="#modalToggle" class="dropdown-item">Approve</a></li>
                                             @endif
                                             @if($v->status==5)
-                                            <li><a href="/passenger/list/{{$v->id}}/0" class="dropdown-item">Details</a></li>
+                                            <li><a href="/{{$type}}/list/{{$v->id}}/0" class="dropdown-item">Details</a></li>
                                             @endif
-                                            <li><a href="javascript:;" onclick="document.getElementById('delete').href = '/passenger/import/delete/{{$v->id}}'" data-bs-toggle="modal" data-bs-target="#modalDelete" class="dropdown-item text-danger delete-record">Delete</a></li>
+                                            <li><a href="javascript:;" onclick="document.getElementById('delete').href = '/{{$type}}/import/delete/{{$v->id}}'" data-bs-toggle="modal" data-bs-target="#modalDelete" class="dropdown-item text-danger delete-record">Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>

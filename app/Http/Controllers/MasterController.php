@@ -25,10 +25,9 @@ class MasterController extends Controller
 
     public function projectList()
     {
-
         $data['selectedMenu'] = [6];
         $data['menus'] = Session::get('menus');
-        $data['list'] = $this->model->getProject();
+        $data['list'] = $this->model->getProject(Session::get('project_access'));
         return view('web.master.project', $data);
     }
 

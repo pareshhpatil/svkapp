@@ -21,11 +21,11 @@ use Exception;
 
 class ParentModel extends Model
 {
-    public function getTableRow($table, $where, $value, $active = 0, $param = [])
+    public function getTableRow($table, $where, $value, $active = 0, $param = [], $select = '*')
     {
 
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
+            ->select(DB::raw($select))
             ->where($where, $value);
         if ($active == 1) {
             $retObj->where('is_active', 1);
@@ -94,18 +94,26 @@ class ParentModel extends Model
         }
     }
 
-    public function getTableList($table, $where, $value, $array = 0)
+    public function getTableList($table, $where, $value, $array = 0, $project_ids = [], $param = [], $select = '*')
     {
 
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
+            ->select(DB::raw($select))
             ->where('is_active', 1)
-            ->where($where, $value)
-            ->get();
-        if ($array == 1) {
-            return json_decode(json_encode($retObj), 1);
+            ->where($where, $value);
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
         }
-        return $retObj;
+        if (!empty($project_ids)) {
+            $retObj->whereIn('project_id', $project_ids);
+        }
+        $retObja =  $retObj->get();
+        if ($array == 1) {
+            return json_decode(json_encode($retObja), 1);
+        }
+        return $retObja;
     }
 
     public function getTableListOrderby($table, $where, $value, $orderby)
@@ -115,6 +123,18 @@ class ParentModel extends Model
             ->select(DB::raw('*'))
             ->where('is_active', 1)
             ->where($where, $value)
+            ->orderBy($orderby)
+            ->get();
+        return $retObj;
+    }
+
+    public function getTableListIn($table, $where, $value, $orderby)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where('is_active', 1)
+            ->whereIn($where, $value)
             ->orderBy($orderby)
             ->get();
         return $retObj;

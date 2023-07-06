@@ -10,7 +10,7 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-6">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Roster /</span>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Ride /</span>
                     @if(!empty($det))
                     Update
                     @else
@@ -28,7 +28,7 @@
                 <!--/ Earning Reports -->
 
                 <!-- Support Tracker -->
-                <form class="source-item pt-4 px-0 px-sm-4" id="frm" action="/roster/save" method="post">
+                <form class="source-item pt-4 px-0 px-sm-4" id="frm" action="/ride/save" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-lg-5">
@@ -37,7 +37,7 @@
                                 <option value=""></option>
                                 @if(!empty($project_list))
                                 @foreach($project_list as $v)
-                                <option @if(!empty($det)) @if($det->project_id==$v->project_id) selected @endif @endif value="{{$v->project_id}}">{{$v->name}}</option>
+                                <option @if(!empty($det)) @if($det->project_id==$v->project_id) selected @endif @endif @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
                                 @endforeach
                                 @endif
                             </select>

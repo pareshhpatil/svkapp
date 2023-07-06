@@ -23,37 +23,48 @@ Route::post('/login/verify', [App\Http\Controllers\Auth\LoginController::class, 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/escort/create', [App\Http\Controllers\PassengerController::class, 'escortCreate']);
+    Route::any('/escort/list', [App\Http\Controllers\PassengerController::class, 'escortList']);
     Route::get('/passenger/create', [App\Http\Controllers\PassengerController::class, 'create']);
     Route::any('/passenger/list', [App\Http\Controllers\PassengerController::class, 'list']);
     Route::any('/passenger/list/{bulk_id}/{type}', [App\Http\Controllers\PassengerController::class, 'list']);
-    Route::get('/passenger/import/format', [App\Http\Controllers\PassengerController::class, 'format']);
-    Route::get('/passenger/import', [App\Http\Controllers\PassengerController::class, 'import']);
-    Route::post('/passenger/importsave', [App\Http\Controllers\PassengerController::class, 'importsave']);
+    Route::get('/{type}/import/format', [App\Http\Controllers\PassengerController::class, 'format']);
+    Route::get('/{type}/import', [App\Http\Controllers\PassengerController::class, 'import']);
+    Route::get('/{type}/import/{type1}/{link}', [App\Http\Controllers\PassengerController::class, 'changeStatus']);
+
+    Route::any('/roster/list/{bulk_id?}/{type?}', [App\Http\Controllers\RosterController::class, 'list']);
+    Route::get('/ajax/roster/route/{date}/{project_id}/{type?}/{shift?}', [App\Http\Controllers\RosterController::class, 'ajaxRosterRoute']);
+
+    Route::get('/ajax/roster/{date}/{project_id}/{bulk_id}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
+    Route::get('/roster/delete/{id}/{bulk_id?}', [App\Http\Controllers\RosterController::class, 'delete']);
+
+    Route::any('/roster/route', [App\Http\Controllers\RosterController::class, 'route']);
+    Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
+    Route::post('/roster/route/save', [App\Http\Controllers\RosterController::class, 'routeSave']);
+
+
+    Route::post('/{type}/importsave', [App\Http\Controllers\PassengerController::class, 'importsave']);
     Route::get('/project/list', [App\Http\Controllers\MasterController::class, 'projectList']);
     Route::post('/passenger/save', [App\Http\Controllers\PassengerController::class, 'save']);
-    Route::get('/ajax/passenger/{project_id}/{type}/{bulk_id}', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
-    Route::get('/passenger/import/{type}/{link}', [App\Http\Controllers\PassengerController::class, 'changeStatus']);
+    Route::get('/ajax/passenger/{project_id}/{bulk_id?}/{type?}', [App\Http\Controllers\PassengerController::class, 'ajaxPassenger']);
     Route::get('/passenger/update/{id}', [App\Http\Controllers\PassengerController::class, 'create']);
 
-    Route::get('/roster/create', [App\Http\Controllers\RosterController::class, 'create']);
-    Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
-    Route::any('/roster/list', [App\Http\Controllers\RosterController::class, 'list']);
-    Route::any('/roster/assign', [App\Http\Controllers\RosterController::class, 'assign']);
-    Route::any('/ride/list', [App\Http\Controllers\RosterController::class, 'rideList']);
+    Route::get('/ride/create', [App\Http\Controllers\RideController::class, 'create']);
+    Route::post('/ride/save', [App\Http\Controllers\RideController::class, 'save']);
+    Route::any('/ride/list', [App\Http\Controllers\RideController::class, 'list']);
+    Route::any('/ride/assign', [App\Http\Controllers\RideController::class, 'assign']);
+    Route::any('/ride/list/completed', [App\Http\Controllers\RideController::class, 'rideList']);
 
     Route::get('/ride/details/{id}', [App\Http\Controllers\RideController::class, 'details']);
 
     Route::get('/passenger/delete/{id}', [App\Http\Controllers\PassengerController::class, 'delete']);
-    Route::get('/roster/delete/{id}', [App\Http\Controllers\RosterController::class, 'delete']);
+    Route::get('/ride/delete/{id}', [App\Http\Controllers\RideController::class, 'delete']);
 
-    Route::get('/roster/update/{id}', [App\Http\Controllers\RosterController::class, 'create']);
+    Route::get('/ride/update/{id}', [App\Http\Controllers\RideController::class, 'create']);
 
-    Route::get('/ajax/roster/{project_id}/{date?}/{status?}/{type?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
+    Route::get('/ajax/ride/{project_id}/{date?}/{status?}/{type?}', [App\Http\Controllers\RideController::class, 'ajaxRide']);
 
-
-    Route::get('/ajax/roster/{project_id}/{date?}/{status?}', [App\Http\Controllers\RosterController::class, 'ajaxRoster']);
-
-    Route::any('/roster/assign/{ride_id}/{driver_id}/{cab_id}', [App\Http\Controllers\RosterController::class, 'assignCab']);
+    Route::any('/ride/assign/{ride_id}/{driver_id}/{cab_id}', [App\Http\Controllers\RideController::class, 'assignCab']);
 
 
     Route::get('/master/{type}/create', [App\Http\Controllers\MasterController::class, 'create']);

@@ -33,10 +33,15 @@ class PassengerController extends Controller
     {
         $data['selectedMenu'] = [2, 3];
         $data['menus'] = Session::get('menus');
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
         $data['det'] = [];
+        $data['type'] = 1;
         if ($id > 0) {
             $data['det'] = $this->model->getTableRow('passenger', 'id', $id);
+            $data['type'] = $data['det']->passenger_type;
+            if ($data['type'] == 2) {
+                $data['selectedMenu'] = [16, 18];
+            }
         }
 
         return view('web.passenger.create', $data);
@@ -49,55 +54,95 @@ class PassengerController extends Controller
         $data['bulk_id'] = $bulk_id;
         $data['type'] = $type;
         $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
         return view('web.passenger.list', $data);
     }
 
-    public function changeStatus($type, $id)
+    public function escortCreate($id = null)
     {
-        if ($type == 'approve') {
+        $data['selectedMenu'] = [16, 17];
+        $data['menus'] = Session::get('menus');
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        $data['det'] = [];
+        $data['type'] = 2;
+        if ($id > 0) {
+            $data['det'] = $this->model->getTableRow('passenger', 'id', $id);
+        }
+
+        return view('web.passenger.create', $data);
+    }
+
+    public function escortList(Request $request)
+    {
+        $data['selectedMenu'] = [16, 18];
+        $data['menus'] = Session::get('menus');
+        $data['bulk_id'] = 0;
+        $data['type'] = 2;
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        return view('web.passenger.list', $data);
+    }
+
+    public function changeStatus($type, $status, $id)
+    {
+        if ($status == 'approve') {
             $this->model->updateTable('import', 'id', $id, 'status', 5);
-            $this->model->querylist('INSERT INTO `passenger` (`project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by`) select  `project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by` from staging_passenger where is_active=1 and bulk_id= ' . $id);
-            $message = 'Passengers added successfully';
-        } elseif ($type == 'delete') {
+            if ($type == 'passenger') {
+                $this->model->querylist('INSERT INTO `passenger` (`project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by`) select  `project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by` from staging_passenger where is_active=1 and bulk_id= ' . $id);
+            } else {
+                $this->model->querylist('INSERT INTO `roster` (`project_id`,`passenger_id`,`date`,`type`,`start_time`,`end_time`,`shift`,`note`,`status`,`is_active`,`bulk_id`,`created_by`,`created_date`,`last_update_by`) select  `project_id`,`passenger_id`,`date`,`type`,`start_time`,`end_time`,`shift`,`note`,`status`,`is_active`,`bulk_id`,`created_by`,`created_date`,`last_update_by` from staging_roster where is_active=1 and bulk_id= ' . $id);
+            }
+            $message = ucfirst($type) . 's added successfully';
+        } elseif ($status == 'delete') {
             $this->model->updateTable('import', 'id', $id, 'is_active', 0);
             $message = 'Sheet deleted successfully';
         }
         return redirect()->back()->withSuccess($message);
     }
 
-    public function import(Request $request)
+    public function import(Request $request, $type = 'passenger')
     {
         $data['selectedMenu'] = [2, 5];
         $data['menus'] = Session::get('menus');
+        $data['type'] = $type;
         $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
-        $data['import_list'] = $this->model->getImport();
-
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        if ($type == 'roster') {
+            $data['selectedMenu'] = [7, 19];
+        }
+        $bulk_type = ($type == 'roster') ? 2 : 1;
+        $data['import_list'] = $this->model->getImport(Session::get('project_access'), $bulk_type);
         return view('web.passenger.import', $data);
     }
-    public function importsave(Request $request)
+    public function importsave(Request $request, $type = 'passenger')
     {
         $file_name = time() . '.xlsx';
-
         $request->file('file')->storeAs('upload', $file_name);
         $user_id = Session::get('user_id');
         $array['project_id'] = $request->project_id;
         $array['file_name'] = $file_name;
+        $array['bulk_type'] = ($request->bulk_type == 'roster') ? 2 : 1;
         $array['user_file_name'] = $request->file('file')->getClientOriginalName();
         $this->model->saveTable('import', $array, $user_id);
         return redirect()->back()->withSuccess('File added successfully');
     }
-    public function format()
+    public function format($type = 'passenger')
     {
-
         $column_name[] = 'Name';
         $column_name[] = 'Mobile';
         $column_name[] = 'Email';
         $column_name[] = 'Gender(Male/Female)';
         $column_name[] = 'Address';
         $column_name[] = 'Area';
-        $title = 'Passenger';
+        if ($type == 'roster') {
+            $column_name[] = 'Type (Pickup/Drop)';
+            $column_name[] = 'Date';
+            $column_name[] = 'Shift';
+            $column_name[] = 'Pickup Time';
+            $column_name[] = 'In Time';
+        }
+
+        $title = ucfirst($type);
 
 
         $objPHPExcel = new PHPExcel();
@@ -159,10 +204,21 @@ class PassengerController extends Controller
                 $data['data'] = $this->model->getTableList('passenger', 'bulk_id', $bulk_id);
             }
         } else {
+            $passenger_type = ($type == 2) ? 2 : 1;
             if ($project_id > 0) {
-                $data['data'] = $this->model->getTableList('passenger', 'project_id', $project_id);
+                $data['data'] = $this->model->getTableList('passenger', 'project_id', $project_id, 0, [], ['passenger_type' => $passenger_type]);
+
+                if ($type == 3) {
+                    $array = [];
+                    if (!empty($data['data'])) {
+                        foreach ($data['data'] as $row) {
+                            $array[$row->id] = $row;
+                        }
+                    }
+                    return json_encode($array);
+                }
             } else {
-                $data['data'] = $this->model->getTableList('passenger', 'is_active', 1);
+                $data['data'] = $this->model->getTableList('passenger', 'is_active', 1, 0, Session::get('project_access'), ['passenger_type' => $passenger_type]);
             }
         }
         return json_encode($data);
@@ -187,6 +243,7 @@ class PassengerController extends Controller
                     $exist = $this->model->getColumnValue('passenger', 'mobile', $row['mobile'], 'id');
                 }
                 if ($exist == false) {
+                    $row['passenger_type'] = $request->type;
                     $this->model->saveTable('passenger', $row, $this->user_id);
                 }
             }

@@ -61,6 +61,12 @@ class LoginController extends Controller
             Session::put('email', $user->email);
             Session::put('mobile', $user->mobile);
             Session::put('project_id', $user->project_id);
+            if ($user->project_access == '') {
+                Session::put('project_access', []);
+            } else {
+                Session::put('project_access', explode(',', $user->project_access));
+            }
+
             $this->setMenu($user->role_id);
             return redirect('/home');
         }
@@ -71,8 +77,12 @@ class LoginController extends Controller
         $model = new ParentModel();
         if ($role_id == 1) {
             $list = $model->getTableListOrderby('menu', 'is_active', 1, 'seq');
+        } else {
+            $menus = $model->getColumnValue('role', 'id', $role_id, 'menus');
+            $menu_array = explode(',', $menus);
+            $list = $model->getTableListIn('menu', 'id', $menu_array, 'seq');
         }
-        
+
         $list = json_decode(json_encode($list), 1);
         $array = array();
         foreach ($list as $row) {

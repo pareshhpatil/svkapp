@@ -8,7 +8,7 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-8">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Passengers /</span> List</h4>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">@if($type==2) Escort @else Passengers @endif /</span> List</h4>
             </div>
             @if($bulk_id==0)
             <div class="col-lg-4 pull-right">
@@ -18,7 +18,7 @@
                         <option value="0">All</option>
                         @if(!empty($project_list))
                         @foreach($project_list as $v)
-                        <option @if($project_id==$v->project_id) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
+                        <option @if($project_id==$v->project_id) selected @endif @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
                         @endforeach
                         @endif
 

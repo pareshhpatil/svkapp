@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\MasterModel;
+use App\Models\RosterModel;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
-use PHPExcel;
-use PHPExcel_IOFactory;
-use PHPExcel_Cell_DataType;
 
 class RosterController extends Controller
 {
@@ -18,196 +15,218 @@ class RosterController extends Controller
      *
      * @return void
      */
-
     public $model = null;
     public $user_id = null;
 
     public function __construct()
     {
-        $this->model = new MasterModel();
+        $this->model = new RosterModel();
         $this->user_id = Session::get('user_id');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function create($id = null)
-    {
-        $data['selectedMenu'] = [7, 8];
-        $data['menus'] = Session::get('menus');
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
-        $data['passenger_list'] = $this->model->getTableList('passenger', 'is_active', 1);
-        $data['det'] = [];
-        if ($id > 0) {
-            $data['det'] = $this->model->getTableRow('ride', 'id', $id);
-            $data['det']->date = $this->htmlDate($data['det']->date, 1);
-            $data['det']->start_time = $this->sqlTime($data['det']->start_time);
-            $data['det']->end_time = $this->sqlTime($data['det']->end_time);
-            $data['passengers'] = $this->model->getTableList('ride_passenger', 'ride_id', $id);
-        }
-        $passenger_list = [];
-        //  if (!empty($data['passenger_list'])) {
-        //  foreach ($data['passenger_list'] as $p) {
-        //   $passenger_list[$p['project_id']] = $p;
-        //  }
-        //  }
-        // $data['passenger_list'] = $passenger_list;
-        return view('web.roster.create', $data);
-    }
-
-    public function delete($id)
-    {
-        $this->model->updateTable('ride', 'id', $id, 'is_active', 0);
-    }
-
-    public function save(Request $request)
-    {
-        $user_id = Session::get('user_id');
-        $array['project_id'] = $request->project_id;
-        $array['date'] = $this->sqlDate($request->date);
-        $array['type'] = $request->type;
-        $array['title'] = $request->title;
-        $array['start_location'] = $request->start_location;
-        $array['end_location'] = $request->end_location;
-        $array['total_passengers'] = count($request->passengers);
-        $array['start_time'] = $array['date'] . ' ' . $this->sqlTime($request->start_time);
-        $array['end_time'] = $array['date'] . ' ' . $this->sqlTime($request->end_time);
-        if ($request->ride_id > 0) {
-            $ride_id = $request->ride_id;
-            $this->model->updateArray('ride', 'id', $ride_id, $array);
-            $this->model->updateTable('ride_passenger', 'ride_id', $ride_id, 'is_active', 0);
-        } else {
-            $ride_id = $this->model->saveTable('ride', $array, $user_id);
-        }
-
-        foreach ($request->passengers as $row) {
-            $row['pickup_time'] = $array['date'] . ' ' . $this->sqlTime($row['pickup_time']);
-            $row['ride_id'] = $ride_id;
-            $emp_location = $this->model->getColumnValue('passenger', 'id', $row['passenger_id'], 'location');
-
-            if ($array['type'] == 'Pickup') {
-                $row['pickup_location'] = $emp_location;
-                $row['drop_location'] = $array['end_location'];
-            } else {
-                $row['pickup_location'] = $array['start_location'];
-                $row['drop_location'] = $emp_location;
-            }
-            if ($row['pid'] > 0) {
-                $pid = $row['pid'];
-                unset($row['pid']);
-                $row['is_active'] = 1;
-                $this->model->updateArray('ride_passenger', 'id', $pid, $row);
-            } else {
-                unset($row['pid']);
-                $row['otp'] = rand(1111, 9999);
-                $this->model->saveTable('ride_passenger', $row, $user_id);
-            }
-        }
-        if ($request->ride_id > 0) {
-            return redirect('/roster/list')->withSuccess('Roster updated successfully');
-        } else {
-            return redirect()->back()->withSuccess('Roster added successfully');
-        }
     }
 
 
     public function list(Request $request, $bulk_id = 0, $type = 0)
     {
-        $data['selectedMenu'] = [7, 9];
+        $data['selectedMenu'] = [7, 19];
         $data['menus'] = Session::get('menus');
         $data['bulk_id'] = $bulk_id;
-        $data['type'] = $type;
-        $data['status'] = 'na';
         $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
         return view('web.roster.list', $data);
     }
 
-    public function rideList(Request $request, $bulk_id = 0, $type = 0)
+    public function route(Request $request, $bulk_id = 0)
     {
-        $data['selectedMenu'] = [14, 15];
+        $data['selectedMenu'] = [7, 21];
         $data['menus'] = Session::get('menus');
         $data['bulk_id'] = $bulk_id;
-        $data['type'] = $type;
-        $data['status'] = 'ride';
-        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
-        return view('web.roster.list', $data);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        $data['project_id'] = (count($data['project_list']) == 1) ? $data['project_list'][0]->project_id : 0;
+        return view('web.roster.route', $data);
     }
 
-    public function assign()
+    public function routeSave(Request $request)
     {
-        $data['selectedMenu'] = [7, 10];
-        $data['menus'] = Session::get('menus');
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1);
-        $data['vehicle_list'] = $this->model->getTableList('vehicle', 'is_active', 1);
-        $data['driver_list'] = $this->model->getTableList('driver', 'is_active', 1);
-        return view('web.roster.assign', $data);
-    }
-
-    public function assignCab($ride_id, $driver_id, $vehicle_id)
-    {
-        $array['driver_id'] = $driver_id;
-        $array['vehicle_id'] = $vehicle_id;
-        $array['status'] = 1;
-        $this->model->updateArray('ride', 'id', $ride_id, $array);
-        $apiController = new ApiController();
-        $link = Encryption::encode($ride_id);
-        $url = 'https://app.svktrv.in/driver/ride/' . $link;
-        $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
-        $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
-        foreach ($passengers as $row) {
-            $link = Encryption::encode($row->id);
-            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-            $apiController->sendNotification($row->passenger_id, 5, 'Cab has been assigned for your next ride', 'Please be ready at your pickup location. Have a safe and pleasant journey.', $url);
-            $short_url = $this->random();
-            $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
-            $url = 'https://app.svktrv.in/l/' . $short_url;
-
-            $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
-            $apiController->sendSMS($row->passenger_id, 5, $message_, '1107168138570499675');
+        $dataarray = json_decode($request->data, 1);
+        $times = json_decode($request->times, 1);
+        $user_id = Session::get('user_id');
+        $project_location = $this->model->getColumnValue('project', 'project_id', $request->project_id, 'location');
+        $ptimes = [];
+        foreach ($times as $t) {
+            $ptimes[$t['key']] = $t['value'];
         }
-    }
+        foreach ($dataarray as $row) {
+            if ($row['is_active'] == 1) {
+                $array = [];
+                $array['project_id'] = $request->project_id;
+                $array['date'] = $this->sqlDate($row['date']);
+                $array['type'] = $row['type'];
+                $array['slab_id'] = $row['slab'];
+                $array['title'] = $row['type'] . ' ' . $row['slab_text'];
+                $array['start_location'] = ($row['type'] == 'Pickup') ? $row['slab_text'] : $project_location;
+                $array['end_location'] = ($row['type'] == 'Drop') ? $row['slab_text'] : $project_location;
+                $array['escort'] = ($row['escort'] == 1) ? 1 : 0;
+                $array['total_passengers'] = count($row['ids']);
+                if ($row['type'] == 'Pickup') {
+                    $array['start_time'] = $array['date'] . ' ' . $this->sqlTime($ptimes[$row['ids'][0]]);
+                    $array['end_time'] = $array['date'] . ' ' . $this->sqlTime($row['time']);
+                } else {
+                    $array['start_time'] = $array['date'] . ' ' . $this->sqlTime($row['time']);
+                    $array['end_time'] =  date('Y-m-d H:i:s', strtotime($array['start_time'] . ' + 3 hours'));
+                }
+                $ride_id = $this->model->saveTable('ride', $array, $user_id);
 
-    public function ajaxRoster($project_id = 0,  $date = 'na', $status = 'na', $type = 'na')
-    {
-        $statusarray = [];
-        if (strlen($date) < 5) {
-            $date = 'na';
-        }
-        if ($date != 'na') {
-            $date = $this->sqlDate($date);
-        }
-        if ($status != 'na') {
-            if ($status == 'ride') {
-                $statusarray = array(5);
-            } else {
-                $statusarray[] = $status;
+                if ($array['escort'] > 0) {
+                    $ride_passenger['roster_id'] = 0;
+                    $ride_passenger['ride_id'] = $ride_id;
+                    $ride_passenger['passenger_id'] = 0;
+                    if ($array['type'] == 'Pickup') {
+                        $ride_passenger['pickup_location'] = $array['start_location'];
+                        $ride_passenger['drop_location'] = $array['end_location'];
+                        $ride_passenger['pickup_time'] = $array['start_time'];
+                    } else {
+                        $ride_passenger['pickup_location'] = $array['start_location'];
+                        $ride_passenger['drop_location'] = $array['end_location'];
+                        $ride_passenger['pickup_time'] = $array['start_time'];
+                    }
+                    $ride_passenger['otp'] = rand(1111, 9999);
+                    $this->model->saveTable('ride_passenger', $ride_passenger, $user_id);
+                }
+
+                foreach ($row['ids'] as $roster_id) {
+                    $ride_passenger['roster_id'] = $roster_id;
+                    $ride_passenger['ride_id'] = $ride_id;
+                    $passenger_id = $this->model->getColumnValue('roster', 'id', $roster_id, 'passenger_id');
+                    $ride_passenger['passenger_id'] = $passenger_id;
+                    $emp_location = $this->model->getColumnValue('passenger', 'id', $ride_passenger['passenger_id'], 'location');
+
+                    if ($array['type'] == 'Pickup') {
+                        $ride_passenger['pickup_location'] = $emp_location;
+                        $ride_passenger['drop_location'] = $array['end_location'];
+                        $ride_passenger['pickup_time'] = $array['date'] . ' ' . $this->sqlTime($ptimes[$roster_id]);
+                    } else {
+                        $ride_passenger['pickup_location'] = $array['start_location'];
+                        $ride_passenger['drop_location'] = $emp_location;
+                        $ride_passenger['pickup_time'] = $array['start_time'];
+                    }
+
+                    $ride_passenger['otp'] = rand(1111, 9999);
+                    $this->model->saveTable('ride_passenger', $ride_passenger, $user_id);
+                    $this->model->updateTable('roster', 'id', $roster_id, 'status', 1);
+                }
             }
         }
+    }
 
-        $data['data'] = $this->model->getRoster($project_id, $date, $statusarray);
+    public function save(Request $request)
+    {
+        $emp['project_id'] = $request->emp_project_id;
+        $emp['employee_name'] = $request->emp_name;
+        $emp['mobile'] = $request->emp_mobile;
+        $emp['email'] = '';
+        $emp['gender'] = $request->emp_gender;
+        $emp['address'] = $request->emp_address;
+        $emp['location'] = $request->emp_location;
+
+        $emp['employee_name'] = str_replace(array("\r", "\n", "'"), "", $emp['employee_name']);
+        $emp['address'] = str_replace(array("\r", "\n", "'"), "", $emp['address']);
+        $emp['location'] = str_replace(array("\r", "\n", "'"), "", $emp['location']);
+
+
+
+        if ($request->emp_id > 0) {
+            $this->model->updateArray('passenger', 'id', $request->emp_id, $emp);
+            $passenger_id = $request->emp_id;
+        } else {
+            $passenger_id = $this->model->getColumnValue('passenger', 'mobile', $emp['mobile'], 'id');
+            if ($passenger_id != false) {
+                $this->model->updateArray('passenger', 'id', $passenger_id, $emp);
+            } else {
+                $passenger_id = $this->model->saveTable('passenger', $emp, Session::get('user_id'));
+            }
+        }
+        $array['project_id'] = $emp['project_id'];
+        $array['passenger_id'] = $passenger_id;
+        $array['type'] = $request->roster_type;
+        $array['date'] = $request->roster_date;
+        $array['shift'] = $request->roster_shift;
+        $array['start_time'] = $this->sqlDate($array['date']) . ' ' . $this->sqlTime($request->roster_time);
+        $array['end_time'] = $this->sqlDate($array['date']) . ' ' . $this->sqlTime($request->roster_in_time);
+        $array['date'] = $this->sqlDate($array['date']);
+        $this->model->saveTable('roster', $array, Session::get('user_id'));
+    }
+
+    public function ajaxRoster($date = 'na', $project_id = 0,  $bulk_id = 0, $shift = null)
+    {
+        $table = 'roster';
+        $from_date = null;
+        $to_date = null;
+        $date_array = explode(' - ', $date);
+        if (!empty($date_array) && $bulk_id == 0) {
+            $from_date = $this->sqlDateTime($date_array[0]);
+            $to_date = $this->sqlDateTime($date_array[1]);
+        }
+        if ($bulk_id > 0) {
+            $status = $this->model->getColumnValue('import', 'id', $bulk_id, 'status');
+            if ($status == 3) {
+                $table = 'staging_roster';
+            }
+        }
+        $data['data'] = $this->model->getRoster($table, $project_id, $bulk_id, $from_date, $to_date, Session::get('project_access'), $shift);
         return json_encode($data);
     }
 
-    function random($length_of_string = 4)
+    public function ajaxRosterRoute($date = 'na', $project_id = 0, $type = '',  $shift = '')
     {
-        // String of all alphanumeric character
-        $str_result = '0123456789bcdfghjklmnpqrstvwxyz';
-        // Shuffle the $str_result and returns substring
-        // of specified length
-        $exist = true;
-        while ($exist == true) {
-            $short = substr(
-                str_shuffle($str_result),
-                0,
-                $length_of_string
-            );
-            $exist = $this->model->getTableRow('short_url', 'short_url', $short);
+        $table = 'roster';
+        $from_date = null;
+        $to_date = null;
+        $date_array = explode(' - ', $date);
+        if (!empty($date_array)) {
+            $from_date = $this->sqlDateTime($date_array[0]);
+            $to_date = $this->sqlDateTime($date_array[1]);
         }
-        return $short;
+        $data['rosterdata'] = $this->model->getRoster($table, $project_id, 0, $from_date, $to_date, Session::get('project_access'), $type, $shift, 0);
+        $data['passenger_list'] = $this->model->getTableList('passenger', 'project_id', $project_id, [], [], [], 'id,passenger_type,employee_name,gender,location');
+        $data['zone_list'] = $this->model->getTableList('zone', 'project_id', $project_id, [], [], [], 'zone_id,zone,car_type');
+        $data['shift'] = [];
+        $data['roster'] = [];
+        if (!empty($data['rosterdata'])) {
+            foreach ($data['rosterdata'] as $k => $row) {
+                if ($row->status == 0) {
+                    $shift = ($row->shift == '') ? 'NA' : $row->shift;
+                    if (!in_array($shift, $data['shift'])) {
+                        $data['shift'][] = $shift;
+                    }
+
+                    if ($row->photo == '') {
+                        if ($row->gender == 'Female') {
+                            $data['rosterdata'][$k]->photo = env('MOBILE_APP_URL') . '/assets/img/map-female.png';
+                        } else {
+                            $data['rosterdata'][$k]->photo = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
+                        }
+                    } else {
+                        $data['rosterdata'][$k]->photo = env('MOBILE_APP_URL') . $row->photo;
+                    }
+                    $data['rosterdata'][$k]->title = $row->location . ' - ' . $row->employee_name . ' - ' . $row->type . ' - ' . $row->date . ' - ' . $row->display_start_time;
+                    $data['roster'][$row->id] = $data['rosterdata'][$k];
+                }
+            }
+        }
+        return json_encode($data);
+    }
+
+
+
+    public function delete($id, $bulk_id = 0)
+    {
+        $table = 'roster';
+        if ($bulk_id > 0) {
+            $status = $this->model->getColumnValue('import', 'id', $bulk_id, 'status');
+            if ($status == 3) {
+                $table = 'staging_roster';
+            }
+        }
+        $this->model->updateTable($table, 'id', $id, 'is_active', 0);
     }
 }

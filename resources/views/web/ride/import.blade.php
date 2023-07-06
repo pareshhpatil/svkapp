@@ -31,7 +31,7 @@
                                 <option value="">Select project</option>
                                 @if(!empty($project_list))
                                 @foreach($project_list as $v)
-                                <option value="{{$v->project_id}}">{{$v->name}}</option>
+                                <option @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
                                 @endforeach
                                 @endif
                             </select>
