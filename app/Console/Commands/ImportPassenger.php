@@ -45,7 +45,7 @@ class ImportPassenger extends Command
         $model = new MasterModel();
         $data = $model->getTableList('import', 'status', 1);
         foreach ($data as $row) {
-            if ($row->bulk_type == 2) {
+            if ($row->bulk_type == 1) {
                 $file = Storage::disk('upload')->path($row->file_name);
                 $inputFileType = PHPExcel_IOFactory::identify($file);
                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
