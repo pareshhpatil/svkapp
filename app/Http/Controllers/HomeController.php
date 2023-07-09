@@ -64,7 +64,7 @@ class HomeController extends Controller
 
             $data['live_ride'] = [];
             $data['data']['upcoming'] = false;
-        }else{
+        } else {
             return redirect('/login');
         }
 
@@ -141,6 +141,7 @@ class HomeController extends Controller
         if ($type == 'assign') {
             $data['driver_list'] = $this->model->getTableList('driver', 'is_active', 1, 'id,name,location');
             $data['vehicle_list'] = $this->model->getTableList('vehicle', 'is_active', 1, 'vehicle_id,number');
+            $data['escort_list'] = $this->model->getList('passenger', ['project_id' => $ride['project_id'], 'passenger_type' => 2], "concat(employee_name,' - ', location) as title,id");
             $data['title'] = 'Assign cab';
             $data['passenger_list'] = $this->model->getTableList('passenger', 'project_id', $ride['project_id'], "concat(employee_name,' - ', location) as title,id");
         }
@@ -412,12 +413,12 @@ class HomeController extends Controller
         $file_path = 'uploads/' . $file_name;
 
         $path = '/storage/' . $file_path;
-       // if (Session::get('user_type') == 4) {
-          //  $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
-      //  } else {
-       //     $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
-       // }
-		//echo '3';
+        // if (Session::get('user_type') == 4) {
+        //  $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
+        //  } else {
+        //     $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
+        // }
+        //echo '3';
         $compress = 'storage/uploads/' . $file_name;
         //$img->save($compress);
         $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);

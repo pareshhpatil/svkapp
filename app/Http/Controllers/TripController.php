@@ -61,13 +61,30 @@ class TripController extends Controller
     {
         $array['driver_id'] = $request->driver_id;
         $array['vehicle_id'] = $request->vehicle_id;
+        $array['escort'] = ($request->escort_id > 0) ? 1 : 0;
         $ride_id = $request->ride_id;
+        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
         $array['status'] = 1;
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+
+        if ($array['escort'] > 0) {
+            if ($ride->escort > 0) {
+                $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $request->escort_id]);
+            } else {
+                $ride_passenger['roster_id'] = 0;
+                $ride_passenger['ride_id'] = $ride_id;
+                $ride_passenger['passenger_id'] = $request->escort_id;
+                $ride_passenger['pickup_location'] = $ride->start_location;
+                $ride_passenger['drop_location'] = $ride->end_location;
+                $ride_passenger['pickup_time'] = $ride->start_time;
+                $ride_passenger['otp'] = rand(1111, 9999);
+                $this->model->saveTable('ride_passenger', $ride_passenger, 0);
+            }
+        }
+
         $apiController->sendNotification($array['driver_id'], 4, 'A new trip has been assigned', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
         foreach ($passengers as $row) {

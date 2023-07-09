@@ -83,6 +83,19 @@
                                 </div>
                             </div>
                             <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="email4b">Select Escort</label>
+                                    <select name="escort_id" class="form-control custom-select select2">
+                                        <option value="">Select..</option>
+                                        @if(!empty($escort_list))
+                                        @foreach($escort_list as $v)
+                                        <option value="{{$v->id}}">{{$v->title}}</option>
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group boxed">
                                 <input type="hidden" name="ride_id" value="{{$ride_id}}">
                                 <button type="submit" class="btn btn-primary btn-block ">Submit</button>
                             </div>
@@ -330,7 +343,7 @@
                 @endif
                 <div class="content">
                     <h4 class="title"><span v-html="item.name"></span>
-                    
+
                         <div class="text-end" style="right: 10px;float: right;">
                             <img v-if="!item.icon && item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="!item.icon && item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="imaged w48 rounded right">
@@ -343,9 +356,9 @@
                     <div v-html="item.location" class="text"></div>
                     @if(Session::get('user_type')==3)
                     <div v-html="'Otp: '+item.otp" class="text text-info"></div>
-                        <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
-                            <ion-icon name="call-outline"></ion-icon> Click To Call
-                        </span>
+                    <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
+                        <ion-icon name="call-outline"></ion-icon> Click To Call
+                    </span>
                     @endif
                 </div>
             </div>

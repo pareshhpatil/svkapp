@@ -162,10 +162,19 @@ class ParentModel extends Model
         return $retObj;
     }
 
-    public function getList($table, $param = [])
+    public function updateWhereArray($table, $param, $update_array)
+    {
+        $retObj = DB::table($table);
+        foreach ($param as $k => $v) {
+            $retObj->where($k, $v);
+        }
+        $retObj->update($update_array);
+    }
+
+    public function getList($table, $param = [], $col = '*')
     {
         $retObj = DB::table($table)
-            ->select(DB::raw('*'));
+            ->select(DB::raw($col));
         if (!empty($param)) {
             foreach ($param as $k => $v) {
                 $retObj->where($k, $v);
