@@ -37,7 +37,7 @@
                                 <option value=""></option>
                                 @if(!empty($project_list))
                                 @foreach($project_list as $v)
-                                <option @if(!empty($det)) @if($det->project_id==$v->project_id) selected @endif @endif @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
+                                <option @if(!empty($det)) @if($det->project_id==$v->project_id) selected @endif @endif @if(count($project_list)==1) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
                                 @endforeach
                                 @endif
                             </select>
@@ -73,6 +73,13 @@
                         <div class="col-lg-5">
                             <label for="defaultFormControlInput" class="form-label">Title</label>
                             <input type="text" maxlength="45" @if(!empty($det)) value="{{$det->title}}" @endif name="title" placeholder="Enter title eg. Slab 1" class="form-control" />
+                        </div>
+                        <div class="col-lg-5">
+                            <label for="defaultFormControlInput" class="form-label">Escort</label>
+                            <select name="escort" class="form-select input-sm" data-allow-clear="true">
+                                <option @if(!empty($det)) @if($det->escort==0) selected @endif @endif  value="0">No</option>
+                                <option @if(!empty($det)) @if($det->escort==1) selected @endif @endif value="1">Yes</option>
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3" data-repeater-list="passengers">

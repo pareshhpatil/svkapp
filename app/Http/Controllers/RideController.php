@@ -108,6 +108,7 @@ class RideController extends Controller
         $array['date'] = $this->sqlDate($request->date);
         $array['type'] = $request->type;
         $array['title'] = $request->title;
+        $array['escort'] = $request->escort;
         $array['start_location'] = $request->start_location;
         $array['end_location'] = $request->end_location;
         $array['total_passengers'] = count($request->passengers);
@@ -119,6 +120,17 @@ class RideController extends Controller
             $this->model->updateTable('ride_passenger', 'ride_id', $ride_id, 'is_active', 0);
         } else {
             $ride_id = $this->model->saveTable('ride', $array, $user_id);
+        }
+
+        if ($array['escort'] > 0) {
+            $ride_passenger['roster_id'] = 0;
+            $ride_passenger['ride_id'] = $ride_id;
+            $ride_passenger['passenger_id'] = 0;
+            $ride_passenger['pickup_location'] = $array['start_location'];
+            $ride_passenger['drop_location'] = $array['end_location'];
+            $ride_passenger['pickup_time'] = $array['start_time'];
+            $ride_passenger['otp'] = rand(1111, 9999);
+            $this->model->saveTable('ride_passenger', $ride_passenger, $user_id);
         }
 
         foreach ($request->passengers as $row) {
@@ -186,12 +198,16 @@ class RideController extends Controller
         return view('web.ride.assign', $data);
     }
 
-    public function assignCab($ride_id, $driver_id, $vehicle_id)
+    public function assignCab($ride_id, $driver_id, $vehicle_id, $escort_id = 0)
     {
         $array['driver_id'] = $driver_id;
         $array['vehicle_id'] = $vehicle_id;
+        $array['escort'] = ($escort_id > 0) ? 1 : 0;
         $array['status'] = 1;
         $this->model->updateArray('ride', 'id', $ride_id, $array);
+        if ($escort_id > 0) {
+            $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $escort_id]);
+        }
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;

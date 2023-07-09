@@ -64,7 +64,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/ajax/ride/{project_id}/{date?}/{status?}/{type?}', [App\Http\Controllers\RideController::class, 'ajaxRide']);
 
-    Route::any('/ride/assign/{ride_id}/{driver_id}/{cab_id}', [App\Http\Controllers\RideController::class, 'assignCab']);
+    Route::any('/ride/assign/{ride_id}/{driver_id}/{cab_id}/{escort_id}', [App\Http\Controllers\RideController::class, 'assignCab']);
 
 
     Route::get('/master/{type}/create', [App\Http\Controllers\MasterController::class, 'create']);

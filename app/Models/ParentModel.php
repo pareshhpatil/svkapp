@@ -161,6 +161,15 @@ class ParentModel extends Model
             ]);
     }
 
+    public function updateWhereArray($table, $param, $update_array)
+    {
+        $retObj = DB::table($table);
+        foreach ($param as $k => $v) {
+            $retObj->where($k, $v);
+        }
+        $retObj->update($update_array);
+    }
+
     public function updateArray($table, $where, $whvalue, $array)
     {
         DB::table($table)

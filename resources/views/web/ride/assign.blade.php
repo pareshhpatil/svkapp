@@ -22,7 +22,7 @@
                         <option value="0">All</option>
                         @if(!empty($project_list))
                         @foreach($project_list as $v)
-                        <option @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
+                        <option @if(count($project_list)==1) selected @endif value="{{$v->project_id}}">{{$v->name}}</option>
                         @endforeach
                         @endif
                     </select>
@@ -94,6 +94,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="row g-2">
+                    <div class="col mb-0">
+                        <label for="emailWithTitle" class="form-label">Escort</label>
+                        <select name="escort_id" id="escort_id" class="form-select input-sm" data-allow-clear="true">
+                            <option value="0">Select Escort</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="closemodal" class="btn btn-label-secondary" data-bs-dismiss="modal">
@@ -141,16 +149,27 @@
 
     });
 
-    function setRide(id) {
+    function setRide(id, project_id) {
         ride_id = id;
+        $('#escort_id')
+            .empty()
+            .append('<option selected="selected" value="0">Select Escort</option>');
+        $.get("/ajax/passenger/" + project_id + "/0/2", function(data, status) {
+            array = JSON.parse(data);
+            array.data.forEach((row, index) => {
+                $('#escort_id')
+                    .append('<option  value="' + row.id + '">' + row.employee_name + ' - ' + row.location + '</option>');
+            });
+        });
     }
 
     function assignRide() {
         driver_id = document.getElementById('driver_id').value;
         cab_id = document.getElementById('vehicle_id').value;
+        escort_id = document.getElementById('escort_id').value;
         if (driver_id > 0 && cab_id > 0) {
             $('#assignride').prop('disabled', true);
-            $.get("/ride/assign/" + ride_id + "/" + driver_id + "/" + cab_id + "", function(data, status) {
+            $.get("/ride/assign/" + ride_id + "/" + driver_id + "/" + cab_id + "/" + escort_id, function(data, status) {
                 document.getElementById('closemodal').click();
                 dt_basic.destroy();
                 datatable();
@@ -204,7 +223,7 @@
                     searchable: false,
                     render: function(data, type, full, meta) {
                         return (
-                            '<button type="button" onclick="setRide(' + full.id + ')" data-bs-toggle="modal" data-bs-target="#modalCenter" class="btn btn-success waves-effect waves-light">Assign</button>'
+                            '<button type="button" onclick="setRide(' + full.id + ',' + full.project_id + ')" data-bs-toggle="modal" data-bs-target="#modalCenter" class="btn btn-success waves-effect waves-light">Assign</button>'
                         );
                     }
                 }],
