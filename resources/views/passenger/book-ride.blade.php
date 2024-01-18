@@ -94,6 +94,15 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
+                                        <div v-html="type">Pickup</div>
+                                        <span v-if="type=='Pickup'" v-on:click="changeMode();" class="badge badge-info"><ion-icon name="arrow-up-outline"></ion-icon></span></a>
+                                        <span v-if="type=='Drop'" v-on:click="changeMode();" class="badge badge-primary "><ion-icon name="arrow-down-outline"></ion-icon></span></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item">
+                                    <div class="in">
                                         <div><input type="date" value="{{$date}}" required name="date" class="form-control" id="date" placeholder="Select Date">
                                         </div>
                                         <a onclick="document.getElementById('date').click();"><span class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
