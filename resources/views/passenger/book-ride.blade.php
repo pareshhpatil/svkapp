@@ -182,7 +182,7 @@
         },
         methods: {
             changeMode() {
-                this.shifts=this.allshifts[this.type];
+                this.selected='';
                 if (this.type == 'Pickup') {
                     this.type = 'Drop';
                     this.pickup = 'Office';
@@ -192,6 +192,7 @@
                     this.pickup = 'Home';
                     this.drop = 'Office';
                 }
+                this.shifts=this.allshifts[this.type];
             }
         }
     });
