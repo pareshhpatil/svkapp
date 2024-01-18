@@ -433,6 +433,16 @@ class HomeController extends Controller
 
     public function bookRide()
     {
+        $project_id = Session::get('project_id');
+        $list = $this->model->getList('shift', ['project_id' => $project_id, 'is_active' => 1], '*');
+        $array = [];
+        if ($list != false) {
+            foreach ($list as $row) {
+                $array[$row->type][$row->shift_time] =  $row->name;
+            }
+        }
+        $data['array'] = $array;
+        $data['list'] = $list;
         $data['menu'] = 3;
         $data['title'] = 'Book a Ride';
         $data['date'] = date('Y-m-d');

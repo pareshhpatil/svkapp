@@ -101,6 +101,7 @@
                                 </div>
                             </li>
                             <li>
+                                @if(empty($array))
                                 <div class="item">
                                     <div class="in">
                                         <div><input type="time" required value="09:00" name="time" class="form-control" id="time" placeholder="Select Date">
@@ -108,6 +109,22 @@
                                         <a onclick="document.getElementById('time').click();"><span class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
                                     </div>
                                 </div>
+                                @else
+                                <div class="item" style="padding-left: 0px;">
+                                    <div class="in">
+                                        <div>
+                                            <div class="input-wrapper">
+                                                <select class="form-control custom-select" name="time" v-model="selected" style="padding: 0 40px 0 16px;">
+                                                    <option value="">Select shift</option>
+                                                    <option v-for="(item, key) in shifts"  :value="key" v-html="item">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <a onclick="document.getElementById('time').click();"><span class="badge badge-info"><ion-icon name="alarm-outline"></ion-icon></span></a>
+                                    </div>
+                                </div>
+                                @endif
                             </li>
 
                         </ul>
@@ -152,15 +169,20 @@
                 data: [],
                 type: 'Pickup',
                 pickup: 'Home',
-                drop: 'Office'
+                drop: 'Office',
+                shifts: [],
+                selected: '',
+                allshifts: []
             }
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
+            this.allshifts = JSON.parse('{!!json_encode($array)!!}');
+            this.shifts=this.allshifts[this.type];
         },
         methods: {
             changeMode() {
-                console.log(this.type);
+                this.shifts=this.allshifts[this.type];
                 if (this.type == 'Pickup') {
                     this.type = 'Drop';
                     this.pickup = 'Office';

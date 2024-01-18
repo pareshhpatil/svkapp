@@ -180,7 +180,12 @@ class ParentModel extends Model
                 $retObj->where($k, $v);
             }
         }
-        return $retObj->get();
+        $retObj = $retObj->get();
+        if (!empty($retObj)) {
+            return $retObj;
+        } else {
+            return false;
+        }
     }
 
     public function updateTable($table, $where, $whvalue, $col, $val)
