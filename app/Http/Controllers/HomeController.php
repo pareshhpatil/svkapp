@@ -509,6 +509,7 @@ class HomeController extends Controller
     public function bookingCancel(Request $request)
     {
         $this->model->updateTable('ride_request', 'id', $request->booking_id, 'is_active', 0);
+        $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 0);
         return redirect('/my-rides/booking');
     }
 
@@ -530,7 +531,12 @@ class HomeController extends Controller
         $array['created_by'] = Session::get('user_id');
         $array['created_date'] = date('Y-m-d H:i:s');
         $array['last_update_by'] = Session::get('user_id');
-        $this->model->saveTable('ride_request', $array);
+        $array['booking_id'] = $this->model->saveTable('ride_request', $array);
+        $array['status'] = 1;
+        $array['start_time'] = $array['time'];
+        unset($array['time']);
+        $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
+        $this->model->saveTable('roster', $array);
         return redirect('/my-rides/booking');
     }
 

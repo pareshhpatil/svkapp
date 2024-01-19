@@ -192,9 +192,8 @@
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
-                            <h5 v-html="item.pickup_time"></h5>
-                            <p><span v-html="item.type"></span></p>
-                            <p><span class="badge badge-warning">Pending</span></p>
+                            <h5 ><span v-html="item.pickup_time"></span> &nbsp;&nbsp;&nbsp;<span class="badge badge-warning">Pending</span></h5>
+                            <h4><span v-html="item.type"></span></h4>
                         </div>
                     </div>
                     <div class="right">
