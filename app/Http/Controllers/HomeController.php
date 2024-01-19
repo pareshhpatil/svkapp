@@ -536,10 +536,11 @@ class HomeController extends Controller
         $array['passenger_id'] = Session::get('parent_id');
         $array['created_by'] = Session::get('user_id');
         $array['created_date'] = date('Y-m-d H:i:s');
+        $array['status'] = 1;
         $array['last_update_by'] = Session::get('user_id');
         $array['booking_id'] = $this->model->saveTable('ride_request', $array);
-        $array['status'] = 1;
         $array['start_time'] = $array['time'];
+        $array['status'] = 0;
         unset($array['time']);
         $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
         $this->model->saveTable('roster', $array);
