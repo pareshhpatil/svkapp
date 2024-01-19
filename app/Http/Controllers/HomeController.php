@@ -337,6 +337,9 @@ class HomeController extends Controller
         $data['menu'] = 5;
         $data['title'] = 'Settings';
         $data['data'] = $this->model->getTableRow('users', 'id', Session::get('user_id'));
+        if ($data['data']->icon == '') {
+            $data['data']->icon = '/assets/img/avatars/' . $data['data']->gender . '.png?v=3';
+        }
         return view('passenger.settings', $data);
     }
     public function profile()
@@ -344,6 +347,9 @@ class HomeController extends Controller
         $data['menu'] = 5;
         $data['title'] = 'Settings';
         $data['data'] = $this->model->getTableRow('users', 'id', Session::get('user_id'));
+        if ($data['data']->icon == '') {
+            $data['data']->icon = '/assets/img/avatars/' . $data['data']->gender . '.png?v=3';
+        }
         return view('passenger.profile', $data);
     }
 
