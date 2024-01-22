@@ -64,7 +64,7 @@
                 <div class="app-brand demo">
                     <a href="#" class="app-brand-link">
                         <span class="app-brand-logo demo" style="height: 60px;width: 97%;">
-                            <img style="max-width: 100%;" src="https://siddhivinayaktravel.in/dist/img/1681581649.png">
+                            <img style="max-width: 100%;" src="https://admin.svktrvin.in/dist/img/1681581649.png">
                         </span>
                     </a>
 

@@ -219,7 +219,7 @@
             data: "userid1",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 0.0,
+            distanceFilter: 1.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
