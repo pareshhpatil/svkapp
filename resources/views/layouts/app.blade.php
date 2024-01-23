@@ -321,7 +321,7 @@
     <!-- Splide -->
     <script src="/assets/js/plugins/splide/splide.min.js"></script>
     <!-- Base Js File -->
-    <script src="/assets/js/base.js?v=8"></script>
+    <script src="/assets/js/base.js?v=9"></script>
 
     @yield('footer')
     @if(!Session::has('token'))
