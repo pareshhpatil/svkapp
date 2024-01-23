@@ -224,7 +224,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             data: "userid1",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 1.0,
+            distanceFilter: {{env('DISTANCE_FILTER')}},
             desiredAccuracy: "best",
             activityType: "other",
         });
