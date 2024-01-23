@@ -93,14 +93,14 @@ class ImportRoster extends Command
                         }
 
                         if ($array['start_time'] != '') {
-                            $array['start_time'] = $worksheet->getCellByColumnAndRow(9, $rowno)->getValue();
+                            $array['start_time'] = $worksheet->getCellByColumnAndRow(11, $rowno)->getValue();
                             $UNIX_DATE = ($array['start_time'] - 25569) * 86400;
                             $array['start_time'] = $array['date'] . ' ' . gmdate("H:i:s", $UNIX_DATE);
                         } else {
                             $array['start_time'] = null;
                         }
                         if ($array['end_time'] != '') {
-                            $array['end_time'] = $worksheet->getCellByColumnAndRow(10, $rowno)->getValue();
+                            $array['end_time'] = $worksheet->getCellByColumnAndRow(12, $rowno)->getValue();
                             $UNIX_DATE = ($array['end_time'] - 25569) * 86400;
                             $array['end_time'] = $array['date'] . ' ' . gmdate("H:i:s", $UNIX_DATE);
                         } else {
