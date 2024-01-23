@@ -86,8 +86,8 @@
 
                     </ul>
                     <div class="d-flex justify-content-center">
-                        <a href="javascript:;" class="btn btn-success me-3 waves-effect waves-light" data-bs-target="#editUser" data-bs-toggle="modal">Approve</a>
-                        <a href="javascript:;" class="btn btn-primary suspend-user waves-effect">Call Driver</a>
+                        <!-- <a href="javascript:;" class="btn btn-success me-3 waves-effect waves-light" data-bs-target="#editUser" data-bs-toggle="modal">Approve</a> -->
+                        <!-- <a href="javascript:;" class="btn btn-primary suspend-user waves-effect">Call Driver</a> -->
                     </div>
                 </div>
             </div>
