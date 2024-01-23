@@ -180,7 +180,7 @@
                 <h5 class="modal-title">Error</h5>
             </div>
             <div class="modal-body">
-                Booking is only permitted up to 6 hours before the schedule pickup time.
+                Booking is only permitted up to 6 hours before the scheduled pickup time.
             </div>
             <div class="modal-footer">
                 <div class="btn-inline">
