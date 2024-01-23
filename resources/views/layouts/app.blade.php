@@ -88,7 +88,7 @@
         <div class="pageTitle">{{$title}}</div>
         <div class="right">
         <a href="/dashboard" class="headerButton">
-        <ion-icon name='home'></ion-icon>
+        <ion-icon name='home-outline'></ion-icon>
             </a>
         </div>
     </div>
