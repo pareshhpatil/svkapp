@@ -46,11 +46,10 @@ class RideController extends Controller
         $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
         $data['vehicle'] = $this->model->getTableRow('vehicle', 'vehicle_id', $data['det']->vehicle_id);
         $data['ride_passengers'] = $this->model->getRidePassenger($id);
+        $data['driver_photo'] = env('MOBILE_APP_URL') . '/assets/img/driver.png';
         if ($data['driver'] != false) {
-            if ($data['driver']->photo == '') {
-                $data['driver']->photo = env('MOBILE_APP_URL') . '/assets/img/driver.png';
-            } else {
-                $data['driver']->photo = env('MOBILE_APP_URL') . $data['driver']->photo;
+            if ($data['driver_photo'] != '') {
+                $data['driver_photo'] = env('MOBILE_APP_URL') . $data['driver']->photo;
             }
         }
 

@@ -26,6 +26,7 @@
         <!-- User Card -->
         <div class="card mb-4">
             <div class="card-body">
+                @isset($driver->name)
                 <div class="user-avatar-section">
                     <div class="d-flex align-items-center flex-column">
                         <img class="img-fluid rounded mb-3 pt-1 mt-4" src="{{$driver->photo}}" style="max-width: 200px;" alt="User avatar">
@@ -35,6 +36,7 @@
                         </div>
                     </div>
                 </div>
+                @endisset
                 <div class="d-flex justify-content-around flex-wrap  pb-4 border-bottom">
 
                 </div>
