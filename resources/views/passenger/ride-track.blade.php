@@ -124,7 +124,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                             <div>
                                 <strong>{{$data['driver']['name']}}</strong>
                                 <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <strong class="text-info">Speed : <span id="speed"></span></strong>
+                                <!-- <strong class="text-info">Speed : <span id="speed"></span></strong> -->
                                 <p>{{$data['vehicle']['number']}}</p>
                             </div>
                         </div>
@@ -317,7 +317,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
     speedshow = Math.round({{$live_location['speed']}} * 3.6);
-    document.getElementById("speed").innerHTML=speedshow;
+    //document.getElementById("speed").innerHTML=speedshow;
     @endif
     //speed = loc_array.speed;
 
@@ -354,7 +354,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         setInterval(function() {
             getData();
-            document.getElementById("speed").innerHTML=speedshow;
+            //document.getElementById("speed").innerHTML=speedshow;
             if (start == true) {
                 direction();
             } else {
