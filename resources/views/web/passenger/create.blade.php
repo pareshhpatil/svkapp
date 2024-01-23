@@ -66,10 +66,14 @@
                                     <div class="col-md-3 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Email</p>
                                         <input type="email" @if(!empty($det)) value="{{$det->email}}" @endif name="email" class="form-control  mb-3" placeholder="Enter email id" />
+                                        <p class="mb-2 repeater-title">Employee Code</p>
+                                        <input type="text" @if(!empty($det)) value="{{$det->employee_code}}" @endif name="employee_code" class="form-control  mb-3" placeholder="Enter code" />
                                     </div>
                                     <div class="col-md-3 col-12 mb-md-0 mb-3">
                                         <p class="mb-2 repeater-title">Mobile</p>
-                                        <input type="text" @if(!empty($det)) value="{{$det->mobile}}" @endif name="mobile" class="form-control " placeholder="Enter mobile number" maxlength="10" minlength="10" />
+                                        <input type="text" @if(!empty($det)) value="{{$det->mobile}}" @endif name="mobile" class="form-control mb-3" placeholder="Enter mobile number" maxlength="10" minlength="10" />
+                                        <p class="mb-2 repeater-title">Cost Center Code</p>
+                                        <input type="text" @if(!empty($det)) value="{{$det->cost_center_code}}" @endif name="cost_center_code" class="form-control  mb-3" placeholder="Enter code" />
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column align-items-center justify-content-between border-start p-2">

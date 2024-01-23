@@ -115,4 +115,20 @@ class MasterModel extends ParentModel
         $array =   $retObj->get();
         return $array;
     }
+
+    public function getInvoiceList($project_ids = [])
+    {
+        $retObj = DB::table('project as a')
+            ->join('company as ea', 'ea.company_id', '=', 'a.company_id')
+            ->join('logsheet_invoice as i', 'i.company_id', '=', 'a.company_id')
+            ->join('vehicle as v', 'i.vehicle_id', '=', 'v.vehicle_id')
+            ->where('a.is_active', 1)
+            ->where('i.is_active', 1)
+            ->select(DB::raw("invoice_id,v.number,invoice_number,DATE_FORMAT(date, '%b %Y') as bill_month,DATE_FORMAT(bill_date, '%d %b %Y') as bill_date,format(grand_total,2,'en_IN') as grand_total,ea.name as company_name"));
+        if (!empty($project_ids)) {
+            $retObj->whereIn('a.project_id', $project_ids);
+        }
+
+        return $retObj->get();
+    }
 }

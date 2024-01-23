@@ -8,24 +8,9 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-8">
-                <h4 class="fw-bold py-2"><span class="text-muted fw-light">@if($type==2) Escort @else Passengers @endif /</span> List</h4>
+                <h4 class="fw-bold py-2"><span class="text-muted fw-light">Shift /</span> List</h4>
             </div>
-            @if($bulk_id==0)
-            <div class="col-lg-4 pull-right">
-                <form action="" id="frm" method="post">
-                    @csrf
-                    <select name="project_id" id="select2Basic" onchange="reload(this.value)" class="select2 form-select input-sm" data-allow-clear="true">
-                        <option value="0">All</option>
-                        @if(!empty($project_list))
-                        @foreach($project_list as $v)
-                        <option @if($project_id==$v->project_id) selected @endif @if(count($project_list)==1) selected @endif  value="{{$v->project_id}}">{{$v->name}}</option>
-                        @endforeach
-                        @endif
-
-                    </select>
-                </form>
-            </div>
-            @endif
+            
         </div>
         <div class="card invoice-preview-card">
 
@@ -37,14 +22,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Emp code</th>
                                 <th>Name</th>
-                                <th>Gender</th>
-                                <th>Email</th>
-                                <th>Mobile</th>
-                                <th>Location</th>
-                                <th>Address</th>
-                                <th>Cost center</th>
+                                <th>Type</th>
+                                <th>Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -66,29 +46,13 @@
     var dt_basic;
     var project_id = 0;
 
-    function reload(id) {
-        project_id = id;
-
-
-        dt_basic.destroy();
-        datatable();
-    }
+    
     // datatable (jquery)
     $(function() {
 
         datatable();
 
     });
-
-    function deletePassenger(id) {
-        response = confirm('Are you sure you want to delete this item?');
-        if (response == true) {
-            $.get("/passenger/delete/" + id, function(data, status) {
-                dt_basic.destroy();
-                datatable();
-            });
-        }
-    }
 
 
     function datatable() {
@@ -99,33 +63,19 @@
         // --------------------------------------------------------------------
         if (dt_basic_table.length) {
             dt_basic = dt_basic_table.DataTable({
-                ajax: '/ajax/passenger/' + project_id + '/{{$bulk_id}}/{{$type}}',
+                ajax: '/master/shift/ajax',
                 columns: [{
                         data: 'id'
                     },
                     {
-                        data: 'employee_code'
+                        data: 'name'
+                    },
+                   
+                    {
+                        data: 'type'
                     },
                     {
-                        data: 'employee_name'
-                    },
-                    {
-                        data: 'gender'
-                    },
-                    {
-                        data: 'email'
-                    },
-                    {
-                        data: 'mobile'
-                    },
-                    {
-                        data: 'location'
-                    },
-                    {
-                        data: 'address'
-                    },
-                    {
-                        data: 'cost_center_code'
+                        data: 'shift_time'
                     },
                     {
                         data: ''
@@ -142,8 +92,7 @@
                             '<div class="d-inline-block">' +
                             '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>' +
                             '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-                            '<li><a href="/passenger/update/'+ full.id +'" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="javascript:;" onclick="' + "deletePassenger(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
+                            '<li><a href="javascript:;" onclick="' + "deleteride(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
                             '</ul>' +
                             '</div>'
                         );
@@ -154,6 +103,17 @@
                 ],
                 displayLength: 10,
                 lengthMenu: [10, 25, 50, 75, 100],
+            });
+        }
+    }
+
+
+    function deleteride(id) {
+        response = confirm('Are you sure you want to delete this item?');
+        if (response == true) {
+            $.get("/master/shift/delete/" + id, function(data, status) {
+                dt_basic.destroy();
+                datatable();
             });
         }
     }

@@ -97,6 +97,7 @@ class RosterController extends Controller
                     $ride_passenger['roster_id'] = $roster_id;
                     $ride_passenger['ride_id'] = $ride_id;
                     $passenger_id = $this->model->getColumnValue('roster', 'id', $roster_id, 'passenger_id');
+                    $booking_id = $this->model->getColumnValue('roster', 'id', $roster_id, 'booking_id');
                     $ride_passenger['passenger_id'] = $passenger_id;
                     $emp_location = $this->model->getColumnValue('passenger', 'id', $ride_passenger['passenger_id'], 'location');
 
@@ -113,6 +114,7 @@ class RosterController extends Controller
                     $ride_passenger['otp'] = rand(1111, 9999);
                     $this->model->saveTable('ride_passenger', $ride_passenger, $user_id);
                     $this->model->updateTable('roster', 'id', $roster_id, 'status', 1);
+                    $this->model->updateTable('ride_request', 'id', $booking_id, 'status', 2);
                 }
             }
         }

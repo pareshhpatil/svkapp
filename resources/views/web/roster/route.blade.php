@@ -223,6 +223,7 @@
                 current_rating: 0,
                 routes: [],
                 roster: [],
+                shifts: [],
                 passengers: [],
                 new_route_car_type: '',
                 new_route_type: '',
@@ -245,7 +246,7 @@
                 roster_type: 'Drop',
                 roster_shift: '',
                 roster_in_time: '{{date("H:i")}}',
-                roster_time: '{{date("H:i")}}',
+                roster_time: '',
                 roster_date: '{{date("Y-m-d")}}',
             }
         },
@@ -432,6 +433,7 @@
             fetchPassenger() {
                 this.passengers = [];
                 this.getPassenger();
+                this.getShift();
                 $('#passenger_id').select2({
                     dropdownParent: $("#offcanvasAddUser")
                 });
@@ -446,6 +448,21 @@
                     this.passengers = res.data;
                 }
 
+            },
+            async getShift() {
+                // var date = '';
+                project_id = document.getElementById('project_id').value;
+                roster_type = document.getElementById('roster_type').value;
+                this.emp_project_id = project_id;
+                if (project_id > 0) {
+                    let res = await axios.get('/ajax/shift/' + project_id + '/'+roster_type);
+                    this.shifts = res.data;
+                }
+
+            },
+            setRosterTime(val)
+            {
+                this.roster_shift=val;
             },
             saveRoute() {
                 times = [];
@@ -480,6 +497,7 @@
 
             },
             saveRoster() {
+                this.roster_shift=document.getElementById('roster_time').options[document.getElementById('roster_time').selectedIndex].text;
                 const formData = new FormData()
                 formData.append('emp_project_id', this.emp_project_id)
                 formData.append('emp_name', this.emp_name)

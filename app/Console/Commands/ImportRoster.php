@@ -65,21 +65,25 @@ class ImportRoster extends Command
                         $emp['gender'] = $worksheet->getCellByColumnAndRow(3, $rowno)->getValue();
                         $emp['address'] = $worksheet->getCellByColumnAndRow(4, $rowno)->getValue();
                         $emp['location'] = $worksheet->getCellByColumnAndRow(5, $rowno)->getValue();
+                        $emp['employee_code'] = $worksheet->getCellByColumnAndRow(6, $rowno)->getValue();
+                        $emp['cost_center_code'] = $worksheet->getCellByColumnAndRow(7, $rowno)->getValue();
                         $passenger_id = $model->getColumnValue('passenger', 'mobile', $emp['mobile'], 'id');
                         if ($passenger_id == false) {
                             $emp['employee_name'] = str_replace(array("\r", "\n", "'"), "", $emp['employee_name']);
                             $emp['address'] = str_replace(array("\r", "\n", "'"), "", $emp['address']);
                             $emp['location'] = str_replace(array("\r", "\n", "'"), "", $emp['location']);
+                            $emp['employee_code'] = str_replace(array("\r", "\n", "'"), "", $emp['employee_code']);
+                            $emp['cost_center_code'] = str_replace(array("\r", "\n", "'"), "", $emp['cost_center_code']);
                             $passenger_id = $model->saveTable('passenger', $emp, $row->created_by);
                         }
                         $array['project_id'] = $row->project_id;
                         $array['bulk_id'] = $row->id;
                         $array['passenger_id'] = $passenger_id;
-                        $array['type'] = $worksheet->getCellByColumnAndRow(6, $rowno)->getValue();
-                        $array['date'] = $worksheet->getCellByColumnAndRow(7, $rowno)->getFormattedValue();
-                        $array['shift'] = $worksheet->getCellByColumnAndRow(8, $rowno)->getValue();
-                        $array['start_time'] = $worksheet->getCellByColumnAndRow(9, $rowno)->getValue();
-                        $array['end_time'] = $worksheet->getCellByColumnAndRow(10, $rowno)->getValue();
+                        $array['type'] = $worksheet->getCellByColumnAndRow(8, $rowno)->getValue();
+                        $array['date'] = $worksheet->getCellByColumnAndRow(9, $rowno)->getFormattedValue();
+                        $array['shift'] = $worksheet->getCellByColumnAndRow(10, $rowno)->getValue();
+                        $array['start_time'] = $worksheet->getCellByColumnAndRow(11, $rowno)->getValue();
+                        $array['end_time'] = $worksheet->getCellByColumnAndRow(12, $rowno)->getValue();
                         $array['date'] = $this->sqlDate($array['date']);
                         if ($array['start_time'] == '0.0') {
                             $array['start_time'] = '0:00';

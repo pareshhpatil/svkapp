@@ -67,13 +67,18 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/ride/assign/{ride_id}/{driver_id}/{cab_id}/{escort_id}', [App\Http\Controllers\RideController::class, 'assignCab']);
 
 
+    Route::get('/ajax/shift/{project_id}/{type}', [App\Http\Controllers\MasterController::class, 'ajaxShift']);
+
+
+
     Route::get('/master/{type}/create', [App\Http\Controllers\MasterController::class, 'create']);
     Route::get('/master/{type}/list', [App\Http\Controllers\MasterController::class, 'list']);
     Route::post('/master/{type}/save', [App\Http\Controllers\MasterController::class, 'save']);
     Route::get('/master/{type}/ajax', [App\Http\Controllers\MasterController::class, 'Ajax']);
+    Route::get('/master/{type}/delete/{id}', [App\Http\Controllers\MasterController::class, 'delete']);
 });
 
-Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
+#Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
 
 
 Route::get('/app/home/{token}', [App\Http\Controllers\HomeController::class, 'home']);

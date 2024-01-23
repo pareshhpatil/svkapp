@@ -134,6 +134,8 @@ class PassengerController extends Controller
         $column_name[] = 'Gender(Male/Female)';
         $column_name[] = 'Address';
         $column_name[] = 'Area';
+        $column_name[] = 'Employee code';
+        $column_name[] = 'Cost center code';
         if ($type == 'roster') {
             $column_name[] = 'Type (Pickup/Drop)';
             $column_name[] = 'Date';

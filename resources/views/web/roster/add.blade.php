@@ -45,28 +45,25 @@
                 </textarea>
             </div>
             <div class="mb-3">
-                <select id="gender" v-model="roster_type" class="select2 form-select">
+                <select id="roster_type" onchange="vue.getShift();" v-model="roster_type" class="select2 form-select">
                     <option value="Pickup">Pickup</option>
                     <option value="Drop">Drop</option>
                 </select>
             </div>
             <div class="mb-3">
-                <input type="text" id="roster_shift" v-model="roster_shift" maxlength="100" class="form-control phone-mask" placeholder="Shift eg. 12 Out" name="roster_shift" />
+            <select id="roster_time" name="roster_time" v-model="roster_time"  class="select2 form-select" aria-placeholder="Select shift">
+                    <option value="">Shift</option>
+                    <option v-for="item in shifts" :value="item.shift_time" v-html="item.name"></option>
+                </select>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="add-user-fullname">Date</label>
                 <input type="date" id="roster_date" v-model="roster_date" class="form-control phone-mask" name="roster_date" />
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="add-user-fullname">Pickup Time</label>
-                <input type="time" id="roster_time" v-model="roster_time" class="form-control phone-mask" name="roster_time" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="add-user-fullname">In Time</label>
-                <input type="time" id="roster_in_time" v-model="roster_in_time" class="form-control phone-mask" name="roster_in_time" />
-            </div>
-
+            
+            
             <button type="button" v-on:click="saveRoster" class="btn btn-primary me-sm-3 me-1 data-submit">Submit</button>
+            <input type="hidden" id="shit_name" v-model="roster_shift"  name="shit_name" />
             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
         </form>
     </div>

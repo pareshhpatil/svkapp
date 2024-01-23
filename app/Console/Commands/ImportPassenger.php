@@ -65,6 +65,8 @@ class ImportPassenger extends Command
                     $array['gender'] = $worksheet->getCellByColumnAndRow(3, $rowno)->getFormattedValue();
                     $array['address'] = $worksheet->getCellByColumnAndRow(4, $rowno)->getFormattedValue();
                     $array['location'] = $worksheet->getCellByColumnAndRow(5, $rowno)->getFormattedValue();
+                    $array['employee_code'] = $worksheet->getCellByColumnAndRow(6, $rowno)->getFormattedValue();
+                    $array['cost_center_code'] = $worksheet->getCellByColumnAndRow(7, $rowno)->getFormattedValue();
                     $rows[] = $array;
                 }
                 foreach ($rows as $drow) {
