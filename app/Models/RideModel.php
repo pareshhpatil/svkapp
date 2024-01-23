@@ -198,9 +198,11 @@ class RideModel extends ParentModel
     public function passengerBookingRides($id)
     {
         $retObj = DB::table('ride_request as p')
-            ->where('p.is_active', 1)
-            ->where('p.passenger_id', $id)
             ->select(DB::raw('*,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time'))
+            ->where('p.is_active', 1)
+            ->where('p.status', 1)
+            ->where('p.passenger_id', $id)
+            ->whereDate('p.date','>=', date('Y-m-d'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

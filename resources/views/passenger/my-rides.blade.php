@@ -187,18 +187,21 @@
         <!-- * waiting tab -->
         @if(Session::get('user_type')==5)
         <div class="tab-pane fade @if($type=='booking') active show @endif" id="booking" role="tabpanel">
+        <div class="alert alert-outline-warning mb-1" role="alert">
+            Cancellations are only permitted up to 6 hours before the scheduled pickup time.
+        </div>
             <div class="transactions mt-2">
-                <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item">
+                <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item" style="padding: 10px 14px;">
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
-                            <h5 ><span v-html="item.pickup_time"></span> &nbsp;&nbsp;&nbsp;<span class="badge badge-warning">Pending</span></h5>
+                            <h5><span v-html="item.pickup_time"></span></h5>
                             <h4><span v-html="item.type"></span></h4>
                         </div>
                     </div>
                     <div class="right">
-                        <div data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="chip chip-outline chip-danger" style="padding: 5px;font-size: 25px;box-shadow: none !important;">
-                            <ion-icon name="close-circle-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
+                        <div data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="btn btn-sm btn-primary">
+                            Cancel
                         </div>
                     </div>
                 </a>
@@ -264,10 +267,10 @@
             this.data = JSON.parse('{!!json_encode($data)!!}');
         },
         methods: {
-            async  fetchDate(type) {
+            async fetchDate(type) {
                 // var date = '';
                 let res = await axios.get('/date/fetch/' + this.current_date + '/' + type);
-                this.current_date=res.data;
+                this.current_date = res.data;
 
             }
         }

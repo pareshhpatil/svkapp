@@ -56,7 +56,9 @@
                 <form action="/ridesave" method="post">
                     @csrf
 
-
+                    <div class="alert alert-outline-warning mb-1" role="alert">
+                       Booking & Cancellations are only permitted up to 6 hours before the scheduled pickup time.
+                    </div>
                     <div class="form-group boxed">
                         <div class="timeline timed ms-1 me-2">
 
@@ -125,7 +127,7 @@
                                             <div class="input-wrapper">
                                                 <select class="form-control custom-select" name="time" v-model="selected" style="padding: 0 40px 0 16px;">
                                                     <option value="">Select shift</option>
-                                                    <option v-for="(item, key) in shifts"  :value="key" v-html="item">
+                                                    <option v-for="(item, key) in shifts" :value="key" v-html="item">
                                                     </option>
                                                 </select>
                                             </div>
@@ -187,11 +189,11 @@
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
             this.allshifts = JSON.parse('{!!json_encode($array)!!}');
-            this.shifts=this.allshifts[this.type];
+            this.shifts = this.allshifts[this.type];
         },
         methods: {
             changeMode() {
-                this.selected='';
+                this.selected = '';
                 if (this.type == 'Pickup') {
                     this.type = 'Drop';
                     this.pickup = 'Office';
@@ -201,7 +203,7 @@
                     this.pickup = 'Home';
                     this.drop = 'Office';
                 }
-                this.shifts=this.allshifts[this.type];
+                this.shifts = this.allshifts[this.type];
             }
         }
     });
