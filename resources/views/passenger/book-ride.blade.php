@@ -57,7 +57,7 @@
                     @csrf
 
                     <div class="alert alert-outline-warning mb-1" role="alert">
-                       Booking & Cancellations are only permitted up to 6 hours before the scheduled pickup time.
+                        Booking & Cancellations are only permitted up to 6 hours before the scheduled pickup time.
                     </div>
                     <div class="form-group boxed">
                         <div class="timeline timed ms-1 me-2">
@@ -105,7 +105,7 @@
                             <li>
                                 <div class="item">
                                     <div class="in">
-                                        <div><input type="date" value="{{$date}}" required name="date" class="form-control" id="date" placeholder="Select Date">
+                                        <div><input type="date" value="{{$date}}" v-on:change="filterDate();" required name="date" class="form-control" id="date" placeholder="Select Date">
                                         </div>
                                         <a onclick="document.getElementById('date').click();"><span class="badge badge-info"><ion-icon name="calendar-outline"></ion-icon></span></a>
                                     </div>
@@ -125,7 +125,7 @@
                                     <div class="in">
                                         <div>
                                             <div class="input-wrapper">
-                                                <select class="form-control custom-select" name="time" v-model="selected" style="padding: 0 40px 0 16px;">
+                                                <select class="form-control custom-select" v-on:click="filterDate" name="time" v-model="selected" style="padding: 0 40px 0 16px;">
                                                     <option value="">Select shift</option>
                                                     <option v-for="(item, key) in shifts" :value="key" v-html="item">
                                                     </option>
@@ -189,7 +189,6 @@
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
             this.allshifts = JSON.parse('{!!json_encode($array)!!}');
-            this.shifts = this.allshifts[this.type];
         },
         methods: {
             changeMode() {
@@ -203,7 +202,28 @@
                     this.pickup = 'Home';
                     this.drop = 'Office';
                 }
-                this.shifts = this.allshifts[this.type];
+
+                this.filterDate();
+
+
+            },
+            filterDate() {
+                var arraycomp = this.allshifts[this.type];
+                var array = this.allshifts[this.type];
+                var currentDate = new Date();
+                currentDate.setHours(currentDate.getHours() + 6);
+                for (var key in arraycomp) {
+                    try {
+                        if (arraycomp.hasOwnProperty(key)) {
+                            var updatedDate = new Date(document.getElementById('date').value + ' ' + key);
+                            if (currentDate > updatedDate) {
+                                delete array[key];
+                                console.log('removed');
+                            }
+                        }
+                    } catch (o) {}
+                }
+                this.shifts = array;
             }
         }
     });

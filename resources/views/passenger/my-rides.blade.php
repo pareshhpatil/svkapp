@@ -200,7 +200,7 @@
                         </div>
                     </div>
                     <div class="right">
-                        <div data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="btn btn-sm btn-primary">
+                        <div v-if="item.hours>6" data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="btn btn-sm btn-primary">
                             Cancel
                         </div>
                     </div>
