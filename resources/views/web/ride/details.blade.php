@@ -43,6 +43,7 @@
                 <p class="mt-4 small text-uppercase text-muted">Details</p>
                 <div class="info-container">
                     <ul class="list-unstyled">
+                        @isset($driver->name)
                         <li class="mb-2">
                             <span class="fw-semibold me-1">Cab Number:</span>
                             <span>{{$vehicle->number}}</span>
@@ -51,6 +52,7 @@
                             <span class="fw-semibold me-1">Mobile:</span>
                             <span>{{$driver->mobile}}</span>
                         </li>
+                        @endisset
                         <li class="mb-2 pt-1">
                             <span class="fw-semibold me-1">Status:</span>
                             @if($det->status==0)
