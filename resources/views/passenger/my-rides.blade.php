@@ -187,9 +187,9 @@
         <!-- * waiting tab -->
         @if(Session::get('user_type')==5)
         <div class="tab-pane fade @if($type=='booking') active show @endif" id="booking" role="tabpanel">
-        <div class="alert alert-outline-warning mb-1" role="alert">
-            Cancellations are only permitted up to 6 hours before the scheduled pickup time.
-        </div>
+            <div class="alert alert-outline-warning mb-1" role="alert">
+                Cancellations are only permitted up to 6 hours before the scheduled pickup time.
+            </div>
             <div class="transactions mt-2">
                 <a v-if="data.booking.length" v-for="item in data.booking" href="#" class="item" style="padding: 10px 14px;">
                     <div class="detail">
