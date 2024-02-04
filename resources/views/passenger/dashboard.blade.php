@@ -293,6 +293,13 @@
             <!-- * carousel multiple -->
 
         </div>
+        @if(session('show_ad'))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2768566574593657" crossorigin="anonymous"></script>
+        <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-hv+e-p-44+a0" data-ad-client="ca-pub-2768566574593657" data-ad-slot="6673501127"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        @endif
 
 
     </div>

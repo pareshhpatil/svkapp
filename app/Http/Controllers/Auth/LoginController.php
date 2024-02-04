@@ -185,6 +185,7 @@ class LoginController extends Controller
             Session::put('project_id', $user->project_id);
             Session::put('gender', $user->gender);
             Session::put('token', $user->token);
+            Session::put('show_ad', $user->show_ad);
             if ($user->dark_mode == 1) {
                 Session::put('mode', 'dark-mode');
             } else {
