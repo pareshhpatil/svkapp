@@ -247,28 +247,47 @@
         @endif
         <!-- * Stats -->
 
-        <!-- Transactions -->
-        <div v-if="data.blogs.length" class="section full mt-4 mb-3">
-            <div class="section-heading padding">
-                <h4 class="title">Blog posts</h4>
-                <a href="/blogs" class="link">View All</a>
-            </div>
 
-            <!-- carousel multiple -->
-            <div class="carousel-multiple splide splide--loop splide--ltr splide--draggable is-active" id="splide03" style="visibility: visible;">
-                <div class="splide__track" id="splide03-track" style="padding-left: 16px; padding-right: 16px;">
-                    <ul class="splide__list" id="splide03-list" style="transform: translateX(-708px);">
-                        <li v-for="item in data.blogs" class="splide__slide splide__slide--clone" aria-hidden="true" tabindex="-1" style="margin-right: 16px; width: 171px;">
-                            <a :href="item.link">
-                                <div class="blog-card">
-                                    <img :src="item.img" alt="image" class="imaged w-100">
-                                    <div class="text">
-                                        <h4 v-html="item.title" class="title"></h4>
+
+
+
+        <!-- Transactions -->
+        <div class="section full mt-4 mb-3">
+            <ul class="listview image-listview inset mb-2" v-if="data.pending_request_show==1">
+                <li>
+                    <a href="/my-rides/request" class="item">
+                        <div class="icon-box bg-success">
+                            <ion-icon name="checkmark-circle-outline" role="img" class="md hydrated" aria-label="checkbox outline"></ion-icon>
+                        </div>
+                        <span v-if="data.pending_request>0" class="badge badge-danger" style="margin-right: 10px; margin-left: -10px;" v-html="data.pending_request"></span>
+                        <div class="in">
+                            Pending Request
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div v-if="data.blogs.length">
+                <div class="section-heading padding">
+                    <h4 class="title">Blog posts</h4>
+                    <a href="/blogs" class="link">View All</a>
+                </div>
+
+                <!-- carousel multiple -->
+                <div class="carousel-multiple splide splide--loop splide--ltr splide--draggable is-active" id="splide03" style="visibility: visible;">
+                    <div class="splide__track" id="splide03-track" style="padding-left: 16px; padding-right: 16px;">
+                        <ul class="splide__list" id="splide03-list" style="transform: translateX(-708px);">
+                            <li v-for="item in data.blogs" class="splide__slide splide__slide--clone" aria-hidden="true" tabindex="-1" style="margin-right: 16px; width: 171px;">
+                                <a :href="item.link">
+                                    <div class="blog-card">
+                                        <img :src="item.img" alt="image" class="imaged w-100">
+                                        <div class="text">
+                                            <h4 v-html="item.title" class="title"></h4>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <!-- * carousel multiple -->
@@ -304,8 +323,7 @@
                 axios.get('/passenger/ride/rating/' + id + '/' + rating);
                 toastbox('toast-11');
             },
-            call(mobile)
-            {
+            call(mobile) {
                 axios.get('/call/' + mobile);
                 toastbox('toast-15');
             }

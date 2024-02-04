@@ -53,10 +53,9 @@
 
         <div class="">
             <div class="card-body">
-                <form action="/ridesave" method="post" onsubmit="return validateDate()">
+                <form action="/ridesave" method="post" id="frm-book" onsubmit="return validateDate()">
                     @csrf
-
-                    <div class="alert alert-outline-warning mb-1" role="alert">
+                    <div class="alert alert-outline-warning mb-1" role="alert" style="background-color: #ffffff;">
                         Booking & Cancellations are only permitted up to 6 hours before the scheduled pickup time.
                     </div>
                     <div class="form-group boxed">
@@ -151,6 +150,7 @@
                             <div class="col-6">
 
                                 <input type="hidden" name="type" :value="type" value="Pickup">
+                                <input type="hidden" id="status" name="status" value="1">
                                 <button type="submit" class="btn btn-lg btn-primary btn-block">Confirm</button>
                             </div>
                             <div class="col-6">
@@ -177,14 +177,15 @@
                 <ion-icon name="close-circle"></ion-icon>
             </div>
             <div class="modal-header">
-                <h5 class="modal-title">Error</h5>
+                <h5 class="modal-title">Warning</h5>
             </div>
             <div class="modal-body">
-                Booking is only permitted up to 6 hours before the scheduled pickup time.
+                Your request will be sent for admin approval as this is Ad hoc booking. Whether approved or rejected, you will receive a notification regarding the status of your booking.
             </div>
             <div class="modal-footer">
                 <div class="btn-inline">
                     <a href="#" class="btn" data-bs-dismiss="modal">CLOSE</a>
+                    <a href="#" class="btn btn-primary" onclick="document.getElementById('frm-book').submit();" data-bs-dismiss="modal">Confirm</a>
                 </div>
             </div>
         </div>
@@ -238,7 +239,10 @@
         var updatedDate = new Date(document.getElementById('date').value + ' ' + document.getElementById('shift_time').value);
         if (currentDate > updatedDate) {
             document.getElementById("dialogclick").click();
+            document.getElementById("status").value = '0';
             return false;
+        } else {
+            document.getElementById("status").value = '1';
         }
     }
 

@@ -200,8 +200,21 @@ class RideModel extends ParentModel
         $retObj = DB::table('ride_request as p')
             ->select(DB::raw('*,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
             ->where('p.is_active', 1)
-            ->where('p.status', 1)
             ->where('p.passenger_id', $id)
+            ->where('p.time', '>', date('Y-m-d H:i:s'))
+            ->get();
+        return json_decode(json_encode($retObj), 1);
+    }
+
+
+    public function pendingBookingRides($project_id = 0)
+    {
+        $retObj = DB::table('ride_request as p')
+            ->select(DB::raw('p.*,employee_name,employee_code,gender,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
+            ->where('p.is_active', 1)
+            ->join('passenger as r', 'r.id', '=', 'p.passenger_id')
+            ->whereIn('p.status', [0, 2])
+            ->where('p.project_id', $project_id)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
             ->get();
         return json_decode(json_encode($retObj), 1);
@@ -235,5 +248,17 @@ class RideModel extends ParentModel
             ->select(DB::raw('distinct r.id,r.name,r.status,DATE_FORMAT(r.created_date, "%a %d %b %y %l:%i %p") as datetime'))
             ->get();
         return json_decode(json_encode($retObj), 1);
+    }
+
+    public function getPendingRequestCount($project_id = 0)
+    {
+        $retObj = DB::table('ride_request as p')
+            ->where('p.is_active', 1)
+            ->whereIn('p.status', [0, 2])
+            ->where('p.time', '>', date('Y-m-d H:i:s'));
+        if ($project_id > 0) {
+            $retObj->where('p.project_id', $project_id);
+        }
+        return $retObj->count();
     }
 }

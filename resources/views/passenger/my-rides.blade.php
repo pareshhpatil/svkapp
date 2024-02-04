@@ -2,7 +2,14 @@
 @section('content')
 <div class="extraHeader pe-0 ps-0">
     <ul class="nav nav-tabs lined" role="tablist">
-
+        @if($type=='request')
+        <li class="nav-item">
+            <a class="nav-link @if($type=='request') active @endif" id="tab-request" data-bs-toggle="tab" href="#request" role="tab">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                Pending Request
+            </a>
+        </li>
+        @else
         @if(Session::get('user_type')==3)
         <li class="nav-item">
             <a class="nav-link @if($type=='booking') active @endif" id="tab-pending" data-bs-toggle="tab" href="#pending" role="tab">
@@ -36,6 +43,7 @@
                 Booking
             </a>
         </li>
+        @endif
         @endif
     </ul>
 </div>
@@ -185,9 +193,46 @@
             </div>
         </div>
         <!-- * waiting tab -->
+        @if($type=='request')
+        <div class="tab-pane fade @if($type=='request') active show @endif" id="request" role="tabpanel">
+            <div class="alert alert-outline-warning mb-1" role="alert" style="background-color: #ffffff;">
+                Admin Approval are only permitted up to 6 hours before the scheduled pickup time.
+            </div>
+            <div class="transactions mt-2">
+                <div v-if="data.request.length" v-for="item in data.request" href="#" class="item" style="padding: 10px 10px;">
+                    <div class="detail">
+                        <img v-if="item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="avatar">
+                        <img v-if="item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="avatar">
+                        <div style="margin-left: 5px;">
+                            <h5><span v-html="item.employee_name"></span></h5>
+                            </h5>
+                            <h5><span v-html="item.pickup_time"></span></h5>
+                            </h5>
+                            <h5><span v-html="item.type"></span></h5>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="right" style="min-width: 135px;">
+                        <div v-if="item.status==0 || item.status==2" data-bs-toggle="modal" v-on:click="approve(item,'Approve')" data-bs-target="#approveRide" class="btn btn-sm btn-success">
+                            Approve
+                        </div>
+                        <div v-if="item.status==0 || item.status==2" data-bs-toggle="modal"  v-on:click="approve(item,'Reject')" data-bs-target="#approveRide" class="btn btn-sm btn-primary">
+                            Reject
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center" v-if="!data.request.length">
+                    <img src="/assets/img/no-record.png" alt="img" style="max-width: 100%;" class="">
+                    <h3 class="text-center">No request</h3>
+                </div>
+            </div>
+        </div>
+        @endif
+
         @if(Session::get('user_type')==5)
         <div class="tab-pane fade @if($type=='booking') active show @endif" id="booking" role="tabpanel">
-            <div class="alert alert-outline-warning mb-1" role="alert">
+            <div class="alert alert-outline-warning mb-1" role="alert" style="background-color: #ffffff;">
                 Cancellations are only permitted up to 6 hours before the scheduled pickup time.
             </div>
             <div class="transactions mt-2">
@@ -195,17 +240,19 @@
                     <div class="detail">
                         <img src="/assets/img/driver.png" alt="img" class="image-block imaged w48">
                         <div>
-                            <h5><span v-html="item.pickup_time"></span></h5>
+                            <h5><span v-html="item.pickup_time"></span>&nbsp;&nbsp;&nbsp;<span v-if="item.status==0 || item.status==2" class="badge badge-warning">Pending</span> <span v-if="item.status==3" class="badge badge-warning">Cancelled</span><span v-if="item.status==4" class="badge badge-primary">Rejected</span></h5>
+
+                            </h5>
+
                             <h4><span v-html="item.type"></span></h4>
                         </div>
                     </div>
                     <div class="right">
-                        <div v-if="item.hours>6" data-bs-toggle="modal" :id="item.id" onclick="cancel(this.id)" data-bs-target="#cancelride" class="btn btn-sm btn-primary">
+                        <div v-if="item.status==0 || item.status==1" data-bs-toggle="modal" :status="item.status" :hour="item.hours" :id="item.id" v-on:click="cancel(item)" data-bs-target="#cancelride" class="btn btn-sm btn-primary">
                             Cancel
                         </div>
                     </div>
                 </a>
-
                 <div class="text-center" v-if="!data.booking.length">
                     <img src="/assets/img/no-record.png" alt="img" style="max-width: 100%;" class="">
                     <h3 class="text-center">No booking rides</h3>
@@ -214,7 +261,6 @@
                         <ion-icon name="add-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
                     </a>
                 </div>
-
             </div>
         </div>
         <div class="modal fade dialogbox" id="cancelride" data-bs-backdrop="static" tabindex="-1" role="dialog">
@@ -225,12 +271,13 @@
                     </div>
                     <form action="/passenger/booking/cancel" method="post">
                         @csrf
-                        <div class="modal-body text-start mb-2">
+                        <div class="modal-body text-start mb-2" id="cancel_message">
                             You want to cancel?
                         </div>
                         <div class="modal-footer">
                             <div class="btn-inline">
                                 <input type="hidden" id="cancel_booking_id" name="booking_id">
+                                <input type="hidden" id="no_show" value="0" name="no_show">
                                 <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
                                 <button type="submit" class="btn btn-text-primary">CONFIRM</button>
                             </div>
@@ -239,7 +286,38 @@
                 </div>
             </div>
         </div>
+
+
         @endif
+        <div class="modal fade dialogbox" id="approveRide" data-bs-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div v-if="approve_type!='Approve'" class="modal-icon text-primary">
+                        <ion-icon name="close-circle"></ion-icon>
+                    </div>
+                    <div v-if="approve_type=='Approve'" class="modal-icon text-success">
+                        <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </div>
+                    <form action="/passenger/booking/approve" id="frm-approve" method="post">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="approve_type_title">Approve</h5>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure?
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-inline">
+                                <input type="hidden" id="approve_booking_id" name="booking_id">
+                                <input type="hidden" id="approve_type" value="Approve" name="approve_type">
+                                <a href="#" class="btn" data-bs-dismiss="modal">CLOSE</a>
+                                <a href="#" class="btn btn-primary" onclick="document.getElementById('frm-approve').submit();" data-bs-dismiss="modal">Confirm</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -260,6 +338,7 @@
             return {
                 data: [],
                 cancel_booking_id: 0,
+                approve_type: 'Approve',
                 current_date: '{{$current_date}}'
             }
         },
@@ -272,14 +351,27 @@
                 let res = await axios.get('/date/fetch/' + this.current_date + '/' + type);
                 this.current_date = res.data;
 
+            },
+            approve(item, type) {
+                this.approve_type=type;
+                document.getElementById('approve_type_title').innerHTML = type;
+                document.getElementById('approve_booking_id').value = item.id;
+                document.getElementById('approve_type').value = type;
+            },
+			cancel(item) {
+                if (item.hours > 6 || item.status == 0) {
+                    document.getElementById('no_show').value = '0';
+                    document.getElementById('cancel_message').innerHTML = 'You want to cancel?';
+                } else {
+                    document.getElementById('no_show').value = '1';
+                    document.getElementById('cancel_message').innerHTML = 'Your request will be sent for admin approval as this is Ad hoc request. Whether approved or rejected, you will receive a notification regarding the status of your request.';
+
+                }
+                document.getElementById('cancel_booking_id').value = item.id;
             }
         }
     })
     document.getElementById('tab-{{$type}}').click();
-
-    function cancel(id) {
-        document.getElementById('cancel_booking_id').value = id;
-    }
 </script>
 
 @endsection

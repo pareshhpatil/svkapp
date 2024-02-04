@@ -64,6 +64,12 @@ class HomeController extends Controller
 
             $data['live_ride'] = [];
             $data['data']['upcoming'] = false;
+        } else if (Session::get('user_type') == 2) {
+            $data['data']['total_ride'] = $this->model->getTableCount('ride', 'is_active',  1);
+            $data['data']['completed_ride'] = $this->model->getTableCount('ride', 'is_active', 1, 0, ['status' => 5]);
+
+            $data['live_ride'] = [];
+            $data['data']['upcoming'] = false;
         } else {
             return redirect('/login');
         }
@@ -77,8 +83,16 @@ class HomeController extends Controller
             $data['data']['ride_passenger']['id'] = $data['live_ride']['pid'];
             $data['data']['ride_passenger']['ride_id'] = $data['live_ride']['ride_id'];
         }
-
-        $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
+        $data['data']['pending_request'] = 0;
+        $data['data']['pending_request_show'] = 0;
+        $data['data']['blogs'] = [];
+        if (Session::get('user_type') == 3 || Session::get('user_type') == 2) {
+            $data['data']['pending_request'] = $this->model->getPendingRequestCount(Session::get('parent_id'));
+            $data['data']['pending_request_show'] = 1;
+        }
+        if (Session::get('user_type') != 3 && Session::get('user_type') != 2) {
+            $data['data']['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toArray();
+        }
 
         //dd($data);
         return view('passenger.dashboard', $data);
@@ -303,6 +317,13 @@ class HomeController extends Controller
             $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/admin/ride/');
             $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0), 0, '/admin/ride/');
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/admin/ride/');
+        } else if (Session::get('user_type') == 2) {
+            $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/admin/ride/');
+            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0), 0, '/admin/ride/');
+            $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/admin/ride/');
+        }
+        if ($type == 'request') {
+            $data['data']['request'] = $this->EncryptList($this->model->pendingBookingRides(Session::get('project_id')), 0, '/passenger/booking/', 'id');
         }
         return view('passenger.my-rides', $data);
     }
@@ -473,7 +494,7 @@ class HomeController extends Controller
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_emergency', $array);
         $ApiController = new ApiController();
-        $ApiController->sendSMS('9730946150', 'SOS is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
+        $ApiController->sendSMS('9730946150', '{#var#} is in an emergency and needs immediate assistance {#var#} - Siddhivinayak Travels House -Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
     }
     public function passengerHelp(Request $request)
@@ -508,15 +529,63 @@ class HomeController extends Controller
         $array['created_by'] = $request->ride_passenger_id;
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_cancel', $array);
-        $this->model->updateTable('ride_passenger', 'id', $request->ride_passenger_id, 'status', 3);
+        $this->model->updateTable('ride_passenger', 'id', $request->ride_passenger_id, 'status', 4);
         return redirect('/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
     }
 
     public function bookingCancel(Request $request)
     {
-        $this->model->updateTable('ride_request', 'id', $request->booking_id, 'is_active', 0);
-        $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 0);
+        if ($request->no_show == 1) {
+            $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 2);
+            $array['status'] = 0;
+        } else {
+            $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 3);
+            $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 0);
+            $array['status'] = 1;
+        }
+        $ride = $this->model->getTableRow('roster', 'booking_id', $request->booking_id);
+        $array['ride_passenger_id'] = $ride->passenger_id;
+        $array['roster_id'] = $ride->id;
+        $array['no_show'] = $request->no_show;
+        $array['message'] = '';
+        $array['created_by'] = $ride->passenger_id;
+        $array['last_update_by'] = $ride->passenger_id;
+        $this->model->saveTable('ride_cancel', $array);
         return redirect('/my-rides/booking');
+    }
+
+    public function bookingApprove(Request $request)
+    {
+        $ride = $this->model->getTableRow('ride_request', 'id', $request->booking_id);
+
+        if ($request->approve_type == 'Approve') {
+            if ($ride->status == 2) {
+                $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 3);
+                $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 0);
+                $description = 'Your ad hoc cancel request has been approved by Admin';
+            } else {
+                $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 1);
+                $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 1);
+                $description = 'Your ad hoc booking request has been approved by Admin';
+            }
+            $message = 'Ad hoc Request Approved';
+        } else {
+            if ($ride->status == 2) {
+                $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 1);
+                $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 1);
+                $description = 'Your ad hoc cancel request has been rejected by Admin';
+            } else {
+                $this->model->updateTable('ride_request', 'id', $request->booking_id, 'status', 4);
+                $this->model->updateTable('roster', 'booking_id', $request->booking_id, 'is_active', 0);
+                $description = 'Your ad hoc booking request has been rejected by Admin';
+            }
+            $message = 'Ad hoc Request Rejected';
+        }
+        $this->model->updateTable('ride_request', 'id', $request->booking_id, 'last_update_by', Session::get('user_id'));
+        $apiController = new ApiController();
+        $url = 'https://app.svktrv.in/my-rides/booking';
+        $apiController->sendNotification($ride->passenger_id, 5, $message, $description, $url);
+        return redirect('/my-rides/request');
     }
 
     public function saveRide(Request $request)
@@ -536,13 +605,23 @@ class HomeController extends Controller
         $array['passenger_id'] = Session::get('parent_id');
         $array['created_by'] = Session::get('user_id');
         $array['created_date'] = date('Y-m-d H:i:s');
-        $array['status'] = 1;
         $array['last_update_by'] = Session::get('user_id');
         $array['booking_id'] = $this->model->saveTable('ride_request', $array);
         $array['start_time'] = $array['time'];
-        $array['status'] = 0;
         unset($array['time']);
         $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
+        if ($array['status'] == 0) {
+            $array['is_active'] = 0;
+
+            $admin_list = $this->model->getList('users', ['user_type' => 2, 'is_active' => 1, 'project_id' => $array['project_id']], 'parent_id');
+            $apiController = new ApiController();
+            $url = 'https://app.svktrv.in/my-rides/request';
+            $passenger_name = $this->model->getColumnValue('passenger', 'id', $array['passenger_id'], 'employee_name');
+            foreach ($admin_list as $row) {
+                $apiController->sendNotification($row->parent_id, 2, 'Ad hoc booking request for approval', $passenger_name . ' requested Ad hoc booking for ' . $array['shift'], $url);
+            }
+        }
+        unset($array['status']);
         $this->model->saveTable('roster', $array);
         return redirect('/my-rides/booking');
     }
