@@ -12,7 +12,7 @@
         @endif
 
   <div class="section">
-    <a href="/contact-us" class="btn btn-block btn-primary" data-bs-toggle="modal" data-bs-target="#actionSheetShare">
+  <a href="https://tawk.to/svk" class="btn btn-block btn-primary">
       <ion-icon name="car-outline"></ion-icon> Book now
     </a>
   </div>
