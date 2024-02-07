@@ -18,7 +18,7 @@
 
                 @if($bulk_id==0)
                 <div class="col-md-6 col-12 mb-4 pull-right">
-                    <input type="text" onchange="reload()" id="bs-rangepicker-time" class="form-control" />
+                    <input type="text" onchange="reload()" id="bs-rangepicker-time" value="{{$current_date_range}}" class="form-control" />
                 </div>
                 <div class="col-lg-4 pull-right">
                     <form action="" id="frm" method="post">
@@ -152,20 +152,19 @@
                 roster_type = document.getElementById('roster_type').value;
                 this.emp_project_id = project_id;
                 if (project_id > 0) {
-                    let res = await axios.get('/ajax/shift/' + project_id + '/'+roster_type);
+                    let res = await axios.get('/ajax/shift/' + project_id + '/' + roster_type);
                     console.log(res.data);
                     this.shifts = res.data;
                 }
 
             },
 
-            setRosterTime(val)
-            {
-                this.roster_shift=val;
+            setRosterTime(val) {
+                this.roster_shift = val;
             },
 
             saveRoster() {
-                this.roster_shift=document.getElementById('roster_time').options[document.getElementById('roster_time').selectedIndex].text;
+                this.roster_shift = document.getElementById('roster_time').options[document.getElementById('roster_time').selectedIndex].text;
                 const formData = new FormData()
                 formData.append('emp_project_id', this.emp_project_id)
                 formData.append('emp_name', this.emp_name)

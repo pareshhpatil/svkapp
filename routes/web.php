@@ -41,6 +41,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/roster/route', [App\Http\Controllers\RosterController::class, 'route']);
     Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
     Route::post('/roster/route/save', [App\Http\Controllers\RosterController::class, 'routeSave']);
+    Route::post('/roster/routedownload', [App\Http\Controllers\RosterController::class, 'rosterRouteDownload']);
 
 
     Route::post('/{type}/importsave', [App\Http\Controllers\PassengerController::class, 'importsave']);
@@ -51,7 +52,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/ride/create', [App\Http\Controllers\RideController::class, 'create']);
     Route::post('/ride/save', [App\Http\Controllers\RideController::class, 'save']);
-    Route::any('/ride/list', [App\Http\Controllers\RideController::class, 'list']);
+    Route::any('/route/list', [App\Http\Controllers\RosterController::class, 'routelist']);
     Route::any('/ride/assign', [App\Http\Controllers\RideController::class, 'assign']);
     Route::any('/ride/list/completed', [App\Http\Controllers\RideController::class, 'rideList']);
 
@@ -62,7 +63,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/ride/update/{id}', [App\Http\Controllers\RideController::class, 'create']);
 
-    Route::get('/ajax/ride/{project_id}/{date?}/{status?}/{type?}', [App\Http\Controllers\RideController::class, 'ajaxRide']);
+    Route::get('/ajax/route/{project_id}/{date?}/{status?}/{type?}', [App\Http\Controllers\RosterController::class, 'ajaxRoute']);
 
     Route::any('/ride/assign/{ride_id}/{driver_id}/{cab_id}/{escort_id}', [App\Http\Controllers\RideController::class, 'assignCab']);
 
@@ -72,10 +73,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
 
     Route::get('/master/{type}/create', [App\Http\Controllers\MasterController::class, 'create']);
+    Route::get('/master/{type}/update/{id}', [App\Http\Controllers\MasterController::class, 'update']);
     Route::get('/master/{type}/list', [App\Http\Controllers\MasterController::class, 'list']);
     Route::post('/master/{type}/save', [App\Http\Controllers\MasterController::class, 'save']);
-    Route::get('/master/{type}/ajax', [App\Http\Controllers\MasterController::class, 'Ajax']);
-    Route::get('/master/{type}/delete/{id}', [App\Http\Controllers\MasterController::class, 'delete']);
+    Route::get('/master/{type}/ajax/{project_id?}', [App\Http\Controllers\MasterController::class, 'Ajax']);
+    Route::get('/master/{type}/delete/{id}/{id_col?}', [App\Http\Controllers\MasterController::class, 'delete']);
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);

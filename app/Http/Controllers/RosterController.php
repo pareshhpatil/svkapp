@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Session;
 use App\Models\RosterModel;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
+use Illuminate\Support\Facades\View;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Cell_DataType;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
 
 class RosterController extends Controller
 {
@@ -22,6 +28,7 @@ class RosterController extends Controller
     {
         $this->model = new RosterModel();
         $this->user_id = Session::get('user_id');
+        View::share('current_date_range', date('d M Y') . ' 05:00 PM - ' . Date('d M Y', strtotime('+1 days')) . ' 05:00 PM');
     }
 
 
@@ -37,12 +44,51 @@ class RosterController extends Controller
 
     public function route(Request $request, $bulk_id = 0)
     {
-        $data['selectedMenu'] = [7, 21];
+        $data['selectedMenu'] = [29, 21];
         $data['menus'] = Session::get('menus');
         $data['bulk_id'] = $bulk_id;
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
         $data['project_id'] = (count($data['project_list']) == 1) ? $data['project_list'][0]->project_id : 0;
         return view('web.roster.route', $data);
+    }
+
+    public function routelist(Request $request, $bulk_id = 0, $type = 0)
+    {
+        $data['selectedMenu'] = [29, 9];
+        $data['menus'] = Session::get('menus');
+        $data['bulk_id'] = $bulk_id;
+        $data['type'] = $type;
+        $data['status'] = 'na';
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        return view('web.roster.routelist', $data);
+    }
+
+    public function ajaxRoute($project_id = 0,  $date = 'na', $status = 'na', $type = 'na')
+    {
+        $statusarray = [];
+        if (strlen($date) < 5) {
+            $date = 'na';
+        }
+
+        if ($status != 'na') {
+            if ($status == 'ride') {
+                $statusarray = array(5);
+            } else {
+                $statusarray[] = $status;
+            }
+        }
+
+        $from_date = null;
+        $to_date = null;
+        $date_array = explode(' - ', $date);
+        if (!empty($date_array)) {
+            $from_date = $this->sqlDateTime($date_array[0]);
+            $to_date = $this->sqlDateTime($date_array[1]);
+        }
+
+        $data['data'] = $this->model->getRoute($project_id, $from_date, $to_date, $statusarray, Session::get('project_access'));
+        return json_encode($data);
     }
 
     public function routeSave(Request $request)
@@ -230,5 +276,166 @@ class RosterController extends Controller
             }
         }
         $this->model->updateTable($table, 'id', $id, 'is_active', 0);
+    }
+
+
+    function rosterRouteDownload(Request $request)
+    {
+
+
+        $from_date = null;
+        $to_date = null;
+        $date_array = explode(' - ', $request->date_range);
+        if (!empty($date_array)) {
+            $from_date = $this->sqlDateTime($date_array[0]);
+            $to_date = $this->sqlDateTime($date_array[1]);
+        }
+        $details = $this->model->getRouteRoster($request->project_id, $from_date, $to_date, [], Session::get('project_access'));
+        $routes_array = [];
+        $last_ride_id = 0;
+        $inc = 0;
+        foreach ($details as $row) {
+            if ($last_ride_id != $row->id) {
+                $inc++;
+            }
+            $routes_array[$inc][] = (array)$row;
+            $last_ride_id = $row->id;
+        }
+
+        $column_name[] = 'SR No';
+        $column_name[] = 'DATE';
+        $column_name[] = 'Employee Name';
+        $column_name[] = 'Gender';
+        $column_name[] = 'EMPLOYEE Mobile';
+        $column_name[] = 'EMPLOYEE Code';
+        $column_name[] = 'Cost Center Code';
+        $column_name[] = 'Type';
+        $column_name[] = 'Shift';
+        $column_name[] = 'Pickup Time';
+        $column_name[] = 'Pickup Location';
+        $column_name[] = 'Drop Time';
+        $column_name[] = 'Drop Location';
+        $column_name[] = 'User Count';
+        $column_name[] = 'Escort';
+        $column_name[] = 'Cab No';
+        $column_name[] = 'Cab Type';
+        $column_name[] = 'Driver Name';
+        $column_name[] = 'Driver No.';
+        $title = ucfirst('Roster');
+
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->getProperties()->setCreator("SVK")
+            ->setLastModifiedBy("SVK")
+            ->setTitle($title)
+            ->setSubject($title)
+            ->setDescription($title);
+        #create array of excel column
+        $first = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+        $column = array();
+        foreach ($first as $s) {
+            $column[] = $s;
+        }
+        foreach ($first as $f) {
+            foreach ($first as $s) {
+                $column[] = $f . $s;
+            }
+        }
+        $int = 0;
+        foreach ($column_name as $col) {
+            $objPHPExcel->getActiveSheet()->setCellValue($column[$int] . '1', $col);
+            $int = $int + 1;
+        }
+
+        $row_number = 1;
+        foreach ($routes_array as $key => $row) {
+            $print_ = 0;
+            foreach ($routes_array[$key] as $ro) {
+                $row_number++;
+                $sr_no = '';
+                $ro['drop_time'] = '';
+                if ($ro['type'] == 'Drop') {
+                    $ro['drop_time'] = $ro['pickup_time'];
+                    $ro['pickup_time'] = '';
+                }
+                $user_count = count($routes_array[$key]);
+                if ($print_ == 0) {
+                    $sr_no = $key;
+                    $print_ = 1;
+                    $ro['escort'] = ($ro['escort'] == 1) ? 'Yes' : '';
+                } else {
+                    $ro['driver_name'] = '';
+                    $ro['escort'] = '';
+                    $ro['type'] = '';
+                    $ro['shift'] = '';
+                    $user_count = '';
+                }
+
+                $n = 0;
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $sr_no);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['date']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['employee_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['gender']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['mobile']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['employee_code']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['cost_center_code']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['type']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['shift']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['pickup_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['pickup_location']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['drop_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['drop_location']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $user_count);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['escort']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['vehicle_number']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['car_type']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['driver_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue($column[$n++] . $row_number, $ro['driver_mobile']);
+            }
+            $row_number++;
+            // $objPHPExcel->getActiveSheet()->setCellValue($column[0] . $row_number, '');
+            //   for ($i = 0; $i < 19; $i++) {
+            //  $objPHPExcel->getActiveSheet()->setCellValue($column[$i] . $row_number, '');
+            // }
+        }
+
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('verdana')
+            ->setSize(10);
+        $objPHPExcel->getActiveSheet()->setTitle($title);
+        //$int++;
+        $autosize = 0;
+        while ($autosize < $int) {
+            $objPHPExcel->getActiveSheet()->getColumnDimension(substr($column[$autosize] . '1', 0, -1))->setAutoSize(true);
+            $autosize++;
+        }
+
+
+        $style = array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+            ),
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb' => 'AAAADD')
+            )
+        );
+        $objPHPExcel->getActiveSheet()->getStyle("A1:" . $column[count($column_name) - 1] . "1")->applyFromArray($style);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+        $objPHPExcel->disconnectWorksheets();
+        unset($objPHPExcel);
+        exit;
     }
 }

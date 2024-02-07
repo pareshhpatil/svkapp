@@ -37,6 +37,33 @@ class MasterController extends Controller
                 $data['selectedMenu'] = [22, 23];
                 $data['project_list'] = $this->model->getProject(Session::get('project_access'));
                 break;
+            case 'slab':
+                $data['selectedMenu'] = [26, 27];
+                $data['project_list'] = $this->model->getProject(Session::get('project_access'));
+                $data['slab_array'] = array('Slab 1', 'Slab 2', 'Slab 3', 'Slab 4', 'Slab 5', 'Slab 6');
+                $data['car_type_array'] = array('Sedan', 'Hatchback', 'Suv');
+                break;
+        }
+        $data['menus'] = Session::get('menus');
+
+        return view('web.' . $type . '.create', $data);
+    }
+
+    public function update($type, $id)
+    {
+        $data['selectedMenu'] = [11, 13];
+        switch ($type) {
+            case 'driver':
+                $data['det'] = $this->model->getTableRow('driver', 'id', $id);
+                break;
+            case 'slab':
+                $data['selectedMenu'] = [26, 28];
+                $data['det'] = $this->model->getTableRow('zone', 'zone_id', $id);
+                $data['det']->id = $data['det']->zone_id;
+                $data['project_list'] = $this->model->getProject(Session::get('project_access'));
+                $data['slab_array'] = array('Slab 1', 'Slab 2', 'Slab 3', 'Slab 4', 'Slab 5', 'Slab 6');
+                $data['car_type_array'] = array('Sedan', 'Hatchback', 'Suv');
+                break;
         }
         $data['menus'] = Session::get('menus');
 
@@ -50,11 +77,24 @@ class MasterController extends Controller
             if ($type == 'shift') {
                 $row['project_id'] = $request->project_id;
                 $this->model->saveTable('shift', $row, $user_id);
+            } else if ($type == 'slab') {
+                $row['admin_id'] = 1;
+                $row['project_id'] = $request->project_id;
+                $row['company_id'] = $this->model->getColumnValue('project', 'project_id', $request->project_id, 'company_id');
+                if ($request->id > 0) {
+                    $this->model->updateArray('zone', 'zone_id', $request->id, $row);
+                } else {
+                    $this->model->saveTable('zone', $row, $user_id);
+                }
             } else {
-                $this->model->saveTable('driver', $row, $user_id);
+                if ($request->id > 0) {
+                    $this->model->updateArray('driver', 'id', $request->id, $row);
+                } else {
+                    $this->model->saveTable('driver', $row, $user_id);
+                }
             }
         }
-        return redirect()->back()->withSuccess(ucfirst($type) . ' added successfully');
+        return redirect()->back()->withSuccess(ucfirst($type) . ' saved successfully');
     }
 
     public function list($type)
@@ -63,6 +103,10 @@ class MasterController extends Controller
         switch ($type) {
             case 'shift':
                 $data['selectedMenu'] = [22, 24];
+                break;
+            case 'slab':
+                $data['project_list'] = $this->model->getProject(Session::get('project_access'));
+                $data['selectedMenu'] = [26, 28];
                 break;
             case 'invoice':
                 $data['selectedMenu'] = [25];
@@ -74,17 +118,23 @@ class MasterController extends Controller
         return view('web.' . $type . '.list', $data);
     }
 
-    public function delete($type, $id)
+    public function delete($type, $id, $id_col = 'id')
     {
-        $this->model->updateTable($type, 'id', $id, 'is_active', 0);
+        $this->model->updateTable($type, $id_col, $id, 'is_active', 0);
         return redirect()->back()->withSuccess(ucfirst($type) . ' deleted successfully');
     }
 
-    public function Ajax($type)
+    public function Ajax($type, $project_id = 0)
     {
         if ($type == 'invoice') {
             $data['data'] = $this->model->getInvoiceList(Session::get('project_access'));
-            
+        } else if ($type == 'slab') {
+            if ($project_id > 0) {
+                $project_array[] = $project_id;
+            } else {
+                $project_array = Session::get('project_access');
+            }
+            $data['data'] = $this->model->getTableList('zone', 'is_active', 1, 0, $project_array);
         } else {
             $data['data'] = $this->model->getTableList($type, 'is_active', 1);
         }

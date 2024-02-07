@@ -10,7 +10,7 @@
             <div class="col-lg-8">
                 <h4 class="fw-bold py-2"><span class="text-muted fw-light">Drivers /</span> List</h4>
             </div>
-            
+
         </div>
         <div class="card invoice-preview-card">
 
@@ -48,7 +48,7 @@
     var dt_basic;
     var project_id = 0;
 
-    
+
     // datatable (jquery)
     $(function() {
 
@@ -72,7 +72,7 @@
                     {
                         data: 'name'
                     },
-                   
+
                     {
                         data: 'email'
                     },
@@ -100,9 +100,8 @@
                             '<div class="d-inline-block">' +
                             '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>' +
                             '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-                            '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a></li>' +
+                            '<li><a href="/master/driver/update/'+full.id+'" class="dropdown-item">Edit</a></li>' +
+                            '<li><a href="javascript:;" onclick="' + "deleteride(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
                             '</ul>' +
                             '</div>'
                         );
@@ -113,6 +112,17 @@
                 ],
                 displayLength: 10,
                 lengthMenu: [10, 25, 50, 75, 100],
+            });
+        }
+    }
+
+
+    function deleteride(id) {
+        response = confirm('Are you sure you want to delete this item?');
+        if (response == true) {
+            $.get("/master/driver/delete/" + id, function(data, status) {
+                dt_basic.destroy();
+                datatable();
             });
         }
     }

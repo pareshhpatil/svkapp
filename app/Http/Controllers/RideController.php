@@ -166,17 +166,7 @@ class RideController extends Controller
     }
 
 
-    public function list(Request $request, $bulk_id = 0, $type = 0)
-    {
-        $data['selectedMenu'] = [14, 9];
-        $data['menus'] = Session::get('menus');
-        $data['bulk_id'] = $bulk_id;
-        $data['type'] = $type;
-        $data['status'] = 'na';
-        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
-        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
-        return view('web.ride.list', $data);
-    }
+
 
     public function rideList(Request $request, $bulk_id = 0, $type = 0)
     {
@@ -229,26 +219,7 @@ class RideController extends Controller
         }
     }
 
-    public function ajaxRide($project_id = 0,  $date = 'na', $status = 'na', $type = 'na')
-    {
-        $statusarray = [];
-        if (strlen($date) < 5) {
-            $date = 'na';
-        }
-        if ($date != 'na') {
-            $date = $this->sqlDate($date);
-        }
-        if ($status != 'na') {
-            if ($status == 'ride') {
-                $statusarray = array(5);
-            } else {
-                $statusarray[] = $status;
-            }
-        }
 
-        $data['data'] = $this->model->getRide($project_id, $date, $statusarray, Session::get('project_access'));
-        return json_encode($data);
-    }
 
     function random($length_of_string = 4)
     {

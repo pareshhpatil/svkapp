@@ -81,7 +81,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 col-12 pull-right">
-                                    <input type="text" onchange="setdate();" id="bs-rangepicker-time" class="form-control" />
+                                    <input type="text" onchange="setdate();" id="bs-rangepicker-time" value="{{$current_date_range}}" class="form-control" />
                                 </div>
                                 <div class="col-lg-6 pull-right  mt-2">
                                     <select id="select2Basic" v-on:change="fetchData" class="select2 form-select input-sm" data-allow-clear="true">
@@ -130,7 +130,7 @@
                 </div>
             </div>
             <div class="row">
-                
+
                 <div class="col-lg-12 pull-right">
                 <br>
                     <button v-if="project_id>0" v-on:click="saveRoute" class="btn btn-primary waves-effect waves-light" type="button">
@@ -219,7 +219,7 @@
             return {
                 data: [],
                 project_id: '{{$project_id}}',
-                date: '',
+                date: '03 Feb 2024 05:00 PM - 04 Feb 2024 05:00 PM',
                 current_rating: 0,
                 routes: [],
                 roster: [],
