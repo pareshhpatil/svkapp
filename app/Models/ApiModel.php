@@ -34,6 +34,28 @@ class ApiModel extends ParentModel
         return $id;
     }
 
+    public function RegisterUser($data)
+    {
+        $id = DB::table('users')->insertGetId(
+            [
+                'user_type' => $data['user_type'],
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'mobile' => $data['mobile'],
+                'user_name' => $data['mobile'],
+                'gender' => $data['gender'],
+                'location' => $data['location'],
+                'token' => $data['token'],
+                'password' => 'napasswe',
+                'role_id' => '1',
+                'admin_id' => '1',
+                'last_login' => date('Y-m-d H:i:s'),
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
     public function saveToken($token, $user_id)
     {
         DB::table('firebase_token')->insertGetId(

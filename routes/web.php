@@ -40,6 +40,9 @@ Route::get('/app/notification/{type}', function () {
 Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/login/otp/{link}', [App\Http\Controllers\Auth\LoginController::class, 'otp']);
+Route::get('/register/{link}', [App\Http\Controllers\Auth\LoginController::class, 'register']);
+Route::post('/register/submit', [App\Http\Controllers\Auth\LoginController::class, 'registerSubmit']);
+
 Route::get('/login/otp/resend/{link}', [App\Http\Controllers\Auth\LoginController::class, 'resendotp']);
 Route::post('/login/sendotp', [App\Http\Controllers\Auth\LoginController::class, 'sendotp']);
 Route::post('/login/validateotp', [App\Http\Controllers\Auth\LoginController::class, 'validateOTP']);
@@ -75,18 +78,24 @@ Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl'
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard-data', [App\Http\Controllers\HomeController::class, 'dashboardData'])->name('dashboard-data');
+    Route::get('/index/{type?}/{param?}/{parame?}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
     Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
+    Route::get('/my-rides-data', [App\Http\Controllers\HomeController::class, 'ridesData'])->name('ridesd');
     Route::get('/book-ride', [App\Http\Controllers\HomeController::class, 'bookRide'])->name('book-ride');
+    Route::get('/book-ride-data', [App\Http\Controllers\HomeController::class, 'bookRideData'])->name('book-ride-data');
     Route::post('/ridesave', [App\Http\Controllers\HomeController::class, 'saveRide'])->name('save-ride');
     Route::get('/chats', [App\Http\Controllers\HomeController::class, 'chats'])->name('chats');
     Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
     Route::get('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
+    Route::get('/settings-data', [App\Http\Controllers\HomeController::class, 'settingsData'])->name('settings-data');
     Route::get('/setting/update/{col}/{val}', [App\Http\Controllers\HomeController::class, 'updateSetting']);
     Route::post('/upload/file/{type}', [App\Http\Controllers\HomeController::class, 'uploadFile']);
 
     Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
+    Route::get('/calendar-data', [App\Http\Controllers\HomeController::class, 'calendarData']);
 
     Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
     Route::get('/admin/ride/{link}', [App\Http\Controllers\HomeController::class, 'adminRideDetail']);

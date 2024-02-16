@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Dashboard | Siddhivinayak Travels House</title>
+    <title>Dashboard | RIDE TRACK</title>
 
     <meta name="description" content="" />
 
@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css" />
-    
+
     <link rel="stylesheet" href="/assets/css/custom.css" />
 
     @yield('header')
@@ -137,7 +137,7 @@
                     </div>
 
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-                        <h5 class="mb-0">Siddhivinayak Travels House</h5>
+                        <h5 class="mb-0">Ride Track</h5>
 
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
 
@@ -294,7 +294,7 @@
                                     <script>
                                         document.write(new Date().getFullYear());
                                     </script>
-                                    , made with ❤️ by Siddhivinayak Travels House
+                                    , made with ❤️ by Ride Track
                                 </div>
 
                             </div>

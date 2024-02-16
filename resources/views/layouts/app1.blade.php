@@ -31,27 +31,37 @@
     </style>-->
 
     @if(Session::get('user_type')==4)
-<script>
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:3546413,hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
-@endif
+    <script>
+        (function(h, o, t, j, a, r) {
+            h.hj = h.hj || function() {
+                (h.hj.q = h.hj.q || []).push(arguments)
+            };
+            h._hjSettings = {
+                hjid: 3546413,
+                hjsv: 6
+            };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script');
+            r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+    @endif
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZW6G05662"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-PZW6G05662');
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PZW6G05662');
 </script>
+
 <body @isset($onload) onload="{{$onload}}" @endisset class="{{Session::get('mode')}}">
 
     <!-- loader -->
@@ -87,8 +97,8 @@
         </div>
         <div class="pageTitle">{{$title}}</div>
         <div class="right">
-        <a href="/dashboard" class="headerButton" style="color: #27173E;">
-        <ion-icon name='home-outline'></ion-icon>
+            <a href="/dashboard" class="headerButton" style="color: #27173E;">
+                <ion-icon name='home-outline'></ion-icon>
             </a>
         </div>
     </div>
@@ -105,12 +115,40 @@
     @if(Session::has('name'))
     @if(!isset($hide_menu))
     <div class="appBottomMenu">
-        <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif onclick="lod(true);" class="item @if($menu==1) active @endif">
+        <a onclick="switchMenu('dashboard');" class="item @if($menu==1) active @endif">
             <div class="col">
                 <ion-icon name="home-outline"></ion-icon>
                 <strong>Home</strong>
             </div>
         </a>
+        <a onclick="switchMenu('rides');" class="item @if($menu==2) active @endif">
+            <div class="col">
+                <ion-icon name="car-sport-outline"></ion-icon>
+                <strong>Rides</strong>
+            </div>
+        </a>
+        @if(Session::get('user_type')==5)
+        <a @if($menu==3) @endif onclick="switchMenu('bookride');" class="item @if($menu==3) active @endif">
+            <div class="col">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                <strong>Book a Ride</strong>
+            </div>
+        </a>
+        @endif
+
+        <a @if($menu==3) @endif onclick="switchMenu('calendar');" class="item @if($menu==3) active @endif">
+            <div class="col">
+                <ion-icon name="calendar-number-outline"></ion-icon>
+                <strong>Calendar</strong>
+            </div>
+        </a>
+        <a @if($menu==3) @endif onclick="switchMenu('settings');" class="item @if($menu==3) active @endif">
+            <div class="col">
+                <ion-icon name="settings-outline"></ion-icon>
+                <strong>Settings</strong>
+            </div>
+        </a>
+
         <a @if($menu==2) href="javascript:location.reload();" @else href="/my-rides" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
             <div class="col">
                 <ion-icon name="car-sport-outline"></ion-icon>
@@ -345,13 +383,55 @@
                 localStorage.setItem("DownloadApp1", 0);
             }
         }
-
-
     </script>
     @endif
     <script>
         function closeT(num = 11) {
             document.getElementById('toast-' + num).classList.remove("show");
+        }
+    </script>
+
+    <script>
+        function switchMenu(id) {
+
+
+            if (id == 'rides') {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('bookride').style.display = 'none';
+                document.getElementById('settings').style.display = 'none';
+                document.getElementById('calendar').style.display = 'none';
+                document.getElementById('rides').style.display = 'block';
+                rides.loadData();
+            } else if (id == 'bookride') {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('rides').style.display = 'none';
+                document.getElementById('settings').style.display = 'none';
+                document.getElementById('calendar').style.display = 'none';
+                document.getElementById('bookride').style.display = 'block';
+                bookride.loadData();
+            } else if (id == 'calendar') {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('rides').style.display = 'none';
+                document.getElementById('bookride').style.display = 'none';
+                document.getElementById('settings').style.display = 'none';
+                document.getElementById('calendar').style.display = 'flex';
+                loadCalendar();
+            } else if (id == 'settings') {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('rides').style.display = 'none';
+                document.getElementById('bookride').style.display = 'none';
+                document.getElementById('calendar').style.display = 'none';
+                document.getElementById('settings').style.display = 'block';
+                settings.loadData();
+            } else if (id == 'dashboard') {
+                document.getElementById('rides').style.display = 'none';
+                document.getElementById('bookride').style.display = 'none';
+                document.getElementById('calendar').style.display = 'none';
+                document.getElementById('settings').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+
+                dashboard.loadData();
+            }
         }
     </script>
 

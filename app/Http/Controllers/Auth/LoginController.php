@@ -63,6 +63,38 @@ class LoginController extends Controller
         return view('auth.otp', $data);
     }
 
+    public function register($link)
+    {
+        if ($link == '__manifest.json') {
+            return false;
+        }
+        $model =  new ApiModel();
+        $otp_id = Encryption::decode($link);
+        $row = $model->getTableRow('otp', 'id', $otp_id, 1);
+        if ($row == false) {
+            return redirect('/login');
+        }
+        $data = json_decode(json_encode($row), 1);
+        $data['link'] = $link;
+        return view('auth.register', $data);
+    }
+
+    public function registerSubmit(Request $request)
+    {
+        $model =  new ApiModel();
+        $data = $request->all();
+
+        if ($data['user_type'] == 'Passenger') {
+            $data['user_type'] = 6;
+        } else {
+            $data['user_type'] = 4;
+        }
+
+        $user_id = $model->RegisterUser($data);
+        $this->setLoginSession($user_id);
+        return redirect('/dashboard');
+    }
+
     public function resendotp($link)
     {
         $apicontroller = new ApiController();
@@ -139,23 +171,50 @@ class LoginController extends Controller
             }
         }
         if ($data != false) {
-            $test_array = array('9999999999', '9999999993', '9999999995', '9730946150');
-            $otp = rand(1111, 9999);
-            if (in_array($request->mobile, $test_array)) {
-                $otp = '1234';
-            } else {
-                $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-                $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
-            }
-            $id = $model->saveOtp($request->mobile, $otp, $data->id);
-            return redirect('/login/otp/' . Encryption::encode($id));
+            $user_id = $data->id;
         } else {
-            return back()->withErrors([
-                'mobile' => 'Mobile is not registered.'
-            ]);
+            $user_id = 0;
         }
+        $test_array = array('9999999999', '9999999993', '9999999995', '9730946150');
+        $otp = rand(1111, 9999);
+        if (in_array($request->mobile, $test_array)) {
+            $otp = '1234';
+        } else {
+            $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+            $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
+        }
+        $id = $model->saveOtp($request->mobile, $otp, $user_id);
+        return redirect('/login/otp/' . Encryption::encode($id));
+        //    } else {
+        //   return back()->withErrors([
+        //      'mobile' => 'Mobile is not registered.'
+        //  ]);
+        // }
     }
-
+    public function setLoginSession($user_id)
+    {
+        Auth::loginUsingId($user_id, true);
+        $user = Auth::user();
+        Session::put('user_id', $user->id);
+        Session::put('user_type', $user->user_type);
+        Session::put('name', $user->name);
+        Session::put('email', $user->email);
+        Session::put('mobile', $user->mobile);
+        Session::put('parent_id', $user->parent_id);
+        Session::put('project_id', $user->project_id);
+        Session::put('gender', $user->gender);
+        Session::put('token', $user->token);
+        Session::put('show_ad', $user->show_ad);
+        if ($user->dark_mode == 1) {
+            Session::put('mode', 'dark-mode');
+        } else {
+            Session::put('mode', '');
+        }
+        if ($user->icon == '') {
+            $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
+        }
+        Session::put('icon', $user->icon);
+    }
     public function validateOTP(Request $request)
     {
         $model =  new ApiModel();
@@ -171,31 +230,15 @@ class LoginController extends Controller
         #check OTP is valid with mobile number
         $data = $model->getTableRow('otp', 'mobile', $request->mobile, 1, ['otp' => $request->otp]);
         if ($data != false) {
+            if ($data->user_id == 0) {
+                $otp_link = Encryption::encode($data->id);
+                return redirect("/register/" . $otp_link);
+            }
             if ($request->token != '') {
                 $model->updateTable('users', 'id', $data->user_id, 'token', $request->token);
             }
-            Auth::loginUsingId($data->user_id, true);
-            $user = Auth::user();
-            Session::put('user_id', $user->id);
-            Session::put('user_type', $user->user_type);
-            Session::put('name', $user->name);
-            Session::put('email', $user->email);
-            Session::put('mobile', $user->mobile);
-            Session::put('parent_id', $user->parent_id);
-            Session::put('project_id', $user->project_id);
-            Session::put('gender', $user->gender);
-            Session::put('token', $user->token);
-            Session::put('show_ad', $user->show_ad);
-            if ($user->dark_mode == 1) {
-                Session::put('mode', 'dark-mode');
-            } else {
-                Session::put('mode', '');
-            }
-            if ($user->icon == '') {
-                $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
-            }
-            Session::put('icon', $user->icon);
-            return redirect('/demo');
+            $this->setLoginSession($data->user_id);
+            return redirect('/dashboard');
         } else {
             return back()->withErrors([
                 'otp' => 'Invalid OTP please try again',

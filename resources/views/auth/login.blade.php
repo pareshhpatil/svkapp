@@ -4,7 +4,7 @@
 
   <img src="/assets/img/banner.png?v=5" style="max-width: 100%;">
   <div class="section mt-2 text-center">
-    <h3 class="text-primary"> SIDDHIVINAYAK TRAVELS HOUSE</h3>
+    <h3 class="text-primary"> RIDE TRACK</h3>
 
   </div>
   <div class="section mb-5 p-2">
