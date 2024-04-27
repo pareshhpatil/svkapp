@@ -21,6 +21,7 @@ class Encryption {
     }
 
     public function encode($value) {
+        return $value;
         if (!$value) {
             return false;
         }
@@ -30,6 +31,7 @@ class Encryption {
     }
 
     public function decode($value) {
+        return $value;
         if (!$value) {
             return false;
         }

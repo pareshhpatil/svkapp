@@ -461,4 +461,29 @@ class Master extends Model
             ->get();
         return $retObj;
     }
+	
+	
+	public function saveTransaction($request_id, $amount)
+    {
+        $id = DB::table('payment_transaction')->insertGetId(
+            [
+                'request_id' => $request_id,
+                'amount' => $amount,
+                'created_at' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+	
+	  public function updateTransaction($id, $status, $referenceId, $utr,$json)
+    {
+        DB::table('payment_transaction')
+            ->where('id', $id)
+            ->update([
+                'status' => $status,
+                'referenceId' => $referenceId,
+				'json'=>$json,
+                'utr' => $utr
+            ]);
+    }
 }

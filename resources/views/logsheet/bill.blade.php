@@ -98,7 +98,7 @@
                                         </div>
 										@if($invoice->narrative!='')
 										<div class="col-md-12" >
-                                            <p>{{$invoice->narrative}}</p>
+                                            <p>{!!$invoice->narrative!!}</p>
                                         </div>
 										@endif
                                     </td>
@@ -138,19 +138,19 @@
                                                 </tr>
                                                 @if($invoice->total_gst>0)
                                                 <tr>
-                                                    <td class="tds" colspan="3" rowspan="3" style="vertical-align: middle;"><span class="pull-right"><b>Goods and Services Tax @5%</b></span></td>
+                                                    <td class="tds" colspan="3" rowspan="3" style="vertical-align: middle;"><span class="pull-right"><b>Goods and Services Tax @ {{number_format($invoice->total_gst*100/$invoice->base_total,2)}}%</b></span></td>
                                                     <td class="tds"><span class="pull-right">CGST@</span></td>
-                                                    <td class="tds"><span class="pull-right">@if($invoice->cgst>0)2.50 @else 00 @endif%</span></td>
+                                                    <td class="tds"><span class="pull-right">@if($invoice->cgst>0){{number_format($invoice->cgst*100/$invoice->base_total,2)}} @else 00 @endif%</span></td>
                                                     <td class="tds"><span class="pull-right">{{$invoice->cgst}}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="tds"><span class="pull-right">SGST@</span></td>
-                                                    <td class="tds"><span class="pull-right">@if($invoice->sgst>0)2.50 @else 00 @endif%</span></td>
+                                                    <td class="tds"><span class="pull-right">@if($invoice->sgst>0){{number_format($invoice->sgst*100/$invoice->base_total,2)}} @else 00 @endif%</span></td>
                                                     <td class="tds"><span class="pull-right">{{$invoice->sgst}}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="tds"><span class="pull-right">IGST@</span></td>
-                                                    <td class="tds"><span class="pull-right">@if($invoice->igst>0)5.00 @else 00 @endif%</span></td>
+                                                    <td class="tds"><span class="pull-right">@if($invoice->igst>0){{number_format($invoice->igst*100/$invoice->base_total,2)}} @else 00 @endif%</span></td>
                                                     <td class="tds"><span class="pull-right">{{$invoice->igst}}</span></td>
                                                 </tr>
                                                 <tr>

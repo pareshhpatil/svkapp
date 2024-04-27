@@ -21,4 +21,4 @@ Route::middleware('api')->post('/v1/company','ApiController@company');
 Route::middleware('api')->post('/v1/policy','ApiController@policy');
 Route::middleware('api')->post('/v1/user','ApiController@user');
 Route::middleware('api')->post('/v1/payment-request','ApiController@paymentrequest');
-
+Route::middleware('api')->post('/webhook/cashfree/payout','ApiController@webhook');

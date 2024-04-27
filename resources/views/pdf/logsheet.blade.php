@@ -22,7 +22,7 @@
                             Summery of Car No: ({{$vehicle->car_type}}){{$vehicle->number}}
 							@if($invoice->narrative!='')
 							<br>
-							{{$invoice->narrative}}
+							{!!$invoice->narrative!!}
 							@endif
                         </td>
                     </tr>

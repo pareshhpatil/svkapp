@@ -37,7 +37,7 @@ class Bill extends Model {
                 ->where('a.source_id', $source_id)
                 ->where('a.is_active', 1)
                 ->where('a.status', 1)
-                ->select(DB::raw('a.*,e.name as employee_name'))
+                ->select(DB::raw('a.*,concat(e.name,'-',e.account_holder_name) as employee_name'))
                 ->get();
         return $retObj;
     }
@@ -47,7 +47,7 @@ class Bill extends Model {
                 ->leftJoin('employee as e', 'e.employee_id', '=', 'a.employee_id')
                 ->where('a.admin_id', $admin_id)
                 ->where('a.is_active', 1)
-                ->select(DB::raw('a.*,e.name as employee_name'))
+                ->select(DB::raw("a.*,concat(e.name,'-',e.account_holder_name) as employee_name"))
                 ->get();
         return $retObj;
     }
@@ -58,7 +58,7 @@ class Bill extends Model {
                 ->where('a.adjust_status',0)
                 ->where('a.pending_amount','>',0)
                 ->where('a.is_active', 1)
-                ->select(DB::raw('a.*,e.name as employee_name'))
+                ->select(DB::raw("a.*,concat(e.name,'-',e.account_holder_name) as employee_name"))
                 ->get();
         return $retObj;
     }
@@ -69,7 +69,18 @@ class Bill extends Model {
                 ->where('a.admin_id', $admin_id)
                 ->where('a.is_active', 1)
                 ->where('a.status', 0)
-                ->select(DB::raw('a.*,v.name'))
+                ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name"))
+                ->get();
+        return $retObj;
+    }
+    public function getBillListGroup($admin_id) {
+        $retObj = DB::table('transaction as a')
+                ->join('employee as v', 'v.employee_id', '=', 'a.employee_id')
+                ->where('a.admin_id', $admin_id)
+                ->where('a.is_active', 1)
+                ->where('a.status', 0)
+                ->groupBy(['employee_id', 'paid_date'])
+                ->select(DB::raw('paid_date,a.employee_id,group_concat(a.narrative) as narrative,sum(amount) as amount,group_concat(v.name) as name,max(transaction_id) as transaction_id'))
                 ->get();
         return $retObj;
     }

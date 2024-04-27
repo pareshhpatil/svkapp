@@ -142,6 +142,16 @@
                             </div>
 							
 							<div class="form-group">
+                                <label class="control-label col-md-4">Escort<span class="required"> * </span></label>
+                                <div class="col-md-7">
+                                    <select name="escort"  class="form-control" data-placeholder="Select...">
+                                        <option  @if($escort=='0') selected @endif value="0">No</option>
+										<option  @if($escort=='1') selected @endif value="1">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+							
+							<div class="form-group">
                                 <label class="control-label col-md-4">Pickup<span class="required"> * </span></label>
                                 <div class="col-md-7">
                                     <input type="text" required="" @if(!empty($det)) value="{{$det->pickup_location}}" @endif   name="pickup" class="form-control">

@@ -120,13 +120,21 @@ class LogsheetController extends Controller
                 $extra_time = $total_time - 12;
                 if (substr($total_time, -2) == '.5') {
                     $total_time = substr($total_time, 0, -2) . ':30';
-                } else {
+                }
+				else if (substr($total_time, -2) == '75') {
+                    $total_time = substr($total_time, 0, -3) . ':45';
+                }
+				else {
                     $total_time = $total_time . ':00';
                 }
 
                 if (substr($extra_time, -2) == '.5') {
                     $extra_time = substr($extra_time, 0, -2) . ':30';
-                } else {
+                } 
+				else if (substr($extra_time, -2) == '75') {
+                    $extra_time = substr($extra_time, 0, -3) . ':45';
+                }
+				else {
                     $extra_time = $extra_time . ':00';
                 }
                 $list[$int]->total_time = $total_time;
@@ -201,13 +209,25 @@ class LogsheetController extends Controller
         $this->downloadlogsheet($link);
     }
 
-    public function downloadbill($link)
+    public function downloadbill($link,$admin_id=0)
     {
-        $this->validateSession(array(1));
+        if($admin_id>0)
+        {
+            $this->admin_id=$admin_id;
+            $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
+            $data['company_name']=$admin->company_name;
+            $data['company_logo']='https://admin.svktrv.in/dist/img/1704035064.png';
+            $link=$link/1234;
+        }else
+        {
+            $this->validateSession(array(1));
+            $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
+        }
+        
         $id = $this->encrypt->decode($link);
         $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
         $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
-        $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
+        
         $data['admin'] = $admin;
         $data['invoice'] = $invoice;
         $data['vehicle_id'] = $invoice->vehicle_id;
@@ -455,10 +475,11 @@ class LogsheetController extends Controller
         $this->validateSession(array(1, 2));
         $date = date('Y-m-d', strtotime($request->date));
         $bill_date = date('Y-m-d', strtotime($request->bill_date));
+		
         if ($this->admin_id == 3) {
-            $toll = ($_POST['amount'][7] > 0) ? $_POST['amount'][7] : 0;
+            $toll = ($_POST['amount'][count($_POST['amount'])-1] > 0) ? $_POST['amount'][count($_POST['amount'])-1] : 0;
         } else {
-            $toll = ($_POST['amount'][5] > 0) ? $_POST['amount'][5] : 0;
+            $toll = ($_POST['amount'][count($_POST['amount'])-1] > 0) ? $_POST['amount'][count($_POST['amount'])-1] : 0;
         }
 
         if ($request->invoice_id > 0) {

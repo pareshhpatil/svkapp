@@ -14,7 +14,7 @@
                         <table class="table" style="font-size: 12px !important;color: black !important;margin-bottom: 0;">
                             <tbody>
                                 <tr >
-                                    <td class="td-c" style="border-top: 0px;"><img style="max-width: 140px;" src="{{ asset('dist/img/'.$admin->logo) }}" alt="logo" class="logo-default"></td>
+                                    <td class="td-c" style="border-top: 0px;"><img style="max-width: 140px;" src="https://admin.siddhivinayaktravelshouse.in/dist/img/{{$admin->logo}}" alt="logo" class="logo-default"></td>
                                 </tr>
                                 <tr>
                                     <td class="td-c text-red" style="border-top: 0px;font-size: 22px;font-family: cambria;color: #ff0000;">{{$company_name}}</td>

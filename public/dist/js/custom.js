@@ -164,6 +164,12 @@ function saveCompanyMis() {
             data: data,
             success: function (data) {
                 _("loaded_n_total").innerHTML = data;
+				if(document.getElementById('id').value>0)
+				{
+					window.location.href = "/admin/mis/listmiscompany";
+
+				}
+
             }
         });
     } catch (o) {
@@ -243,17 +249,17 @@ function calculateLogsheet() {
         amt = '';
         if (qty > 0 && rate > 0) {
             amt = Number(qty * rate);
-            if (deduct == 0) {
+            
+            _("amt" + id).value = amt.toFixed(2);
+        }
+		amt=Number(_("amt" + id).value);
+		if (deduct == 0) {
                 total_amount = Number(total_amount + amt);
             } else {
                 total_amount = Number(total_amount - amt);
             }
-            _("amt" + id).value = amt.toFixed(2);
-        }
 
     });
-    toll = getamt('amt6');
-    total_amount = Number(total_amount + toll);
     _("base_total").value = total_amount.toFixed(2);
 
     cgst = getamt('cgst');

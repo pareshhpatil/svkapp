@@ -1,6 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+.table>tbody+tbody {
+    border-top: 0px solid #ddd;
+}
+.danger{
+	color:red;
+}
+</style>
 <div class="row">
     <div class="col-lg-12">
         @isset($success_message)
@@ -145,17 +153,36 @@
 
 
                         <div class="col-md-12">
-                            <table class="table table-bordered" style="font-size: 12px !important;color: black !important;">
-                                <tbody>
+                            <table class="table table-bordered" id="particular_table" style="font-size: 12px !important;color: black !important;">
+                                <tbody style="">
                                     <tr>
                                         <th class="td-c">Particulars</th>
                                         <th class="td-c">Unit</th>
                                         <th class="td-c">Qty</th>
                                         <th class="td-c">Rate(R.s)</th>
                                         <th class="td-c">Amount</th>
+										<th class="td-c"><a href="javascript:void(0)" class="btn btn-sm success" onclick="addRow()"><i class="fa fa-plus"> </i></a></th>
                                     </tr>
                                     @php($int=1)
                                     @foreach($logsheet_detail as $det)
+										@if($invoice_id==0 && $int==5  && Session::get('admin_id')!=8)
+											<tr>
+                                        <td class="td-c"><input type="text" class="form-control" value="{{$det['particular_name']}}" name="particular_name[]"> </td>
+                                        <td class="td-c"><input type="text" class="form-control" name="unit[]" value="{{$det['unit']}}"></td>
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='' ) readonly @endif class="form-control" onblur="calculateLogsheet();" id="qty{{$int}}" name="qty[]" value="{{$det['qty']}}"></td>
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" @if($det['unit']=='' ) readonly @endif class="form-control" onblur="calculateLogsheet();" id="rate{{$int}}" name="rate[]" value="{{$det['rate']}}"></td>
+                                        <td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt{{$int}}" name="amount[]" onblur="calculateLogsheet();" value="{{$det['amount']}}">
+                                            <input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct{{$int}}" value="{{$det['is_deduct']}}">
+                                            <input type="hidden" class="form-control" name="int[]" value="{{$int}}">
+                                            <input type="hidden" class="form-control" name="detail_id[]" value="{{$det['id']}}">
+                                        </td>
+										<td class="td-c">
+										<a  href="javascript:;" onclick="$(this).closest('tr').remove();calculateLogsheet();"  data-confirm="Are you sure to delete this item?" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a>
+										</td>
+                                    </tr>
+									</tbody>
+											
+									@else
                                     <tr>
                                         <td class="td-c"><input type="text" class="form-control" value="{{$det['particular_name']}}" name="particular_name[]"> </td>
                                         <td class="td-c"><input type="text" class="form-control" name="unit[]" value="{{$det['unit']}}"></td>
@@ -166,11 +193,19 @@
                                             <input type="hidden" class="form-control" name="int[]" value="{{$int}}">
                                             <input type="hidden" class="form-control" name="detail_id[]" value="{{$det['id']}}">
                                         </td>
+										<td class="td-c">
+											<a  href="javascript:;" onclick="$(this).closest('tr').remove();calculateLogsheet();"  data-confirm="Are you sure to delete this item?" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a>
+										</td>
                                     </tr>
+									@endif
                                     @php($int++)
                                     @endforeach
+									@if($int==7)
+									
+									@endif
+									
                                     <tr>
-                                        <td class="td-c"></td>
+                                        <td class="td-c"><input type="hidden" id="countRow" value="{{$int}}"></td>
                                         <td class="td-c"></td>
                                         <td class="td-c"></td>
                                         <th class="">Total Value /Taxable Value(Rs.)</th>
@@ -247,6 +282,18 @@
 
             </div>
         </form>
+		
+		
+		<script>
+		function addRow()
+		{
+			count=Number(document.getElementById("countRow").value);
+			count=count+1;
+		$('#particular_table').find('tbody').append('<tr><td class="td-c"><input type="text" class="form-control" value="" name="particular_name[]"> </td><td class="td-c"><input type="text" class="form-control" name="unit[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="qty'+count+'" name="qty[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="rate'+count+'" name="rate[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt'+count+'" name="amount[]" onblur="calculateLogsheet();" value=""><input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct'+count+'" value="0"><input type="hidden" class="form-control" name="int[]" value="'+count+'"><input type="hidden" class="form-control" name="detail_id[]" value="0"></td><td class="td-c"><a data-cy="particular-remove2" href="javascript:;" onclick="$(this).closest('+"'"+'tr'+"'"+').remove();calculateLogsheet();" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a></td></tr>');
+		document.getElementById("countRow").value=count;
+		}
+		
+		</script>
         @endisset
         <!-- END PAYMENT TRANSACTION TABLE -->
 

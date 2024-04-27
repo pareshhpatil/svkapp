@@ -18,6 +18,8 @@
                             <th>Bill #</th>
                             <th>Date</th>
                             <th>Name </th>
+							 <th>Account holder </th>
+							  <th>Account </th>
                             <th>Narrative </th>
                             <th>Amount </th>
                             <th style="width: 70px;">Action </th>
@@ -29,6 +31,8 @@
                             <td>{{$item->transaction_id}}</td>
                             <td>{{$item->paid_date}}</td>
                             <td><a target="_BLANK" href="/admin/employee/view/{{$item->emplink}}">{{$item->name}}</a></td>
+							 <td>{{$item->account_holder_name}}</td>
+							  <td>{{$item->account_no}}</td>
                             <td>{{$item->narrative}}</td>
                             <td>{{$item->amount}}</td>
                             <td>

@@ -59,6 +59,7 @@ class MisController extends Controller
         $data['pickup_drop'] = 'Drop';
         $data['car_no'] = '0';
         $data['cab_zone'] = '';
+		$data['escort'] = '0';
         if ($link != null) {
             $id = $this->encrypt->decode($link);
             $det = $this->master_model->getMasterDetail('company_mis', 'id', $id);
@@ -69,6 +70,7 @@ class MisController extends Controller
             $data['pickup_drop'] = $det->pickup_drop;
             $data['car_no'] = $det->car_no;
             $data['cab_zone'] = $det->zone;
+			$data['escort'] = $det->escort;
             $data['det'] = $det;
         }
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
@@ -286,6 +288,15 @@ class MisController extends Controller
             foreach ($array as $key => $row) {
                 $export[$key]['Date'] = date('d/m/Y', strtotime($row['date']));
                 $export[$key]['Package'] = $row['zone'];
+				if($row['escort']==1)
+				{
+					$export[$key]['Company_slab'] = $row['company_slab'].' with Escort';
+				}else{
+					$export[$key]['Company_slab'] = $row['company_slab'];
+				}
+				
+				$export[$key]['Driver_slab'] = $row['driver_slab'];
+				$export[$key]['Escort'] = ($row['escort']==1) ? 'Yes' : 'No';
                 $export[$key]['Logsheet number'] = $row['logsheet_no'];
                 $export[$key]['Company name'] = $row['company_name'];
                 $export[$key]['Car Type'] = $row['car_type'];
@@ -296,8 +307,17 @@ class MisController extends Controller
                 $export[$key]['Pickup time'] = date('h:i', strtotime($row['pickup_time']));
                 $export[$key]['Drop time'] = date('h:i', strtotime($row['drop_time']));
                 $export[$key]['Toll'] = $row['toll'];
+				if($this->user_id==8)
+				{
+					$export[$key]['SVK Amount'] = $row['svk_amount'];
+					$export[$key]['Vendor Amount'] = $row['vendor_amount'];
+					$export[$key]['Admin Amount'] = $row['admin_amount'];
+					$export[$key]['Company Amount'] = $row['company_amount'];
+					
+				}	
 
                 $export[$key]['Employee name'] = $row['employee_name'];
+                $export[$key]['Employee count'] = $row['user_count'];
                 $export[$key]['Remark'] = $row['remark'];
             }
             $this->exportExcel($export, 'MIS');
@@ -356,7 +376,7 @@ class MisController extends Controller
                     $sheet->freezeFirstRow();
                     $sheet->setAutoSize(true);
                 });
-            })->export('xlsx');
+            })->export('xls');
         } catch (Exception $e) {
         }
     }

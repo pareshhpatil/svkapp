@@ -129,12 +129,14 @@ Route::get('/admin/logsheet/deletebill/{id}', 'LogsheetController@logsheetdelete
 Route::get('/admin/logsheet/printlogsheet/{id}', 'LogsheetController@printlogsheet');
 Route::get('/admin/logsheet/printbill/{id}', 'LogsheetController@printbill');
 Route::get('/admin/logsheet/downloadbill/{id}', 'LogsheetController@downloadbill');
+Route::get('/admin/logsheet/downloadbill/{id}/{admin_id}', 'LogsheetController@downloadbill');
 Route::get('/admin/logsheet/downloadlogsheet/{id}', 'LogsheetController@downloadlogsheet');
 Route::get('/admin/logsheet/download/{id}', 'LogsheetController@download');
 Route::get('/admin/logsheet/downloadexcel/{id}', 'LogsheetController@downloadexcel');
 Route::post('/admin/logsheet/logsheetbillsave', 'LogsheetController@logsheetbillsave');
 
 Route::get('/admin/bill', 'BillController@bill');
+Route::get('/admin/bill/group', 'BillController@billgroup');
 Route::get('/admin/bill/new', 'BillController@billcreate');
 Route::post('/admin/bill/save', 'BillController@billsave');
 Route::post('/admin/bill/paymentsave', 'BillController@paymentsave');

@@ -15,6 +15,8 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2768566574593657"
+     crossorigin="anonymous"></script>
     </head>
     <body class="hold-transition login-page">
         <div class="login-box">

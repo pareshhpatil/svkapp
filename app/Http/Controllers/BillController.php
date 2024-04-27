@@ -55,6 +55,26 @@ class BillController extends Controller
         return view('bill.list', $data);
     }
 
+    public function billgroup()
+    {
+        $bill_list = $this->bill_model->getBillListGroup($this->admin_id);
+        $int = 0;
+        $amount = 0;
+        foreach ($bill_list as $item) {
+            $emplink = $this->encrypt->encode($item->{'employee_id'});
+            $link = $this->encrypt->encode($item->{'transaction_id'});
+            $bill_list[$int]->link = $link;
+            $bill_list[$int]->emplink = $emplink;
+            $amount = $amount + $item->{'amount'};
+            $int++;
+        }
+        $data['total_amount'] = $amount;
+        $data['title'] = 'Pending Bills';
+        $data['list'] = $bill_list;
+        $data['addnewlink'] = '/admin/bill/new';
+        return view('bill.list', $data);
+    }
+
     public function transaction()
     {
         $list = $this->bill_model->getTransactionList($this->admin_id);
@@ -117,7 +137,7 @@ class BillController extends Controller
         $this->setSuccess('Transaction has been save successfully');
         header('Location: /admin/bill/new');
     }
-    
+
 
     public function creditlist()
     {
@@ -184,8 +204,8 @@ class BillController extends Controller
             $request->source_id = 0;
         }
         if ($_POST['type'] != 3) {
-            $this->bill_model->saveBill($request->employee_id,$request->category,0,0,$request->amount, $request->remark, $date, $request->amount, $this->user_id, $this->admin_id);
-            $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id,0);
+            $this->bill_model->saveBill($request->employee_id, $request->category, 0, 0, $request->amount, $request->remark, $date, $request->amount, $this->user_id, $this->admin_id);
+            $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id, 0);
         }
         if ($_POST['type'] != 1) {
             $this->bill_model->saveTransaction($is_paid, $request->employee_id, $date, $request->amount, $request->payment_mode, $request->remark, 'NA', $request->source_id, 1, $this->user_id, $this->admin_id);
@@ -201,17 +221,108 @@ class BillController extends Controller
         exit;
     }
 
+    function callapi($url, $header, $post_data = '')
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $post_data,
+            CURLOPT_HTTPHEADER => $header,
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return json_decode($response, 1);
+    }
+
+
+
+
+
+
     public function paymentsave(Request $request)
     {
+		$transaction=$this->master_model->getMasterDetail('transaction', 'transaction_id', $request->bill_id);
+		if($transaction->status!=0)
+		{
+		$this->setSuccess('Transaction Already paid');
+        header('Location: /admin/bill');
+        exit;
+		}
+		
+		$success=true;
         $date = date('Y-m-d', strtotime($request->date));
+        if ($request->source_id == 2) {
+            $employee = $this->master_model->getMasterDetail('employee', 'employee_id', $request->employee_id);
+            $transaction_id = $this->master_model->saveTransaction($request->bill_id, $request->amount);
+
+
+            $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
+                'accept: application/json',
+                'x-client-id: '.env('CF_CLIENT'),
+                'x-client-secret: '.env('CF_SECRET')
+            ));
+            if (isset($data['data']['token'])) {
+                $email = ($employee->email != '') ? $employee->email : 'contact@siddhivinayaktravelshouse.in';
+                $mobile = ($employee->mobile != '') ? $employee->mobile : '8879391658';
+                $post_data = '{
+					  "beneDetails": {
+						"beneId": "' . $employee->employee_id . '",
+						"name": "' . $employee->account_holder_name . '",
+						"email": "' . $email . '",
+						"phone": "' . $mobile . '",
+						"address1": "NA Address",
+						"bankAccount": "' . $employee->account_no . '",
+						"ifsc": "' . $employee->ifsc_code . '"
+					  },
+					  "amount": ' . $request->amount . ',
+					  "transferId": "' . $transaction_id . '",
+					  "transferMode": "neft",
+					  "remarks": "Payment"
+					}';
+                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1.2/directTransfer', array(
+                    'accept: application/json',
+                    'content-type: application/json',
+                    'Authorization: Bearer ' . $data['data']['token']
+                ), $post_data);
+                $status = $data['status'];
+				if(isset($data['data']['referenceId']))
+				{
+                $referenceId = $data['data']['referenceId'];
+                $utr = $data['data']['utr'];
+				}else{
+					echo $post_data;
+					dd($data);
+					
+				}
+                $json = json_encode($data);
+                $this->master_model->updateTransaction($transaction_id, $status, $referenceId, $utr, $json);
+				
+                if ($data['status'] != 'SUCCESS' && $data['status'] != 'PENDING') {
+					$success=false;
+					dd($data);
+                }
+            } else {
+                dd($data);
+            }
+        }
+		if($success==true)
+		{
         $this->bill_model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $this->user_id);
-        
+
         $this->master_model->updateEmployeeBalance($request->amount, $request->employee_id);
         $this->master_model->updateBankBalance($request->amount, $request->source_id);
         $this->setSuccess('Transaction has been save successfully');
         header('Location: /admin/bill');
         exit;
+		}
     }
-
-    
 }
