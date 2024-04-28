@@ -73,21 +73,21 @@ class MasterController extends Controller
         $data['title'] = ucfirst($master) . ' detail';
         $data['det'] = $detail;
 
-       // $mpdf = new \Mpdf\Mpdf([
-       //     'mode' => '',
-       //     'format' => 'A4',
-       //     'default_font_size' => 0,
-       //     'default_font' => '',
-       //     'margin_left' => 4,
-       //     'margin_right' => 4,
-      //      'margin_bottom' => 4,
-       //     'margin_header' => 9,
-      //      'margin_footer' => 9,
-      //  ]);
-      //  $mpdf->WriteHTML(\View::make('master.' . $master . '.view')->with($data)->render());
-      //  $mpdf->Output();
-       // $mpdf->Output('quotation.pdf', 'D');
-       // die();
+        // $mpdf = new \Mpdf\Mpdf([
+        //     'mode' => '',
+        //     'format' => 'A4',
+        //     'default_font_size' => 0,
+        //     'default_font' => '',
+        //     'margin_left' => 4,
+        //     'margin_right' => 4,
+        //      'margin_bottom' => 4,
+        //     'margin_header' => 9,
+        //      'margin_footer' => 9,
+        //  ]);
+        //  $mpdf->WriteHTML(\View::make('master.' . $master . '.view')->with($data)->render());
+        //  $mpdf->Output();
+        // $mpdf->Output('quotation.pdf', 'D');
+        // die();
 
         return view('master.' . $master . '.view', $data);
     }
@@ -116,6 +116,8 @@ class MasterController extends Controller
             header('Location: /admin/employee/salary');
         } else if ($master == 'transaction') {
             header('Location: /admin/bill/new');
+        } else if ($master == 'subscription') {
+            header('Location: /admin/bill/subscription');
         } else {
             header('Location: /admin/' . $master . '/list');
         }

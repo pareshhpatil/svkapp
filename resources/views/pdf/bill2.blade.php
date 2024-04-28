@@ -71,16 +71,13 @@
                                             <p><b style="font-weight: bold;">Work Order No:</b>  {{$invoice->work_order_no}}</p>
                                         </div>
 										@endif
-										@if($company->company_id==3334)
-											@php
-												$po='7000047284';
-											@endphp
-										@endif 
+										@if($invoice->po_number!='')
+										<div class="col-md-12" >
+                                            <p><b style="font-weight: bold;">PO Number:</b>  {{$invoice->po_number}}</p>
+                                        </div>
+										@endif
 										
 										@if($po!='' && $po!='a')
-										<div class="col-md-12" >
-                                            <p><b style="font-weight: bold;">PO Number :</b>  {{$po}}</p>
-                                        </div>
 										<div class="col-md-12" >
                                             <p><b style="font-weight: bold;">Currency :</b>  Indian rupee</p>
                                         </div>

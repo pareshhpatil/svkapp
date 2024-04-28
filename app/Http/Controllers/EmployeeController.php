@@ -255,56 +255,5 @@ class EmployeeController extends Controller
         return view('employee.saved', $data);
     }
 
-    public function subscription()
-    {
-        $this->validateSession(array(1, 2));
-        $subscription_list = $this->employee_model->getEMPSubscriptionList($this->admin_id);
-        $int = 0;
-        foreach ($subscription_list as $item) {
-            $link = $this->encrypt->encode($item->subscription_id);
-            $subscription_list[$int]->link = $link;
-            $int++;
-        }
-        $data['list'] = $subscription_list;
-        $data['title'] = 'Employee Subscription';
-        $data['addnewlink'] = '/admin/employee/subscription/create';
-        return view('master.subscription.list', $data);
-    }
-
-    public function subscriptioncreate()
-    {
-        $this->validateSession(array(1, 2));
-        $data['title'] = 'Create Subscription';
-        $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
-        $data['employee_list'] = $employee_list;
-
-        return view('master.subscription.create', $data);
-    }
-
-    public function subscriptionsave(Request $request)
-    {
-        $this->validateSession(array(1, 2));
-        $employee_id = $this->employee_model->saveSubscription($request->employee_id, $request->type, 1, 1, $request->day, $request->amount, $request->note, $this->admin_id, $this->user_id);
-        $this->setSuccess('Bill has been save successfully');
-        header('Location: /admin/employee/subscription/create');
-        exit;
-    }
-
-    public function subscriptionrequest()
-    {
-        $this->bill_model = new Bill();
-        $list = $this->master_model->getMaster('subscription', 1, 'mode');
-        foreach ($list as $item) {
-            if (date('d') == $item->day && $item->last_date != date('Y-m-d')) {
-                $note = date('M Y', strtotime("last month")) . ' ' . $item->note;
-                $this->bill_model->saveBill($item->employee_id, $item->category, 0, 0, $item->amount, $note, date('Y-m-d'), $item->amount, 1000, $item->admin_id);
-                $this->master_model->updateEmployeeBalance($item->amount, $item->employee_id, 0);
-                if ($item->type == 2) {
-                    $this->bill_model->saveTransaction(0, $item->employee_id, date('Y-m-d'), $item->amount, '', $note, 'NA', 0, 1, $item->user_id, 1);
-                }
-                $this->master_model->updateTableColumn('subscription', 'last_date', date('Y-m-d'), 'subscription_id', $item->subscription_id, 1000);
-            }
-        }
-        echo 'done';
-    }
+    
 }

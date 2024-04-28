@@ -16,8 +16,8 @@
                             <div>
                                 <a href="/admin/subscription/view/{{$link}}" class="btn btn-primary">View subscription</a>
                                 <a href="/admin/subscription/update/{{$link}}" class="btn btn-success">Update subscription</a>
-                                <a href="/admin/employee/subscription/create" class="btn btn-info">Add subscription</a>
-                                <a href="/admin/employee/subscription" class="btn btn-primary">Subscription Listing</a>
+                                <a href="/admin/bill/subscription/create" class="btn btn-info">Add subscription</a>
+                                <a href="/admin/bill/subscription" class="btn btn-primary">Subscription Listing</a>
                             </div>
                         </div>
                     </div>

@@ -43,6 +43,11 @@ Route::get('/employee/accessdenied', 'EmployeeController@accessdenied');
 
 Route::get('/company/dashboard', 'DashboardController@company');
 
+Route::any('/admin/income/create', 'BillController@paymentEntry');
+Route::any('/admin/income/list', 'BillController@list');
+Route::any('/admin/expense/pending', 'BillController@expensePending');
+
+
 #master
 Route::get('/admin/{master}/create', 'MasterController@mastercreate');
 Route::get('/admin/{master}/list', 'MasterController@masterlist');
@@ -62,15 +67,15 @@ Route::get('/admin/employee/absent', 'EmployeeController@absent');
 Route::get('/admin/employee/advance', 'EmployeeController@advance');
 Route::get('/admin/employee/overtime', 'EmployeeController@overtime');
 Route::any('/admin/employee/salary', 'EmployeeController@salary');
-Route::any('/admin/employee/subscription', 'EmployeeController@subscription');
-Route::any('/admin/employee/subscription/create', 'EmployeeController@subscriptioncreate');
+Route::any('/admin/bill/subscription', 'BillController@subscription');
+Route::any('/admin/bill/subscription/create', 'BillController@subscriptioncreate');
 Route::get('/admin/employee/salarydetail/{id}', 'EmployeeController@salarydetail');
 
 Route::post('/admin/employee/saveabsent', 'EmployeeController@saveabsent');
 Route::post('/admin/employee/saveadvance', 'EmployeeController@saveadvance');
 Route::post('/admin/employee/saveovertime', 'EmployeeController@saveovertime');
-Route::post('/admin/employee/subscriptionsave', 'EmployeeController@subscriptionsave');
-Route::post('/admin/employee/subscriptionupdatesave', 'EmployeeController@subscriptionupdatesave');
+Route::post('/admin/bill/subscriptionsave', 'BillController@subscriptionsave');
+Route::post('/admin/bill/subscriptionupdatesave', 'BillController@subscriptionupdatesave');
 
 #Company
 Route::post('/admin/company/save', 'MasterController@companysave');

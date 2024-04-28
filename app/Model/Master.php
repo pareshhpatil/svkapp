@@ -53,6 +53,15 @@ class Master extends Model
         return $retObj;
     }
 
+    public function getMasterValue($table, $column, $id,$value)
+    {
+        $retObj = DB::table($table)
+            ->select(DB::raw($value))
+            ->where($column, $id)
+            ->first();
+        return $retObj->{$value};
+    }
+
     public function deleteReccord($table, $column, $id, $user_id)
     {
         DB::table($table)
@@ -131,7 +140,7 @@ class Master extends Model
         );
         return $id;
     }
-    
+
 
     public function updateZone($request, $admin_id, $user_id)
     {
@@ -229,6 +238,25 @@ class Master extends Model
                 'gst_number' => $gst_number,
                 'address' => $address,
                 'join_date' => $join_date,
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+    public function savePaymentStatement($source_id, $from_id, $paid_date, $amount, $transaction_type, $type, $narrative, $user_id)
+    {
+        $id = DB::table('payment_statement')->insertGetId(
+            [
+                'source_id' => $source_id,
+                'from_id' => $from_id,
+                'paid_date' => $paid_date,
+                'amount' => $amount,
+                'transaction_type' => $transaction_type,
+                'type' => $type,
+                'narrative' => $narrative,
                 'created_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s'),
                 'last_update_by' => $user_id
@@ -461,9 +489,9 @@ class Master extends Model
             ->get();
         return $retObj;
     }
-	
-	
-	public function saveTransaction($request_id, $amount)
+
+
+    public function saveTransaction($request_id, $amount)
     {
         $id = DB::table('payment_transaction')->insertGetId(
             [
@@ -474,15 +502,15 @@ class Master extends Model
         );
         return $id;
     }
-	
-	  public function updateTransaction($id, $status, $referenceId, $utr,$json)
+
+    public function updateTransaction($id, $status, $referenceId, $utr, $json)
     {
         DB::table('payment_transaction')
             ->where('id', $id)
             ->update([
                 'status' => $status,
                 'referenceId' => $referenceId,
-				'json'=>$json,
+                'json' => $json,
                 'utr' => $utr
             ]);
     }

@@ -87,63 +87,7 @@
         @endisset
         <form action="/admin/logsheet/logsheetbillsave" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            @if(count($expense_list)>0)
-            <div class="panel panel-primary">
-                <div class="panel-body">
-                    <table id="example1" class="table table-bordered table-striped" style="text-align: center;">
-                        <thead>
-                            <tr>
-                                <th class="td-c">DATE</th>
-                                <th class="td-c">Category</th>
-                                <th class="td-c">Name</th>
-                                <th class="td-c">Note</th>
-                                <th class="td-c">Amount</th>
-                                <th class="td-c">Adjust Amt</th>
-                                <th class="td-c">Adjust?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($expense_list as $item)
-                            <tr>
-                                <td class="td-c">
-                                    {{ Carbon\Carbon::parse($item->date)->format('d/m/Y')}}
-                                </td>
-                                <td class="td-c">
-                                    {{$item->category}}
-                                </td>
-                                <td class="td-c">
-                                    {{$item->employee_name}}
-                                </td>
-                                <td class="td-c">
-                                    {{$item->note}}
-                                </td>
-                                <td class="td-c">
-                                    {{$item->pending_amount}}
-                                </td>
-                                <td class="td-c">
-                                    <input type="number" step="0.01" name="req_{{$item->request_id}}" max="{{$item->pending_amount}}" onchange="invexpense();" id="req_{{$item->request_id}}" value="{{$item->pending_amount}}" class="form-control input-sm">
-                                </td>
-                                <td class="td-c">
-                                    <input type="checkbox" name="rcheck[]" onchange="invexpense();" value="{{$item->request_id}}">
-                                </td>
-
-                            </tr>
-                            @endforeach
-
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="5"></th>
-
-                                <th class="td-c" id="total_expense">0.00</th>
-                                <th class="td-c"></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <!-- /.panel-body -->
-            </div>
-            @endif
+            
 
             <div class="panel panel-primary">
                 <div class="panel-body" style="overflow: auto;">
@@ -260,6 +204,11 @@
                                         <th><span class="pull-right">
                                                 <input type="text" name="work_order_no" value="{{$work_order_no}}" class="form-control"></span></th>
                                     </tr>
+                                    <tr>
+                                        <td colspan="4" style="vertical-align: middle;"><span class="pull-right"><b>PO Number</b></span></td>
+                                        <th><span class="pull-right">
+                                                <input type="text" name="po_number" value="{{$po_number}}" class="form-control"></span></th>
+                                    </tr>
 									<tr>
                                         <td colspan="4" style="vertical-align: middle;"><span class="pull-right"><b>Description</b></span></td>
                                         <th><span class="pull-right">
@@ -268,6 +217,64 @@
                                 </tbody>
 
                             </table>
+                            @if(count($expense_list)>0)
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <h4>Expense List</h4>
+                    <table id="example1" class="table table-bordered table-striped" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th class="td-c">DATE</th>
+                                <th class="td-c">Category</th>
+                                <th class="td-c">Name</th>
+                                <th class="td-c">Note</th>
+                                <th class="td-c">Amount</th>
+                                <th class="td-c">Adjust Amt</th>
+                                <th class="td-c">Adjust?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($expense_list as $item)
+                            <tr>
+                                <td class="td-c">
+                                    {{ Carbon\Carbon::parse($item->date)->format('d/m/Y')}}
+                                </td>
+                                <td class="td-c">
+                                    {{$item->category}}
+                                </td>
+                                <td class="td-c">
+                                    {{$item->employee_name}}
+                                </td>
+                                <td class="td-c">
+                                    {{$item->note}}
+                                </td>
+                                <td class="td-c">
+                                    {{$item->pending_amount}}
+                                </td>
+                                <td class="td-c">
+                                    <input type="number" step="0.01" name="req_{{$item->request_id}}" max="{{$item->pending_amount}}" onchange="invexpense();" id="req_{{$item->request_id}}" value="{{$item->pending_amount}}" class="form-control input-sm">
+                                </td>
+                                <td class="td-c">
+                                    <input type="checkbox" name="rcheck[]" onchange="invexpense();" value="{{$item->request_id}}">
+                                </td>
+
+                            </tr>
+                            @endforeach
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="5"></th>
+
+                                <th class="td-c" id="total_expense">0.00</th>
+                                <th class="td-c"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            @endif
                             <input type="hidden" name="invoice_id" value="{{$invoice_id}}">
                             <input type="hidden" name="vehicle_id" value="{{$vehicle_id}}">
                             <input type="hidden" name="company_id" value="{{$company_id}}">

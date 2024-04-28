@@ -71,6 +71,11 @@
                                             <p><b style="font-weight: bold;">Work Order No:</b>  {{$invoice->work_order_no}}</p>
                                         </div>
 										@endif
+										@if($invoice->po_number!='')
+										<div class="col-md-12" >
+                                            <p><b style="font-weight: bold;">PO Number:</b>  {{$invoice->po_number}}</p>
+                                        </div>
+										@endif
 										@if($company->company_id==34)
 											@php
 											$po='7000013922 & 7000022738';
@@ -78,9 +83,6 @@
 										@endif 
 										
 										@if($po!='' && $po!='a')
-										<div class="col-md-12" >
-                                            <p><b style="font-weight: bold;">PO Number :</b>  {{$po}}</p>
-                                        </div>
 										<div class="col-md-12" >
                                             <p><b style="font-weight: bold;">Currency :</b>  Indian rupee</p>
                                         </div>

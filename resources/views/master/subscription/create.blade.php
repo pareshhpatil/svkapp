@@ -3,14 +3,25 @@
 @section('content')
 <div class="row" id="insert">
     @isset($success_message)
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <strong>Success! </strong> {{$success_message}}
-        </div>
-        @endisset
-    <form action="/admin/employee/subscriptionsave" method="post" id="customerForm" enctype="multipart/form-data" class="form-horizontal">
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>Success! </strong> {{$success_message}}
+    </div>
+    @endisset
+    <form action="/admin/bill/subscriptionsave" method="post" id="customerForm" enctype="multipart/form-data" class="form-horizontal">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">Company<span class="required">* </span></label>
+                <div class="col-md-7">
+                    <select name="company_id" required class="form-control select2" data-placeholder="Select...">
+                        <option value="">Select company</option>
+                        @foreach ($company_list as $item)
+                        <option value="{{$item->company_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Employee name<span class="required">* </span></label>
                 <div class="col-md-7">
@@ -33,7 +44,22 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Day<span class="required">* </span></label>
+                <label class="control-label col-md-4">Category<span class="required"> *</span></label>
+                <div class="col-md-7">
+                    <select name="category" required class="form-control" data-placeholder="Select...">
+                        <option value="">Select category</option>
+                        <option value="Casual">Casual</option>
+                        <option value="Advance">Advance</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Vendor Package">Vendor Package</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Company">Company</option>
+                        <option value="Office Expnese">Office Expnese</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Monthly Day<span class="required">* </span></label>
                 <div class="col-md-7">
                     <input type="number" pattern="[0-9]*" name="day" value="5" class="form-control">
                 </div>

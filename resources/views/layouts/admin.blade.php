@@ -205,10 +205,7 @@
                                     <a href="/admin/employee/overtime">
                                         <i class="fa fa-circle-o"></i> Over Time</a>
                                 </li>
-                                <li>
-                                    <a href="/admin/employee/subscription">
-                                        <i class="fa fa-circle-o"></i> Subscription</a>
-                                </li>
+                                
                                 <!--
                                 <li>
                                     <a href="/admin/employee/salary">
@@ -269,6 +266,18 @@
                                 <li>
                                     <a href="/admin/paymentsource/creditlist">
                                         <i class="fa fa-circle-o"></i> Credit list</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/bill/subscription">
+                                        <i class="fa fa-circle-o"></i> Subscription</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/income/list">
+                                        <i class="fa fa-circle-o"></i> Income</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/expense/pending">
+                                        <i class="fa fa-circle-o"></i> Expense Adjust</a>
                                 </li>
 
                             </ul>

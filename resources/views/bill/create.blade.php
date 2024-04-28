@@ -3,14 +3,26 @@
 @section('content')
 <div class="row" id="insert">
     @isset($success_message)
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <strong>Success! </strong> {{$success_message}}
-        </div>
-        @endisset
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>Success! </strong> {{$success_message}}
+    </div>
+    @endisset
     <form action="/admin/bill/save" method="post" id="customerForm" class="form-horizontal">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
         <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">Company<span class="required">* </span></label>
+                <div class="col-md-7">
+                    <select name="company_id" required class="form-control select2" data-placeholder="Select...">
+                        <option value="">Select company</option>
+                        @foreach ($company_list as $item)
+                        <option value="{{$item->company_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Vendor<span class="required">* </span></label>
                 <div class="col-md-7">
@@ -33,7 +45,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="control-label col-md-4">Category<span class="required"> *</span></label>
                 <div class="col-md-7">
@@ -41,21 +52,22 @@
                         <option value="">Select category</option>
                         <option value="Casual">Casual</option>
                         <option value="Advance">Advance</option>
-						<option value="Salary">Salary</option>
-						<option value="Vendor Package">Vendor Package</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Vendor Package">Vendor Package</option>
                         <option value="Maintenance">Maintenance</option>
                         <option value="Company">Company</option>
                         <option value="Office Expnese">Office Expnese</option>
                     </select>
                 </div>
             </div>
-            
+
             <div class="form-group">
-                <label class="control-label col-md-4">Bill Date<span class="required"> </span></label>
+                <label class="control-label col-md-4">Payment Date<span class="required"> </span></label>
                 <div class="col-md-7">
-                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy" >
+                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy">
                 </div>
             </div>
+
 
             <div class="form-group">
                 <label class="control-label col-md-4">Amount<span class="required">* </span></label>
@@ -66,7 +78,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Remark<span class="required">* </span></label>
                 <div class="col-md-7">
-                    <input type="text" required id="remark" name="remark"   class="form-control" >
+                    <input type="text" required id="remark" name="remark" class="form-control">
                 </div>
             </div>
 
@@ -96,8 +108,8 @@
             <div class="form-group">
                 <div class="col-md-11 modal-footer">
                     <p id="loaded_n_total"></p>
-                    <a href="/admin/bill" class="btn btn-default pull-right" >Close</a>
-                    <button  type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
+                    <a href="/admin/bill" class="btn btn-default pull-right">Close</a>
+                    <button type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                 </div>
             </div>
         </div>

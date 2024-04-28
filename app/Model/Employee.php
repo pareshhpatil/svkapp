@@ -99,15 +99,7 @@ class Employee extends Model {
                 ->get();
         return $retObj;
     }
-    public function getEMPSubscriptionList($admin_id) {
-        $retObj = DB::table('subscription as a')
-                ->join('employee as ea', 'ea.employee_id', '=', 'a.employee_id')
-                ->select(DB::raw('a.*,ea.name as employee_name'))
-                ->where('a.admin_id', $admin_id)
-                ->where('a.is_active', 1)
-                ->get();
-        return $retObj;
-    }
+    
 
     public function saveSalary($employee_id, $salary_month, $salary_date, $salary_amount, $absent_amount, $advance_amount, $overtime_amount, $paid_amount, $absent_id, $advance_id, $overtime_id, $remark, $user_id, $admin_id) {
         $id = DB::table('salary')->insertGetId(
@@ -196,35 +188,7 @@ class Employee extends Model {
         ]);
     }
 
-    public function saveSubscription($employee_id,$type,  $mode,$repeat_every, $day, $amount, $note, $admin_id, $user_id) {
-        $id = DB::table('subscription')->insertGetId(
-                [
-                    'employee_id' => $employee_id,
-                    'mode' => $mode,
-                    'repeat_every' => $repeat_every,
-                    'type' => $type,
-                    'day' => $day,
-                    'amount' => $amount,
-                    'note' => $note,
-                    'admin_id' => $admin_id,
-                    'created_by' => $user_id,
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'last_update_by' => $user_id
-                ]
-        );
-        return $id;
-    }
-
-    public function updateSubscription($subscription_id, $day, $amount, $note, $user_id) {
-        DB::table('subscription')
-                ->where('subscription_id', $subscription_id)
-                ->update([
-                    'day' => $day,
-                    'amount' => $amount,
-                    'note' => $note,
-                    'last_update_by' => $user_id
-        ]);
-    }
+    
 
 
     public function getPassengers() {

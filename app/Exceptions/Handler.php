@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Log;
+use Throwable;
 class Handler extends ExceptionHandler
 {
 /**
@@ -30,8 +31,9 @@ protected $dontReport = [
  * @param  \Exception  $exception
  * @return void
  */
-public function report(Exception $exception)
+public function report(Throwable  $exception)
 {
+    dd($exception);
 //parent::report($exception);
 }
 
@@ -42,7 +44,7 @@ public function report(Exception $exception)
  * @param  \Exception  $exception
  * @return \Illuminate\Http\Response
  */
-public function render($request, Exception $exception)
+public function render($request, Throwable  $exception)
 {
     dd($exception);
 if($request->is('api/*')){

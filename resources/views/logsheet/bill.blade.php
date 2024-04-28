@@ -72,6 +72,11 @@
                                             <p><b>Work Order No:</b>  {{$invoice->work_order_no}}</p>
                                         </div>
 										@endif
+										@if($invoice->po_number!='')
+										<div class="col-md-12" >
+                                            <p><b>PO Number:</b>  {{$invoice->po_number}}</p>
+                                        </div>
+										@endif
 										
                                     </td>
                                 </tr>

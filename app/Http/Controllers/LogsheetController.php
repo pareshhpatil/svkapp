@@ -100,6 +100,7 @@ class LogsheetController extends Controller
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
         $data['work_order_no'] = $invoice->work_order_no;
+        $data['po_number'] = $invoice->po_number;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -120,21 +121,17 @@ class LogsheetController extends Controller
                 $extra_time = $total_time - 12;
                 if (substr($total_time, -2) == '.5') {
                     $total_time = substr($total_time, 0, -2) . ':30';
-                }
-				else if (substr($total_time, -2) == '75') {
+                } else if (substr($total_time, -2) == '75') {
                     $total_time = substr($total_time, 0, -3) . ':45';
-                }
-				else {
+                } else {
                     $total_time = $total_time . ':00';
                 }
 
                 if (substr($extra_time, -2) == '.5') {
                     $extra_time = substr($extra_time, 0, -2) . ':30';
-                } 
-				else if (substr($extra_time, -2) == '75') {
+                } else if (substr($extra_time, -2) == '75') {
                     $extra_time = substr($extra_time, 0, -3) . ':45';
-                }
-				else {
+                } else {
                     $extra_time = $extra_time . ':00';
                 }
                 $list[$int]->total_time = $total_time;
@@ -172,6 +169,7 @@ class LogsheetController extends Controller
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
         $data['work_order_no'] = $invoice->work_order_no;
+        $data['po_number'] = $invoice->po_number;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -209,30 +207,29 @@ class LogsheetController extends Controller
         $this->downloadlogsheet($link);
     }
 
-    public function downloadbill($link,$admin_id=0)
+    public function downloadbill($link, $admin_id = 0)
     {
-        if($admin_id>0)
-        {
-            $this->admin_id=$admin_id;
+        if ($admin_id > 0) {
+            $this->admin_id = $admin_id;
             $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
-            $data['company_name']=$admin->company_name;
-            $data['company_logo']='https://admin.svktrv.in/dist/img/1704035064.png';
-            $link=$link/1234;
-        }else
-        {
+            $data['company_name'] = $admin->company_name;
+            $data['company_logo'] = 'https://admin.svktrv.in/dist/img/1704035064.png';
+            $link = $link / 1234;
+        } else {
             $this->validateSession(array(1));
             $admin = $this->master_model->getMasterDetail('admin', 'admin_id', $this->admin_id);
         }
-        
+
         $id = $this->encrypt->decode($link);
         $invoice = $this->master_model->getMasterDetail('logsheet_invoice', 'invoice_id', $id);
         $logsheet_detail = $this->master_model->getMaster('logsheet_detail', $id, 'invoice_id');
-        
+
         $data['admin'] = $admin;
         $data['invoice'] = $invoice;
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
         $data['work_order_no'] = $invoice->work_order_no;
+        $data['po_number'] = $invoice->po_number;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -411,6 +408,7 @@ class LogsheetController extends Controller
         $data['vehicle_id'] = $invoice->vehicle_id;
         $data['company_id'] = $invoice->company_id;
         $data['work_order_no'] = $invoice->work_order_no;
+        $data['po_number'] = $invoice->po_number;
         $data['month'] = date('M-Y', strtotime($invoice->date));
         $date = $invoice->date;
 
@@ -475,22 +473,22 @@ class LogsheetController extends Controller
         $this->validateSession(array(1, 2));
         $date = date('Y-m-d', strtotime($request->date));
         $bill_date = date('Y-m-d', strtotime($request->bill_date));
-		
+
         if ($this->admin_id == 3) {
-            $toll = ($_POST['amount'][count($_POST['amount'])-1] > 0) ? $_POST['amount'][count($_POST['amount'])-1] : 0;
+            $toll = ($_POST['amount'][count($_POST['amount']) - 1] > 0) ? $_POST['amount'][count($_POST['amount']) - 1] : 0;
         } else {
-            $toll = ($_POST['amount'][count($_POST['amount'])-1] > 0) ? $_POST['amount'][count($_POST['amount'])-1] : 0;
+            $toll = ($_POST['amount'][count($_POST['amount']) - 1] > 0) ? $_POST['amount'][count($_POST['amount']) - 1] : 0;
         }
 
         if ($request->invoice_id > 0) {
             $invoice_id = $request->invoice_id;
-            $invoice_id = $this->logsheet_model->updateLogsheetInvoice($invoice_id, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $this->user_id, $this->admin_id);
+            $invoice_id = $this->logsheet_model->updateLogsheetInvoice($invoice_id, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $request->po_number, $this->user_id, $this->admin_id);
         } else {
             $invoice_number = $this->logsheet_model->getInvoiceNumber($request->invoice_seq);
-            $invoice_id = $this->logsheet_model->saveLogsheetInvoice($invoice_number, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $this->user_id, $this->admin_id);
+            $invoice_id = $this->logsheet_model->saveLogsheetInvoice($invoice_number, $request->vehicle_id, $request->company_id, $date, $bill_date, $request->cgst, $request->sgst, $request->igst, $request->total_gst, $request->base_total, $request->grand_total, $toll, $request->type, $request->work_order_no, $request->po_number, $this->user_id, $this->admin_id);
         }
-		
-		$this->master_model->updateTableColumn('logsheet_invoice', 'narrative', $_POST['narrative'], 'invoice_id', $invoice_id, $this->user_id);
+
+        $this->master_model->updateTableColumn('logsheet_invoice', 'narrative', $_POST['narrative'], 'invoice_id', $invoice_id, $this->user_id);
         $int = 0;
         foreach ($_POST['int'] as $row) {
             if ($_POST['detail_id'][$int] > 0) {
@@ -543,7 +541,8 @@ class LogsheetController extends Controller
         $id = 0;
         $data['admin_id'] = $this->admin_id;
         $data['work_order_no'] = '';
-		$data['narrative'] = '';
+        $data['po_number'] = '';
+        $data['narrative'] = '';
         if (isset($_POST['vehicle_id'])) {
             $data['vehicle_id'] = $_POST['vehicle_id'];
             $data['company_id'] = $_POST['company_id'];
@@ -554,7 +553,6 @@ class LogsheetController extends Controller
             $data['vehicle_id'] = 0;
             $data['company_id'] = 0;
             $data['month'] = '';
-			
         }
 
         if ($link != null) {
@@ -567,7 +565,8 @@ class LogsheetController extends Controller
             $data['vehicle_id'] = $invoice->vehicle_id;
             $data['company_id'] = $invoice->company_id;
             $data['work_order_no'] = $invoice->work_order_no;
-			$data['narrative'] = $invoice->narrative;
+            $data['po_number'] = $invoice->po_number;
+            $data['narrative'] = $invoice->narrative;
             $data['month'] = date('M-Y', strtotime($invoice->date));
             $date = $invoice->date;
         }
@@ -655,9 +654,9 @@ class LogsheetController extends Controller
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $company_list = $this->master_model->getMaster('company', $this->admin_id);
         $expense_list = array();
-        if ($link == null) {
+        if ($data['company_id'] > 0) {
             $bill_model = new Bill();
-            // $expense_list = $bill_model->getPendingRequest();
+            $expense_list = $bill_model->getPendingRequest($data['company_id'], $this->admin_id);
         }
         //dd($expense_list);
 
@@ -818,6 +817,7 @@ class LogsheetController extends Controller
         $data['admin_id'] = $this->admin_id;
         $data['user_id'] = $this->user_id;
         $data['work_order_no'] = '';
+        $data['po_number'] = '';
         if (isset($_POST['vehicle_id'])) {
             $data['vehicle_id'] = $_POST['vehicle_id'];
             $data['company_id'] = $_POST['company_id'];
@@ -840,6 +840,7 @@ class LogsheetController extends Controller
             $data['vehicle_id'] = $invoice->vehicle_id;
             $data['company_id'] = $invoice->company_id;
             $data['work_order_no'] = $invoice->work_order_no;
+            $data['po_number'] = $invoice->po_number;
             $data['month'] = date('M-Y', strtotime($invoice->date));
             $date = $invoice->date;
         }
@@ -914,7 +915,7 @@ class LogsheetController extends Controller
             $row['toll'] = $data['toll'][$key];
             $row['remark'] = $data['remark'][$key];
             $row['holiday'] = $data['holiday'][$key];
-            $this->saveLogsheetMonth($row,1);
+            $this->saveLogsheetMonth($row, 1);
         }
 
         $this->setSuccess('Logsheet Bill has been save successfully');
