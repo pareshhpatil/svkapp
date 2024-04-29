@@ -39,6 +39,7 @@
                         <option value="">Select mode</option>
                         <option value="Cash">Cash</option>
                         <option value="Cheque">Cheque</option>
+                        <option value="upi">UPI</option>
                         <option selected value="NEFT">NEFT</option>
                     </select>
                 </div>
