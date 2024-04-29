@@ -373,6 +373,7 @@ class BillController extends Controller
         $employee = $this->master_model->getMasterDetail('employee', 'employee_id', $request->employee_id);
 
         if ($request->source_id == 2) {
+            $mode = ($request->payment_mode == 'upi') ? 'upi' : 'neft';
             $transaction_id = $this->master_model->saveTransaction($request->bill_id, $request->amount);
 
 
@@ -396,7 +397,7 @@ class BillController extends Controller
 					  },
 					  "amount": ' . $request->amount . ',
 					  "transferId": "' . $transaction_id . '",
-					  "transferMode": "neft",
+					  "transferMode": "' . $mode . '",
 					  "remarks": "Payment"
 					}';
                 $data = $this->callapi('https://payout-api.cashfree.com/payout/v1.2/directTransfer', array(
