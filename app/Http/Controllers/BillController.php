@@ -373,7 +373,7 @@ class BillController extends Controller
         $employee = $this->master_model->getMasterDetail('employee', 'employee_id', $request->employee_id);
 
         if ($request->source_id == 2) {
-            $mode = ($request->payment_mode == 'upi') ? 'upi' : 'neft';
+            $mode = ($request->payment_mode == 'imps') ? 'imps' : 'neft';
             $transaction_id = $this->master_model->saveTransaction($request->bill_id, $request->amount);
 
 
