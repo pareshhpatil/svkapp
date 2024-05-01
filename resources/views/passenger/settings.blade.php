@@ -1,8 +1,4 @@
-@if (session('role_id')==2)
-@extends('layouts.staff')
-@else
 @extends('layouts.app')
-@endif
 @section('content')
 <script src="https://unpkg.com/vue-croppie/dist/vue-croppie.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/croppie/croppie.css">

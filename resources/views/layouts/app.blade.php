@@ -31,27 +31,37 @@
     </style>-->
 
     @if(Session::get('user_type')==4)
-<script>
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:3546413,hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
-@endif
+    <script>
+        (function(h, o, t, j, a, r) {
+            h.hj = h.hj || function() {
+                (h.hj.q = h.hj.q || []).push(arguments)
+            };
+            h._hjSettings = {
+                hjid: 3546413,
+                hjsv: 6
+            };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script');
+            r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+    @endif
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZW6G05662"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-PZW6G05662');
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PZW6G05662');
 </script>
+
 <body @isset($onload) onload="{{$onload}}" @endisset class="{{Session::get('mode')}}">
 
     <!-- loader -->
@@ -87,8 +97,8 @@
         </div>
         <div class="pageTitle">{{$title}}</div>
         <div class="right">
-        <a href="/dashboard" class="headerButton" style="color: #27173E;">
-        <ion-icon name='home-outline'></ion-icon>
+            <a href="/dashboard" class="headerButton" style="color: #27173E;">
+                <ion-icon name='home-outline'></ion-icon>
             </a>
         </div>
     </div>
@@ -105,6 +115,34 @@
     @if(Session::has('name'))
     @if(!isset($hide_menu))
     <div class="appBottomMenu">
+
+        @if (session('role_id')==2)
+        <a @if($menu==1) href="javascript:location.reload();" @else href="/staff/dashboard" @endif onclick="lod(true);" class="item @if($menu==1) active @endif">
+            <div class="col">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+            </div>
+        </a>
+        <a @if($menu==2) href="javascript:location.reload();" @else href="/staff/payment/pending" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
+            <div class="col">
+                <ion-icon name="card-outline"></ion-icon>
+                <strong>Pending</strong>
+            </div>
+        </a>
+        <a @if($menu==3) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
+            <div class="col">
+                <ion-icon name="cash-outline"></ion-icon>
+                <strong>Transactions</strong>
+            </div>
+        </a>
+
+        <a @if($menu==5) href="javascript:location.reload();" @else href="/settings" @endif onclick="lod(true);" class="item @if($menu==5) active @endif">
+            <div class="col">
+                <ion-icon name="settings-outline"></ion-icon>
+                <strong>Settings</strong>
+            </div>
+        </a>
+        @else
         <a @if($menu==1) href="javascript:location.reload();" @else href="/dashboard" @endif onclick="lod(true);" class="item @if($menu==1) active @endif">
             <div class="col">
                 <ion-icon name="home-outline"></ion-icon>
@@ -139,6 +177,7 @@
             </div>
         </a>
     </div>
+    @endif
     @endif
     @endif
 
@@ -345,8 +384,6 @@
                 localStorage.setItem("DownloadApp1", 0);
             }
         }
-
-        
     </script>
     @endif
     <script>
