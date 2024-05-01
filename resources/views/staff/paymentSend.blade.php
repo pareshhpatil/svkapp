@@ -146,7 +146,7 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label mb-1" for="password1">Date</label>
-                            <input type="date" value="{{$date}}" required style="text-align: left;" name="date" class="form-control" id="date" placeholder="Select Date">
+                            <input type="date" value="{{$date}}" required style="text-align: left;" name="date" class="form-control"  placeholder="Select Date">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
                                 </i>
