@@ -123,13 +123,13 @@
         </a>
         <a @if($menu==2) href="javascript:location.reload();" @else href="/staff/payment/pending" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
             <div class="col">
-                <ion-icon name="car-sport-outline"></ion-icon>
+                <ion-icon name="card-outline"></ion-icon>
                 <strong>Pending</strong>
             </div>
         </a>
         <a @if($menu==4) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==4) active @endif">
             <div class="col">
-                <ion-icon name="calendar-number-outline"></ion-icon>
+                <ion-icon name="cash-outline"></ion-icon>
                 <strong>Transactions</strong>
             </div>
         </a>
