@@ -88,7 +88,7 @@
             <div class="row mt-2">
                 <template>
                     <div class="col-6">
-                        <a href="/my-rides">
+                        <a href="/staff/payment/pending">
                             <div class="stat-box">
                                 <div class="title text-center">Total Pending </div>
                                 <div class="value text-warning text-center" v-html="data.total_pending"></div>
@@ -96,7 +96,7 @@
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="/my-rides/past">
+                        <a href="/staff/payment/transactions">
                             <div class="stat-box">
                                 <div class="title text-center">Total Transactions </div>
                                 <div class="value text-success text-center" v-html="data.total_transactions"></div>
