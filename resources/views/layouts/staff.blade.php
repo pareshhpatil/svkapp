@@ -127,7 +127,7 @@
                 <strong>Pending</strong>
             </div>
         </a>
-        <a @if($menu==3) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==4) active @endif">
+        <a @if($menu==3) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="cash-outline"></ion-icon>
                 <strong>Transactions</strong>
