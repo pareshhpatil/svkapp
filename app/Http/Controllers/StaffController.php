@@ -57,8 +57,8 @@ class StaffController extends Controller
         }
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
         $data['transaction_list'] = $bill_list;
-        $array['total_pending'] = $this->moneyFormatIndia($this->model->getPendingSum(Session::get('admin_id')),2);
-        $data['total_balance'] = $this->moneyFormatIndia($this->model->getSourceBalance(json_decode($user_access['payment_source'])),2);
+        $array['total_pending'] = $this->moneyFormatIndia($this->model->getPendingSum(Session::get('admin_id')), 2);
+        $data['total_balance'] = $this->moneyFormatIndia($this->model->getSourceBalance(json_decode($user_access['payment_source'])), 2);
         $array['total_transactions'] = $this->moneyFormatIndia($amount, 2);
         $data['data'] = $array;
         return view('staff.dashboard', $data);
@@ -128,10 +128,11 @@ class StaffController extends Controller
         $data['detail'] = $detail;
         $data['date'] = date('Y-m-d');
         $data['data'] = [];
-        if ($this->payment_source == null) {
+        $payment_source = json_decode($user_access['payment_source']);
+        if ($payment_source == null) {
             $data['paymentsource'] = $this->model->getTableList('paymentsource', 'admin_id', Session::get('admin_id'), 'paymentsource_id,name,balance');
         } else {
-            $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $this->payment_source, 'paymentsource_id,name,balance');
+            $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $payment_source, 'paymentsource_id,name,balance');
         }
         $data['payment_modes'] = json_decode($user_access['payment_modes'], 1);
         return view('staff.paymentDetail', $data);
@@ -139,18 +140,21 @@ class StaffController extends Controller
 
     public function paymentSend()
     {
+        $user_access = Session::get('user_access');
         $data['menu'] = 0;
         $data['title'] = 'Payment transfer';
+        $payment_source = json_decode($user_access['payment_source']);
+        $company_access = json_decode($user_access['company_access']);
         $data['employees'] = $this->model->getTableList('employee', 'admin_id', Session::get('admin_id'), 'employee_id,name');
-        if ($this->company_access == null) {
+        if ($company_access == '') {
             $data['companies'] = $this->model->getTableList('company', 'admin_id', Session::get('admin_id'), 'company_id,name');
         } else {
-            $data['companies'] = $this->model->getTableListInArray('company', 'company_id', $this->company_access, 'company_id,name');
+            $data['companies'] = $this->model->getTableListInArray('company', 'company_id', $company_access, 'company_id,name');
         }
-        if ($this->payment_source == null) {
+        if ($payment_source == null) {
             $data['paymentsource'] = $this->model->getTableList('paymentsource', 'admin_id', Session::get('admin_id'), 'paymentsource_id,name,balance');
         } else {
-            $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $this->payment_source, 'paymentsource_id,name,balance');
+            $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $payment_source, 'paymentsource_id,name,balance');
         }
         $user_access = Session::get('user_access');
 
