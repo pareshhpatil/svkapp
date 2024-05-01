@@ -205,7 +205,7 @@ class StaffModel extends ParentModel
         } else {
             $current_balance = $current_balance + $amount;
         }
-        $this->updateTable('paymentsource', 'balance', $current_balance, 'paymentsource_id', $source_id);
+        $this->updateTable('paymentsource', 'paymentsource_id', $source_id, 'balance', $current_balance);
     }
 
 
