@@ -177,6 +177,8 @@ class LoginController extends Controller
             Auth::loginUsingId($data->user_id, true);
             $user = Auth::user();
             Session::put('user_id', $user->id);
+            Session::put('admin_id', $user->admin_id);
+            Session::put('role_id', $user->role_id);
             Session::put('user_type', $user->user_type);
             Session::put('name', $user->name);
             Session::put('email', $user->email);
@@ -186,6 +188,12 @@ class LoginController extends Controller
             Session::put('gender', $user->gender);
             Session::put('token', $user->token);
             Session::put('show_ad', $user->show_ad);
+            if ($user->role_id == 2) {
+                $user_access = $model->getTableRow('user_access', 'user_id',  $user->id);
+                if ($user_access != false) {
+                    Session::put('user_access', json_decode(json_encode($user_access), 1));
+                }
+            }
             if ($user->dark_mode == 1) {
                 Session::put('mode', 'dark-mode');
             } else {
@@ -195,7 +203,10 @@ class LoginController extends Controller
                 $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
             }
             Session::put('icon', $user->icon);
-            return redirect('/demo');
+            if ($user->role_id == 2) {
+                return redirect('staff/dashboard');
+            }
+            return redirect('/dashboard');
         } else {
             return back()->withErrors([
                 'otp' => 'Invalid OTP please try again',

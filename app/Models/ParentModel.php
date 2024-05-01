@@ -150,6 +150,18 @@ class ParentModel extends Model
             ->get();
         return $retObj;
     }
+
+    public function getTableListInArray($table, $where, $value, $col = '*')
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw($col))
+            ->where('is_active', 1)
+            ->whereIn($where, $value)
+            ->get();
+        return $retObj;
+    }
+
     public function getTableListOrderby($table, $where, $value, $orderby, $idcol = 'id')
     {
 
