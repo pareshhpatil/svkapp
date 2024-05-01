@@ -55,10 +55,12 @@ class StaffController extends Controller
             $bill_list[$int]->amount = $this->moneyFormatIndia($item->{'amount'}, 2);
             $int++;
         }
+        $pending_amount = $this->model->getPendingSum(Session::get('admin_id'));
+        $balance_amount = $this->model->getSourceBalance(json_decode($user_access['payment_source']));
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
         $data['transaction_list'] = $bill_list;
-        $array['total_pending'] = $this->moneyFormatIndia($this->model->getPendingSum(Session::get('admin_id')), 2);
-        $data['total_balance'] = $this->moneyFormatIndia($this->model->getSourceBalance(json_decode($user_access['payment_source'])), 2);
+        $array['total_pending'] = $this->moneyFormatIndia($pending_amount, 2);
+        $data['total_balance'] = $this->moneyFormatIndia($balance_amount, 2);
         $array['total_transactions'] = $this->moneyFormatIndia($amount, 2);
         $data['data'] = $array;
         $data['menu'] = 1;
