@@ -70,7 +70,7 @@
                         </a>
                     </div>
                     <div class="item">
-                        <a href="app-cards.html">
+                        <a href="/staff/payment/transactions">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="card-outline" role="img" class="md hydrated" aria-label="card outline"></ion-icon>
                             </div>
