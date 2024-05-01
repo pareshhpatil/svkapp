@@ -61,6 +61,7 @@ class StaffController extends Controller
         $data['total_balance'] = $this->moneyFormatIndia($this->model->getSourceBalance(json_decode($user_access['payment_source'])), 2);
         $array['total_transactions'] = $this->moneyFormatIndia($amount, 2);
         $data['data'] = $array;
+        $data['menu'] = 1;
         return view('staff.dashboard', $data);
     }
 
@@ -99,6 +100,7 @@ class StaffController extends Controller
         $data['list'] = $bill_list;
         $data['date'] = date('Y-m-d');
         $data['data'] = [];
+        $data['menu'] = 2;
         return view('staff.paymentPending', $data);
     }
     public function transactions()
@@ -117,6 +119,7 @@ class StaffController extends Controller
         $data['list'] = $bill_list;
         $data['date'] = date('Y-m-d');
         $data['data'] = [];
+        $data['menu'] = 3;
         return view('staff.paymentTransaction', $data);
     }
     public function paymentDetail($id)

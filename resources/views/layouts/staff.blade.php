@@ -130,7 +130,7 @@
         <a @if($menu==4) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==4) active @endif">
             <div class="col">
                 <ion-icon name="calendar-number-outline"></ion-icon>
-                <strong>Calendar</strong>
+                <strong>Transactions</strong>
             </div>
         </a>
 
