@@ -108,6 +108,7 @@ class StaffModel extends ParentModel
                 'payment_mode' => $payment_mode,
                 'source_id' => $source_id,
                 'amount' => $amount,
+                'last_update_by' => $user_id,
                 'paid_date' => $date
             ]);
     }
@@ -170,7 +171,7 @@ class StaffModel extends ParentModel
             ->where('a.is_active', 1)
             ->where('a.status', 1)
             ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name,p.name as payment_source"))
-            ->orderBy('a.transaction_id', 'desc')
+            ->orderBy('a.last_update_date', 'desc')
             ->get();
         return $retObj;
     }

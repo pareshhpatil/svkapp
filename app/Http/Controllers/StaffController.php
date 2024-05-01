@@ -203,7 +203,7 @@ class StaffController extends Controller
 
     public function paymentsave(Request $request, $return = 0)
     {
-        $this->user_id = Session::get('user_id');
+        $user_id = Session::get('user_id');
         $transaction = $this->model->getTableRow('transaction', 'transaction_id', $request->bill_id);
         $narrative = $transaction->narrative;
         if ($transaction->status != 0) {
@@ -269,7 +269,7 @@ class StaffController extends Controller
             }
         }
         if ($success == true) {
-            $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $this->user_id);
+            $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id);
 
             $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
             $this->model->updateBankBalance($request->amount, $request->source_id);
