@@ -37,6 +37,9 @@ class HomeController extends Controller
     public function index()
     {
 
+        if (Session::get('role_id') == 2) {
+            return redirect('staff/dashboard');
+        }
         $data['menu'] = 1;
         $data['title'] = 'dashboard';
         if (Session::get('user_type') == 5) {
