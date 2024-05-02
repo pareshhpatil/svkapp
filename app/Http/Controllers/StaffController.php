@@ -56,6 +56,7 @@ class StaffController extends Controller
             $bill_list[$int]->amount = $this->moneyFormatIndia($item->{'amount'}, 2);
             $int++;
         }
+
         $pending_amount = $this->model->getPendingSum(Session::get('admin_id'));
         $balance_amount = $this->model->getSourceBalance(json_decode($user_access['payment_source']));
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
