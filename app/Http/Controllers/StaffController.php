@@ -223,8 +223,8 @@ class StaffController extends Controller
         $success = true;
         $date = date('Y-m-d', strtotime($request->date));
         $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
-
-        if ($request->source_id == 2) {
+        $cashfree_source = array(2, 18, 19, 20, 21);
+        if (in_array($request->source_id, $cashfree_source)) {
             $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
             $transaction_id = $this->model->savePaymentTransaction($request->bill_id, $request->amount);
 
