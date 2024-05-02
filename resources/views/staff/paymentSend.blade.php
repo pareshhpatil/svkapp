@@ -166,7 +166,7 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="password3">Remark</label>
-                            <input type="text" class="form-control" name="remark" autocomplete="off" placeholder="Remark">
+                            <input type="text" class="form-control" required name="remark" autocomplete="off" placeholder="Remark">
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
                             </i>
