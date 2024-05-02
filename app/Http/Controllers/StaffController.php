@@ -220,12 +220,14 @@ class StaffController extends Controller
             exit;
         }
 
+        $fee = 0;
         $success = true;
         $date = date('Y-m-d', strtotime($request->date));
         $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
         $cashfree_source = array(2, 18, 19, 20, 21);
         if (in_array($request->source_id, $cashfree_source)) {
             $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
+            $fee = ($request->payment_mode == 'IMPS') ? 5.9 : 1.77;
             $transaction_id = $this->model->savePaymentTransaction($request->bill_id, $request->amount);
 
 
@@ -280,8 +282,8 @@ class StaffController extends Controller
             $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id);
 
             $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
-            $this->model->updateBankBalance($request->amount, $request->source_id, 1);
-            $this->model->savePaymentStatement($request->source_id, $request->bill_id, $date, $request->amount, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
+            $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
+            $this->model->savePaymentStatement($request->source_id, $request->bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
             if ($return == 0) {
                 return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
             }
