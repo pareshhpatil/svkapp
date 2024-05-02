@@ -43,7 +43,8 @@ class StaffController extends Controller
 
     public function dashboard()
     {
-        $user_access = Session::get('user_access');
+        $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
+        $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
         $data['title'] = 'dashboard';
 
@@ -126,7 +127,8 @@ class StaffController extends Controller
     }
     public function paymentDetail($id)
     {
-        $user_access = Session::get('user_access');
+        $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
+        $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
         $data['title'] = 'Payment detail';
         $detail = $this->model->getBillDetail($id);
@@ -145,7 +147,8 @@ class StaffController extends Controller
 
     public function paymentSend()
     {
-        $user_access = Session::get('user_access');
+        $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
+        $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
         $data['title'] = 'Payment transfer';
         $payment_source = json_decode($user_access['payment_source']);
@@ -161,7 +164,6 @@ class StaffController extends Controller
         } else {
             $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $payment_source, 'paymentsource_id,name,balance');
         }
-        $user_access = Session::get('user_access');
 
         $data['category'] = (Session::has('category')) ? Session::has('category') : '';
         $data['company_id'] = (Session::has('company_id')) ? Session::has('company_id') : '';
