@@ -73,7 +73,7 @@
                     <div class="transactions">
                         <!-- item -->
                         @foreach($list as $v)
-                        <a href="#" class="item">
+                        <a href="/staff/transaction/detail/{{$v->transaction_id}}" class="item">
                             <div class="detail">
                                 <div>
                                     <strong>{{$v->name}}</strong>

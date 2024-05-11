@@ -124,6 +124,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('staff/payment/requestPaymentSave', [App\Http\Controllers\StaffController::class, 'requestPaymentSave'])->name('paymentsave');
     Route::post('staff/payment/requestsave', [App\Http\Controllers\StaffController::class, 'requestsave'])->name('requestsave');
     Route::get('staff/payment/transactions', [App\Http\Controllers\StaffController::class, 'transactions'])->name('transactions');
+    Route::get('staff/transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'transactionDetail'])->name('transactionDetail');
 });
 
 if (env('APP_ENV') != 'local') {

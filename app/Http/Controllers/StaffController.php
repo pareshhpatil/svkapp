@@ -148,6 +148,18 @@ class StaffController extends Controller
         return view('staff.paymentDetail', $data);
     }
 
+    public function transactionDetail($id)
+    {
+        $transaction = $this->model->getTableRow('transaction', 'transaction_id',  $id);
+        $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
+        $data['menu'] = 3;
+        $data['title'] = 'Payment detail';
+        $data['transaction'] = $transaction;
+        $data['employee'] = $employee;
+
+        return view('staff.transactionDetail', $data);
+    }
+
     public function paymentSend()
     {
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
