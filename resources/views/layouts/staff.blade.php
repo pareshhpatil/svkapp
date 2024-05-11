@@ -121,12 +121,21 @@
                 <strong>Home</strong>
             </div>
         </a>
+        @if(Session::get('user_type')==1)
         <a @if($menu==2) href="javascript:location.reload();" @else href="/staff/payment/pending" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
             <div class="col">
                 <ion-icon name="card-outline"></ion-icon>
                 <strong>Pending</strong>
             </div>
         </a>
+        @else
+        <a @if($menu==4) href="javascript:location.reload();" @else href="/staff/payment/send" @endif onclick="lod(true);" class="item @if($menu==2) active @endif">
+            <div class="col">
+                <ion-icon name="card-outline"></ion-icon>
+                <strong>Payment</strong>
+            </div>
+        </a>
+        @endif
         <a @if($menu==3) href="javascript:location.reload();" @else href="/staff/payment/transactions" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="cash-outline"></ion-icon>

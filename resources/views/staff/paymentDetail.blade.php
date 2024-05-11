@@ -69,7 +69,7 @@
                     {{ session()->get('success') }}
                 </div>
                 @endif
-                <form action="/staff/payment/paymentsave" method="post" id="frm-book">
+                <form action="/staff/payment/paymentsave" onsubmit="lod(true)" method="post" id="frm-book">
                     @csrf
 
                     <div class="form-group basic">

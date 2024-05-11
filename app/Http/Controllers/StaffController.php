@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
 use App\Models\StaffModel;
+use Spatie\Browsershot\Browsershot;
+
 
 class StaffController extends Controller
 {
@@ -150,7 +152,7 @@ class StaffController extends Controller
     {
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
-        $data['menu'] = 0;
+        $data['menu'] = 4;
         $data['title'] = 'Payment transfer';
         $payment_source = json_decode($user_access['payment_source']);
         $company_access = json_decode($user_access['company_access']);
