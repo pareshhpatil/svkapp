@@ -82,7 +82,14 @@
                                 </div>
                             </div>
                             <div class="right">
+                                @if($v->status==2)
+                                <div class="price text-danger">{{$v->amount}}
+                                    <br>Failed
+                                </div>
+
+                                @else
                                 <div class="price text-success">{{$v->amount}}</div>
+                                @endif
                             </div>
                         </a>
                         @endforeach
