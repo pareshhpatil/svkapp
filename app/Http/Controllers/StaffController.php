@@ -151,7 +151,7 @@ class StaffController extends Controller
     public function transactionDetail($id)
     {
         $transaction = $this->model->getTableRow('transaction', 'transaction_id',  $id);
-        $reason = $this->model->getColumnValue('payment_transaction', 'request_id',$transaction->transaction_id , 'message', [],  'id');
+        $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
         $data['reason'] = (isset($reason)) ? $reason : '';
         $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
         $data['menu'] = 3;
@@ -241,6 +241,12 @@ class StaffController extends Controller
         $date = date('Y-m-d', strtotime($request->date));
         $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
         $cashfree_source = array(2, 18, 19, 20, 21);
+        $balance = $this->model->getColumnValue('paymentsource', 'paymentsource_id', $request->source_id, 'balance');
+        if ($balance < $request->amount) {
+            $this->setSuccess('Balance not available');
+            header('Location: /staff/payment/send');
+            exit;
+        }
         if (in_array($request->source_id, $cashfree_source)) {
             $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
             $fee = ($request->payment_mode == 'IMPS') ? 5.9 : 1.77;
