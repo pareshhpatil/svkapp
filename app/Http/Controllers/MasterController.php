@@ -110,7 +110,11 @@ class MasterController extends Controller
     public function masterdelete($master, $link)
     {
         $id = $this->encrypt->decode($link);
-        $this->master_model->deleteReccord($master, $master . '_id', $id, $this->user_id);
+        if ($master == 'logsheet_invoice') {
+            $this->master_model->deleteReccord($master, 'invoice_id', $id, $this->user_id);
+        } else {
+            $this->master_model->deleteReccord($master, $master . '_id', $id, $this->user_id);
+        }
         $this->setSuccess(ucfirst($master) . ' has been deleted successfully');
         if ($master == 'salary') {
             header('Location: /admin/employee/salary');
@@ -118,6 +122,8 @@ class MasterController extends Controller
             header('Location: /admin/bill/new');
         } else if ($master == 'subscription') {
             header('Location: /admin/bill/subscription');
+        } else if ($master == 'logsheet_invoice') {
+            header('Location: /admin/logsheet');
         } else {
             header('Location: /admin/' . $master . '/list');
         }

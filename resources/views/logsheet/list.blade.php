@@ -22,7 +22,7 @@
                             <th>Bill date </th>
                             <th>GST </th>
                             <th>Total Amount </th>
-                            <th style="width: 80px;">Action </th>
+                            <th style="width: 130px;">Action </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +42,8 @@
                                 <a target="_BLANK" href="/admin/logsheet/printbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-file-word-o"></i></a>
                                 <a target="_BLANK" href="/admin/logsheet/downloadbill/{{$item->link}}" class="btn btn-xs btn-primary"><i class="fa fa-download"></i></a>
                                 <a href="/admin/logsheet/generatebill/{{$item->link}}" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></a>
+                                <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/logsheet_invoice/delete/{{$item->link}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+
                             </td>
                         </tr>
                         @endforeach
@@ -217,6 +219,28 @@
     <!-- /.col-lg-12 -->
 </div>
 
+
+
+<div class="modal modal-danger fade" id="modal-danger">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Invoice</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you would not like to use this invoice in the future?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>
+                <a id="deleteanchor" href="" class="btn btn-outline">Delete</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <div class="modal fade" id="modal-confirm">
     <div class="modal-dialog">
         <div class="modal-content">
