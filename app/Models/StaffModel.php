@@ -169,7 +169,7 @@ class StaffModel extends ParentModel
                     ->orWhere('a.created_by', $last_update_by);
             })
             ->where('a.is_active', 1)
-            ->whereIne('a.status', [1,2])
+            ->whereIn('a.status', [1,2])
             ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name,p.name as payment_source"))
             ->orderBy('a.last_update_date', 'desc')
             ->get();
