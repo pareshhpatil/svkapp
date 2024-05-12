@@ -232,8 +232,7 @@ class StaffController extends Controller
         $narrative = $transaction->narrative;
         if ($transaction->status != 0) {
             $this->setSuccess('Transaction Already paid');
-            header('Location: /staff/payment/transactions');
-            exit;
+            return redirect('/staff/payment/send')->withSuccess('Transaction Already paid');
         }
 
         $fee = 0;
@@ -243,9 +242,7 @@ class StaffController extends Controller
         $cashfree_source = array(2, 18, 19, 20, 21);
         $balance = $this->model->getColumnValue('paymentsource', 'paymentsource_id', $request->source_id, 'balance');
         if ($balance < $request->amount) {
-            $this->setSuccess('Balance not available');
-            header('Location: /staff/payment/send');
-            exit;
+            return redirect('/staff/payment/send')->withSuccess('Balance not available');
         }
         if (in_array($request->source_id, $cashfree_source)) {
             $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
