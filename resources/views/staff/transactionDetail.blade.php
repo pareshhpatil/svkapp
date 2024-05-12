@@ -83,11 +83,11 @@
         @if($transaction->status==2)
             <li>
                 <strong>Status</strong>
-                <span class="text-success">Failed</span>
+                <span class="text-danger">Failed</span>
             </li>
             <li>
                 <strong>Reason</strong>
-                <span class="text-success">{{$reason}}</span>
+                <span >{{$reason}}</span>
             </li>
             @else
             <li>
