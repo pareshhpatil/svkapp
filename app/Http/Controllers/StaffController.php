@@ -151,6 +151,8 @@ class StaffController extends Controller
     public function transactionDetail($id)
     {
         $transaction = $this->model->getTableRow('transaction', 'transaction_id',  $id);
+        $payment = $this->model->getTableRow('payment_transaction', 'request_id',  $transaction->transaction_id);
+        $data['reason'] = (isset($payment->message)) ? $payment->message : '';
         $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
         $data['menu'] = 3;
         $data['title'] = 'Payment detail';

@@ -59,7 +59,16 @@
 
     <div class="section mt-2 mb-2">
 
-
+        @if($transaction->status==2)
+        <div class="listed-detail mt-3">
+            <div class="icon-wrapper">
+                <div class="iconbox">
+                    <ion-icon name="arrow-forward-outline" role="img" class="md hydrated" aria-label="arrow forward outline"></ion-icon>
+                </div>
+            </div>
+            <h3 class="text-center mt-2">Payment Failed</h3>
+        </div>
+        @else
         <div class="listed-detail mt-3">
             <div class="icon-wrapper">
                 <div class="iconbox" style="background: green;">
@@ -68,12 +77,24 @@
             </div>
             <h3 class="text-center mt-2">Payment Sent</h3>
         </div>
+        @endif
 
         <ul class="listview flush transparent simple-listview no-space mt-3">
+        @if($transaction->status==2)
+            <li>
+                <strong>Status</strong>
+                <span class="text-success">Failed</span>
+            </li>
+            <li>
+                <strong>Reason</strong>
+                <span class="text-success">{{$reason}}</span>
+            </li>
+            @else
             <li>
                 <strong>Status</strong>
                 <span class="text-success">Success</span>
             </li>
+            @endif
             <li>
                 <strong>To</strong>
                 <span>{{$employee->account_holder_name}}</span>
