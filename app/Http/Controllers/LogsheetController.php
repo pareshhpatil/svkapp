@@ -889,7 +889,7 @@ class LogsheetController extends Controller
         $expense_list = array();
         if ($link == null) {
             $bill_model = new Bill();
-            $expense_list = $bill_model->getPendingRequest();
+            $expense_list = $bill_model->getPendingRequest(0,$this->admin_id);
         }
 
         $data['title'] = 'Generate Monthly Logsheet';
