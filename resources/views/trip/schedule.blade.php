@@ -61,7 +61,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Vehicle<span class="required">* </span></label>
                 <div class="col-md-7">
-                    <select name="vehicle_id" required class="form-control" data-placeholder="Select...">
+                    <select name="vehicle_id" required class="form-control select2" data-placeholder="Select...">
                         <option value="">Select vehicle</option>
                         @foreach ($vehicle_list as $item)
                         <option value="{{$item->vehicle_id}}">{{$item->name}}</option>
@@ -73,7 +73,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Driver<span class="required">* </span></label>
                 <div class="col-md-7">
-                    <select name="employee_id" required class="form-control" data-placeholder="Select...">
+                    <select name="employee_id" required class="form-control select2" data-placeholder="Select...">
                         <option value="">Select Driver</option>
                         @foreach ($employee_list as $item)
                         <option value="{{$item->employee_id}}">{{$item->name}}</option>

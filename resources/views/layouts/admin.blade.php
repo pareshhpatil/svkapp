@@ -138,6 +138,25 @@
 
                             </ul>
                         </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs"></i> <span>Casual</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/trip/add">
+                                        <i class="fa fa-circle-o"></i> Create</a>
+                                </li>
+                                <li>
+                                    <a href="/trip/list/all">
+                                        <i class="fa fa-circle-o"></i> List</a>
+                                </li>
+                                
+                            </ul>
+                        </li>
                         @endif
                         <li class="treeview">
                             <a href="#">

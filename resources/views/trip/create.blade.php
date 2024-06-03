@@ -6,18 +6,28 @@
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="col-md-6">
             <div class="form-group">
+                <label class="control-label col-md-4">Company<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <select name="company_id" class="form-control select2">
+                        @foreach ($company_list as $item)
+                        <option value="{{$item->company_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-4">Vehicle type<span class="required"> </span></label>
                 <div class="col-md-7">
                     <select name="vehicle_type" class="form-control">
-                        <option value="Sedane">Sedane (Swift)</option>
-                        <option value="SUV">SUV (Inova)</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Date <span class="required">*</span></label>
                 <div class="col-md-7">
-                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy" >
+                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy">
                 </div>
             </div>
             <div class="form-group">

@@ -24,6 +24,7 @@ class Trip extends Model {
                 [
                     'vehicle_type' => $data['vehicle_type'],
                     'date' => $data['date'],
+                    'company_id' => $data['company_id'],
                     'time' => $data['pickup_time'],
                     'total_passengers' => $data['total_passengers'],
                     'passengers' => $data['passengers'],
@@ -58,6 +59,7 @@ class Trip extends Model {
                 [
                     'employee_id' => $data['employee_id'],
                     'vehicle_id' => $data['vehicle_id'],
+                    'company_id' => $data['company_id'],
                     'date' => $data['date'],
                     'time' => $data['time'],
                     'total_passengers' => $data['total_passengers'],

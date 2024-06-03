@@ -141,7 +141,7 @@ class BillController extends Controller
         }
 
         $invoice_list = [];
-        $expense_list = $this->bill_model->getPendingRequest(0, $this->admin_id);
+        $expense_list = $this->bill_model->getPendingRequest($company_id, $this->admin_id);
         $data['title'] = 'Pending Expense List';
         $data['expense_list'] = $expense_list;
         $company_list = $this->master_model->getMaster('company', $this->admin_id);
