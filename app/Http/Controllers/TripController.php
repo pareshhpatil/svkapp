@@ -152,6 +152,21 @@ class TripController extends Controller
         return view('trip.schedule', $data);
     }
 
+    public function complete($link)
+    {
+        $this->validateSession(array(1, 4));
+        $id = $this->encrypt->decode($link);
+        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id, 'admin_id');
+        $employee_list = $this->master_model->getMaster('employee', $this->admin_id, 'admin_id');
+        $detail = $this->master_model->getMasterDetail('trip_request', 'req_id', $id);
+        $data['vehicle_list'] = $vehicle_list;
+        $data['employee_list'] = $employee_list;
+        $data['det'] = $detail;
+        $data['req_id'] = $id;
+        $data['title'] = 'Trip Schedule';
+        return view('trip.schedule', $data);
+    }
+
     public function review($link)
     {
         $data['login_type'] = '';
@@ -189,7 +204,7 @@ class TripController extends Controller
         $short_url = $this->master_model->getShortUrl($long_url);
         $sms = "Trip Assigned for " . $detail->passengers . " on " . date('d M Y', strtotime($detail->date)) . ' ' . date('h:i A', strtotime($detail->time)) . " Pickup from " . $detail->pickup_location . " " . $short_url;
         foreach ($this->tripAsignMobile as $mobile) {
-           // $this->sms_send($mobile, $sms);
+            // $this->sms_send($mobile, $sms);
         }
         $this->master_model->updateTableColumn('trip_request', 'trip_id', $trip_id, 'req_id', $_POST['req_id'], $this->user_id);
         $this->master_model->updateTableColumn('trip_request', 'status', 'Assigned', 'req_id', $_POST['req_id'], $this->user_id);

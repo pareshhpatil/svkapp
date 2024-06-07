@@ -98,7 +98,7 @@
 
                         <div class="col-md-12">
                             <table class="table table-bordered" id="particular_table" style="font-size: 12px !important;color: black !important;">
-                                <tbody style="">
+                                
                                     <tr>
                                         <th class="td-c">Particulars</th>
                                         <th class="td-c">Unit</th>
@@ -108,7 +108,19 @@
 										<th class="td-c"><a href="javascript:void(0)" class="btn btn-sm success" onclick="addRow()"><i class="fa fa-plus"> </i></a></th>
                                     </tr>
                                     @php($int=1)
+                                    @php($body_closed=0)
+                                    <tbody id="abc">
                                     @foreach($logsheet_detail as $det)
+                                    @if($det['is_deduct']==1)
+                                    </tbody>
+                                    @php($body_closed=1)
+                                    @endif
+
+                                    @if($det['particular_name']=='Toll /Parking' && $body_closed==0)
+                                    </tbody>
+                                    @php($body_closed=1)
+
+                                    @endif
 										@if($invoice_id==0 && $int==5  && Session::get('admin_id')!=8)
 											<tr>
                                         <td class="td-c"><input type="text" class="form-control" value="{{$det['particular_name']}}" name="particular_name[]"> </td>
@@ -124,7 +136,6 @@
 										<a  href="javascript:;" onclick="$(this).closest('tr').remove();calculateLogsheet();"  data-confirm="Are you sure to delete this item?" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a>
 										</td>
                                     </tr>
-									</tbody>
 											
 									@else
                                     <tr>
@@ -141,12 +152,19 @@
 											<a  href="javascript:;" onclick="$(this).closest('tr').remove();calculateLogsheet();"  data-confirm="Are you sure to delete this item?" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a>
 										</td>
                                     </tr>
+                                    
 									@endif
                                     @php($int++)
                                     @endforeach
+                                    @if($body_closed==0)
+                                    </tbody>
+                                    @endif
+
 									@if($int==7)
 									
 									@endif
+                                   
+
 									
                                     <tr>
                                         <td class="td-c"><input type="hidden" id="countRow" value="{{$int}}"></td>
@@ -214,7 +232,6 @@
                                         <th><span class="pull-right">
                                                 <input type="text" name="narrative" value="{{$narrative}}" class="form-control"></span></th>
                                     </tr>
-                                </tbody>
 
                             </table>
                             @if(count($expense_list)>0)
@@ -296,7 +313,7 @@
 		{
 			count=Number(document.getElementById("countRow").value);
 			count=count+1;
-		$('#particular_table').find('tbody').append('<tr><td class="td-c"><input type="text" class="form-control" value="" name="particular_name[]"> </td><td class="td-c"><input type="text" class="form-control" name="unit[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="qty'+count+'" name="qty[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="rate'+count+'" name="rate[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt'+count+'" name="amount[]" onblur="calculateLogsheet();" value=""><input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct'+count+'" value="0"><input type="hidden" class="form-control" name="int[]" value="'+count+'"><input type="hidden" class="form-control" name="detail_id[]" value="0"></td><td class="td-c"><a data-cy="particular-remove2" href="javascript:;" onclick="$(this).closest('+"'"+'tr'+"'"+').remove();calculateLogsheet();" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a></td></tr>');
+		$('#abc').append('<tr><td class="td-c"><input type="text" class="form-control" value="" name="particular_name[]"> </td><td class="td-c"><input type="text" class="form-control" name="unit[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="qty'+count+'" name="qty[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*"  class="form-control" onblur="calculateLogsheet();" id="rate'+count+'" name="rate[]" value=""></td><td class="td-c"><input type="number" step="0.01" pattern="[0-9]*" class="form-control" id="amt'+count+'" name="amount[]" onblur="calculateLogsheet();" value=""><input type="hidden" class="form-control" name="is_deduct[]" id="is_deduct'+count+'" value="0"><input type="hidden" class="form-control" name="int[]" value="'+count+'"><input type="hidden" class="form-control" name="detail_id[]" value="0"></td><td class="td-c"><a data-cy="particular-remove2" href="javascript:;" onclick="$(this).closest('+"'"+'tr'+"'"+').remove();calculateLogsheet();" class="btn btn-sm danger"> <i class="fa fa-times"> </i> </a></td></tr>');
 		document.getElementById("countRow").value=count;
 		}
 		

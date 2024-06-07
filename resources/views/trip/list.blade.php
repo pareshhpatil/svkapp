@@ -46,8 +46,8 @@
                                 
                             </td>
                             <td>
-                                @if($item->link!='')
-                                <a href="/trip/{{$item->link}}" target="_BLANK" class="btn btn-xs btn-primary">Detail</a>
+                                @if($item->status=='Assigned')
+                                <a href="/trip/complete/{{$item->link}}" target="_BLANK" class="btn btn-xs btn-primary">Complete</a>
                                 @endif
                                 
                                 @if($login_type!='client' && $item->status=='Requested')
