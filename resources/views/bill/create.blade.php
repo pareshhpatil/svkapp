@@ -41,7 +41,7 @@
                         <option value="">Select type</option>
                         <option value="1">Bill</option>
                         <option value="2">Bill & Payment</option>
-                        <option value="3">Advance</option>
+                        <option value="3">Payment</option>
                     </select>
                 </div>
             </div>

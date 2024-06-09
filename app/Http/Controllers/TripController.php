@@ -38,6 +38,7 @@ class TripController extends Controller
         $this->employee_model = new Employee();
         $this->master_model = new Master();
         $this->trip_model = new Trip();
+        $this->validateSession(array(1, 4));
     }
 
     public function addtrip()
@@ -152,19 +153,46 @@ class TripController extends Controller
         return view('trip.schedule', $data);
     }
 
+    public function packagesave()
+    {
+        $id = $this->trip_model->savePackage($_POST, $this->admin_id, $this->user_id);
+        $this->setSuccess('Package has been send successfully');
+        header('Location: /trip/package/list');
+        exit;
+    }
+
+    public function package()
+    {
+        $this->validateSession(array(1, 4));
+        $company_list = $this->master_model->getMaster('company', $this->admin_id, 'admin_id');
+        $data['company_list'] = $company_list;
+        $data['title'] = 'Casual package';
+        return view('trip.package', $data);
+    }
+
+    public function packageList()
+    {
+        $this->validateSession(array(1, 4));
+        $package_list = $this->trip_model->getPackageList($this->admin_id);
+        $data['list'] = $package_list;
+        $data['addnewlink'] = '/trip/package';
+        $data['title'] = 'Casual package';
+        return view('trip.package_list', $data);
+    }
+
     public function complete($link)
     {
         $this->validateSession(array(1, 4));
         $id = $this->encrypt->decode($link);
-        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id, 'admin_id');
+        $detail = $this->master_model->getMasterDetail('trip', 'trip_id', $id);
+        $package_list = $this->master_model->getMaster('company_casual_package', $detail->company_id, 'company_id');
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id, 'admin_id');
-        $detail = $this->master_model->getMasterDetail('trip_request', 'req_id', $id);
-        $data['vehicle_list'] = $vehicle_list;
+        $data['package_list'] = $package_list;
         $data['employee_list'] = $employee_list;
         $data['det'] = $detail;
-        $data['req_id'] = $id;
-        $data['title'] = 'Trip Schedule';
-        return view('trip.schedule', $data);
+        $data['trip_id'] = $id;
+        $data['title'] = 'Trip Complete';
+        return view('trip.complete', $data);
     }
 
     public function review($link)
@@ -197,6 +225,8 @@ class TripController extends Controller
         $data['total_passengers'] = $detail->total_passengers;
         $data['pickup_location'] = $detail->pickup_location;
         $data['drop_location'] = $detail->drop_location;
+        $data['vehicle_type'] = $detail->vehicle_type;
+        $data['admin_id'] = $this->admin_id;
         $data['note'] = $detail->note;
         $trip_id = $this->trip_model->saveTripDetail($data, $this->user_id);
         $link = $this->encrypt->encode($trip_id);
@@ -213,6 +243,30 @@ class TripController extends Controller
         $data['success'] = 'Trip has been scheduled successfully';
         $data['link'] = $link;
         return view('trip.saved', $data);
+    }
+
+    public function completesave(Request $request)
+    {
+        $this->validateSession(array(1, 4));
+        $data = [];
+        $package = $this->master_model->getMasterDetail('company_casual_package', 'id', $_POST['package_id']);
+
+        $data['status'] = 'Completed';
+        $data['package_id'] = $_POST['package_id'];
+        $data['extra_km'] = ($_POST['extra_km'] > 0) ? $_POST['extra_km'] : 0;
+        $data['extra_hour'] = ($_POST['extra_hour'] > 0) ? $_POST['extra_hour'] : 0;
+        $data['toll_parking'] = ($_POST['toll_parking'] > 0) ? $_POST['toll_parking'] : 0;
+        $data['vendor_amount'] = ($_POST['vendor_amount'] > 0) ? $_POST['vendor_amount'] : 0;
+
+        $data['package_amount'] = $package->package_amount;
+        $data['extra_km_amount'] = $package->extra_km * $data['extra_km'];
+        $data['extra_hour_amount'] = $package->extra_hour * $data['extra_hour'];
+        $data['total_amount'] = $data['package_amount'] + $data['extra_km_amount'] + $data['extra_hour_amount'] + $data['toll_parking'];
+        $trip_id = $this->trip_model->updateTrip($request->trip_id, $data);
+
+        $this->setSuccess('Trip has been send successfully');
+        header('Location: /trip/list/all');
+        exit;
     }
 
     public function trip($link)

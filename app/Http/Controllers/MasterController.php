@@ -112,6 +112,8 @@ class MasterController extends Controller
         $id = $this->encrypt->decode($link);
         if ($master == 'logsheet_invoice') {
             $this->master_model->deleteReccord($master, 'invoice_id', $id, $this->user_id);
+        } elseif ($master == 'company_casual_package') {
+            $this->master_model->deleteReccord($master, 'id', $id, $this->user_id);
         } else {
             $this->master_model->deleteReccord($master, $master . '_id', $id, $this->user_id);
         }
@@ -124,6 +126,8 @@ class MasterController extends Controller
             header('Location: /admin/bill/subscription');
         } else if ($master == 'logsheet_invoice') {
             header('Location: /admin/logsheet');
+        } else if ($master == 'company_casual_package') {
+            header('Location: /trip/package/list');
         } else {
             header('Location: /admin/' . $master . '/list');
         }

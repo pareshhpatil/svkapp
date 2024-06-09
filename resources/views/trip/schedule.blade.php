@@ -81,6 +81,18 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Vendor<span class="required">* </span></label>
+                <div class="col-md-7">
+                    <select name="vendor_id" required class="form-control select2" data-placeholder="Select...">
+                        <option value="">Select vendor</option>
+                        @foreach ($employee_list as $item)
+                        <option value="{{$item->employee_id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <div class="col-md-4"></div>

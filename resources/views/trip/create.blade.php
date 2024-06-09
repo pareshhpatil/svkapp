@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Vehicle type<span class="required"> </span></label>
                 <div class="col-md-7">
-                    <select name="vehicle_type" class="form-control">
+                    <select name="vehicle_type" class="form-control select2">
                         <option value="Sedan">Sedan</option>
                         <option value="SUV">SUV</option>
                     </select>

@@ -168,6 +168,10 @@ Route::get('/trip/schedule/{id}', 'TripController@schedule');
 Route::get('/trip/complete/{id}', 'TripController@complete');
 Route::post('/trip/schedulesave', 'TripController@schedulesave');
 Route::get('/trip/add', 'TripController@addtrip');
+Route::get('/trip/package', 'TripController@package');
+Route::post('/trip/packagesave', 'TripController@packagesave');
+Route::post('/trip/completesave', 'TripController@completesave');
+Route::get('/trip/package/list', 'TripController@packageList');
 
 Route::get('/trip/review/{id}', 'TripController@review');
 Route::post('/trip/reviewsave', 'TripController@savereview');

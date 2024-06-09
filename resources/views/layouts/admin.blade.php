@@ -154,6 +154,10 @@
                                     <a href="/trip/list/all">
                                         <i class="fa fa-circle-o"></i> List</a>
                                 </li>
+                                <li>
+                                    <a href="/trip/package/list">
+                                        <i class="fa fa-circle-o"></i> Package</a>
+                                </li>
                                 
                             </ul>
                         </li>
