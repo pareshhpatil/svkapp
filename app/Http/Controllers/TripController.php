@@ -263,6 +263,7 @@ class TripController extends Controller
         $data['extra_hour_amount'] = $package->extra_hour * $data['extra_hour'];
         $data['total_amount'] = $data['package_amount'] + $data['extra_km_amount'] + $data['extra_hour_amount'] + $data['toll_parking'];
         $trip_id = $this->trip_model->updateTrip($request->trip_id, $data);
+        $this->master_model->updateTableColumn('trip_request', 'status', 'Completed', 'trip_id', $request->trip_id, $this->user_id);
 
         $this->setSuccess('Trip has been send successfully');
         header('Location: /trip/list/all');

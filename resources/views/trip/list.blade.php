@@ -34,15 +34,7 @@
                             <td>{{$item->drop_location}}</td>
                             <td>{{$item->passengers}}</td>
                             <td>
-                                @if($item->status=='Requested')
-                                <span style="padding: 0px 5px 0px 5px;" class="lable label-sm label-primary">{{$item->status}} </span>
-                                @elseif($item->status=='Assigned')
-                                <span style="padding: 0px 5px 0px 5px;" class="lable label-sm label-warning">{{$item->status}} </span>
-                                @elseif($item->status=='Completed')
-                                <span style="padding: 0px 5px 0px 5px;" class="lable label-sm label-success">{{$item->status}} </span>
-                                @elseif($item->status=='Rejected')
-                               <span style="padding: 0px 5px 0px 5px;" class="lable label-sm label-danger">{{$item->status}} </span>
-                               @endif
+                            {{$item->status}}
                                 
                             </td>
                             <td>
