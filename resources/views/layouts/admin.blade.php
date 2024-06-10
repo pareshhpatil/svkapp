@@ -210,6 +210,53 @@
                         @if(Session::get('admin_id')==1)
                         <li class="treeview">
                             <a href="#">
+                                <i class="fa fa-rupee"></i> <span>Bills & Payments</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="/admin/bill/new">
+                                        <i class="fa fa-circle-o"></i> Create</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/bill">
+                                        <i class="fa fa-circle-o"></i> Pending Bills</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/transaction">
+                                        <i class="fa fa-circle-o"></i> Payment Transaction</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/request">
+                                        <i class="fa fa-circle-o"></i> Payment Request</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/paymentsource/credit">
+                                        <i class="fa fa-circle-o"></i> Credit</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/paymentsource/creditlist">
+                                        <i class="fa fa-circle-o"></i> Credit list</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/bill/subscription">
+                                        <i class="fa fa-circle-o"></i> Subscription</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/income/list">
+                                        <i class="fa fa-circle-o"></i> Income</a>
+                                </li>
+                                <li>
+                                    <a href="/admin/expense/pending">
+                                        <i class="fa fa-circle-o"></i> Expense Adjust</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
                                 <i class="fa fa-users"></i> <span>Employee</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
@@ -258,53 +305,7 @@
                             </ul>
                         </li>
 
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-rupee"></i> <span>Bills & Payments</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="/admin/bill/new">
-                                        <i class="fa fa-circle-o"></i> Create</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/bill">
-                                        <i class="fa fa-circle-o"></i> Pending Bills</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/transaction">
-                                        <i class="fa fa-circle-o"></i> Payment Transaction</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/request">
-                                        <i class="fa fa-circle-o"></i> Payment Request</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/paymentsource/credit">
-                                        <i class="fa fa-circle-o"></i> Credit</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/paymentsource/creditlist">
-                                        <i class="fa fa-circle-o"></i> Credit list</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/bill/subscription">
-                                        <i class="fa fa-circle-o"></i> Subscription</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/income/list">
-                                        <i class="fa fa-circle-o"></i> Income</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/expense/pending">
-                                        <i class="fa fa-circle-o"></i> Expense Adjust</a>
-                                </li>
-
-                            </ul>
-                        </li>
+                        
                         @endif
                         @endif
 
