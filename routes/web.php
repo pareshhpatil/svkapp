@@ -212,3 +212,4 @@ Route::any('/admin/roster/notificationdetail', 'RosterController@notificationdet
 Route::get('/roster/rating/{id}/{rating}', 'RosterController@rating');
 
 Route::post('/roster/reviewsave', 'RosterController@savereview');
+Route::any('/facebook/webhook', 'ApiController@facebookWebhook');
