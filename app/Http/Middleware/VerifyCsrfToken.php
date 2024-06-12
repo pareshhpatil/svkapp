@@ -13,5 +13,5 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         '/facebook/webhook'
-        ];
+    ];
 }
