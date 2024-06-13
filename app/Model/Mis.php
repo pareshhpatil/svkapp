@@ -138,23 +138,25 @@ class Mis extends Model
         return $retObj;
     }
 
-    public function getMisVehicle()
+    public function getMisVehicle($admin_id)
     {
         $retObj = DB::table('mis as m')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'm.vehicle_id')
             ->select(DB::raw('distinct v.vehicle_id,v.name'))
             ->where('m.is_active', 1)
+            ->where('v.admin_id', $admin_id)
             ->get();
         return $retObj;
     }
 
-    public function getMISList($start_date = null, $end_date = null, $vehicle_id = 0)
+    public function getMISList($admin_id,$start_date = null, $end_date = null, $vehicle_id = 0)
     {
         if ($start_date == null) {
             $retObj = DB::table('mis as m')
                 ->join('vehicle as v', 'v.vehicle_id', '=', 'm.vehicle_id')
                 ->select(DB::raw('m.*,v.number as vehicle_name'))
                 ->where('m.is_active', 1)
+                ->where('v.admin_id', $admin_id)
                 ->orderBy('date', 'asc')
                 ->limit(50)
                 ->get();
