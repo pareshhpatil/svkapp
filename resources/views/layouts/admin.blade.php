@@ -112,7 +112,7 @@
                                 </li>
                             </ul>
                         </li>
-                        @if(Session::get('admin_id')==1)
+                        @if(Session::get('admin_id')==1 || Session::get('admin_id')==10)
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>MIS</span>
@@ -179,7 +179,7 @@
                                     <a href="/admin/vehicle/list">
                                         <i class="fa fa-circle-o"></i> Vehicle</a>
                                 </li>
-                                @if(Session::get('admin_id')==1)
+                                @if(Session::get('admin_id')==1 || Session::get('admin_id')==10)
                                 <li>
                                     <a href="/admin/employee/list">
                                         <i class="fa fa-circle-o"></i> Employee</a>
@@ -207,7 +207,7 @@
 
                             </ul>
                         </li>
-                        @if(Session::get('admin_id')==1)
+                        @if(Session::get('admin_id')==1 || Session::get('admin_id')==10)
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-rupee"></i> <span>Bills & Payments</span>
