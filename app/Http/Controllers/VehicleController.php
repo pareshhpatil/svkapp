@@ -68,7 +68,7 @@ class VehicleController extends Controller
     public function fuel($add = false)
     {
         $this->setFilterDates();
-        $vehicle_list = $this->master_model->getMaster('vehicle', 1, 'fuel_enable');
+        $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $source_list = $this->master_model->getMaster('paymentsource',  $this->admin_id);
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
         $fuel_list = $this->vehicle_model->getFuelList($this->from_date, $this->to_date, $this->admin_id);
