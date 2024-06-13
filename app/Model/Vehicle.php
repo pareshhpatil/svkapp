@@ -71,14 +71,15 @@ class Vehicle extends Model {
         return $id;
     }
 
-    public function getFuelList($from_date,$to_date) {
+    public function getFuelList($from_date,$to_date,$admin_id) {
         $retObj = DB::table('fuel as a')
                 ->join('vehicle as v', 'v.vehicle_id', '=', 'a.vehicle_id')
                 ->join('paymentsource as s', 's.paymentsource_id', '=', 'a.source_id')
                 ->leftJoin('employee as e', 'e.employee_id', '=', 'a.employee_id')
                 ->where('a.is_active', 1)
-                ->where('date', ">=", $from_date)
-                ->where('date', "<=", $to_date)
+                ->where('v.admin_id', $admin_id)
+                //->where('date', ">=", $from_date)
+                //->where('date', "<=", $to_date)
                 ->select(DB::raw('fuel_id,v.number,e.name,a.date,litre,rate,amount,s.name as paymentsource'))
                 ->get();
         return $retObj;
