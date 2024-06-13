@@ -69,7 +69,7 @@ class VehicleController extends Controller
     {
         $this->setFilterDates();
         $vehicle_list = $this->master_model->getMaster('vehicle', 1, 'fuel_enable');
-        $source_list = $this->master_model->getMaster('paymentsource', 1, 'is_active');
+        $source_list = $this->master_model->getMaster('paymentsource',  $this->admin_id);
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
         $fuel_list = $this->vehicle_model->getFuelList($this->from_date, $this->to_date);
         $data['title'] = 'Fuel entry';
@@ -88,7 +88,7 @@ class VehicleController extends Controller
     public function fuelsave(Request $request)
     {
         $this->bill_model = new Bill();
-        $date=$request->date;
+        $date = $request->date;
         $request->photo = $this->master_model->uploadImage($request, 'bills');
         if ($request->intrest > 0) {
             $request->intrest_charge = $request->amount * $request->intrest / 100;
@@ -111,7 +111,7 @@ class VehicleController extends Controller
         }
 
         $this->master_model->updateBankBalance($request->amount, $request->source_id);
-        
+
         return $this->fuel(true);
     }
 }
