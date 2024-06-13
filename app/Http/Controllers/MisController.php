@@ -274,14 +274,14 @@ class MisController extends Controller
         $from_date_ = date('d M Y');
         $to_date_ = date('d M Y');
         if (empty($_POST)) {
-            $invoice_list = $this->mis_model->getMISListCompany();
+            $invoice_list = $this->mis_model->getMISListCompany($this->admin_id);
         } else {
             $from_date_ = $_POST['from_date'];
             $to_date_ = $_POST['to_date'];
             $from_date = date('Y-m-d', strtotime($_POST['from_date']));
             $to_date = date('Y-m-d', strtotime($_POST['to_date']));
             $company_id = $_POST['company_id'];
-            $invoice_list = $this->mis_model->getMISListCompany($from_date, $to_date, $company_id);
+            $invoice_list = $this->mis_model->getMISListCompany($this->admin_id,$from_date, $to_date, $company_id);
         }
         if (isset($_POST['export'])) {
             $array = json_decode(json_encode($invoice_list), True);

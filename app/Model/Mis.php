@@ -186,13 +186,14 @@ class Mis extends Model
         return $retObj;
     }
 
-    public function getMISListCompany($start_date = null, $end_date = null, $company_id = 0)
+    public function getMISListCompany($admin_id,$start_date = null, $end_date = null, $company_id = 0)
     {
         if ($start_date == null) {
             $retObj = DB::table('company_mis as m')
                 ->join('company as v', 'v.company_id', '=', 'm.company_id')
                 ->select(DB::raw('m.*,v.name as company_name'))
                 ->where('m.is_active', 1)
+                ->where('v.admin_id', $admin_id)
                 ->orderBy('date', 'asc')
                 ->limit(50)
                 ->get();
