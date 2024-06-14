@@ -311,7 +311,7 @@ class StaffController extends Controller
                 $short_url = $this->random();
                 $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
 
-                $this->sendWhatsapp($mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+                $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
             }
             if ($return == 0) {
                 return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
