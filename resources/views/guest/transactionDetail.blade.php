@@ -1,4 +1,4 @@
-@extends('layouts.guest',['title'=>'Contact us'])
+@extends('layouts.guest',['title'=>'Payment Receipt'])
 @section('content')
 <div id="appCapsule" class="full-height">
 
@@ -20,7 +20,7 @@
                     <ion-icon name="arrow-forward-outline" role="img" class="md hydrated" aria-label="arrow forward outline"></ion-icon>
                 </div>
             </div>
-            <h3 class="text-center mt-2">Payment Sent</h3>
+            <h3 class="text-center mt-2">Payment Success</h3>
         </div>
         @endif
 
