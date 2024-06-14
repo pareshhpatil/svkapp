@@ -390,7 +390,7 @@ class StaffController extends Controller
 
 }',
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAGZBQK9pQmIBO6NGFRxn4rYYunmNfchDf79YfDDwlaZBd6aa2OLuZAAwVN4W2n9FZAQ9kiZA4X7DUXAUiLkxyIJCNEpGMEXKXSjj73BlvylAzXT6ZAF0rAj0PmnUycrWys2aTfbTThOWpL9yo5VSsJm86l7dSwiVLiyy7VIqTY2Urb1KBpGKZB3j5rADNNAeNYvQkZA4t5Ko4SJOU04z17PYmtZAMJ0BhNlq8cEZD',
+                'Authorization: Bearer ' . env('WHATSAPP_TOKEN'),
                 'Content-Type: application/json'
             ),
         ));
