@@ -99,13 +99,14 @@ class StaffModel extends ParentModel
             ]);
     }
 
-    public function updateTransaction($status, $id, $amount, $payment_mode, $source_id, $date, $user_id)
+    public function updateTransaction($status, $id, $amount, $payment_mode, $source_id, $date, $user_id, $code = '')
     {
         DB::table('transaction')
             ->where('transaction_id', $id)
             ->update([
                 'status' => $status,
                 'payment_mode' => $payment_mode,
+                'code' => $code,
                 'source_id' => $source_id,
                 'amount' => $amount,
                 'last_update_by' => $user_id,
@@ -169,7 +170,7 @@ class StaffModel extends ParentModel
                     ->orWhere('a.created_by', $last_update_by);
             })
             ->where('a.is_active', 1)
-            ->whereIn('a.status', [1,2])
+            ->whereIn('a.status', [1, 2])
             ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name,p.name as payment_source"))
             ->orderBy('a.last_update_date', 'desc')
             ->get();

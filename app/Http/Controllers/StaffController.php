@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
 use App\Models\StaffModel;
+use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 
 
@@ -298,16 +299,109 @@ class StaffController extends Controller
             }
         }
         if ($success == true) {
-            $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id);
+            $code = 'SVK' . rand(10000000, 99999999);
+            $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id, $code);
 
             $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
             $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
             $this->model->savePaymentStatement($request->source_id, $request->bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
+            if (strlen($employee->mobile) == 10) {
+
+                $url = 'https://app.svktrv.in/transaction/detail/' . $code;
+                $short_url = $this->random();
+                $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+
+                $this->sendWhatsapp($mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+            }
             if ($return == 0) {
                 return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
             }
         }
     }
+
+    function GuestTransactionDetail($id)
+    {
+        $transaction = $this->model->getTableRow('transaction', 'code',  $id);
+        $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
+        $data['reason'] = (isset($reason)) ? $reason : '';
+        $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
+        $data['menu'] = 3;
+        $data['title'] = 'Payment detail';
+        $data['transaction'] = $transaction;
+        $data['employee'] = $employee;
+
+        return view('guest.transactionDetail', $data);
+    }
+
+
+    function sendWhatsapp($mobile, $name, $date, $amount, $payment_link)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://graph.facebook.com/v19.0/350618571465341/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+	"messaging_product": "whatsapp",
+	"to": "91' . $mobile . '",
+	"type": "template",
+	"template": {
+		"name": "payment_success",
+		"language": {
+			"code": "en"
+		},
+	"components": [
+		{
+			"type": "body",
+			"parameters": [
+				{
+					"type": "text",
+					"text": "' . $name . '"
+				},
+				{
+					"type": "text",
+					"text": "' . $date . '"
+				},
+				{
+					"type": "text",
+					"text": "' . $amount . '"
+				}
+			]
+		},
+		{
+			"type": "button",
+			"sub_type": "url",
+            "index": 0,
+			"parameters": [
+				{
+					"type": "text",
+					"text": "' . $payment_link . '"
+				}
+			]
+		}
+
+	]	}
+
+}',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer EAAGZBQK9pQmIBO6NGFRxn4rYYunmNfchDf79YfDDwlaZBd6aa2OLuZAAwVN4W2n9FZAQ9kiZA4X7DUXAUiLkxyIJCNEpGMEXKXSjj73BlvylAzXT6ZAF0rAj0PmnUycrWys2aTfbTThOWpL9yo5VSsJm86l7dSwiVLiyy7VIqTY2Urb1KBpGKZB3j5rADNNAeNYvQkZA4t5Ko4SJOU04z17PYmtZAMJ0BhNlq8cEZD',
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        Log::error('Watsapp: ' . $response);
+        return $response;
+    }
+
     function requestsave(Request $request, $get_transaction_id = 0)
     {
         $admin_id = Session::get('admin_id');
@@ -322,5 +416,24 @@ class StaffController extends Controller
             return $transaction_id;
         }
         return redirect()->back()->withSuccess('Payment request saved');
+    }
+
+
+    function random($length_of_string = 4)
+    {
+        // String of all alphanumeric character
+        $str_result = '0123456789bcdfghjklmnpqrstvwxyz';
+        // Shuffle the $str_result and returns substring
+        // of specified length
+        $exist = true;
+        while ($exist == true) {
+            $short = substr(
+                str_shuffle($str_result),
+                0,
+                $length_of_string
+            );
+            $exist = $this->model->getTableRow('short_url', 'short_url', $short);
+        }
+        return $short;
     }
 }

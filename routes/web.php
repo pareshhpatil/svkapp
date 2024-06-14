@@ -127,6 +127,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('staff/transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'transactionDetail'])->name('transactionDetail');
 });
 
+Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestTransactionDetail'])->name('transactionDetailguest');
+
+
 if (env('APP_ENV') != 'local') {
     URL::forceScheme('https');
 }
