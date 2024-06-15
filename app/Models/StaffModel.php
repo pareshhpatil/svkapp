@@ -160,17 +160,15 @@ class StaffModel extends ParentModel
         return $retObj;
     }
 
-    public function getTransactionList($last_update_by)
+    public function getTransactionList($date, $payment_source)
     {
         $retObj = DB::table('transaction as a')
             ->join('employee as v', 'v.employee_id', '=', 'a.employee_id')
             ->join('paymentsource as p', 'p.paymentsource_id', '=', 'a.source_id')
-            ->where(function ($retObj) use ($last_update_by) {
-                $retObj->where('a.last_update_by', $last_update_by)
-                    ->orWhere('a.created_by', $last_update_by);
-            })
+            ->where('a.paid_date', $date)
             ->where('a.is_active', 1)
             ->whereIn('a.status', [1, 2])
+            ->whereIn('a.source_id', $payment_source)
             ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name,p.name as payment_source"))
             ->orderBy('a.last_update_date', 'desc')
             ->get();

@@ -59,6 +59,7 @@
 
     <div id="app" class="">
 
+
     @if(session()->has('success'))
                 <div class="alert alert-success d-flex align-items-center" role="alert">
                     <span class="alert-icon text-success me-2">
@@ -69,7 +70,26 @@
                 @endif
                 <div class="section">
                     <div class="section-heading">
+
                     </div>
+                    <form method="post" id="frmpost" action="">
+                        @csrf
+                        <input type="hidden" id="date" name="date" v-value="current_date">
+                    </form>
+            <div class="appHeader" style="    top: auto;    margin-bottom: 10px;position: relative;border-radius: 10px;">
+                <div class="left">
+                    <a href="#" v-on:click="fetchDate(0)" class="headerButton">
+                        <ion-icon name="chevron-back-outline" role="img" class="md hydrated" aria-label="chevron back outline"></ion-icon>
+                    </a>
+                </div>
+                <div class="pageTitle" v-html="current_date">
+                </div>
+                <div class="right">
+                    <a v-on:click="fetchDate(1)" href="#" class="headerButton">
+                        <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
+                    </a>
+                </div>
+            </div>
                     <div class="transactions">
                         <!-- item -->
                         @foreach($list as $v)
@@ -119,6 +139,7 @@
                 data: [],
                 employees: [],
                 selected: '',
+                current_date: '{{$date}}',
                 companies: []
             }
         },
@@ -136,7 +157,17 @@
                     this.pickup = 'Home';
                     this.drop = 'Office';
                 }
-            }
+            },
+            async fetchDate(type) {
+                // var date = '';
+                let res = await axios.get('/date/fetch/' + this.current_date + '/' + type);
+                this.current_date = res.data;
+                this.display_date = res.data;
+
+                document.getElementById('date').value=this.current_date;
+                document.getElementById('frmpost').submit();
+
+            },
         }
     });
 

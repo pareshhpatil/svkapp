@@ -54,7 +54,7 @@ class StaffController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'dashboard';
 
-        $bill_list = $this->model->getTransactionList(Session::get('user_id'));
+        $bill_list = $this->model->getTransactionList(date('Y-m-d'), json_decode($user_access['payment_source']));
         $int = 0;
         $amount = 0;
         foreach ($bill_list as $item) {
@@ -115,9 +115,15 @@ class StaffController extends Controller
     }
     public function transactions()
     {
+        $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
+        $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
         $data['title'] = 'Payment transactions';
-        $bill_list = $this->model->getTransactionList(Session::get('user_id'));
+        $date = date('Y-m-d');
+        if (isset($_POST['date'])) {
+            $date = date('Y-m-d', strtotime($_POST['date']));
+        }
+        $bill_list = $this->model->getTransactionList($date, json_decode($user_access['payment_source']));
         $int = 0;
         $amount = 0;
         foreach ($bill_list as $item) {
@@ -127,7 +133,7 @@ class StaffController extends Controller
         }
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
         $data['list'] = $bill_list;
-        $data['date'] = date('Y-m-d');
+        $data['date'] = date('D d M Y', strtotime($date));
         $data['data'] = [];
         $data['menu'] = 3;
         return view('staff.paymentTransaction', $data);
