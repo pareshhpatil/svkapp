@@ -220,4 +220,22 @@ class StaffModel extends ParentModel
         }
         $this->updateTable('employee', 'employee_id', $employee_id, 'balance', $current_balance);
     }
+
+
+    public function saveWhatsapp($mobile, $name, $type, $status, $message_type, $message, $message_id)
+    {
+        $id = DB::table('whatsapp_messages')->insertGetId(
+            [
+                'mobile' => $mobile,
+                'name' => $name,
+                'type' => $type,
+                'status' => $status,
+                'message_type' => $message_type,
+                'message' => $message,
+                'message_id' => $message_id,
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
 }

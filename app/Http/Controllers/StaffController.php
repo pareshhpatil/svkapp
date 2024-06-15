@@ -8,7 +8,8 @@ use App\Models\MasterModel;
 use App\Models\StaffModel;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class StaffController extends Controller
 {
@@ -46,6 +47,7 @@ class StaffController extends Controller
 
     public function dashboard()
     {
+
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
@@ -398,8 +400,36 @@ class StaffController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        Log::error('Watsapp: ' . $response);
+        Log::error('Whatsapp: ' . $response);
+        $array = json_decode($response, 1);
+        if (isset($array['messages']['id'])) {
+            $message = $this->getPaymentMessage($name, $date, $amount, 'https://app.svktrv.in/l/' . $payment_link);
+            $this->model->saveWhatsapp($mobile, $name, 'Sent', $array['messages']['message_status'], 'text', $message, $array['messages']['id']);
+        }
+
         return $response;
+    }
+
+    function getPaymentMessage($name, $date, $amount, $payment_link)
+    {
+        $text = "Payment success
+    Hey " . $name . "
+
+    Your payment has been successfully sent to your account. 💰 It may take approximately 30-40 minutes ⏰ for the payment to reflect in your account.
+
+    Transaction Details:
+    📅 Date: " . $date . "
+    💼 Amount: " . $amount . "
+
+    Please be patient while the payment processes.
+
+    Thank you for your cooperation!
+
+    Best regards,
+    Siddhivinayak Travels House
+
+    " . $payment_link;
+        return $text;
     }
 
     function requestsave(Request $request, $get_transaction_id = 0)
