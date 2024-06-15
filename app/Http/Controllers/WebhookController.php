@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
-
+use Log;
 class WebhookController extends Controller
 {
     /**
