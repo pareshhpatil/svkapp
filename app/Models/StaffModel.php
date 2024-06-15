@@ -238,4 +238,14 @@ class StaffModel extends ParentModel
         );
         return $id;
     }
+
+    public function updateWhatsappStatus($id, $status,$time)
+    {
+        DB::table('whatsapp_messages')
+            ->where('message_id', $id)
+            ->update([
+                'status' => $status,
+                'last_update_date' => date('Y-m-d H:i:s', $time)
+            ]);
+    }
 }

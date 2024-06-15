@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/ride/track/*'
+        '/ride/track/*',
+        '/facebook/webhook',
     ];
 }
