@@ -233,6 +233,7 @@ class StaffModel extends ParentModel
                 'message_type' => $message_type,
                 'message' => $message,
                 'message_id' => $message_id,
+                'last_update_date' => date('Y-m-d H:i:s'),
                 'created_date' => date('Y-m-d H:i:s')
             ]
         );
