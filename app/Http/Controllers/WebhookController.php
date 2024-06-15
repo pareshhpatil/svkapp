@@ -79,7 +79,7 @@ class WebhookController extends Controller
         // Save the media file to storage
         if ($response->successful()) {
             $timestamp = time();
-            $directoryPath = 'media';
+            $directoryPath = 'public/media';
             $fileName = "media_file_{$timestamp}.jpg";
             $filePath = "{$directoryPath}/{$fileName}";
 
