@@ -37,6 +37,7 @@
                         <img src="/assets/img/navigation.png" alt="photo" class="imaged w76">
                     </div>
                     <div class="footer" v-html="item.time"></div>
+
                 </div>
             </div>
             <div v-if="item.type=='Sent'" class="message-item user">
@@ -53,6 +54,7 @@
                     </div>
 
                     <div class="footer" v-html="item.time"></div>
+                    <div class="footer" v-html="item.status"></div>
                 </div>
             </div>
         </div>
