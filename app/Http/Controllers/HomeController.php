@@ -360,7 +360,7 @@ class HomeController extends Controller
     public function whatsapp()
     {
         $data['menu'] = 0;
-        $data['title'] = 'Chats';
+        $data['title'] = 'Whatsapp';
         $chats = $this->model->WhatsappList();
         $data['whatsapps'] = $this->EncryptList($chats, 0, '/whatsapp/', 'mobile');
         return view('master.whatsapps', $data);
