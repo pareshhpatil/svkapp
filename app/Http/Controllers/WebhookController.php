@@ -40,7 +40,6 @@ class WebhookController extends Controller
                 $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
                 $message = $this->getWhatsappImage($image_id);
             }
-            dd($message);
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
@@ -85,7 +84,7 @@ class WebhookController extends Controller
 
             Storage::disk('local')->put($filePath, $response->body());
             $url = Storage::url($filePath);
-            return $url;
+            return env('APP_URL') . $url;
 
             // Optionally, do something with the saved file path
         }
