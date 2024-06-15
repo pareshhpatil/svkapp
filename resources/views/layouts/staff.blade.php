@@ -225,7 +225,7 @@
                                     <ion-icon name="logo-whatsapp" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
-                                    Chats
+                                    Whatsapp
                                 </div>
                             </a>
                         </li>
