@@ -111,7 +111,7 @@ class MasterController extends Controller
         $messages = json_encode($messages);
         $messages = str_replace('\n', '<br>', $messages);
         $data['messages'] = $messages;
-        $data['title'] = substr($name, 0, 20) . ' - ' . $id;
+        $data['title'] = substr($name, 0, 15) . ' - ' . $id;
         $data['hide_menu'] = true;
         return view('master.whatsapp', $data);
     }
