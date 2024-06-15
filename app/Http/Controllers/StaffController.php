@@ -48,6 +48,7 @@ class StaffController extends Controller
     public function dashboard()
     {
 
+
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;
@@ -402,9 +403,9 @@ class StaffController extends Controller
         curl_close($curl);
         Log::error('Whatsapp: ' . $response);
         $array = json_decode($response, 1);
-        if (isset($array['messages']['id'])) {
+        if (isset($array['messages'][0]['id'])) {
             $message = $this->getPaymentMessage($name, $date, $amount, 'https://app.svktrv.in/l/' . $payment_link);
-            $this->model->saveWhatsapp($mobile, $name, 'Sent', $array['messages']['message_status'], 'text', $message, $array['messages']['id']);
+            $this->model->saveWhatsapp($mobile, $name, 'Sent', $array['messages'][0]['message_status'], 'text', $message, $array['messages'][0]['id']);
         }
 
         return $response;
