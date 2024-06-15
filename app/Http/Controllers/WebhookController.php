@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Log;
+
 class WebhookController extends Controller
 {
     /**
@@ -54,8 +55,9 @@ class WebhookController extends Controller
 
 
         Log::error('Facebook Webhook: ' . json_encode($request->all()));
-
-        echo $request->hub_challenge;
+        if (isset($request->hub_challenge)) {
+            echo $request->hub_challenge;
+        }
     }
 
 
