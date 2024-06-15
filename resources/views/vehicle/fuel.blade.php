@@ -17,15 +17,16 @@
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <div class="col-md-12">
                                 <div class="col-md-3">
-                                    <input type="text" name="from_date" readonly="" required="" value="{{$from_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy">
-                                    <div class="help-block"></div>
+                                    <select name="vehicle_id" required class="form-control select2" style="width: 100%;" data-placeholder="Select...">
+                                        <option value="0">All vehicles</option>
+                                        @foreach ($vehicle_list as $item)
+                                        <option @if($vehicle_id==$item->vehicle_id) selected @endif value="{{$item->vehicle_id}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <input type="text" name="to_date" readonly="" required="" value="{{$to_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="d M yyyy">
-                                    <div class="help-block"></div>
-                                </div>
+
                                 <div class="col-md-1">
-                                    <button type="submit" class="btn btn-primary">Submit </button>
+                                    <button type="submit" class="btn btn-primary">Search </button>
                                 </div>
                                 <br>
                             </div>
@@ -48,6 +49,7 @@
                                 <th>Rate </th>
                                 <th>Amount </th>
                                 <th>Payment from </th>
+                                <th>? </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,6 +63,8 @@
                                 <td>{{$item->rate}}</td>
                                 <td>{{$item->amount}}</td>
                                 <td>{{$item->paymentsource}}</td>
+                                <td> <a href="#" onclick="document.getElementById('deleteanchor').href = '/admin/fuel/delete/{{$item->fuel_id}}'" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-danger"><i class="fa fa-remove"></i></a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -126,7 +130,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Paid from<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="source_id"  required class="form-control select2" style="width: 100%;" data-placeholder="Select...">
+                                    <select name="source_id" required class="form-control select2" style="width: 100%;" data-placeholder="Select...">
                                         <option value="">Select source</option>
                                         @foreach ($source_list as $item)
                                         <option value="{{$item->paymentsource_id}}">{{$item->name}}</option>
@@ -171,5 +175,25 @@
     <!-- /.panel -->
 </div>
 <!-- /.col-lg-12 -->
+</div>
+<div class="modal modal-danger fade" id="modal-danger">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Record</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you would not like to use this record in the future?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>
+                <a id="deleteanchor" href="" class="btn btn-outline">Delete</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
 @endsection

@@ -68,14 +68,19 @@ class VehicleController extends Controller
     public function fuel($add = false)
     {
         $this->setFilterDates();
+        $vehicle_id = 0;
+        if (isset($_POST['vehicle_id'])) {
+            $vehicle_id = $_POST['vehicle_id'];
+        }
         $vehicle_list = $this->master_model->getMaster('vehicle', $this->admin_id);
         $source_list = $this->master_model->getMaster('paymentsource',  $this->admin_id);
         $employee_list = $this->master_model->getMaster('employee', $this->admin_id);
-        $fuel_list = $this->vehicle_model->getFuelList($this->from_date, $this->to_date, $this->admin_id);
+        $fuel_list = $this->vehicle_model->getFuelList($this->from_date, $this->to_date, $this->admin_id, $vehicle_id);
         $data['title'] = 'Fuel entry';
         $data['vehicle_list'] = $vehicle_list;
         $data['list'] = $fuel_list;
         $data['add'] = $add;
+        $data['vehicle_id'] = $vehicle_id;
         $data['source_list'] = $source_list;
         $data['employee_list'] = $employee_list;
         $data['addnew_button'] = 1;

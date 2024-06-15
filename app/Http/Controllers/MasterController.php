@@ -128,6 +128,8 @@ class MasterController extends Controller
             header('Location: /admin/logsheet');
         } else if ($master == 'company_casual_package') {
             header('Location: /trip/package/list');
+        } else if ($master == 'fuel') {
+            header('Location: /admin/vehicle/fuel');
         } else {
             header('Location: /admin/' . $master . '/list');
         }
