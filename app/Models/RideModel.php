@@ -277,4 +277,15 @@ class RideModel extends ParentModel
         }
         return $retObj->count();
     }
+
+
+    public function getPendingMessagetCount($mobile)
+    {
+        return DB::table('whatsapp_messages as p')
+            ->where('p.is_active', 1)
+            ->where('p.mobile', $mobile)
+            ->where('p.status', 'delivered')
+            ->where('p.type', 'Received')
+            ->count();
+    }
 }

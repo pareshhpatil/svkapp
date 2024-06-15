@@ -71,8 +71,9 @@ class MasterModel extends ParentModel
         $retObj = DB::table('whatsapp_messages as c')
             ->where('c.is_active', 1)
             ->where('c.mobile', $mobile)
-            ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.last_update_date, "%l:%i %p") as time'));
+            ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.created_date, "%l:%i %p") as time'));
         $array = $retObj->get();
+        $this->updateReadMessage($mobile);
         return json_decode(json_encode($array), 1);
     }
 
@@ -86,5 +87,30 @@ class MasterModel extends ParentModel
             ->select(DB::raw('u.token'));
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
+    }
+
+
+    public function updateReadMessage($mobile)
+    {
+        DB::table('whatsapp_messages')
+            ->where('type', 'Received')
+            ->where('is_active', '1')
+            ->where('status', 'delivered')
+            ->where('mobile', $mobile)
+            ->update([
+                'status' => 'read'
+            ]);
+    }
+
+    function getChatName($mobile)
+    {
+        $maxName = DB::table('whatsapp_messages')
+            ->select('name')
+            ->orderByRaw('created_date DESC')
+            ->where('mobile', $mobile)
+            ->where('name', '<>', '')
+            ->first();
+
+        return $maxName->name;
     }
 }

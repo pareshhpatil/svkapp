@@ -179,6 +179,8 @@ class MasterController extends Controller
             $whatsapparray['image']['caption'] = '';
         }
 
+        $data_array['name'] = $this->model->getChatName($request->group_id);
+
         $data_array['message_id'] = $this->sendWhatsappMessage($whatsapparray);
 
         $this->model->saveTable('whatsapp_messages', $data_array);

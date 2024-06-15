@@ -16,6 +16,8 @@
                             <div class="mb-05"><strong v-html="item.name"></strong></div>
                             <div class="text-xsmall" v-html="item.last_update_date"></div>
                         </div>
+                        <span v-if="item.pending_message>0" class="badge badge-success" style="margin-right: 10px; margin-left: -10px;" v-html="item.pending_message"></span>
+
                         <span class="badge badge-success "></span>
                     </div>
                 </a>
