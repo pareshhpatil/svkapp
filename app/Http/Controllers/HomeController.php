@@ -340,6 +340,7 @@ class HomeController extends Controller
                     $array[$k]['link'] = $link . Encryption::encode($v[$key]);
                 }
             } else {
+
                 $array['link'] = $link . Encryption::encode($array[$key]);
             }
         }
@@ -354,6 +355,15 @@ class HomeController extends Controller
         $chats = $this->model->chatList(Session::get('user_id'));
         $data['chats'] = $this->EncryptList($chats, 0, '/chat/', 'id');
         return view('master.chats', $data);
+    }
+
+    public function whatsapp()
+    {
+        $data['menu'] = 0;
+        $data['title'] = 'Chats';
+        $chats = $this->model->WhatsappList();
+        $data['whatsapps'] = $this->EncryptList($chats, 0, '/whatsapp/', 'mobile');
+        return view('master.whatsapps', $data);
     }
 
     public function settings()

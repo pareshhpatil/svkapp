@@ -250,6 +250,22 @@ class RideModel extends ParentModel
         return json_decode(json_encode($retObj), 1);
     }
 
+    public function WhatsappList()
+    {
+        $results = DB::table('whatsapp_messages as t1')
+            ->select(DB::raw('concat(t1.name," - ",t1.mobile) as name,t1.mobile,DATE_FORMAT(t1.last_update_date, "%a %d %b %y %l:%i %p") as last_update_date'))
+            ->join(DB::raw('(SELECT mobile, MAX(last_update_date) as max_last_update,max(name) as name
+                    FROM whatsapp_messages
+                    GROUP BY mobile) as t2'), function ($join) {
+                $join->on('t1.mobile', '=', 't2.mobile')
+                    ->on('t1.last_update_date', '=', 't2.max_last_update');
+            })
+            ->orderByDesc('t1.last_update_date')
+            ->get()->toArray();
+        $results = json_decode(json_encode($results), 1);
+        return $results;
+    }
+
     public function getPendingRequestCount($project_id = 0)
     {
         $retObj = DB::table('ride_request as p')

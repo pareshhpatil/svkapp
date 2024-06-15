@@ -102,6 +102,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/chat/create/{user_type}/{ride_id}/{type}/{user_id}/{request_id}', [App\Http\Controllers\MasterController::class, 'chatCreate']);
     Route::get('/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chat']);
+
     Route::get('/ajax/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chatMessage']);
     Route::post('/ajax/chat/submit', [App\Http\Controllers\MasterController::class, 'chatSubmit']);
 
@@ -110,6 +111,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/driver/ride/passenger/resendotp/{passenger_id}', [App\Http\Controllers\HomeController::class, 'resendOTP']);
 
 
+    Route::get('/whatsapp/{group_id}', [App\Http\Controllers\MasterController::class, 'whatsapp']);
+    Route::get('/ajax/whatsapp/{group_id}', [App\Http\Controllers\MasterController::class, 'whatsappMessage']);
+    Route::post('/ajax/whatsapp/submit', [App\Http\Controllers\MasterController::class, 'whatsappSubmit']);
 
     Route::get('/call/{mobile}', [App\Http\Controllers\MasterController::class, 'callIVR']);
 
@@ -125,6 +129,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('staff/payment/requestsave', [App\Http\Controllers\StaffController::class, 'requestsave'])->name('requestsave');
     Route::get('staff/payment/transactions', [App\Http\Controllers\StaffController::class, 'transactions'])->name('transactions');
     Route::get('staff/transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'transactionDetail'])->name('transactionDetail');
+
+    Route::get('/whatsapp', [App\Http\Controllers\HomeController::class, 'whatsapp'])->name('whatsapp');
+    Route::get('/whatsapp/{id}', [App\Http\Controllers\HomeController::class, 'whatsappMessage'])->name('whatsappMessage');
 });
 
 Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestTransactionDetail'])->name('transactionDetailguest');

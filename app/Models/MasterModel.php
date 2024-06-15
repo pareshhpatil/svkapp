@@ -66,6 +66,16 @@ class MasterModel extends ParentModel
         return json_decode(json_encode($array), 1);
     }
 
+    public function getWhatsappMessages($mobile)
+    {
+        $retObj = DB::table('whatsapp_messages as c')
+            ->where('c.is_active', 1)
+            ->where('c.mobile', $mobile)
+            ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.last_update_date, "%l:%i %p") as time'));
+        $array = $retObj->get();
+        return json_decode(json_encode($array), 1);
+    }
+
     public function getChatMembers($group_id, $user_id)
     {
         $retObj = DB::table('chat_group_member as c')
