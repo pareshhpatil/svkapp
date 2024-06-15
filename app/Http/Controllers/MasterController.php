@@ -174,7 +174,7 @@ class MasterController extends Controller
         $whatsapparray['type'] = $data_array['message_type'];
         if ($data_array['message_type'] == 'text') {
             $whatsapparray['text']['body'] = $body;
-        } else if ($data_array['message_type'] == 'text') {
+        } else if ($data_array['message_type'] == 'image') {
             $whatsapparray['image']['link'] = $body;
             $whatsapparray['image']['caption'] = '';
         }
