@@ -102,6 +102,7 @@ class MasterController extends Controller
         $id = Encryption::decode($link);
         $group = $this->model->getTableRow('chat_group', 'id', $id);
         $messages = $this->model->getWhatsappMessages($id);
+        $name = $this->model->getChatName($id);
         $data['menu'] = 0;
         $data['created_date'] = date('Y-m-d');
         $data['user_id'] = Session::get('user_id');
@@ -110,7 +111,7 @@ class MasterController extends Controller
         $messages = json_encode($messages);
         $messages = str_replace('\n', '<br>', $messages);
         $data['messages'] = $messages;
-        $data['title'] = $id;
+        $data['title'] = $name . ' - ' . $id;
         $data['hide_menu'] = true;
         return view('master.whatsapp', $data);
     }
