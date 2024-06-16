@@ -33,22 +33,26 @@ class WebhookController extends Controller
         $data = $request->all();
         $model = $this->model;
         if (isset($data['entry'][0]['changes'][0]['value']['contacts'][0]['profile']['name'])) {
+            $image = '';
             $name = $data['entry'][0]['changes'][0]['value']['contacts'][0]['profile']['name'];
             $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
             $message_type = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
             $message_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
             if ($message_type == 'text') {
                 $message = $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
+                $description = $message;
             } else if ($message_type == 'image') {
                 $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
                 $message = $this->getWhatsappImage($image_id);
+                $image = $message;
+                $description = 'Image';
             }
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
             $apiController = new ApiController();
             $url = 'https://app.svktrv.in/whatsapp/' . Encryption::encode(substr($mobile, 2));
-            $message = 'Whatsapp message received';
+            $message = 'Message received from ' . $name;
             $description = 'Message received from ' . $name;
-            $apiController->sendNotification(1, 1, $message, $description, $url);
+            $apiController->sendNotification(1, 1, $message, $description, $url, $image);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
             $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
