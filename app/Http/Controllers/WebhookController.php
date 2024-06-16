@@ -47,6 +47,11 @@ class WebhookController extends Controller
                 $message = $this->getWhatsappImage($image_id);
                 $image = $message;
                 $description = 'Image';
+            } else if ($message_type == 'location') {
+                $latitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['latitude'];
+                $longitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['longitude'];
+                $message = 'https://www.google.com/maps/search/?api=1&query=' . $latitude . ',' . $longitude;
+                $description = 'Location received';
             }
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
             $apiController = new ApiController();
