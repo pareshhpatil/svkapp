@@ -47,6 +47,13 @@ class WebhookController extends Controller
                 $message = $this->getWhatsappImage($image_id);
                 $image = $message;
                 $description = 'Image';
+            } else if ($message_type == 'document') {
+                $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['document']['id'];
+                $filename = $data['entry'][0]['changes'][0]['value']['messages'][0]['document']['filename'];
+                $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                $message = $this->getWhatsappImage($image_id, $extension);
+                $image = $message;
+                $description = 'Document';
             } else if ($message_type == 'location') {
                 $latitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['latitude'];
                 $longitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['longitude'];
@@ -88,7 +95,7 @@ class WebhookController extends Controller
 
 
 
-    function getWhatsappImage($image_id)
+    function getWhatsappImage($image_id, $extension = 'jpg')
     {
         $accessToken = env('WHATSAPP_TOKEN');
 
@@ -107,7 +114,7 @@ class WebhookController extends Controller
         if ($response->successful()) {
             $timestamp = time();
             $directoryPath = 'public/media';
-            $fileName = "media_file_{$timestamp}.jpg";
+            $fileName = "media_file_{$timestamp}." . $extension;
             $filePath = "{$directoryPath}/{$fileName}";
 
             Storage::disk('local')->put($filePath, $response->body());

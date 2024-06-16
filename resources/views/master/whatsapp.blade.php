@@ -38,6 +38,9 @@
                     <div v-if="item.message_type=='location'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/navigation.png" alt="photo" class="imaged w76">
                     </div>
+                    <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
+                        <img src="/assets/img/document.png" alt="photo" class="imaged w76">
+                    </div>
                     <div class="footer" v-html="item.time"></div>
 
                 </div>
@@ -55,6 +58,9 @@
                     </div>
                     <div v-if="item.message_type=='location'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/navigation.png" alt="photo" class="imaged w76">
+                    </div>
+                    <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
+                        <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
 
                     <div class="footer" v-html="item.time"></div>
