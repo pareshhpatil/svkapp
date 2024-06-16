@@ -14,6 +14,7 @@ use App\Models\ApiModel;
 use Validator;
 use App\Http\Lib\Encryption;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\MasterController;
 
 class LoginController extends Controller
 {
@@ -147,7 +148,10 @@ class LoginController extends Controller
                 $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
                 $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
 
-                $this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile);
+                $MasterController = new MasterController();
+                $json = '{"messaging_product":"whatsapp","to":"91' . $request->mobile . '","type":"template","template":{"name":"otp","language":{"code":"en"},"components":[{"type":"body","parameters":[{"type":"text","text":"' . $otp . '"}]}]}}';
+                $MasterController->sendWhatsappMessage(json_decode($json));
+                $this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile . ' OTP: ' . $otp);
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
