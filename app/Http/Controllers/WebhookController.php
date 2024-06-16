@@ -10,6 +10,8 @@ use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Log;
+use App\Http\Controllers\ApiController;
+use App\Http\Lib\Encryption;
 
 class WebhookController extends Controller
 {
@@ -42,6 +44,11 @@ class WebhookController extends Controller
                 $message = $this->getWhatsappImage($image_id);
             }
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
+            $apiController = new ApiController();
+            $url = 'https://app.svktrv.in/whatsapp/' . Encryption::encode(substr($mobile, 2));
+            $message = 'Whatsapp message received';
+            $description = 'Message received from ' . $name;
+            $apiController->sendNotification(1, 1, $message, $description, $url);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
             $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];

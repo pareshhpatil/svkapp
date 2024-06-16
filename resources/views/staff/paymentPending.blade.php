@@ -59,44 +59,72 @@
 
     <div id="app" class="">
 
-    @if(session()->has('success'))
-                <div class="alert alert-success d-flex align-items-center" role="alert">
-                    <span class="alert-icon text-success me-2">
-                        <i class="ti ti-check ti-xs"></i>
-                    </span>
-                    {{ session()->get('success') }}
+        @if(session()->has('success'))
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <span class="alert-icon text-success me-2">
+                <i class="ti ti-check ti-xs"></i>
+            </span>
+            {{ session()->get('success') }}
+        </div>
+        @endif
+        <div class="section">
+            <div class="section-heading">
+            </div>
+            <div class="transactions">
+                @foreach($list as $v)
+                <!--<div data-bs-toggle="modal" id="{{$v->transaction_id}}" onclick="cancel({{$v->transaction_id}})" data-bs-target="#cancelride" class="btn btn-sm btn-primary pull-right">
+                    <ion-icon name="close"></ion-icon>
                 </div>
-                @endif
-                <div class="section">
-                    <div class="section-heading">
+                <br>-->
+                <a href="/staff/payment/detail/{{$v->transaction_id}}" class="item">
+                    <div class="detail">
+                        <div>
+                            <strong>{{$v->name}}</strong>
+                            <p>{{$v->paid_date}}</p>
+                            <p>{{$v->narrative}}</p>
+                        </div>
                     </div>
-                    <div class="transactions">
-                        <!-- item -->
-                        @foreach($list as $v)
-                        <a href="/staff/payment/detail/{{$v->transaction_id}}" class="item">
-                            <div class="detail">
-                                <div>
-                                    <strong>{{$v->name}}</strong>
-                                    <p>{{$v->paid_date}}</p>
-                                    <p>{{$v->narrative}}</p>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <div class="price text-warning">{{$v->amount}}</div>
-                            </div>
-                        </a>
-                        @endforeach
-                        <!-- * item -->
-                        <!-- item -->
+                    <div class="right">
 
+                        <div class="price text-warning">{{$v->amount}}</div>
                     </div>
-                </div>
+
+                </a>
+                @endforeach
+                <!-- * item -->
+                <!-- item -->
+
+            </div>
+        </div>
 
 
 
 
     </div>
 
+</div>
+<div class="modal fade dialogbox" id="cancelride" data-bs-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Booking</h5>
+            </div>
+            <form action="/passenger/booking/cancel" method="post">
+                @csrf
+                <div class="modal-body text-start mb-2" id="cancel_message">
+                    You want to cancel?
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <input type="hidden" id="cancel_booking_id" name="booking_id">
+                        <input type="hidden" id="no_show" value="0" name="no_show">
+                        <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
+                        <button type="submit" class="btn btn-text-primary">CONFIRM</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
@@ -115,8 +143,7 @@
                 companies: []
             }
         },
-        mounted() {
-        },
+        mounted() {},
         methods: {
             changeMode() {
                 this.selected = '';
