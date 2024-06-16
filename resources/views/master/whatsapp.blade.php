@@ -33,7 +33,7 @@
                             <img :src="item.message" alt="photo" class="imaged w160">
                         </a>
                     </div>
-                    <div v-if="item.message_type==3" v-on:click="window.location.assign(item.message, '_system');">
+                    <div v-if="item.message_type=='location'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/navigation.png" alt="photo" class="imaged w76">
                     </div>
                     <div class="footer" v-html="item.time"></div>
