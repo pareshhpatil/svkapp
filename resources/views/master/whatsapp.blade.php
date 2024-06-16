@@ -54,7 +54,6 @@
                         <video  width="200"  controls>
                             <source :src="item.message" type="video/mp4">
                         </video>
-                        <a :href="item.message">Video</a>
 
                     </div>
                     <div class="footer" v-html="item.time"></div>
