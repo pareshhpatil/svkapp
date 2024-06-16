@@ -146,10 +146,13 @@ class LoginController extends Controller
             } else {
                 $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
                 $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
+
+                $this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile);
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {
+            $this->notifyAdmin('App new login user Mobile: ' . $request->mobile);
             return back()->withErrors([
                 'mobile' => 'Mobile is not registered.'
             ]);

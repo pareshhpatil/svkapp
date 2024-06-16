@@ -7,6 +7,8 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\WebhookController;
+use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
@@ -71,5 +73,13 @@ class Controller extends BaseController
             $thecash = $num;
         }
         return $thecash . $numdecimal; // writes the final format where $currency is the currency symbol.
+    }
+
+    function notifyAdmin($body)
+    {
+        $WebhookController = new WebhookController();
+        $json = '{"object":"whatsapp_business_account","entry":[{"id":"351936407998643","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"918879643150","phone_number_id":"350618571465341"},"contacts":[{"profile":{"name":"Contact us"},"wa_id":"919423300297"}],"messages":[{"from":"919423300297","id":"' . rand(10000, 99999) . '","timestamp":"1718544192","text":{"body":"' . $body . '"},"type":"text"}]},"field":"messages"}]}]}';
+        $request = new Request(json_decode($json, 1));
+        $WebhookController->facebookWebhook($request);
     }
 }
