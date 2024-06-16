@@ -42,7 +42,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls autoplay>
+                        <audio preload="auto" controls autoplay muted>
                             <source :src="item.message" type="audio/mpeg">
                             <source :src="item.message" type="audio/ogg">
                             Your browser does not support the audio tag.
