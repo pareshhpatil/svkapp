@@ -54,6 +54,11 @@ class WebhookController extends Controller
                 $message = $this->getWhatsappImage($image_id, $extension);
                 $image = $message;
                 $description = 'Document';
+            } else if ($message_type == 'audio') {
+                $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
+                $message = $this->getWhatsappImage($image_id, 'mp3');
+                $image = $message;
+                $description = 'Audio';
             } else if ($message_type == 'location') {
                 $latitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['latitude'];
                 $longitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['longitude'];
