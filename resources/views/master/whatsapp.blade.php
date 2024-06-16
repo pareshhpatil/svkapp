@@ -51,7 +51,7 @@
 
                     </div>
                     <div v-if="item.message_type=='video'">
-                        <video  controls>
+                        <video  width="200"  controls>
                             <source :src="item.message" type="video/mp4">
                         </video>
                         <a :href="item.message">Video</a>
