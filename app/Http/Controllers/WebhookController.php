@@ -29,6 +29,7 @@ class WebhookController extends Controller
     public function facebookWebhook(Request $request)
 
     {
+        Log::error('Facebook Webhook: ' . json_encode($request->all()));
 
         $data = $request->all();
         $model = $this->model;
@@ -50,7 +51,7 @@ class WebhookController extends Controller
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
             $apiController = new ApiController();
             $url = 'https://app.svktrv.in/whatsapp/' . Encryption::encode(substr($mobile, 2));
-            $message = 'Message received from ' . $name;
+            $message = 'Whatsapp from ' . $name;
             //$description = 'Message received from ' . $name;
             $apiController->sendNotification(1, 1, $message, $description, $url, $image);
         }
@@ -65,7 +66,6 @@ class WebhookController extends Controller
 
 
 
-        Log::error('Facebook Webhook: ' . json_encode($request->all()));
         if (isset($request->hub_challenge)) {
             echo $request->hub_challenge;
         }
