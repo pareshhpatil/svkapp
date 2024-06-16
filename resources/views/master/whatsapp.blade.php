@@ -42,12 +42,12 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls>
-                            <source  :src="item.message" type="audio/ogg">
+                        <audio preload="auto" controls autoplay>
                             <source :src="item.message" type="audio/mpeg">
+                            <source :src="item.message" type="audio/ogg">
                             Your browser does not support the audio tag.
                         </audio>
-                        <a :href="item.message" >Audio</a>
+                        <a :href="item.message">Audio</a>
 
                     </div>
                     <div class="footer" v-html="item.time"></div>
@@ -72,12 +72,13 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                    <audio preload="auto" controls>
-                            <source :src="item.message" type="audio/ogg">
+                        <audio preload="auto" controls autoplay>
                             <source :src="item.message" type="audio/mpeg">
+
+                            <source :src="item.message" type="audio/ogg">
                             Your browser does not support the audio tag.
                         </audio>
-                        <a :href="item.message" >Audio</a>
+                        <a :href="item.message">Audio</a>
 
                     </div>
 
