@@ -47,7 +47,7 @@
                             <source :src="item.message" type="audio/mpeg">
                             Your browser does not support the audio tag.
                         </audio>
-
+                        <a :href="item.message" >Audio</a>
 
                     </div>
                     <div class="footer" v-html="item.time"></div>
@@ -77,6 +77,7 @@
                             <source :src="item.message" type="audio/mpeg">
                             Your browser does not support the audio tag.
                         </audio>
+                        <a :href="item.message" >Audio</a>
 
                     </div>
 
