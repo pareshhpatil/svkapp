@@ -41,8 +41,13 @@
                     <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
-                    <div v-if="item.message_type=='audio'" >
-                        <source :src="item.message" type="audio/ogg">
+                    <div v-if="item.message_type=='audio'">
+                        <audio controls>
+                            <source :src="item.message" type="audio/ogg">
+                            <source :src="item.message" type="audio/mpeg">
+                            Your browser does not support the audio tag.
+                        </audio>
+
 
                     </div>
                     <div class="footer" v-html="item.time"></div>
@@ -66,8 +71,13 @@
                     <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
-                    <div v-if="item.message_type=='audio'" >
-                        <source :src="item.message" type="audio/ogg">
+                    <div v-if="item.message_type=='audio'">
+                    <audio controls>
+                            <source :src="item.message" type="audio/ogg">
+                            <source :src="item.message" type="audio/mpeg">
+                            Your browser does not support the audio tag.
+                        </audio>
+
                     </div>
 
                     <div class="footer" v-html="item.time"></div>
@@ -193,7 +203,7 @@
             this.user_id = '{{$user_id}}';
             this.group_id = '{{$group_id}}';
             setInterval(this.fetchData, 3000);
-            setTimeout(() =>  this.scrollToBottom(), 1000);
+            setTimeout(() => this.scrollToBottom(), 1000);
         },
         methods: {
             onImageChange(e) {
