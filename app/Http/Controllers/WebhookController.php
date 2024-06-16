@@ -51,7 +51,7 @@ class WebhookController extends Controller
             $apiController = new ApiController();
             $url = 'https://app.svktrv.in/whatsapp/' . Encryption::encode(substr($mobile, 2));
             $message = 'Message received from ' . $name;
-            $description = 'Message received from ' . $name;
+            //$description = 'Message received from ' . $name;
             $apiController->sendNotification(1, 1, $message, $description, $url, $image);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
