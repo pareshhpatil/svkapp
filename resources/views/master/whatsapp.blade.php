@@ -252,6 +252,8 @@
                     formData.append('file', this.image);
                     formData.append('message', this.message);
                     formData.append('group_id', this.group_id);
+                    formData.append('mylatitude', mylatitude);
+                    formData.append('mylongitude', mylongitude);
                     let res = await axios.post('/ajax/whatsapp/submit', formData, config);
                     this.messages = res.data;
                 }

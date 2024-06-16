@@ -167,6 +167,8 @@ class MasterController extends Controller
             $data_array['message_type'] = 'text';
         } else if ($array['type'] == 2) {
             $data_array['message_type'] = 'image';
+        } else if ($array['type'] == 3) {
+            $data_array['message_type'] = 'location';
         }
         $data_array['message'] = $body;
 
@@ -178,6 +180,10 @@ class MasterController extends Controller
         } else if ($data_array['message_type'] == 'image') {
             $whatsapparray['image']['link'] = $body;
             $whatsapparray['image']['caption'] = '';
+        } else if ($data_array['message_type'] == 'location') {
+            $whatsapparray['location']['latitude'] = $request->mylatitude;
+            $whatsapparray['location']['longitude'] = $request->mylongitude;
+            $whatsapparray['location']['name'] = 'Location';
         }
 
         $data_array['name'] = $this->model->getChatName($request->group_id);
