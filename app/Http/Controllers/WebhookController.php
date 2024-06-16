@@ -52,6 +52,16 @@ class WebhookController extends Controller
                 $longitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['longitude'];
                 $message = 'https://www.google.com/maps/search/?api=1&query=' . $latitude . ',' . $longitude;
                 $description = 'Location received';
+            } else if ($message_type == 'contacts') {
+                $contact = $data['entry'][0]['changes'][0]['value']['messages'][0]['contacts'][0];
+                $message = $contact['name']['formatted_name'] . ' <br>';
+                if ($contact['phones'][0]['phone']) {
+                    $message .= " <br> Phone: " . $contact['phones'][0]['phone'];
+                }
+                if ($contact['phones'][0]['wa_id']) {
+                    $message .= " <br> Whatsapp: " . substr($contact['phones'][0]['wa_id'], 2);
+                }
+                $description = 'Contact received';
             }
             $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
             $apiController = new ApiController();
