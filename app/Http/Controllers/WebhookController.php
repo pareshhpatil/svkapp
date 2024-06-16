@@ -56,7 +56,7 @@ class WebhookController extends Controller
                 $description = 'Document';
             } else if ($message_type == 'audio') {
                 $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
-                $message = $this->getWhatsappImage($image_id, 'mp3');
+                $message = $this->getWhatsappImage($image_id, 'ogg');
                 $image = $message;
                 $description = 'Audio';
             } else if ($message_type == 'location') {
