@@ -41,8 +41,9 @@
                     <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
-                    <div v-if="item.message_type=='audio'" v-on:click="window.location.assign(item.message, '_system');">
-                        <img src="/assets/img/audio.png" alt="photo" class="imaged w76">
+                    <div v-if="item.message_type=='audio'" >
+                        <source :src="item.message" type="audio/ogg">
+
                     </div>
                     <div class="footer" v-html="item.time"></div>
 
@@ -65,8 +66,8 @@
                     <div v-if="item.message_type=='document'" v-on:click="window.location.assign(item.message, '_system');">
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
-                    <div v-if="item.message_type=='audio    '" v-on:click="window.location.assign(item.message, '_system');">
-                        <img src="/assets/img/audio.png" alt="photo" class="imaged w76">
+                    <div v-if="item.message_type=='audio'" >
+                        <source :src="item.message" type="audio/ogg">
                     </div>
 
                     <div class="footer" v-html="item.time"></div>
