@@ -42,8 +42,8 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio controls>
-                            <source :src="item.message" type="audio/ogg">
+                        <audio preload="auto" controls>
+                            <source  :src="item.message" type="audio/ogg">
                             <source :src="item.message" type="audio/mpeg">
                             Your browser does not support the audio tag.
                         </audio>
@@ -72,7 +72,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                    <audio controls>
+                    <audio preload="auto" controls>
                             <source :src="item.message" type="audio/ogg">
                             <source :src="item.message" type="audio/mpeg">
                             Your browser does not support the audio tag.
