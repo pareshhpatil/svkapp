@@ -48,7 +48,13 @@
                             Your browser does not support the audio tag.
                         </audio>
                         <a :href="item.message">Audio</a>
-                        <button onclick="document.querySelector('audio').play()">Play Audio</button>
+
+                    </div>
+                    <div v-if="item.message_type=='video'">
+                        <video  width="640" height="360" controls>
+                            <source :src="item.message" type="video/mp4">
+                        </video>
+                        <a :href="item.message">Video</a>
 
                     </div>
                     <div class="footer" v-html="item.time"></div>
@@ -80,7 +86,6 @@
                             Your browser does not support the audio tag.
                         </audio>
                         <a :href="item.message">Audio</a>
-                        <button onclick="document.querySelector('audio').play()">Play Audio</button>
 
                     </div>
 
