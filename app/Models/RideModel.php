@@ -253,7 +253,7 @@ class RideModel extends ParentModel
     public function WhatsappList()
     {
         $results = DB::table('whatsapp_messages as t1')
-            ->select(DB::raw('concat(t1.name," - ",t1.mobile) as name,t1.mobile,DATE_FORMAT(t1.last_update_date, "%a %d %b %y %l:%i %p") as last_update_date'))
+            ->select(DB::raw('concat(t1.name," - ",t1.mobile) as name,t1.mobile,DATE_FORMAT(t1.created_date, "%a %d %b %y %l:%i %p") as last_update_date'))
             ->join(DB::raw('(SELECT mobile, MAX(last_update_date) as max_last_update,MAX(id) as id,max(name) as name
                     FROM whatsapp_messages
                     GROUP BY mobile) as t2'), function ($join) {
