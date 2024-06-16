@@ -28,6 +28,8 @@
                     <div class="title" v-html="item.name"></div>
                     <div v-if="item.message_type=='text'" class="bubble" v-html="item.message">
                     </div>
+                    <div v-if="item.message_type=='contacts'" class="bubble" v-html="item.message">
+                    </div>
                     <div v-if="item.message_type=='image'" class="bubble">
                         <a download="chat-file" :href="item.message" title="ImageName">
                             <img :src="item.message" alt="photo" class="imaged w160">
@@ -43,6 +45,8 @@
             <div v-if="item.type=='Sent'" class="message-item user">
                 <div class="content">
                     <div v-if="item.message_type=='text'" class="bubble" v-html="item.message">
+                    </div>
+                    <div v-if="item.message_type=='contacts'" class="bubble" v-html="item.message">
                     </div>
                     <div v-if="item.message_type=='image'" class="bubble">
                         <a download="chat-file" :href="item.message" title="ImageName">
