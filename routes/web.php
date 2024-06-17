@@ -141,3 +141,5 @@ Route::any('/facebook/webhook', [App\Http\Controllers\WebhookController::class, 
 if (env('APP_ENV') != 'local') {
     URL::forceScheme('https');
 }
+
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
