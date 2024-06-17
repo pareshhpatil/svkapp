@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
-
+use App\Http\Lib\GoogleTranslateService;
 class StaffController extends Controller
 {
     /**
@@ -48,6 +48,12 @@ class StaffController extends Controller
     public function dashboard()
     {
 
+        // $text = 'Paresh';
+        // $targetLanguage = 'hi'; // Hindi language code
+        // $GoogleTranslateService=new GoogleTranslateService();
+
+        // $translatedText = $GoogleTranslateService->translate($text, $targetLanguage);
+        // dd($translatedText);
 
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);

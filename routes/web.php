@@ -72,9 +72,10 @@ Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\TripControlle
 Route::get('/passenger/ride/rating/{ride_id}/{rating}', [App\Http\Controllers\TripController::class, 'rating']);
 Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::class, 'dateFetch']);
 Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl']);
+Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
+Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
 
 Route::group(['middleware' => array('auth', 'access')], function () {
-    Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
     Route::get('/book-ride', [App\Http\Controllers\HomeController::class, 'bookRide'])->name('book-ride');
@@ -88,7 +89,6 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
 
-    Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
     Route::get('/admin/ride/{link}', [App\Http\Controllers\HomeController::class, 'adminRideDetail']);
     Route::get('/admin/ride/assign/{link}', [App\Http\Controllers\HomeController::class, 'adminRideAssign']);
 

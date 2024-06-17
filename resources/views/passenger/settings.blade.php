@@ -76,6 +76,23 @@
                 <div class="item">
                     <div class="in">
                         <div>
+                            Whatsapp notifications
+                            <div class="text-muted">
+                                Receive whatsapp notification
+                            </div>
+                        </div>
+                        <div class="form-check form-switch  ms-2">
+
+                            <input class="form-check-input" @if($data->whatsapp_notification==1) checked @endif type="checkbox" value="1" v-on:change="updateValue('whatsapp_notification')" id="whatsapp_notification">
+                            <label class="form-check-label" for="whatsapp_notification"></label>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item">
+                    <div class="in">
+                        <div>
                             SMS notifications
                             <div class="text-muted">
                                 Receive SMS notification

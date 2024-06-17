@@ -7,6 +7,7 @@ use App\Models\ApiModel;
 use Validator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
+use Illuminate\Support\Facades\Http;
 
 class ApiController extends Controller
 {
@@ -139,7 +140,7 @@ class ApiController extends Controller
     public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png', $tokens = [])
     {
         if (empty($tokens)) {
-            $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type]);
+            $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type, 'app_notification' => 1]);
             if ($token != '') {
                 $tokens[] = $token;
             }
@@ -171,6 +172,29 @@ class ApiController extends Controller
 
             $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
             $res = $client->sendAsync($request)->wait();
+        }
+    }
+
+    function sendWhatsappMessage($user_id, $user_type, $template_name, $params)
+    {
+        $mobile = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type, 'whatsapp_notification' => 1]);
+        if ($mobile != false) {
+            $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"en"}},"components":[{"type":"body","parameters":[]}]}';
+            $array = json_decode($json, 1);
+            $array['components'][0]['parameters'] = $params;
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN'),
+                'Content-Type' => 'application/json', // Specify JSON content type if sending JSON data
+            ])->post('https://graph.facebook.com/v19.0/350618571465341/messages', $array);
+
+            if ($response->successful()) {
+                $responseData = $response->json(); // Convert response to JSON
+                // Handle successful response
+                return $responseData['messages'][0]['id'];
+            } else {
+                // Handle failed request
+                dd($response->status(), $response->body()); // Output status code and response body for debugging
+            }
         }
     }
 }
