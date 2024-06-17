@@ -198,19 +198,19 @@
                     <div class="from-to-block ">
                         <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
                             <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
-                            <strong>Home</strong>
+                            <strong>Pickup</strong>
                         </div>
                         <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
-                            <strong>Office</strong>
+                            <strong>Pickup</strong>
                         </div>
                         <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
                             <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
-                            <strong>Home</strong>
+                            <strong>Drop</strong>
                         </div>
                         <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
-                            <strong>Office</strong>
+                            <strong>Drop</strong>
                         </div>
                         <div class="arrow"></div>
                     </div>
@@ -321,7 +321,7 @@
                 <span class="time" v-html="data.ride.start_time"></span>
                 <div class="dot bg-info"></div>
                 <div class="content">
-                    <h4 class="title">Office
+                    <h4 class="title">Drop
                         <div class="text-end" style="right: 10px;float: right;">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w24 rounded right">
                         </div>
@@ -366,7 +366,7 @@
                 <span class="time" v-html="data.ride.end_time"></span>
                 <div class="dot bg-primary bg-red"></div>
                 <div class="content">
-                    <h4 class="title">Office
+                    <h4 class="title">Pickup
                         <div class="text-end" style="right: 10px;float: right;">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
