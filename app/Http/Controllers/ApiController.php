@@ -175,11 +175,23 @@ class ApiController extends Controller
         }
     }
 
-    function sendWhatsappMessage($user_id, $user_type, $template_name, $params)
+    function sendWhatsappMessage($user_id, $user_type, $template_name, $params, $button_link = null, $lang = 'en')
     {
+        $button_json = '';
+        if ($button_link != null) {
+            $button_json = ',{"type":"button","index":"0","sub_type":"url","parameters":[{"type":"text","text":"' . $button_link . '"}]}';
+        }
+
         $mobile = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type, 'whatsapp_notification' => 1]);
-        if ($mobile != false) {
-            $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"en"}},"components":[{"type":"body","parameters":[]}]}';
+        if ($mobile == false) {
+            if ($user_type == 4) {
+                $mobile = $this->model->getColumnValue('driver', 'id', $user_id, 'mobile');
+            } elseif ($user_type == 5) {
+                $mobile = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+            }
+        }
+        if ($mobile != false && strlen($mobile) == 10) {
+            $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"' . $lang . '"}},"components":[{"type":"body","parameters":[]}' . $button_json . ']}';
             $array = json_decode($json, 1);
             $array['components'][0]['parameters'] = $params;
             $response = Http::withHeaders([

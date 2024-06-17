@@ -70,6 +70,9 @@ class TripController extends Controller
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
 
+        $driver_short_url = $this->random();
+        $this->model->saveTable('short_url', ['short_url' => $driver_short_url, 'long_url' => $url]);
+
         if ($array['escort'] > 0) {
             if ($ride->escort > 0) {
                 $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $request->escort_id]);
@@ -86,7 +89,25 @@ class TripController extends Controller
         }
 
         $apiController->sendNotification($array['driver_id'], 4, 'A new trip has been assigned', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
+
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
+
+        $driver = $this->model->getTableRow('driver', 'id', $array['driver_id']);
+        $passenger = $this->model->getTableRow('passenger', 'id', $passengers[0]->passenger_id);
+        $booking_id = $this->formatNumberToString($ride_id);
+
+        $car_type = $this->model->getColumnValue('vehicle', 'vehicle_id', $ride->vehicle_id, 'car_type');
+
+
+        $params[] = array('type' => 'text', 'text' => $driver->name);
+        $params[] = array('type' => 'text', 'text' => $booking_id);
+        $params[] = array('type' => 'text', 'text' => $passenger->address);
+        $params[] = array('type' => 'text', 'text' => $ride->end_location);
+        $params[] = array('type' => 'text', 'text' => $this->htmlDate($ride->start_time));
+        $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
+        $params[] = array('type' => 'text', 'text' => $passenger->mobile);
+
+        $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi');
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
             $url = 'https://app.svktrv.in/passenger/ride/' . $link;
@@ -98,7 +119,19 @@ class TripController extends Controller
 
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $apiController->userSMS($row->passenger_id, 5, $message_, '1107168138570499675');
+
+            $passenger = $this->model->getTableRow('passenger', 'id', $row->passenger_id);
+            $params = [];
+            $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
+            $params[] = array('type' => 'text', 'text' => $booking_id);
+            $params[] = array('type' => 'text', 'text' => $passenger->address);
+            $params[] = array('type' => 'text', 'text' => $row->drop_location);
+            $params[] = array('type' => 'text', 'text' => $car_type);
+            $params[] = array('type' => 'text', 'text' => $driver->name);
+            $params[] = array('type' => 'text', 'text' => $driver->mobile);
+            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en');
         }
+
 
         return redirect('/my-rides/pending');
     }
@@ -110,6 +143,20 @@ class TripController extends Controller
         if ($url != false) {
             return redirect($url, 301);
         }
+    }
+
+    function formatNumberToString($number, $length = 10, $prefix = 'STH')
+    {
+        // Convert number to string
+        $numberString = (string) $number;
+
+        // Calculate the number of zeros needed
+        $zerosToAdd = $length - strlen($prefix) - strlen($numberString);
+
+        // Append zeros to the left
+        $formattedString = $prefix . str_repeat('0', $zerosToAdd) . $numberString;
+
+        return $formattedString;
     }
 
     function random($length_of_string = 4)
