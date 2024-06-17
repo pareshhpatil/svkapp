@@ -39,9 +39,21 @@
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($whatsapps)!!}');
+            setInterval(this.fetchData, 3000);
         },
         methods: {
-
+            async fetchData() {
+                await axios.get('/whatsapp/getdata/1')
+                    .then(response => {
+                        // Update your data with the received response
+                        if (response.data.length > this.count) {
+                            this.data = response.data;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
         }
     })
 </script>

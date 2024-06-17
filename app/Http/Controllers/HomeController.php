@@ -357,7 +357,7 @@ class HomeController extends Controller
         return view('master.chats', $data);
     }
 
-    public function whatsapp()
+    public function whatsapp($get_data = null)
     {
         $data['menu'] = 0;
         $data['title'] = 'Whatsapp';
@@ -366,6 +366,9 @@ class HomeController extends Controller
             $chats[$key]['pending_message'] = $this->model->getPendingMessagetCount($row['mobile']);
         }
         $data['whatsapps'] = $this->EncryptList($chats, 0, '/whatsapp/', 'mobile');
+        if ($get_data == 1) {
+            return json_encode($data['whatsapps']);
+        }
         return view('master.whatsapps', $data);
     }
 
