@@ -8,6 +8,7 @@ use Validator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Http;
+use App\Models\StaffModel;
 
 class ApiController extends Controller
 {
@@ -175,7 +176,7 @@ class ApiController extends Controller
         }
     }
 
-    function sendWhatsappMessage($user_id, $user_type, $template_name, $params, $button_link = null, $lang = 'en')
+    function sendWhatsappMessage($user_id, $user_type, $template_name, $params, $button_link = null, $lang = 'en', $store = 0)
     {
         $button_json = '';
         if ($button_link != null) {
@@ -202,6 +203,10 @@ class ApiController extends Controller
             if ($response->successful()) {
                 $responseData = $response->json(); // Convert response to JSON
                 // Handle successful response
+
+                $StaffModel = new StaffModel();
+                $StaffModel->saveWhatsapp($mobile, 'Name', 'Sent', 'Sent', 'text', $template_name, $responseData['messages'][0]['id']);
+
                 return $responseData['messages'][0]['id'];
             } else {
                 // Handle failed request

@@ -70,6 +70,7 @@ class TripController extends Controller
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
 
+
         $driver_short_url = $this->random();
         $this->model->saveTable('short_url', ['short_url' => $driver_short_url, 'long_url' => $url]);
 
@@ -107,7 +108,7 @@ class TripController extends Controller
         $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
         $params[] = array('type' => 'text', 'text' => $passenger->mobile);
 
-        $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi');
+        $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
             $url = 'https://app.svktrv.in/passenger/ride/' . $link;
@@ -130,7 +131,7 @@ class TripController extends Controller
             $params[] = array('type' => 'text', 'text' => $car_type);
             $params[] = array('type' => 'text', 'text' => $driver->name);
             $params[] = array('type' => 'text', 'text' => $driver->mobile);
-            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en');
+            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
         }
 
 
