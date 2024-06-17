@@ -186,7 +186,7 @@
         // --------------------------------------------------------------------
         if (dt_basic_table.length) {
             dt_basic = dt_basic_table.DataTable({
-                ajax: '/ajax/ride/' + project_id + '/' + date + '/0',
+                ajax: '/ajax/route/' + project_id + '/' + date + '/0',
                 columns: [{
                         data: 'id'
                     },
