@@ -124,6 +124,7 @@ class TripController extends Controller
             $params = [];
             $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
             $params[] = array('type' => 'text', 'text' => $booking_id);
+            $params[] = array('type' => 'text', 'text' => $this->htmlDate($row->pickup_time));
             $params[] = array('type' => 'text', 'text' => $passenger->address);
             $params[] = array('type' => 'text', 'text' => $row->drop_location);
             $params[] = array('type' => 'text', 'text' => $car_type);
