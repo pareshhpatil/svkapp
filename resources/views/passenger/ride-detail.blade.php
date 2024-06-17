@@ -321,7 +321,7 @@
                 <span class="time" v-html="data.ride.start_time"></span>
                 <div class="dot bg-info"></div>
                 <div class="content">
-                    <h4 class="title">Drop
+                    <h4 class="title">Pickup
                         <div class="text-end" style="right: 10px;float: right;">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w24 rounded right">
                         </div>
@@ -366,7 +366,7 @@
                 <span class="time" v-html="data.ride.end_time"></span>
                 <div class="dot bg-primary bg-red"></div>
                 <div class="content">
-                    <h4 class="title">Pickup
+                    <h4 class="title">Drop
                         <div class="text-end" style="right: 10px;float: right;">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
