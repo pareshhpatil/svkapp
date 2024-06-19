@@ -11,6 +11,7 @@ use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use App\Http\Lib\GoogleTranslateService;
+
 class StaffController extends Controller
 {
     /**
@@ -321,12 +322,14 @@ class StaffController extends Controller
             $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
             $this->model->savePaymentStatement($request->source_id, $request->bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
             if (strlen($employee->mobile) == 10) {
+                $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $employee->mobile, 'id');
+                if ($failed == false) {
+                    $url = 'https://app.svktrv.in/transaction/detail/' . $code;
+                    $short_url = $this->random();
+                    $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
 
-                $url = 'https://app.svktrv.in/transaction/detail/' . $code;
-                $short_url = $this->random();
-                $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
-
-                $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+                    $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+                }
             }
             if ($return == 0) {
                 return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');

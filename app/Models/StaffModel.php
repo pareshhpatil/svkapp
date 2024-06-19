@@ -238,6 +238,17 @@ class StaffModel extends ParentModel
         return $id;
     }
 
+    public function saveWhatsappFailed($mobile)
+    {
+        $id = DB::table('whatsapp_failed')->insertGetId(
+            [
+                'mobile' => $mobile,
+                'created_date' => date('Y-m-d H:i:s')
+            ]
+        );
+        return $id;
+    }
+
     public function updateWhatsappStatus($id, $status, $time)
     {
         DB::table('whatsapp_messages')

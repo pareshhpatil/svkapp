@@ -192,25 +192,29 @@ class ApiController extends Controller
             }
         }
         if ($mobile != false && strlen($mobile) == 10) {
-            $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"' . $lang . '"},"components":[{"type":"body","parameters":[]}' . $button_json . ']}}';
-            $array = json_decode($json, 1);
-            $array['template']['components'][0]['parameters'] = $params;
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN'),
-                'Content-Type' => 'application/json', // Specify JSON content type if sending JSON data
-            ])->post('https://graph.facebook.com/v19.0/350618571465341/messages', $array);
+            $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $mobile, 'id');
+            if ($failed == false) {
 
-            if ($response->successful()) {
-                $responseData = $response->json(); // Convert response to JSON
-                // Handle successful response
+                $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"' . $lang . '"},"components":[{"type":"body","parameters":[]}' . $button_json . ']}}';
+                $array = json_decode($json, 1);
+                $array['template']['components'][0]['parameters'] = $params;
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN'),
+                    'Content-Type' => 'application/json', // Specify JSON content type if sending JSON data
+                ])->post('https://graph.facebook.com/v19.0/350618571465341/messages', $array);
 
-                $StaffModel = new StaffModel();
-                $StaffModel->saveWhatsapp($mobile, 'Name', 'Sent', 'Sent', 'text', $template_name, $responseData['messages'][0]['id']);
+                if ($response->successful()) {
+                    $responseData = $response->json(); // Convert response to JSON
+                    // Handle successful response
 
-                return $responseData['messages'][0]['id'];
-            } else {
-                // Handle failed request
-                dd($response->status(), $response->body()); // Output status code and response body for debugging
+                    $StaffModel = new StaffModel();
+                    $StaffModel->saveWhatsapp($mobile, '', 'Sent', 'Sent', 'text', $template_name, $responseData['messages'][0]['id']);
+
+                    return $responseData['messages'][0]['id'];
+                } else {
+                    // Handle failed request
+                    dd($response->status(), $response->body()); // Output status code and response body for debugging
+                }
             }
         }
     }

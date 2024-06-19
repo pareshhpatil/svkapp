@@ -59,14 +59,12 @@ class WebhookController extends Controller
                 $message = $this->getWhatsappImage($image_id, 'ogg');
                 $image = $message;
                 $description = 'Audio';
-            }
-            else if ($message_type == 'video') {
+            } else if ($message_type == 'video') {
                 $image_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['video']['id'];
                 $message = $this->getWhatsappImage($image_id, 'mp4');
                 $image = $message;
                 $description = 'Video';
-            }
-            else if ($message_type == 'location') {
+            } else if ($message_type == 'location') {
                 $latitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['latitude'];
                 $longitude = $data['entry'][0]['changes'][0]['value']['messages'][0]['location']['longitude'];
                 $message = 'https://www.google.com/maps/search/?api=1&query=' . $latitude . ',' . $longitude;
@@ -93,8 +91,15 @@ class WebhookController extends Controller
             $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
             $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
             $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
+            $error_code = '';
+            if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
+                $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
+            }
 
             $model->updateWhatsappStatus($message_id, $status, $timestamp);
+            if ($error_code == '131026') {
+                $model->saveWhatsappFailed(substr($mobile, 2));
+            }
         }
 
 
