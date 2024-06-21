@@ -42,7 +42,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls autoplay muted>
+                        <audio preload="auto" controls  >
                             <source :src="item.message" type="audio/mpeg">
                             <source :src="item.message" type="audio/ogg">
                             Your browser does not support the audio tag.
@@ -56,6 +56,7 @@
                         </video>
 
                     </div>
+                    <div class="footer" style="opacity: 1; font-size: 15px;" v-if="item.reaction" v-html="item.reaction"></div>
                     <div class="footer" v-html="item.time"></div>
 
                 </div>
@@ -78,7 +79,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls autoplay>
+                        <audio preload="auto" controls >
                             <source :src="item.message" type="audio/mpeg">
 
                             <source :src="item.message" type="audio/ogg">
@@ -87,9 +88,10 @@
                         <a :href="item.message">Audio</a>
 
                     </div>
-
+                    <div class="footer" style="opacity: 1; font-size: 15px;" v-if="item.reaction" v-html="item.reaction"></div>
                     <div class="footer" v-html="item.time"></div>
                     <div class="footer" v-html="item.status"></div>
+
                 </div>
             </div>
         </div>
