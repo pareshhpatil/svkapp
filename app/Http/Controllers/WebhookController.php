@@ -86,6 +86,12 @@ class WebhookController extends Controller
                 }
                 $description = 'Contact received';
             }
+
+            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['context'])) {
+                $message_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'];
+                $model->updateTable('whatsapp_messages', 'message_id', $message_id, 'reaction', $message);
+                $message_type = 'reaction';
+            }
             if ($message_type != 'reaction') {
                 $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
             }
