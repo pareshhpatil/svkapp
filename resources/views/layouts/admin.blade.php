@@ -436,7 +436,7 @@
         <script src="{{ asset('bower_components/select2/dist/js/select2.full.min.js') }}"></script>
         <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
         <script src="{{ asset('dist/js/demo.js') }}"></script>
-        <script src="{{ asset('dist/js/custom.js?version=33') }}"></script>
+        <script src="{{ asset('dist/js/custom.js?version=34') }}"></script>
         <script>
                             $(function () {
                                 $('.select2').select2({
