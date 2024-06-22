@@ -407,18 +407,6 @@
                     @yield('content')
 					
 					
-					<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2768566574593657"
-     crossorigin="anonymous"></script>
-<!-- Admin -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2768566574593657"
-     data-ad-slot="5658933431"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
                 </section>
 				
             </div>

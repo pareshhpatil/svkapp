@@ -35,8 +35,6 @@
                 }
             }
         </script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2768566574593657"
-     crossorigin="anonymous"></script>
     </head>
     <body class="hold-transition skin-blue sidebar-mini fixed">
         <div id="load"></div>

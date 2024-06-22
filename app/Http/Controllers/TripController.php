@@ -20,6 +20,8 @@ use App\Model\Master;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Session;
+use GuzzleHttp\Client;
+
 
 class TripController extends Controller
 {
@@ -27,6 +29,7 @@ class TripController extends Controller
     private $employee_model;
     private $master_model;
     private $trip_model;
+    private $client;
     private $schedulerMobile = array('9730946150', '8879391658');
     private $tripAsignMobile = array('9730946150', '8879391658');
     private $reviewMobile = array('9730946150');
@@ -38,6 +41,8 @@ class TripController extends Controller
         $this->employee_model = new Employee();
         $this->master_model = new Master();
         $this->trip_model = new Trip();
+        $this->client = new Client();
+
         $this->validateSession(array(1, 4));
     }
 
@@ -242,6 +247,8 @@ class TripController extends Controller
         $data['title'] = 'Success Trip';
         $data['success'] = 'Trip has been scheduled successfully';
         $data['link'] = $link;
+
+        $this->client->get('https://app.siddhivinayaktravelshouse.in/notification/trip/detail/' . $trip_id);
         return view('trip.saved', $data);
     }
 
