@@ -46,26 +46,52 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Extra KM<span class="required"></span></label>
                 <div class="col-md-7">
-                    <input type="number" step="0.01"  name="extra_km" value="" class="form-control">
+                    <input type="number" step="0.01" name="extra_km" value="" class="form-control">
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Extra hour<span class="required"></span></label>
                 <div class="col-md-7">
-                    <input type="number" step="0.01"  name="extra_hour" value="" class="form-control">
+                    <input type="number" step="0.01" name="extra_hour" value="" class="form-control">
                 </div>
             </div>
-          
+
             <div class="form-group">
                 <label class="control-label col-md-4">Toll / Parking<span class="required"></span></label>
                 <div class="col-md-7">
-                    <input type="number" step="0.01"  name="toll_parking" value="" class="form-control">
+                    <input type="number" step="0.01" name="toll_parking" value="" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Driver Allowance<span class="required"></span></label>
+                <div class="col-md-7">
+                    <input type="number" step="0.01" name="driver_amount" value="" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Start KM<span class="required"></span></label>
+                <div class="col-md-7">
+                    <input type="number" step="0.01" name="start_km" value="" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">End KM<span class="required"></span></label>
+                <div class="col-md-7">
+                    <input type="number" step="0.01" name="end_km" value="" class="form-control">
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Vendor amount<span class="required"></span></label>
                 <div class="col-md-7">
-                    <input type="number" step="0.01"  name="vendor_amount" value="" class="form-control">
+                    <input type="number" step="0.01" name="vendor_amount" value="" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">Remark<span class="required"></span></label>
+                <div class="col-md-7">
+                    <textarea name="remark" value="" class="form-control">
+                    </textarea>
                 </div>
             </div>
 

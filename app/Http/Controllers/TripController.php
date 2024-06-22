@@ -265,6 +265,13 @@ class TripController extends Controller
         $data['toll_parking'] = ($_POST['toll_parking'] > 0) ? $_POST['toll_parking'] : 0;
         $data['vendor_amount'] = ($_POST['vendor_amount'] > 0) ? $_POST['vendor_amount'] : 0;
 
+        $data['start_km'] = ($_POST['start_km'] > 0) ? $_POST['start_km'] : '';
+        $data['end_km'] = ($_POST['end_km'] > 0) ? $_POST['end_km'] : '';
+        $data['remark'] = ($_POST['remark'] != '') ? $_POST['remark'] : '';
+        $data['driver_amount'] = ($_POST['driver_amount'] > 0) ? $_POST['driver_amount'] : 0;
+
+
+
         $data['package_amount'] = $package->package_amount;
         $data['extra_km_amount'] = $package->extra_km * $data['extra_km'];
         $data['extra_hour_amount'] = $package->extra_hour * $data['extra_hour'];
