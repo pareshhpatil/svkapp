@@ -102,7 +102,7 @@ class TripController extends Controller
         $vehicle = $this->model->getTableRow('vehicle', 'vehicle_id', $ride->vehicle_id);
         $car_type = $vehicle->car_type;
 
-
+        $params=[];
         $params[] = array('type' => 'text', 'text' => $driver->name);
         $params[] = array('type' => 'text', 'text' => $booking_id);
         $params[] = array('type' => 'text', 'text' => $passenger->address);
