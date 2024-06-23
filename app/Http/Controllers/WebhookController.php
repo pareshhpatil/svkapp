@@ -171,6 +171,7 @@ class WebhookController extends Controller
         $data['driver_id'] = $ride->driver_id;
         $data['vehicle_id'] = $ride->vehicle_id;
         $data['escort'] = $ride->escort;
+        $data['ride_id'] = $trip->ride_id;
         $data['pickup_location'] = $trip->pickup_location;
         $data['emails'] = explode(',', $trip->emails);
         $data['mobiles'] = explode(',', $trip->mobiles);
