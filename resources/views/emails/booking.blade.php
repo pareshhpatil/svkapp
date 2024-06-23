@@ -245,7 +245,6 @@
                                                                             <tr>
                                                                                 <td style="margin: 0px; padding-top: 5px; padding-left: 7px;">
                                                                                     <div style="margin-top: 2px; font-size: 14px; font-weight: bold; font-stretch: normal; line-height: 1.43; color: #1f425c;">{{$v}}</div>
-                                                                                    <!-- <div style="font-size: 12px; font-stretch: normal; line-height: 1.33; color: rgb(116, 127, 141);">{{$v['mobile']}}<br></div> -->
                                                                                 </td>
                                                                             </tr>
                                                                             @endforeach
