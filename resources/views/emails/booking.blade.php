@@ -117,7 +117,7 @@
                                                             <tr>
                                                                 <td style="margin: 0px; padding-top: 8px; width: 364.95px;">
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 24px;"><span style="font-size: 12px; font-weight: normal; font-stretch: normal; line-height: 2.2; color: rgb(116, 127, 141); margin: 0px; text-wrap: nowrap; overflow: auto hidden;">Pickup Address</span></div>
-                                                                    <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;"><img height="20" style="margin-bottom: -5px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/location.png"><span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">{{$pickup_address}}</span></div>
+                                                                    <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;"><img height="20" style="margin-bottom: -5px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/location.png"><span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">&nbsp; {{$pickup_address}}</span></div>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
