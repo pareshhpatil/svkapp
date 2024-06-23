@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row" id="insert">
-    <form action="/trip/completesave" method="post" id="customerForm" class="form-horizontal">
+    <form action="/trip/completesave" enctype="multipart/form-data" method="post" id="customerForm" class="form-horizontal">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="col-md-6">
             <div class="form-group">
@@ -90,8 +90,13 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Remark<span class="required"></span></label>
                 <div class="col-md-7">
-                    <textarea name="remark" value="" class="form-control">
-                    </textarea>
+                    <textarea name="remark" value="" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Attachments<span class="required"></span></label>
+                <div class="col-md-7">
+                    <input type="file" multiple name="uploaded_file[]">
                 </div>
             </div>
 

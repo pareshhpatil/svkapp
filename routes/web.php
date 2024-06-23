@@ -166,6 +166,7 @@ Route::get('/trip/rating/{id}/{rating}', 'TripController@rating');
 
 Route::get('/trip/schedule/{id}', 'TripController@schedule');
 Route::get('/trip/complete/{id}', 'TripController@complete');
+Route::get('/trip/complete/detail/{id}', 'TripController@completeDetail');
 Route::post('/trip/schedulesave', 'TripController@schedulesave');
 Route::get('/trip/add', 'TripController@addtrip');
 Route::get('/trip/package', 'TripController@package');

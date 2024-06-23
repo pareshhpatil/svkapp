@@ -41,6 +41,9 @@
                                 @if($item->status=='Assigned')
                                 <a href="/trip/complete/{{$item->link}}" target="_BLANK" class="btn btn-xs btn-primary">Complete</a>
                                 @endif
+                                @if($item->status=='Completed')
+                                <a href="/trip/complete/detail/{{$item->link}}" target="_BLANK" class="btn btn-xs btn-primary">Detail</a>
+                                @endif
                                 
                                 @if($login_type!='client' && $item->status=='Requested')
                                 <a href="/trip/schedule/{{$item->req_link}}" target="_BLANK" class="btn btn-xs btn-warning">Schedule</a>
