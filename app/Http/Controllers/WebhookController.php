@@ -166,8 +166,6 @@ class WebhookController extends Controller
         $trip = $this->model->getTableRow('trip', 'trip_id', $trip_id);
         $ride = $this->model->getTableRow('ride', 'id', $trip->ride_id);
 
-
-
         $data['driver_id'] = $ride->driver_id;
         $data['vehicle_id'] = $ride->vehicle_id;
         $data['escort'] = $ride->escort;
@@ -181,28 +179,24 @@ class WebhookController extends Controller
         $tripController->assignCab($request);
 
 
+        // $toEmail = 'pareshhpatil@gmail.com';
+        // $toName = 'Paresh';
+        // $ccEmails = ['cc1@example.com', 'cc1@example.com'];
+        // // $ccEmails = [
+        // //     'cc1@example.com' => 'CC Recipient 1',
+        // //     'cc2@example.com' => 'CC Recipient 2',
+        // //     // Add more CC recipients as needed
+        // // ];
 
+        // $data['booking_id'] = '';
+        // $data['pickup_time'] = '';
+        // $data['pickup_address'] = '';
+        // $data['driver_name'] = '';
+        // $data['driver_mobile'] = '';
+        // $data['vehicle_number'] = '';
+        // $data['vehicle_type'] = '';
+        // $data['passengers'] = [];
 
-
-
-        $toEmail = 'pareshhpatil@gmail.com';
-        $toName = 'Paresh';
-        $ccEmails = ['cc1@example.com', 'cc1@example.com'];
-        // $ccEmails = [
-        //     'cc1@example.com' => 'CC Recipient 1',
-        //     'cc2@example.com' => 'CC Recipient 2',
-        //     // Add more CC recipients as needed
-        // ];
-
-        $data['booking_id'] = '';
-        $data['pickup_time'] = '';
-        $data['pickup_address'] = '';
-        $data['driver_name'] = '';
-        $data['driver_mobile'] = '';
-        $data['vehicle_number'] = '';
-        $data['vehicle_type'] = '';
-        $data['passengers'] = [];
-
-        Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
+        // Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
     }
 }

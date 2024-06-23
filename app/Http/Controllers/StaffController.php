@@ -55,7 +55,15 @@ class StaffController extends Controller
 
         // $translatedText = $GoogleTranslateService->translate($text, $targetLanguage);
         // dd($translatedText);
-
+        // $data['booking_id']='jj';
+        // $data['pickup_time']='hh';
+        // $data['pickup_address']='gg';
+        // $data['driver_name']='ff';
+        // $data['driver_mobile']='dd';
+        // $data['vehicle_number']='ss';
+        // $data['vehicle_type']='aa';
+        // $data['passengers']=['aaaaaaaaaaa','sssssssssss'];
+        // return view('emails.booking', $data);
 
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
