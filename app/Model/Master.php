@@ -506,7 +506,7 @@ class Master extends Model
         return $id;
     }
 
-    public function updateTransaction($id, $status, $referenceId, $utr, $json)
+    public function updateTransaction($id, $status, $referenceId, $utr, $json,$message)
     {
         DB::table('payment_transaction')
             ->where('id', $id)
@@ -514,6 +514,7 @@ class Master extends Model
                 'status' => $status,
                 'referenceId' => $referenceId,
                 'json' => $json,
+                'message' => $message,
                 'utr' => $utr
             ]);
     }
