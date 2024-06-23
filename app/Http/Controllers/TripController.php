@@ -107,7 +107,7 @@ class TripController extends Controller
         $params[] = array('type' => 'text', 'text' => $booking_id);
         $params[] = array('type' => 'text', 'text' => $passenger->address);
         $params[] = array('type' => 'text', 'text' => $ride->end_location);
-        $params[] = array('type' => 'text', 'text' => $this->htmlDate($ride->start_time));
+        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
         $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
         $params[] = array('type' => 'text', 'text' => ($passenger->mobile!=''?$passenger->mobile:'NA') );
 
@@ -121,14 +121,14 @@ class TripController extends Controller
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
             $url = 'https://app.svktrv.in/l/' . $short_url;
 
-            $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
+            $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDateTime($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $apiController->userSMS($row->passenger_id, 5, $message_, '1107168138570499675');
 
             $passenger = $this->model->getTableRow('passenger', 'id', $row->passenger_id);
             $params = [];
             $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
             $params[] = array('type' => 'text', 'text' => $booking_id);
-            $params[] = array('type' => 'text', 'text' => $this->htmlDate($row->pickup_time));
+            $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
             $params[] = array('type' => 'text', 'text' => $passenger->address);
             $params[] = array('type' => 'text', 'text' => $row->drop_location);
             $params[] = array('type' => 'text', 'text' => $car_type);
@@ -151,7 +151,7 @@ class TripController extends Controller
                     $params = [];
                     $params[] = array('type' => 'text', 'text' => 'Passenger');
                     $params[] = array('type' => 'text', 'text' => $booking_id);
-                    $params[] = array('type' => 'text', 'text' => $this->htmlDate($ride->start_time));
+                    $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
                     $params[] = array('type' => 'text', 'text' => $ride->start_location);
                     $params[] = array('type' => 'text', 'text' => $ride->end_location);
                     $params[] = array('type' => 'text', 'text' => $car_type);
@@ -163,7 +163,7 @@ class TripController extends Controller
 
 
             $data['booking_id'] = $booking_id;
-            $data['pickup_time'] = $this->htmlDate($ride->start_time);
+            $data['pickup_time'] = $this->htmlDateTime($ride->start_time);
             $data['pickup_address'] = $request->pickup_location;
             $data['driver_name'] = $driver->name;
             $data['driver_mobile'] = $driver->mobile;
