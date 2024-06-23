@@ -46,26 +46,31 @@
 
         <div class="panel panel-primary" style="display: none;" id="insert">
             <div class="panel-body" style="overflow: auto;">
-                <div class="row"  >
-                    <form action="/admin/vehicle/savereplacecab" method="post"  enctype="multipart/form-data" class="form-horizontal">
+                <div class="row">
+                    <form action="/admin/vehicle/savereplacecab" method="post" enctype="multipart/form-data" class="form-horizontal">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label col-md-4">Vehicle Number<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <input type="text"  name="vehicle_number" required=""  class="form-control" >
+                                    <select name="vehicle_number" style="width: 100%;" required class="form-control select2" data-placeholder="Select...">
+                                        <option value="">Select vehicle</option>
+                                        @foreach ($vehicle_list as $item)
+                                        <option value="{{$item->number}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">Owner name<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <input type="text"  name="owner" required=""  class="form-control" >
+                                    <input type="text" name="owner" required="" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">Replace With Vehicle<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <select name="vehicle_id" required class="form-control" data-placeholder="Select...">
+                                    <select name="vehicle_id" style="width: 100%;" required class="form-control select2" data-placeholder="Select...">
                                         <option value="">Select vehicle</option>
                                         @foreach ($vehicle_list as $item)
                                         <option value="{{$item->vehicle_id}}">{{$item->name}}</option>
@@ -108,7 +113,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Date<span class="required"> </span></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy" >
+                                    <input type="text" name="date" readonly="" value="{{$current_date}}" autocomplete="off" class="form-control form-control-inline date-picker" data-date-format="dd M yyyy">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -128,15 +133,15 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Remark<span class="required">* </span></label>
                                 <div class="col-md-7">
-                                    <input type="text" id="remark" name="remark"   class="form-control" >
+                                    <input type="text" id="remark" name="remark" class="form-control">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="modal-footer">
                                     <p id="loaded_n_total"></p>
-                                    <a href="" class="btn btn-default pull-right" >Close</a>
-                                    <button  type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
+                                    <a href="" class="btn btn-default pull-right">Close</a>
+                                    <button type="submit" class="btn btn-primary pull-right" style="margin-right: 10px;">Save</button>
                                 </div>
                             </div>
                         </div>

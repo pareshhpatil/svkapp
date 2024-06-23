@@ -93,7 +93,87 @@ class Trip extends Model
                 'passengers' => $data['passengers'],
                 'pickup_location' => $data['pickup_location'],
                 'drop_location' => $data['drop_location'],
+                'emails' => $data['emails'],
+                'mobiles' => $data['mobiles'],
                 'note' => $data['note'],
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+    public function saveDriver($data, $user_id)
+    {
+        $id = DB::table('driver')->insertGetId(
+            [
+                'name' => $data['name'],
+                'mobile' => $data['mobile'],
+                'address' => $data['address'],
+                'license' => $data['license'],
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+
+    public function saveRide($data, $user_id)
+    {
+        $id = DB::table('ride')->insertGetId(
+            [
+                'title' => $data['title'],
+                'project_id' => $data['project_id'],
+                'driver_id' => $data['driver_id'],
+                'vehicle_id' => $data['vehicle_id'],
+                'date' => $data['date'],
+                'type' => $data['type'],
+                'status' => $data['status'],
+                'start_time' => $data['start_time'],
+                'end_time' => $data['end_time'],
+                'total_passengers' => $data['total_passengers'],
+                'start_location' => $data['start_location'],
+                'end_location' => $data['end_location'],
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+    public function savePassenger($data, $user_id)
+    {
+        $id = DB::table('passenger')->insertGetId(
+            [
+                'project_id' => $data['project_id'],
+                'employee_name' => $data['name'],
+                'passenger_type' => 3,
+                'gender' => $data['gender'],
+                'address' => $data['address'],
+                'location' => $data['location'],
+                'mobile' => $data['mobile'],
+                'created_by' => $user_id,
+                'created_date' => date('Y-m-d H:i:s'),
+                'last_update_by' => $user_id
+            ]
+        );
+        return $id;
+    }
+
+    public function saveRidePassenger($data, $user_id)
+    {
+        $id = DB::table('ride_passenger')->insertGetId(
+            [
+                'passenger_id' => $data['passenger_id'],
+                'ride_id' => $data['ride_id'],
+                'pickup_time' => $data['pickup_time'],
+                'pickup_location' => $data['pickup_location'],
+                'drop_location' => $data['drop_location'],
+                'otp' => $data['otp'],
                 'created_by' => $user_id,
                 'created_date' => date('Y-m-d H:i:s'),
                 'last_update_by' => $user_id

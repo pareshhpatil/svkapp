@@ -53,12 +53,15 @@ class Master extends Model
         return $retObj;
     }
 
-    public function getMasterValue($table, $column, $id,$value)
+    public function getMasterValue($table, $column, $id, $value)
     {
         $retObj = DB::table($table)
             ->select(DB::raw($value))
             ->where($column, $id)
             ->first();
+        if (empty($retObj)) {
+            return false;
+        }
         return $retObj->{$value};
     }
 

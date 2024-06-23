@@ -231,6 +231,8 @@ class TripController extends Controller
         $data['pickup_location'] = $detail->pickup_location;
         $data['drop_location'] = $detail->drop_location;
         $data['vehicle_type'] = $detail->vehicle_type;
+        $data['emails'] = $_POST['emails'];
+        $data['mobiles'] = $_POST['mobiles'];
         $data['admin_id'] = $this->admin_id;
         $data['note'] = $detail->note;
         $trip_id = $this->trip_model->saveTripDetail($data, $this->user_id);
@@ -238,11 +240,57 @@ class TripController extends Controller
         $long_url = 'http://siddhivinayaktravel.in/trip/' . $link;
         $short_url = $this->master_model->getShortUrl($long_url);
         $sms = "Trip Assigned for " . $detail->passengers . " on " . date('d M Y', strtotime($detail->date)) . ' ' . date('h:i A', strtotime($detail->time)) . " Pickup from " . $detail->pickup_location . " " . $short_url;
+
+        $employee = $this->master_model->getMasterDetail('employee', 'employee_id', $_POST['employee_id']);
+        $driver_id = $this->master_model->getMasterValue('driver', 'mobile', $employee->mobile, 'id');
+        if ($driver_id == false) {
+            $driver_data['name'] = $employee->name;
+            $driver_data['mobile'] = $employee->mobile;
+            $driver_data['address'] = $employee->address;
+            $driver_data['license'] = $employee->license;
+            $driver_id = $this->trip_model->saveDriver($driver_data, $this->user_id);
+        }
+
+
+
+        $ride_data['title'] = 'Casual duty for ' . $detail->passengers;
+        $ride_data['project_id'] = '5';
+        $ride_data['driver_id'] = $driver_id;
+        $ride_data['vehicle_id'] = $_POST['vehicle_id'];
+        $ride_data['date'] = $detail->date;
+        $ride_data['type'] = 'Pickup';
+        $ride_data['status'] = '1';
+        $ride_data['start_time'] = $detail->date . ' ' . $detail->time;
+        $ride_data['end_time'] = $detail->date . ' ' . $detail->time;
+        $ride_data['total_passengers'] = $detail->total_passengers;
+        $ride_data['start_location'] = $detail->pickup_location;
+        $ride_data['end_location'] = $detail->drop_location;
+        $ride_id = $this->trip_model->saveRide($ride_data, $this->user_id);
+
         foreach ($this->tripAsignMobile as $mobile) {
             // $this->sms_send($mobile, $sms);
         }
+        foreach (explode(',', $data['passengers']) as $name) {
+            $pdata['name'] = $name;
+            $pdata['project_id'] = 5;
+            $pdata['location'] = '';
+            $pdata['mobile'] = '';
+            $pdata['gender'] = 'Male';
+            $pdata['address'] = $detail->pickup_location;
+            $passenger_id = $this->trip_model->savePassenger($pdata, $this->user_id);
+
+            $rpdata['passenger_id'] = $passenger_id;
+            $rpdata['ride_id'] = $ride_id;
+            $rpdata['pickup_time'] = $ride_data['start_time'];
+            $rpdata['pickup_location'] = $ride_data['start_location'];
+            $rpdata['drop_location'] = $ride_data['end_location'];
+            $rpdata['otp'] = rand(1111, 9999);
+            $this->trip_model->saveRidePassenger($rpdata, $this->user_id);
+        }
+
         $this->master_model->updateTableColumn('trip_request', 'trip_id', $trip_id, 'req_id', $_POST['req_id'], $this->user_id);
         $this->master_model->updateTableColumn('trip_request', 'status', 'Assigned', 'req_id', $_POST['req_id'], $this->user_id);
+        $this->master_model->updateTableColumn('trip', 'ride_id', $ride_id, 'trip_id', $trip_id, $this->user_id);
 
         $data['title'] = 'Success Trip';
         $data['success'] = 'Trip has been scheduled successfully';

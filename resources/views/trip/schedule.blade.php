@@ -59,6 +59,19 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label col-md-4">Emails<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <input type="text" name="emails" class="form-control" >
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Whatsapp numbers<span class="required"> </span></label>
+                <div class="col-md-7">
+                    <input type="text" name="mobiles" class="form-control" >
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label col-md-4">Vehicle<span class="required">* </span></label>
                 <div class="col-md-7">
                     <select name="vehicle_id" required class="form-control select2" data-placeholder="Select...">
