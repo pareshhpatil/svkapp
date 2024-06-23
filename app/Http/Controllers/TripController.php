@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Lib\Encryption;
 use App\Models\ParentModel;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingEmail;
 
 class TripController extends Controller
 {
@@ -97,7 +99,8 @@ class TripController extends Controller
         $passenger = $this->model->getTableRow('passenger', 'id', $passengers[0]->passenger_id);
         $booking_id = $this->formatNumberToString($ride_id);
 
-        $car_type = $this->model->getColumnValue('vehicle', 'vehicle_id', $ride->vehicle_id, 'car_type');
+        $vehicle = $this->model->getTableRow('vehicle', 'vehicle_id', $ride->vehicle_id);
+        $car_type = $vehicle->car_type;
 
 
         $params[] = array('type' => 'text', 'text' => $driver->name);
@@ -134,8 +137,46 @@ class TripController extends Controller
             $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
         }
 
+        if (isset($request->mobiles)) {
+            $link = Encryption::encode($ride_id);
+            $url = 'https://app.svktrv.in/admin/ride/' . $link;
 
-        return redirect('/my-rides/pending');
+            $short_url = $this->random();
+            $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+            $url = 'https://app.svktrv.in/l/' . $short_url;
+
+            foreach ($request->mobiles as $mobile) {
+                $mobile = trim($mobile);
+                if (strlen($mobile) == 10) {
+                    $params = [];
+                    $params[] = array('type' => 'text', 'text' => 'Passenger');
+                    $params[] = array('type' => 'text', 'text' => $booking_id);
+                    $params[] = array('type' => 'text', 'text' => $this->htmlDate($ride->start_time));
+                    $params[] = array('type' => 'text', 'text' => $ride->start_location);
+                    $params[] = array('type' => 'text', 'text' => $ride->end_location);
+                    $params[] = array('type' => 'text', 'text' => $car_type);
+                    $params[] = array('type' => 'text', 'text' => $driver->name);
+                    $params[] = array('type' => 'text', 'text' => $driver->mobile);
+                    $apiController->sendWhatsappMessage($mobile, 'mobile', 'booking_details', $params, $short_url, 'en', 1);
+                }
+            }
+
+
+            $data['booking_id'] = $booking_id;
+            $data['pickup_time'] = $this->htmlDate($ride->start_time);
+            $data['pickup_address'] = $request->pickup_location;
+            $data['driver_name'] = $driver->name;
+            $data['driver_mobile'] = $driver->mobile;
+            $data['vehicle_number'] = $vehicle->number;
+            $data['vehicle_type'] =  $car_type;
+            $data['passengers'] = $request->passengers;
+
+            $ccEmails = explode(',', env('CC_EMAILS'));
+
+            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('Thanks! Siddhivinayak Travels House Cab Booking Confirmed', $data));
+        } else {
+            return redirect('/my-rides/pending');
+        }
     }
 
 

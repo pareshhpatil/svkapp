@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         '/ride/track/*',
         '/facebook/webhook',
         '/cashfree/webhook',
+        '/notification/*',
     ];
 }

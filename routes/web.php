@@ -139,6 +139,8 @@ Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::cla
 Route::any('/facebook/webhook', [App\Http\Controllers\WebhookController::class, 'facebookWebhook'])->name('facebookWebhook');
 Route::any('/cashfree/webhook', [App\Http\Controllers\WebhookController::class, 'cashfreeWebhook'])->name('cashfreeWebhook');
 
+Route::any('/notification/trip/detail/{id}', [App\Http\Controllers\WebhookController::class, 'notificationBooking'])->name('notificationBooking');
+
 
 if (env('APP_ENV') != 'local') {
     URL::forceScheme('https');

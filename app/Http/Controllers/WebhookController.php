@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Http;
 use Log;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingEmail; // Replace with your Mailable class
+use App\Http\Controllers\TripController;
 
 class WebhookController extends Controller
 {
@@ -25,81 +28,6 @@ class WebhookController extends Controller
     {
         $this->model = new StaffModel();
     }
-
-    public function cashfreeWebhook(Request $request)
-
-	{
-
-		Log::error('Webhook: ' . json_encode($request->all()));
-
-		$bill_model = new Bill();
-
-		$master_model = new Master();
-
-		if ($request->event == 'TRANSFER_SUCCESS') {
-
-			//{"event":"TRANSFER_SUCCESS","transferId":"6","referenceId":"1454828560","acknowledged":"1","eventTime":"2024-03-22 09:59:13","utr":"408209572503","signature":"M+OL4mvgYudbbigQGqQPlxIBl8nXgNdROYfctyjRTAc="}
-
-			$payment_transaction = $master_model->getMasterDetail('payment_transaction', 'id', $request->transferId);
-
-
-
-			$request_id = $payment_transaction->request_id;
-
-			$transaction = $master_model->getMasterDetail('transaction', 'transaction_id', $request_id);
-
-			$employee = $master_model->getMasterDetail('employee', 'employee_id', $transaction->employee_id);
-
-
-
-			$master_model->updateTransaction($request->transferId, 'SUCCESS', $request->referenceId, $request->utr, json_encode($request->all()), 'PAYMENT SUCCESS');
-
-			$bill_model->updateTransaction(1, $request_id, $payment_transaction->amount, 'NEFT', $transaction->source_id, $request->eventTime, 100);
-
-
-
-			if ($transaction->status == 0) {
-
-				$master_model->updateEmployeeBalance($payment_transaction->amount, $transaction->employee_id);
-
-				$master_model->updateBankBalance($payment_transaction->amount, $transaction->source_id);
-
-				$master_model->savePaymentStatement($transaction->source_id, $transaction->transaction_id, $transaction->paid_date, $transaction->amount, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $transaction->narrative, $transaction->created_by);
-			}
-		}
-
-		if ($request->event == 'TRANSFER_FAILED') {
-
-			$payment_transaction = $master_model->getMasterDetail('payment_transaction', 'id', $request->transferId);
-
-			$request_id = $payment_transaction->request_id;
-
-			$transaction = $master_model->getMasterDetail('transaction', 'transaction_id', $request_id);
-
-			if ($transaction->status == 1) {
-
-
-
-				$employee = $master_model->getMasterDetail('employee', 'employee_id', $transaction->employee_id);
-
-				$reason = (isset($request->reason)) ? $request->reason : 'PAYMENT FAILED';
-
-
-
-				$master_model->updateTransaction($request->transferId, 'FAILED', $request->referenceId, $request->utr, json_encode($request->all()), $reason);
-
-				$bill_model->updateTransaction(2, $request_id, $payment_transaction->amount, 'NEFT', $transaction->source_id, date('Y-m-d'), 100);
-
-
-
-				$master_model->updateEmployeeBalance($payment_transaction->amount, $transaction->employee_id, 0);
-
-				$master_model->updateBankBalance($payment_transaction->amount, $transaction->source_id, 0);
-
-				$master_model->savePaymentStatement($transaction->source_id, $transaction->transaction_id, $transaction->paid_date, $transaction->amount, 'Credit', 'Reverse', "Reverse payment from :" . $employee->name, $transaction->created_by);
-			}
-		}
-	}
 
 
     public function facebookWebhook(Request $request)
@@ -230,5 +158,50 @@ class WebhookController extends Controller
 
             // Optionally, do something with the saved file path
         }
+    }
+
+
+    function notificationBooking($trip_id)
+    {
+        $trip = $this->model->getTableRow('trip', 'trip_id', $trip_id);
+        $ride = $this->model->getTableRow('ride', 'id', $trip->ride_id);
+
+
+
+        $data['driver_id'] = $ride->driver_id;
+        $data['vehicle_id'] = $ride->vehicle_id;
+        $data['escort'] = $ride->escort;
+        $data['pickup_location'] = $trip->pickup_location;
+        $data['emails'] = explode(',', $trip->emails);
+        $data['mobiles'] = explode(',', $trip->mobiles);
+        $data['passengers'] = explode(',', $trip->passengers);
+        $tripController = new TripController();
+        $request = new Request($data);
+        $tripController->assignCab($request);
+
+
+
+
+
+
+        $toEmail = 'pareshhpatil@gmail.com';
+        $toName = 'Paresh';
+        $ccEmails = ['cc1@example.com', 'cc1@example.com'];
+        // $ccEmails = [
+        //     'cc1@example.com' => 'CC Recipient 1',
+        //     'cc2@example.com' => 'CC Recipient 2',
+        //     // Add more CC recipients as needed
+        // ];
+
+        $data['booking_id'] = '';
+        $data['pickup_time'] = '';
+        $data['pickup_address'] = '';
+        $data['driver_name'] = '';
+        $data['driver_mobile'] = '';
+        $data['vehicle_number'] = '';
+        $data['vehicle_type'] = '';
+        $data['passengers'] = [];
+
+        Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
     }
 }

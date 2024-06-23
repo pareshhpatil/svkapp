@@ -183,14 +183,21 @@ class ApiController extends Controller
             $button_json = ',{"type":"button","index":"0","sub_type":"url","parameters":[{"type":"text","text":"' . $button_link . '"}]}';
         }
 
-        $mobile = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type, 'whatsapp_notification' => 1]);
-        if ($mobile == false) {
-            if ($user_type == 4) {
-                $mobile = $this->model->getColumnValue('driver', 'id', $user_id, 'mobile');
-            } elseif ($user_type == 5) {
-                $mobile = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+        if ($user_type == 'mobile') {
+            $mobile = $user_id;
+        } else {
+            $mobile = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type, 'whatsapp_notification' => 1]);
+            if ($mobile == false) {
+                if ($user_type == 4) {
+                    $mobile = $this->model->getColumnValue('driver', 'id', $user_id, 'mobile');
+                } elseif ($user_type == 5) {
+                    $mobile = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+                }
             }
         }
+
+
+
         if ($mobile != false && strlen($mobile) == 10) {
             $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $mobile, 'id');
             if ($failed == false) {

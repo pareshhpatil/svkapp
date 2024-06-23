@@ -56,6 +56,7 @@ class StaffController extends Controller
         // $translatedText = $GoogleTranslateService->translate($text, $targetLanguage);
         // dd($translatedText);
 
+
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
         $data['menu'] = 0;

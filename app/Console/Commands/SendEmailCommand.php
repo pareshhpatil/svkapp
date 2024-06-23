@@ -15,10 +15,15 @@ class SendEmailCommand extends Command
     {
         $toEmail = 'pareshhpatil@gmail.com';
         $toName = 'Paresh';
+        $ccEmails = [];
+        // $ccEmails = [
+        //     'cc1@example.com' => 'CC Recipient 1',
+        //     'cc2@example.com' => 'CC Recipient 2',
+        //     // Add more CC recipients as needed
+        // ];
 
-        Mail::to($toEmail, $toName)->send(new SampleEmail());
+        Mail::to($toEmail, $toName)->cc($ccEmails)->send(new SampleEmail('Hii', 54));
 
         $this->info('Email sent successfully!');
     }
 }
-
