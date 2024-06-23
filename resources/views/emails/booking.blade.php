@@ -25,7 +25,7 @@
                                     <table>
                                         <tbody>
                                             <tr>
-                                                <td style="margin: 0px;"><img src="https://www.siddhivinayaktravelshouse.in/images/logo.png" class="CToWUd" data-bit="iit" style="height: auto; line-height: 18px; outline: none; max-height: 60px;  padding: 0px 0px 0px 20px; float: left; "></td>
+                                                <td style="margin: 0px;"><img src="https://www.siddhivinayaktravelshouse.in/images/logonew.png" class="CToWUd" data-bit="iit" style="height: auto; line-height: 18px; outline: none; max-height: 60px;  padding: 0px 0px 0px 20px; float: left; "></td>
                                                 <td style="margin: 0px; width: 305px; height: 23px; font-size: 19px; font-weight: bold; font-stretch: normal; line-height: 1.7; text-align: center; color: #1f425c; padding-left: 14px; background-repeat: no-repeat; background-size: 417px; background-position: center top;">Siddhivinayak Travels House<br>
                                                     <div style="font-size: 11px; font-stretch: normal;font-weight: normal;">002, Plot No. C-16 Sector 9 Ges Airoli 400708</div>
                                                     <div style="font-size: 11px; font-stretch: normal;font-weight: normal;">+91 8879391658 / +91 9730946150</div>
