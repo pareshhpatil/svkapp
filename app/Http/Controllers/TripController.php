@@ -109,7 +109,7 @@ class TripController extends Controller
         $params[] = array('type' => 'text', 'text' => $ride->end_location);
         $params[] = array('type' => 'text', 'text' => $this->htmlDate($ride->start_time));
         $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
-        $params[] = array('type' => 'text', 'text' => $passenger->mobile);
+        $params[] = array('type' => 'text', 'text' => ($passenger->mobile!=''?$passenger->mobile:'NA') );
 
         $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
