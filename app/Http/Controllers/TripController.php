@@ -302,6 +302,9 @@ class TripController extends Controller
 
     public function completesave(Request $request)
     {
+
+
+
         $this->validateSession(array(1, 4));
         $data = [];
         $package = $this->master_model->getMasterDetail('company_casual_package', 'id', $_POST['package_id']);
@@ -318,8 +321,16 @@ class TripController extends Controller
         $data['remark'] = ($_POST['remark'] != '') ? $_POST['remark'] : '';
         $data['driver_amount'] = ($_POST['driver_amount'] > 0) ? $_POST['driver_amount'] : 0;
 
+        $files = [];
+        if ($request->hasFile('uploaded_file')) {
+            foreach ($request->file('uploaded_file') as $file) {
+                $name = 'trip_' . rand(1, 500) . time() . '.' . $file->getClientOriginalExtension();
+                $file->move("dist/uploads/bills", $name);
+                $files[] = env('APP_URL') . '/dist/uploads/bills/' . $name;
+            }
+        }
 
-
+        $data['attachments'] = implode(',', $files);
         $data['package_amount'] = $package->package_amount;
         $data['extra_km_amount'] = $package->extra_km * $data['extra_km'];
         $data['extra_hour_amount'] = $package->extra_hour * $data['extra_hour'];
@@ -352,6 +363,26 @@ class TripController extends Controller
         $data['trip_id'] = $id;
         $data['title'] = 'Trip Details';
         return view('trip.view', $data);
+    }
+
+    public function completeDetail($link)
+    {
+        $id = $this->encrypt->decode($link);
+        $detail = $this->master_model->getMasterDetail('trip', 'trip_id', $id);
+        $empdetail = $this->master_model->getMasterDetail('employee', 'employee_id', $detail->employee_id);
+        $vehidetail = $this->master_model->getMasterDetail('vehicle', 'vehicle_id', $detail->vehicle_id);
+        $data['edet'] = $empdetail;
+        $data['vdet'] = $vehidetail;
+        $data['det'] = $detail;
+        $data['link'] = $link;
+        $attachments = [];
+        if ($detail->attachments != '') {
+            $attachments = explode(',', $detail->attachments);
+        }
+        $data['attachments'] = $attachments;
+        $data['trip_id'] = $id;
+        $data['title'] = 'Trip Details';
+        return view('trip.detail', $data);
     }
 
     public function rating($link, $rating)
