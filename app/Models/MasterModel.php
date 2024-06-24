@@ -110,7 +110,13 @@ class MasterModel extends ParentModel
             ->where('mobile', $mobile)
             ->where('name', '<>', '')
             ->first();
+        if(isset($maxName->name))
+        {
+            return $maxName->name;
+        }else
+        {
+            return 'No name';
+        }
 
-        return $maxName->name;
     }
 }
