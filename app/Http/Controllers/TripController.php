@@ -102,14 +102,14 @@ class TripController extends Controller
         $vehicle = $this->model->getTableRow('vehicle', 'vehicle_id', $ride->vehicle_id);
         $car_type = $vehicle->car_type;
 
-        $params=[];
+        $params = [];
         $params[] = array('type' => 'text', 'text' => $driver->name);
         $params[] = array('type' => 'text', 'text' => $booking_id);
         $params[] = array('type' => 'text', 'text' => $passenger->address);
         $params[] = array('type' => 'text', 'text' => $ride->end_location);
         $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
         $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
-        $params[] = array('type' => 'text', 'text' => ($passenger->mobile!=''?$passenger->mobile:'NA') );
+        $params[] = array('type' => 'text', 'text' => ($passenger->mobile != '' ? $passenger->mobile : 'NA'));
 
         $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
@@ -173,7 +173,7 @@ class TripController extends Controller
 
             $ccEmails = explode(',', env('CC_EMAILS'));
 
-            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('Thanks! Siddhivinayak Travels House Cab Booking Confirmed', $data));
+            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('Thanks! Siddhivinayak Travels House Cab Booking Confirmed #' . $booking_id, $data));
         } else {
             return redirect('/my-rides/pending');
         }
