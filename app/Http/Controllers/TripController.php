@@ -32,10 +32,10 @@ class TripController extends Controller
     {
         // $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
 
-     //   Log::info('Tracking POST: ' . json_encode($_POST));
+        //   Log::info('Tracking POST: ' . json_encode($_POST));
         Log::info('Tracking: ' . json_encode($request->all()));
-      //  $seq = rand(0, 5);
-       // sleep($seq);
+        //  $seq = rand(0, 5);
+        // sleep($seq);
         $array['live_location'] = json_encode($request->all());
         $array['ride_id'] = $ride_id;
         //  if ($response == false) {
@@ -177,7 +177,7 @@ class TripController extends Controller
 
             $ccEmails = explode(',', env('CC_EMAILS'));
 
-            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('Thanks! Siddhivinayak Travels House Cab Booking Confirmed #' . $booking_id, $data));
+            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
         } else {
             return redirect('/my-rides/pending');
         }
