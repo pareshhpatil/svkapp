@@ -214,7 +214,7 @@
     function startlocation() {
         window.WTN.backgroundLocation.start({
             callback: false,
-            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "userid1",
             backgroundIndicator: true,
@@ -302,7 +302,7 @@
 
     }
 
-   
+
 </script>
 <script type="text/javascript">
     var k = 0;
@@ -466,7 +466,7 @@
 
             }
         };
-        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
+        xhttp.open("GET", "https://app.siddhivinayaktravelshouse.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
     }
 </script>

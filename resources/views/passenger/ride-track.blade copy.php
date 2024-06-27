@@ -214,7 +214,7 @@
     function startlocation() {
         window.WTN.backgroundLocation.start({
             callback: false,
-            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "userid1",
             backgroundIndicator: true,
@@ -265,9 +265,9 @@
 
         my_lat = latitude;
         my_long = longitude;
-       
+
     }
-	
+
 	function setMyPosition()
 	{
 		if (currentMarker == null) {
@@ -303,7 +303,7 @@
 
     }
 
-   
+
 </script>
 <script type="text/javascript">
     var k = 0;
@@ -337,7 +337,7 @@
 
     function initialize() {
 
-        
+
 
         // Add the button to the map's controls
         // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
@@ -346,7 +346,7 @@
 
         //moveBus(map, marker);
 		setDriverLocation();
-		
+
 		setInterval(function() {
 			getData();
 			if(start==true)
@@ -359,7 +359,7 @@
         }, 30000);
 
     }
-	
+
 	function setDriverLocation()
 	{
 		driverMarker = new google.maps.Marker({
@@ -392,7 +392,7 @@
             currentMarker.setMap(null);
         } catch (o) {}
 
-       
+
 
         originMarker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, lat_long),
@@ -422,13 +422,13 @@
             }
         });
 		direction();
-        
+
 
     }
-	
+
 	function direction()
 	{
-		
+
             //lat=lat-0.00005;
             //map.setCenter(new google.maps.LatLng(lat, lat_long));
             originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
@@ -447,7 +447,7 @@
                     const duration = response.routes[0].legs[0].duration.text;
                     document.getElementById("arr").style.display = 'block';
                     document.getElementById("duration").innerHTML = duration;
-                    
+
 
                     // Customize the markers
                     var markerOptions = {
@@ -471,8 +471,8 @@
                     window.alert("Directions request failed due to " + status)
                 );
 	}
-	
-	
+
+
 
     function getData() {
         var xhttp = new XMLHttpRequest();
@@ -486,7 +486,7 @@
 
             }
         };
-        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
+        xhttp.open("GET", "https://app.siddhivinayaktravelshouse.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
     }
 </script>

@@ -324,7 +324,7 @@
     function start() {
         window.WTN.backgroundLocation.start({
             callback: successCallback,
-            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
             timeout: 30,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
