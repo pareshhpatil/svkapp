@@ -135,6 +135,9 @@
             <button v-if="data.ride.status==6" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
                 End Ride
             </button>
+            <button v-if="data.ride.status==7" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
+                End Ride
+            </button>
         </div>
         <hr>
         <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
