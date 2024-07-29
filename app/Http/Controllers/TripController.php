@@ -129,16 +129,24 @@ class TripController extends Controller
             $apiController->userSMS($row->passenger_id, 5, $message_, '1107168138570499675');
 
             $passenger = $this->model->getTableRow('passenger', 'id', $row->passenger_id);
-            $params = [];
-            $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
-            $params[] = array('type' => 'text', 'text' => $booking_id);
-            $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
-            $params[] = array('type' => 'text', 'text' => $passenger->address);
-            $params[] = array('type' => 'text', 'text' => $row->drop_location);
-            $params[] = array('type' => 'text', 'text' => $car_type);
-            $params[] = array('type' => 'text', 'text' => $driver->name);
-            $params[] = array('type' => 'text', 'text' => $driver->mobile);
-            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
+            if (!isset($request->mobiles)) {
+                $mobiles = [];
+            } else {
+                $mobiles = $request->mobiles;
+            }
+
+            if (!in_array($passenger->mobile, $mobiles)) {
+                $params = [];
+                $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
+                $params[] = array('type' => 'text', 'text' => $booking_id);
+                $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
+                $params[] = array('type' => 'text', 'text' => $passenger->address);
+                $params[] = array('type' => 'text', 'text' => $row->drop_location);
+                $params[] = array('type' => 'text', 'text' => $car_type);
+                $params[] = array('type' => 'text', 'text' => $driver->name);
+                $params[] = array('type' => 'text', 'text' => $driver->mobile);
+                $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
+            }
         }
 
         if (isset($request->mobiles)) {

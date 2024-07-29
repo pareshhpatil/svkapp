@@ -218,6 +218,10 @@ class HomeController extends Controller
         $data['ride_id'] = $ride_id;
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
+        if ($ride['casual'] == 1) {
+            return view('driver.ride-detail-casual', $data);
+        }
+
         return view('driver.ride-detail', $data);
     }
 
