@@ -117,6 +117,32 @@ class TripController extends Controller
         $params[] = array('type' => 'text', 'text' => $employee_name);
         $params[] = array('type' => 'text', 'text' => ($employee_mobile != '' ? $employee_mobile : 'NA'));
 
+
+        if (isset($request->emails)) {
+            $data['booking_id'] = $booking_id;
+            $data['pickup_time'] = $this->htmlDateTime($ride->start_time);
+            $data['pickup_address'] = $request->pickup_location;
+            $data['driver_name'] = $driver->name;
+            $data['driver_mobile'] = $driver->mobile;
+            $data['vehicle_number'] = $vehicle->number;
+            $data['vehicle_type'] =  $car_type;
+            $data['passengers'] = $request->passengers;
+
+            $ccEmails = explode(',', env('CC_EMAILS'));
+            $to_email = '';
+            foreach ($request->emails as $email) {
+                if ($to_email == '') {
+                    $to_email = $email;
+                } else {
+                    $ccEmails[] = $email;
+                }
+            }
+
+            Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
+        }
+
+
+
         $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
@@ -178,28 +204,6 @@ class TripController extends Controller
                     }
                 }
             }
-
-
-            $data['booking_id'] = $booking_id;
-            $data['pickup_time'] = $this->htmlDateTime($ride->start_time);
-            $data['pickup_address'] = $request->pickup_location;
-            $data['driver_name'] = $driver->name;
-            $data['driver_mobile'] = $driver->mobile;
-            $data['vehicle_number'] = $vehicle->number;
-            $data['vehicle_type'] =  $car_type;
-            $data['passengers'] = $request->passengers;
-
-            $ccEmails = explode(',', env('CC_EMAILS'));
-            $to_email = '';
-            foreach ($request->emails as $email) {
-                if ($to_email == '') {
-                    $to_email = $email;
-                } else {
-                    $ccEmails[] = $email;
-                }
-            }
-
-            Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
         } else {
             return redirect('/my-rides/pending');
         }
