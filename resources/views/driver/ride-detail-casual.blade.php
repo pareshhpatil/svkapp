@@ -138,7 +138,8 @@
         </div>
         <hr>
         <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
-            <div class="text-info" id="loder" role="status"></div>
+
+            <div class="col text-center"><div class="text-info" id="loder" role="status"></div></div>
 
             @csrf
             <div class="row mb-1" v-for="(item, index) in data.vehicle_photos">
