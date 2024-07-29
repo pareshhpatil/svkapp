@@ -137,10 +137,10 @@
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
                 Start Ride
             </button>
-            <a v-if="data.ride.status==2" href="/driver/ride/status/{{$ride_id}}/6" class="btn btn-success text-center">
+            <a v-if="data.ride.status==2" href="/casual/ride/status/{{$ride_id}}/6" class="btn btn-success text-center">
                 Reached at Location
             </a>
-            <a v-if="data.ride.status==6" href="/driver/ride/status/{{$ride_id}}/7" class="btn btn-success text-center">
+            <a v-if="data.ride.status==6" href="/casual/ride/status/{{$ride_id}}/7" class="btn btn-success text-center">
                 Passenger Picked Up
             </a>
             <button v-if="data.ride.status==6" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
@@ -326,13 +326,13 @@
     function startlocation() {
         lod(true);
         start();
-        window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+        window.location.href = "/casual/ride/status/{{$ride_id}}/2";
     }
 
     function stoplocation() {
         lod(true);
         stop();
-        window.location.href = "/driver/ride/status/{{$ride_id}}/5";
+        window.location.href = "/casual/ride/status/{{$ride_id}}/5";
     }
     @if($data['ride']['status'] == 2)
     //setInterval(function() {

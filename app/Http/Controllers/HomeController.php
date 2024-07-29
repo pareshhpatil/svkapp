@@ -787,6 +787,74 @@ class HomeController extends Controller
         return redirect('/thank-you');
     }
 
+    public function casualRideStatus($ride_id, $status)
+    {
+        $model =  new ParentModel();
+        $model->updateTable('ride', 'id', $ride_id, 'status', $status);
+        if ($status == 5) {
+            $model->updateTable('ride', 'id', $ride_id, 'ride_ended', date('Y-m-d H:i:s'));
+        }
+        if ($status == 2) {
+            $model->updateTable('ride', 'id', $ride_id, 'ride_started', date('Y-m-d H:i:s'));
+        }
+        $mobiles = $this->model->getColumnValue('trip', 'ride_id', $ride_id, 'mobiles');
+        $mobiles = explode(',', $mobiles);
+        if (!in_array('8879391658', $mobiles)) {
+            $mobiles[] = '8879391658';
+        }
+
+        $link = Encryption::encode($ride_id);
+        $url = 'https://app.svktrv.in/ride/detail/' . $link;
+
+        $short_url = $this->random();
+        $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+        $url = 'https://app.svktrv.in/l/' . $short_url;
+        $booking_id = $this->formatNumberToString($ride_id);
+        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        $ride_passenger_id = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'passenger_id');
+        $driver = $this->model->getTableRow('driver', 'id', $ride->driver_id);
+        $passenger = $this->model->getTableRow('passenger', 'id', $ride_passenger_id);
+        $employee_name = $passenger->employee_name;
+        $employee_mobile = $passenger->mobile;
+        $status_name = $this->model->getColumnValue('config', 'value', $status, 'Description', ['type' => 'ride_status']);
+
+        $apiController = new ApiController();
+
+        foreach ($mobiles as $mobile) {
+            $mobile = str_replace(' ', '', $mobile);
+            $mobile = trim($mobile);
+            if (strlen($mobile) == 10) {
+                $params = [];
+                $params[] = array('type' => 'text', 'text' => $status_name);
+                $params[] = array('type' => 'text', 'text' => $booking_id);
+                $employee_mobile = ($employee_mobile != '') ? ' Mob: ' . $employee_mobile : '';
+                $params[] = array('type' => 'text', 'text' => $employee_name . $employee_mobile);
+                $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
+                $params[] = array('type' => 'text', 'text' => $ride->start_location);
+                $params[] = array('type' => 'text', 'text' => $driver->name);
+                $params[] = array('type' => 'text', 'text' => $driver->mobile);
+                $apiController->sendWhatsappMessage($mobile, 'mobile', 'ride_status', $params, $short_url, 'en', 1);
+            }
+        }
+
+
+        return redirect()->back();
+    }
+
+    function formatNumberToString($number, $length = 10, $prefix = 'STH')
+    {
+        // Convert number to string
+        $numberString = (string) $number;
+
+        // Calculate the number of zeros needed
+        $zerosToAdd = $length - strlen($prefix) - strlen($numberString);
+
+        // Append zeros to the left
+        $formattedString = $prefix . str_repeat('0', $zerosToAdd) . $numberString;
+
+        return $formattedString;
+    }
+
     public function driverRideStatus($ride_id, $status)
     {
         $model =  new ParentModel();

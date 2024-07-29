@@ -152,7 +152,7 @@ class TripController extends Controller
         $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
-            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+            $url = 'https://app.svktrv.in/ride/detail/' . $link;
             $apiController->sendNotification($row->passenger_id, 5, 'Cab has been assigned for your next ride', 'Please be ready at your pickup location. Have a safe and pleasant journey.', $url);
 
             $short_url = $this->random();
@@ -186,7 +186,7 @@ class TripController extends Controller
 
         if (isset($request->mobiles) || isset($request->emails)) {
             $link = Encryption::encode($ride_id);
-            $url = 'https://app.svktrv.in/admin/ride/' . $link;
+            $url = 'https://app.svktrv.in/ride/detail/' . $link;
 
             $short_url = $this->random();
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);

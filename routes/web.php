@@ -78,6 +78,10 @@ Route::get('/driver/app-ride/{id}', [App\Http\Controllers\TripController::class,
 Route::post('/upload/ride/file', [App\Http\Controllers\HomeController::class, 'uploadRideFile']);
 Route::get('/ride/detail/{link}', [App\Http\Controllers\HomeController::class, 'RideDetail']);
 
+Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
+Route::get('/casual/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'casualRideStatus']);
+
+
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/my-rides/{type?}', [App\Http\Controllers\HomeController::class, 'rides'])->name('rides');
@@ -109,7 +113,6 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/ajax/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chatMessage']);
     Route::post('/ajax/chat/submit', [App\Http\Controllers\MasterController::class, 'chatSubmit']);
 
-    Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
     Route::get('/driver/ride/passenger/resendotp/{passenger_id}', [App\Http\Controllers\HomeController::class, 'resendOTP']);
 
