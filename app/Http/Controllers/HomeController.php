@@ -107,7 +107,7 @@ class HomeController extends Controller
             return false;
         }
         $id = Encryption::decode($link);
-
+        $id = 1572;
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
 
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
@@ -135,6 +135,48 @@ class HomeController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'Ride detail';
         $data['enc_link'] = $link;
+        if ($ride['casual'] == 1) {
+            $photos = $this->model->getTableList('ride_images', 'ride_id', $ride_passenger['ride_id']);
+            $data['data']['photos'] = $photos;
+            return view('passenger.ride-detail-casual', $data);
+        }
+        return view('passenger.ride-detail', $data);
+    }
+    public function RideDetail($link)
+    {
+        if ($link == '__manifest.json') {
+            return false;
+        }
+        $id = Encryption::decode($link);
+
+        $ride = $this->model->getRowArray('ride', 'id', $id);
+        $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
+        $driver = [];
+        $vehicle = [];
+        if ($ride['driver_id'] > 0) {
+            $driver = $this->model->getRowArray('driver', 'id', $ride['driver_id']);
+        }
+        if ($ride['vehicle_id'] > 0) {
+            $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
+        }
+        $ride_passengers = $this->model->getRidePassenger($id);
+        $data['data']['ride_passengers'] = $ride_passengers;
+        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $data['data']['ride'] = $ride;
+        $data['data']['project'] = $project;
+        $data['data']['driver'] = $driver;
+        $data['data']['vehicle'] = $vehicle;
+
+        $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
+        $data['menu'] = 0;
+        $data['title'] = 'Ride detail';
+        $data['enc_link'] = $link;
+        if ($ride['casual'] == 1) {
+            $photos = $this->model->getTableList('ride_images', 'ride_id', $id);
+            $data['data']['photos'] = $photos;
+            return view('passenger.ride-detail-casual', $data);
+        }
         return view('passenger.ride-detail', $data);
     }
 
@@ -179,6 +221,10 @@ class HomeController extends Controller
         $data['type'] = $type;
         $data['menu'] = 0;
         $data['ride_id'] = $ride_id;
+        if ($ride['casual'] == 1) {
+            $photos = $this->model->getTableList('ride_images', 'ride_id', $ride_id);
+            return view('passenger.ride-detail-casual', $data);
+        }
         return view('passenger.ride-detail', $data);
     }
 
