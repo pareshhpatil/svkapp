@@ -137,8 +137,9 @@ class TripController extends Controller
                     $ccEmails[] = $email;
                 }
             }
-
-            Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
+            if ($to_email != '') {
+                Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
+            }
         }
 
 
