@@ -85,7 +85,7 @@
             <div v-if="data.driver.name" class="listed-detail ">
                 <div class="row" style="border-bottom: 1px solid lightgrey;">
                     <div class="col text-center">
-                        <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;">
+                        <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-1 img-circle" style="max-height: 130px;">
                         <img v-if="!data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;" src="/assets/img/driver.png?v-1">
                     </div>
                     <div class="col">
