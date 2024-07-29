@@ -190,8 +190,16 @@ class TripController extends Controller
             $data['passengers'] = $request->passengers;
 
             $ccEmails = explode(',', env('CC_EMAILS'));
+            $to_email = '';
+            foreach ($request->emails as $email) {
+                if ($to_email == '') {
+                    $to_email = $email;
+                } else {
+                    $ccEmails[] = $email;
+                }
+            }
 
-            Mail::to($request->emails)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
+            Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
         } else {
             return redirect('/my-rides/pending');
         }
