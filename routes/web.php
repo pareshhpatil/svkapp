@@ -74,7 +74,7 @@ Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::cl
 Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl']);
 Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
 Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
-Route::get('/driver/app-ride/{id}', [App\Http\Controllers\TripController::class, 'driverAppRideDetail']);
+Route::get('    {id}', [App\Http\Controllers\TripController::class, 'driverAppRideDetail']);
 Route::post('/upload/ride/file', [App\Http\Controllers\HomeController::class, 'uploadRideFile']);
 
 
