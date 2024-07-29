@@ -129,7 +129,7 @@
             <a v-if="data.ride.status==2" href="/driver/ride/status/{{$ride_id}}/6" class="btn btn-success text-center">
                 Reached at Location
             </a>
-            <a v-if="data.ride.status==5" href="/driver/ride/status/{{$ride_id}}/7" class="btn btn-success text-center">
+            <a v-if="data.ride.status==6" href="/driver/ride/status/{{$ride_id}}/7" class="btn btn-success text-center">
                 Passenger Picked Up
             </a>
             <button v-if="data.ride.status==6" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
