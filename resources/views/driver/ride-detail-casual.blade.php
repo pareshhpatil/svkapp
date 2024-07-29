@@ -66,6 +66,17 @@
                 &nbsp;
             </div>
         </div>
+        <div class="mb-1" v-if="data.ride.status==2 || data.ride.status==6 || data.ride.status==7 || data.ride.status==5">
+            <div class="appHeader bg-info text-light" style="top:50px;margin-bottom:50px">
+                <div class="pageTitle" v-if="data.ride.status==2">Driver Started Ride</div>
+                <div class="pageTitle" v-if="data.ride.status==6">Driver Reached at Pickup Location</div>
+                <div class="pageTitle" v-if="data.ride.status==7">Passenger picked up</div>
+                <div class="pageTitle" v-if="data.ride.status==5">Ride completed</div>
+            </div>
+            <div class="mt-2">
+                &nbsp;
+            </div>
+        </div>
         <div class="card mt-1 mb-1">
             <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
                 <!-- item -->
@@ -142,7 +153,9 @@
         <hr>
         <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
 
-            <div class="col text-center"><div class="text-info" id="loder" role="status"></div></div>
+            <div class="col text-center">
+                <div class="text-info" id="loder" role="status"></div>
+            </div>
 
             @csrf
             <div class="row mb-1" v-for="(item, index) in data.vehicle_photos">

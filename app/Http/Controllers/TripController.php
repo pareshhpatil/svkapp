@@ -62,6 +62,11 @@ class TripController extends Controller
             return $this->htmlDate(date('Y-m-d', strtotime($date . ' - 1 days')));
         }
     }
+    public function driverAppRideDetail($id)
+    {
+        $link = Encryption::encode($id);
+        return redirect('https://app.siddhivinayaktravelshouse.in/driver/ride/' . $link);
+    }
 
     public function assignCab(Request $request)
     {
