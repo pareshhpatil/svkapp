@@ -147,7 +147,7 @@ class TripController extends Controller
                 $params[] = array('type' => 'text', 'text' => $car_type);
                 $params[] = array('type' => 'text', 'text' => $driver->name);
                 $params[] = array('type' => 'text', 'text' => $driver->mobile);
-                $params[] = array('type' => 'text', 'text' => $driver->employee_name);
+                $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
                 $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
             }
         }
