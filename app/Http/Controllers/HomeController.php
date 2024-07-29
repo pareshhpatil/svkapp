@@ -841,6 +841,24 @@ class HomeController extends Controller
         return redirect()->back();
     }
 
+    function random($length_of_string = 4)
+    {
+        // String of all alphanumeric character
+        $str_result = '0123456789bcdfghjklmnpqrstvwxyz';
+        // Shuffle the $str_result and returns substring
+        // of specified length
+        $exist = true;
+        while ($exist == true) {
+            $short = substr(
+                str_shuffle($str_result),
+                0,
+                $length_of_string
+            );
+            $exist = $this->model->getTableRow('short_url', 'short_url', $short);
+        }
+        return $short;
+    }
+
     function formatNumberToString($number, $length = 10, $prefix = 'STH')
     {
         // Convert number to string
