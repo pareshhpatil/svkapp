@@ -101,6 +101,8 @@ class TripController extends Controller
 
         $driver = $this->model->getTableRow('driver', 'id', $array['driver_id']);
         $passenger = $this->model->getTableRow('passenger', 'id', $passengers[0]->passenger_id);
+        $employee_name = $passenger->employee_name;
+        $employee_mobile = $passenger->mobile;
         $booking_id = $this->formatNumberToString($ride_id);
 
         $vehicle = $this->model->getTableRow('vehicle', 'vehicle_id', $ride->vehicle_id);
@@ -112,8 +114,8 @@ class TripController extends Controller
         $params[] = array('type' => 'text', 'text' => $passenger->address);
         $params[] = array('type' => 'text', 'text' => $ride->end_location);
         $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
-        $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
-        $params[] = array('type' => 'text', 'text' => ($passenger->mobile != '' ? $passenger->mobile : 'NA'));
+        $params[] = array('type' => 'text', 'text' => $employee_name);
+        $params[] = array('type' => 'text', 'text' => ($employee_mobile != '' ? $employee_mobile : 'NA'));
 
         $apiController->sendWhatsappMessage($array['driver_id'], 4, 'driver_booking_details', $params, $driver_short_url, 'hi', 1);
         foreach ($passengers as $row) {
@@ -145,31 +147,35 @@ class TripController extends Controller
                 $params[] = array('type' => 'text', 'text' => $car_type);
                 $params[] = array('type' => 'text', 'text' => $driver->name);
                 $params[] = array('type' => 'text', 'text' => $driver->mobile);
+                $params[] = array('type' => 'text', 'text' => $driver->employee_name);
                 $apiController->sendWhatsappMessage($row->passenger_id, 5, 'booking_details', $params, $short_url, 'en', 1);
             }
         }
 
-        if (isset($request->mobiles)) {
+        if (isset($request->mobiles) || isset($request->emails)) {
             $link = Encryption::encode($ride_id);
             $url = 'https://app.svktrv.in/admin/ride/' . $link;
 
             $short_url = $this->random();
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
             $url = 'https://app.svktrv.in/l/' . $short_url;
-
-            foreach ($request->mobiles as $mobile) {
-                $mobile = trim($mobile);
-                if (strlen($mobile) == 10) {
-                    $params = [];
-                    $params[] = array('type' => 'text', 'text' => 'Passenger');
-                    $params[] = array('type' => 'text', 'text' => $booking_id);
-                    $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
-                    $params[] = array('type' => 'text', 'text' => $ride->start_location);
-                    $params[] = array('type' => 'text', 'text' => $ride->end_location);
-                    $params[] = array('type' => 'text', 'text' => $car_type);
-                    $params[] = array('type' => 'text', 'text' => $driver->name);
-                    $params[] = array('type' => 'text', 'text' => $driver->mobile);
-                    $apiController->sendWhatsappMessage($mobile, 'mobile', 'booking_details', $params, $short_url, 'en', 1);
+            if (!empty($request->mobiles)) {
+                foreach ($request->mobiles as $mobile) {
+                    $mobile = str_replace(' ', '', $mobile);
+                    $mobile = trim($mobile);
+                    if (strlen($mobile) == 10) {
+                        $params = [];
+                        $params[] = array('type' => 'text', 'text' => 'Passenger');
+                        $params[] = array('type' => 'text', 'text' => $booking_id);
+                        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
+                        $params[] = array('type' => 'text', 'text' => $ride->start_location);
+                        $params[] = array('type' => 'text', 'text' => $ride->end_location);
+                        $params[] = array('type' => 'text', 'text' => $car_type);
+                        $params[] = array('type' => 'text', 'text' => $driver->name);
+                        $params[] = array('type' => 'text', 'text' => $driver->mobile);
+                        $params[] = array('type' => 'text', 'text' => $employee_name . ($employee_mobile != '') ? ' Mob: ' . $employee_mobile : '');
+                        $apiController->sendWhatsappMessage($mobile, 'mobile', 'booking_details', $params, $short_url, 'en', 1);
+                    }
                 }
             }
 
