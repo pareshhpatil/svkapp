@@ -74,6 +74,8 @@ Route::get('/date/fetch/{date}/{type}', [App\Http\Controllers\TripController::cl
 Route::get('/l/{short}', [App\Http\Controllers\TripController::class, 'shortUrl']);
 Route::get('/passenger/ride/{link}', [App\Http\Controllers\HomeController::class, 'passengerRideDetail']);
 Route::get('/driver/ride/{link}', [App\Http\Controllers\HomeController::class, 'driverRideDetail']);
+Route::post('/upload/ride/file/{ride}/{type}', [App\Http\Controllers\HomeController::class, 'uploadRideFile']);
+
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

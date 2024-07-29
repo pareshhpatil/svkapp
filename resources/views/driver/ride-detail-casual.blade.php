@@ -131,31 +131,72 @@
                 <!-- * item -->
             </ul>
         </div>
-        <form id="frm" action="/upload/file/image" method="post" enctype="multipart/form-data">
+        <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="hello" value="hiii">
-        <div class="row ">
-            <div class="col-6">
-                <h3 style="padding-top: 20px;">Vehicle photos</h3>
-                <button  class="btn btn-info text-center">
-                Add new
-            </button>
-        </div>
-            <div class="col-6">
-                <div class="avatar-section">
-                    <a href="#" onclick="document.getElementById('fileuploadInput').click();">
-                        <img id="imgsrc" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
-                        <input type="file" id="fileuploadInput" onchange="document.getElementById('frm').submit();" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
-                        <input type="hidden" name="image" id="img">
-                        <span  class="button">
-                            <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
-                        <div id="loder" role="status" class="text-info"></div>
-                    </a>
+            <div class="row mb-1" id="vphoto">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;">Vehicle photos</h3>
+                    <button class="btn btn-info text-center">
+                        Add new
+                    </button>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
+                            <img id="imgsrc" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
+                            <input type="file" id="fileuploadInput" v-on:change="onImageChange" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" name="image" id="img">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="row mb-1" id="plaphoto">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;">Placard photos</h3>
+                    <button class="btn btn-info text-center">
+                        Add new
+                    </button>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
+                            <img id="imgsrc2" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
+                            <input type="file" id="fileuploadInput" onchange="document.getElementById('frm').submit();" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" name="image" id="img">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                            <div id="loder" role="status" class="text-info"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-1" id="plaphoto">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;">Driver photos</h3>
+                    <button class="btn btn-info text-center">
+                        Add new
+                    </button>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
+                            <img id="imgsrc3" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
+                            <input type="file" id="fileuploadInput" onchange="document.getElementById('frm').submit();" multiple  name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" name="image" id="img">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                            <div id="loder" role="status" class="text-info"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </form>
         <div class="col text-center">
+            <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
+                Start Ride
+            </button>
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
                 Start Ride
             </button>
@@ -298,7 +339,7 @@
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
             pauseAutomatically: false,
-            distanceFilter: {{env('DISTANCE_FILTER')}},
+            distanceFilter: "{{env('DISTANCE_FILTER')}}",
             desiredAccuracy: "best",
             activityType: "other",
         });
@@ -409,9 +450,9 @@
                 toastbox('toast-15');
             },
             onImageChange(e) {
-               // alert(e.target.files[0]);
+                // alert(e.target.files[0]);
                 this.image = e.target.files[0];
-               // console.log(this.image);
+                // console.log(this.image);
                 this.formSubmit(e.target.files[0]);
             },
             formSubmit(image) {
@@ -427,14 +468,15 @@
                 let formData = new FormData(form);
 
                 //image = document.getElementById('fileuploadInput').value;
-               // alert(image);
-               console.log(formData);
-               // formData.append('file', image);
-                formData.append('test', 'hiii');
+                // alert(image);
+                //console.log(formData);
+                //formData.append('file[]', image);
+               // formData.append('test', 'hiii');
                 console.log(formData);
-                axios.post('/upload/file/image', formData, config)
+                axios.post('/upload/ride/file', formData, config)
                     .then(function(response) {
-                        document.getElementById('imgsrc').src = response.data.image;
+                        console.log(response);
+                        document.getElementById('imgsrc').src = response.data[0];
                         lo(false);
                     })
                     .catch(function(error) {
@@ -444,7 +486,7 @@
                     });
             }
         }
-    })
+    });
 </script>
 
 

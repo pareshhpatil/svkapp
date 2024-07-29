@@ -481,6 +481,49 @@ class HomeController extends Controller
         return response()->json(['image' => '/' . $compress]);
     }
 
+
+    public function uploadRideFile(Request $request,$ride_id,$type)
+    {
+        $files = $request->file('file');
+        $file_name = time() . rand(1, 999) . '.png';
+        foreach ($files as $file) {
+            $file_name = time() . rand(1, 999) . '.png';
+            $file_path[] = '/storage/'.$file->storeAs('uploads', $file_name, 'public');
+        }
+        return $file_path;
+        $request->validate([
+            'image' => 'required'
+        ]);
+
+        $croped_image = $request->image;
+        list($type, $croped_image) = explode(';', $croped_image);
+        list(, $croped_image)      = explode(',', $croped_image);
+        $croped_image = base64_decode($croped_image);
+
+        $file_name = time() . rand(1, 999) . '.png';
+        Storage::disk('public')->put('uploads/' . $file_name, $croped_image);
+        //$file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
+        $file_path = 'uploads/' . $file_name;
+
+        $path = '/storage/' . $file_path;
+        // if (Session::get('user_type') == 4) {
+        //  $img = Image::make('storage/uploads/' . $file_name)->resize(140, 140);
+        //  } else {
+        //     $img = Image::make('storage/uploads/' . $file_name)->resize(80, 80);
+        // }
+        //echo '3';
+        $compress = 'storage/uploads/' . $file_name;
+        //$img->save($compress);
+        $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
+        $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
+        if (Session::get('user_type') == 4) {
+            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo', '/' . $compress);
+        }
+
+        Session::put('icon', '/' . $compress);
+        return response()->json(['image' => '/' . $compress]);
+    }
+
     public function bookRide()
     {
         $project_id = Session::get('project_id');
