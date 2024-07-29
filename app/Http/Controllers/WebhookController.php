@@ -171,14 +171,14 @@ class WebhookController extends Controller
         $data['escort'] = $ride->escort;
         $data['ride_id'] = $trip->ride_id;
         $data['pickup_location'] = $trip->pickup_location;
+        if ($trip->emails == '') {
+            $trip->emails = 'maheshspatil.88@gmail.com';
+        }
+        if ($trip->mobiles == '') {
+            $trip->mobiles = '8879391658';
+        }
         $data['emails'] = explode(',', $trip->emails);
-        if (empty($data['emails'])) {
-            $data['emails'] = array('maheshspatil.88@gmail.com');
-        }
         $data['mobiles'] = explode(',', $trip->mobiles);
-        if (empty($data['mobiles'])) {
-            $data['mobiles'] = array('8879391658');
-        }
         $data['passengers'] = explode(',', $trip->passengers);
         $tripController = new TripController();
         $request = new Request($data);
