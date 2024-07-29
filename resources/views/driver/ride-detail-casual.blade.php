@@ -76,7 +76,7 @@
                         </div>
                         <div class="in">
                             <div>
-                                <strong>Today 11:38 AM</strong>
+                                <strong v-html="data.ride.start_time"></strong>
                                 <div class="text-small text-secondary" v-text="data.ride.start_location"> </div>
                             </div>
 
