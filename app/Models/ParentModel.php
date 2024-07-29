@@ -267,4 +267,15 @@ class ParentModel extends Model
                 'last_update_by' => $user_id
             ]);
     }
+
+    public function insertTable($table_name, $array, $created_by = '0')
+    {
+        $array['created_by'] = $created_by;
+        $array['last_update_by'] = $created_by;
+        $array['created_date'] = date('Y-m-d H:i:s');
+        $id = DB::table($table_name)->insertGetId(
+            $array
+        );
+        return $id;
+    }
 }

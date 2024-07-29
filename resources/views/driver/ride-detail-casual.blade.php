@@ -77,7 +77,7 @@
                         <div class="in">
                             <div>
                                 <strong>Today 11:38 AM</strong>
-                                <div class="text-small text-secondary"> MALINI AGARWAL-501,DEV ASHISH,14TH ROAD KHAR WEST ,INL MAHAVIR HOSPITAL LANE MUMBAI 400052</div>
+                                <div class="text-small text-secondary" v-text="data.ride.start_location"> </div>
                             </div>
 
                         </div>
@@ -87,28 +87,19 @@
                 <li>
                     <ul class="" style="margin-left: 50px;">
                         <!-- item -->
-                        <li>
+                        <li v-for="(item, index) in data.ride_passengers">
                             <a href="#" class="item" style="padding: 0px 16px;min-height: 20px;">
 
                                 <div class="in">
                                     <div>
-                                        <strong>Bitcoin</strong>
+                                        <strong><span v-text="item.name"></span>
+                                            <span class="text-small text-secondary" v-text="item.mobile"></span></strong>
                                     </div>
 
                                 </div>
                             </a>
                         </li>
-                        <li>
-                            <a href="#" class="item" style="padding: 0px 16px;min-height: 20px;">
 
-                                <div class="in">
-                                    <div>
-                                        <strong>Bitcoin</strong>
-                                    </div>
-
-                                </div>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <!-- * item -->
@@ -121,7 +112,7 @@
                         <div class="in">
                             <div>
                                 <strong>Drop</strong>
-                                <div class="text-small text-secondary">Buy</div>
+                                <div class="text-small text-secondary" v-text="data.ride.end_location"></div>
                             </div>
 
                         </div>
@@ -131,133 +122,99 @@
                 <!-- * item -->
             </ul>
         </div>
-        <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
-            @csrf
-            <div class="row mb-1" id="vphoto">
-                <div class="col-6">
-                    <h3 style="padding-top: 20px;">Vehicle photos</h3>
-                    <button class="btn btn-info text-center">
-                        Add new
-                    </button>
-                </div>
-                <div class="col-6">
-                    <div class="avatar-section">
-                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
-                            <img id="imgsrc" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
-                            <input type="file" id="fileuploadInput" v-on:change="onImageChange" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
-                            <input type="hidden" name="image" id="img">
-                            <span class="button">
-                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-1" id="plaphoto">
-                <div class="col-6">
-                    <h3 style="padding-top: 20px;">Placard photos</h3>
-                    <button class="btn btn-info text-center">
-                        Add new
-                    </button>
-                </div>
-                <div class="col-6">
-                    <div class="avatar-section">
-                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
-                            <img id="imgsrc2" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
-                            <input type="file" id="fileuploadInput" onchange="document.getElementById('frm').submit();" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
-                            <input type="hidden" name="image" id="img">
-                            <span class="button">
-                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
-                            <div id="loder" role="status" class="text-info"></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-1" id="plaphoto">
-                <div class="col-6">
-                    <h3 style="padding-top: 20px;">Driver photos</h3>
-                    <button class="btn btn-info text-center">
-                        Add new
-                    </button>
-                </div>
-                <div class="col-6">
-                    <div class="avatar-section">
-                        <a href="#" onclick="document.getElementById('fileuploadInput').click();">
-                            <img id="imgsrc3" alt="avatar" class="imaged w100 " src="/assets/img/upload.png">
-                            <input type="file" id="fileuploadInput" onchange="document.getElementById('frm').submit();" multiple  name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
-                            <input type="hidden" name="image" id="img">
-                            <span class="button">
-                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
-                            <div id="loder" role="status" class="text-info"></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div class="col text-center">
+        <div class="col text-center mb-1">
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
                 Start Ride
             </button>
-            <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
-                Start Ride
-            </button>
-            <button v-if="data.ride.status==2 && alldone==true" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
+            <a v-if="data.ride.status==2" href="/driver/ride/status/{{$ride_id}}/6" class="btn btn-success text-center">
+                Reached at Location
+            </a>
+            <a v-if="data.ride.status==5" href="/driver/ride/status/{{$ride_id}}/7" class="btn btn-success text-center">
+                Passenger Picked Up
+            </a>
+            <button v-if="data.ride.status==6" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
                 End Ride
             </button>
         </div>
+        <hr>
+        <form id="frm" onsubmit="" action="/upload/ride/file" method="post" enctype="multipart/form-data">
+            <div class="text-info" id="loder" role="status"></div>
 
-
-
-
-
-
-
-        <div class="modal fade dialogbox" id="inmodal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Enter OTP</h5>
-                    </div>
-                    <div class="modal-body text-start mb-2">
-                        <div class="form-group basic">
-                            <div class="input-wrapper">
-                                <input type="text" required class="form-control verification-input" id="otp" autofocus inputmode="numeric" name="otp" pattern="[0-9]*" minlength="4" placeholder="••••" maxlength="4">
-                                <i class="clear-input">
-                                    <ion-icon name="close-circle"></ion-icon>
-                                </i>
-                                <p v-if="verror!=''" class="text-primary text-center" v-html="verror"></p>
-                                <br>
-                                <a v-on:click="resendotp()" class="text-primary text-center">Re-Send OTP</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="btn-inline">
-                            <button type="button" id="closeotp" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                            <button type="button" v-on:click="verifyotp()" class="btn btn-primary bg-red">VERIFY</button>
-                        </div>
+            @csrf
+            <div class="row mb-1" v-for="(item, index) in data.vehicle_photos">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;" v-if="index==0">Vehicle photos</h3>
+                    <a class="btn btn-info text-center" v-on:click="addNewPhoto('Vehicle')" v-if="index==0">
+                        Add new
+                    </a>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" v-on:click="selectPhoto('vehicle_'+index)">
+                            <img :id="'img_vehicle_'+index" alt="avatar" class="imaged w100 " :src="item.image">
+                            <input type="file" :id="'vehicle_'+index" v-on:change="onImageChange" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" :id="'id_vehicle_'+index" v-model="item.id" name="vehicle_photo_ids[]">
+                            <input type="hidden" :id="'type_vehicle_'+index" v-model="item.type" name="photo_type[]">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal fade dialogbox" id="noshowmodal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirm?</h5>
-                    </div>
-                    <div class="modal-body text-start mb-2">
-                        <p>Do you want to continue?</p>
-                    </div>
+            <hr v-if="data.ride.status>1">
 
-                    <div class="modal-footer">
-                        <div class="btn-inline">
-                            <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                            <button type="button" v-on:click="noshow()" data-bs-dismiss="modal" class="btn btn-primary bg-red">NO SHOW</button>
-                        </div>
+            <div v-if="data.ride.status>1" class="row mb-1" v-for="(item, index) in data.driver_photos">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;" v-if="index==0">Driver photos</h3>
+                    <a class="btn btn-info text-center" v-on:click="addNewPhoto('Driver')" v-if="index==0">
+                        Add new
+                    </a>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" v-on:click="selectPhoto('driver_'+index)">
+                            <img :id="'img_driver_'+index" alt="avatar" class="imaged w100 " :src="item.image">
+                            <input type="file" :id="'driver_'+index" v-on:change="onImageChange" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" :id="'id_driver_'+index" v-model="item.id" name="driver_photo_ids[]">
+                            <input type="hidden" :id="'type_driver_'+index" v-model="item.type" name="photo_type[]">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
+            <hr v-if="data.ride.status>1">
+            <div v-if="data.ride.status>1" class="row mb-1" v-for="(item, index) in data.placard_photos">
+                <div class="col-6">
+                    <h3 style="padding-top: 20px;" v-if="index==0">Placard photos</h3>
+                    <a class="btn btn-info text-center" v-on:click="addNewPhoto('Placard')" v-if="index==0">
+                        Add new
+                    </a>
+                </div>
+                <div class="col-6">
+                    <div class="avatar-section">
+                        <a href="#" v-on:click="selectPhoto('placard_'+index)">
+                            <img :id="'img_placard_'+index" alt="avatar" class="imaged w100 " :src="item.image">
+                            <input type="file" :id="'placard_'+index" v-on:change="onImageChange" name="file[]" accept=".png, .jpg, .jpeg" style="display: none;">
+                            <input type="hidden" :id="'id_placard_'+index" v-model="item.id" name="placard_photo_ids[]">
+                            <input type="hidden" :id="'type_placard_'+index" v-model="item.type" name="photo_type[]">
+                            <span class="button">
+                                <ion-icon name="camera-outline" role="img" class="md hydrated" aria-label="camera outline"></ion-icon></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+
+
+
+
+
+
+
+
         <div class="modal fade dialogbox" id="endmodal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -378,7 +335,13 @@
                 verror: '',
                 alldone: false,
                 image: null,
-                notloded: true
+                notloded: true,
+                selected_photo: '',
+                defaultPhoto: {
+                    image: '/assets/img/upload.png',
+                    id: '0',
+                    type: 'na'
+                }
             }
         },
         mounted() {
@@ -455,6 +418,21 @@
                 // console.log(this.image);
                 this.formSubmit(e.target.files[0]);
             },
+            selectPhoto(selected_photo) {
+                this.selected_photo = selected_photo;
+                document.getElementById(selected_photo).click();
+            },
+            addNewPhoto(type) {
+                this.defaultPhoto.type = type;
+                if (type == 'Vehicle') {
+                    this.data.vehicle_photos.push(this.defaultPhoto);
+                } else if (type == 'Placard') {
+                    this.data.placard_photos.push(this.defaultPhoto);
+                } else if (type == 'Driver') {
+                    this.data.driver_photos.push(this.defaultPhoto);
+                }
+
+            },
             formSubmit(image) {
                 lo(true);
                 let currentObj = this;
@@ -470,13 +448,17 @@
                 //image = document.getElementById('fileuploadInput').value;
                 // alert(image);
                 //console.log(formData);
-                //formData.append('file[]', image);
-               // formData.append('test', 'hiii');
-                console.log(formData);
+                var sphotoid = this.selected_photo;
+
+                formData.append('image', image);
+                formData.append('id', document.getElementById('id_' + sphotoid).value);
+                formData.append('type', document.getElementById('type_' + sphotoid).value);
+                formData.append('ride_id', this.data.ride.id);
+                // formData.append('test', 'hiii');
                 axios.post('/upload/ride/file', formData, config)
                     .then(function(response) {
-                        console.log(response);
-                        document.getElementById('imgsrc').src = response.data[0];
+                        document.getElementById('img_' + sphotoid).src = response.data.url;
+                        document.getElementById('id_' + sphotoid).value = response.data.id;
                         lo(false);
                     })
                     .catch(function(error) {
