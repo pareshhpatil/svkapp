@@ -242,7 +242,7 @@ class ApiController extends Controller
         Pickup Location: {{5}}
         Driver Name: {{6}}
         Driver Contact: {{7}}
-        Link : {{Link}}";
+        Link : https://app.svktrv.in/l/{{Link}}";
 
         $messages['booking_details'] = "<b>Booking details</b>
 
@@ -258,7 +258,7 @@ class ApiController extends Controller
         Cab Type: {{6}}
         Driver Name: {{7}}
         Driver Contact: {{8}}
-        Link : {{Link}}";
+        Link : https://app.svktrv.in/l/{{Link}}";
 
         $messages['driver_booking_details'] = "<b>बुकिंग अलर्ट</b>
 
@@ -270,7 +270,7 @@ class ApiController extends Controller
         पिकअप समय: {{5}}
         यात्री का नाम: {{6}}
         यात्री संपर्क: {{7}}
-        Link : {{Link}}";
+        Link : https://app.svktrv.in/l/{{Link}}";
 
         if (!isset($messages[$type])) {
             return $type;
