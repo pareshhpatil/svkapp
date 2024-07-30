@@ -213,9 +213,11 @@ class ApiController extends Controller
                 if ($response->successful()) {
                     $responseData = $response->json(); // Convert response to JSON
                     // Handle successful response
-
+                    $name = $this->model->getColumnValue('employee', 'mobile', $mobile, 'name');
+                    $name = ($name == false) ? '' : $name;
                     $StaffModel = new StaffModel();
-                    $StaffModel->saveWhatsapp($mobile, '', 'Sent', 'Sent', 'text', $template_name, $responseData['messages'][0]['id']);
+                    $message = $this->getWhatsappMessage($template_name, $params, $button_link);
+                    $StaffModel->saveWhatsapp($mobile, $name, 'Sent', 'Sent', 'text', $message, $responseData['messages'][0]['id']);
 
                     return $responseData['messages'][0]['id'];
                 } else {
@@ -224,5 +226,62 @@ class ApiController extends Controller
                 }
             }
         }
+    }
+
+    function getWhatsappMessage($type, $params, $link)
+    {
+        $messages['ride_status'] = "<b>Ride Status Update</b>
+
+        Status: {{1}}
+
+        Details:
+        Booking ID: {{2}}
+        Passenger name: {{3}}
+        Pickup Time: {{4}}
+        Pickup Location: {{5}}
+        Driver Name: {{6}}
+        Driver Contact: {{7}}
+        Link : {{Link}}";
+
+        $messages['booking_details'] = "<b>Booking details</b>
+
+        Hello {{1}} ,
+
+        We're excited to confirm your cab booking details:
+
+        Booking ID: #{{2}}
+        Passenger name: {{9}}
+        Pickup Time: {{3}}
+        Pickup Location: {{4}}
+        Drop-off Location: {{5}}
+        Cab Type: {{6}}
+        Driver Name: {{7}}
+        Driver Contact: {{8}}
+        Link : {{Link}}";
+
+        $messages['driver_booking_details'] = "<b>बुकिंग अलर्ट</b>
+
+        नमस्ते {{1}}
+
+        बुकिंग आईडी: #{{2}}
+        पिकअप स्थान: {{3}}
+        ड्रॉप-ऑफ स्थान: {{4}}
+        पिकअप समय: {{5}}
+        यात्री का नाम: {{6}}
+        यात्री संपर्क: {{7}}
+        Link : {{Link}}";
+
+        if (!isset($messages[$type])) {
+            return $type;
+        }
+
+        foreach ($params as $key => $row) {
+            $key = $key + 1;
+            $messages[$type] = str_replace('{{' . $key . '}}', $row['text'], $messages[$type]);
+        }
+
+        $messages[$type] = str_replace('{{Link}}', $link, $messages[$type]);
+
+        return $messages[$type];
     }
 }
