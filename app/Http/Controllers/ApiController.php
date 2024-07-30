@@ -221,8 +221,9 @@ class ApiController extends Controller
 
                     return $responseData['messages'][0]['id'];
                 } else {
-                    // Handle failed request
-                    dd($response->status(), $response->body()); // Output status code and response body for debugging
+                    //
+                    Log::error($response->status().'-'.$response->body());
+                    //dd($response->status(), $response->body()); // Output status code and response body for debugging
                 }
             }
         }
