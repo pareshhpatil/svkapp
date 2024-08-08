@@ -176,7 +176,7 @@ class TripController extends Controller
                 $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
                 $params[] = array('type' => 'text', 'text' => $passenger->address);
                 $params[] = array('type' => 'text', 'text' => $row->drop_location);
-                $params[] = array('type' => 'text', 'text' => $car_type);
+                $params[] = array('type' => 'text', 'text' => $vehicle->number.' - '.$car_type);
                 $params[] = array('type' => 'text', 'text' => $driver->name);
                 $params[] = array('type' => 'text', 'text' => $driver->mobile);
                 $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
@@ -202,7 +202,7 @@ class TripController extends Controller
                         $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
                         $params[] = array('type' => 'text', 'text' => $ride->start_location);
                         $params[] = array('type' => 'text', 'text' => $ride->end_location);
-                        $params[] = array('type' => 'text', 'text' => $car_type);
+                        $params[] = array('type' => 'text', 'text' => $vehicle->number.' - '.$car_type);
                         $params[] = array('type' => 'text', 'text' => $driver->name);
                         $params[] = array('type' => 'text', 'text' => $driver->mobile);
                         $employee_mobile = ($employee_mobile != '') ? ' Mob: ' . $employee_mobile : '';
