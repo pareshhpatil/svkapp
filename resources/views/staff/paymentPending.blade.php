@@ -76,7 +76,7 @@
                     <ion-icon name="close"></ion-icon>
                 </div>
                 <br>-->
-                <a data-bs-toggle="modal" :onclick="getData({{$v->transaction_id}})" data-bs-target="#cancelride" class="item">
+                <a data-bs-toggle="modal" onclick="getData({{$v->transaction_id}})" data-bs-target="#cancelride" class="item">
                     <div class="detail">
                         <div>
                             <strong>{{$v->name}}</strong>
@@ -147,40 +147,20 @@
                     this.drop = 'Office';
                 }
             },
-            getData(id) {
-                axios.get('/staff/payment/detail/5111/1')
-                    .then(response => {
-                        document.getElementById('datat').innerHTML = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
+
         }
     });
 
 
 
-    function validateDate() {
-        var currentDate = new Date();
-        currentDate.setHours(currentDate.getHours() + 6);
-        var updatedDate = new Date(document.getElementById('date').value + ' ' + document.getElementById('shift_time').value);
-        if (currentDate > updatedDate) {
-            document.getElementById("dialogclick").click();
-            document.getElementById("status").value = '0';
-            return false;
-        } else {
-            document.getElementById("status").value = '1';
-        }
+    function getData(id) {
+        axios.get('/staff/payment/detail/' + id + '/1')
+            .then(response => {
+                document.getElementById('datat').innerHTML = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
-
-    var today = new Date().toISOString().split('T')[0];
-    document.getElementById('date').setAttribute('min', today);
-
-
-
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
 </script>
 @endsection
