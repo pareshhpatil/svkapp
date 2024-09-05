@@ -76,7 +76,7 @@
                     <ion-icon name="close"></ion-icon>
                 </div>
                 <br>-->
-                <a href="/staff/payment/detail/{{$v->transaction_id}}" class="item">
+                <a data-bs-toggle="modal" :onclick="getData({{$v->transaction_id}})" data-bs-target="#cancelride" class="item">
                     <div class="detail">
                         <div>
                             <strong>{{$v->name}}</strong>
@@ -105,24 +105,14 @@
 </div>
 <div class="modal fade dialogbox" id="cancelride" data-bs-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Cancel Booking</h5>
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-body text-start mb-2" id="datat">
             </div>
-            <form action="/passenger/booking/cancel" method="post">
-                @csrf
-                <div class="modal-body text-start mb-2" id="cancel_message">
-                    You want to cancel?
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
                 </div>
-                <div class="modal-footer">
-                    <div class="btn-inline">
-                        <input type="hidden" id="cancel_booking_id" name="booking_id">
-                        <input type="hidden" id="no_show" value="0" name="no_show">
-                        <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                        <button type="submit" class="btn btn-text-primary">CONFIRM</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -156,9 +146,20 @@
                     this.pickup = 'Home';
                     this.drop = 'Office';
                 }
+            },
+            getData(id) {
+                axios.get('/staff/payment/detail/5111/1')
+                    .then(response => {
+                        document.getElementById('datat').innerHTML = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }
         }
     });
+
+
 
     function validateDate() {
         var currentDate = new Date();

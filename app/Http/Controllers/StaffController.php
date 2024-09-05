@@ -154,7 +154,7 @@ class StaffController extends Controller
         $data['menu'] = 3;
         return view('staff.paymentTransaction', $data);
     }
-    public function paymentDetail($id)
+    public function paymentDetail($id, $ajax = false)
     {
         $user_access = $this->model->getTableRow('user_access', 'user_id',  Session::get('user_id'));
         $user_access =  json_decode(json_encode($user_access), 1);
@@ -171,7 +171,10 @@ class StaffController extends Controller
             $data['paymentsource'] = $this->model->getTableListInArray('paymentsource', 'paymentsource_id', $payment_source, 'paymentsource_id,name,balance');
         }
         $data['payment_modes'] = json_decode($user_access['payment_modes'], 1);
-        return view('staff.paymentDetail', $data);
+        if ($ajax == false) {
+            return view('staff.paymentDetail', $data);
+        }
+        return view('staff.paymentDetailAjax', $data);
     }
 
     public function transactionDetail($id)
@@ -341,6 +344,9 @@ class StaffController extends Controller
                 }
             }
             if ($return == 0) {
+                if (Session::get('user_id') == 1) {
+                    return redirect('/staff/payment/pending')->withSuccess('Transaction has been save successfully');
+                }
                 return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
             }
         }

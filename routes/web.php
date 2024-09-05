@@ -129,7 +129,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('staff/payment/request', [App\Http\Controllers\StaffController::class, 'paymentrequest'])->name('payment_request');
     Route::get('staff/payment/send', [App\Http\Controllers\StaffController::class, 'paymentSend'])->name('payment_send');
     Route::get('staff/payment/pending', [App\Http\Controllers\StaffController::class, 'paymentPending'])->name('payment_pending');
-    Route::get('staff/payment/detail/{id}', [App\Http\Controllers\StaffController::class, 'paymentDetail'])->name('payment_detail');
+    Route::get('staff/payment/detail/{id}/{ajax?}', [App\Http\Controllers\StaffController::class, 'paymentDetail'])->name('payment_detail');
     Route::post('staff/payment/paymentsave', [App\Http\Controllers\StaffController::class, 'paymentSave'])->name('paymentsave');
     Route::post('staff/payment/requestPaymentSave', [App\Http\Controllers\StaffController::class, 'requestPaymentSave'])->name('paymentsave');
     Route::post('staff/payment/requestsave', [App\Http\Controllers\StaffController::class, 'requestsave'])->name('requestsave');
