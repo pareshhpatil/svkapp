@@ -9,6 +9,8 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingEmail;
 use Log;
+use Illuminate\Support\Facades\View;
+
 
 class TripController extends Controller
 {
@@ -66,6 +68,51 @@ class TripController extends Controller
     {
         $link = Encryption::encode($id);
         return redirect('https://app.siddhivinayaktravelshouse.in/driver/ride/' . $link);
+    }
+
+    public function sendemail($to_email, $ccEmails, $subject, $body)
+    {
+        $cc_array = [];
+        foreach ($ccEmails as $k => $email) {
+            $cc_array[$k]['email'] = $email;
+        }
+        $curl = curl_init();
+        $json = '{
+            "sender":{
+               "name":"Siddhivinayak Travels House",
+               "email":"contact@siddhivinayaktravelshouse.in"
+            },
+            "to":[
+               {
+                  "email":"' . $to_email . '"
+               }
+            ],
+            "cc":' . json_encode($cc_array) . ',
+            "subject":"' . $subject . '",
+            "htmlContent":""
+         }';
+
+        $array = json_decode($json, 1);
+        $array['htmlContent'] = $body;
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.brevo.com/v3/smtp/email',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($array),
+            CURLOPT_HTTPHEADER => array(
+                'accept: application/json',
+                'api-key: ' . env('EMAIL_KEY'),
+                'content-type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
     }
 
     public function assignCab(Request $request)
@@ -143,7 +190,10 @@ class TripController extends Controller
                 }
             }
             if ($to_email != '') {
-                Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
+                $subject = '#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed';
+                $body = View::make('emails.booking', $data)->render();
+                $this->sendemail($to_email, $ccEmails, $subject, $body);
+                // Mail::to($to_email)->cc($ccEmails)->send(new BookingEmail('#' . $booking_id . ' Siddhivinayak Travels House Cab Booking Confirmed', $data));
             }
         }
 
@@ -176,7 +226,7 @@ class TripController extends Controller
                 $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
                 $params[] = array('type' => 'text', 'text' => $passenger->address);
                 $params[] = array('type' => 'text', 'text' => $row->drop_location);
-                $params[] = array('type' => 'text', 'text' => $vehicle->number.' - '.$car_type);
+                $params[] = array('type' => 'text', 'text' => $vehicle->number . ' - ' . $car_type);
                 $params[] = array('type' => 'text', 'text' => $driver->name);
                 $params[] = array('type' => 'text', 'text' => $driver->mobile);
                 $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
@@ -202,7 +252,7 @@ class TripController extends Controller
                         $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
                         $params[] = array('type' => 'text', 'text' => $ride->start_location);
                         $params[] = array('type' => 'text', 'text' => $ride->end_location);
-                        $params[] = array('type' => 'text', 'text' => $vehicle->number.' - '.$car_type);
+                        $params[] = array('type' => 'text', 'text' => $vehicle->number . ' - ' . $car_type);
                         $params[] = array('type' => 'text', 'text' => $driver->name);
                         $params[] = array('type' => 'text', 'text' => $driver->mobile);
                         $employee_mobile = ($employee_mobile != '') ? ' Mob: ' . $employee_mobile : '';
