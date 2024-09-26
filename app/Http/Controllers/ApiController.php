@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Http;
 use App\Models\StaffModel;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
