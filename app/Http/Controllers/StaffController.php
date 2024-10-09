@@ -112,6 +112,7 @@ class StaffController extends Controller
 
     public function paymentPending()
     {
+
         $data['menu'] = 0;
         $data['title'] = 'Payment request';
         $bill_list = $this->model->getBillList(Session::get('admin_id'));
@@ -161,6 +162,9 @@ class StaffController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'Payment detail';
         $detail = $this->model->getBillDetail($id);
+        $pending_list = $this->model->getEmployeeBillList(Session::get('admin_id'), $detail->employee_id);
+        $data['count'] = count($pending_list);
+        $data['pending_list'] = $pending_list;
         $data['detail'] = $detail;
         $data['date'] = date('Y-m-d');
         $data['data'] = [];
@@ -257,37 +261,43 @@ class StaffController extends Controller
     public function paymentsave(Request $request, $return = 0)
     {
         $user_id = Session::get('user_id');
-        $transaction = $this->model->getTableRow('transaction', 'transaction_id', $request->bill_id);
-        $narrative = $transaction->narrative;
-        if ($transaction->status != 0) {
-            $this->setSuccess('Transaction Already paid');
-            return redirect('/staff/payment/send')->withSuccess('Transaction Already paid');
+        if (isset($request->multiple_payment)) {
+            $bill_ids = $request->multiple_bill_id;
+        } else {
+            $bill_ids[] = $request->bill_id;
         }
+        foreach ($bill_ids as $bill_id) {
+            $transaction = $this->model->getTableRow('transaction', 'transaction_id', $bill_id);
+            $narrative = $transaction->narrative;
+            if ($transaction->status != 0) {
+                $this->setSuccess('Transaction Already paid');
+                return redirect('/staff/payment/send')->withSuccess('Transaction Already paid');
+            }
 
-        $fee = 0;
-        $success = true;
-        $date = date('Y-m-d', strtotime($request->date));
-        $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
-        $cashfree_source = array(2, 18, 19, 20, 21);
-        $balance = $this->model->getColumnValue('paymentsource', 'paymentsource_id', $request->source_id, 'balance');
-        if ($balance < $request->amount) {
-            return redirect('/staff/payment/send')->withSuccess('Balance not available');
-        }
-        if (in_array($request->source_id, $cashfree_source)) {
-            $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
-            $fee = ($request->payment_mode == 'IMPS') ? 5.9 : 1.77;
-            $transaction_id = $this->model->savePaymentTransaction($request->bill_id, $request->amount);
+            $fee = 0;
+            $success = true;
+            $date = date('Y-m-d', strtotime($request->date));
+            $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
+            $cashfree_source = array(2, 18, 19, 20, 21);
+            $balance = $this->model->getColumnValue('paymentsource', 'paymentsource_id', $request->source_id, 'balance');
+            if ($balance < $request->amount) {
+                return redirect('/staff/payment/send')->withSuccess('Balance not available');
+            }
+            if (in_array($request->source_id, $cashfree_source)) {
+                $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
+                $fee = ($request->payment_mode == 'IMPS') ? 5.9 : 1.77;
+                $transaction_id = $this->model->savePaymentTransaction($bill_id, $request->amount);
 
 
-            $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
-                'accept: application/json',
-                'x-client-id: ' . env('CF_KEY'),
-                'x-client-secret: ' . env('CF_SECRET')
-            ));
-            if (isset($data['data']['token'])) {
-                $email = ($employee->email != '') ? $employee->email : 'contact@siddhivinayaktravelshouse.in';
-                $mobile = ($employee->mobile != '') ? $employee->mobile : '8879391658';
-                $post_data = '{
+                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
+                    'accept: application/json',
+                    'x-client-id: ' . env('CF_KEY'),
+                    'x-client-secret: ' . env('CF_SECRET')
+                ));
+                if (isset($data['data']['token'])) {
+                    $email = ($employee->email != '') ? $employee->email : 'contact@siddhivinayaktravelshouse.in';
+                    $mobile = ($employee->mobile != '') ? $employee->mobile : '8879391658';
+                    $post_data = '{
 					  "beneDetails": {
 						"beneId": "' . $employee->employee_id . '",
 						"name": "' . $employee->account_holder_name . '",
@@ -302,53 +312,55 @@ class StaffController extends Controller
 					  "transferMode": "' . $mode . '",
 					  "remarks": "Payment"
 					}';
-                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1.2/directTransfer', array(
-                    'accept: application/json',
-                    'content-type: application/json',
-                    'Authorization: Bearer ' . $data['data']['token']
-                ), $post_data);
-                $status = $data['status'];
-                if (isset($data['data']['referenceId'])) {
-                    $referenceId = $data['data']['referenceId'];
-                    $utr = $data['data']['utr'];
-                } else {
-                    echo $post_data;
-                    dd($data);
-                }
-                $json = json_encode($data);
-                $this->model->updatePaymentTransaction($transaction_id, $status, $referenceId, $utr, $json);
+                    $data = $this->callapi('https://payout-api.cashfree.com/payout/v1.2/directTransfer', array(
+                        'accept: application/json',
+                        'content-type: application/json',
+                        'Authorization: Bearer ' . $data['data']['token']
+                    ), $post_data);
+                    $status = $data['status'];
+                    if (isset($data['data']['referenceId'])) {
+                        $referenceId = $data['data']['referenceId'];
+                        $utr = $data['data']['utr'];
+                    } else {
+                        echo $post_data;
+                        dd($data);
+                    }
+                    $json = json_encode($data);
+                    $this->model->updatePaymentTransaction($transaction_id, $status, $referenceId, $utr, $json);
 
-                if ($data['status'] != 'SUCCESS' && $data['status'] != 'PENDING') {
-                    $success = false;
+                    if ($data['status'] != 'SUCCESS' && $data['status'] != 'PENDING') {
+                        $success = false;
+                        dd($data);
+                    }
+                } else {
                     dd($data);
                 }
-            } else {
-                dd($data);
+            }
+            if ($success == true) {
+                $code = 'SVK' . rand(10000000, 99999999);
+                $this->model->updateTransaction(1, $bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id, $code);
+
+                $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
+                $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
+                $this->model->savePaymentStatement($request->source_id, $bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
+                if (strlen($employee->mobile) == 10) {
+                    $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $employee->mobile, 'id');
+                    if ($failed == false) {
+                        $url = 'https://app.svktrv.in/transaction/detail/' . $code;
+                        $short_url = $this->random();
+                        $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+
+                        $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+                    }
+                }
             }
         }
-        if ($success == true) {
-            $code = 'SVK' . rand(10000000, 99999999);
-            $this->model->updateTransaction(1, $request->bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id, $code);
 
-            $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
-            $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
-            $this->model->savePaymentStatement($request->source_id, $request->bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
-            if (strlen($employee->mobile) == 10) {
-                $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $employee->mobile, 'id');
-                if ($failed == false) {
-                    $url = 'https://app.svktrv.in/transaction/detail/' . $code;
-                    $short_url = $this->random();
-                    $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
-
-                    $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
-                }
+        if ($return == 0) {
+            if (Session::get('user_id') == 1) {
+                return redirect('/staff/payment/pending')->withSuccess('Transaction has been save successfully');
             }
-            if ($return == 0) {
-                if (Session::get('user_id') == 1) {
-                    return redirect('/staff/payment/pending')->withSuccess('Transaction has been save successfully');
-                }
-                return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
-            }
+            return redirect('/staff/payment/transactions')->withSuccess('Transaction has been save successfully');
         }
     }
 

@@ -160,6 +160,20 @@ class StaffModel extends ParentModel
         return $retObj;
     }
 
+    public function getEmployeeBillList($admin_id,$employee_id)
+    {
+        $retObj = DB::table('transaction as a')
+            ->join('employee as v', 'v.employee_id', '=', 'a.employee_id')
+            ->where('a.admin_id', $admin_id)
+            ->where('a.employee_id', $employee_id)
+            ->where('a.is_active', 1)
+            ->where('a.status', 0)
+            ->select(DB::raw("a.*,v.name,v.account_no,v.account_holder_name"))
+            ->orderBy('a.transaction_id', 'desc')
+            ->get();
+        return $retObj;
+    }
+
     public function getTransactionList($date, $payment_source)
     {
         $retObj = DB::table('transaction as a')

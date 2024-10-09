@@ -53,17 +53,32 @@
                     </i>
                 </div>
             </div>
+            @if($count>1)
             <div class="form-group basic">
                 <div class="input-wrapper">
-                    <label class="label mb-1" for="password1">Date</label>
-                    <div><input type="date" value="{{$date}}" required name="date" class="form-control" id="date" placeholder="Select Date">
+                    <label class="label mb-1" for="email2">Total count {{$count}}
+                        <input type="checkbox" name="multiple_payment" >
+                    </label>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                        @foreach($pending_list as $v)
+                        <tr>
+                            <td>{{$v->amount}}
+                                <input type="hidden" name="multiple_bill_id[]" value="{{$v->transaction_id}}">
+                            </td>
+                            <td>{{$v->paid_date}}</td>
+                        </tr>
+                        @endforeach
+                    </table>
 
-                        <i class="clear-input">
-                            <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
-                        </i>
-                    </div>
+
                 </div>
             </div>
+            @endif
+
             <div class="form-group basic">
                 <div class="input-wrapper">
                     <label class="label" for="password2">Amount</label>
@@ -79,6 +94,7 @@
             <div class="mt-2">
                 <div class="row">
                     <div class="col-6">
+                        <input type="hidden" value="{{$date}}" name="date" id="date">
                         <input type="hidden" name="bill_id" value="{{$detail->transaction_id}}">
                         <input type="hidden" name="employee_id" value="{{$detail->employee_id}}">
                         <button type="submit" class="btn btn-lg btn-primary btn-block">Confirm</button>
