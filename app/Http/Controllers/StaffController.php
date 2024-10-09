@@ -261,8 +261,10 @@ class StaffController extends Controller
     public function paymentsave(Request $request, $return = 0)
     {
         $user_id = Session::get('user_id');
+        $multiple = false;
         if (isset($request->multiple_payment)) {
             $bill_ids = $request->multiple_bill_id;
+            $multiple = true;
         } else {
             $bill_ids[] = $request->bill_id;
         }
@@ -273,6 +275,11 @@ class StaffController extends Controller
                 $this->setSuccess('Transaction Already paid');
                 return redirect('/staff/payment/send')->withSuccess('Transaction Already paid');
             }
+            if ($multiple == true) {
+                $amount = $transaction->amount;
+            } else {
+                $amount = $request->amount;
+            }
 
             $fee = 0;
             $success = true;
@@ -280,13 +287,13 @@ class StaffController extends Controller
             $employee = $this->model->getTableRow('employee', 'employee_id', $request->employee_id);
             $cashfree_source = array(2, 18, 19, 20, 21);
             $balance = $this->model->getColumnValue('paymentsource', 'paymentsource_id', $request->source_id, 'balance');
-            if ($balance < $request->amount) {
+            if ($balance < $amount) {
                 return redirect('/staff/payment/send')->withSuccess('Balance not available');
             }
             if (in_array($request->source_id, $cashfree_source)) {
                 $mode = ($request->payment_mode == 'IMPS') ? 'imps' : 'neft';
                 $fee = ($request->payment_mode == 'IMPS') ? 5.9 : 1.77;
-                $transaction_id = $this->model->savePaymentTransaction($bill_id, $request->amount);
+                $transaction_id = $this->model->savePaymentTransaction($bill_id, $amount);
 
 
                 $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
@@ -307,7 +314,7 @@ class StaffController extends Controller
 						"bankAccount": "' . $employee->account_no . '",
 						"ifsc": "' . $employee->ifsc_code . '"
 					  },
-					  "amount": ' . $request->amount . ',
+					  "amount": ' . $amount . ',
 					  "transferId": "' . $transaction_id . '",
 					  "transferMode": "' . $mode . '",
 					  "remarks": "Payment"
@@ -338,11 +345,11 @@ class StaffController extends Controller
             }
             if ($success == true) {
                 $code = 'SVK' . rand(10000000, 99999999);
-                $this->model->updateTransaction(1, $bill_id, $request->amount, $request->payment_mode, $request->source_id, $date, $user_id, $code);
+                $this->model->updateTransaction(1, $bill_id, $amount, $request->payment_mode, $request->source_id, $date, $user_id, $code);
 
-                $this->model->updateEmployeeBalance($request->amount, $request->employee_id);
-                $this->model->updateBankBalance($request->amount + $fee, $request->source_id, 1);
-                $this->model->savePaymentStatement($request->source_id, $bill_id, $date, $request->amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
+                $this->model->updateEmployeeBalance($amount, $request->employee_id);
+                $this->model->updateBankBalance($amount + $fee, $request->source_id, 1);
+                $this->model->savePaymentStatement($request->source_id, $bill_id, $date, $amount + $fee, 'Debit', 'Expense', "Paid to :" . $employee->name . ' for ' . $narrative, $user_id);
                 if (strlen($employee->mobile) == 10) {
                     $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $employee->mobile, 'id');
                     if ($failed == false) {
@@ -350,7 +357,7 @@ class StaffController extends Controller
                         $short_url = $this->random();
                         $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
 
-                        $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $request->amount, $short_url);
+                        $this->sendWhatsapp($employee->mobile, $employee->name, date('d M Y'), $amount, $short_url);
                     }
                 }
             }
