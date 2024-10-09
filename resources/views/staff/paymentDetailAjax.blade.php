@@ -57,13 +57,14 @@
             <div class="form-group basic">
                 <div class="input-wrapper">
                     <label class="label mb-1" for="email2">Total count {{$count}}
-                        <input type="checkbox" name="multiple_payment" >
+                        <input type="checkbox" name="multiple_payment">
                     </label>
                     <table class="table table-bordered">
                         <tr>
                             <th>Amount</th>
                             <th>Date</th>
                         </tr>
+                        @php $total=0; @endphp
                         @foreach($pending_list as $v)
                         <tr>
                             <td>{{$v->amount}}
@@ -71,7 +72,12 @@
                             </td>
                             <td>{{$v->paid_date}}</td>
                         </tr>
+                        @php $total=$total+$v->amount; @endphp
                         @endforeach
+                        <tr>
+                            <th>{{number_format($total,2)}}</th>
+                            <th>Grand Total</th>
+                        </tr>
                     </table>
 
 
