@@ -61,8 +61,8 @@ class StaffController extends Controller
             'x-client-secret: ' . env('CF_SECRET')
         ));
         if (isset($data['data']['token'])) {
-            Session::set('cashfree_token', $data['data']['token']);
-            Session::set('token_time', $currentTimestamp);
+            Session::put('cashfree_token', $data['data']['token']);
+            Session::put('token_time', $currentTimestamp);
             return $data['data']['token'];
         } else {
             dd($data);
