@@ -142,6 +142,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 });
 
 Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestTransactionDetail'])->name('transactionDetailguest');
+Route::get('group/transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestGroupTransactionDetail'])->name('transactionGroupDetailguest');
 Route::any('/facebook/webhook', [App\Http\Controllers\WebhookController::class, 'facebookWebhook'])->name('facebookWebhook');
 Route::any('/cashfree/webhook', [App\Http\Controllers\WebhookController::class, 'cashfreeWebhook'])->name('cashfreeWebhook');
 

@@ -45,6 +45,29 @@ class StaffController extends Controller
         $this->user_id = Session::get('user_id');
     }
 
+    private function getToken()
+    {
+        $currentTimestamp = time();
+        if (Session::has('token_time')) {
+
+            if (Session::has('token_time') > $currentTimestamp) {
+                return Session::has('cashfree_token');
+            }
+        }
+
+        $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
+            'accept: application/json',
+            'x-client-id: ' . env('CF_KEY'),
+            'x-client-secret: ' . env('CF_SECRET')
+        ));
+        if (isset($data['data']['token'])) {
+            Session::set('cashfree_token', $data['data']['token']);
+            Session::set('token_time', $currentTimestamp);
+            return $data['data']['token'];
+        } else {
+            dd($data);
+        }
+    }
 
     public function dashboard()
     {
@@ -79,6 +102,9 @@ class StaffController extends Controller
             $int++;
         }
 
+
+
+
         $pending_amount = $this->model->getPendingSum(Session::get('admin_id'));
         $balance_amount = $this->model->getSourceBalance(json_decode($user_access['payment_source']));
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
@@ -88,6 +114,24 @@ class StaffController extends Controller
         $array['total_transactions'] = $this->moneyFormatIndia($amount, 2);
         $data['data'] = $array;
         $data['menu'] = 1;
+
+        if (Session::get('user_id') == 1) {
+            $token = $this->getToken();
+            $data['total_balance'] = '';
+            if (isset($token)) {
+
+                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/getBalance', array(
+                    'accept: application/json',
+                    'content-type: application/json',
+                    'Authorization: Bearer ' . $token
+                ), '', 'GET');
+                if (isset($data['data']['availableBalance'])) {
+                    $data['total_balance'] = $this->moneyFormatIndia($data['data']['availableBalance'], 2);
+                }
+            }
+        }
+
+
         return view('staff.dashboard', $data);
     }
 
@@ -228,7 +272,7 @@ class StaffController extends Controller
         return view('staff.paymentSend', $data);
     }
 
-    function callapi($url, $header, $post_data = '')
+    function callapi($url, $header, $post_data = '', $method = 'POST')
     {
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -239,7 +283,7 @@ class StaffController extends Controller
             CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_POSTFIELDS => $post_data,
             CURLOPT_HTTPHEADER => $header,
         ));
@@ -296,12 +340,8 @@ class StaffController extends Controller
                 $transaction_id = $this->model->savePaymentTransaction($bill_id, $amount);
 
 
-                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/authorize', array(
-                    'accept: application/json',
-                    'x-client-id: ' . env('CF_KEY'),
-                    'x-client-secret: ' . env('CF_SECRET')
-                ));
-                if (isset($data['data']['token'])) {
+                $token = $this->getToken();
+                if (isset($token)) {
                     $email = ($employee->email != '') ? $employee->email : 'contact@siddhivinayaktravelshouse.in';
                     $mobile = ($employee->mobile != '') ? $employee->mobile : '8879391658';
                     $post_data = '{
@@ -322,7 +362,7 @@ class StaffController extends Controller
                     $data = $this->callapi('https://payout-api.cashfree.com/payout/v1.2/directTransfer', array(
                         'accept: application/json',
                         'content-type: application/json',
-                        'Authorization: Bearer ' . $data['data']['token']
+                        'Authorization: Bearer ' . $token
                     ), $post_data);
                     $status = $data['status'];
                     if (isset($data['data']['referenceId'])) {
@@ -339,8 +379,6 @@ class StaffController extends Controller
                         $success = false;
                         dd($data);
                     }
-                } else {
-                    dd($data);
                 }
             }
             if ($success == true) {
@@ -372,6 +410,20 @@ class StaffController extends Controller
     }
 
     function GuestTransactionDetail($id)
+    {
+        $transaction = $this->model->getTableRow('transaction', 'code',  $id);
+        $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
+        $data['reason'] = (isset($reason)) ? $reason : '';
+        $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
+        $data['menu'] = 3;
+        $data['title'] = 'Payment detail';
+        $data['transaction'] = $transaction;
+        $data['employee'] = $employee;
+
+        return view('guest.transactionDetail', $data);
+    }
+
+    function GuestGroupTransactionDetail($id)
     {
         $transaction = $this->model->getTableRow('transaction', 'code',  $id);
         $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
