@@ -120,13 +120,13 @@ class StaffController extends Controller
             $data['total_balance'] = '';
             if (isset($token)) {
 
-                $data = $this->callapi('https://payout-api.cashfree.com/payout/v1/getBalance', array(
+                $array = $this->callapi('https://payout-api.cashfree.com/payout/v1/getBalance', array(
                     'accept: application/json',
                     'content-type: application/json',
                     'Authorization: Bearer ' . $token
                 ), '', 'GET');
-                if (isset($data['data']['availableBalance'])) {
-                    $data['total_balance'] = $this->moneyFormatIndia($data['data']['availableBalance'], 2);
+                if (isset($array['data']['availableBalance'])) {
+                    $data['total_balance'] = $this->moneyFormatIndia($array['data']['availableBalance'], 2);
                 }
             }
         }
