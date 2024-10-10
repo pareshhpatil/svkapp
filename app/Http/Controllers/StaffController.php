@@ -412,15 +412,20 @@ class StaffController extends Controller
     function GuestTransactionDetail($id)
     {
         $transaction = $this->model->getTableRow('transaction', 'code',  $id);
-        $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
-        $data['reason'] = (isset($reason)) ? $reason : '';
-        $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
-        $data['menu'] = 3;
-        $data['title'] = 'Payment detail';
-        $data['transaction'] = $transaction;
-        $data['employee'] = $employee;
+        if (isset($transaction->transaction_id)) {
+            $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
+            $data['reason'] = (isset($reason)) ? $reason : '';
+            $employee = $this->model->getTableRow('employee', 'employee_id',  $transaction->employee_id);
+            $data['menu'] = 3;
+            $data['title'] = 'Payment detail';
+            $data['transaction'] = $transaction;
+            $data['employee'] = $employee;
 
-        return view('guest.transactionDetail', $data);
+            return view('guest.transactionDetail', $data);
+        } else {
+            Log::error('Transaction not fount with this code ' . $id);
+            return redirect('/404');
+        }
     }
 
     function GuestGroupTransactionDetail($id)
