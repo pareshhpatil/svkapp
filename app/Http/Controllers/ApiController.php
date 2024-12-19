@@ -335,7 +335,7 @@ class ApiController extends Controller
         $summary = [];
         for ($i = 1; $i <= $num; $i++) {
             $group = floor(($i - 1) / $groupSize) * $groupSize + 1;
-            //$array[$group][$i] = [];
+            $array[$group] = [];
         }
 
         if ($user_id != false) {
