@@ -60,6 +60,23 @@ class ParentModel extends Model
         return $retObj->count();
     }
 
+    public function getTableSum($table, $where, $value, $active = 0, $param = [], $sum_column)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where($where, $value);
+        if ($active == 1) {
+            $retObj->where('is_active', 1);
+        }
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        return $retObj->sum($sum_column);
+    }
+
     public function getRowArray($table, $where, $value, $active = 0, $param = [])
     {
 
@@ -183,7 +200,7 @@ class ParentModel extends Model
         $retObj->update($update_array);
     }
 
-    public function getList($table, $param = [], $col = '*')
+    public function getList($table, $param = [], $col = '*', $limit = 0, $orderby = '')
     {
         $retObj = DB::table($table)
             ->select(DB::raw($col));
@@ -191,6 +208,12 @@ class ParentModel extends Model
             foreach ($param as $k => $v) {
                 $retObj->where($k, $v);
             }
+        }
+        if ($limit > 0) {
+            $retObj->limit($limit);
+        }
+        if ($orderby != '') {
+            $retObj->orderBy($orderby, 'desc');
         }
         $retObj = $retObj->get();
         if (!empty($retObj)) {

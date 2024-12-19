@@ -223,7 +223,7 @@ class ApiController extends Controller
                     return $responseData['messages'][0]['id'];
                 } else {
                     //
-                    Log::error($response->status().'-'.$response->body());
+                    Log::error($response->status() . '-' . $response->body());
                     //dd($response->status(), $response->body()); // Output status code and response body for debugging
                 }
             }
@@ -285,5 +285,87 @@ class ApiController extends Controller
         $messages[$type] = str_replace('{{Link}}', $link, $messages[$type]);
 
         return $messages[$type];
+    }
+
+    function validateAuth($auth)
+    {
+        return $this->model->getColumnValue('mataka_user', 'key', $auth, 'id');
+    }
+
+
+    function saveMataka(Request $request)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $array = $request->all();
+            if ($array['id'] > 0) {
+                $this->model->updateTableData('mataka', 'id', $array['id'], $array);
+            } else {
+                unset($array['id']);
+                $this->model->saveTable('mataka', $array, $user_id);
+            }
+        }
+    }
+    function getMataka(Request $request, $type, $date)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'type' => $type]);
+            return response()->json($list);
+        }
+    }
+
+    function getMatakaNumbers(Request $request, $number, $date)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'number' => $number]);
+            return response()->json($list);
+        }
+    }
+    function getMatakaLatest(Request $request, $count)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id], '*', $count, 'id');
+            return response()->json($list);
+        }
+    }
+    function getMatakaDetail(Request $request, $id)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $detail = $this->model->getTableRow('mataka', 'id', $id, 1, ['created_by' => $user_id]);
+            return response()->json($detail);
+        }
+    }
+
+    function getMatakaSummary(Request $request)
+    {
+        $user_id = $this->validateAuth($request->header('Auth'));
+        if ($user_id != false) {
+            $summary = [];
+            $total = 0;
+            $open = 0;
+            $bracket = 0;
+            $transaction = [];
+            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => date('Y-m-d')], '*', 0, 'id');
+            foreach ($list as $k => $row) {
+                if ($k < 5) {
+                    $transaction[] = $row;
+                }
+                $total = $total + $row->amount;
+                if ($row->type == 'open') {
+                    $open = $open + $row->amount;
+                } else {
+                    $bracket = $bracket + $row->amount;
+                }
+            }
+            $summary['total'] = $total;
+            $summary['open'] = $open;
+            $summary['bracket'] = $bracket;
+            $summary['transaction'] = $transaction;
+            return response()->json($summary);
+        }
     }
 }
