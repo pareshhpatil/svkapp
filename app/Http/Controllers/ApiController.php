@@ -361,9 +361,9 @@ class ApiController extends Controller
                     $bracket = $bracket + $row->amount;
                 }
             }
-            $summary['total'] = $total;
-            $summary['open'] = $open;
-            $summary['bracket'] = $bracket;
+            $summary['total'] = number_format($total);
+            $summary['open'] = number_format($open);
+            $summary['bracket'] = number_format($bracket);
             $summary['transaction'] = $transaction;
             return response()->json($summary);
         }
