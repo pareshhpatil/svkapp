@@ -311,14 +311,14 @@ class ApiController extends Controller
         if (env('MATAKA_TOKEN') == $request->header('Auth')) {
             $array = $request->all();
             $detail = $this->model->getTableRow('mataka_user', 'username', $array['user_name'], 1, ['password' => $array['password']]);
-            if($detail!=false)
-            {
-                return response()->json($detail);
-            }else{
-                
-                return response()->json($detail);
+            if ($detail != false) {
+                $return = json_decode(json_encode($detail), 1);
+                $return['status'] = 'success';
+                return response()->json($return);
+            } else {
+                $return['status'] = 'failed';
+                return response()->json($return);
             }
-
         }
     }
     function getMataka(Request $request, $type, $date)
