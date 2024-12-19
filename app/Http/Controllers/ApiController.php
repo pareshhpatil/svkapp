@@ -302,7 +302,7 @@ class ApiController extends Controller
                 $this->model->updateTableData('mataka', 'id', $array['id'], $array);
             } else {
                 unset($array['id']);
-                $array['date']=date('Y-m-d');
+                $array['date'] = date('Y-m-d');
                 $this->model->saveTable('mataka', $array, $user_id);
             }
         }
@@ -325,9 +325,30 @@ class ApiController extends Controller
     function getMataka(Request $request, $type, $date)
     {
         $user_id = $this->validateAuth($request->header('Auth'));
+        $date = ($date == 'na') ? date('Y-m-d') : $date;
+        $num = 10;
+        $groupSize = 5;
+        if ($type == 'open') {
+            $num = 100;
+        }
+        $array = [];
+        for ($i = 1; $i <= $num; $i++) {
+            $group = floor(($i - 1) / $groupSize) * $groupSize + 1;
+            $array[$group][$i] = [];
+        }
+
         if ($user_id != false) {
             $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'type' => $type]);
-            return response()->json($list);
+            foreach ($list as $row) {
+                $number = (int)$row->number;
+                $group = floor(($number - 1) / $groupSize) * $groupSize + 1;
+                $i = 0;
+                while (isset($array[$group][$i][$number])) {
+                    $i++;
+                }
+                $array[$group][$i][$number][] = $row;
+            }
+            return response()->json($array);
         }
     }
 
