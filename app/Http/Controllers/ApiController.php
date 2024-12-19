@@ -332,6 +332,7 @@ class ApiController extends Controller
             $num = 100;
         }
         $array = [];
+        $summary = [];
         for ($i = 1; $i <= $num; $i++) {
             $group = floor(($i - 1) / $groupSize) * $groupSize + 1;
             //$array[$group][$i] = [];
@@ -347,8 +348,13 @@ class ApiController extends Controller
                     $i++;
                 }
                 $array[$group][$i][$number][] = $row;
+                if (isset($summary[$number])) {
+                    $summary[$number] = $summary[$number] + $row->amount;
+                } else {
+                    $summary[$number] =  $row->amount;
+                }
             }
-            return response()->json($array);
+            return response()->json(['rows' => $array, 'summary' => $summary]);
         }
     }
 
