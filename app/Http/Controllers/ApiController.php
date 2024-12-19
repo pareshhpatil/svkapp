@@ -306,6 +306,21 @@ class ApiController extends Controller
             }
         }
     }
+    function loginMataka(Request $request)
+    {
+        if (env('MATAKA_TOKEN') == $request->header('Auth')) {
+            $array = $request->all();
+            $detail = $this->model->getTableRow('mataka_user', 'username', $array['user_name'], 1, ['password' => $array['password']]);
+            if($detail!=false)
+            {
+                return response()->json($detail);
+            }else{
+                
+                return response()->json($detail);
+            }
+
+        }
+    }
     function getMataka(Request $request, $type, $date)
     {
         $user_id = $this->validateAuth($request->header('Auth'));
