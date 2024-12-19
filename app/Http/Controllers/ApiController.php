@@ -302,6 +302,7 @@ class ApiController extends Controller
                 $this->model->updateTableData('mataka', 'id', $array['id'], $array);
             } else {
                 unset($array['id']);
+                $array['date']=date('Y-m-d');
                 $this->model->saveTable('mataka', $array, $user_id);
             }
         }
