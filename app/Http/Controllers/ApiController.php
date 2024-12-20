@@ -328,7 +328,7 @@ class ApiController extends Controller
         $date = ($date == 'na') ? date('Y-m-d') : $date;
         $num = 10;
         $groupSize = 5;
-        if ($type == 'open') {
+        if ($type == 'bracket') {
             $num = 100;
         }
         $array = [];
@@ -390,6 +390,7 @@ class ApiController extends Controller
             $summary = [];
             $total = 0;
             $open = 0;
+            $closed = 0;
             $bracket = 0;
             $transaction = [];
             $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => date('Y-m-d')], '*', 0, 'id');
@@ -400,12 +401,15 @@ class ApiController extends Controller
                 $total = $total + $row->amount;
                 if ($row->type == 'open') {
                     $open = $open + $row->amount;
+                } elseif ($row->type == 'closed') {
+                    $closed = $closed + $row->amount;
                 } else {
                     $bracket = $bracket + $row->amount;
                 }
             }
             $summary['total'] = number_format($total);
             $summary['open'] = number_format($open);
+            $summary['closed'] = number_format($closed);
             $summary['bracket'] = number_format($bracket);
             $summary['transaction'] = $transaction;
             return response()->json($summary);
