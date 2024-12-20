@@ -342,7 +342,7 @@ class ApiController extends Controller
             $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'type' => $type]);
             foreach ($list as $row) {
                 $number = (int)$row->number;
-                $group = floor(($number - 1) / $groupSize) * $groupSize;
+                $group = floor(($number) / $groupSize) * $groupSize;
                 $i = 0;
                 while (isset($array[$group][$i][$number])) {
                     $i++;
