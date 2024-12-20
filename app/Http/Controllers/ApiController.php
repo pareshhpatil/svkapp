@@ -326,14 +326,14 @@ class ApiController extends Controller
     {
         $user_id = $this->validateAuth($request->header('Auth'));
         $date = ($date == 'na') ? date('Y-m-d') : $date;
-        $num = 10;
+        $num = 9;
         $groupSize = 5;
         if ($type == 'bracket') {
-            $num = 100;
+            $num = 99;
         }
         $array = [];
         $summary = [];
-        for ($i = 1; $i <= $num; $i++) {
+        for ($i = 0; $i <= $num; $i++) {
             $group = floor(($i - 1) / $groupSize) * $groupSize + 1;
             $array[$group] = [];
         }
