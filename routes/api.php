@@ -26,7 +26,7 @@ Route::post('validateotp', [App\Http\Controllers\ApiController::class, 'validate
 
 Route::post('saveMataka', [App\Http\Controllers\ApiController::class, 'saveMataka']);
 Route::post('loginMataka', [App\Http\Controllers\ApiController::class, 'loginMataka']);
-Route::get('getMataka/{type}/{date}', [App\Http\Controllers\ApiController::class, 'getMataka']);
+Route::get('getMataka/{type}/{date}/{mataka_type}', [App\Http\Controllers\ApiController::class, 'getMataka']);
 Route::get('getMatakaNumbers/{number}/{date}', [App\Http\Controllers\ApiController::class, 'getMatakaNumbers']);
 Route::get('getMatakaLatest/{count}', [App\Http\Controllers\ApiController::class, 'getMatakaLatest']);
 Route::get('getMatakaDetail/{id}', [App\Http\Controllers\ApiController::class, 'getMatakaDetail']);
