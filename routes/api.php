@@ -30,4 +30,4 @@ Route::get('getMataka/{type}/{date}', [App\Http\Controllers\ApiController::class
 Route::get('getMatakaNumbers/{number}/{date}', [App\Http\Controllers\ApiController::class, 'getMatakaNumbers']);
 Route::get('getMatakaLatest/{count}', [App\Http\Controllers\ApiController::class, 'getMatakaLatest']);
 Route::get('getMatakaDetail/{id}', [App\Http\Controllers\ApiController::class, 'getMatakaDetail']);
-Route::get('getMatakaSummary', [App\Http\Controllers\ApiController::class, 'getMatakaSummary']);
+Route::get('getMatakaSummary/{type}', [App\Http\Controllers\ApiController::class, 'getMatakaSummary']);

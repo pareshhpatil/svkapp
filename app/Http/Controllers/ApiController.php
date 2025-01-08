@@ -322,7 +322,7 @@ class ApiController extends Controller
             }
         }
     }
-    function getMataka(Request $request, $type, $date)
+    function getMataka(Request $request, $type, $date, $mataka_type)
     {
         $user_id = $this->validateAuth($request->header('Auth'));
         $date = ($date == 'na') ? date('Y-m-d') : $date;
@@ -339,7 +339,7 @@ class ApiController extends Controller
         }
 
         if ($user_id != false) {
-            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'type' => $type]);
+            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => $date, 'type' => $type, 'mataka_type' => $mataka_type]);
             foreach ($list as $row) {
                 $number = (int)$row->number;
                 $group = floor(($number) / $groupSize) * $groupSize;
@@ -383,7 +383,7 @@ class ApiController extends Controller
         }
     }
 
-    function getMatakaSummary(Request $request)
+    function getMatakaSummary(Request $request, $mataka_type)
     {
         $user_id = $this->validateAuth($request->header('Auth'));
         if ($user_id != false) {
@@ -393,7 +393,7 @@ class ApiController extends Controller
             $closed = 0;
             $bracket = 0;
             $transaction = [];
-            $list = $this->model->getList('mataka', ['is_active' => 1, 'created_by' => $user_id, 'date' => date('Y-m-d')], '*', 0, 'id');
+            $list = $this->model->getList('mataka', ['mataka_type' => $mataka_type, 'is_active' => 1, 'created_by' => $user_id, 'date' => date('Y-m-d')], '*', 0, 'id');
             foreach ($list as $k => $row) {
                 if ($k < 5) {
                     $transaction[] = $row;
