@@ -419,13 +419,13 @@ class ApiController extends Controller
 
     public function bookNetworkCount(Request $request)
     {
-        $allowedOrigin = 'https://booknetwork.in';
+       // $allowedOrigin = 'https://booknetwork.in';
         $origin = $request->headers->get('Origin');
 
-        if ($origin !== $allowedOrigin) {
-            abort(403, 'Unauthorized request origin');
-        } else {
+        if ($origin == 'https://booknetwork.in' || $origin == 'https://www.booknetwork.in') {
             Log::info('Book network Website visit');
+        } else {
+            abort(403, 'Unauthorized request origin');
         }
         // Proceed with the API logic
     }
