@@ -98,8 +98,7 @@ class WebhookController extends Controller
             }
             if ($message_type != 'reaction') {
                 $exist = $model->getColumnValue('whatsapp_messages', 'message_id', $message_id, 'message_id');
-                if ($exist != false) {
-                } else {
+                if ($exist == false) {
                     $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
                 }
             }
