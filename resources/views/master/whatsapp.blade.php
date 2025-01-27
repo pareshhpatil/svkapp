@@ -207,37 +207,8 @@
         },
 
         mounted() {
-            let jsonString = '{!!$messages!!}';
 
-            // Replace unnecessary backslashes
-            let fixedJsonString = jsonString
-                .replace(/\\\//g, '/')
-
-                .replace(/\\'/g, "'")
-
-                .replace(/\\"/g, '"')
-
-                .replace(/\\\\/g, '\\')
-
-                // Replace escaped newline characters (\\n) with actual newlines (optional, if you want to format better)
-                .replace(/\\n/g, '\n')
-
-                // Replace escaped carriage return characters (\\r) with actual carriage returns (optional)
-                .replace(/\\r/g, '\r')
-
-                // Replace escaped tab characters (\\t) with actual tabs (optional)
-                .replace(/\\t/g, '\t')
-
-                .replace(/\\\\\\\\/g, '\\')
-
-                // Optionally, you could handle HTML entities like &lt;, &gt;, &amp; to their respective characters:
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&amp;/g, '&');
-
-
-            this.messages = JSON.parse(fixedJsonString);
-
+            this.messages = JSON.parse('{!!$messages!!}');
             this.count = this.messages.length;
             this.user_id = '{{$user_id}}';
             this.group_id = '{{$group_id}}';

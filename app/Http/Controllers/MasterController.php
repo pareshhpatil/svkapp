@@ -110,6 +110,7 @@ class MasterController extends Controller
         $data['link'] = $link;
         $messages = json_encode($messages);
         $messages = str_replace('\n', '<br>', $messages);
+        $messages = str_replace("'", "\'", $messages);
         $data['messages'] = $messages;
         $data['title'] = substr($name, 0, 15) . ' - ' . $id;
         $data['hide_menu'] = true;
