@@ -112,6 +112,7 @@ class WebhookController extends Controller
             $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
             $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
             $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
+            $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
             $error_code = '';
             if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
                 $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
