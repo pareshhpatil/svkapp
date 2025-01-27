@@ -415,4 +415,18 @@ class ApiController extends Controller
             return response()->json($summary);
         }
     }
+
+    public function bookNetworkCount(Request $request)
+    {
+        $allowedOrigin = 'https://booknetwork.in';
+        $origin = $request->headers->get('Origin');
+        Log::info('Book network Website visit' . $origin);
+
+        if ($origin !== $allowedOrigin) {
+            abort(403, 'Unauthorized request origin');
+        } else {
+            Log::info('Book network Website visit');
+        }
+        // Proceed with the API logic
+    }
 }
