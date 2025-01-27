@@ -43,8 +43,8 @@ class SendEmailCommand extends Command
         $curl = curl_init();
         $json = '{
             "sender":{
-               "name":"Siddhivinayak Travels House",
-               "email":"contact@siddhivinayaktravelshouse.in"
+               "name":"'.env('MAIL_FROM_ADDRESS').'",
+               "email":"'.env('MAIL_FROM_NAME').'"
             },
             "to":[
                {
