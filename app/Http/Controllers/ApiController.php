@@ -141,6 +141,7 @@ class ApiController extends Controller
 
     public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png', $tokens = [])
     {
+        return;
         if (empty($tokens)) {
             $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type, 'app_notification' => 1]);
             if ($token != '') {
@@ -420,7 +421,6 @@ class ApiController extends Controller
     {
         $allowedOrigin = 'https://booknetwork.in';
         $origin = $request->headers->get('Origin');
-        Log::info('Book network Website visit' . $origin);
 
         if ($origin !== $allowedOrigin) {
             abort(403, 'Unauthorized request origin');
