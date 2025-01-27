@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\SampleEmail; // Replace with your Mailable class
 use Illuminate\Support\Facades\View;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingEmail; // Replace with your Mailable class
 class SendEmailCommand extends Command
 {
     protected $signature = 'email:send';
@@ -14,6 +14,32 @@ class SendEmailCommand extends Command
 
     public function handle()
     {
+
+
+
+        $toEmail = 'pareshhpatil@gmail.com';
+        $toName = 'Paresh';
+        $ccEmails = [];
+        // $ccEmails = [
+        //     'cc1@example.com' => 'CC Recipient 1',
+        //     'cc2@example.com' => 'CC Recipient 2',
+        //     // Add more CC recipients as needed
+        // ];
+
+        $data['booking_id'] = '';
+        $data['pickup_time'] = '';
+        $data['pickup_address'] = '';
+        $data['driver_name'] = '';
+        $data['driver_mobile'] = '';
+        $data['vehicle_number'] = '';
+        $data['vehicle_type'] = '';
+        $data['passengers'] = [];
+
+        Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
+        die();
+
+
+
         $toEmail = 'pareshhpatil@gmail.com';
         $toName = 'Paresh';
         $ccEmails = ['paresh@swipez.in'];
