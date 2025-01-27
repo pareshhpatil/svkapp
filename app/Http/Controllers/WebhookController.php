@@ -97,7 +97,11 @@ class WebhookController extends Controller
                 $message_type = 'reaction';
             }
             if ($message_type != 'reaction') {
-                $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
+                $exist = $model->getColumnValue('whatsapp_messages', 'message_id', $message_id, 'message_id');
+                if ($exist != false) {
+                } else {
+                    $model->saveWhatsapp(substr($mobile, 2), $name, 'Received', 'delivered', $message_type, $message, $message_id);
+                }
             }
             $apiController = new ApiController();
             $url = 'https://app.svktrv.in/whatsapp/' . Encryption::encode(substr($mobile, 2));
