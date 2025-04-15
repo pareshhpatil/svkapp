@@ -61,12 +61,7 @@
    <a href="https://app.svktrv.in/app/notification/216ac4ad077b42336974d69a00c1f9dc" >Notification</a>
 
 
-<script>
-function logout() {
-  // Call the "logout" method in Flutter code
-  window.flutter_inappwebview.callHandler('logout');
-}
-</script>
+
             </div>
           </div>
           <!-- /Register -->

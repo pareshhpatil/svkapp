@@ -294,16 +294,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li>
-                            <a href="/blogs" class="item">
-                                <div class="icon-box bg-primary">
-                                    <ion-icon name="apps-outline" role="img" class="md hydrated" aria-label="apps outline"></ion-icon>
-                                </div>
-                                <div class="in">
-                                    Blogs
-                                </div>
-                            </a>
-                        </li>
+                        
                         <li>
                             <a href="/faq" class="item">
                                 <div class="icon-box bg-primary">

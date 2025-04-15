@@ -121,8 +121,8 @@
                 <span class="time">
                     <span v-if="data.ride.type=='Drop'" v-html="item.drop_time"></span>
                     <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time"></span>
-                    <img v-if="item.icon==''" src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w48  rounded right">
-                    <img v-if="item.icon!=''" :src="item.icon" alt="avatar" class="imaged w48  rounded right">
+                    <!--<img  src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w48  rounded right">
+                    <img v-if="item.icon!=''" :src="item.icon" alt="avatar" class="imaged w48  rounded right">-->
                 </span>
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>

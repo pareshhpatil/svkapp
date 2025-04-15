@@ -35,8 +35,8 @@ class SendEmailCommand extends Command
         $data['vehicle_type'] = '';
         $data['passengers'] = [];
 
-        Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
-        die();
+ #       Mail::to($toEmail, $toName)->cc($ccEmails)->send(new BookingEmail('Thanks! Your cab booking is confirmed', $data));
+  #      die();
 
 
 

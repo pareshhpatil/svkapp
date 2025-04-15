@@ -30,12 +30,20 @@ Route::get('/store-data', function () {
     return 'Data stored successfully.';
 });
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+//Route::get('/', function () {
+//   return redirect('/login');
+//});
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'homea'])->name('home1');
+
 Route::get('/app/notification/{type}', function () {
     return redirect('/dashboard');
 });
+
+Route::redirect('/chat/create/{user_type}/{ride_id}/{type}/{user_id}/{request_id}', '/contact-us', 301);
+
+Route::redirect('/chat', '/contact-us', 301);
+
 
 Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

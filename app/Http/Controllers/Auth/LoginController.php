@@ -151,12 +151,12 @@ class LoginController extends Controller
                 $MasterController = new MasterController();
                 $json = '{"messaging_product":"whatsapp","to":"91' . $request->mobile . '","type":"template","template":{"name":"otp","language":{"code":"en"},"components":[{"type":"body","parameters":[{"type":"text","text":"' . $otp . '"}]}]}}';
                 $MasterController->sendWhatsappMessage(json_decode($json,1));
-                $this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile . ' OTP: ' . $otp);
+                //$this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile . ' OTP: ' . $otp);
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {
-            $this->notifyAdmin('App new login user Mobile: ' . $request->mobile);
+            //$this->notifyAdmin('App new login user Mobile: ' . $request->mobile);
             return back()->withErrors([
                 'mobile' => 'Mobile is not registered.'
             ]);

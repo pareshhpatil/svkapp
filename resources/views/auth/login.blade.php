@@ -27,11 +27,7 @@
           </i>
         </div>
       </div>
-      <div class="form-links mt-2">
-        <div>
-          <a href="/contact-us">Register Now</a>
-        </div>
-      </div>
+
 
       <div class=" transparent mt-2">
         <button type="submit" class="btn btn-primary btn-block btn-lg">Verify</button>

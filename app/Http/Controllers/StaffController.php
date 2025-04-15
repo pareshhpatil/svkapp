@@ -105,7 +105,10 @@ class StaffController extends Controller
 
 
 
-        $pending_amount = $this->model->getPendingSum(Session::get('admin_id'));
+        $pending_amount=0;
+		if (Session::get('user_id') == 1) {
+			$pending_amount = $this->model->getPendingSum(Session::get('admin_id'));
+		}
         $balance_amount = $this->model->getSourceBalance(json_decode($user_access['payment_source']));
         $data['total_amount'] = $this->moneyFormatIndia($amount, 2);
         $data['transaction_list'] = $bill_list;
@@ -156,6 +159,9 @@ class StaffController extends Controller
 
     public function paymentPending()
     {
+		if (Session::get('user_id') != 1) {
+			return redirect('/staff/dashboard');
+		}
 
         $data['menu'] = 0;
         $data['title'] = 'Payment request';
