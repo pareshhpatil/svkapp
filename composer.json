@@ -20,8 +20,7 @@
         "phpoffice/phpexcel": "^1.8.0",
         "pusher/pusher-php-server": "^7.2",
         "rap2hpoutre/laravel-log-viewer": "^2.4",
-        "sentry/sentry-laravel": "^3.4",
-        "spatie/browsershot": "^3.40"
+        "sentry/sentry-laravel": "^3.4"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

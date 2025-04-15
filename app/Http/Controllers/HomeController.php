@@ -34,10 +34,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-	 
+
 	 public function homea()
     {
-        
+
         return view('home', []);
     }
     public function index()
@@ -113,7 +113,6 @@ class HomeController extends Controller
             return false;
         }
         $id = Encryption::decode($link);
-        $id = 1572;
         $ride_passenger = $this->model->getRowArray('ride_passenger', 'id', $id);
 
         $ride = $this->model->getRowArray('ride', 'id', $ride_passenger['ride_id']);
