@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 
-class ValidateAccess 
+class ValidateAccess
 {
     /**
      * Get the path the user should be redirected to when they are not authenticated.
@@ -15,6 +15,6 @@ class ValidateAccess
     protected function handle($request,Closure $next)
     {
         return $next($request);
-        
+
     }
 }

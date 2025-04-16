@@ -72,8 +72,8 @@ class LoginController extends Controller
         $row = $model->getTableRow('otp', 'id', $otp_id, 1);
         if ($row != false) {
             $otp = rand(1111, 9999);
-            $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-            $apicontroller->sendSMS($row->mobile, $message, '1107168138576339315');
+            //$message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+            $apicontroller->sendSMS($row->mobile, ['var1' => $otp], '67fd2c55d6fc05588a2e1d03');
             $id = $model->saveOtp($row->mobile, $otp, $row->user_id);
             return redirect('/login/otp/' . Encryption::encode($id));
         } else {
@@ -140,17 +140,18 @@ class LoginController extends Controller
             }
         }
         if ($data != false) {
-            $test_array = array('9999999999', '9999999993', '9999999995', '9730946150');
+            $test_array = array('9999999999', '9999999993', '9999999995', 'a9730946150');
             $otp = rand(1111, 9999);
             if (in_array($request->mobile, $test_array)) {
                 $otp = '1234';
             } else {
                 $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-                $apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
+                //$apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
+                $apicontroller->sendSMS($request->mobile, ['var1' => $otp], '67fd2c55d6fc05588a2e1d03');
 
-                $MasterController = new MasterController();
-                $json = '{"messaging_product":"whatsapp","to":"91' . $request->mobile . '","type":"template","template":{"name":"otp","language":{"code":"en"},"components":[{"type":"body","parameters":[{"type":"text","text":"' . $otp . '"}]}]}}';
-                $MasterController->sendWhatsappMessage(json_decode($json,1));
+                //$MasterController = new MasterController();
+                //$json = '{"messaging_product":"whatsapp","to":"91' . $request->mobile . '","type":"template","template":{"name":"otp","language":{"code":"en"},"components":[{"type":"body","parameters":[{"type":"text","text":"' . $otp . '"}]}]}}';
+                //$MasterController->sendWhatsappMessage(json_decode($json, 1));
                 //$this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile . ' OTP: ' . $otp);
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);

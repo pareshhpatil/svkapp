@@ -105,18 +105,27 @@ class ApiController extends Controller
     }
 
 
-    public function sendSMS($number_, $message_, $template_id)
+    public function sendSMS($number_, $params, $templateId)
     {
-        $message_ = str_replace(" ", "%20", $message_);
-        $message_ = str_replace("&", "%26", $message_);
-        $message_ = preg_replace("/\r|\n/", "%0a", $message_);
-        $invokeURL = env('SMS_URL');
-        $invokeURL = str_replace("__MESSAGE__", $message_, $invokeURL);
-        $invokeURL = str_replace("__NUM__", $number_, $invokeURL);
-        $invokeURL = str_replace("__TEMPLATE_ID__", $template_id, $invokeURL);
         $client = new Client();
-        $request = new Req('GET', $invokeURL);
-        $res = $client->sendAsync($request)->wait();
+        $number = '91' . $number_;
+        $params['mobiles'] = $number;
+
+        $response = $client->post('https://control.msg91.com/api/v5/flow', [
+            'headers' => [
+                'accept' => 'application/json',
+                'authkey' => env('MSG91_AUTHKEY'), // move auth key to .env
+                'content-type' => 'application/json',
+            ],
+            'json' => [
+                'template_id' => $templateId,
+                'short_url' => '0',
+                'realTimeResponse' => '1',
+                'recipients' => [
+                    $params,
+                ],
+            ],
+        ]);
     }
 
     public function ivrCall($from, $to)
@@ -419,7 +428,7 @@ class ApiController extends Controller
 
     public function bookNetworkCount(Request $request)
     {
-       // $allowedOrigin = 'https://booknetwork.in';
+        // $allowedOrigin = 'https://booknetwork.in';
         $origin = $request->headers->get('Origin');
 
         if ($origin == 'https://booknetwork.in' || $origin == 'https://www.booknetwork.in') {
