@@ -207,6 +207,7 @@
             <button v-if="data.ride.status==2 " onclick="restartLocation()" class="btn btn-success text-center mt-2">
                 Location Update
             </button>
+            <div id="speed"></div>
         </div>
 
 
@@ -356,13 +357,15 @@
             speed
         } = position;
         // Show a map centered at latitude / longitude.
+
+        document.getElementById('speed').innerHTML=speed;
     }
 
 
     function start() {
         window.WTN.backgroundLocation.start({
             callback: successCallback,
-            apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
