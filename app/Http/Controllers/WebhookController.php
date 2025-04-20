@@ -33,7 +33,7 @@ class WebhookController extends Controller
     public function facebookWebhook(Request $request)
 
     {
-        Log::info('Facebook Webhook: ' . json_encode($request->all()));
+        //Log::info('Facebook Webhook: ' . json_encode($request->all()));
 
         $data = $request->all();
         $model = $this->model;
@@ -109,18 +109,20 @@ class WebhookController extends Controller
             $apiController->sendNotification(1, 1, $message, $description, $url, $image);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
-            $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
-            $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
-            $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
-            $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
-            $error_code = '';
-            if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
-                $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
-            }
+            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['from'])) {
+                $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
+                $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
+                $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
+                $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
+                $error_code = '';
+                if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
+                    $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
+                }
 
-            $model->updateWhatsappStatus($message_id, $status, $timestamp);
-            if ($error_code == '131026') {
-                $model->saveWhatsappFailed(substr($mobile, 2));
+                $model->updateWhatsappStatus($message_id, $status, $timestamp);
+                if ($error_code == '131026') {
+                    $model->saveWhatsappFailed(substr($mobile, 2));
+                }
             }
         }
 
