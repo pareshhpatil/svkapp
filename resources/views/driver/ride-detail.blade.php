@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('content')
+<script src="https://unpkg.com/webtonative@1.0.63/webtonative.min.js"></script>
+
 <style>
     .timeline:before {
         bottom: 60px;
@@ -319,8 +321,6 @@
 
 @section('footer')
 
-<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
-
 
 
 
@@ -364,12 +364,11 @@
 
     function start() {
         window.WTN.backgroundLocation.start({
-            callback: successCallback,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
-            pauseAutomatically: true,
+            pauseAutomatically: false,
             distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
@@ -383,7 +382,7 @@
     function startlocation() {
         lod(true);
         start();
-        window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+        //window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
     function restartLocation()
