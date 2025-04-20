@@ -196,6 +196,16 @@ class RideController extends Controller
         $array['vehicle_id'] = $vehicle_id;
         $array['escort'] = ($escort_id > 0) ? 1 : 0;
         $array['status'] = 1;
+        $type = $this->model->getColumnValue('ride', 'id', $ride_id, 'type');
+        $vehicle_number = $this->model->getColumnValue('vehicle', 'vehicle_id', $vehicle_id, 'number');
+        $array['title'] = $type . ' ' . substr($vehicle_number, -4);
+        if ($type == 'Drop') {
+            $location = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'drop_location', [], 'id');
+            $array['end_location'] = $location;
+        } else {
+            $location = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'pickup_location');
+            $array['start_location'] = $location;
+        }
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         if ($escort_id > 0) {
             $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $escort_id]);
@@ -215,10 +225,10 @@ class RideController extends Controller
             $url = 'app.svktrv.in/l/' . $short_url;
 
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
-            $params['var1']=$ride->type;
-            $params['var2']=$this->htmlDate($row->pickup_time);
-            $params['var3']=$this->htmlTime($row->pickup_time);
-            $params['var4']=$url;
+            $params['var1'] = $ride->type;
+            $params['var2'] = $this->htmlDate($row->pickup_time);
+            $params['var3'] = $this->htmlTime($row->pickup_time);
+            $params['var4'] = $url;
             $apiController->sendSMS($row->passenger_id, 5, $params, '6804878cd6fc0553042e8f65');
         }
     }
