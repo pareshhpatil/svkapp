@@ -363,12 +363,12 @@
         window.WTN.backgroundLocation.start({
             callback: successCallback,
             apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
-            timeout: 30,
+            timeout: 10,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 1.0,
-            desiredAccuracy: "bestForNavigation",
+            distanceFilter: 0.0,
+            desiredAccuracy: "best",
             activityType: "other",
         });
     }
