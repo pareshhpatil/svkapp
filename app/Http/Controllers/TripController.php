@@ -43,7 +43,7 @@ class TripController extends Controller
         $array['latitude']=$live_location['latitude'];
         $array['longitude']=$live_location['longitude'];
         $array['speed']=$live_location['speed'];
-        $array['speedAccuracy']=$live_location['speedAccuracy'];
+        $array['speedAccuracy']=(isset($live_location['speedAccuracy']))? $live_location['speedAccuracy'] : 0;
         $array['live_location']=json_encode($array);
         $array['ride_id'] = $ride_id;
         //  if ($response == false) {
