@@ -133,10 +133,10 @@ class HomeController extends Controller
             $vehicle = $this->model->getRowArray('vehicle', 'vehicle_id', $ride['vehicle_id']);
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
-        $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
+        $ride_passenger['pickup_time'] = $this->htmlShortDateTime($ride_passenger['pickup_time']);
         $data['data']['ride_passengers'] = $ride_passengers;
-        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
-        $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
+        $ride['start_time'] = $this->htmlShortDateTime($ride['start_time']);
+        $ride['end_time'] = $this->htmlShortDateTime($ride['end_time']);
         $data['data']['ride_passenger'] = $ride_passenger;
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;

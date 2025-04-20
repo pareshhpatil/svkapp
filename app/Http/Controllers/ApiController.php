@@ -135,12 +135,16 @@ class ApiController extends Controller
 
     public function ivrCall($from, $to)
     {
-        $body['form_params']['authkey'] = env('IVR_KEY');
-        $body['form_params']['agentmobile'] = $from;
-        $body['form_params']['customermobile'] =  $to;
+        $body['json']['client_secret'] = env('IVR_KEY');
+        $body['json']['client_id'] = 'siddhivinayak';
         $client = new Client();
-        $response = $client->request('POST', 'https://beta.teleforce.in/api/tfapi/clicktocall', $body);
-        return $response->getBody()->getContents();
+        $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/login', $body);
+        $array = json_decode($response->getBody()->getContents(), 1);
+        $ivr_array['json']['token']=$array['accessToken'];
+        $ivr_array['json']['caller1']=$from;
+        $ivr_array['json']['caller2']=$to;
+        $ivr_array['json']['did']=env('IVR_DID');
+        $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/clicktorandomobile', $ivr_array);
     }
 
     public function userSMS($user_id, $user_type, $message_, $template_id)

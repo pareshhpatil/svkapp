@@ -46,6 +46,13 @@ class Controller extends BaseController
         }
     }
 
+    public function htmlShortDateTime($time)
+    {
+        if ($time != '') {
+            return  date('d M h:i:A', strtotime($time));
+        }
+    }
+
     function moneyFormatIndia($num)
     {
         $num = str_replace(',', '', $num);

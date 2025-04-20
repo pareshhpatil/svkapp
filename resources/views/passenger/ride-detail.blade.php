@@ -33,6 +33,12 @@
         position: absolute;
         border: none;
     }
+    .timeline.timed {
+    padding-left: 20px;
+}
+.timeline.timed:before {
+    left: 20px;
+}
 </style>
 <div id="appCapsule" class="full-height">
     <div id="app" class="section ">
@@ -127,7 +133,7 @@
                 </div>
                 <div class="col">
                     <div class="">
-                        <ul class="listview flush transparent no-line image-listview detailed-list">
+                        <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
                             <!-- item -->
                             <li style="padding:0px;">
                                 <div class="item" style="padding: 0;">
@@ -321,12 +327,12 @@
         <div class="timeline timed ms-1 me-2">
 
             <div class="item" v-if="data.ride.type=='Drop'">
-                <span class="time" v-html="data.ride.start_time"></span>
+                
                 <div class="dot bg-info"></div>
                 <div class="content">
-                    <h4 class="title">Pickup
+                    <h4 class="title">Pickup at <span class="text" v-html="data.ride.start_time"></span>
                         <div class="text-end" style="right: 10px;float: right;">
-                            <img src="/assets/img/office.png" alt="avatar" class="imaged w24 rounded right">
+                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
                     </h4>
                     <div class="text" v-html="data.project.location"></div>
@@ -366,10 +372,9 @@
                 </div>
             </div>
             <div class="item" v-if="data.ride.type=='Pickup'">
-                <span class="time" v-html="data.ride.end_time"></span>
                 <div class="dot bg-primary bg-red"></div>
                 <div class="content">
-                    <h4 class="title">Drop
+                    <h4 class="title">Drop at <span class="text" v-html="data.ride.end_time"></span>
                         <div class="text-end" style="right: 10px;float: right;">
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                         </div>
