@@ -212,7 +212,7 @@ class RideController extends Controller
             $apiController->sendNotification($row->passenger_id, 5, 'Cab has been assigned for your next ride', 'Please be ready at your pickup location. Have a safe and pleasant journey.', $url);
             $short_url = $this->random();
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
-            $url = 'https://app.svktrv.in/l/' . $short_url;
+            $url = 'app.svktrv.in/l/' . $short_url;
 
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $params['var1']=$ride->type;
