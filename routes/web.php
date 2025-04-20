@@ -67,7 +67,7 @@ Route::get('/faq', function () {
 
 Route::get('/blogs', [App\Http\Controllers\HomeController::class, 'blogs']);
 Route::get('/blog/{id}/{title}', [App\Http\Controllers\HomeController::class, 'blog']);
-Route::any('/ride/track/{id}', [App\Http\Controllers\TripController::class, 'rideLiveTrack'])->middleware('throttle:10,1');
+Route::any('/ride/track/{id}', [App\Http\Controllers\TripController::class, 'rideLiveTrack']);
 Route::any('/app/ping', [App\Http\Controllers\HomeController::class, 'ping']);
 Route::post('/passenger/sos', [App\Http\Controllers\HomeController::class, 'passengerSOS']);
 Route::post('/passenger/help', [App\Http\Controllers\HomeController::class, 'passengerHelp']);
