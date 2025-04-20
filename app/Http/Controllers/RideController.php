@@ -215,7 +215,11 @@ class RideController extends Controller
             $url = 'https://app.svktrv.in/l/' . $short_url;
 
             $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
-            $apiController->sendSMS($row->passenger_id, 5, $message_, '1107168138570499675');
+            $params['var1']=$ride->type;
+            $params['var2']=$this->htmlDate($row->pickup_time);
+            $params['var3']=$this->htmlTime($row->pickup_time);
+            $params['var4']=$url;
+            $apiController->sendSMS($row->passenger_id, 5, $params, '6804878cd6fc0553042e8f65');
         }
     }
 
