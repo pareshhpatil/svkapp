@@ -8,8 +8,8 @@ use App\Models\ParentModel;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingEmail;
-use Log;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 
 
 class TripController extends Controller
