@@ -207,7 +207,7 @@
             <button v-if="data.ride.status==2 " onclick="restartLocation()" class="btn btn-success text-center mt-2">
                 Location Update
             </button>
-            <div id="speed"></div>
+            <div id="speed">hiiii</div>
         </div>
 
 
@@ -358,7 +358,7 @@
         } = position;
         // Show a map centered at latitude / longitude.
 
-        document.getElementById('speed').innerHTML=speed;
+        document.getElementById('speed').innerHTML=position;
     }
 
 
