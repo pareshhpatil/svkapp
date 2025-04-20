@@ -366,9 +366,9 @@
             timeout: 30,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
-            pauseAutomatically: false,
-            distanceFilter: {{env('DISTANCE_FILTER')}},
-            desiredAccuracy: "best",
+            pauseAutomatically: true,
+            distanceFilter: 5.0,
+            desiredAccuracy: "bestForNavigation",
             activityType: "other",
         });
     }
