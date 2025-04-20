@@ -10,6 +10,9 @@ use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Http;
 use App\Models\StaffModel;
 use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class ApiController extends Controller
 {
@@ -147,43 +150,37 @@ class ApiController extends Controller
         $this->sendSMS($number_, $message_, $template_id);
     }
 
+    public function sendNotificationToDevice(string $deviceToken, string $title, string $body, $url = '', $image = '')
+    {
+        $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+        $messaging = $factory->createMessaging();
+        $data = [];
+        if ($url != '') {
+            $data = [
+                'deepLink' => $url
+            ];
+        }
+        $notification = Notification::create($title, $body, $image);
+        $message = CloudMessage::withTarget('token', $deviceToken)
+            ->withNotification($notification)
+            ->withData($data);
+
+        return $messaging->send($message);
+    }
+
 
     public function sendNotification($user_id, $user_type, $title, $body, $url = '', $image = 'https://app.svktrv.in/assets/img/banner.png', $tokens = [])
     {
-        return;
         if (empty($tokens)) {
             $token = $this->model->getColumnValue('users', 'parent_id', $user_id, 'token', ['user_type' => $user_type, 'app_notification' => 1]);
             if ($token != '') {
                 $tokens[] = $token;
             }
         }
-
         if (!empty($tokens)) {
-            $key = env('FIREBASE_KEY');
-            $array['registration_ids'] = $tokens;
-            $array['notification']['body'] = $body;
-            $array['notification']['title'] = $title;
-            $array['notification']['sound'] = "default";
-            if ($image != '') {
-                $array['notification']['image'] = $image;
+            foreach ($tokens as $token) {
+                $this->sendNotificationToDevice($token, $title, $body, $url, $image);
             }
-            $array['notification']['content_available'] = true;
-            $array['notification']['priority'] = "normal";
-            $array['notification']['sound'] = "default";
-            if ($url != '') {
-                $array['notification']['link'] = $url;
-                $array['data']['deepLink'] = $url;
-            }
-
-            $client = new Client();
-            $headers = [
-                'Authorization' => 'key=' . $key,
-                'Content-Type' => 'application/json'
-            ];
-            $body = json_encode($array);
-
-            $request = new Req('POST', 'https://fcm.googleapis.com/fcm/send', $headers, $body);
-            $res = $client->sendAsync($request)->wait();
         }
     }
 

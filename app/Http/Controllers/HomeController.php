@@ -12,6 +12,7 @@ use Image;
 use App\Http\Lib\Encryption;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
@@ -27,6 +28,12 @@ class HomeController extends Controller
     {
         //$this->middleware('auth');
         $this->model = new RideModel();
+        //     Redis::set('ride_id','Hello');
+        //     $cabKeys = Redis::keys('*');
+        //     $cabData = array_combine($cabKeys, Redis::mget($cabKeys));
+        //    dd($cabData);
+        //    die();
+
     }
 
     /**
@@ -35,7 +42,7 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
-	 public function homea()
+    public function homea()
     {
 
         return view('home', []);
@@ -258,7 +265,9 @@ class HomeController extends Controller
         }
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['start_short_time'] = $this->htmlTime($ride['start_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['end_short_time'] = $this->htmlTime($ride['end_time']);
         $ride['end_time'] = $this->htmlTime($ride['end_time']);
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;
@@ -307,7 +316,6 @@ class HomeController extends Controller
 
             return view('driver.ride-detail-casual', $data);
         }
-
         return view('driver.ride-detail', $data);
     }
 
@@ -560,7 +568,12 @@ class HomeController extends Controller
         $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
         $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', '/' . $compress);
         if (Session::get('user_type') == 4) {
-            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo', '/' . $compress);
+            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo',  $path);
+            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'icon', '/' . $compress);
+        }
+        if (Session::get('user_type') == 5) {
+            $this->model->updateTable('passenger', 'id', Session::get('parent_id'), 'photo',  $path);
+            $this->model->updateTable('passenger', 'id', Session::get('parent_id'), 'icon', '/' . $compress);
         }
 
         Session::put('icon', '/' . $compress);
@@ -790,6 +803,22 @@ class HomeController extends Controller
         $ApiController = new ApiController();
         $ApiController->sendSMS('9730946150', 'CONTACTUS is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
+    }
+
+    public function signature(Request $request)
+    {
+        $model =  new ParentModel();
+        if (isset($request->signature)) {
+            $array = $request->all();
+            $signatureData = $request->input('signature');
+            // Remove the base64 prefix
+            $image = str_replace('data:image/png;base64,', '', $signatureData);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'signature_' . time() . '.jpg';
+            Storage::disk('public')->put("signatures/{$imageName}", base64_decode($image));
+        }
+
+        return view('driver.signature', ['title' => 'Sign', 'menu' => '']);
     }
 
     public function casualRideStatus($ride_id, $status)

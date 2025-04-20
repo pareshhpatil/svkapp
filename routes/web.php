@@ -147,6 +147,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/whatsapp/getdata/{id}', [App\Http\Controllers\HomeController::class, 'whatsapp'])->name('whatsappgetdata');
     Route::get('/whatsapp', [App\Http\Controllers\HomeController::class, 'whatsapp'])->name('whatsapp');
     Route::get('/whatsapp/{id}', [App\Http\Controllers\HomeController::class, 'whatsappMessage'])->name('whatsappMessage');
+    Route::any('/signature/{id}', [App\Http\Controllers\HomeController::class, 'signature'])->name('signature');
 });
 
 Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestTransactionDetail'])->name('transactionDetailguest');

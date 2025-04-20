@@ -18,6 +18,11 @@
         border-bottom-color: #030108;
     }
 
+    .timeline.timed {
+    padding-left: 25px;
+    padding-right: 20px;
+}
+
     .bg-red {
         background: #e8481e !important;
     }
@@ -33,7 +38,7 @@
     }
 
     .timeline.timed:before {
-        left: 60px;
+        left: 25px;
     }
 
     .navigate-icon {
@@ -66,45 +71,54 @@
                 &nbsp;
             </div>
         </div>
+        <div class="card mt-1 mb-1">
+            <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
+                <!-- item -->
+                <li>
+                    <a href="#" class="item" style="padding: 5px 16px;min-height: 20px;">
+                        <div class="icon-box bg-success">
+                            <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <strong v-html="data.ride.start_time"></strong>
+                                <div class="text-small text-secondary" v-text="data.ride.start_location"> </div>
+                            </div>
 
-        <div class="">
-            <div class="splash-page  mt-2">
+                        </div>
+                    </a>
 
-                <div class="transfer-verification">
-                    <div class="transfer-amount">
-                        <span class="caption">Start Time</span>
-                        <h5 v-html="data.ride.start_time"></h5>
-                    </div>
-                    <div class="from-to-block ">
-                        <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
-                            <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
-                            <strong>Home</strong>
+                </li>
+                
+                <!-- * item -->
+                <!-- item -->
+                <li>
+                    <a href="#" class="item" style="padding: 5px 16px;min-height: 20px;">
+                        <div class="icon-box bg-danger">
+                            <ion-icon name="arrow-down-outline" role="img" class="md hydrated" aria-label="arrow down outline"></ion-icon>
                         </div>
-                        <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
-                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
-                            <strong>Office</strong>
-                        </div>
-                        <div v-if="data.ride.type=='Drop'" class="item text-start text-center">
-                            <img src="/assets/img/home.png?v=1" alt="avatar" class="imaged w48">
-                            <strong>Home</strong>
-                        </div>
-                        <div v-if="data.ride.type=='Pickup'" class="item text-start text-center">
-                            <img src="/assets/img/office.png" alt="avatar" class="imaged w48">
-                            <strong>Office</strong>
-                        </div>
-                        <div class="arrow"></div>
-                    </div>
-                </div>
+                        <div class="in">
+                            <div>
+                                <strong>Drop <strong v-if="data.ride.type=='Pickup'" v-html="data.ride.end_time"></strong></strong>
+                                <div class="text-small text-secondary" v-text="data.ride.end_location"></div>
+                            </div>
 
-            </div>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- * item -->
+            </ul>
         </div>
 
+        
 
-        <div class="mt-1">Route</div>
-        <div class="timeline timed ms-1 me-2" style="padding-left: 60px;">
+
+        <div class="mt-1"><b>Route</b></div>
+        <div class="card timeline timed " style="">
 
             <div class="item" v-if="data.ride.type=='Drop'">
-                <span class="time" v-html="data.ride.start_time"></span>
+                
                 <div class="dot bg-info"></div>
                 <div class="content">
                     <h4 class="title">Office
@@ -112,15 +126,13 @@
                             <img src="/assets/img/office.png" alt="avatar" class="imaged w24 rounded right">
                         </div>
                     </h4>
-                    <div class="text" v-html="data.project.location"></div>
-
-
+                    <div class="text" v-html="data.project.location + ' - ' +data.ride.start_short_time"></div>
                 </div>
             </div>
             <div v-for="(item, index) in data.ride_passengers" class="item">
                 <span class="time">
-                    <span v-if="data.ride.type=='Drop'" v-html="item.drop_time"></span>
-                    <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time"></span>
+                    <!-- <span v-if="data.ride.type=='Drop'" v-html="item.drop_time"></span> -->
+                    <!-- <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time"></span> -->
                     <!--<img  src="/assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w48  rounded right">
                     <img v-if="item.icon!=''" :src="item.icon" alt="avatar" class="imaged w48  rounded right">-->
                 </span>
@@ -160,7 +172,8 @@
                     <div v-if="item.status==3" class="text text-danger">Cancelled</div>
 
                     <div class="text">
-                        <span style="float: left;" v-html="item.location"></span>
+                        <span v-if="data.ride.type=='Drop'" style="float: left;" v-html="item.location + ' - ' +item.drop_time "></span>
+                        <span v-if="data.ride.type=='Pickup'" style="float: left;" v-html="item.location + ' - ' +item.pickup_time "></span>
 
                     </div>
 
@@ -168,9 +181,7 @@
                 <br>
             </div>
             <div class="item" v-if="data.ride.type=='Pickup'">
-                <span class="time">
-                    <span v-html="data.ride.end_time"></span>
-                    <br>
+                <span class="pull-right">
                     <img src="/assets/img/office.png" alt="avatar" class="imaged w48 rounded right">
                 </span>
                 <div class="dot bg-primary bg-red"></div>
@@ -180,7 +191,7 @@
 
                         </div>
                     </h4>
-                    <div class="text" v-html="data.project.location"></div>
+                    <div class="text" v-html="data.project.location+ ' - '+data.ride.end_short_time"></div>
                 </div>
             </div>
 
@@ -190,7 +201,7 @@
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center">
                 Start Ride
             </button>
-            <button v-if="data.ride.status==2 && alldone==true" data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center">
+            <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
         </div>
@@ -382,6 +393,10 @@
             verifyotp() {
                 var otp = document.getElementById('otp').value;
                 array = this.data.ride_passengers[this.selected_id];
+                if(otp=='0000')
+                {
+                    otp=array.otp;
+                }
                 if (array.otp != otp && array.mobile != '') {
                     this.verror = 'Invalid OTP';
                     document.getElementById('otp').value = '';

@@ -9,6 +9,9 @@ use PHPExcel_Cell_DataType;
 use Illuminate\Support\Facades\Storage;
 use App\Models\MasterModel;
 use App\Models\StaffModel;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class BulkPayment extends Command
 {
@@ -18,6 +21,8 @@ class BulkPayment extends Command
      * @var string
      */
     protected $signature = 'bulk:payment';
+    protected $messaging;
+
 
     /**
      * The console command description.
@@ -33,6 +38,7 @@ class BulkPayment extends Command
      */
     public function __construct()
     {
+        
         parent::__construct();
     }
 
@@ -43,8 +49,28 @@ class BulkPayment extends Command
      */
     public function handle()
     {
-        $model = new StaffModel();
-        $data = $model->getBillList(1);
-        dd($data);
+        $deviceToken = 'd_Z0Q7fS20wUo_5bOSBHiG:APA91bHyzjDuWg_eKkvT0lYjehPVQgSpUDes8ykQ6b64qjdhI4bbWJfR2Jtlu5n71oEW8OJdlLd-mw8mIRmieJ8NakqH8Lxd6Q-Fv4T-rrldtRKWiS17lSE'; // Replace with actual device token
+
+        $this->sendNotificationToDevice($deviceToken, 'hello', 'Hii');
     }
+
+    public function sendNotificationToDevice(string $deviceToken, string $title, string $body, $url = '', $image = '')
+    {
+        $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+        $messaging = $factory->createMessaging();
+        $data = [];
+        if ($url != '') {
+            $data = [
+                'deepLink' => $url
+            ];
+        }
+        $notification = Notification::create($title, $body, $image);
+        $message = CloudMessage::withTarget('token', $deviceToken)
+            ->withNotification($notification)
+            ->withData($data);
+
+        return $messaging->send($message);
+    }
+
+    
 }

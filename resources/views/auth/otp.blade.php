@@ -36,6 +36,7 @@
         <input type="hidden" name="mobile" value="{{$mobile}}">
         <input type="hidden" name="link" value="{{$link}}">
         <input type="hidden" name="token" id="token">
+        <input type="hidden" name="device_info" id="device_info">
         <button type="submit" class="btn btn-primary btn-block btn-lg">Verify OTP</button>
       </div>
 
@@ -45,6 +46,11 @@
   <script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
 
   <script>
+
+WTN.deviceInfo().then(function(value){
+  document.getElementById('device_info').value=value.os+' - '+ value.model+' - '+ value.osVersion ;
+});
+
     const {
       Messaging: FirebaseMessaging
     } = window.WTN.Firebase
@@ -52,7 +58,6 @@
     FirebaseMessaging.getFCMToken({
       callback: function(data) {
         document.getElementById('token').value = data.token;
-        //store it in your backend to send notification
       }
     });
 

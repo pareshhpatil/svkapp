@@ -225,14 +225,10 @@ class RideModel extends ParentModel
     {
         $retObj = DB::table('ride_passenger as p')
             ->join('passenger as pr', 'pr.id', '=', 'p.passenger_id')
-            ->leftJoin('users as r', function ($join) {
-                $join->on("r.parent_id", "=", "p.passenger_id")
-                    ->where("r.user_type",  5);
-            })
             ->where('p.is_active', 1)
             ->where('p.ride_id', $ride_id)
             ->select(DB::raw('p.id,pr.address,pr.mobile ,p.status,p.otp,TIME_FORMAT(p.pickup_time, "%h %i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%h %i %p") as drop_time ,
-            p.pickup_location,p.drop_location,r.icon,pr.location,pr.employee_name as name,pr.gender,p.passenger_id'))
+            p.pickup_location,p.drop_location,pr.icon,pr.location,pr.employee_name as name,pr.gender,p.passenger_id'))
             ->get();
         return json_decode(json_encode($retObj), 1);
     }

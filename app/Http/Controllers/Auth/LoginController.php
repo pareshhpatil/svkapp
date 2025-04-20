@@ -182,6 +182,9 @@ class LoginController extends Controller
             if ($request->token != '') {
                 $model->updateTable('users', 'id', $data->user_id, 'token', $request->token);
             }
+            if ($request->device_info != '') {
+                $model->updateTable('users', 'id', $data->user_id, 'device_info', $request->device_info);
+            }
             Auth::loginUsingId($data->user_id, true);
             $user = Auth::user();
             Session::put('user_id', $user->id);
