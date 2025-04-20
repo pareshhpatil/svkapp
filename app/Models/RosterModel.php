@@ -72,6 +72,33 @@ class RosterModel extends ParentModel
         return $array;
     }
 
+    public function getRides($project_id, $from_date, $to_date, $status, $project_ids = [])
+    {
+        $retObj = DB::table('ride as a')
+            ->join('project as ea', 'ea.project_id', '=', 'a.project_id')
+            ->join('config as c', 'c.value', '=', 'a.status')
+            ->where('a.is_active', 1)
+            ->where('c.type', 'ride_status')
+            ->select(DB::raw('a.*,ea.name as project_name,c.description,TIME_FORMAT(a.start_time, "%h:%i %p") as display_start_time,DATE_FORMAT(a.date,"%d-%b-%Y") as date'));
+        if ($project_id > 0) {
+            $retObj->where('a.project_id', $project_id);
+        } else {
+            if (!empty($project_ids)) {
+                $retObj->whereIn('a.project_id', $project_ids);
+            }
+        }
+        if ($from_date != null) {
+            $retObj->where('a.start_time', '>=', $from_date)
+                ->where('a.start_time', '<=', $to_date);
+        }
+        if (!empty($status)) {
+            $retObj->whereIn('a.status', $status);
+        }
+
+        $array =   $retObj->get();
+        return $array;
+    }
+
 
     public function getRouteRoster($project_id, $from_date, $to_date, $status, $project_ids = [])
     {
