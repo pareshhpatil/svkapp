@@ -633,7 +633,14 @@ class HomeController extends Controller
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_emergency', $array);
         $ApiController = new ApiController();
-        $ApiController->sendSMS('9730946150', '{#var#} is in an emergency and needs immediate assistance {#var#} - Siddhivinayak Travels House -Siddhivinayak Travels House', '1107168138576339315');
+        $passenger_id = $this->model->getColumnValue('ride_passenger', 'id', $request->ride_passenger_id, 'passenger_id');
+        $passenger = $this->model->getTableRow('users', 'parent_id', $passenger_id, 1, ['user_type' => 5]);
+        $params['var1'] = $passenger->name;
+        $params['var2'] = $this->saveShortUrl('https://app.svktrv.in/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
+        if ($passenger->emergency_contact != '') {
+            $ApiController->sendSMS($passenger->emergency_contact, $params, '68048826d6fc0554706b7e85');
+        }
+        $ApiController->sendSMS('9730946150', $params, '68048826d6fc0554706b7e85');
         return redirect('/thank-you');
     }
     public function passengerHelp(Request $request)
@@ -651,7 +658,7 @@ class HomeController extends Controller
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_help', $array);
         $ApiController = new ApiController();
-        $ApiController->sendSMS('9730946150', 'HELP is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
+        $ApiController->sendSMS('9730946150', 'HELP is OTP to verify your mobile number with Siddhivinayak Travels House', '68048826d6fc0554706b7e85');
         return redirect('/thank-you');
     }
     public function rideCancel(Request $request)
@@ -819,6 +826,13 @@ class HomeController extends Controller
         }
 
         return view('driver.signature', ['title' => 'Sign', 'menu' => '']);
+    }
+
+    public function saveShortUrl($url)
+    {
+        $short_url = $this->random();
+        $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+        return 'https://app.svktrv.in/l/' . $short_url;
     }
 
     public function casualRideStatus($ride_id, $status)
