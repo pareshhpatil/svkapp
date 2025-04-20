@@ -35,7 +35,7 @@ class TripController extends Controller
         // $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
 
         //   Log::info('Tracking POST: ' . json_encode($_POST));
-        //Log::info('Tracking: ' . json_encode($request->all()));
+        Log::info('Tracking: ' . json_encode($request->all()));
         //  $seq = rand(0, 5);
         // sleep($seq);
         $live_location = $request->all();

@@ -124,6 +124,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/driver/ride/passenger/status/{passenger_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverPassengerRideStatus']);
     Route::get('/driver/ride/passenger/resendotp/{passenger_id}', [App\Http\Controllers\HomeController::class, 'resendOTP']);
 
+    Route::get('/driver/ride/location/status/{type}/{id}/{status}/{lat}/{long}', [App\Http\Controllers\HomeController::class, 'driverLocationRideStatus']);
+
+
 
     Route::get('/whatsapp/{group_id}', [App\Http\Controllers\MasterController::class, 'whatsapp']);
     Route::get('/ajax/whatsapp/{group_id}', [App\Http\Controllers\MasterController::class, 'whatsappMessage']);
