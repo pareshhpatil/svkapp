@@ -119,14 +119,15 @@
             </div>
         </div>
         <div v-if="data.driver.name" class="listed-detail ">
+            <div class="card mt-1">
             <div class="row" style="border-bottom: 1px solid lightgrey;">
                 <div class="col text-center">
-                    <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;">
-                    <img v-if="!data.driver.photo" class="mt-3 img-circle" style="max-height: 130px;" src="/assets/img/driver.png?v-1">
+                    <img v-if="data.driver.photo" :src="data.driver.photo" class="mt-2 img-circle" style="max-height: 130px;">
+                    <img v-if="!data.driver.photo" class="mt-2 img-circle" style="max-height: 130px;" src="/assets/img/driver.png?v-1">
                 </div>
                 <div class="col">
                     <div class="">
-                        <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
+                        <ul class="listview flush transparent no-line image-listview detailed-list">
                             <!-- item -->
                             <li style="padding:0px;">
                                 <div class="item" style="padding: 0;">
@@ -184,6 +185,7 @@
 
                 </div>
             </div>
+            </div>
 
 
         </div>
@@ -191,7 +193,7 @@
             <div class="splash-page  mt-2">
 
                 <div class="transfer-verification">
-                    <div class="transfer-amount">
+                    <!-- <div class="transfer-amount">
                         <span class="caption">Pickup Time</span>
                         <h5 v-html="data.ride_passenger.pickup_time"></h5>
                     </div>
@@ -213,7 +215,7 @@
                             <strong>Drop</strong>
                         </div>
                         <div class="arrow"></div>
-                    </div>
+                    </div> -->
                     <h2 v-if="data.ride_passenger.otp && data.ride_passenger.status!=2" class="mb-2">OTP <span v-html="data.ride_passenger.otp"></span></h2>
                 </div>
 
@@ -315,6 +317,7 @@
             @endif
         </div>
 
+        <div class="card">
         <div class="timeline timed ms-1 me-2">
 
             <div class="item" v-if="data.ride.type=='Drop'">
@@ -377,6 +380,7 @@
             </div>
 
 
+        </div>
         </div>
 
         @include('passenger.ride-options')
