@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class ApiController extends Controller
 {
@@ -152,20 +154,27 @@ class ApiController extends Controller
 
     public function sendNotificationToDevice(string $deviceToken, string $title, string $body, $url = '', $image = '')
     {
-        $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
-        $messaging = $factory->createMessaging();
-        $data = [];
-        if ($url != '') {
-            $data = [
-                'deepLink' => $url
-            ];
-        }
-        $notification = Notification::create($title, $body, $image);
-        $message = CloudMessage::withTarget('token', $deviceToken)
-            ->withNotification($notification)
-            ->withData($data);
+        try {
+            $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+            $messaging = $factory->createMessaging();
+            $data = [];
+            if ($url != '') {
+                $data = [
+                    'deepLink' => $url
+                ];
+            }
+            $notification = Notification::create($title, $body, $image);
+            $message = CloudMessage::withTarget('token', $deviceToken)
+                ->withNotification($notification)
+                ->withData($data);
 
-        return $messaging->send($message);
+            return $messaging->send($message);
+        } catch (MessagingException | FirebaseException $e) {
+            // Log the error for debugging
+            Log::error('Firebase Messaging Error: ' . $e->getMessage());
+            // You can return false or handle the error response as needed
+            return false;
+        }
     }
 
 
