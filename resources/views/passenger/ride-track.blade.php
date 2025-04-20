@@ -210,7 +210,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
 @section('footer')
 
-<script src="https://unpkg.com/webtonative@1.0.43/webtonative.min.js"></script>
+<script src="https://unpkg.com/webtonative@1.0.63/webtonative.min.js"></script>
 
 
 
