@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 
 
+
 class TripController extends Controller
 {
     /**
