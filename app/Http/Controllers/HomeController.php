@@ -832,7 +832,7 @@ class HomeController extends Controller
     {
         $short_url = $this->random();
         $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
-        return 'https://app.svktrv.in/l/' . $short_url;
+        return 'app.svktrv.in/l/' . $short_url;
     }
 
     public function casualRideStatus($ride_id, $status)
