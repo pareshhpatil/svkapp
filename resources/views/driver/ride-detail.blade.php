@@ -368,8 +368,8 @@
             timeout: 10,
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
-            pauseAutomatically: false,
-            distanceFilter: 0.0,
+            pauseAutomatically: true,
+            distanceFilter: 5.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
@@ -382,7 +382,7 @@
     function startlocation() {
         //lod(true);
         start();
-        //window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+        window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
     function restartLocation()
