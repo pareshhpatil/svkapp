@@ -494,7 +494,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
             }
         };
-        xhttp.open("GET", "https://app.siddhivinayaktravelshouse.in/ride/track/location/{{$ride_id}}", true);
+        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
     }
 </script>
