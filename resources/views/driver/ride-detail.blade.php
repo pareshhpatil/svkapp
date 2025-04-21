@@ -206,9 +206,9 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
-            <!-- <button v-if="data.ride.status==2 " onclick="restartLocation()" class="btn btn-success text-center mt-2">
-                Location Update
-            </button> -->
+            <button v-if="data.ride.status==2 " onclick="BarcodeScan()" class="btn btn-success text-center mt-2">
+                Scan
+            </button>
         </div>
 
 
@@ -324,6 +324,14 @@
 
 
 <script>
+
+const { Format, BarcodeScan } = WTN.Barcode;
+BarcodeScan({
+  formats: Format.QR_CODE, // optional
+  onBarcodeSearch: (value) => {
+    alert(value);
+  },
+});
 
     var mylatitude = '';
     var mylongitude = '';
