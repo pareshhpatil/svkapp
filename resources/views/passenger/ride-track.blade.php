@@ -219,7 +219,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     function startlocation() {
         window.WTN.backgroundLocation.start({
             callback: false,
-            apiUrl: "https://app.siddhivinayaktravelshouse.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "userid1",
             backgroundIndicator: true,

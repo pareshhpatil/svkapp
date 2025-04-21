@@ -41,19 +41,17 @@ class TripController extends Controller
         // sleep($seq);
 
         $live_location = $request->all();
-        $array['latitude']=$live_location['latitude'];
-        $array['longitude']=$live_location['longitude'];
-        $array['speed']=$live_location['speed'];
-        $array['speedAccuracy']=(isset($live_location['speedAccuracy']))? $live_location['speedAccuracy'] : 0;
-        $array['live_location']=json_encode($array);
+        $array['latitude'] = $live_location['latitude'];
+        $array['longitude'] = $live_location['longitude'];
+        $array['speed'] = $live_location['speed'];
+        $array['speedAccuracy'] = (isset($live_location['speedAccuracy'])) ? $live_location['speedAccuracy'] : 0;
+        $array['live_location'] = json_encode($array);
         $array['ride_id'] = $ride_id;
 
-        $value = Cache::get('ride_'.$ride_id);
-        if($value!=false)
-        {
-            $cache_array=json_decode($value,true);
-            if($cache_array['latitude']==$array['latitude'] && $cache_array['longitude']==$array['longitude'] )
-            {
+        $value = Cache::get('ride_' . $ride_id);
+        if ($value != false) {
+            $cache_array = json_decode($value, true);
+            if ($cache_array['latitude'] == $array['latitude'] && $cache_array['longitude'] == $array['longitude']) {
                 Log::error('Tracking: Same');
                 return;
             }
@@ -61,7 +59,7 @@ class TripController extends Controller
         Log::error('Tracking: ' . json_encode($request->all()));
 
 
-        Cache::put('ride_'.$ride_id,$array['live_location'], 8600); // 3600 seconds = 1 hour
+        Cache::put('ride_' . $ride_id, $array['live_location'], 8600); // 3600 seconds = 1 hour
 
         //  if ($response == false) {
         //  $this->model->saveTable('ride_live_location', $array);
@@ -71,6 +69,10 @@ class TripController extends Controller
 
     public function rideLocation($ride_id)
     {
+        $value = Cache::get('ride_' . $ride_id);
+        if ($value != false) {
+            return $value;
+        }
         $array = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_id, 'live_location', [], 'id');
         return $array;
     }
@@ -90,7 +92,7 @@ class TripController extends Controller
     public function driverAppRideDetail($id)
     {
         $link = Encryption::encode($id);
-        return redirect('https://app.siddhivinayaktravelshouse.in/driver/ride/' . $link);
+        return redirect('https://app.svktrv.in/driver/ride/' . $link);
     }
 
     public function sendemail($to_email, $ccEmails, $subject, $body)

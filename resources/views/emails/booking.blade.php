@@ -75,7 +75,7 @@
                                                                 <td style="margin: 0px; padding-top: 8px; width: 364.95px;">
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 24px;"><span style="font-size: 12px; font-weight: normal; font-stretch: normal; line-height: 2.2; color: rgb(116, 127, 141); margin: 0px; text-wrap: nowrap; overflow: auto hidden;">Booking ID#</span></div>
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;">
-                                                                        <img height="20" style="margin-bottom: -5px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/tag.png">
+                                                                        <img height="20" style="margin-bottom: -5px;" src="https://app.svktrv.in/assets/img/icons/tag.png">
                                                                          <span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">{{$booking_id}}</span>
                                                                     </div>
                                                                 </td>
@@ -103,7 +103,7 @@
                                                                 <td style="margin: 0px; padding-top: 8px; width: 364.95px;">
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 24px;"><span style="font-size: 12px; font-weight: normal; font-stretch: normal; line-height: 2.2; color: rgb(116, 127, 141); margin: 0px; text-wrap: nowrap; overflow: auto hidden;">Pickup Date and Time</span></div>
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;">
-                                                                    <img height="20" style="margin-bottom: -5px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/calendar.png">
+                                                                    <img height="20" style="margin-bottom: -5px;" src="https://app.svktrv.in/assets/img/icons/calendar.png">
                                                                     <span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">{{$pickup_time}}</span>
                                                                     </div>
                                                                 </td>
@@ -117,7 +117,7 @@
                                                             <tr>
                                                                 <td style="margin: 0px; padding-top: 8px; width: 364.95px;">
                                                                     <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 24px;"><span style="font-size: 12px; font-weight: normal; font-stretch: normal; line-height: 2.2; color: rgb(116, 127, 141); margin: 0px; text-wrap: nowrap; overflow: auto hidden;">Pickup Address</span></div>
-                                                                    <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;"><img height="20" style="margin-bottom: -5px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/location.png"><span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">&nbsp; {{$pickup_address}}</span></div>
+                                                                    <div style="font-size: 16px; font-stretch: normal; line-height: 1.25; color: #1f425c; font-weight: bold; padding-left: 22px;"><img height="20" style="margin-bottom: -5px;" src="https://app.svktrv.in/assets/img/icons/location.png"><span style="font-size: 14px; font-stretch: normal; line-height: 1.25;">&nbsp; {{$pickup_address}}</span></div>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -149,7 +149,7 @@
                                                                                         <tbody>
                                                                                             <tr>
                                                                                                 <td style="margin: 0px;">
-                                                                                                <img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/user.png">
+                                                                                                <img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.svktrv.in/assets/img/icons/user.png">
                                                                                                 </td>
                                                                                             </tr>
                                                                                         </tbody>
@@ -184,7 +184,7 @@
                                                                                     <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" width="5%">
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="margin: 0px;"><img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/cab.png"></td>
+                                                                                                <td style="margin: 0px;"><img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.svktrv.in/assets/img/icons/cab.png"></td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -228,7 +228,7 @@
                                                                     <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" width="5%">
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="margin: 0px;"><img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.siddhivinayaktravelshouse.in/assets/img/icons/group.png"></td>
+                                                                                <td style="margin: 0px;"><img height="20" style="margin-bottom: -5px;margin-left: 20px;" src="https://app.svktrv.in/assets/img/icons/group.png"></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
