@@ -339,8 +339,7 @@
                 </div>
             </div>
             <div v-for="item in data.ride_passengers" class="item">
-                <span v-if="data.ride.type=='Drop'" v-html="item.drop_time" class="time"></span>
-                <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time" class="time"></span>
+               
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 @if($title=='Assign cab')
@@ -351,7 +350,8 @@
                 </span>
                 @endif
                 <div class="content">
-                    <h4 class="title"><span v-html="item.name"></span>
+                    <h4 class="title"><span v-html="item.name"></span> <span v-if="data.ride.type=='Drop'" v-html="item.drop_time" class="time"></span>
+                    <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time" class="time"></span>
 
                         <div class="text-end" style="right: 10px;float: right;">
                             <img v-if="!item.icon && item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
