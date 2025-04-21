@@ -328,7 +328,7 @@ function scanBarcode()
 {
 const { Format, BarcodeScan } = WTN.Barcode;
 BarcodeScan({
-  formats: Format.QR_CODE, // optional
+  formats: Format.ALL_FORMATS, // optional
   onBarcodeSearch: (value) => {
     alert(value);
   },
