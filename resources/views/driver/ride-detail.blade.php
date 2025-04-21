@@ -504,7 +504,7 @@ BarcodeScan({
                 setTimeout(() => this.updateLocationApi(type,id,status,mylatitude,mylongitude), 5000);
             },
             async updateLocationApi(type,id,status,lat,long) {
-                await axios.get('/driver/ride/location/status/${type}/${id}/${status}/${lat}/${long}')
+                await axios.get('/driver/ride/location/status/'+type+'/'+id+'/'+status+'/'+lat+'/'+long)
                     .then(response => {
                         
                     })
