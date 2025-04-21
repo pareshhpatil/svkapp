@@ -482,20 +482,20 @@ BarcodeScan({
                 this.data.ride_passengers[this.selected_id].status = 2;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/2');
                 document.getElementById('closeout').click();
-                this.endStatus();
                 this.sendLocation('passenger',array.id,2);
+                this.endStatus();
             },
             endStatus() {
                 var done = true;
                 for (let i = 0; i < this.data.ride_passengers.length; i++) {
                     pstatus = this.data.ride_passengers[i].status;
                     if (pstatus == 0 || pstatus == 1 || pstatus == 5) {
-                        console.log(pstatus);
                         done = false;
                     }
                 }
                 if (done == true) {
-                    stoplocation();
+                    lod(true);
+                    setTimeout(() => stoplocation(), 5000);
                 }
                 this.alldone = done;
             },
