@@ -368,7 +368,7 @@
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 5.0,
+            distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
