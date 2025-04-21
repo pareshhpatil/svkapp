@@ -134,6 +134,7 @@ class HomeController extends Controller
         }
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
         $ride_passenger['pickup_time'] = $this->htmlShortDateTime($ride_passenger['pickup_time']);
+        unset($ride_passenger['actual_pickup_location'], $ride_passenger['actual_drop_location'], $ride_passenger['cab_reach_location']);
         $data['data']['ride_passengers'] = $ride_passengers;
         $ride['start_time'] = $this->htmlShortDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlShortDateTime($ride['end_time']);
@@ -340,6 +341,8 @@ class HomeController extends Controller
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
         $data['live_location'] = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_passenger['ride_id'], 'live_location', [], 'id');
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
+        unset($ride_passenger['actual_pickup_location'], $ride_passenger['actual_drop_location'], $ride_passenger['cab_reach_location']);
+
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
 
