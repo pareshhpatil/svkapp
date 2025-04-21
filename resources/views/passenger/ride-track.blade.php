@@ -397,51 +397,45 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         });
     }
 
-
-
     function navigate() {
-        start = true;
-        try {
-            driverMarker.setMap(null);
-        } catch (o) {}
-        try {
-            currentMarker.setMap(null);
-        } catch (o) {}
+        if(start==false)
+        {
+            start = true;
+            try {
+                driverMarker.setMap(null);
+            } catch (o) {}
+            try {
+                currentMarker.setMap(null);
+            } catch (o) {}
+            originMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lat_long),
+                map: map,
+                icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
+                label: {
+                    text: "{{$data['driver']['name']}}",
+                    className: 'marker-label'
+                }
+            });
 
-
-
-
-
-        originMarker = new google.maps.Marker({
-            position: new google.maps.LatLng(lat, lat_long),
-            map: map,
-            icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
-            label: {
-                text: "{{$data['driver']['name']}}",
-                className: 'marker-label'
-            }
-        });
-
-        destinationMarker = new google.maps.Marker({
-            position: new google.maps.LatLng(my_lat, my_long),
-            map: map,
-            icon: {
-                url: 'https://app.svktrv.in/assets/img/map-male.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(40, 40),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            }, // Path to your custom marker icon
-            label: {
-                text: "{{$data['passenger']['name']}}",
-                className: 'marker-label-user'
-            }
-        });
-        direction();
-
-
+            destinationMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(my_lat, my_long),
+                map: map,
+                icon: {
+                    url: 'https://app.svktrv.in/assets/img/map-male.png',
+                    // This marker is 20 pixels wide by 32 pixels high.
+                    size: new google.maps.Size(40, 40),
+                    // The origin for this image is (0, 0).
+                    origin: new google.maps.Point(0, 0),
+                    // The anchor for this image is the base of the flagpole at (0, 32).
+                    anchor: new google.maps.Point(0, 32)
+                }, // Path to your custom marker icon
+                label: {
+                    text: "{{$data['passenger']['name']}}",
+                    className: 'marker-label-user'
+                }
+            });
+            direction();
+        }
     }
 
     function direction() {
@@ -450,10 +444,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         //map.setCenter(new google.maps.LatLng(lat, lat_long));
         originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
         // map.panTo(new google.maps.LatLng(lat, lat_long));
-
-
-
-
         directionsService
             .route({
                 origin: new google.maps.LatLng(lat, lat_long),
@@ -479,13 +469,13 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                     suppressMarkers: true
 
                 });
-
                 //directionsDisplay.setDirections(response);
 
                 directionsRenderer.setDirections(response);
             })
             .catch((e) =>
-                window.alert("Directions request failed due to " + status)
+                a=e
+                //window.alert("Directions request failed due to " + status)
             );
     }
 
