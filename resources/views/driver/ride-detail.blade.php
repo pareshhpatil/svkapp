@@ -206,9 +206,9 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
-            <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
+            <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
-            </button>
+            </button> -->
         </div>
 
 
@@ -384,6 +384,7 @@ BarcodeScan({
         });
     }
 
+
     function stop() {
         window.WTN.backgroundLocation.stop();
     }
@@ -450,12 +451,14 @@ BarcodeScan({
                     this.data.ride_passengers[this.selected_id].status = 1;
                     axios.get('/driver/ride/passenger/status/' + array.id + '/1');
                     document.getElementById('closeotp').click();
+                    this.sendLocation('passenger',array.id,1);
                 }
             },
             directverify(selected_id) {
                 array = this.data.ride_passengers[selected_id];
                 this.data.ride_passengers[selected_id].status = 1;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/1');
+                this.sendLocation('passenger',array.id,1);
             },
             resendotp(selected_id) {
                 array = this.data.ride_passengers[this.selected_id];
@@ -472,6 +475,7 @@ BarcodeScan({
                 array = this.data.ride_passengers[id];
                 this.data.ride_passengers[id].status = 5;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/5');
+                this.sendLocation('passenger',array.id,5);
             },
             out() {
                 array = this.data.ride_passengers[this.selected_id];
@@ -479,6 +483,7 @@ BarcodeScan({
                 axios.get('/driver/ride/passenger/status/' + array.id + '/2');
                 document.getElementById('closeout').click();
                 this.endStatus();
+                this.sendLocation('passenger',array.id,2);
             },
             endStatus() {
                 var done = true;
@@ -493,6 +498,24 @@ BarcodeScan({
                     stoplocation();
                 }
                 this.alldone = done;
+            },
+            sendLocation(type,id,status) {
+                setLocation();
+                setTimeout(() => this.updateLocationApi(type,id,status,mylatitude,mylongitude), 5000);
+            },
+            async updateLocationApi(type,id,status,lat,long) {
+                await axios.get('/driver/ride/location/status/${type}/${id}/${status}/${lat}/${long}')
+                    .then(response => {
+                        // Update your data with the received response
+                        if (response.data.length > this.count) {
+                            this.count = response.data.length;
+                            this.messages = response.data;
+                            this.scrollToBottom();
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             },
             call(mobile) {
                 axios.get('/call/' + mobile);
