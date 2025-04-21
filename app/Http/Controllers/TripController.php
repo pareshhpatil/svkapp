@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingEmail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 
 
@@ -36,9 +37,9 @@ class TripController extends Controller
         // $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
 
         //   Log::info('Tracking POST: ' . json_encode($_POST));
-        Log::error('Tracking: ' . json_encode($request->all()));
         //  $seq = rand(0, 5);
         // sleep($seq);
+
         $live_location = $request->all();
         $array['latitude']=$live_location['latitude'];
         $array['longitude']=$live_location['longitude'];
@@ -46,6 +47,22 @@ class TripController extends Controller
         $array['speedAccuracy']=(isset($live_location['speedAccuracy']))? $live_location['speedAccuracy'] : 0;
         $array['live_location']=json_encode($array);
         $array['ride_id'] = $ride_id;
+
+        $value = Cache::get('ride_'.$ride_id);
+        if($value!=false)
+        {
+            $cache_array=json_decode($value,true);
+            if($cache_array['latitude']==$array['latitude'] && $cache_array['longitude']==$array['longitude'] )
+            {
+                Log::error('Tracking: Same');
+                return;
+            }
+        }
+        Log::error('Tracking: ' . json_encode($request->all()));
+
+
+        Cache::put('ride_'.$ride_id,$array['live_location'], 8600); // 3600 seconds = 1 hour
+
         //  if ($response == false) {
         //  $this->model->saveTable('ride_live_location', $array);
         //  }
