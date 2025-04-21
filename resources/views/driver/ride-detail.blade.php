@@ -506,12 +506,7 @@ BarcodeScan({
             async updateLocationApi(type,id,status,lat,long) {
                 await axios.get('/driver/ride/location/status/${type}/${id}/${status}/${lat}/${long}')
                     .then(response => {
-                        // Update your data with the received response
-                        if (response.data.length > this.count) {
-                            this.count = response.data.length;
-                            this.messages = response.data;
-                            this.scrollToBottom();
-                        }
+                        
                     })
                     .catch(error => {
                         console.error(error);
