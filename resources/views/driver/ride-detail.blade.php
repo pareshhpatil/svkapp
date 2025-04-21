@@ -206,10 +206,9 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
-            <button v-if="data.ride.status==2 " onclick="restartLocation()" class="btn btn-success text-center mt-2">
+            <!-- <button v-if="data.ride.status==2 " onclick="restartLocation()" class="btn btn-success text-center mt-2">
                 Location Update
-            </button>
-            <div id="speed">hiiii</div>
+            </button> -->
         </div>
 
 
@@ -380,7 +379,7 @@
     }
 
     function startlocation() {
-        //lod(true);
+        lod(true);
         start();
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
@@ -397,7 +396,7 @@
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
     @if($data['ride']['status'] == 2)
-    restartLocation();
+    //restartLocation();
     //setInterval(function() {
     //    stop();
     //    start();
