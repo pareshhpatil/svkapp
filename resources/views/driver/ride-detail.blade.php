@@ -378,7 +378,7 @@ BarcodeScan({
             data: "ride_id-{{$ride_id}}",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 10.0,
+            distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
