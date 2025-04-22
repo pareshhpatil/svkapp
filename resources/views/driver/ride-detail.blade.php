@@ -95,7 +95,7 @@
                 
                 <!-- * item -->
                 <!-- item -->
-                <li>
+                <!-- <li>
                     <a href="#" class="item" style="padding: 5px 16px;min-height: 20px;">
                         <div class="icon-box bg-danger">
                             <ion-icon name="arrow-down-outline" role="img" class="md hydrated" aria-label="arrow down outline"></ion-icon>
@@ -108,7 +108,7 @@
 
                         </div>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- * item -->
             </ul>
