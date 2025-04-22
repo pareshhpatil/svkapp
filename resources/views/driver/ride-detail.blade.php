@@ -57,23 +57,22 @@
         <div id="loader" v-if="notloded">
             <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
         </div>
-        <!-- <div v-if="!data.driver.name">
+        <div v-if="!data.driver.name">
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Cab not assigned yet</div>
             </div>
             <div class="mt-2">
                 &nbsp;
             </div>
-        </div> -->
-
-        <!-- <div v-if="data.ride.status==3">
+        </div>
+        <div v-if="data.ride.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Ride has been cancelled</div>
             </div>
             <div class="mt-2">
                 &nbsp;
             </div>
-        </div> -->
+        </div>
         <div class="card mt-1 mb-1">
             <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
                 <!-- item -->
@@ -83,10 +82,10 @@
                             <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
                         </div>
                         <div class="in">
-                            <!-- <div>
+                            <div>
                                 <strong v-html="data.ride.start_time"></strong>
                                 <div class="text-small text-secondary" v-text="data.ride.start_location"> </div>
-                            </div> -->
+                            </div>
 
                         </div>
                     </a>
@@ -95,7 +94,7 @@
                 
                 <!-- * item -->
                 <!-- item -->
-                <!-- <li>
+                <li>
                     <a href="#" class="item" style="padding: 5px 16px;min-height: 20px;">
                         <div class="icon-box bg-danger">
                             <ion-icon name="arrow-down-outline" role="img" class="md hydrated" aria-label="arrow down outline"></ion-icon>
@@ -108,7 +107,7 @@
 
                         </div>
                     </a>
-                </li> -->
+                </li>
 
                 <!-- * item -->
             </ul>
