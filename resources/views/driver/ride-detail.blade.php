@@ -65,15 +65,15 @@
                 &nbsp;
             </div>
         </div> -->
-        
-        <div v-if="data.ride.status==3">
+
+        <!-- <div v-if="data.ride.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Ride has been cancelled</div>
             </div>
             <div class="mt-2">
                 &nbsp;
             </div>
-        </div>
+        </div> -->
         <div class="card mt-1 mb-1">
             <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
                 <!-- item -->
