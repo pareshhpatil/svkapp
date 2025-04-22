@@ -374,7 +374,7 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
-            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://admin.ridetrack.in/ride/track/{{$ride_id}}",
             timeout: 3000,
             data: '{"tracking-id":"ride_id-{{$ride_id}}"}',
             backgroundIndicator: true,
