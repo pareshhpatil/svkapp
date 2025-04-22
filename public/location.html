@@ -14,7 +14,7 @@
 
   <h2>QR Code Generator</h2>
   <input type="text" id="text" placeholder="Enter text or URL" />
-  <button onclick="start()">Generate</button>
+  <button onclick="startlocation()">Generate</button>
 
   <div id="qrcode"></div>
 
@@ -101,9 +101,7 @@
         }
     
         function startlocation() {
-            lod(true);
             start();
-            window.location.href = "/driver/ride/status/1072/2";
         }
     
         function restartLocation()
@@ -117,12 +115,6 @@
             stop();
             window.location.href = "/driver/ride/status/1072/5";
         }
-        @if($data['ride']['status'] == 2)
-        //restartLocation();
-        //setInterval(function() {
-        //    stop();
-        //    start();
-        //}, 300000);
-        @endif
+
     </script>
 </html>
