@@ -65,6 +65,7 @@
                 &nbsp;
             </div>
         </div> -->
+        
         <div v-if="data.ride.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Ride has been cancelled</div>
