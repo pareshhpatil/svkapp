@@ -792,8 +792,10 @@ class HomeController extends Controller
     {
         $data['menu'] = 0;
         $data['id'] = $id;
-        $data['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toJson();
-        return view('blog.index', $data);
+        if (in_array($id, array('1', '2', '3', '4', '5'))) {
+            $data['blogs'] = $this->model->getTableList('blogs', 'is_active', 1)->toJson();
+            return view('blog.index', $data);
+        }
     }
     public function blogs()
     {
@@ -983,7 +985,7 @@ class HomeController extends Controller
             $ride_passenger_id = $id;
         }
         $model =  new ParentModel();
-        $location='{ "latitude": '.$lat.', "longitude": '.$long.' }';
+        $location = '{ "latitude": ' . $lat . ', "longitude": ' . $long . ' }';
         if ($status == 5 || $status == 1) {
             if ($status == 5) {
                 $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_reach_location', $location);
