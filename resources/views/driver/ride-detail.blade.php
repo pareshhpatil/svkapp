@@ -83,10 +83,10 @@
                             <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
                         </div>
                         <div class="in">
-                            <div>
+                            <!-- <div>
                                 <strong v-html="data.ride.start_time"></strong>
                                 <div class="text-small text-secondary" v-text="data.ride.start_location"> </div>
-                            </div>
+                            </div> -->
 
                         </div>
                     </a>
