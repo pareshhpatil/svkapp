@@ -20,6 +20,10 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/login/verify', [App\Http\Controllers\Auth\LoginController::class, 'verify']);
+
+Route::any('/ride/track/{id}', [App\Http\Controllers\RideController::class, 'rideLiveTrack']);
+
+
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -83,6 +87,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
 
+Route::any('/ride/track/{id}', [App\Http\Controllers\RideController::class, 'rideLiveTrack'])->middleware('throttle:10,1');
 
 Route::get('/app/home/{token}', [App\Http\Controllers\HomeController::class, 'home']);
 Route::get('/app/trips/{token}', [App\Http\Controllers\HomeController::class, 'trips']);

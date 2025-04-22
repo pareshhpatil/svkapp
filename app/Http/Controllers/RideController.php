@@ -11,6 +11,9 @@ use App\Http\Lib\Encryption;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell_DataType;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
 
 class RideController extends Controller
 {
@@ -27,6 +30,48 @@ class RideController extends Controller
     {
         $this->model = new MasterModel();
         $this->user_id = Session::get('user_id');
+    }
+
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function rideLiveTrack(Request $request, $ride_id)
+    {
+        // $response = $this->model->updateTable('ride_live_location', 'ride_id', $ride_id, 'live_location', json_encode($request->all()));
+
+        //   Log::info('Tracking POST: ' . json_encode($_POST));
+        //  $seq = rand(0, 5);
+        // sleep($seq);
+        Log::error('Tracking: ' . json_encode($request->all()));
+
+        $live_location = $request->all();
+        $array['latitude'] = $live_location['latitude'];
+        $array['longitude'] = $live_location['longitude'];
+        $array['speed'] = $live_location['speed'];
+        $array['speedAccuracy'] = (isset($live_location['speedAccuracy'])) ? $live_location['speedAccuracy'] : 0;
+        $array['live_location'] = json_encode($array);
+        $array['ride_id'] = $ride_id;
+
+        $value = Cache::get('ride_' . $ride_id);
+        if ($value != false) {
+            $cache_array = json_decode($value, true);
+            if ($cache_array['latitude'] == $array['latitude'] && $cache_array['longitude'] == $array['longitude']) {
+                Log::error('Tracking: Same');
+                return;
+            }
+        }
+        //Log::error('Tracking: ' . json_encode($request->all()));
+
+
+        Cache::put('ride_' . $ride_id, $array['live_location'], 8600); // 3600 seconds = 1 hour
+
+        //  if ($response == false) {
+        //  $this->model->saveTable('ride_live_location', $array);
+        //  }
+        $this->model->saveTable('ride_location_track', $array);
     }
 
 
