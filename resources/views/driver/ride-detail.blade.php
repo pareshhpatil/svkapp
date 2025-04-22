@@ -57,14 +57,14 @@
         <div id="loader" v-if="notloded">
             <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
         </div>
-        <div v-if="!data.driver.name">
+        <!-- <div v-if="!data.driver.name">
             <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Cab not assigned yet</div>
             </div>
             <div class="mt-2">
                 &nbsp;
             </div>
-        </div>
+        </div> -->
         <div v-if="data.ride.status==3">
             <div class="appHeader bg-danger text-light" style="top:50px;margin-bottom:50px">
                 <div class="pageTitle">Ride has been cancelled</div>
