@@ -39,6 +39,7 @@ class TripController extends Controller
         //   Log::info('Tracking POST: ' . json_encode($_POST));
         //  $seq = rand(0, 5);
         // sleep($seq);
+        Log::error('Tracking: ' . json_encode($request->all()));
 
         $live_location = $request->all();
         $array['latitude'] = $live_location['latitude'];
@@ -56,7 +57,7 @@ class TripController extends Controller
                 return;
             }
         }
-        Log::error('Tracking: ' . json_encode($request->all()));
+        //Log::error('Tracking: ' . json_encode($request->all()));
 
 
         Cache::put('ride_' . $ride_id, $array['live_location'], 8600); // 3600 seconds = 1 hour
