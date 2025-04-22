@@ -8,7 +8,7 @@
       by <a href="#">Paresh Patil</a>
     </div>
     <div>
-      06, Jan 2024
+      06, Jan 2025
     </div>
   </div>
   <div class="lead">
