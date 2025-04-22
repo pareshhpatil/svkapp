@@ -13,10 +13,9 @@
 <body>
 
   <h2>QR Code Generator</h2>
-  <input type="text" id="text" placeholder="Enter text or URL" />
-  <button onclick="startlocation()">Generate</button>
+  <button style="width: 100px;height: 100px;" onclick="startlocation()">Start</button>
+  <button style="width: 100px;height: 100px;" onclick="stop()">Stop</button>
 
-  <div id="qrcode"></div>
 
   <script>
     function generateQRCode() {
