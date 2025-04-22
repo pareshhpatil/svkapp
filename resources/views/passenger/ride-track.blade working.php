@@ -466,7 +466,7 @@
 
             }
         };
-        xhttp.open("GET", "https://app.svktrv.in/ride/track/location/{{$ride_id}}", true);
+        xhttp.open("GET", "https://admin.ridetrack.in/ride/track/location/{{$ride_id}}", true);
         xhttp.send();
     }
 </script>

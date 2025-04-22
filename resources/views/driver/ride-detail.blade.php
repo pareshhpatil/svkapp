@@ -209,7 +209,6 @@
             <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
             </button> -->
-            <a href="/location.html" >Test</a>
         </div>
 
 
