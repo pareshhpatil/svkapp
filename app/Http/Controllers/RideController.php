@@ -45,7 +45,6 @@ class RideController extends Controller
         //   Log::info('Tracking POST: ' . json_encode($_POST));
         //  $seq = rand(0, 5);
         // sleep($seq);
-        Log::error('Tracking: ' . json_encode($request->all()));
 
         $live_location = $request->all();
         $array['latitude'] = $live_location['latitude'];
@@ -65,6 +64,7 @@ class RideController extends Controller
         }
         //Log::error('Tracking: ' . json_encode($request->all()));
 
+        Log::error('Tracking: ' . json_encode($request->all()));
 
         Cache::put('ride_' . $ride_id, $array['live_location'], 8600); // 3600 seconds = 1 hour
 
@@ -72,6 +72,16 @@ class RideController extends Controller
         //  $this->model->saveTable('ride_live_location', $array);
         //  }
         $this->model->saveTable('ride_location_track', $array);
+    }
+
+    public function rideLocation($ride_id)
+    {
+        $value = Cache::get('ride_' . $ride_id);
+        if ($value != false) {
+            return $value;
+        }
+        $array = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_id, 'live_location', [], 'id');
+        return $array;
     }
 
 

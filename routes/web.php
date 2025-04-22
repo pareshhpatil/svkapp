@@ -22,6 +22,7 @@ Route::get('/login/auth', [App\Http\Controllers\HomeController::class, 'index'])
 Route::post('/login/verify', [App\Http\Controllers\Auth\LoginController::class, 'verify']);
 
 Route::any('/ride/track/{id}', [App\Http\Controllers\RideController::class, 'rideLiveTrack']);
+Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\RideController::class, 'rideLocation']);
 
 
 Route::group(['middleware' => array('auth', 'access')], function () {
