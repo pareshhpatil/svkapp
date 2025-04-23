@@ -54,7 +54,7 @@ class TripController extends Controller
             $cache_array = json_decode($value, true);
             if ($cache_array['latitude'] == $array['latitude'] && $cache_array['longitude'] == $array['longitude']) {
                 Log::error('Tracking: Same');
-                return;
+                return true;
             }
         }
         //Log::error('Tracking: ' . json_encode($request->all()));
@@ -66,6 +66,7 @@ class TripController extends Controller
         //  $this->model->saveTable('ride_live_location', $array);
         //  }
         $this->model->saveTable('ride_location_track', $array);
+        return true;
     }
 
     public function rideLocation($ride_id)
