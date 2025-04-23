@@ -371,7 +371,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                 map.setCenter(dvmarker);
             }
         }
-        }, 2000);
+        }, 10000);
 
     }
 
