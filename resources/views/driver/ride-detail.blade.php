@@ -393,6 +393,7 @@ BarcodeScan({
     function startlocation() {
         lod(true);
         start();
+        alert("https://app.svktrv.in/ride/track/{{$ride_id}}");
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
