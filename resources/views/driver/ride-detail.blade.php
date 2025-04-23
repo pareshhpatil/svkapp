@@ -373,8 +373,8 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
-            apiUrl: "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location",
-            //apiUrl: "https://admin.ridetrack.in/ride/track/{{$ride_id}}",
+            //apiUrl: "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location",
+            apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 3000,
             data: '{{$ride_id}}',
             backgroundIndicator: true,
