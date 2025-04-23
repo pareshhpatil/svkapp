@@ -373,12 +373,13 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
-            apiUrl: "https://admin.ridetrack.in/ride/track/{{$ride_id}}",
+            apiUrl: "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location",
+            //apiUrl: "https://admin.ridetrack.in/ride/track/{{$ride_id}}",
             timeout: 3000,
-            data: '{"tracking-id":"ride_id-{{$ride_id}}"}',
+            data: '{{$ride_id}}',
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: 5.0,
+            distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
         });

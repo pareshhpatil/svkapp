@@ -486,7 +486,7 @@
 
             }
         };
-        xhttp.open("GET", "https://admin.ridetrack.in/ride/track/location/{{$ride_id}}", true);
+        xhttp.open("GET", "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/{{$ride_id}}", true);
         xhttp.send();
     }
 </script>
