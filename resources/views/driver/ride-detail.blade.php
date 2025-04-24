@@ -324,7 +324,7 @@
 
 
 <script>
-   // WTN.clearAppCache(false);
+   WTN.clearAppCache(false);
 
 
 function scanBarcode()
