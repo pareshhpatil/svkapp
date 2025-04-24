@@ -206,7 +206,7 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
-            <p style="width: 100%; height:100px" id="speed"></p>
+            <!-- <p style="width: 100%; height:100px" id="speed"></p> -->
             <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
             </button> -->
@@ -214,7 +214,7 @@
                 Test
                                         </a>  -->
 
-            <button  onclick="restart()" class="btn btn-success text-center mt-2">
+            <!-- <button  onclick="restart()" class="btn btn-success text-center mt-2">
                 App
             </button> 
 
@@ -226,7 +226,7 @@
             </button> 
             <button  onclick="restart3()" class="btn btn-success text-center mt-2">
                 Aws
-            </button> 
+            </button>  -->
         </div>
 
 
@@ -509,7 +509,7 @@ stop();
     function startlocation() {
        // lod(true);
         start();
-       // window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+        window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
     function restartLocation()
