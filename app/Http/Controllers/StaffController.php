@@ -417,6 +417,9 @@ class StaffController extends Controller
 
     function GuestTransactionDetail($id)
     {
+        if ($id == '__manifest.json') {
+            return false;
+        }
         $transaction = $this->model->getTableRow('transaction', 'code',  $id);
         if (isset($transaction->transaction_id)) {
             $reason = $this->model->getColumnValue('payment_transaction', 'request_id', $transaction->transaction_id, 'message', [],  'id');
