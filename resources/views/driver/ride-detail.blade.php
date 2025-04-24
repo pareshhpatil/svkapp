@@ -344,6 +344,11 @@
 <script>
    //WTN.clearAppCache(false);
 
+   const { screen } = window.WTN
+
+//to keep device screen on all the time
+screen.keepScreenOn()
+
 
 function scanBarcode()
 {
