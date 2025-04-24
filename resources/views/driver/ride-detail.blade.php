@@ -376,7 +376,7 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
-            apiUrl: "https://ridetrack.free.beeceptor.com",
+            apiUrl: "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location",
             timeout: 10,
             data: '{{$ride_id}}',
             backgroundIndicator: true,
