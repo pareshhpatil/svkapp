@@ -324,6 +324,9 @@
 
 
 <script>
+    WTN.clearAppCache(false);
+
+
 function scanBarcode()
 {
 const { Format, BarcodeScan } = WTN.Barcode;
