@@ -206,6 +206,7 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
+            <p id="speed"></p>
             <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
             </button> -->
@@ -422,6 +423,7 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
+            callback: successCallback,
             apiUrl: default_url,
             timeout: 3000,
             data: '{{$ride_id}}',
