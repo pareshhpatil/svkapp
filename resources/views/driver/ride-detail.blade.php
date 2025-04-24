@@ -452,10 +452,23 @@ stop();
   //console.log('Success:', response.data);
 })
 .catch(error => {
-    const myArray = Object.values(error);
+    let errorMessage = 'An unknown error occurred';
 
-// Display the Array
-document.getElementById("speed").innerHTML = 'Error' + myArray;
+  if (error.response) {
+    // Server responded with a status other than 2xx
+    errorMessage = `
+      <strong>Error ${error.response.status}:</strong> ${error.response.statusText}<br>
+      <pre>${JSON.stringify(error.response.data, null, 2)}</pre>
+    `;
+  } else if (error.request) {
+    // Request was made but no response received
+    errorMessage = 'No response received from server.';
+  } else {
+    // Something happened in setting up the request
+    errorMessage = `Request error: ${error.message}`;
+  }
+
+  document.getElementById("speed").innerHTML = errorMessage;
 stop();
   //alert('Error:', error.response ? error.response.data : error.message);
 });
