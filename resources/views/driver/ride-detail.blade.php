@@ -462,7 +462,10 @@ stop();
     `;
   } else if (error.request) {
     // Request was made but no response received
-    errorMessage = 'No response received from server.';
+    errorMessage = `
+      <strong>Request Sent:</strong><br>
+      <pre>${error.request instanceof XMLHttpRequest ? error.request.responseText || '[XMLHttpRequest object]' : JSON.stringify(error.request, null, 2)}</pre>
+    `;
   } else {
     // Something happened in setting up the request
     errorMessage = `Request error: ${error.message}`;
