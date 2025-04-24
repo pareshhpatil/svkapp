@@ -477,7 +477,7 @@ stop();
   }
 
   document.getElementById("speed").innerHTML = errorMessage;
-stop();
+//stop();
   //alert('Error:', error.response ? error.response.data : error.message);
 });
 
