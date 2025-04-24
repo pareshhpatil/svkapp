@@ -455,6 +455,7 @@ document.getElementById("speed").innerHTML = myArray;
 
 // Display the Array
 document.getElementById("speed").innerHTML = myArray;
+stop();
   //alert('Error:', error.response ? error.response.data : error.message);
 });
 
