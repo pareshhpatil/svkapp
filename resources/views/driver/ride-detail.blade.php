@@ -212,6 +212,17 @@
             <!-- <a  href="/location.html" class="btn btn-success text-center mt-2">
                 Test
                                         </a>  -->
+
+            <button  onclick="restart()" class="btn btn-success text-center mt-2">
+                App
+            </button> 
+
+            <button  onclick="restart1()" class="btn btn-success text-center mt-2">
+                Third
+            </button> 
+            <button  onclick="restart2()" class="btn btn-success text-center mt-2">
+                Admin
+            </button> 
         </div>
 
 
@@ -327,7 +338,7 @@
 
 
 <script>
-   WTN.clearAppCache(false);
+   //WTN.clearAppCache(false);
 
 
 function scanBarcode()
@@ -343,6 +354,7 @@ BarcodeScan({
 
     var mylatitude = '';
     var mylongitude = '';
+    var default_url="https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
 
     function success(pos) {
         const crd = pos.coords;
@@ -363,6 +375,27 @@ BarcodeScan({
         navigator.geolocation.getCurrentPosition(success, error, options);
     }
 
+    function restart()
+    {
+        stop();
+        default_url="https://app.svktrv.in/ride/track/{{$ride_id}}";
+        start();
+    }
+
+    function restart1()
+    {
+        stop();
+        default_url="https://ridetrack.free.beeceptor.com";
+        start();
+    }
+
+    function restart2()
+    {
+        stop();
+        default_url="https://admin.ridetrack.in/ride/track/{{$ride_id}}";
+        start();
+    }
+
 
     function successCallback(position) {
         const {
@@ -379,11 +412,11 @@ BarcodeScan({
 
     function start() {
         window.WTN.backgroundLocation.start({
-            apiUrl: "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location",
+            apiUrl: default_url,
             timeout: 3000,
             data: '{{$ride_id}}',
             backgroundIndicator: true,
-            pauseAutomatically: true,
+            pauseAutomatically: false,
             distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
