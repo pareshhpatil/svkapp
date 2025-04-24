@@ -456,6 +456,12 @@ stop();
 
   if (error.response) {
     // Server responded with a status other than 2xx
+    errorMessage = `
+      <strong>Error ${error.response.status}:</strong> ${error.response.statusText}<br>
+      <pre>${JSON.stringify(error.response.data, null, 2)}</pre>
+    `;
+  } else if (error.request) {
+    // Request was made but no response received
     const req = error.request;
     errorMessage = `
       <strong>Request Details:</strong><br>
@@ -465,12 +471,6 @@ stop();
         <li><strong>StatusText:</strong> ${req.statusText}</li>
         <li><strong>ResponseText:</strong><pre>${req.responseText || 'No response text'}</pre></li>
       </ul>
-    `;
-  } else if (error.request) {
-    // Request was made but no response received
-    errorMessage = `
-      <strong>Request Sent:</strong><br>
-      <pre>${error.request instanceof XMLHttpRequest ? error.request.responseText || '[XMLHttpRequest object]' : JSON.stringify(error.request, null, 2)}</pre>
     `;
   } else {
     // Something happened in setting up the request
