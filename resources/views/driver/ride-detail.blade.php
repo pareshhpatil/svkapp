@@ -425,7 +425,7 @@ BarcodeScan({
        // document.getElementById('speed').innerHTML=position.latitude;
 
 
-        axios.post('https://app.svktrv.in/ride/track/{{$ride_id}}', {
+        axios.post('https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location', {
   latitude: position.latitude,
   longitude: position.longitude,
   altitude: position.altitude,
