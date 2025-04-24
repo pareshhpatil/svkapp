@@ -486,7 +486,7 @@ stop();
 
     function start() {
         window.WTN.backgroundLocation.start({
-            callback: successCallback,
+            //callback: successCallback,
             apiUrl: default_url,
             timeout: 3000,
             data: '{{$ride_id}}',
