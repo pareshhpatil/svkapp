@@ -451,7 +451,7 @@ BarcodeScan({
     function startlocation() {
         lod(true);
         start();
-        window.location.href = "/driver/ride/status/{{$ride_id}}/2";
+       // window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
     function restartLocation()
