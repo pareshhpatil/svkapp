@@ -387,7 +387,7 @@ BarcodeScan({
         });
     }
 
-    alert("https://ridetrack.free.beeceptor.com");
+    //alert("https://ridetrack.free.beeceptor.com");
     //apiUrl= "https://app.svktrv.in/ride/track/{{$ride_id}}";
 
 
