@@ -386,7 +386,8 @@ BarcodeScan({
             activityType: "other",
         });
     }
-
+    
+    alert("https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location");
     //apiUrl= "https://app.svktrv.in/ride/track/{{$ride_id}}";
 
 
