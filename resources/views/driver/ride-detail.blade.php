@@ -380,7 +380,7 @@ BarcodeScan({
             timeout: 3000,
             //data: '{{$ride_id}}',
             backgroundIndicator: true,
-            pauseAutomatically: false,
+            pauseAutomatically: true,
             distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
