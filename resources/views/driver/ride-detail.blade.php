@@ -462,14 +462,13 @@ stop();
     `;
   } else if (error.request) {
     // Request was made but no response received
-    const req = error.request;
     errorMessage = `
       <strong>Request Details:</strong><br>
       <ul>
-        <li><strong>ReadyState:</strong> ${req.readyState}</li>
-        <li><strong>Status:</strong> ${req.status}</li>
-        <li><strong>StatusText:</strong> ${req.statusText}</li>
-        <li><strong>ResponseText:</strong><pre>${req.responseText || 'No response text'}</pre></li>
+        <li><strong>ReadyState:</strong> ${error.request.readyState}</li>
+        <li><strong>Status:</strong> ${error.request.status}</li>
+        <li><strong>StatusText:</strong> ${error.request.statusText}</li>
+        <li><strong>ResponseText:</strong><pre>${error.request.responseText || 'No response text'}</pre></li>
       </ul>
     `;
   } else {
