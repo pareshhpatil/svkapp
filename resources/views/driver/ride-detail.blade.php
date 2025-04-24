@@ -447,7 +447,11 @@ BarcodeScan({
   //console.log('Success:', response.data);
 })
 .catch(error => {
-  alert('Error:', error.response ? error.response.data : error.message);
+    const myArray = Object.values(error);
+
+// Display the Array
+document.getElementById("speed").innerHTML = myArray;
+  //alert('Error:', error.response ? error.response.data : error.message);
 });
 
     }
