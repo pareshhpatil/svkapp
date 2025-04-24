@@ -447,14 +447,15 @@ BarcodeScan({
     const myArray = Object.values(response);
 
 // Display the Array
-document.getElementById("speed").innerHTML = myArray;
+document.getElementById("speed").innerHTML = 'Success' +response.data;
+stop();
   //console.log('Success:', response.data);
 })
 .catch(error => {
     const myArray = Object.values(error);
 
 // Display the Array
-document.getElementById("speed").innerHTML = myArray;
+document.getElementById("speed").innerHTML = 'Error' + myArray;
 stop();
   //alert('Error:', error.response ? error.response.data : error.message);
 });
