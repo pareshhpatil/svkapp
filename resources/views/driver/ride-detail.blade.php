@@ -423,6 +423,33 @@ BarcodeScan({
         // Show a map centered at latitude / longitude.
 
         document.getElementById('speed').innerHTML=position.latitude;
+
+
+        axios.post('https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location', {
+  latitude: position.latitude,
+  longitude: position.longitude,
+  altitude: position.altitude,
+  deviceID: position.deviceID,
+  bearing: position.bearing,
+  bearingAccuracy: position.bearingAccuracy,
+  speed: position.speed,
+  speedAccuracy: position.speedAccuracy,
+  data: "{{$ride_id}}",
+  verticalAccuracy: position.verticalAccuracy,
+  timestamp: position.timestamp,
+  type: position.type
+}, {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  //console.log('Success:', response.data);
+})
+.catch(error => {
+  alert('Error:', error.response ? error.response.data : error.message);
+});
+
     }
 
 
