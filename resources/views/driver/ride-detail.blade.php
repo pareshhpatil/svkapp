@@ -417,7 +417,7 @@ BarcodeScan({
         } = position;
         // Show a map centered at latitude / longitude.
 
-        document.getElementById('speed').innerHTML=position;
+        document.getElementById('speed').innerHTML=position.latitude;
     }
 
 
