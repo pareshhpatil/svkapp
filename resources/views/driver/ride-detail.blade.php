@@ -447,7 +447,7 @@ BarcodeScan({
     const myArray = Object.values(response);
 
 // Display the Array
-document.getElementById("speed").innerHTML = 'Success' +response.data;
+document.getElementById("speed").innerHTML = 'Success' +myArray;
 stop();
   //console.log('Success:', response.data);
 })
