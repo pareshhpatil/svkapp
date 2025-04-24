@@ -456,9 +456,15 @@ stop();
 
   if (error.response) {
     // Server responded with a status other than 2xx
+    const req = error.request;
     errorMessage = `
-      <strong>Error ${error.response.status}:</strong> ${error.response.statusText}<br>
-      <pre>${JSON.stringify(error.response.data, null, 2)}</pre>
+      <strong>Request Details:</strong><br>
+      <ul>
+        <li><strong>ReadyState:</strong> ${req.readyState}</li>
+        <li><strong>Status:</strong> ${req.status}</li>
+        <li><strong>StatusText:</strong> ${req.statusText}</li>
+        <li><strong>ResponseText:</strong><pre>${req.responseText || 'No response text'}</pre></li>
+      </ul>
     `;
   } else if (error.request) {
     // Request was made but no response received
