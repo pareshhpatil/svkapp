@@ -206,7 +206,7 @@
             <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button>
-            <p id="speed"></p>
+            <p style="width: 100%; height:100px" id="speed"></p>
             <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
             </button> -->
@@ -422,10 +422,10 @@ BarcodeScan({
         } = position;
         // Show a map centered at latitude / longitude.
 
-        document.getElementById('speed').innerHTML=position.latitude;
+       // document.getElementById('speed').innerHTML=position.latitude;
 
 
-        axios.post('https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location', {
+        axios.post('https://app.svktrv.in/ride/track/{{$ride_id}}', {
   latitude: position.latitude,
   longitude: position.longitude,
   altitude: position.altitude,
@@ -444,6 +444,10 @@ BarcodeScan({
   }
 })
 .then(response => {
+    const myArray = Object.values(response);
+
+// Display the Array
+document.getElementById("speed").innerHTML = myArray;
   //console.log('Success:', response.data);
 })
 .catch(error => {
