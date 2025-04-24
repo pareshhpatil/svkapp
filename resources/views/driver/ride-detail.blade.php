@@ -223,6 +223,9 @@
             <button  onclick="restart2()" class="btn btn-success text-center mt-2">
                 Admin
             </button> 
+            <button  onclick="restart3()" class="btn btn-success text-center mt-2">
+                Aws
+            </button> 
         </div>
 
 
@@ -393,6 +396,13 @@ BarcodeScan({
     {
         stop();
         default_url="https://admin.ridetrack.in/ride/track/{{$ride_id}}";
+        start();
+    }
+
+    function restart3()
+    {
+        stop();
+        default_url="https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
         start();
     }
 
