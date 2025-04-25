@@ -258,6 +258,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
 
 
+
     function successCallback(position) {
         const {
             accuracy,
@@ -354,7 +355,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         //moveBus(map, marker);
         setDriverLocation();
-        updateLocation();
 
         setInterval(function() {
             updateLocation();
@@ -502,6 +502,10 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         xhttp.open("GET", "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/{{$ride_id}}", true);
         xhttp.send();
     }
+
+
+    setDriverLocation();
+    updateLocation();
 </script>
 
 @endsection
