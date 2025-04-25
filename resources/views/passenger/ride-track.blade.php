@@ -504,8 +504,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
 
-    setDriverLocation();
-    updateLocation();
+
 </script>
 
 @endsection
