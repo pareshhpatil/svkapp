@@ -343,8 +343,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     var destinationMarker;
     directionsRenderer.setMap(map);
 
-    var navigation_started=false;
-
 
     function initialize() {
 
@@ -450,14 +448,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         //lat=lat-0.00005;
         //map.setCenter(new google.maps.LatLng(lat, lat_long));
         originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-        if(navigation_started==true)
-        {
-            map.panTo(new google.maps.LatLng(lat, lat_long));
-        }
-        
-        if(navigation_started==false){
-            navigation_started=true;
-        
+        // map.panTo(new google.maps.LatLng(lat, lat_long));
         directionsService
             .route({
                 origin: new google.maps.LatLng(lat, lat_long),
@@ -491,7 +482,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                 a=e
                 //window.alert("Directions request failed due to " + status)
             );
-        }
     }
 
 
