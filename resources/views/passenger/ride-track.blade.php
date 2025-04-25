@@ -240,6 +240,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
 
 <script>
+    
     // var my_lat = '';
     // var my_long = '';
 
@@ -353,9 +354,17 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         //moveBus(map, marker);
         setDriverLocation();
+        updateLocation();
 
         setInterval(function() {
-            getData();
+            updateLocation();
+        }, 10000);
+
+    }
+
+    function updateLocation()
+    {
+        getData();
             if(old_lat==lat && old_lat_long==lat_long)
         {
             
@@ -371,8 +380,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                 map.setCenter(dvmarker);
             }
         }
-        }, 10000);
-
     }
 
     function setDriverLocation() {
