@@ -13,6 +13,8 @@ use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+
 class ApiController extends Controller
 {
     /**
