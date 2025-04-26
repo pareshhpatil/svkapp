@@ -145,6 +145,36 @@ class ApiController extends Controller
                     'deepLink' => $url
                 ];
             }
+
+
+            $notificationPayload = [
+                'token' => $deviceToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                    'image' => $image,
+                ],
+                'android' => [
+                    'notification' => [
+                        'sound' => 'default', // Or custom sound
+                    ],
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default', // iOS sound field
+                        ],
+                    ],
+                ],
+                'data' => $url ? ['deepLink' => $url] : [],
+            ];
+            
+            $message = CloudMessage::fromArray($notificationPayload);
+            
+            return $messaging->send($message);
+
+
+
             $notification = Notification::create($title, $body, $image);
             $message = CloudMessage::withTarget('token', $deviceToken)
                 ->withNotification($notification)
