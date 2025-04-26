@@ -107,6 +107,7 @@ class ImportRoster extends Command
             $headerMap = $this->mapHeaders($worksheet);
             $highestRow = $worksheet->getHighestRow();
             $rows = [];
+            Log::error($headerMap);
 
             for ($rowno = 2; $rowno <= $highestRow; ++$rowno) {
                 $emp = [
