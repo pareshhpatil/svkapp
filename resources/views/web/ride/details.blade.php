@@ -164,7 +164,7 @@
                                     <p class="mb-2">Cab reached at {{$v->pickup_location}}</p>
                                     <div class="d-flex">
                                         <a href="javascript:void(0)" class="me-3">
-                                            <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle">
+                                            <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle avatar-lg">
                                         </a>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@
                                     <p class="mb-2">Drop location {{$v->drop_location}}</p>
                                     <div class="d-flex">
                                         <a href="javascript:void(0)" class="me-3">
-                                            <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle">
+                                            <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle avatar-lg">
                                         </a>
                                     </div>
                                 </div>
@@ -273,7 +273,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <a href="javascript:void(0)" class="me-3">
-                                                <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle">
+                                                <img src="{{$v->icon}}" alt="{{$v->name}}" class="rounded-circle avatar-lg">
                                             </a>
                                         </div>
                                         <div class="col-md-8">
@@ -337,36 +337,71 @@
 
 
 @endsection
-  <script>
-    function initMap() {
-      // Map initialization
-      var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13
-      });
 
-      // Directions service
-      var directionsService = new google.maps.DirectionsService();
-      var directionsDisplay = new google.maps.DirectionsRenderer();
-      directionsDisplay.setMap(map);
 
-      // Define the waypoints (stops) with titles
-      var waypoints = [
-	  @if($det->type=='Drop')
+<script>
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 11,
+          center: { lat: 19.076, lng: 72.8777 }, // Mumbai center
+        });
+
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+          map: map,
+          suppressMarkers: true, // Removes default red pins
+        });
+
+        const waypoints = [
+        @if($det->type=='Drop')
 		{
           location: '{{$company_address}}',
           stopover: true,
           title: 'Office'
         },
       @endif
+
       @foreach($ride_passengers as $v)
       @if($v->status!=3 && $v->status!=4)
+      @php 
+        $actual_location='';
+        if($det->type=='Drop')
         {
-          location: '{{$v->address}}',
+        if($v->actual_drop_location!='')
+        {
+            $actual_location=$v->actual_drop_location;
+        }
+
+        }else{
+            if($v->actual_pickup_location!='')
+        {
+            $actual_location=$v->actual_pickup_location;
+        }
+        if($actual_location!='')
+        {
+            $locationArray = json_decode($actual_location, true);
+
+            // Create the object with 'lat' and 'lng'
+            $location = [
+                'lat' => $locationArray['latitude'],
+                'lng' => $locationArray['longitude'],
+            ];
+            $actual_location=json_encode($location);
+        }
+        }
+      @endphp
+        {
+            @if($actual_location=='')
+                location: '{{$v->address}}',
+            @else
+                location: {{$actual_location}},
+            @endif
           stopover: true,
           title: '{{$v->name}}'
         },
       @endif
       @endforeach
+
       @if($det->type=='Pickup')
 		{
           location: '{{$company_address}}',
@@ -374,46 +409,111 @@
           title: 'Office'
         }
      @endif
-        
-      ];
-	  
-	 var origin = waypoints[0].location;
-     var destination = waypoints[waypoints.length - 1].location;
+          
+        ];
 
-      // Calculate the directions
-      var request = {
-        origin: origin,
-        destination: destination,
-        waypoints: waypoints.map(function(waypoint) {
-          return {
-            location: waypoint.location,
-            stopover: waypoint.stopover
-          };
-        }),
-        optimizeWaypoints: true,
-        travelMode: 'DRIVING'
-      };
+        var origin = waypoints[0].location;
+        var destination = waypoints[waypoints.length - 1].location;
 
-      directionsService.route(request, function(result, status) {
-        if (status == 'OK') {
-          directionsDisplay.setDirections(result);
+        directionsService.route(
+          {
+            origin: origin,
+            destination: destination,
+            waypoints: waypoints,
+            travelMode: google.maps.TravelMode.DRIVING,
+          },
+          (response, status) => {
+            if (status === "OK") {
+              directionsRenderer.setDirections(response);
 
-          // Add markers with titles for each waypoint
-          var route = result.routes[0];
-          var waypointsOrder = result.routes[0].waypoint_order;
-          for (var i = 0; i < waypointsOrder.length; i++) {
-            var waypointIndex = waypointsOrder[i];
-            var waypoint = waypoints[waypointIndex];
-            var marker = new google.maps.Marker({
-              position: route.legs[i].end_location,
-              map: map,
-              title: waypoint.title
-            });
+              const legs = response.routes[0].legs;
+              console.log(legs);
+
+              // Custom Marker: Start at Bandra
+              new google.maps.Marker({
+                position: legs[0].start_location,
+                map: map,
+                title: "Start - Bandra",
+                icon: {
+                  url: "https://admin.ridetrack.in/favicon.ico",
+                  scaledSize: new google.maps.Size(40, 40),
+                },
+              });
+
+              // Custom Marker: Paresh at Andheri
+              var pareshMarker = new google.maps.OverlayView();
+              pareshMarker.onAdd = function () {
+                const div = document.createElement("div");
+                div.className = "marker-label";
+                div.innerHTML = `
+                  <img src="https://app.svktrv.in/storage/uploads/172016010331.png" />
+                  <span>Paresh</span>
+                `;
+                const panes = this.getPanes();
+                panes.overlayImage.appendChild(div);
+                this.div = div;
+              };
+
+              pareshMarker.draw = function () {
+                const point = this.getProjection().fromLatLngToDivPixel(legs[0].end_location);
+                if (point) {
+                  this.div.style.left = point.x + "px";
+                  this.div.style.top = point.y + "px";
+                  this.div.style.position = "absolute";
+                }
+              };
+
+              pareshMarker.setMap(map);
+
+              // Custom Marker: Mahesh at Borivali
+              var pareshMarker = new google.maps.OverlayView();
+              pareshMarker.onAdd = function () {
+                const div = document.createElement("div");
+                div.className = "marker-label";
+                div.innerHTML = `
+                  <img src="https://app.svktrv.in/storage/uploads/172016010331.png" />
+                  <span>Mahesh</span>
+                `;
+                const panes = this.getPanes();
+                panes.overlayImage.appendChild(div);
+                this.div = div;
+              };
+
+              pareshMarker.draw = function () {
+                const point = this.getProjection().fromLatLngToDivPixel(legs[1].end_location);
+                if (point) {
+                  this.div.style.left = point.x + "px";
+                  this.div.style.top = point.y + "px";
+                  this.div.style.position = "absolute";
+                }
+              };
+
+              pareshMarker.setMap(map);
+
+              // Create InfoWindow for displaying distance between Bandra and Andheri
+              const distanceWindow1 = new google.maps.InfoWindow({
+                content: `<div style="padding-top:10px"><strong>Bandra to Andheri: ${legs[0].distance.text}</strong></div>`,
+              });
+              distanceWindow1.setPosition(legs[0].end_location);
+              distanceWindow1.open(map);
+
+              // Create InfoWindow for displaying distance between Andheri and Borivali
+              const distanceWindow2 = new google.maps.InfoWindow({
+                content: `<div><strong>Andheri to Borivali: ${legs[1].distance.text}</strong></div>`,
+              });
+              distanceWindow2.setPosition(legs[1].end_location);
+              distanceWindow2.open(map);
+            } else {
+              alert("Directions request failed due to " + status);
+            }
           }
-        }
-      });
-    }
-</script>
+        );
+      }
+    </script>
+
+
+
+
 
 
 @section('footer')

@@ -52,7 +52,7 @@ class RosterModel extends ParentModel
             ->join('config as c', 'c.value', '=', 'a.status')
             ->where('a.is_active', 1)
             ->where('c.type', 'ride_status')
-            ->select(DB::raw('a.*,ea.name as project_name,c.description,TIME_FORMAT(a.start_time, "%h:%i %p") as display_start_time,DATE_FORMAT(a.date,"%d-%b-%Y") as date'));
+            ->select(DB::raw('a.*,ea.name as project_name,c.description,TIME_FORMAT(a.start_time, "%h:%i %p") as display_start_time,DATE_FORMAT(a.date,"%d-%b-%Y") as date,c.Description as status'));
         if ($project_id > 0) {
             $retObj->where('a.project_id', $project_id);
         } else {

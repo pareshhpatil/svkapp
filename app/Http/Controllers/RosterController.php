@@ -86,14 +86,16 @@ class RosterController extends Controller
 
         $from_date = null;
         $to_date = null;
-        $date_array = explode(' - ', $date);
-        if (!empty($date_array)) {
-            if (count($date_array) == 1) {
-                $from_date = $this->sqlDateTime($date_array[0]);
-                $to_date = $this->sqlDateTime($date_array[0] . ' 23:59');
-            } else {
-                $from_date = $this->sqlDateTime($date_array[0]);
-                $to_date = $this->sqlDateTime($date_array[1]);
+        if ($date != 'na') {
+            $date_array = explode(' - ', $date);
+            if (!empty($date_array)) {
+                if (count($date_array) == 1) {
+                    $from_date = $this->sqlDateTime($date_array[0]);
+                    $to_date = $this->sqlDateTime($date_array[0] . ' 23:59');
+                } else {
+                    $from_date = $this->sqlDateTime($date_array[0]);
+                    $to_date = $this->sqlDateTime($date_array[1]);
+                }
             }
         }
         $data['data'] = $this->model->getRoute($project_id, $from_date, $to_date, $statusarray, Session::get('project_access'));

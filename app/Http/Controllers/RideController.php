@@ -94,8 +94,8 @@ class RideController extends Controller
         $data['menus'] = Session::get('menus');
         $data['det'] = $this->model->getTableRow('ride', 'id', $id);
         $data['det']->date = $this->htmlDate($data['det']->date, 1);
-        $data['det']->start_time = $this->htmlTime($data['det']->start_time);
-        $data['det']->end_time = $this->htmlTime($data['det']->end_time);
+        $data['det']->start_time = $this->htmlTime($data['det']->ride_started);
+        $data['det']->end_time = $this->htmlTime($data['det']->ride_ended);
 
         $data['driver'] = $this->model->getTableRow('driver', 'id', $data['det']->driver_id);
         $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
@@ -104,7 +104,7 @@ class RideController extends Controller
         $data['driver_photo'] = env('MOBILE_APP_URL') . '/assets/img/driver.png';
         if ($data['driver'] != false) {
             if ($data['driver_photo'] != '') {
-                $data['driver_photo'] = env('MOBILE_APP_URL') . $data['driver']->photo;
+                $data['driver_photo'] =  $data['driver']->photo;
             }
         }
 
@@ -117,7 +117,7 @@ class RideController extends Controller
                     $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
                 }
             } else {
-                $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . $row->icon;
+                $data['ride_passengers'][$k]->icon = $row->icon;
             }
         }
         //  dd($data);
