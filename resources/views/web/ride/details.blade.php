@@ -535,7 +535,7 @@
                     const div = document.createElement("div");
                     div.className = "marker-label";
                     div.innerHTML = `
-                    <img src="{{$rv['icon']}}" />
+                    <img src="{{$rv['icon']}}" style="max-width:20px;" />
                     <span>{{$rv['title']}}</span>
                     `;
                     const panes = this.getPanes();
@@ -558,7 +558,7 @@
 
               @foreach($route_info as $rk=>$rv)
               const distanceWindow{{$rk}} = new google.maps.InfoWindow({
-                content: `<div style="padding-top:10px"><strong>From To : ${legs[{{$rk}}].distance.text}</strong></div>`,
+                content: `<div style="padding-top:10px"><strong> {{$rv['title']}} : ${legs[{{$rk}}].distance.text}</strong></div>`,
               });
               distanceWindow{{$rk}}.setPosition(legs[{{$rk}}].end_location);
               distanceWindow{{$rk}}.open(map);
