@@ -337,7 +337,83 @@
 
 
 @endsection
+  <!-- <script>
+    function initMap() {
+      // Map initialization
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 13
+      });
 
+      // Directions service
+      var directionsService = new google.maps.DirectionsService();
+      var directionsDisplay = new google.maps.DirectionsRenderer();
+      directionsDisplay.setMap(map);
+
+      // Define the waypoints (stops) with titles
+      var waypoints = [
+	  @if($det->type=='Drop')
+		{
+          location: '{{$company_address}}',
+          stopover: true,
+          title: 'Office'
+        },
+      @endif
+      @foreach($ride_passengers as $v)
+      @if($v->status!=3 && $v->status!=4)
+        {
+          location: '{{$v->address}}',
+          stopover: true,
+          title: '{{$v->name}}'
+        },
+      @endif
+      @endforeach
+      @if($det->type=='Pickup')
+		{
+          location: '{{$company_address}}',
+          stopover: true,
+          title: 'Office'
+        }
+     @endif
+        
+      ];
+	  
+	 var origin = waypoints[0].location;
+     var destination = waypoints[waypoints.length - 1].location;
+
+      // Calculate the directions
+      var request = {
+        origin: origin,
+        destination: destination,
+        waypoints: waypoints.map(function(waypoint) {
+          return {
+            location: waypoint.location,
+            stopover: waypoint.stopover
+          };
+        }),
+        optimizeWaypoints: true,
+        travelMode: 'DRIVING'
+      };
+
+      directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+          directionsDisplay.setDirections(result);
+
+          // Add markers with titles for each waypoint
+          var route = result.routes[0];
+          var waypointsOrder = result.routes[0].waypoint_order;
+          for (var i = 0; i < waypointsOrder.length; i++) {
+            var waypointIndex = waypointsOrder[i];
+            var waypoint = waypoints[waypointIndex];
+            var marker = new google.maps.Marker({
+              position: route.legs[i].end_location,
+              map: map,
+              title: waypoint.title
+            });
+          }
+        }
+      });
+    }
+</script> -->
 
 <script>
       function initMap() {
@@ -510,10 +586,6 @@
         );
       }
     </script>
-
-
-
-
 
 
 @section('footer')
