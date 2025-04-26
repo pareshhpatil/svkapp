@@ -9,6 +9,10 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell_DataType;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class PassengerController extends Controller
 {
     /**
@@ -128,14 +132,17 @@ class PassengerController extends Controller
     }
     public function format($type = 'passenger')
     {
-        $column_name[] = 'Name';
-        $column_name[] = 'Mobile';
-        $column_name[] = 'Email';
-        $column_name[] = 'Gender(Male/Female)';
-        $column_name[] = 'Address';
-        $column_name[] = 'Area';
-        $column_name[] = 'Employee code';
-        $column_name[] = 'Cost center code';
+        $column_name = [
+            'Name',
+            'Mobile',
+            'Email',
+            'Gender(Male/Female)',
+            'Address',
+            'Area',
+            'Employee code',
+            'Cost center code',
+        ];
+
         if ($type == 'roster') {
             $column_name[] = 'Type (Pickup/Drop)';
             $column_name[] = 'Date';
@@ -146,54 +153,58 @@ class PassengerController extends Controller
 
         $title = ucfirst($type);
 
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-        $objPHPExcel = new PHPExcel();
-        $objPHPExcel->getProperties()->setCreator("SVK")
+        $spreadsheet->getProperties()
+            ->setCreator("SVK")
             ->setLastModifiedBy("SVK")
             ->setTitle($title)
             ->setSubject($title)
             ->setDescription("Import " . $title);
-        #create array of excel column
-        $first = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
-        $column = array();
-        foreach ($first as $s) {
-            $column[] = $s;
+
+        // Create Excel column letters (A-Z, AA-ZZ)
+        $column = [];
+        $letters = range('A', 'Z');
+        foreach ($letters as $l) {
+            $column[] = $l;
         }
-        foreach ($first as $f) {
-            foreach ($first as $s) {
+        foreach ($letters as $f) {
+            foreach ($letters as $s) {
                 $column[] = $f . $s;
             }
         }
-        $int = 0;
-        foreach ($column_name as $col) {
-            $objPHPExcel->getActiveSheet()->setCellValue($column[$int] . '1', $col);
-            $int = $int + 1;
+
+        // Set column headers
+        foreach ($column_name as $index => $name) {
+            $sheet->setCellValue($column[$index] . '1', $name);
+            $sheet->getColumnDimension($column[$index])->setAutoSize(true);
         }
 
-        $objPHPExcel->getDefaultStyle()->getFont()->setName('verdana')
-            ->setSize(10);
-        $objPHPExcel->getActiveSheet()->setTitle($title);
-        //$int++;
-        $autosize = 0;
-        while ($autosize < $int) {
-            $objPHPExcel->getActiveSheet()->getColumnDimension(substr($column[$autosize] . '1', 0, -1))->setAutoSize(true);
-            $autosize++;
+        // Font styling
+        $spreadsheet->getDefaultStyle()->getFont()->setName('Verdana')->setSize(10);
+        $sheet->setTitle($title);
+
+        // Output to browser
+        $filename = $title . '.xlsx';
+        $writer = new Xlsx($spreadsheet);
+
+        // Clean output buffer to prevent corrupt download
+        if (ob_get_length()) {
+            ob_end_clean();
         }
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
         header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
-        header('Cache-Control: max-age=1');
-        // If you're serving to IE over SSL, then the following may be needed
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-        header('Pragma: public'); // HTTP/1.0
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
 
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save('php://output');
-        $objPHPExcel->disconnectWorksheets();
-        unset($objPHPExcel);
+        $writer->save('php://output');
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
         exit;
     }
 
