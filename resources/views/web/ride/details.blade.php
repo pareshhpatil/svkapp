@@ -455,14 +455,12 @@
         }
         if($actual_location!='')
         {
+            $actual_location = html_entity_decode($actual_location);
             $locationArray = json_decode($actual_location, true);
 
             // Create the object with 'lat' and 'lng'
-            $location = [
-                'lat' => $locationArray['latitude'],
-                'lng' => $locationArray['longitude'],
-            ];
-            $actual_location=json_encode($location);
+            
+            $actual_location='{ lat: '.$locationArray['latitude'].', lng: '.$locationArray['longitude'].' }';
         }
         }
       @endphp
@@ -470,7 +468,7 @@
             @if($actual_location=='')
                 location: '{{$v->address}}',
             @else
-                location: {{$actual_location}},
+                location: '{{$actual_location}}',
             @endif
           stopover: true,
           title: '{{$v->name}}'
@@ -586,7 +584,7 @@
         );
       }
     </script>
-
+hii
 
 @section('footer')
 
