@@ -294,7 +294,7 @@ class RosterController extends Controller
                             $data['rosterdata'][$k]->photo = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
                         }
                     } else {
-                        $data['rosterdata'][$k]->photo = env('MOBILE_APP_URL') . $row->photo;
+                        $data['rosterdata'][$k]->photo = $row->photo;
                     }
                     $data['rosterdata'][$k]->title = $row->location . ' - ' . $row->employee_name . ' - ' . $row->type . ' - ' . $row->date . ' - ' . $row->display_start_time;
                     $data['roster'][$row->id] = $data['rosterdata'][$k];
