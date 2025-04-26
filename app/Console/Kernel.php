@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('import:passenger')->everyFiveMinutes();
-        $schedule->command('import:roster')->everyFiveMinutes();
+        //$schedule->command('import:passenger')->everyFiveMinutes();
+        $schedule->command('import:roster')->everyMinute()->withoutOverlapping();
     }
 
     /**
