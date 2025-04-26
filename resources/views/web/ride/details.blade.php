@@ -428,8 +428,11 @@
           suppressMarkers: true, // Removes default red pins
         });
 
+        @php $route_info=[]; @endphp
+
         const waypoints = [
         @if($det->type=='Drop')
+        @php $route_info[]=array('title'=>'Office','icon'=>"https://admin.ridetrack.in/favicon.ico"); @endphp
 		{
           location: '{{$company_address}}',
           stopover: true
@@ -440,6 +443,7 @@
       @if($v->status!=3 && $v->status!=4)
       @php 
         $actual_location='';
+        $route_info[]=array('title'=>$v->name,'icon'=>$v->icon);
         if($det->type=='Drop')
         {
         if($v->actual_drop_location!='')
@@ -475,6 +479,7 @@
       @endforeach
 
       @if($det->type=='Pickup')
+      @php $route_info[]=array('title'=>'Office','icon'=>"https://admin.ridetrack.in/favicon.ico"); @endphp
 		{
           location: '{{$company_address}}',
           stopover: true
@@ -482,6 +487,14 @@
      @endif
           
         ];
+
+        const encodedJson = '{{json_encode($route_info)}}';
+
+        // Decode HTML entities
+        const decodedJson = encodedJson.replace(/&quot;/g, '"');
+        route_info = JSON.parse(decodedJson);
+
+        console.log('route_info',route_info);
         console.log('Waypoints',waypoints);
         var origin = waypoints[0].location;
         var destination = waypoints[waypoints.length - 1].location;
@@ -498,82 +511,61 @@
               directionsRenderer.setDirections(response);
 
               const legs = response.routes[0].legs;
-              console.log(legs);
 
               // Custom Marker: Start at Bandra
-              new google.maps.Marker({
+
+              console.log('Legs',legs);
+
+              @foreach($route_info as $rk=>$rv)
+
+                @if($rk==0)
+                new google.maps.Marker({
                 position: legs[0].start_location,
                 map: map,
-                title: "Start - Bandra",
+                title: "{{$rv['title']}}",
                 icon: {
-                  url: "https://admin.ridetrack.in/favicon.ico",
+                  url: "h{{$rv['icon']}}",
                   scaledSize: new google.maps.Size(40, 40),
                 },
               });
+                @endif
+                
+                var newMarker{{$rk}} = new google.maps.OverlayView();
+                newMarker{{$rk}}.onAdd = function () {
+                    const div = document.createElement("div");
+                    div.className = "marker-label";
+                    div.innerHTML = `
+                    <img src="{{$rv['icon']}}" />
+                    <span>{{$rv['title']}}</span>
+                    `;
+                    const panes = this.getPanes();
+                    panes.overlayImage.appendChild(div);
+                    this.div = div;
+                };
 
-              // Custom Marker: Paresh at Andheri
-              var pareshMarker = new google.maps.OverlayView();
-              pareshMarker.onAdd = function () {
-                const div = document.createElement("div");
-                div.className = "marker-label";
-                div.innerHTML = `
-                  <img src="https://app.svktrv.in/storage/uploads/172016010331.png" />
-                  <span>Paresh</span>
-                `;
-                const panes = this.getPanes();
-                panes.overlayImage.appendChild(div);
-                this.div = div;
-              };
+                newMarker{{$rk}}.draw = function () {
+                    const point = this.getProjection().fromLatLngToDivPixel(legs[{{$rk}}].end_location);
+                    if (point) {
+                    this.div.style.left = point.x + "px";
+                    this.div.style.top = point.y + "px";
+                    this.div.style.position = "absolute";
+                    }
+                };
 
-              pareshMarker.draw = function () {
-                const point = this.getProjection().fromLatLngToDivPixel(legs[0].end_location);
-                if (point) {
-                  this.div.style.left = point.x + "px";
-                  this.div.style.top = point.y + "px";
-                  this.div.style.position = "absolute";
-                }
-              };
+                newMarker{{$rk}}.setMap(map);
 
-              pareshMarker.setMap(map);
+              @endforeach
 
-              // Custom Marker: Mahesh at Borivali
-              var pareshMarker = new google.maps.OverlayView();
-              pareshMarker.onAdd = function () {
-                const div = document.createElement("div");
-                div.className = "marker-label";
-                div.innerHTML = `
-                  <img src="https://app.svktrv.in/storage/uploads/172016010331.png" />
-                  <span>Mahesh</span>
-                `;
-                const panes = this.getPanes();
-                panes.overlayImage.appendChild(div);
-                this.div = div;
-              };
-
-              pareshMarker.draw = function () {
-                const point = this.getProjection().fromLatLngToDivPixel(legs[1].end_location);
-                if (point) {
-                  this.div.style.left = point.x + "px";
-                  this.div.style.top = point.y + "px";
-                  this.div.style.position = "absolute";
-                }
-              };
-
-              pareshMarker.setMap(map);
-
-              // Create InfoWindow for displaying distance between Bandra and Andheri
-              const distanceWindow1 = new google.maps.InfoWindow({
-                content: `<div style="padding-top:10px"><strong>Bandra to Andheri: ${legs[0].distance.text}</strong></div>`,
+              @foreach($route_info as $rk=>$rv)
+              const distanceWindow{{$rk}} = new google.maps.InfoWindow({
+                content: `<div style="padding-top:10px"><strong>From To : ${legs[{{$rk}}].distance.text}</strong></div>`,
               });
-              distanceWindow1.setPosition(legs[0].end_location);
-              distanceWindow1.open(map);
+              distanceWindow{{$rk}}.setPosition(legs[{{$rk}}].end_location);
+              distanceWindow{{$rk}}.open(map);
 
-              // Create InfoWindow for displaying distance between Andheri and Borivali
-              const distanceWindow2 = new google.maps.InfoWindow({
-                content: `<div><strong>Andheri to Borivali: ${legs[1].distance.text}</strong></div>`,
-              });
-              distanceWindow2.setPosition(legs[1].end_location);
-              distanceWindow2.open(map);
+              @endforeach
+
+        
             } else {
               alert("Directions request failed due to " + status);
             }
