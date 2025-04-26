@@ -419,6 +419,8 @@
 </script> -->
 
 <script>
+     var total_distance =0;
+
       function initMap() {
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 11,
@@ -558,7 +560,6 @@
                 newMarker{{$rk}}.setMap(map);
 
               @endforeach
-                val total_distance =0;
               @foreach($route_info as $rk=>$rv)
               if(legs[{{$rk}}].distance.value>0)
               {
