@@ -115,7 +115,7 @@ class ImportRoster extends Command
                     'employee_name' => $this->cleanText($this->getCellValue($worksheet, $headerMap['name'], $rowno)),
                     'mobile' => $this->getCellValue($worksheet, $headerMap['mobile'], $rowno),
                     'email' => $this->getCellValue($worksheet, $headerMap['email'], $rowno),
-                    'gender' => $this->getCellValue($worksheet, $headerMap['gender'], $rowno),
+                    'gender' => $this->getCellValue($worksheet, $headerMap['gender (male/female)'], $rowno),
                     'address' => $this->cleanText($this->getCellValue($worksheet, $headerMap['address'], $rowno)),
                     'location' => $this->cleanText($this->getCellValue($worksheet, $headerMap['area'], $rowno)),
                     'employee_code' => $this->cleanText($this->getCellValue($worksheet, $headerMap['employee code'], $rowno)),
