@@ -176,9 +176,13 @@
 
                         <div class="col-12 col-md-12">
                             <label class="form-label" for="modalAddCardName">Slab package</label>
-                            <select id="slab" class="select2 form-select input-sm" placeholder="Select.." aria-placeholder="Select..">
+                            <select id="slab" class="select2 form-select input-sm"  placeholder="Select.." aria-placeholder="Select..">
                                 <option v-for="item in data.zone_list" v-if="new_route_car_type==item.car_type" :value="item.zone_id" v-html="item.zone"></option>
                             </select>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label class="form-label" for="modalAddCardName">Title</label>
+                            <input type="text" id="title"  v-model="new_route_title" class="form-control input-sm" placeholder="Title" >
                         </div>
                         <div class="col-12 col-md-12">
                             <label class="form-label" for="modalAddCardName">Escort</label>
@@ -227,6 +231,7 @@
                 passengers: [],
                 new_route_car_type: '',
                 new_route_type: '',
+                new_route_title: '',
                 new_route_escort: '0',
                 new_route_slab: '',
                 new_route_time: '{{date("H:i")}}',
@@ -326,7 +331,7 @@
                     slab_text = $("#slab").select2('data')[0].text;
                     escort_name = '';
                     edit_cab = $("#edit_cab").val();
-                    array = JSON.parse('{"id":"","ids":"' + this.new_route_ids + '","time":"' + this.new_route_time + '","date":"' + this.new_route_date + '","car_type":"' + this.new_route_car_type + '","type":"' + this.new_route_type + '","escort_name":"' + escort_name + '","escort":"' + this.new_route_escort + '","slab":"' + this.new_route_slab + '","slab_text":"' + slab_text + '","is_active":"1"}');
+                    array = JSON.parse('{"id":"","ids":"' + this.new_route_ids + '","time":"' + this.new_route_time + '","date":"' + this.new_route_date + '","car_type":"' + this.new_route_car_type + '","type":"' + this.new_route_type + '","title":"' + this.new_route_title + '","escort_name":"' + escort_name + '","escort":"' + this.new_route_escort + '","slab":"' + this.new_route_slab + '","slab_text":"' + slab_text + '","is_active":"1"}');
                     if (edit_cab != '') {
                         this.routes[edit_cab] = array;
                     } else {
@@ -395,6 +400,7 @@
                 this.edit_cab = index;
                 this.new_route_slab = this.routes[index].slab;
                 this.new_route_car_type = this.routes[index].car_type;
+                this.new_route_title = this.routes[index].title;
                 this.new_route_type = this.routes[index].type;
                 this.new_route_escort = this.routes[index].escort;
                 //this.new_route_ids = this.routes[index].ids;

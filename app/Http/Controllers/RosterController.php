@@ -150,7 +150,7 @@ class RosterController extends Controller
                 $array['date'] = $this->sqlDate($row['date']);
                 $array['type'] = $row['type'];
                 $array['slab_id'] = $row['slab'];
-                $array['title'] = $row['type'] . ' ' . $row['slab_text'];
+                $array['title'] = $row['title'];
                 $array['start_location'] = ($row['type'] == 'Pickup') ? $row['slab_text'] : $project_location;
                 $array['end_location'] = ($row['type'] == 'Drop') ? $row['slab_text'] : $project_location;
                 $array['escort'] = ($row['escort'] == 1) ? 1 : 0;

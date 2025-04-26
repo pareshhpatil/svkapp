@@ -36,8 +36,16 @@ class HomeController extends Controller
         $data['male'] = (isset($employee['Male'])) ? $employee['Male'] : 0;
         $data['female'] = (isset($employee['Female'])) ? $employee['Female'] : 0;
         $data['total_employee'] = $data['male'] + $data['female'];
-        $data['malePercent'] = round($data['male'] * 100 / $data['total_employee']);
-        $data['femalePercent'] = round($data['female'] * 100 / $data['total_employee']);
+        if($data['total_employee']>0)
+        {
+            $data['malePercent'] = round($data['male'] * 100 / $data['total_employee']);
+            $data['femalePercent'] = round($data['female'] * 100 / $data['total_employee']);
+    
+        }else{
+            $data['malePercent'] = 0;
+            $data['femalePercent'] = 0;
+    
+        }
 
         $from_date = date('Y-06-01');
         $to_date = date('Y-06-30');
