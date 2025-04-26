@@ -317,7 +317,7 @@
             </div>
             <div class="tab-pane fade" id="navs-top-map" role="tabpanel">
                 <div class="card mb-4">
-                    <h5 class="card-header">Locations</h5>
+                    <h5 class="card-header">Locations - <span id="total_distance" style="font-size: medium;"></span> </h5>
                     <div class="" >
                         
                         <div id="map"></div>
@@ -538,7 +538,7 @@
                     const div = document.createElement("div");
                     div.className = "marker-label";
                     div.innerHTML = `
-                    <img src="{{$rv['icon']}}" style="max-width:40px;" />
+                    <img src="{{$rv['icon']}}" style="max-width:40px;border-radius: 50%;" />
                     <span>{{$rv['title']}}</span>
                     `;
                     const panes = this.getPanes();
@@ -558,8 +558,12 @@
                 newMarker{{$rk}}.setMap(map);
 
               @endforeach
-
+                val total_distance =0;
               @foreach($route_info as $rk=>$rv)
+              if(legs[{{$rk}}].distance.value>0)
+              {
+                total_distance=total_distance+ legs[{{$rk}}].distance.value;
+              }
               const distanceWindow{{$rk}} = new google.maps.InfoWindow({
                 content: `<div style="padding-top:10px"><strong> {{$rv['title']}} : ${legs[{{$rk}}].distance.text}</strong></div>`,
               });
@@ -567,6 +571,8 @@
               distanceWindow{{$rk}}.open(map);
 
               @endforeach
+              total_distance=total_distance/1000;
+              document.getElementById("total_distance").innerHTML='Total KM: '+ total_distance.toString() + ' KM';
 
         
             } else {
@@ -576,7 +582,6 @@
         );
       }
     </script>
-hii
 
 @section('footer')
 
