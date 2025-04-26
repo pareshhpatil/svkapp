@@ -432,8 +432,7 @@
         @if($det->type=='Drop')
 		{
           location: '{{$company_address}}',
-          stopover: true,
-          title: 'Office'
+          stopover: true
         },
       @endif
 
@@ -470,8 +469,7 @@
             @else
                 location: {{$actual_location}},
             @endif
-          stopover: true,
-          title: '{{$v->name}}'
+          stopover: true
         },
       @endif
       @endforeach
@@ -479,8 +477,7 @@
       @if($det->type=='Pickup')
 		{
           location: '{{$company_address}}',
-          stopover: true,
-          title: 'Office'
+          stopover: true
         }
      @endif
           
