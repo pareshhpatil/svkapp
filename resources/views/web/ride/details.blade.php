@@ -317,7 +317,7 @@
             </div>
             <div class="tab-pane fade" id="navs-top-map" role="tabpanel">
                 <div class="card mb-4">
-                    <h5 class="card-header">Locations - <span id="total_distance" style="font-size: medium;"></span> </h5>
+                    <h5 class="card-header">Locations  <span id="total_distance" style="font-size: medium;float:right"></span> </h5>
                     <div class="" >
                         
                         <div id="map"></div>
@@ -573,6 +573,7 @@
 
               @endforeach
               total_distance=total_distance/1000;
+              total_distance=total_distance.toFixed(2);
               document.getElementById("total_distance").innerHTML='Total KM: '+ total_distance.toString() + ' KM';
 
         
