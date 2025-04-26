@@ -9,6 +9,9 @@
       height: 550px;
       width: 100%;
     }
+    .gm-style-iw-chr{
+	  display:none;
+	  }
   </style>
 @endsection
 @section('content')
