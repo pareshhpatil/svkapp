@@ -254,13 +254,16 @@ class RideController extends Controller
         $ride = $this->model->getTableRow('ride', 'id', $ride_id);
         $type = $ride->type;
         $vehicle_number = $this->model->getColumnValue('vehicle', 'vehicle_id', $vehicle_id, 'number');
+        $project_location = $this->model->getColumnValue('project', 'project_id', $ride->project_id, 'location');
         $array['title'] = $type . ' ' . substr($vehicle_number, -4);
         if ($type == 'Drop') {
             $location = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'drop_location', [], 'id');
+            $array['start_location'] = $project_location;
             $array['end_location'] = $location;
         } else {
             $location = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'pickup_location');
             $array['start_location'] = $location;
+            $array['end_location'] = $project_location;
         }
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         if ($escort_id > 0) {
