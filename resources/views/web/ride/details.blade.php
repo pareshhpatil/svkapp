@@ -538,7 +538,7 @@
                     const div = document.createElement("div");
                     div.className = "marker-label";
                     div.innerHTML = `
-                    <img src="{{$rv['icon']}}" style="max-width:20px;" />
+                    <img src="{{$rv['icon']}}" style="max-width:40px;" />
                     <span>{{$rv['title']}}</span>
                     `;
                     const panes = this.getPanes();
