@@ -468,7 +468,7 @@
             @if($actual_location=='')
                 location: '{{$v->address}}',
             @else
-                location: '{{$actual_location}}',
+                location: {{$actual_location}},
             @endif
           stopover: true,
           title: '{{$v->name}}'
