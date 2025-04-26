@@ -561,12 +561,19 @@
 
               @endforeach
               @foreach($route_info as $rk=>$rv)
+              var key={{$rk}};
+              var km_text=legs[{{$rk}}].distance.text;
               if(legs[{{$rk}}].distance.value>0)
               {
                 total_distance=total_distance+ legs[{{$rk}}].distance.value;
+              }else{
+                if(key==0)
+                {
+                    km_text='Start KM 0';
+                }
               }
               const distanceWindow{{$rk}} = new google.maps.InfoWindow({
-                content: `<div style="padding-top:10px"><strong> {{$rv['title']}} : ${legs[{{$rk}}].distance.text}</strong></div>`,
+                content: `<div style="padding-top:10px"><strong> {{$rv['title']}} : ${km_text}</strong></div>`,
               });
               distanceWindow{{$rk}}.setPosition(legs[{{$rk}}].end_location);
               distanceWindow{{$rk}}.open(map);
