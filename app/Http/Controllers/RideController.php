@@ -251,7 +251,8 @@ class RideController extends Controller
         $array['vehicle_id'] = $vehicle_id;
         $array['escort'] = ($escort_id > 0) ? 1 : 0;
         $array['status'] = 1;
-        $type = $this->model->getColumnValue('ride', 'id', $ride_id, 'type');
+        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        $type = $ride->type;
         $vehicle_number = $this->model->getColumnValue('vehicle', 'vehicle_id', $vehicle_id, 'number');
         $array['title'] = $type . ' ' . substr($vehicle_number, -4);
         if ($type == 'Drop') {
@@ -269,8 +270,21 @@ class RideController extends Controller
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
         $apiController->sendNotification($driver_id, 4, 'A new trip has been assigned', 'Please make sure to arrive at the pick-up location on time and provide a safe and comfortable ride to the passenger', $url);
+        $driver_name = $this->model->getColumnValue('driver', 'id', $driver_id, 'name');
+
+        $short_url = $this->random();
+        $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
+        $params = [];
+        $params[] = array('type' => 'text', 'text' => $driver_name);
+        $params[] = array('type' => 'text', 'text' => $array['start_location']);
+        $params[] = array('type' => 'text', 'text' => $array['end_location']);
+        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
+
+        $apiController->sendWhatsappMessage($driver_id, 4, 'driver_assign', $params, $short_url, 'hi', 1);
+
+        $params = [];
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
+        
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
             $url = 'https://app.svktrv.in/passenger/ride/' . $link;
@@ -279,12 +293,26 @@ class RideController extends Controller
             $this->model->saveTable('short_url', ['short_url' => $short_url, 'long_url' => $url]);
             $url = 'app.svktrv.in/l/' . $short_url;
 
-            $message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
+            //$message_ = 'Cab assigned for ' . $ride->type . ' on ' . $this->htmlDate($row->pickup_time) . ' Please reach your pickup point at ' . $this->htmlTime($row->pickup_time) . ' Trip details ' . $url . ' - Siddhivinayak Travels House';
             $params['var1'] = $ride->type;
             $params['var2'] = $this->htmlDate($row->pickup_time);
             $params['var3'] = $this->htmlTime($row->pickup_time);
             $params['var4'] = $url;
             $apiController->sendSMS($row->passenger_id, 5, $params, '6804878cd6fc0553042e8f65');
+            $employee_name = $this->model->getColumnValue('passenger', 'id', $row->passenger_id, 'employee_name');
+            if ($type == 'Drop') {
+                $start_location = "Office";
+                $end_location = "Home";
+            } else {
+                $start_location = "Home";
+                $end_location = "Office";
+            }
+            $params = [];
+            $params[] = array('type' => 'text', 'text' => $employee_name);
+            $params[] = array('type' => 'text', 'text' => $start_location);
+            $params[] = array('type' => 'text', 'text' => $end_location);
+            $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
+            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'ride_status', $params, $short_url, 'en', 1);
         }
     }
 

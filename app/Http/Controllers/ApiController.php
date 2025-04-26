@@ -12,7 +12,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
-use Log;
+use Illuminate\Support\Facades\Log;
 class ApiController extends Controller
 {
     /**
@@ -203,5 +203,136 @@ class ApiController extends Controller
                 $this->sendNotificationToDevice($token, $title, $body, $url, $image);
             }
         }
+    }
+
+
+    function sendWhatsappMessage($user_id, $user_type, $template_name, $params, $button_link = null, $lang = 'en', $store = 0)
+    {
+        $button_json = '';
+        if ($button_link != null) {
+            $button_json = ',{"type":"button","index":"0","sub_type":"url","parameters":[{"type":"text","text":"' . $button_link . '"}]}';
+        }
+
+        if ($user_type == 'mobile') {
+            $mobile = $user_id;
+        } else {
+            $mobile = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type, 'whatsapp_notification' => 1]);
+            if ($mobile == false) {
+                if ($user_type == 4) {
+                    $mobile = $this->model->getColumnValue('driver', 'id', $user_id, 'mobile');
+                } elseif ($user_type == 5) {
+                    $mobile = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+                }
+            }
+        }
+
+
+
+        if ($mobile != false && strlen($mobile) == 10) {
+            $failed = $this->model->getColumnValue('whatsapp_failed', 'mobile', $mobile, 'id');
+            if ($failed == false) {
+
+                $json = '{"messaging_product":"whatsapp","to":"91' . $mobile . '","type":"template","template":{"name":"' . $template_name . '","language":{"code":"' . $lang . '"},"components":[{"type":"body","parameters":[]}' . $button_json . ']}}';
+                $array = json_decode($json, 1);
+                $array['template']['components'][0]['parameters'] = $params;
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN'),
+                    'Content-Type' => 'application/json', // Specify JSON content type if sending JSON data
+                ])->post('https://graph.facebook.com/v19.0/350618571465341/messages', $array);
+
+                if ($response->successful()) {
+                    $responseData = $response->json(); // Convert response to JSON
+                    // Handle successful response
+                    $name = $this->model->getColumnValue('employee', 'mobile', $mobile, 'name');
+                    $name = ($name == false) ? '' : $name;
+                    
+                    $message = $this->getWhatsappMessage($template_name, $params, $button_link);
+                    $this->model->saveWhatsapp($mobile, $name, 'Sent', 'Sent', 'text', $message, $responseData['messages'][0]['id']);
+
+                    return $responseData['messages'][0]['id'];
+                } else {
+                    //
+                    Log::error($response->status() . '-' . $response->body());
+                    //dd($response->status(), $response->body()); // Output status code and response body for debugging
+                }
+            }
+        }
+    }
+
+    function getWhatsappMessage($type, $params, $link)
+    {
+        $messages['ride_status'] = "<b>Ride Status Update</b>
+
+        Status: {{1}}
+
+        Details:
+        Booking ID: {{2}}
+        Passenger name: {{3}}
+        Pickup Time: {{4}}
+        Pickup Location: {{5}}
+        Driver Name: {{6}}
+        Driver Contact: {{7}}
+        Link : https://app.svktrv.in/l/{{Link}}";
+
+        $messages['booking_details'] = "<b>Booking details</b>
+
+        Hello {{1}} ,
+
+        We're excited to confirm your cab booking details:
+
+        Booking ID: #{{2}}
+        Passenger name: {{9}}
+        Pickup Time: {{3}}
+        Pickup Location: {{4}}
+        Drop-off Location: {{5}}
+        Cab Type: {{6}}
+        Driver Name: {{7}}
+        Driver Contact: {{8}}
+        Link : https://app.svktrv.in/l/{{Link}}";
+
+        $messages['driver_booking_details'] = "<b>बुकिंग अलर्ट</b>
+
+        नमस्ते {{1}}
+
+        बुकिंग आईडी: #{{2}}
+        पिकअप स्थान: {{3}}
+        ड्रॉप-ऑफ स्थान: {{4}}
+        पिकअप समय: {{5}}
+        यात्री का नाम: {{6}}
+        यात्री संपर्क: {{7}}
+        Link : https://app.svktrv.in/l/{{Link}}";
+
+
+        $messages['ride_details'] = "<b>Ride Details</b>
+        Dear {{1}}
+        The vehicle has been assigned for your next ride.
+
+        Please see ride details below for your upcoming trip from {{2}} to  {{3}} at Time {{4}}
+        
+        Link : https://app.svktrv.in/l/{{Link}}";
+
+        $messages['driver_assign'] = "<b>बुकिंग अलर्ट</b>
+        नमस्ते {{1}} ,
+
+        आपको एक नई कैब बुकिंग मिली है:
+
+        पिकअप स्थान: {{2}}
+        ड्रॉप-ऑफ स्थान: {{3}}
+        पिकअप समय: {{4}}
+        
+        Link : https://app.svktrv.in/l/{{Link}}";
+
+        if (!isset($messages[$type])) {
+            return $type;
+        }
+
+        foreach ($params as $key => $row) {
+            $key = $key + 1;
+            $messages[$type] = str_replace('{{' . $key . '}}', $row['text'], $messages[$type]);
+        }
+
+        $messages[$type] = str_replace('{{Link}}', $link, $messages[$type]);
+
+        return $messages[$type];
     }
 }
