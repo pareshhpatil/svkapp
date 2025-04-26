@@ -482,7 +482,7 @@
      @endif
           
         ];
-
+        console.log('Waypoints',waypoints);
         var origin = waypoints[0].location;
         var destination = waypoints[waypoints.length - 1].location;
 
