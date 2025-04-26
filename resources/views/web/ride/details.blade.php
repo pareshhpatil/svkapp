@@ -569,7 +569,7 @@
               }else{
                 if(key==0)
                 {
-                    km_text='Start KM 0';
+                    km_text='Start 0 KM';
                 }
               }
               const distanceWindow{{$rk}} = new google.maps.InfoWindow({
