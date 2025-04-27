@@ -561,7 +561,7 @@ class HomeController extends Controller
         list(, $croped_image)      = explode(',', $croped_image);
         $croped_image = base64_decode($croped_image);
 
-        $file_name = 'uploads/' . time() . rand(1, 999) . '.png';
+        $file_name = 'photo/' . time() . rand(1, 999) . '.png';
         Storage::disk('s3')->put($file_name, $croped_image);
         $path = Storage::disk('s3')->url($file_name);
         $compress = $path;

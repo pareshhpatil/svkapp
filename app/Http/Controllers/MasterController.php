@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class MasterController extends Controller
 {
@@ -133,13 +134,17 @@ class MasterController extends Controller
         $body = $request->message;
         $image = '';
         if ($request->file()) {
-            $file_name = time() . rand(1, 999) . '_chat.' . $request->file->extension();
-            $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
-            $path = '/storage/' . $file_path;
+            $file_name = 'whatsapp/' . time() . rand(1, 999) . '_chat.' . $request->file->extension();
+            Storage::disk('s3')->put($file_name, $request->file('file'));
+            $path = Storage::disk('s3')->url($file_name);
             $array['message'] = $path;
-            $image = env('APP_URL') . $path;
+            $image = $path;
             $body = $image;
         }
+
+
+
+
         if ($array['type'] == 3) {
             $image = env('APP_URL') . '/assets/img/navigation.png';
             $body = 'Location received';
@@ -222,11 +227,12 @@ class MasterController extends Controller
         $body = $request->message;
         $image = '';
         if ($request->file()) {
-            $file_name = time() . rand(1, 999) . '_chat.' . $request->file->extension();
-            $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
-            $path = '/storage/' . $file_path;
+
+            $file_name = 'chats/' . time() . rand(1, 999) . '_chat.' . $request->file->extension();
+            Storage::disk('s3')->put($file_name, $request->file('file'));
+            $path = Storage::disk('s3')->url($file_name);
             $array['message'] = $path;
-            $image = env('APP_URL') . $path;
+            $image = $path;
             $body = 'Image received';
         }
         if ($array['type'] == 3) {
