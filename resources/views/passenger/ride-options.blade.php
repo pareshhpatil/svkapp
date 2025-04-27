@@ -41,7 +41,7 @@
                     <div class="">
                         <div class="">
 
-                            <a href="/chat/create/5/{{$data['ride']['id']}}/1/{{$data['ride_passenger']['passenger_id']}}/0">
+                            <a href="/chat/create/5/{{$data['ride_passenger']['ride_id']}}/1/{{$data['ride_passenger']['passenger_id']}}/0">
                                 <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
                                     <div class="icon-wrap">
                                         <ion-icon name="person-circle-outline"></ion-icon>
@@ -51,7 +51,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <a href="/chat/create/5/{{$data['ride']['id']}}/2/{{$data['ride_passenger']['passenger_id']}}/0">
+                            <a href="/chat/create/5/{{$data['ride_passenger']['ride_id']}}/2/{{$data['ride_passenger']['passenger_id']}}/0">
                                 <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
                                     <div class="icon-wrap">
                                         <ion-icon name="car-outline"></ion-icon>
@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <a href="/chat/create/5/{{$data['ride']['id']}}/3/{{$data['ride_passenger']['passenger_id']}}/0">
+                            <a href="/chat/create/5/{{$data['ride_passenger']['ride_id']}}/3/{{$data['ride_passenger']['passenger_id']}}/0">
                                 <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
                                     <div class="icon-wrap">
                                         <ion-icon name="people-outline"></ion-icon>
