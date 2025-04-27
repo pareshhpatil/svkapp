@@ -139,7 +139,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                         <!-- Wallet Footer -->
                         <div class="wallet-footer" style="padding-top: 10px;">
                             <div v-if="data.ride.status==1" class="item mb-1">
-                                <a href="#" onclick="navigate();">
+                                <a href="#" onclick="navigate(false);">
                                     <div class="icon-wrapper bg-success">
                                         <ion-icon name="navigate-outline"></ion-icon>
                                     </div>
@@ -236,10 +236,11 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         my_lat = position.latitude;
         my_long = position.longitude;
+        stop();
         app_location=true;
         start=false;
-        navigate();
-        stop();
+        navigate(true);
+        
     }
 
     function successCallback(position) {
@@ -364,7 +365,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         });
     }
 
-    function navigate() {
+    function navigate(app_location) {
         if(app_location==false)
         {
             startlocation();
