@@ -43,9 +43,9 @@
   Speed limits are in place to ensure the safety of all road users. Different speed limits are set for different types of roads. Always pay attention to the speed limit signs and adjust your speed accordingly.
 
   </p>
-  <figure>
+  <!-- <figure>
     <img src="/assets/img/blog/rule3.jpg" alt="image" class="imaged img-fluid">
-  </figure>
+  </figure> -->
 
   <h3>4. Wear Seat Belts</h3>
   <p>

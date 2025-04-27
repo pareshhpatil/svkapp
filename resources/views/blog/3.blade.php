@@ -23,9 +23,9 @@
   <p>
     Alibaug is a coastal town located about 120 kilometers from Mumbai. It is a popular weekend getaway
     known for its beaches, backwaters, and fishing villages.
-  <figure>
+  <!-- <figure>
     <img src="/assets/img/blog/11.jpg" alt="image" class="imaged img-fluid">
-  </figure>
+  </figure> -->
   <ul>
     <li>
       <h4>Alibaug Beach</h4>
@@ -100,9 +100,9 @@
     tourist destinations known for their scenic beauty, waterfalls, and forts.
 
   </p>
-  <figure>
+  <!-- <figure>
     <img src="/assets/img/blog/13.jpg" alt="image" class="imaged img-fluid">
-  </figure>
+  </figure> -->
   <ul>
     <li>
       <h4>Lonavala Waterfalls
