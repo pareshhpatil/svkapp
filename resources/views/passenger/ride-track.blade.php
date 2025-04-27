@@ -339,10 +339,10 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     async function updateLocation() {
-    await getData(); // wait for new data
+    await getData(); // Wait for fresh location
 
     if (old_lat === lat && old_lat_long === lat_long) {
-        // No location change; do nothing
+        // No location change
         return;
     }
 
@@ -353,15 +353,12 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
     const dvMarkerPosition = new google.maps.LatLng(lat, lat_long);
 
+    if (driverMarker) {
+        driverMarker.position = dvMarkerPosition;
+    }
+
     if (start) {
-        direction();
-    } else {
-        if (driverMarker) {
-            driverMarker.position = dvMarkerPosition;
-        }
-        if (map) {
-            map.setCenter(dvMarkerPosition);
-        }
+        direction(); // Recalculate route
     }
 }
 
