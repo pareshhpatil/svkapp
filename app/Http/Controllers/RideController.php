@@ -315,7 +315,10 @@ class RideController extends Controller
             $params[] = array('type' => 'text', 'text' => $start_location);
             $params[] = array('type' => 'text', 'text' => $end_location);
             $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
-            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'ride_details', $params, $short_url, 'en', 1);
+            $params[] = array('type' => 'text', 'text' => $driver_name);
+            $params[] = array('type' => 'text', 'text' => $vehicle_number);
+            $params[] = array('type' => 'text', 'text' => $row->otp);
+            $apiController->sendWhatsappMessage($row->passenger_id, 5, 'ride_confirmation', $params, $short_url, 'en', 1);
         }
     }
 

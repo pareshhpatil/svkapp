@@ -305,22 +305,17 @@ class ApiController extends Controller
         Link : https://app.svktrv.in/l/{{Link}}";
 
 
-        $messages['ride_details'] = "<b>Ride Details</b>
-        Dear {{1}}
-        The vehicle has been assigned for your next ride.
+        $messages['ride_confirmation'] = "<b>Ride Confirmation</b>
+        Dear {{1}},
 
-        Please see ride details below for your upcoming trip from {{2}} to  {{3}} at Time {{4}}
-        
-        Link : https://app.svktrv.in/l/{{Link}}";
-
-        $messages['driver_assign'] = "<b>बुकिंग अलर्ट</b>
-        नमस्ते {{1}} ,
-
-        आपको एक नई कैब बुकिंग मिली है:
-
-        पिकअप स्थान: {{2}}
-        ड्रॉप-ऑफ स्थान: {{3}}
-        पिकअप समय: {{4}}
+        Your vehicle has been assigned for your upcoming trip.
+        Ride Details:
+        From: {{2}}
+        To: {{3}}
+        Date & Time: {{4}}
+        Driver name: {{5}}
+        Vehicle number: {{6}}
+        OTP for Driver Verification: {{7}}
         
         Link : https://app.svktrv.in/l/{{Link}}";
 
