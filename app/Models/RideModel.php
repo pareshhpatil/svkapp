@@ -106,7 +106,7 @@ class RideModel extends ParentModel
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->whereIn('r.status', [1])
+            ->whereIn('r.status', [1, 2])
             ->whereDate('r.date', '>=', date('Y-m-d'));
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
