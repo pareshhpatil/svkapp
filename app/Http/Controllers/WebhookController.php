@@ -135,9 +135,62 @@ class WebhookController extends Controller
     }
 
 
+    function downloadWhatsappMediaStream($image_id)
+    {
+        $accessToken = env('WHATSAPP_TOKEN');
+
+        // Step 1: Fetch media metadata
+        $mediaMetaResponse = Http::withToken($accessToken)
+            ->get("https://graph.facebook.com/v20.0/{$image_id}");
+
+        if (!$mediaMetaResponse->successful()) {
+            throw new \Exception('Failed to fetch media metadata.');
+        }
+
+        $mediaUrl = $mediaMetaResponse->json('url');
+
+        if (!$mediaUrl) {
+            throw new \Exception('Media URL not found in the response.');
+        }
+
+        // Step 2: Get the media file as a stream
+        $mediaFileResponse = Http::withToken($accessToken)
+            ->withOptions(['stream' => true])
+            ->get($mediaUrl);
+
+        if (!$mediaFileResponse->successful()) {
+            throw new \Exception('Failed to download media file.');
+        }
+
+        // Step 3: Guess file extension
+        $contentType = $mediaFileResponse->header('Content-Type');
+
+        $extension = match ($contentType) {
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'video/mp4' => 'mp4',
+            'application/pdf' => 'pdf',
+            'audio/ogg' => 'ogg',
+            default => 'bin',
+        };
+
+        // Step 4: Generate file path
+        $timestamp = time();
+        $fileName = "media_file_{$timestamp}.{$extension}";
+        $filePath = "whatsapp/{$fileName}";
+
+        // Step 5: Stream upload to S3
+        $stream = $mediaFileResponse->toPsrResponse()->getBody();
+
+        Storage::disk('s3')->put($filePath, $stream);
+
+        return Storage::disk('s3')->url($filePath);
+    }
 
     function getWhatsappImage($image_id, $extension = 'jpg')
     {
+        return $this->downloadWhatsappMediaStream($image_id);
         $accessToken = env('WHATSAPP_TOKEN');
 
         // Make a GET request to retrieve media URL
