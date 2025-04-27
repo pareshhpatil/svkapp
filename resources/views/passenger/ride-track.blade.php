@@ -218,13 +218,13 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 <script>
     function startlocation() {
         window.WTN.backgroundLocation.start({
-            callback: false,
+            callback: successCallback,
             apiUrl: "https://app.svktrv.in/ride/track/{{$ride_id}}",
             timeout: 10,
             data: "userid1",
             backgroundIndicator: true,
             pauseAutomatically: true,
-            distanceFilter: {{env('DISTANCE_FILTER')}},
+            distanceFilter: 0.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
@@ -254,16 +254,18 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         maximumAge: 0
     };
 
-    navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+    //navigator.geolocation.watchPosition(successCallback, errorCallback, options);
 
     function successCallback(position) {
         const { latitude, longitude } = position.coords;
         my_lat = latitude;
         my_long = longitude;
+
+        stop();
     }
 
     function errorCallback(error) {
-        alert('Error getting location:', error);
+        //alert('Error getting location:', error);
     }
 
     function createCustomMarkerContent(name, iconUrl, labelClass = 'marker-label') {
@@ -376,7 +378,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     function navigate() {
-        navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+        startlocation();
         if (!start) {
             start = true;
             try { driverMarker.map = null; } catch (o) {}
