@@ -323,6 +323,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         const myOptions = {
             zoom: 15,
             center: driverLatLng,
+            mapId: '46bf20bc83a0ec31',
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
