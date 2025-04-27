@@ -376,6 +376,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     function navigate() {
+        navigator.geolocation.watchPosition(successCallback, errorCallback, options);
         if (!start) {
             start = true;
             try { driverMarker.map = null; } catch (o) {}
