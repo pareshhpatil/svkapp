@@ -170,10 +170,9 @@ class RideModel extends ParentModel
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
             //  ->whereDate('p.pickup_time', '<=', date('Y-m-d'))
-            ->where('p.status', '>', 1)
+            ->where('p.status',  2)
             ->where('p.passenger_id', $id)
             ->orderBy('p.id', 'desc')
-
             ->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,p.rating,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'))
             ->get();
         return json_decode(json_encode($retObj), 1);
@@ -226,6 +225,7 @@ class RideModel extends ParentModel
         $retObj = DB::table('ride_passenger as p')
             ->join('passenger as pr', 'pr.id', '=', 'p.passenger_id')
             ->where('p.is_active', 1)
+            ->where('p.status', '<>',4)
             ->where('p.ride_id', $ride_id)
             ->select(DB::raw('p.id,pr.address,pr.mobile ,p.status,p.otp,TIME_FORMAT(p.pickup_time, "%h %i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%h %i %p") as drop_time ,
             p.pickup_location,p.drop_location,pr.icon,pr.location,pr.employee_name as name,pr.gender,p.passenger_id,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'))

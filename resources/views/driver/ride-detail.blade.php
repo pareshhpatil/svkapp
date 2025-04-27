@@ -200,9 +200,14 @@
 
         </div>
         <div class="col text-center">
+            @if(!empty($data['ride_passengers']))
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center mt-2">
                 Start Ride
             </button>
+            @else
+            <br>
+            No Passengers
+            @endif
             <!-- <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
             </button> -->
