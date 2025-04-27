@@ -268,6 +268,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         my_lat = position.latitude;
         my_long = position.longitude;
         app_location=true;
+        start=false;
         navigate();
         stop();
     }
