@@ -71,19 +71,21 @@
                                     </div>
                                 </div>
                             </a>
-
-                            <a :href="'/chat/create/5/{{$data['ride']['id']}}/4/{{$data['ride_passenger']['passenger_id']}}/'+item.passenger_id" v-if="item.id!=data.ride_passenger.id" v-for="item in data.ride_passengers">
+                            @foreach($data['ride_passengers'] as $v)
+                            @if($v['id']!=$data['ride_passenger']['id'])
+                            <a href="'/chat/create/5/{{$data['ride']['id']}}/4/{{$data['ride_passenger']['passenger_id']}}/{{$v['passenger_id']}}" >
                                 <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
                                     <div class="icon-wrap">
                                         <ion-icon name="person-outline"></ion-icon>
                                     </div>
-
                                     <div>
-                                        <strong v-html="item.name"></strong>
+                                        <strong>{{$v['name']}}</strong>
                                     </div>
 
                                 </div>
                             </a>
+                            @endif
+                            @endforeach
 
                         </div>
                     </div>

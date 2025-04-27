@@ -149,10 +149,10 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
                             <div class="item">
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
-                                    <div class="icon-wrapper bg-warning">
+                                    <div class="icon-wrapper bg-success">
                                         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                                     </div>
-                                    <strong>Help</strong>
+                                    <strong>Chat</strong>
                                 </a>
                             </div>
 
@@ -173,41 +173,9 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         </div>
     </div>
 </div>
-@if(Session::get('user_type')!=3)
-<div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Help</h5>
-            </div>
-            <form action="/passenger/help" method="post">
-                @csrf
-                <div class="modal-body text-start mb-2">
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="text1">Enter Message</label>
-                            <textarea rows="2" type="text" name="message" class="form-control" placeholder="Enter message" maxlength="250"></textarea>
-                            <i class="clear-input">
-                                <ion-icon name="close-circle"></ion-icon>
-                            </i>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-inline">
-                        <input type="hidden" :value="{{$data['ride_passenger']['id']}}" name="ride_passenger_id">
-                        <input type="hidden" :value="{{$data['ride_passenger']['ride_id']}}" name="ride_id">
-                        <button type="button" class="btn btn-text-secondary" data-bs-dismiss="modal">CLOSE</button>
-                        <button type="submit" class="btn btn-text-primary">SEND</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
-@endsection
 
+@endsection
+@include('passenger.ride-options')
 @section('footer')
 
 <script src="https://unpkg.com/webtonative@1.0.63/webtonative.min.js"></script>
@@ -248,6 +216,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     let originMarker;
     let destinationMarker;
     let app_location =false;
+
 
     const options = {
         enableHighAccuracy: true,
