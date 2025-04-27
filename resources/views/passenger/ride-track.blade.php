@@ -335,7 +335,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         setDriverLocation();
 
-        setInterval(updateLocation, 10000);
+        setInterval(updateLocation, 2000);
     }
 
     async function updateLocation() {
