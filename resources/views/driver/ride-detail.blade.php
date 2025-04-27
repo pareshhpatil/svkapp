@@ -203,9 +203,9 @@
             <button v-if="data.ride.status==1" onclick="startlocation();" class="btn btn-success text-center mt-2">
                 Start Ride
             </button>
-            <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
+            <!-- <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
                 End Ride
-            </button>
+            </button> -->
             <!-- <p style="width: 100%; height:100px" id="speed"></p> -->
             <!-- <button  onclick="scanBarcode()" class="btn btn-success text-center mt-2">
                 Scan
