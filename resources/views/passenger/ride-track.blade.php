@@ -421,7 +421,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             console.error('Directions request failed:', e);
         });
     }
-    var counter=10;
+    var counter=0;
     function getData() {
     return new Promise((resolve, reject) => {
         const xhttp = new XMLHttpRequest();
@@ -431,7 +431,12 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                     counter=counter+10;
                     try {
                         const array = JSON.parse(this.responseText);
-                        lat = array.latitude + counter;
+                        if (typeof array.latitude === "number" && typeof array.longitude === "number") {
+                            counter += 0.00015;
+                            lat = array.latitude + counter;
+                        }else{
+                            lat = array.latitude ;
+                        }
                         lat_long = array.longitude;
                         speedshow = Math.round(array.speed * 3.6);
                         resolve();
