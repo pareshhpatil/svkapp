@@ -363,7 +363,7 @@ class HomeController extends Controller
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['ride_id'] = $ride_passenger['ride_id'];
-        $data['live_location'] = json_decode($data['live_location'], 1);
+        $data['live_location'] = json_encode($data['live_location'], 1);
 
         $data['title'] = 'Ride Tracking';
         $data['onload'] = 'initialize()';
