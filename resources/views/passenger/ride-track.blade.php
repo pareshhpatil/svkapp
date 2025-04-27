@@ -218,7 +218,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 <script>
     function startlocation() {
         window.WTN.backgroundLocation.start({
-            callback: successCallback,
+            callback: successCallbackMap,
             apiUrl: "https://app.svktrv.in/ride/track/1",
             timeout: 10,
             data: "userid1",
@@ -256,12 +256,25 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
 
+    function successCallbackMap(position) {
+        const {
+            latitude,
+            longitude,
+            altitude,
+            speed
+        } = position;
+
+        my_lat = position.latitude;
+        my_long = position.longitude;
+        stop();
+    }
+
     function successCallback(position) {
         const { latitude, longitude } = position.coords;
         my_lat = latitude;
         my_long = longitude;
 
-        stop();
+        
     }
 
     function errorCallback(error) {
