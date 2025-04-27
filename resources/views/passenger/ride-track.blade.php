@@ -263,7 +263,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     function errorCallback(error) {
-        console.error('Error getting location:', error);
+        alert('Error getting location:', error);
     }
 
     function createCustomMarkerContent(name, iconUrl, labelClass = 'marker-label') {
