@@ -187,7 +187,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     function startlocation() {
         window.WTN.backgroundLocation.start({
             callback: successCallbackMap,
-            apiUrl: "https://app.svktrv.in/ride/track/1",
+            apiUrl: "",
             timeout: 10,
             data: "userid1",
             backgroundIndicator: true,
