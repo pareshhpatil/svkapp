@@ -30,6 +30,7 @@ class RideModel extends ParentModel
             ->leftJoin('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
+            ->whereIn('r.status', [0, 1, 2])
             ->where('p.status', 0)
             ->whereDate('r.date', '>=', date('Y-m-d'))
             ->where('p.passenger_id', $id)
@@ -51,8 +52,7 @@ class RideModel extends ParentModel
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
             ->where('p.status', '<', 2)
-            ->where('r.status', '<', 3)
-            ->where('r.status', '>', 1)
+            ->where('r.status', 2)
             ->where('p.passenger_id', $id)
             ->select(DB::raw('*,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'));
         if ($single == 1) {

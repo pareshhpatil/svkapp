@@ -13,6 +13,7 @@ use App\Http\Lib\Encryption;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -339,7 +340,13 @@ class HomeController extends Controller
         }
         $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
         $ride_passengers = $this->model->getRidePassenger($ride_passenger['ride_id']);
-        $data['live_location'] = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_passenger['ride_id'], 'live_location', [], 'id');
+
+        $response =  Http::get("https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/" . $ride_passenger['ride_id']);
+        $statusCode = $response->status();
+        $data['live_location'] = '{}';
+        if ($statusCode == 200) {
+            $data['live_location']  = $response->json();
+        }
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride_passenger['pickup_time']);
         unset($ride_passenger['actual_pickup_location'], $ride_passenger['actual_drop_location'], $ride_passenger['cab_reach_location']);
 
@@ -357,6 +364,7 @@ class HomeController extends Controller
         $data['menu'] = 0;
         $data['ride_id'] = $ride_passenger['ride_id'];
         $data['live_location'] = json_decode($data['live_location'], 1);
+
         $data['title'] = 'Ride Tracking';
         $data['onload'] = 'initialize()';
         return view('passenger.ride-track', $data);
@@ -558,7 +566,7 @@ class HomeController extends Controller
         Storage::disk('s3')->put($file_name, $croped_image);
         $path = Storage::disk('s3')->url($file_name);
         $compress = $path;
-        
+
         //$file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
         //  $file_path = 'uploads/' . $file_name;
 
@@ -639,14 +647,42 @@ class HomeController extends Controller
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_emergency', $array);
         $ApiController = new ApiController();
-        $passenger_id = $this->model->getColumnValue('ride_passenger', 'id', $request->ride_passenger_id, 'passenger_id');
+        $ridepassenger = $this->model->getTableRow('ride_passenger', 'id', $request->ride_passenger_id);
+        $passenger_id = $ridepassenger->passenger_id;
         $passenger = $this->model->getTableRow('users', 'parent_id', $passenger_id, 1, ['user_type' => 5]);
         $params['var1'] = $passenger->name;
-        $params['var2'] = $this->saveShortUrl('https://app.svktrv.in/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
+        $short_url = $this->saveShortUrl('https://app.svktrv.in/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
+        $params['var2'] = $short_url;
         if ($passenger->emergency_contact != '') {
             $ApiController->sendSMS($passenger->emergency_contact, $params, '68048826d6fc0554706b7e85');
         }
         $ApiController->sendSMS('9730946150', $params, '68048826d6fc0554706b7e85');
+
+        $mobiles[] = '9730946150';
+        $mobiles[] = '8879391658';
+        if ($passenger->emergency_contact != '') {
+            $mobiles[] = $passenger->emergency_contact;
+        }
+
+        $ride = $this->model->getTableRow('ride', 'id', $ridepassenger->ride_id);
+        $driver_name = $this->model->getColumnValue('driver', 'id', $ride->driver_id, 'name');
+        $vehicle_number = $this->model->getColumnValue('vehicle', 'vehicle_id', $ride->vehicle_id, 'number');
+
+        $params = [];
+        $params[] = array('type' => 'text', 'text' => $passenger->name);
+        $params[] = array('type' => 'text', 'text' => $ridepassenger->pickup_location . ' to ' . $ridepassenger->drop_location);
+        $params[] = array('type' => 'text', 'text' => $driver_name);
+        $params[] = array('type' => 'text', 'text' => $vehicle_number);
+        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
+        $params[] = array('type' => 'text', 'text' => implode(',', $request->emergency));
+        $short_url = str_replace('app.svktrv.in/l/', '', $short_url);
+        foreach ($mobiles as $mobile) {
+            $mobile = str_replace(' ', '', $mobile);
+            $mobile = trim($mobile);
+            if (strlen($mobile) == 10) {
+                $ApiController->sendWhatsappMessage($mobile, 'mobile', 'emergency_sos', $params, $short_url, 'en', 1);
+            }
+        }
         return redirect('/thank-you');
     }
     public function passengerHelp(Request $request)
