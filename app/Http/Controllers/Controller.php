@@ -51,4 +51,12 @@ class Controller extends BaseController
             return $w . date(' d M y h:i:A', strtotime($time));
         }
     }
+
+    public function htmlShortDateTime($time)
+    {
+        $w = substr(date("l", strtotime($time)), 0, 3);
+        if ($time != '') {
+            return date('d M h:i:A', strtotime($time));
+        }
+    }
 }
