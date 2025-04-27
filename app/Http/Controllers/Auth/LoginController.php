@@ -145,7 +145,7 @@ class LoginController extends Controller
             if (in_array($request->mobile, $test_array)) {
                 $otp = '1234';
             } else {
-                $message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
+                //$message = $otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
                 //$apicontroller->sendSMS($request->mobile, $message, '1107168138576339315');
                 $apicontroller->sendSMS($request->mobile, ['var1' => $otp], '67fd2c55d6fc05588a2e1d03');
 
