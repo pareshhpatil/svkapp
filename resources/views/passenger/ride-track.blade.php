@@ -335,7 +335,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         setDriverLocation();
 
-        setInterval(updateLocation, 2000);
+        setInterval(updateLocation, 10000);
     }
 
     async function updateLocation() {
@@ -421,7 +421,6 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             console.error('Directions request failed:', e);
         });
     }
-    var counter=0;
     function getData() {
     return new Promise((resolve, reject) => {
         const xhttp = new XMLHttpRequest();
@@ -430,11 +429,8 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                 if (this.status === 200) {
                     try {
                         const array = JSON.parse(this.responseText);
-                            counter += 0.00015;
-                            lat = parseFloat(array.latitude) + counter;
-                            lat_long = parseFloat(array.longitude) + counter;
-                        
-                        
+                            lat = array.latitude;
+                            lat_long = array.longitude;
                         speedshow = Math.round(array.speed * 3.6);
                         resolve();
                     } catch (e) {
