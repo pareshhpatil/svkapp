@@ -384,7 +384,12 @@ class HomeController extends Controller
         }
         // $passenger = $this->model->getRowArray('users', 'parent_id', $ride_passenger['passenger_id'], 0, ['user_type' => 5]);
         $ride_passengers = $this->model->getRidePassenger($ride_id);
-        $data['live_location'] = $this->model->getColumnValue('ride_location_track', 'ride_id', $ride_id, 'live_location', [], 'id');
+        $response =  Http::get("https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/" . $ride_id);
+        $statusCode = $response->status();
+        $data['live_location'] = [];
+        if ($statusCode == 200) {
+            $data['live_location']  = $response->json();
+        }
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['end_time'] = $this->htmlDateTime($ride['end_time']);
