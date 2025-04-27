@@ -63,6 +63,7 @@
                         </div>
                     </div>
                     <div class="right">
+                    <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
                     </div>
                 </a>
@@ -83,6 +84,7 @@
                 <div class="pageTitle" v-html="current_date">
                 </div>
                 <div class="right">
+                <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
                     <a v-on:click="fetchDate(1)" href="#" class="headerButton">
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
                     </a>
@@ -97,6 +99,7 @@
                         </div>
                     </div>
                     <div class="right">
+                    <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
                     </div>
                 </a>
@@ -115,7 +118,9 @@
                             <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
                         </div>
                     </div>
+                    
                     <div class="right">
+                    <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
                     </div>
                 </a>
@@ -131,6 +136,7 @@
                         </div>
                     </div>
                     <div class="right">
+                    <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated"></ion-icon>
                     </div>
                 </a>
