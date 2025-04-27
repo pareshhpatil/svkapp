@@ -188,7 +188,38 @@ class WebhookController extends Controller
         return Storage::disk('s3')->url($filePath);
     }
 
+
     function getWhatsappImage($image_id, $extension = 'jpg')
+    {
+        $accessToken = env('WHATSAPP_TOKEN');
+
+        // Make a GET request to retrieve media URL
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken,
+        ])->get('https://graph.facebook.com/v19.0/' . $image_id);
+
+        // Get media URL from response
+        $mediaUrl = $response->json('url');
+        // Make a GET request to fetch media file with streaming response
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken
+        ])->get($mediaUrl);
+        // Save the media file to storage
+        if ($response->successful()) {
+            $timestamp = time();
+            $directoryPath = 'public/media';
+            $fileName = "media_file_{$timestamp}." . $extension;
+            $filePath = "{$directoryPath}/{$fileName}";
+
+            Storage::disk('local')->put($filePath, $response->body());
+            $url = Storage::url($filePath);
+            return env('APP_URL') . $url;
+
+            // Optionally, do something with the saved file path
+        }
+    }
+
+    function getWhatsappImagenew($image_id, $extension = 'jpg')
     {
         return $this->downloadWhatsappMediaStream($image_id);
         $accessToken = env('WHATSAPP_TOKEN');
