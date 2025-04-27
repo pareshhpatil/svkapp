@@ -160,8 +160,8 @@ class LoginController extends Controller
                 $mobile = trim($mobile);
                 if (strlen($mobile) == 10) {
                     $params = [];
-                    $params[] = array('type' => 'text', 'text' => $otp);
-                    $apicontroller->sendWhatsappMessage($mobile, 'mobile', 'svk_otp', $params);
+                    $params[] = array('type' => 'text', 'text' => (string) $otp);
+                    $apicontroller->sendWhatsappMessage($mobile, 'mobile', 'otp_svk', $params,null,'en_US');
                 }
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
