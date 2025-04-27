@@ -159,7 +159,7 @@ class WebhookController extends Controller
             $filePath = "{$directoryPath}/{$fileName}";
 
             $file_name = 'whatsapp/' . $fileName;
-            Storage::disk('s3')->put($file_name, file_get_contents($response->body()));
+            Storage::disk('s3')->put($file_name, $response->body());
             $path = Storage::disk('s3')->url($file_name);
             return $path;
 
