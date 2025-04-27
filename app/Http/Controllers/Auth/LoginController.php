@@ -153,6 +153,16 @@ class LoginController extends Controller
                 //$json = '{"messaging_product":"whatsapp","to":"91' . $request->mobile . '","type":"template","template":{"name":"otp","language":{"code":"en"},"components":[{"type":"body","parameters":[{"type":"text","text":"' . $otp . '"}]}]}}';
                 //$MasterController->sendWhatsappMessage(json_decode($json, 1));
                 //$this->notifyAdmin('App login user Name: ' . $data->name . ' Mobile: ' . $request->mobile . ' OTP: ' . $otp);
+
+
+
+                $mobile = str_replace(' ', '', $request->mobile);
+                $mobile = trim($mobile);
+                if (strlen($mobile) == 10) {
+                    $params = [];
+                    $params[] = array('type' => 'text', 'text' => $otp);
+                    $apicontroller->sendWhatsappMessage($mobile, 'mobile', 'svk_otp', $params);
+                }
             }
             $id = $model->saveOtp($request->mobile, $otp, $data->id);
             return redirect('/login/otp/' . Encryption::encode($id));
