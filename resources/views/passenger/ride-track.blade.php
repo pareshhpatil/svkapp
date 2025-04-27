@@ -261,8 +261,8 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         
         const img = document.createElement('img');
         img.src = iconUrl;
-        img.style.width = '40px';
-        img.style.height = '40px';
+        img.style.width = '50px';
+        img.style.height = '50px';
         
         const label = document.createElement('div');
         label.innerText = name;
@@ -300,6 +300,10 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
     speedshow = Math.round({{$live_location['speed']}} * 3.6);
+    if(speedshow<0)
+    {
+        speedshow="0";
+    }
     document.getElementById("speed").innerText = speedshow;
     timeAgo({{$live_location['timestamp']}});
     @endif
