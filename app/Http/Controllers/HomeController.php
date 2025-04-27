@@ -343,7 +343,7 @@ class HomeController extends Controller
 
         $response =  Http::get("https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/" . $ride_passenger['ride_id']);
         $statusCode = $response->status();
-        $data['live_location'] = '{}';
+        $data['live_location'] = [];
         if ($statusCode == 200) {
             $data['live_location']  = $response->json();
         }
@@ -363,7 +363,6 @@ class HomeController extends Controller
         $data['data']['link'] = env('APP_URL') . '/passenger/ride/' . $link;
         $data['menu'] = 0;
         $data['ride_id'] = $ride_passenger['ride_id'];
-        $data['live_location'] = json_encode($data['live_location'], 1);
 
         $data['title'] = 'Ride Tracking';
         $data['onload'] = 'initialize()';

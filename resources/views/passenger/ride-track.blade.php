@@ -98,7 +98,7 @@
         background: #1DCC70 !important;
     }
 </style>
-<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}" async defer></script>
+
 
 <div id="appCapsule" class="full-height">
 
@@ -240,271 +240,204 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
 
 <script>
-    
-    // var my_lat = '';
-    // var my_long = '';
+    let my_lat = 0;
+    let my_long = 0;
+    let start = false;
+    let currentMarker = null;
+    let driverMarker;
+    let originMarker;
+    let destinationMarker;
 
-    var my_lat = 0;
-    var my_long = 0;
-    var start = false;
-    var options = {
+    const options = {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0
     };
+
     navigator.geolocation.watchPosition(successCallback, errorCallback, options);
-    var currentMarker = null;
-    var driverMarker;
-
-
-
 
     function successCallback(position) {
-        const {
-            accuracy,
-            latitude,
-            longitude,
-            altitude,
-            heading,
-            speed
-        } = position.coords;
-        // Show a map centered at latitude / longitude.
-
+        const { latitude, longitude } = position.coords;
         my_lat = latitude;
         my_long = longitude;
+    }
 
+    function errorCallback(error) {
+        console.error('Error getting location:', error);
+    }
+
+    function createCustomMarkerContent(name, iconUrl, labelClass = 'marker-label') {
+        const div = document.createElement('div');
+        div.style.position = 'relative';
+        
+        const img = document.createElement('img');
+        img.src = iconUrl;
+        img.style.width = '40px';
+        img.style.height = '40px';
+        
+        const label = document.createElement('div');
+        label.innerText = name;
+        label.className = labelClass;
+        
+        div.appendChild(img);
+        div.appendChild(label);
+        
+        return div;
     }
 
     function setMyPosition() {
         if (currentMarker == null) {
-            var myLatLng = new google.maps.LatLng(latitude, longitude);
-            currentMarker = new google.maps.Marker({
-                icon: {
-                    url: "{{$data['passenger']['icon'],$user_icon}}",
-                    // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(40, 40),
-                    // The origin for this image is (0, 0).
-                    origin: new google.maps.Point(0, 0),
-                    // The anchor for this image is the base of the flagpole at (0, 32).
-                    anchor: new google.maps.Point(0, 32)
-                },
+            const myLatLng = { lat: my_lat, lng: my_long };
+            currentMarker = new google.maps.marker.AdvancedMarkerElement({
+                map: map,
                 position: myLatLng,
-                label: {
-                    text: "{{$data['passenger']['name']}}",
-                    className: 'marker-label'
-                },
-                map: map
+                content: createCustomMarkerContent(
+                    "{{$data['passenger']['name']}}",
+                    "{{$data['passenger']['icon'],$user_icon}}",
+                    'marker-label'
+                )
             });
-
-            // Add the button to the map's controls
-            // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
-
-            currentMarker.setMap(map);
-        } else {
-            //currentMarker.setPosition(new google.maps.LatLng(my_lat, my_long));
         }
     }
 
-    function errorCallback(error) {
+    let k = 0;
+    let lat = 0;
+    let lat_long = 0;
+    let old_lat = 0;
+    let old_lat_long = 0;
+    let speedshow = '';
 
-    }
-</script>
-<script type="text/javascript">
-    var k = 0;
-    marker = '';
-    lat = 0;
-    lat_long = 0;
-    old_lat=0;
-    old_lat_long=0;
-    speedshow = '';
     @if(isset($live_location['latitude']))
     lat = {{$live_location['latitude']}};
     lat_long = {{$live_location['longitude']}};
     speedshow = Math.round({{$live_location['speed']}} * 3.6);
-    document.getElementById("speed").innerHTML=speedshow;
+    document.getElementById("speed").innerText = speedshow;
     @endif
-    //speed = loc_array.speed;
 
-    mylocation_lat = '';
-    mylocation_long = '';
-
-    var driverLatLng = new google.maps.LatLng(lat, lat_long);
-    myOptions = {
-        zoom: 15,
-        center: driverLatLng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    var map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
-
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer();
-    var originMarker;
-    var destinationMarker;
-    directionsRenderer.setMap(map);
-
+    let map;
+    let directionsService;
+    let directionsRenderer;
 
     function initialize() {
+        const driverLatLng = { lat: lat, lng: lat_long };
+        const myOptions = {
+            zoom: 15,
+            center: driverLatLng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
+        map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
 
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+        directionsRenderer.setMap(map);
 
-        // Add the button to the map's controls
-        // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locationButton);
-
-        //driverMarker.setMap(map);
-
-        //moveBus(map, marker);
         setDriverLocation();
 
-        setInterval(function() {
-            updateLocation();
-        }, 10000);
-
+        setInterval(updateLocation, 10000);
     }
 
-    function updateLocation()
-    {
+    function updateLocation() {
         getData();
-            if(old_lat==lat && old_lat_long==lat_long)
-        {
-            
-        }else{
-            old_lat_long=lat_long;
-            old_lat=lat;
-            document.getElementById("speed").innerHTML=speedshow;
-            if (start == true) {
+        if (old_lat === lat && old_lat_long === lat_long) {
+            // no change
+        } else {
+            old_lat = lat;
+            old_lat_long = lat_long;
+            document.getElementById("speed").innerText = speedshow;
+            if (start) {
                 direction();
             } else {
-                dvmarker = new google.maps.LatLng(lat, lat_long);
-                driverMarker.setPosition(dvmarker);
+                const dvmarker = { lat: lat, lng: lat_long };
+                driverMarker.position = dvmarker;
                 map.setCenter(dvmarker);
             }
         }
     }
 
     function setDriverLocation() {
-        driverMarker = new google.maps.Marker({
-            icon: {
-                url: 'https://app.svktrv.in/assets/img/sm-icon.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(60, 68),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            },
-            position: driverLatLng,
-            label: {
-                text: "{{$data['driver']['name']}}",
-                className: 'marker-label'
-            },
-            map: map
+        driverMarker = new google.maps.marker.AdvancedMarkerElement({
+            map: map,
+            position: { lat: lat, lng: lat_long },
+            content: createCustomMarkerContent(
+                "{{$data['driver']['name']}}",
+                "https://app.svktrv.in/assets/img/sm-icon.png",
+                'marker-label'
+            )
         });
     }
 
     function navigate() {
-        if(start==false)
-        {
+        if (!start) {
             start = true;
-            try {
-                driverMarker.setMap(null);
-            } catch (o) {}
-            try {
-                currentMarker.setMap(null);
-            } catch (o) {}
-            originMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, lat_long),
+            try { driverMarker.map = null; } catch (o) {}
+            try { currentMarker.map = null; } catch (o) {}
+
+            originMarker = new google.maps.marker.AdvancedMarkerElement({
                 map: map,
-                icon: 'https://app.svktrv.in/assets/img/sm-icon.png', // Path to your custom marker icon
-                label: {
-                    text: "{{$data['driver']['name']}}",
-                    className: 'marker-label'
-                }
+                position: { lat: lat, lng: lat_long },
+                content: createCustomMarkerContent(
+                    "{{$data['driver']['name']}}",
+                    "https://app.svktrv.in/assets/img/sm-icon.png",
+                    'marker-label'
+                )
             });
 
-            destinationMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(my_lat, my_long),
+            destinationMarker = new google.maps.marker.AdvancedMarkerElement({
                 map: map,
-                icon: {
-                    url: 'https://app.svktrv.in/assets/img/map-male.png',
-                    // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(40, 40),
-                    // The origin for this image is (0, 0).
-                    origin: new google.maps.Point(0, 0),
-                    // The anchor for this image is the base of the flagpole at (0, 32).
-                    anchor: new google.maps.Point(0, 32)
-                }, // Path to your custom marker icon
-                label: {
-                    text: "{{$data['passenger']['name']}}",
-                    className: 'marker-label-user'
-                }
+                position: { lat: my_lat, lng: my_long },
+                content: createCustomMarkerContent(
+                    "{{$data['passenger']['name']}}",
+                    "https://app.svktrv.in/assets/img/map-male.png",
+                    'marker-label-user'
+                )
             });
+
             direction();
         }
     }
 
     function direction() {
+        originMarker.position = { lat: lat, lng: lat_long };
+        directionsService.route({
+            origin: { lat: lat, lng: lat_long },
+            destination: { lat: my_lat, lng: my_long },
+            travelMode: 'DRIVING'
+        }).then((response) => {
+            const duration = response.routes[0].legs[0].duration.text;
+            document.getElementById("arr").style.display = 'block';
+            document.getElementById("duration").innerText = duration;
 
-        //lat=lat-0.00005;
-        //map.setCenter(new google.maps.LatLng(lat, lat_long));
-        originMarker.setPosition(new google.maps.LatLng(lat, lat_long));
-        // map.panTo(new google.maps.LatLng(lat, lat_long));
-        directionsService
-            .route({
-                origin: new google.maps.LatLng(lat, lat_long),
-                destination: new google.maps.LatLng(my_lat, my_long),
-                travelMode: 'DRIVING'
-            })
-            .then((response) => {
-                const duration = response.routes[0].legs[0].duration.text;
-                document.getElementById("arr").style.display = 'block';
-                document.getElementById("duration").innerHTML = duration;
-
-
-                // Customize the markers
-                var markerOptions = {
-                    origin: originMarker,
-                    destination: destinationMarker,
-                };
-                directionsRenderer.setOptions({
-                    markerOptions: markerOptions,
-                    polylineOptions: {
-                        strokeColor: '#FF0000' // Set your desired color
-                    },
-                    suppressMarkers: true
-
-                });
-                //directionsDisplay.setDirections(response);
-
-                directionsRenderer.setDirections(response);
-            })
-            .catch((e) =>
-                a=e
-                //window.alert("Directions request failed due to " + status)
-            );
+            directionsRenderer.setDirections(response);
+        }).catch((e) => {
+            console.error('Directions request failed:', e);
+        });
     }
 
-
-
     function getData() {
-        var xhttp = new XMLHttpRequest();
+        const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 try {
-                    array = JSON.parse(this.responseText);
+                    const array = JSON.parse(this.responseText);
                     lat = array.latitude;
                     lat_long = array.longitude;
                     speedshow = Math.round(array.speed * 3.6);
-                } catch (o) {}
-
+                } catch (e) {
+                    console.error('Parsing error:', e);
+                }
             }
         };
         xhttp.open("GET", "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/{{$ride_id}}", true);
         xhttp.send();
     }
+</script>
 
+<!-- Now load Google Maps API async and deferred correctly -->
 
-
+<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}&callback=initialize&libraries=marker" 
+async 
+defer>
 </script>
 
 @endsection
