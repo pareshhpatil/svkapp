@@ -477,25 +477,26 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 function timeAgo(timestamp) {
     const now = Date.now();
     const secondsPast = Math.floor((now - timestamp) / 1000);
-
+    var text='';
     if (secondsPast < 60) {
-        return `${secondsPast} seconds ago`;
+        text= `${secondsPast} seconds ago`;
     }
     if (secondsPast < 3600) {
         const minutes = Math.floor(secondsPast / 60);
-        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        text= `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
     }
     if (secondsPast < 86400) {
         const hours = Math.floor(secondsPast / 3600);
-        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+        text= `${hours} hour${hours !== 1 ? 's' : ''} ago`;
     }
     if (secondsPast < 2592000) {
         const days = Math.floor(secondsPast / 86400);
-        return `${days} day${days !== 1 ? 's' : ''} ago`;
+        text= `${days} day${days !== 1 ? 's' : ''} ago`;
     }
     // More than 30 days ago
     const date = new Date(timestamp);
-    document.getElementById('timestamp').innerHTML= date.toLocaleDateString();
+    text=date.toLocaleDateString();
+    document.getElementById('timestamp').innerHTML= text;
 }
 </script>
 
