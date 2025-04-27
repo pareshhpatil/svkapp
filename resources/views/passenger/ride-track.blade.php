@@ -247,6 +247,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     let driverMarker;
     let originMarker;
     let destinationMarker;
+    let app_location =false;
 
     const options = {
         enableHighAccuracy: true,
@@ -266,6 +267,8 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
         my_lat = position.latitude;
         my_long = position.longitude;
+        app_location=true;
+        navigate();
         stop();
     }
 
@@ -391,7 +394,11 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     function navigate() {
-        startlocation();
+        if(app_location==false)
+        {
+            startlocation();
+        }
+       
         if (!start) {
             start = true;
             try { driverMarker.map = null; } catch (o) {}
