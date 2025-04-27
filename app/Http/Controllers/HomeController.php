@@ -717,6 +717,36 @@ class HomeController extends Controller
         $array['last_update_by'] = $request->ride_passenger_id;
         $this->model->saveTable('ride_cancel', $array);
         $this->model->updateTable('ride_passenger', 'id', $request->ride_passenger_id, 'status', 4);
+
+        $ridepassenger = $this->model->getTableRow('ride_passenger', 'id', $request->ride_passenger_id);
+        $passenger_id = $ridepassenger->passenger_id;
+        $passenger = $this->model->getTableRow('passenger', 'id', $passenger_id, 1);
+
+        $mobiles[] = '9730946150';
+        $mobiles[] = '8879391658';
+
+        $ApiController = new ApiController();
+
+        $ride = $this->model->getTableRow('ride', 'id', $ridepassenger->ride_id);
+        if ($ride->driver_id > 0) {
+            $driver_mobile = $this->model->getColumnValue('driver', 'id', $ride->driver_id, 'mobile');
+            $mobiles[] = $driver_mobile;
+        }
+        $reason = ($request->message != '') ? $request->message : 'No reason';
+        $params = [];
+        $short_url = $this->saveShortUrl('https://app.svktrv.in/driver/ride/' . Encryption::encode($ridepassenger->ride_id));
+        $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
+        $params[] = array('type' => 'text', 'text' => $ridepassenger->pickup_location . ' to ' . $ridepassenger->drop_location);
+        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ridepassenger->pickup_time));
+        $params[] = array('type' => 'text', 'text' => $reason);
+        $short_url = str_replace('app.svktrv.in/l/', '', $short_url);
+        foreach ($mobiles as $mobile) {
+            $mobile = str_replace(' ', '', $mobile);
+            $mobile = trim($mobile);
+            if (strlen($mobile) == 10) {
+                $ApiController->sendWhatsappMessage($mobile, 'mobile', 'employee_ride_canceled', $params, $short_url, 'en', 0);
+            }
+        }
         return redirect('/passenger/ride/' . Encryption::encode($request->ride_passenger_id));
     }
 

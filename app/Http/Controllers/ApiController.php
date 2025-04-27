@@ -140,10 +140,10 @@ class ApiController extends Controller
         $client = new Client();
         $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/login', $body);
         $array = json_decode($response->getBody()->getContents(), 1);
-        $ivr_array['json']['token']=$array['accessToken'];
-        $ivr_array['json']['caller1']=$from;
-        $ivr_array['json']['caller2']=$to;
-        $ivr_array['json']['did']=env('IVR_DID');
+        $ivr_array['json']['token'] = $array['accessToken'];
+        $ivr_array['json']['caller1'] = $from;
+        $ivr_array['json']['caller2'] = $to;
+        $ivr_array['json']['did'] = env('IVR_DID');
         $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/clicktorandomobile', $ivr_array);
     }
 
@@ -190,9 +190,9 @@ class ApiController extends Controller
                 ],
                 'data' => $url ? ['deepLink' => $url] : [],
             ];
-            
+
             $message = CloudMessage::fromArray($notificationPayload);
-            
+
             return $messaging->send($message);
 
 
@@ -268,8 +268,9 @@ class ApiController extends Controller
                     $name = ($name == false) ? '' : $name;
                     $StaffModel = new StaffModel();
                     $message = $this->getWhatsappMessage($template_name, $params, $button_link);
-                    $StaffModel->saveWhatsapp($mobile, $name, 'Sent', 'Sent', 'text', $message, $responseData['messages'][0]['id']);
-
+                    if ($store == 1) {
+                        $StaffModel->saveWhatsapp($mobile, $name, 'Sent', 'Sent', 'text', $message, $responseData['messages'][0]['id']);
+                    }
                     return $responseData['messages'][0]['id'];
                 } else {
                     //
