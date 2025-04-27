@@ -338,23 +338,33 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         setInterval(updateLocation, 10000);
     }
 
-    function updateLocation() {
-        getData();
-        if (old_lat === lat && old_lat_long === lat_long) {
-            // no change
-        } else {
-            old_lat = lat;
-            old_lat_long = lat_long;
-            document.getElementById("speed").innerText = speedshow;
-            if (start) {
-                direction();
-            } else {
-                const dvmarker = { lat: lat, lng: lat_long };
-                driverMarker.position = dvmarker;
-                map.setCenter(dvmarker);
-            }
+    async function updateLocation() {
+    await getData(); // wait for new data
+
+    if (old_lat === lat && old_lat_long === lat_long) {
+        // No location change; do nothing
+        return;
+    }
+
+    old_lat = lat;
+    old_lat_long = lat_long;
+
+    document.getElementById("speed").innerText = speedshow;
+
+    const dvMarkerPosition = new google.maps.LatLng(lat, lat_long);
+
+    if (start) {
+        direction();
+    } else {
+        if (driverMarker) {
+            driverMarker.position = dvMarkerPosition;
+        }
+        if (map) {
+            map.setCenter(dvMarkerPosition);
         }
     }
+}
+
 
     function setDriverLocation() {
         driverMarker = new google.maps.marker.AdvancedMarkerElement({
@@ -416,22 +426,30 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     }
 
     function getData() {
+    return new Promise((resolve, reject) => {
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                try {
-                    const array = JSON.parse(this.responseText);
-                    lat = array.latitude;
-                    lat_long = array.longitude;
-                    speedshow = Math.round(array.speed * 3.6);
-                } catch (e) {
-                    console.error('Parsing error:', e);
+            if (this.readyState === 4) {
+                if (this.status === 200) {
+                    try {
+                        const array = JSON.parse(this.responseText);
+                        lat = array.latitude;
+                        lat_long = array.longitude;
+                        speedshow = Math.round(array.speed * 3.6);
+                        resolve();
+                    } catch (e) {
+                        console.error('Parsing error:', e);
+                        reject(e);
+                    }
+                } else {
+                    reject(new Error(`HTTP error: ${this.status}`));
                 }
             }
         };
         xhttp.open("GET", "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/{{$ride_id}}", true);
         xhttp.send();
-    }
+    });
+}
 </script>
 
 <!-- Now load Google Maps API async and deferred correctly -->
