@@ -143,7 +143,7 @@ class WebhookController extends Controller
         // Make a GET request to retrieve media URL
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://graph.facebook.com/v19.0/' . $image_id);
+        ])->get('https://graph.facebook.com/v20.0/' . $image_id);
 
         // Get media URL from response
         $mediaUrl = $response->json('url');
@@ -158,9 +158,10 @@ class WebhookController extends Controller
             $fileName = "media_file_{$timestamp}." . $extension;
             $filePath = "{$directoryPath}/{$fileName}";
 
-            Storage::disk('local')->put($filePath, $response->body());
-            $url = Storage::url($filePath);
-            return env('APP_URL') . $url;
+            $file_name = 'whatsapp/' . $fileName;
+            Storage::disk('s3')->put($file_name, file_get_contents($response->body()));
+            $path = Storage::disk('s3')->url($file_name);
+            return $path;
 
             // Optionally, do something with the saved file path
         }
