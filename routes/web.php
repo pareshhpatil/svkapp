@@ -108,6 +108,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/admin/ride/assign/{link}', [App\Http\Controllers\HomeController::class, 'adminRideAssign']);
 
     Route::post('/admin/assign/cab', [App\Http\Controllers\TripController::class, 'assignCab']);
+    Route::post('/admin/assign/ride/cab', [App\Http\Controllers\TripController::class, 'assignRideCab']);
 
     Route::get('/master/add/{type}', [App\Http\Controllers\MasterController::class, 'masterAdd']);
     Route::post('/master/save/{type}', [App\Http\Controllers\MasterController::class, 'masterSave']);

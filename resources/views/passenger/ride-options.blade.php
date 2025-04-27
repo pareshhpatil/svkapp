@@ -29,6 +29,7 @@
         </div>
     </div>
 </div>
+@isset($data['ride_passenger']['ride_id'])
 <div class="modal fade dialogbox" id="helpmodal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -101,6 +102,7 @@
         </div>
     </div>
 </div>
+@endisset
 
 <div class="modal fade modalbox  dialogbox" id="sosmodel" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

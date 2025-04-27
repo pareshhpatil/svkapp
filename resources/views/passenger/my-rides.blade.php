@@ -84,7 +84,7 @@
                 <div class="pageTitle" v-html="current_date">
                 </div>
                 <div class="right">
-                <span v-if="item.ride_status==2" class="badge badge-success">Live</span>
+                <!-- <span v-if="item.ride_status==2" class="badge badge-success">Live</span> -->
                     <a v-on:click="fetchDate(1)" href="#" class="headerButton">
                         <ion-icon name="chevron-forward-outline" role="img" class="md hydrated" aria-label="chevron forward outline"></ion-icon>
                     </a>

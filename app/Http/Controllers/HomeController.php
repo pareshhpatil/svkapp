@@ -425,8 +425,8 @@ class HomeController extends Controller
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/driver/ride/');
         } else if (Session::get('user_type') == 3) {
             $data['data']['pending'] = $this->EncryptList($this->model->adminPendingRides(), 0, '/admin/ride/assign/');
-            $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/admin/ride/');
-            $data['data']['live'] = [];
+            $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id'), 0, [1]), 0, '/admin/ride/');
+            $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0, [2]), 0, '/admin/ride/');
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/admin/ride/');
         } else if (Session::get('user_type') == 2) {
             $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id')), 0, '/admin/ride/');

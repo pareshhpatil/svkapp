@@ -133,6 +133,19 @@ class ApiController extends Controller
         ]);
     }
 
+
+    public function sendUserSMS($user_id, $user_type, $params, $template_id)
+    {
+        $number_ = $this->model->getColumnValue('users', 'parent_id', $user_id, 'mobile', ['user_type' => $user_type]);
+        if ($number_ == false && $user_type == 5) {
+            $number_ = $this->model->getColumnValue('passenger', 'id', $user_id, 'mobile');
+        }
+        if (strlen($number_) == 10) {
+            $this->sendSMS($number_, $params, $template_id);
+        }
+    }
+
+
     public function ivrCall($from, $to)
     {
         $body['json']['client_secret'] = env('IVR_KEY');

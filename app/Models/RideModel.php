@@ -81,13 +81,13 @@ class RideModel extends ParentModel
     }
 
 
-    public function driverLiveRide($id, $single = 1)
+    public function driverLiveRide($id, $single = 1, $status = [2, 6, 7])
     {
         $retObj = DB::table('ride as r')
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->whereIn('r.status', [2, 6, 7]);
+            ->whereIn('r.status', $status);
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
         }
@@ -100,13 +100,13 @@ class RideModel extends ParentModel
         return json_decode(json_encode($array), 1);
     }
 
-    public function driverUpcomingRides($id, $single = 0)
+    public function driverUpcomingRides($id, $single = 0, $status = [1, 2])
     {
         $retObj = DB::table('ride as r')
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('r.is_active', 1)
-            ->whereIn('r.status', [1, 2])
+            ->whereIn('r.status', $status)
             ->whereDate('r.date', '>=', date('Y-m-d'));
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
@@ -225,7 +225,7 @@ class RideModel extends ParentModel
         $retObj = DB::table('ride_passenger as p')
             ->join('passenger as pr', 'pr.id', '=', 'p.passenger_id')
             ->where('p.is_active', 1)
-            ->where('p.status', '<>',4)
+            ->where('p.status', '<>', 4)
             ->where('p.ride_id', $ride_id)
             ->select(DB::raw('p.id,pr.address,pr.mobile ,p.status,p.otp,TIME_FORMAT(p.pickup_time, "%h:%i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%h:%i %p") as drop_time ,
             p.pickup_location,p.drop_location,pr.icon,pr.location,pr.employee_name as name,pr.gender,p.passenger_id,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'))

@@ -59,7 +59,7 @@
                 <div class="section-title">Assign Cab</div>
                 <div class="card">
                     <div class="card-body">
-                        <form onsubmit="lod(true);" action="/admin/assign/cab" method="post">
+                        <form onsubmit="lod(true);" action="/admin/assign/ride/cab" method="post">
                             @csrf
                             <div class="form-group boxed">
                                 <div class="input-wrapper">
