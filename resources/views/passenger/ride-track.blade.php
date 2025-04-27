@@ -481,21 +481,24 @@ function timeAgo(timestamp) {
     if (secondsPast < 60) {
         text= `${secondsPast} seconds ago`;
     }
-    if (secondsPast < 3600) {
+    if (secondsPast < 3600 && text=='') {
         const minutes = Math.floor(secondsPast / 60);
         text= `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
     }
-    if (secondsPast < 86400) {
+    if (secondsPast < 86400 && text=='') {
         const hours = Math.floor(secondsPast / 3600);
         text= `${hours} hour${hours !== 1 ? 's' : ''} ago`;
     }
-    if (secondsPast < 2592000) {
+    if (secondsPast < 2592000 && text=='') {
         const days = Math.floor(secondsPast / 86400);
         text= `${days} day${days !== 1 ? 's' : ''} ago`;
     }
     // More than 30 days ago
+    if(text=='')
+    {
     const date = new Date(timestamp);
     text=date.toLocaleDateString();
+    }
     document.getElementById('timestamp').innerHTML= text;
 }
 </script>
