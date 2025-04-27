@@ -428,16 +428,17 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4) {
                 if (this.status === 200) {
-                    counter=counter+10;
                     try {
                         const array = JSON.parse(this.responseText);
                         if (typeof array.latitude === "number" && typeof array.longitude === "number") {
-                            counter += 0.00015;
+                            counter += 0.00115;
                             lat = array.latitude + counter;
+                            lat_long = array.longitude + counter;
                         }else{
                             lat = array.latitude ;
+                            lat_long = array.longitude;
                         }
-                        lat_long = array.longitude;
+                        
                         speedshow = Math.round(array.speed * 3.6);
                         resolve();
                     } catch (e) {
