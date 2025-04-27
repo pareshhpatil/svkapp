@@ -421,16 +421,17 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
             console.error('Directions request failed:', e);
         });
     }
-
+    var counter=10;
     function getData() {
     return new Promise((resolve, reject) => {
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4) {
                 if (this.status === 200) {
+                    counter=counter+10;
                     try {
                         const array = JSON.parse(this.responseText);
-                        lat = array.latitude;
+                        lat = array.latitude + counter;
                         lat_long = array.longitude;
                         speedshow = Math.round(array.speed * 3.6);
                         resolve();
