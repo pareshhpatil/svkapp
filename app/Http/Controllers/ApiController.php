@@ -260,7 +260,6 @@ class ApiController extends Controller
                     'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN'),
                     'Content-Type' => 'application/json', // Specify JSON content type if sending JSON data
                 ])->post('https://graph.facebook.com/v20.0/350618571465341/messages', $array);
-                    dd($response );
                 if ($response->successful()) {
                     $responseData = $response->json(); // Convert response to JSON
                     // Handle successful response
