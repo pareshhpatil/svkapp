@@ -507,7 +507,7 @@ stop();
     }
 
     function startlocation() {
-       // lod(true);
+        lod(true);
         start();
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
@@ -524,7 +524,7 @@ stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
     @if($data['ride']['status'] == 2)
-    //restartLocation();
+    restartLocation();
     //setInterval(function() {
     //    stop();
     //    start();
