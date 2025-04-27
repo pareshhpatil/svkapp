@@ -281,7 +281,7 @@ class RideController extends Controller
         $params[] = array('type' => 'text', 'text' => $driver_name);
         $params[] = array('type' => 'text', 'text' => $array['start_location']);
         $params[] = array('type' => 'text', 'text' => $array['end_location']);
-        $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($ride->start_time));
+        $params[] = array('type' => 'text', 'text' => $this->htmlShortDateTime($ride->start_time));
 
         $apiController->sendWhatsappMessage($driver_id, 4, 'driver_assign', $params, $short_url, 'hi', 1);
 
@@ -314,7 +314,7 @@ class RideController extends Controller
             $params[] = array('type' => 'text', 'text' => $employee_name);
             $params[] = array('type' => 'text', 'text' => $start_location);
             $params[] = array('type' => 'text', 'text' => $end_location);
-            $params[] = array('type' => 'text', 'text' => $this->htmlDateTime($row->pickup_time));
+            $params[] = array('type' => 'text', 'text' => $this->htmlShortDateTime($row->pickup_time));
             $params[] = array('type' => 'text', 'text' => $driver_name);
             $params[] = array('type' => 'text', 'text' => $vehicle_number);
             $params[] = array('type' => 'text', 'text' => $row->otp);
