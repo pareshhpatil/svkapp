@@ -73,7 +73,7 @@
                             </a>
                             @foreach($data['ride_passengers'] as $v)
                             @if($v['id']!=$data['ride_passenger']['id'])
-                            <a href="'/chat/create/5/{{$data['ride']['id']}}/4/{{$data['ride_passenger']['passenger_id']}}/{{$v['passenger_id']}}" >
+                            <a href="/chat/create/5/{{$data['ride']['id']}}/4/{{$data['ride_passenger']['passenger_id']}}/{{$v['passenger_id']}}" >
                                 <div class="alert alert-imaged alert-outline-primary alert-dismissible fade show mb-2" role="alert">
                                     <div class="icon-wrap">
                                         <ion-icon name="person-outline"></ion-icon>
