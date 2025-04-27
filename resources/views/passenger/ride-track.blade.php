@@ -98,7 +98,7 @@
         background: #1DCC70 !important;
     }
 </style>
-<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}" async defer></script>
 
 <div id="appCapsule" class="full-height">
 
