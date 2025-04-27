@@ -12,10 +12,10 @@
         @endif
 
   <div class="section">
-  <a href="https://tawk.to/svk" class="btn btn-block btn-primary">
+  <!-- <a href="https://tawk.to/svk" class="btn btn-block btn-primary">
       <ion-icon name="car-outline"></ion-icon> Book now
     </a>
-  </div>
+  </div> -->
 
 
   <div class="section mt-3">
