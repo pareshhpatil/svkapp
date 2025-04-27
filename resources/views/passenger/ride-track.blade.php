@@ -124,7 +124,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                             <div>
                                 <strong>{{$data['driver']['name']}}</strong>
                                 <strong id="arr" style="display: none;" class="text-primary">Arriving in <span id="duration"></span> </strong>
-                                <strong class="text-info">Speed : <span id="speed"></span></strong>
+                                <strong class="text-info">Speed : <span id="speed"></span> </strong> <p>Location updated: <span id="timestamp">NA</span></p>
                                 <p>{{$data['vehicle']['number']}}</p>
                             </div>
                         </div>
@@ -331,6 +331,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
     lat_long = {{$live_location['longitude']}};
     speedshow = Math.round({{$live_location['speed']}} * 3.6);
     document.getElementById("speed").innerText = speedshow;
+    timeAgo({{$live_location['timestamp']}});
     @endif
 
     let map;
@@ -453,9 +454,11 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
                 if (this.status === 200) {
                     try {
                         const array = JSON.parse(this.responseText);
-                            lat = array.latitude;
-                            lat_long = array.longitude;
+                        lat = array.latitude;
+                        lat_long = array.longitude;
                         speedshow = Math.round(array.speed * 3.6);
+                        timeAgo(array.timestamp);
+                        //alert(timeAgo(array.timestamp));
                         resolve();
                     } catch (e) {
                         console.error('Parsing error:', e);
@@ -469,6 +472,30 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
         xhttp.open("GET", "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location/{{$ride_id}}", true);
         xhttp.send();
     });
+}
+
+function timeAgo(timestamp) {
+    const now = Date.now();
+    const secondsPast = Math.floor((now - timestamp) / 1000);
+
+    if (secondsPast < 60) {
+        return `${secondsPast} seconds ago`;
+    }
+    if (secondsPast < 3600) {
+        const minutes = Math.floor(secondsPast / 60);
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    }
+    if (secondsPast < 86400) {
+        const hours = Math.floor(secondsPast / 3600);
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    }
+    if (secondsPast < 2592000) {
+        const days = Math.floor(secondsPast / 86400);
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
+    // More than 30 days ago
+    const date = new Date(timestamp);
+    document.getElementById('timestamp').innerHTML= date.toLocaleDateString();
 }
 </script>
 
