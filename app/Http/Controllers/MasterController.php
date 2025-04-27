@@ -135,7 +135,7 @@ class MasterController extends Controller
         $image = '';
         if ($request->file()) {
             $file_name = 'whatsapp/' . time() . rand(1, 999) . '_chat.' . $request->file->extension();
-            Storage::disk('s3')->put($file_name, $request->file('file'));
+            Storage::disk('s3')->put($file_name, file_get_contents($request->file('file')));
             $path = Storage::disk('s3')->url($file_name);
             $array['message'] = $path;
             $image = $path;
@@ -229,7 +229,7 @@ class MasterController extends Controller
         if ($request->file()) {
 
             $file_name = 'chats/' . time() . rand(1, 999) . '_chat.' . $request->file->extension();
-            Storage::disk('s3')->put($file_name, $request->file('file'));
+            Storage::disk('s3')->put($file_name, file_get_contents($request->file('file')));
             $path = Storage::disk('s3')->url($file_name);
             $array['message'] = $path;
             $image = $path;
