@@ -474,7 +474,7 @@ $user_icon=($data['passenger']['gender']!='Male')? 'https://app.svktrv.in/assets
 
 <!-- Now load Google Maps API async and deferred correctly -->
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}&callback=initialize&libraries=marker" 
+<script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}&callback=initialize&libraries=marker&loading=async" 
 async 
 defer>
 </script>
