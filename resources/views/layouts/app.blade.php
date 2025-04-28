@@ -70,7 +70,7 @@
 
     <!-- loader -->
     <div id="loader" style="display: block!important;">
-        <!-- <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon"> -->
+        <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
     </div>
     <!-- * loader -->
 
