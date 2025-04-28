@@ -141,7 +141,7 @@
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
-                    <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+item.address, '_system');" v-html="item.name"></span>
+                    <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+item.address, '_system');" v-html="item.name"></span> <span v-if="item.passenger_type==2"> (Escort)</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
                             <ion-icon name="call-outline"></ion-icon>
@@ -174,9 +174,8 @@
                     <div v-if="item.status==3" class="text text-danger">Cancelled</div>
 
                     <div class="text">
-                        <span v-if="data.ride.type=='Drop'" style="float: left;" v-html="item.location + ' - ' +item.drop_time "></span>
+                        <span v-if="data.ride.type=='Drop'" style="float: left;" v-html="item.location + ' - ' +item.pickup_time "></span>
                         <span v-if="data.ride.type=='Pickup'" style="float: left;" v-html="item.location + ' - ' +item.pickup_time "></span>
-
                     </div>
 
                 </div>

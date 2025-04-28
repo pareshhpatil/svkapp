@@ -350,11 +350,12 @@
                 </span>
                 @endif
                 <div class="content">
-                    <h4 class="title"><span v-html="item.name"></span> <span v-if="data.ride.type=='Drop'" v-html="item.drop_time" ></span>
+                    <h4 class="title"><span v-html="item.name"></span> <span v-if="item.passenger_type==2"> (Escort)</span> <span v-if="data.ride.type=='Drop'" v-html="item.drop_time" ></span>
                     <span v-if="data.ride.type=='Pickup'" v-html="item.pickup_time" ></span>
 
                         <div class="text-end" style="right: 10px;float: right;">
-                            <img v-if="!item.icon && item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
+                            <img v-if="!item.icon && item.gender=='Male' && item.passenger_type!=2" src="/assets/img/map-male.png" alt="avatar" class="imaged w48 rounded right">
+                            <img v-if="!item.icon && item.passenger_type==2" src="https://admin.ridetrack.in/assets/img/escort.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="!item.icon && item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="imaged w48 rounded right">
                             <img v-if="item.icon" :src="item.icon" alt="avatar" class="imaged w48 rounded right">
 
@@ -362,7 +363,8 @@
 
                     </h4>
 
-                    <div v-html="item.location" class="text"></div>
+                    <div v-if="item.location==''" class="text">&nbsp;</div> 
+                    <div v-html="item.location" class="text"></div> 
                     @if(Session::get('user_type')==3)
                     <div v-html="'Otp: '+item.otp" class="text text-info"></div>
                     <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
@@ -387,6 +389,8 @@
 
         </div>
         </div>
+        <br>
+        <br>
 
         @include('passenger.ride-options')
 

@@ -154,6 +154,7 @@ class HomeController extends Controller
             $data['data']['photos'] = $photos;
             return view('passenger.ride-detail-casual', $data);
         }
+        //dd($data);
         return view('passenger.ride-detail', $data);
     }
     public function RideDetail($link)
