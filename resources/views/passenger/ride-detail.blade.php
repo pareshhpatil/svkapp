@@ -47,12 +47,10 @@
         </div>
         <div @if($title!='Assign cab' ) v-if="!data.driver.name" @endif>
             @if(Session::get('user_type')!=3)
-            <div class="appHeader bg-warning text-light" style="top:50px;margin-bottom:50px">
+            <div class="alert alert-outline-primary mt-1" >
                 <div class="pageTitle">Cab not assigned yet</div>
             </div>
-            <div class="mt-2">
-                &nbsp;
-            </div>
+            
             @else
             @if($title=='Assign cab')
             <div class="mt-2 mb-2">
@@ -271,7 +269,7 @@
                             <strong>Cancel</strong>
                         </a>
                     </div>
-                    <div class="item">
+                    <div class="item" v-if="data.driver.name">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#helpmodal">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
@@ -279,7 +277,7 @@
                             <strong>Chat</strong>
                         </a>
                     </div>
-                    <div class="item">
+                    <div class="item" v-if="data.driver.name">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#sosmodel">
                             <div class="icon-wrapper bg-primary bg-red" style="background: #e8481e !important;">
                                 <ion-icon name="accessibility-outline"></ion-icon>
