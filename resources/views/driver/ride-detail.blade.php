@@ -496,7 +496,7 @@ stop();
             data: '{{$ride_id}}',
             backgroundIndicator: true,
             pauseAutomatically: false,
-            distanceFilter: 0.0,
+            distanceFilter: 10.0,
             desiredAccuracy: "best",
             activityType: "other",
         });
