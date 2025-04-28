@@ -67,7 +67,7 @@
 <body @isset($onload) onload="{{$onload}}" @endisset class="{{Session::get('mode')}}">
 
     <!-- loader -->
-    <div id="loader" style="display: block!important;">
+    <div id="loader" >
         <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
     </div>
     <!-- * loader -->
