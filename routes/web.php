@@ -61,6 +61,9 @@ Route::get('/thank-you', function () {
 Route::get('/demo', function () {
     return view('guest.demo');
 });
+Route::get('/mobile', function () {
+    return view('guest.mobileapp');
+});
 Route::get('/faq', function () {
     return view('passenger.faq');
 });
