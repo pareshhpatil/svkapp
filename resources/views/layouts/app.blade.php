@@ -22,6 +22,9 @@
             border: 2px solid #fff;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.09);
         }
+        #loader {
+            background: transparent;
+        }
     </style>
     <!-- <style>
         body {
@@ -66,7 +69,7 @@
 <body @isset($onload) onload="{{$onload}}" @endisset class="{{Session::get('mode')}}">
 
     <!-- loader -->
-    <div id="loader">
+    <div id="loader" style="display: block!important;">
         <!-- <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon"> -->
     </div>
     <!-- * loader -->
