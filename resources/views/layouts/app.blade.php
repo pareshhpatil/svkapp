@@ -67,7 +67,7 @@
 
     <!-- loader -->
     <div id="loader">
-        <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon">
+        <!-- <img src="/assets/img/animation1.gif" alt="icon" class="loading-icon"> -->
     </div>
     <!-- * loader -->
 
