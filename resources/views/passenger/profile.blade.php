@@ -72,14 +72,14 @@
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="email4b">Location</label>
-                            <input type="text" name="location" class="form-control" :onclick="updated=true" v-model="data.location" placeholder="Enter your location eg. Kharghar">
+                            <input type="text" name="location" readonly class="form-control" :onclick="updated=true" v-model="data.location" placeholder="Enter your location eg. Kharghar">
                         </div>
                     </div>
 
                     <div class="form-group basic">
                         <div class="input-wrapper">
                             <label class="label" for="textarea4b">Address</label>
-                            <textarea id="textarea4b" name="address" :onclick="updated=true" rows="2" v-model="data.address" class="form-control" placeholder="Enter your full address"></textarea>
+                            <textarea id="textarea4b" name="address" readonly :onclick="updated=true" rows="2" v-model="data.address" class="form-control" placeholder="Enter your full address"></textarea>
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
                             </i>
