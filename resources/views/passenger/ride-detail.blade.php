@@ -55,7 +55,7 @@
             </div>
             @else
             @if($title=='Assign cab')
-            <div class="section mt-2 mb-2">
+            <div class="mt-2 mb-2">
                 <div class="section-title">Assign Cab</div>
                 <div class="card">
                     <div class="card-body">
