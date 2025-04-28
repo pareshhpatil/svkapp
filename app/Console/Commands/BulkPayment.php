@@ -12,6 +12,7 @@ use App\Models\StaffModel;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use App\Http\Controllers\ApiController;
 
 class BulkPayment extends Command
 {
@@ -38,7 +39,7 @@ class BulkPayment extends Command
      */
     public function __construct()
     {
-        
+
         parent::__construct();
     }
 
@@ -49,9 +50,17 @@ class BulkPayment extends Command
      */
     public function handle()
     {
-        $deviceToken = 'd_Z0Q7fS20wUo_5bOSBHiG:APA91bHyzjDuWg_eKkvT0lYjehPVQgSpUDes8ykQ6b64qjdhI4bbWJfR2Jtlu5n71oEW8OJdlLd-mw8mIRmieJ8NakqH8Lxd6Q-Fv4T-rrldtRKWiS17lSE'; // Replace with actual device token
+        $ApiController = new ApiController();
 
-        $this->sendNotificationToDevice($deviceToken, 'hello', 'Hii');
+        $array = [];
+        foreach ($array as $mobile) {
+            $ApiController->sendWhatsappMessage($mobile, 'mobile', 'mobile_app_installation', [], null, 'en', 1);
+            echo $mobile . PHP_EOL;
+        }
+
+        // $deviceToken = 'd_Z0Q7fS20wUo_5bOSBHiG:APA91bHyzjDuWg_eKkvT0lYjehPVQgSpUDes8ykQ6b64qjdhI4bbWJfR2Jtlu5n71oEW8OJdlLd-mw8mIRmieJ8NakqH8Lxd6Q-Fv4T-rrldtRKWiS17lSE'; // Replace with actual device token
+
+        // $this->sendNotificationToDevice($deviceToken, 'hello', 'Hii');
     }
 
     public function sendNotificationToDevice(string $deviceToken, string $title, string $body, $url = '', $image = '')
@@ -71,6 +80,4 @@ class BulkPayment extends Command
 
         return $messaging->send($message);
     }
-
-    
 }

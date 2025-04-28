@@ -276,6 +276,28 @@
                                 </div>
                             </a>
                         </li>
+                        @if(Session::get('mobile')=='9730946150')
+                        <li>
+                            <a href="/whatsapp" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="logo-whatsapp" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Whatsapp
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/users/list" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="logo-users" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Users
+                                </div>
+                            </a>
+                        </li>
+                        @endif
                         <li>
                             <a href="/chats" class="item">
                                 <div class="icon-box bg-primary">
