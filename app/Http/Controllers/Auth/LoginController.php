@@ -164,8 +164,9 @@ class LoginController extends Controller
                 $array['parent_id'] = $passenger->id;
                 $array['password'] = 'napasswe';
                 $array['company_name'] = 'Siddhivinayak Travels';
-                $passenger = $model->saveTable('users', $array, 0);
+                $model->saveTable('users', $array, 0);
                 $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+                $apicontroller->sendNotification(1, 1, 'New employee registered ' . $passenger->employee_name,  '', '');
             }
 
 
@@ -188,6 +189,7 @@ class LoginController extends Controller
                     $array['company_name'] = 'Siddhivinayak Travels';
                     $passenger = $model->saveTable('users', $array, 0);
                     $data = $model->getTableRow('users', 'mobile', $request->mobile, 1);
+                    $apicontroller->sendNotification(1, 1, 'New driver registered ' . $driver->name,  '', '');
                 }
             }
         }

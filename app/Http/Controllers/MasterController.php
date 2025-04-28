@@ -48,7 +48,7 @@ class MasterController extends Controller
         $array['response'] = $result;
         $this->model->saveTable('call_ivr', $array, $array['user_id']);
         $tokens[] = env('MY_TOKEN');
-        $ApiController->sendNotification(1, 3, 'Call Initiated ', $from . ' to ' . $to,  '', '', $tokens);
+        $ApiController->sendNotification(1, 1, 'Call Initiated ', $from . ' to ' . $to,  '', '');
     }
 
     public function masterSave(Request $request, $type)
