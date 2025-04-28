@@ -146,7 +146,7 @@ class TripController extends Controller
     {
         $array['driver_id'] = $request->driver_id;
         $array['vehicle_id'] = $request->vehicle_id;
-        $array['escort'] = ($request->escort_id > 0) ? 1 : 0;
+        $array['escort'] = ($request->escort_id > 0) ? $request->escort_id : 0;
         $ride_id = $request->ride_id;
         $vehicle_id = $request->vehicle_id;
         $driver_id = $request->driver_id;
