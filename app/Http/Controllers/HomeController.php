@@ -418,7 +418,7 @@ class HomeController extends Controller
         $data['menu'] = 2;
         $data['title'] = 'My Rides';
         $data['type'] = $type;
-        $data['current_date'] = $this->htmlDate(date('Y-m-d'));
+        $data['current_date'] = $this->htmlDate(date('Y-m-29'));
         if (Session::get('user_type') == 5) {
             $data['data']['upcoming'] = $this->EncryptList($this->model->passengerUpcomingRides(Session::get('parent_id')));
             $data['data']['live'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id'), 0), 0);
