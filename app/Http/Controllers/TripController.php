@@ -169,8 +169,20 @@ class TripController extends Controller
         }
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         if ($escort_id > 0) {
-            $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $escort_id]);
+            if ($ride->escort > 0) {
+                $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_id' => 0], ['passenger_id' => $request->escort_id]);
+            } else {
+                $ride_passenger['roster_id'] = 0;
+                $ride_passenger['ride_id'] = $ride_id;
+                $ride_passenger['passenger_id'] = $request->escort_id;
+                $ride_passenger['pickup_location'] = $ride->start_location;
+                $ride_passenger['drop_location'] = $ride->end_location;
+                $ride_passenger['pickup_time'] = $ride->start_time;
+                $ride_passenger['otp'] = rand(1111, 9999);
+                $this->model->saveTable('ride_passenger', $ride_passenger, 0);
+            }
         }
+        
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/driver/ride/' . $link;
