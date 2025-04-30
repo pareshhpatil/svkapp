@@ -10,6 +10,7 @@ use App\Models\MasterModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Http\Controllers\ApiController;
 
 class PassengerController extends Controller
 {
@@ -87,10 +88,16 @@ class PassengerController extends Controller
 
     public function changeStatus($type, $status, $id)
     {
+        $ApiController = new ApiController();
+
         if ($status == 'approve') {
             $this->model->updateTable('import', 'id', $id, 'status', 5);
             if ($type == 'passenger') {
                 $this->model->querylist('INSERT INTO `passenger` (`project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by`) select  `project_id`, `employee_name`, `gender`, `address`, `location`, `mobile`, `email`, `bulk_id`,  `created_by`, `created_date`, `last_update_by` from staging_passenger where is_active=1 and bulk_id= ' . $id);
+                $array = $this->model->getTableList('staging_passenger', 'bulk_id', $id, 1, [], [], 'mobile');
+                foreach ($array as $v) {
+                    $ApiController->sendWhatsappMessage($v['mobile'], 'mobile', 'mobile_app_installation', [], null, 'en', 1);
+                }
             } else {
                 $this->model->querylist('INSERT INTO `roster` (`project_id`,`passenger_id`,`date`,`type`,`start_time`,`end_time`,`shift`,`note`,`status`,`is_active`,`bulk_id`,`created_by`,`created_date`,`last_update_by`) select  `project_id`,`passenger_id`,`date`,`type`,`start_time`,`end_time`,`shift`,`note`,`status`,`is_active`,`bulk_id`,`created_by`,`created_date`,`last_update_by` from staging_roster where is_active=1 and bulk_id= ' . $id);
             }
