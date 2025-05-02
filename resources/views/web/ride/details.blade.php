@@ -448,6 +448,7 @@
       @if($v->status!=3 && $v->status!=4)
       @php 
         $actual_location='';
+        $locationArray=[];
         $route_info[]=array('title'=>$v->name,'icon'=>$v->icon);
         if($det->type=='Drop')
         {
@@ -467,7 +468,6 @@
             $locationArray = json_decode($actual_location, true);
 
             // Create the object with 'lat' and 'lng'
-            
             $actual_location='{ lat: '.$locationArray['latitude'].', lng: '.$locationArray['longitude'].' }';
         }
         }
@@ -519,7 +519,6 @@
 
               // Custom Marker: Start at Bandra
 
-              console.log('Legs',legs);
 
               @foreach($route_info as $rk=>$rv)
 
