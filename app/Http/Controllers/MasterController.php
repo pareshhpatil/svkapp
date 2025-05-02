@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
+use App\Http\Lib\Encryption;
 
 class MasterController extends Controller
 {
@@ -114,6 +115,7 @@ class MasterController extends Controller
         }
 
         $data['menus'] = Session::get('menus');
+        $data['enc'] = Encryption::encode(date('Y-m-d'));
 
         return view('web.' . $type . '.list', $data);
     }
