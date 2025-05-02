@@ -462,6 +462,7 @@
         {
             $actual_location=$v->actual_pickup_location;
         }
+        }
         if($actual_location!='')
         {
             $actual_location = html_entity_decode($actual_location);
@@ -469,7 +470,6 @@
 
             // Create the object with 'lat' and 'lng'
             $actual_location='{ lat: '.$locationArray['latitude'].', lng: '.$locationArray['longitude'].' }';
-        }
         }
       @endphp
         {
