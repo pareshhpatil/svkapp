@@ -122,7 +122,7 @@
                     full.photo='https://app.svktrv.in/assets/img/map-male.png';
                 }
                 return (
-                    '<img src="' + full.photo + '" alt="' + full.name + '" class="rounded-circle avatar-lg" style="object-fit: cover; width: 50px; height: 50px;">'
+                    '<a href="' + full.photo + '" target="_BLANK"> <img src="' + full.photo + '" alt="' + full.name + '" class="rounded-circle avatar-lg" style="object-fit: cover; width: 50px; height: 50px;"></a>'
                 );
             }
         }],
