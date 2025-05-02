@@ -91,7 +91,7 @@ class RideModel extends ParentModel
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
         }
-        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(start_time, "%l:%i %p") as only_time,d.name as driver_name, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(start_time, "%l:%i %p") as only_time,d.name as driver_name, r.id as pid , start_location as pickup_location ,end_location as drop_location,d.photo'));
         if ($single == 1) {
             $array = $retObj->first();
         } else {
@@ -111,7 +111,7 @@ class RideModel extends ParentModel
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
         }
-        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
+        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time, r.id as pid , start_location as pickup_location ,end_location as drop_location,d.photo'));
         if ($single == 1) {
             $array = $retObj->first();
         } else {
@@ -143,7 +143,7 @@ class RideModel extends ParentModel
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
         }
-        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location'));
+        $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location,d.photo'));
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }
