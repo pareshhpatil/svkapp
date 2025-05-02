@@ -166,6 +166,8 @@ Route::any('/cashfree/webhook', [App\Http\Controllers\WebhookController::class, 
 
 Route::any('/notification/trip/detail/{id}', [App\Http\Controllers\WebhookController::class, 'notificationBooking'])->name('notificationBooking');
 
+Route::any('/login/driver/{{id}}/{{driver_id}}', [App\Http\Controllers\Auth\LoginController::class, 'driverLogin']);
+
 
 if (env('APP_ENV') != 'local') {
     URL::forceScheme('https');
