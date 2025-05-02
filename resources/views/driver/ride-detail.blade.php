@@ -335,7 +335,7 @@
             Ride ended successfully 
         </div>
     </div>
-    <a type="button" href="/my-rides/past" class="btn btn-sm  btn-text-light bg-red">Done</a>
+    <button type="button" onclick="closeT(16);" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
 </div>
 
 <div id="toast-15" class="toast-box toast-center" style="z-index: 5000;">
