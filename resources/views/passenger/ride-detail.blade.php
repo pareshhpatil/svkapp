@@ -171,9 +171,10 @@
                                     <div class="in">
                                         <div>
                                             <div class="text-small text-secondary">Mobile</div>
-                                            <button v-on:click="call('{{$data['driver']['mobile']}}')" class="btn btn-primary btn-sm me-1 mb-1">
+                                            <strong v-html="data.driver.mobile"></strong>
+                                            <!-- <button v-on:click="call('{{$data['driver']['mobile']}}')" class="btn btn-primary btn-sm me-1 mb-1">
                                                 Call Driver
-                                            </button>
+                                            </button> -->
                                         </div>
 
                                     </div>

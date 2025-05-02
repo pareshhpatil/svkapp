@@ -49,7 +49,7 @@ class HomeController extends Controller
         return view('home', []);
     }
     public function index()
-    {
+    {   
 
         if (Session::get('role_id') == 2) {
             return redirect('staff/dashboard');
@@ -662,6 +662,7 @@ class HomeController extends Controller
         }
         $ApiController->sendSMS('9730946150', $params, '68048826d6fc0554706b7e85');
 
+        $mobiles[] = '8424876639';
         $mobiles[] = '9730946150';
         $mobiles[] = '8879391658';
         if ($passenger->emergency_contact != '') {
@@ -727,6 +728,7 @@ class HomeController extends Controller
         $passenger_id = $ridepassenger->passenger_id;
         $passenger = $this->model->getTableRow('passenger', 'id', $passenger_id, 1);
 
+        $mobiles[] = '8424876639';
         $mobiles[] = '9730946150';
         $mobiles[] = '8879391658';
 
