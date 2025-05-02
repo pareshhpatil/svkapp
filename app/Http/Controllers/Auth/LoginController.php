@@ -156,7 +156,7 @@ class LoginController extends Controller
             if ($user->role_id == 2) {
                 return redirect('staff/dashboard');
             }
-            return redirect('/dashboard');
+            return redirect('/profile');
         }
     }
 
