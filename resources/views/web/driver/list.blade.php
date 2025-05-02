@@ -101,7 +101,7 @@
                             '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>' +
                             '<ul class="dropdown-menu dropdown-menu-end m-0">' +
                             '<li><a href="/master/driver/update/'+full.id+'" class="dropdown-item">Edit</a></li>' +
-                            '<li><a href="https://app.svktrv.in/login/driver/{{$enc}}/'+full.id+'" class="dropdown-item">Login</a></li>' +
+                            '<li><a target="_BLANK" href="https://app.svktrv.in/login/driver/{{$enc}}/'+full.id+'" class="dropdown-item">Login</a></li>' +
                             '<li><a href="javascript:;" onclick="' + "deleteride(" + full.id + ");" + '" class="dropdown-item text-danger delete-record">Delete</a></li>' +
                             '</ul>' +
                             '</div>'
