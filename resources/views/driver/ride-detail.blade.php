@@ -267,6 +267,8 @@
                 </div>
             </div>
         </div>
+
+        
         <div class="modal fade dialogbox" id="noshowmodal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -326,6 +328,16 @@
 
 </div>
 
+<div id="toast-16" class="toast-box toast-center" style="z-index: 5000;">
+    <div class="in">
+        <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
+        <div class="text">
+            Ride ended successfully 
+        </div>
+    </div>
+    <a type="button" href="/my-rides/past" class="btn btn-sm  btn-text-light bg-red">Done</a>
+</div>
+
 <div id="toast-15" class="toast-box toast-center" style="z-index: 5000;">
     <div class="in">
         <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
@@ -369,10 +381,13 @@ BarcodeScan({
     var mylongitude = '';
     var default_url="https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
 
+    var location_get=false;
+
     function success(pos) {
         const crd = pos.coords;
         mylatitude = crd.latitude;
         mylongitude = crd.longitude;
+        location_get=true;
     }
 
     function error(err) {
@@ -386,105 +401,6 @@ BarcodeScan({
             maximumAge: 0,
         };
         navigator.geolocation.getCurrentPosition(success, error, options);
-    }
-
-    function restart()
-    {
-        stop();
-        default_url="https://app.svktrv.in/ride/track/{{$ride_id}}";
-        start();
-    }
-
-    function restart1()
-    {
-        stop();
-        default_url="https://ridetrack.free.beeceptor.com";
-        start();
-    }
-
-    function restart2()
-    {
-        stop();
-        default_url="https://admin.ridetrack.in/ride/track/{{$ride_id}}";
-        start();
-    }
-
-    function restart3()
-    {
-        stop();
-        default_url="https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
-        start();
-    }
-
-
-    function successCallback(position) {
-        const {
-            latitude,
-            longitude,
-            altitude,
-            speed
-        } = position;
-        // Show a map centered at latitude / longitude.
-
-       // document.getElementById('speed').innerHTML=position.latitude;
-
-
-       axios.post('https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location', {
-  latitude: String(position.latitude),
-  longitude: String(position.longitude),
-  altitude: String(position.altitude),
-  deviceID: String(position.deviceID),
-  bearing: String(position.bearing),
-  bearingAccuracy: String(position.bearingAccuracy),
-  speed: String(position.speed),
-  speedAccuracy: String(position.speedAccuracy),
-  data: String("{{$ride_id}}"),
-  verticalAccuracy: String(position.verticalAccuracy),
-  timestamp: String(position.timestamp),
-  type: String(position.type)
-}, {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-    const myArray = Object.values(response);
-
-// Display the Array
-document.getElementById("speed").innerHTML = 'Success' +myArray;
-stop();
-  //console.log('Success:', response.data);
-})
-.catch(error => {
-    let errorMessage = 'An unknown error occurred';
-
-  if (error.response) {
-    // Server responded with a status other than 2xx
-    errorMessage = `
-      <strong>Error ${error.response.status}:</strong> ${error.response.statusText}<br>
-      <pre>${JSON.stringify(error.response.data, null, 2)}</pre>
-    `;
-  } else if (error.request) {
-    // Request was made but no response received
-    errorMessage = `
-      <strong>Request Details:</strong><br>
-      <ul>
-        <li><strong>ReadyState:</strong> ${error.request.readyState}</li>
-        <li><strong>Status:</strong> ${error.request.status}</li>
-        <li><strong>StatusText:</strong> ${error.request.statusText}</li>
-        <li><strong>ResponseText:</strong><pre>${error.request.responseText || 'No response text'}</pre></li>
-      </ul>
-    `;
-  } else {
-    // Something happened in setting up the request
-    errorMessage = `Request error: ${error.message}`;
-  }
-
-  document.getElementById("speed").innerHTML = errorMessage;
-//stop();
-  //alert('Error:', error.response ? error.response.data : error.message);
-});
-
     }
 
 
@@ -534,6 +450,10 @@ stop();
     //    start();
     //}, 300000);
     @endif
+
+    function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+    }
 </script>
 
 <script>
@@ -615,16 +535,30 @@ stop();
                     }
                 }
                 if (done == true) {
-                    lod(true);
-                    axios.get('/driver/ride/status/{{$ride_id}}/5');
+                    //lod(true);
                     stop();
+                    axios.get('/driver/ride/status/{{$ride_id}}/5');
                     //setTimeout(() => stoplocation(), 6000);
+                    toastbox('toast-16');
                 }
                 this.alldone = done;
             },
-            sendLocation(type,id,status) {
-                setLocation();
-                setTimeout(() => this.updateLocationApi(type,id,status,mylatitude,mylongitude), 5000);
+            // sendLocation(type,id,status) {
+            //     setLocation();
+            //     setTimeout(() => this.updateLocationApi(type,id,status,mylatitude,mylongitude), 5000);
+            // },
+            async sendLocation(type,id,status) {
+            location_get=false;
+            setLocation();
+            let count = 0;
+            while (location_get==false) {
+                await sleep(1000); // wait 1 second
+                if (count === 5) {
+                break;
+                }
+                count++;
+            }
+            this.updateLocationApi(type,id,status,mylatitude,mylongitude);
             },
             async updateLocationApi(type,id,status,lat,long) {
                 await axios.get('/driver/ride/location/status/'+type+'/'+id+'/'+status+'/'+lat+'/'+long)
