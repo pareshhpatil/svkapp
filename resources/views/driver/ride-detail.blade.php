@@ -382,7 +382,7 @@ BarcodeScan({
     function setLocation() {
         const options = {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 4000,
             maximumAge: 0,
         };
         navigator.geolocation.getCurrentPosition(success, error, options);
@@ -616,7 +616,7 @@ stop();
                 }
                 if (done == true) {
                     lod(true);
-                    setTimeout(() => stoplocation(), 5000);
+                    setTimeout(() => stoplocation(), 6000);
                 }
                 this.alldone = done;
             },
