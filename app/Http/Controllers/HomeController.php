@@ -1005,7 +1005,7 @@ class HomeController extends Controller
         $model->updateTable('ride', 'id', $ride_id, 'status', $status);
         if ($status == 5) {
             $model->updateTable('ride', 'id', $ride_id, 'ride_ended', date('Y-m-d H:i:s'));
-            return redirect('/my-rides/past');
+            return true;
         }
 
         $model->updateTable('ride', 'id', $ride_id, 'ride_started', date('Y-m-d H:i:s'));

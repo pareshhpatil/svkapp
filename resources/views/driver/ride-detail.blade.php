@@ -616,7 +616,9 @@ stop();
                 }
                 if (done == true) {
                     lod(true);
-                    setTimeout(() => stoplocation(), 6000);
+                    axios.get('/driver/ride/status/{{$ride_id}}/5');
+                    stop();
+                    //setTimeout(() => stoplocation(), 6000);
                 }
                 this.alldone = done;
             },
