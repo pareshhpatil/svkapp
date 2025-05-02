@@ -22,6 +22,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Photo</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -70,9 +71,11 @@
                         data: 'id'
                     },
                     {
+                        data: ''
+                    },
+                    {
                         data: 'name'
                     },
-
                     {
                         data: 'email'
                     },
@@ -107,7 +110,22 @@
                             '</div>'
                         );
                     }
-                }],
+                },{
+            targets: 1, // Photo column
+            title: 'Photo',
+            orderable: false,
+            searchable: false,
+            render: function(data, type, full, meta) {
+                console.log(full.name,full.photo);
+                if(full.photo=='null' || full.photo=='' || full.photo==null)
+                {
+                    full.photo='https://app.svktrv.in/assets/img/map-male.png';
+                }
+                return (
+                    '<img src="' + full.photo + '" alt="' + full.name + '" class="rounded-circle avatar-lg" style="object-fit: cover; width: 50px; height: 50px;">'
+                );
+            }
+        }],
                 order: [
                     [0, 'desc']
                 ],
