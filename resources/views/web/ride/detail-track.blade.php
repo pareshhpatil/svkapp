@@ -57,6 +57,7 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-2"><select id="speed-select" class="form-control" onchange="updateSpeed()" style="min-width:80px;">
+                                        <option value="200">0.2 sec</option>
                                         <option value="500">0.5 sec</option>
                                         <option value="1000" selected>1 sec</option>
                                         <option value="2000">2 sec</option>
