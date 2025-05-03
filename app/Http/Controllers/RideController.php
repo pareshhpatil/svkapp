@@ -104,7 +104,7 @@ class RideController extends Controller
         $data['selectedMenu'] = [14, 15];
         $data['menus'] = Session::get('menus');
         $data['det'] = $this->model->getTableRow('ride', 'id', $id);
-        $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
+        $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'lat_long');
         $data['ride_passengers'] = $this->model->getRidePassenger($id);
 
         foreach ($data['ride_passengers'] as $k => $row) {

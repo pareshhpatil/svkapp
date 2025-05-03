@@ -71,14 +71,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="row">
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div style="margin-bottom: 8px; font-weight: bold;">Total KM: 16.87</div>
+                                </div> -->
+                                <div class="col-md-4">
+                                    <div id="speed-display" style="margin-bottom: 8px; font-weight: bold;">Speed: </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div id="speed-display" style="margin-bottom: 8px; font-weight: bold;">Speed: 16.87</div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div id="eta" style="margin-bottom: 8px; font-weight: bold;">Time: 16.87</div>
+                                    <div id="eta" style="margin-bottom: 8px; font-weight: bold;">Time: </div>
                                 </div>
                             </div>
                         </div>
@@ -189,29 +189,22 @@
                     @endforeach
 
                    
-                    let office_address = "{{$company_address}}";
+                    //let office_address = "{{$company_address}}";
 
-                    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(office_address)}&key={{env('MAP_KEY')}}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === "OK") {
-                        let location = data.results[0].geometry.location;
-                        let latlng = [location.lat, location.lng];
+                   
+                    //let location = data.results[0].geometry.location;
+                    let latlng = [{{$company_address}}];
 
-                        L.marker(latlng, {
-                            icon: L.icon({
-                            iconUrl: 'https://app.svktrv.in/assets/img/office.png',
-                            iconSize: [32, 32],
-                            iconAnchor: [16, 32]
-                            })
+                    L.marker(latlng, {
+                        icon: L.icon({
+                        iconUrl: 'https://app.svktrv.in/assets/img/office.png',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 32]
                         })
-                        .addTo(map)
-                        .bindPopup('Office');
-                        } else {
-                        console.error("Address not found office" +office_address);
-                        }
                     })
-                    .catch(error => console.error('Geocoding failed:', error));
+                    .addTo(map)
+                    .bindPopup('Office');
+                        
 
                     var carIcon = L.icon({
                         iconUrl: 'https://app.svktrv.in/favicon.ico',
