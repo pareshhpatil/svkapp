@@ -161,7 +161,7 @@
 
                     // Start/End markers
                     @foreach($ride_passengers as $v)
-
+                    @if($v->status!=4)
                     var address = "{{$v->address}}";
 
                     fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key={{env('MAP_KEY')}}`)
@@ -185,7 +185,7 @@
                         }
                     })
                     .catch(error => console.error('Geocoding failed:', error));
-
+                    @endif
                     @endforeach
 
                    
