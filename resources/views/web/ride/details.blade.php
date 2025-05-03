@@ -126,6 +126,10 @@
                 <a class="nav-link" role="tab" data-bs-toggle="tab" onclick="initMap();" data-bs-target="#navs-top-map" aria-controls="navs-top-map" aria-selected="true" href="javascript:void(0);">
                     <i class="ti ti-location ti-xs me-1"></i>Location Map</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link"  href="/ride/detail/track/{{$det->id}}">
+                    <i class="ti ti-location ti-xs me-1"></i>Location Tracking</a>
+            </li>
             
         </ul>
         <!--/ User Pills -->

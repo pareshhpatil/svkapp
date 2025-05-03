@@ -13,6 +13,7 @@ use PHPExcel_IOFactory;
 use PHPExcel_Cell_DataType;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Services\DynamoDBService;
 
 
 class RideController extends Controller
@@ -85,6 +86,42 @@ class RideController extends Controller
     }
 
 
+    public function detailTrack($id)
+    {
+        $dynamo=new DynamoDBService();
+        $data['ride'] = $dynamo->getAllRows('data', $id);
+
+        $speed = array_map(function ($item) {
+            return [
+                'speed' => $item['speed'],
+                'timestamp' => $item['timestamp'],
+            ];
+        }, $data['ride']);
+
+        $data['speed'] = json_encode($speed);
+        
+        $this->model = new RideModel();
+        $data['selectedMenu'] = [14, 15];
+        $data['menus'] = Session::get('menus');
+        $data['det'] = $this->model->getTableRow('ride', 'id', $id);
+        $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
+        $data['ride_passengers'] = $this->model->getRidePassenger($id);
+
+        foreach ($data['ride_passengers'] as $k => $row) {
+            if ($row->icon == '') {
+                if ($row->gender == 'Female') {
+                    $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-female.png';
+                } else {
+                    $data['ride_passengers'][$k]->icon = env('MOBILE_APP_URL') . '/assets/img/map-male.png';
+                }
+            } else {
+                $data['ride_passengers'][$k]->icon = $row->icon;
+            }
+        }
+       // dd($data['ride_passengers']);
+        //  dd($data);
+        return view('web.ride.detail-track', $data);
+    }
     public function details($id)
     {
         // $id = Encryption::decode($link);

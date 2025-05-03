@@ -32,7 +32,7 @@ class HomeController extends Controller
     public function show()
     {
         $dynamo=new DynamoDBService();
-        $item = $dynamo->getItem2('data', 1123);
+        $item = $dynamo->getAllRows('data', 1123);
         return response()->json($item);
     }
     public function index()

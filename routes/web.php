@@ -84,6 +84,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/master/{type}/save', [App\Http\Controllers\MasterController::class, 'save']);
     Route::get('/master/{type}/ajax/{project_id?}', [App\Http\Controllers\MasterController::class, 'Ajax']);
     Route::get('/master/{type}/delete/{id}/{id_col?}', [App\Http\Controllers\MasterController::class, 'delete']);
+
+    Route::get('/ride/detail/track/{id}', [App\Http\Controllers\RideController::class, 'detailTrack']);
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
