@@ -165,6 +165,14 @@
             </div>
         </a>
         @endif
+        @if(Session::get('user_type')==3)
+        <a @if($menu==3) href="javascript:location.reload();" @else href="/notifications" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
+            <div class="col">
+                <ion-icon name="notifications-outline"></ion-icon>
+                <strong>Notifications</strong>
+            </div>
+        </a>
+        @endif
         <a @if($menu==4) href="javascript:location.reload();" @else href="/calendar" @endif onclick="lod(true);" class="item @if($menu==4) active @endif">
             <div class="col">
                 <ion-icon name="calendar-number-outline"></ion-icon>

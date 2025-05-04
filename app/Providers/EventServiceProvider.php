@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\RideStatusChanged;
+use App\Events\PassengerStatusChanged;
+use App\Listeners\HandleRideStatusChange;
+use App\Listeners\HandlePassengerStatusChange;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,9 +16,13 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
+
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        RideStatusChanged::class => [
+            HandleRideStatusChange::class,
+        ],
+        PassengerStatusChanged::class => [
+            HandlePassengerStatusChange::class,
         ],
     ];
 

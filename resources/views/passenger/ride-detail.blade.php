@@ -261,6 +261,16 @@
                             <strong>Track</strong>
                         </a>
                     </div>
+                    @if(Session::get('user_type')==3)
+                    <div class="item">
+                        <a href="/notifications/{{$ride_id}}" >
+                            <div class="icon-wrapper bg-warning" >
+                            <ion-icon name="notifications-outline"></ion-icon>
+                            </div>
+                            <strong>Updates</strong>
+                        </a>
+                    </div>
+                    @endif
                     @if(Session::get('user_type')!=3)
                     <div v-if="data.ride.status<2" class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#cancelride">

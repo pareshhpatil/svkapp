@@ -14,6 +14,8 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Http;
+use App\Events\PassengerStatusChanged;
+use App\Events\RideStatusChanged;
 
 class HomeController extends Controller
 {
@@ -49,8 +51,7 @@ class HomeController extends Controller
         return view('home', []);
     }
     public function index()
-    {   
-
+    {
         if (Session::get('role_id') == 2) {
             return redirect('staff/dashboard');
         }
@@ -634,6 +635,21 @@ class HomeController extends Controller
         return view('passenger.book-ride', $data);
     }
 
+    public function notifications($ride_id = 0)
+    {
+        if ($ride_id > 0) {
+            $filter = ['is_active' => 1];
+        } else {
+            $filter = ['ride_id' => $ride_id];
+        }
+        $list = $this->model->getList('notifications', $filter, '*', 0, 'id');
+        $data['list'] = $list;
+        $data['menu'] = 3;
+        $data['title'] = 'Notifications';
+        $data['date'] = date('Y-m-d');
+        return view('master.notifications', $data);
+    }
+
     public function passengerSOS(Request $request)
     {
 
@@ -1003,33 +1019,54 @@ class HomeController extends Controller
 
     public function driverRideStatus($ride_id, $status)
     {
+        event(new RideStatusChanged($ride_id, $status));
         $model =  new ParentModel();
-        $model->updateTable('ride', 'id', $ride_id, 'status', $status);
+        $array = [];
+        $array['status'] = $status;
         if ($status == 5) {
-            $model->updateTable('ride', 'id', $ride_id, 'ride_ended', date('Y-m-d H:i:s'));
+            $array['ride_ended'] = date('Y-m-d H:i:s');
+            $model->updateTableData('ride', 'id', $ride_id, $array);
             return true;
         }
-
-        $model->updateTable('ride', 'id', $ride_id, 'ride_started', date('Y-m-d H:i:s'));
-        $apiController = new ApiController();
-        $link = Encryption::encode($ride_id);
-        $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
-        foreach ($passengers as $row) {
-            if ($row->status == 0) {
-                $link = Encryption::encode($row->id);
-                $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-                $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been started', 'Our driver is en route to your pickup location. Enjoy your journey with us.', $url);
-            }
-        }
-
-
-
-
+        $array['ride_started'] = date('Y-m-d H:i:s');
+        $model->updateTableData('ride', 'id', $ride_id, $array);
         return redirect('/driver/ride/' . Encryption::encode($ride_id));
+    }
+
+    public function saveNotification($title, $message, $link, $user_type = 3, $user_id = 0)
+    {
+        $array['title'] = $title;
+        $array['message'] = $message;
+        $array['link'] = $link;
+        $array['user_type'] = $user_type;
+        $array['user_id'] = $user_id;
+        $this->model->insertTable('notifications', $array);
     }
 
     public function driverPassengerRideStatus($ride_passenger_id, $status)
     {
+        $array = [];
+        $array['status'] = $status;
+        $model =  new ParentModel();
+        $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
+        switch ($status) {
+            case 5:
+                $array['cab_time'] = date('Y-m-d H:i:s');
+                break;
+            case 1:
+                $array['in_time'] = date('Y-m-d H:i:s');
+                if ($row->cab_time == '') {
+                    $array['cab_time'] = date('Y-m-d H:i:s');
+                }
+                break;
+            case 2:
+                $array['drop_time'] = date('Y-m-d H:i:s');
+                break;
+        }
+        $model->updateTableData('ride_passenger', 'id', $ride_passenger_id, $array);
+        event(new PassengerStatusChanged($ride_passenger_id, $status));
+        return true;
+
         $apiController = new ApiController();
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         $model =  new ParentModel();
@@ -1078,13 +1115,12 @@ class HomeController extends Controller
         $apiController = new ApiController();
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         $mobile = $this->model->getColumnValue('passenger', 'id', $row->passenger_id, 'mobile');
-        $message = $row->otp . ' is OTP to verify your mobile number with Siddhivinayak Travels House';
-        $apiController->sendSMS($mobile, $message, '1107168138576339315');
-        $link = Encryption::encode($ride_passenger_id);
-        $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-        $apiController->sendNotification($row->passenger_id, 5, $row->otp . ' is OTP to verify your mobile number', $url);
-        $tokens[] = env('MY_TOKEN');
-        $apiController->sendNotification(1, 3, 'Resend otp ', $ride_passenger_id . ' to ' . $mobile,  '', '', $tokens);
+        $apiController->sendSMS($mobile, ['var1' => $row->otp], '67fd2c55d6fc05588a2e1d03');
+        $params = [];
+        $params[] = array('type' => 'text', 'text' => (string) $row->otp);
+        $apiController->sendWhatsappMessage($mobile, 'mobile', 'otp_svk', $params, (string) $row->otp, 'en_US');
+        $apiController->sendNotification(1, 1, 'Resend otp ', $ride_passenger_id . ' to ' . $mobile,  '', '');
+        return true;
     }
 
     public function passengerAdd($ride_id, $passenger_id, $time)
