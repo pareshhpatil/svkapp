@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\ImportPassenger',
         'App\Console\Commands\ImportRoster',
+        'App\Console\Commands\RideReminder',
     ];
 
     /**
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('import:passenger')->everyFiveMinutes();
         $schedule->command('import:roster')->everyMinute()->withoutOverlapping();
+        $schedule->command('ride:reminder')->everyTenMinutes()->withoutOverlapping();
     }
 
     /**

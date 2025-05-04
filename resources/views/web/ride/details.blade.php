@@ -127,7 +127,7 @@
                     <i class="ti ti-location ti-xs me-1"></i>Location Map</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"  href="/ride/detail/track/{{$det->id}}">
+                <a class="nav-link" target="_blank" href="/ride/detail/track/{{$det->id}}">
                     <i class="ti ti-location ti-xs me-1"></i>Location Tracking</a>
             </li>
             
