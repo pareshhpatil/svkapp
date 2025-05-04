@@ -19,10 +19,16 @@ class RideStatusChanged
      *
      * @return void
      */
-    public function __construct(
-        public int $ride_id,
-        public int $status // e.g. 'started', 'ended'
-    ) {}
+
+    public $ride_id;
+    public $status;
+
+    public function __construct($ride_id, $status)
+    {
+        $this->ride_id = $ride_id;
+        $this->status = $status;
+    }
+
 
     /**
      * Get the channels the event should broadcast on.

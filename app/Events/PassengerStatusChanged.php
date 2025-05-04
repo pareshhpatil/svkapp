@@ -19,10 +19,15 @@ class PassengerStatusChanged
      *
      * @return void
      */
-    public function __construct(
-        public int $passenger_id,
-        public int $status // e.g. 'in', 'out'
-    ) {}
+    public $passenger_id;
+    public $status;
+
+    public function __construct($passenger_id, $status)
+    {
+        $this->passenger_id = $passenger_id;
+        $this->status = $status;
+    }
+
 
     /**
      * Get the channels the event should broadcast on.

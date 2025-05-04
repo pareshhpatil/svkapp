@@ -27,6 +27,6 @@ class HandleRideStatusChange
      */
     public function handle(RideStatusChanged $event)
     {
-        dispatch(new SendRideStatusNotification($event->ride_id, $event->status));
+        dispatch(new SendRideStatusNotification($event->ride_id, (int) $event->status));
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\ParentModel;
 use App\Models\RideModel;
 use Validator;
 use Intervention\Image\ImageManager;
@@ -899,10 +898,9 @@ class HomeController extends Controller
 
     public function contactus(Request $request)
     {
-        $model =  new ParentModel();
         $array = $request->all();
         unset($array['_token']);
-        $model->saveTable('contactus', $array);
+        $this->model->saveTable('contactus', $array);
         $ApiController = new ApiController();
         $ApiController->sendSMS('9730946150', 'CONTACTUS is OTP to verify your mobile number with Siddhivinayak Travels House', '1107168138576339315');
         return redirect('/thank-you');
@@ -910,7 +908,7 @@ class HomeController extends Controller
 
     public function signature(Request $request)
     {
-        $model =  new ParentModel();
+        $model =  $this->model;
         if (isset($request->signature)) {
             $array = $request->all();
             $signatureData = $request->input('signature');
@@ -933,7 +931,7 @@ class HomeController extends Controller
 
     public function casualRideStatus($ride_id, $status)
     {
-        $model =  new ParentModel();
+        $model =  $this->model;
         $model->updateTable('ride', 'id', $ride_id, 'status', $status);
         if ($status == 5) {
             $model->updateTable('ride', 'id', $ride_id, 'ride_ended', date('Y-m-d H:i:s'));
@@ -1020,7 +1018,7 @@ class HomeController extends Controller
     public function driverRideStatus($ride_id, $status)
     {
         event(new RideStatusChanged($ride_id, $status));
-        $model =  new ParentModel();
+        $model =  $this->model;
         $array = [];
         $array['status'] = $status;
         if ($status == 5) {
@@ -1047,7 +1045,7 @@ class HomeController extends Controller
     {
         $array = [];
         $array['status'] = $status;
-        $model =  new ParentModel();
+        $model =  $this->model;
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         switch ($status) {
             case 5:
@@ -1069,7 +1067,7 @@ class HomeController extends Controller
 
         $apiController = new ApiController();
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
-        $model =  new ParentModel();
+        $model =  $this->model;
         if ($status == 5 || $status == 1) {
             if ($status == 5) {
                 $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'cab_time', date('Y-m-d H:i:s'));
@@ -1096,7 +1094,7 @@ class HomeController extends Controller
         if ($type == 'passenger') {
             $ride_passenger_id = $id;
         }
-        $model =  new ParentModel();
+        $model =  $this->model;
         $location = '{ "latitude": ' . $lat . ', "longitude": ' . $long . ' }';
         if ($status == 5 || $status == 1) {
             if ($status == 5) {

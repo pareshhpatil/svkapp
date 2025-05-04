@@ -10,8 +10,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ApiController;
-use App\Models\ParentModel;
 use App\Http\Lib\Encryption;
+use Illuminate\Support\Facades\DB;
 
 class SendRideStatusNotification implements ShouldQueue
 {
@@ -28,7 +28,7 @@ class SendRideStatusNotification implements ShouldQueue
         public int $ride_id,
         public int $status
     ) {
-        $this->model =  new ParentModel();
+       
     }
 
     public function handle()
@@ -38,7 +38,7 @@ class SendRideStatusNotification implements ShouldQueue
         $apiController = new ApiController();
         $link = Encryption::encode($ride_id);
         if ($status == 2) {
-            $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
+            $passengers = $this->getTableList('ride_passenger', 'ride_id', $ride_id);
             foreach ($passengers as $row) {
                 if ($row->status == 0) {
                     $link = Encryption::encode($row->id);
@@ -48,8 +48,8 @@ class SendRideStatusNotification implements ShouldQueue
             }
         }
 
-        $ride = $this->model->getTableRow('ride', 'id', $ride_id);
-        $driver_name = $this->model->getColumnValue('driver', 'id', $ride->driver_id, 'name');
+        $ride = $this->getTableRow('ride', 'id', $ride_id);
+        $driver_name = $this->getColumnValue('driver', 'id', $ride->driver_id, 'name');
         $link = Encryption::encode($ride_id);
         $url = 'https://app.svktrv.in/admin/ride/' . $link;
         $title = '';
@@ -65,7 +65,7 @@ class SendRideStatusNotification implements ShouldQueue
         $tokens = [];
         if ($title != '') {
             $this->saveNotification($title, $message, $url, $notification_type);
-            $supervisors = $this->model->getTableList('users', 'field_supervisor', 1);
+            $supervisors = $this->getTableList('users', 'field_supervisor', 1);
             foreach ($supervisors as $row) {
                 if ($row->token != '' && $row->app_notification == 1) {
                     $tokens[] = $row->token;
@@ -74,6 +74,61 @@ class SendRideStatusNotification implements ShouldQueue
             if (!empty($tokens)) {
                 $apiController->sendNotification(0, 0, $title, $message, $url, '', $tokens);
             }
+        }
+    }
+
+    public function getTableList($table, $where, $value, $col = '*')
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw($col))
+            ->where('is_active', 1)
+            ->where($where, $value)
+            ->get();
+        return $retObj;
+    }
+
+    public function getColumnValue($table, $where, $value, $column_name, $param = [], $orderby = null)
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw($column_name . ' as value'))
+            ->where($where, $value);
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        if ($orderby != null) {
+            $retObj->orderByDesc($orderby);
+        }
+        $array = $retObj->first();
+        if (!empty($array)) {
+            return $array->value;
+        } else {
+            return false;
+        }
+    }
+
+    public function getTableRow($table, $where, $value, $active = 0, $param = [])
+    {
+
+        $retObj = DB::table($table)
+            ->select(DB::raw('*'))
+            ->where($where, $value);
+        if ($active == 1) {
+            $retObj->where('is_active', 1);
+        }
+        if (!empty($param)) {
+            foreach ($param as $k => $v) {
+                $retObj->where($k, $v);
+            }
+        }
+        $array = $retObj->first();
+        if (!empty($array)) {
+            return $array;
+        } else {
+            return false;
         }
     }
 
@@ -87,6 +142,17 @@ class SendRideStatusNotification implements ShouldQueue
         $array['user_type'] = $user_type;
         $array['user_id'] = $user_id;
         $array['ride_id'] = $this->ride_id;
-        $this->model->insertTable('notifications', $array);
+        $this->insertTable('notifications', $array);
+    }
+
+    public function insertTable($table_name, $array, $created_by = '0')
+    {
+        $array['created_by'] = $created_by;
+        $array['last_update_by'] = $created_by;
+        $array['created_date'] = date('Y-m-d H:i:s');
+        $id = DB::table($table_name)->insertGetId(
+            $array
+        );
+        return $id;
     }
 }
