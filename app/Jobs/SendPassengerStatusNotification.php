@@ -62,18 +62,18 @@ class SendPassengerStatusNotification implements ShouldQueue
         $notification_type = 1;
         if ($status == 6) {
             $title = $passenger_name . ' picked up from ' . $row->pickup_location . ' by ' . $driver_name;
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' Pickup time: ' . date('h:i:A', strtotime($ride->pickup_time));
+            $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
         } elseif ($status == 2) {
             $title = $passenger_name . ' droped at ' . $row->drop_location . ' by ' . $driver_name;
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' Type: ' . $ride->type;
+            $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Type: ' . $ride->type;
             $notification_type = 1;
         } elseif ($status == 5) {
             $title = $driver_name . ' has reached at ' . $passenger_name . ' location';
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' Pickup time: ' . date('h:i:A', strtotime($ride->pickup_time));
+            $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
             $notification_type = 2;
         } elseif ($status == 4) {
             $title = $driver_name . ' mark no show for ' . $passenger_name;
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' Pickup time: ' . date('h:i:A', strtotime($ride->pickup_time));
+            $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
             $notification_type = 2;
         }
         $tokens = [];
