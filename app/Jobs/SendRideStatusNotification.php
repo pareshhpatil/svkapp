@@ -62,6 +62,7 @@ class SendRideStatusNotification implements ShouldQueue
             $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' End time: ' . date('h:i:A', strtotime($ride->end_time));
             $notification_type = 1;
         }
+        
         $tokens = [];
         if ($title != '') {
             $this->saveNotification($title, $message, $url, $notification_type);

@@ -636,12 +636,13 @@ class HomeController extends Controller
 
     public function notifications($ride_id = 0)
     {
-        if ($ride_id > 0) {
+        if ($ride_id == 0) {
             $filter = ['is_active' => 1];
         } else {
             $filter = ['ride_id' => $ride_id];
         }
         $list = $this->model->getList('notifications', $filter, '*', 0, 'id');
+        dd($list);
         $data['list'] = $list;
         $data['menu'] = 3;
         $data['title'] = 'Notifications';
