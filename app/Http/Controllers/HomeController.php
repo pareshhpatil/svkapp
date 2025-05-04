@@ -642,7 +642,6 @@ class HomeController extends Controller
             $filter = ['ride_id' => $ride_id];
         }
         $list = $this->model->getList('notifications', $filter, '*', 0, 'id');
-        dd($list);
         $data['list'] = $list;
         $data['menu'] = 3;
         $data['title'] = 'Notifications';
