@@ -21,9 +21,9 @@
     }
 
     .timeline.timed {
-    padding-left: 25px;
-    padding-right: 20px;
-}
+        padding-left: 25px;
+        padding-right: 20px;
+    }
 
     .bg-red {
         background: #e8481e !important;
@@ -91,7 +91,7 @@
                     </a>
 
                 </li>
-                
+
                 <!-- * item -->
                 <!-- item -->
                 <li>
@@ -113,14 +113,14 @@
             </ul>
         </div>
 
-        
+
 
 
         <div class="mt-1"><b>Route</b></div>
         <div class="card timeline timed " style="">
 
             <div class="item" v-if="data.ride.type=='Drop'">
-                
+
                 <div class="dot bg-info"></div>
                 <div class="content">
                     <h4 class="title">Office
@@ -268,7 +268,7 @@
             </div>
         </div>
 
-        
+
         <div class="modal fade dialogbox" id="noshowmodal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -332,7 +332,7 @@
     <div class="in">
         <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
         <div class="text">
-            Ride ended successfully 
+            Ride ended successfully
         </div>
     </div>
     <button type="button" onclick="closeT(16);" class="btn btn-sm  btn-text-light bg-red">CLOSE</button>
@@ -358,36 +358,40 @@
 
 
 <script>
-   //WTN.clearAppCache(false);
+    //WTN.clearAppCache(false);
 
-   const { screen } = window.WTN
+    const {
+        screen
+    } = window.WTN
 
-//to keep device screen on all the time
-screen.keepScreenOn()
+    //to keep device screen on all the time
+    screen.keepScreenOn()
 
 
-function scanBarcode()
-{
-const { Format, BarcodeScan } = WTN.Barcode;
-BarcodeScan({
-  formats: Format.ALL_FORMATS, // optional
-  onBarcodeSearch: (value) => {
-    alert(value);
-  },
-});
-}
+    function scanBarcode() {
+        const {
+            Format,
+            BarcodeScan
+        } = WTN.Barcode;
+        BarcodeScan({
+            formats: Format.ALL_FORMATS, // optional
+            onBarcodeSearch: (value) => {
+                alert(value);
+            },
+        });
+    }
 
     var mylatitude = '';
     var mylongitude = '';
-    var default_url="https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
+    var default_url = "https://vlpf3uqi3h.execute-api.ap-south-1.amazonaws.com/live/location";
 
-    var location_get=false;
+    var location_get = false;
 
     function success(pos) {
         const crd = pos.coords;
         mylatitude = crd.latitude;
         mylongitude = crd.longitude;
-        location_get=true;
+        location_get = true;
     }
 
     function error(err) {
@@ -432,8 +436,7 @@ BarcodeScan({
         window.location.href = "/driver/ride/status/{{$ride_id}}/2";
     }
 
-    function restartLocation()
-    {
+    function restartLocation() {
         stop();
         start();
     }
@@ -452,7 +455,7 @@ BarcodeScan({
     @endif
 
     function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 </script>
 
@@ -480,9 +483,10 @@ BarcodeScan({
             verifyotp() {
                 var otp = document.getElementById('otp').value;
                 array = this.data.ride_passengers[this.selected_id];
-                if(otp=='0000')
-                {
-                    otp=array.otp;
+                verified = "1";
+                if (otp == '0000') {
+                    otp = array.otp;
+                    verified = "0";
                 }
                 if (array.otp != otp && array.mobile != '') {
                     this.verror = 'Invalid OTP';
@@ -490,16 +494,16 @@ BarcodeScan({
                 } else {
                     document.getElementById('otp').value = '';
                     this.data.ride_passengers[this.selected_id].status = 1;
-                    axios.get('/driver/ride/passenger/status/' + array.id + '/1');
+                    axios.get('/driver/ride/passenger/status/' + array.id + '/1' + verified);
                     document.getElementById('closeotp').click();
-                    this.sendLocation('passenger',array.id,1);
+                    this.sendLocation('passenger', array.id, 1);
                 }
             },
             directverify(selected_id) {
                 array = this.data.ride_passengers[selected_id];
                 this.data.ride_passengers[selected_id].status = 1;
-                axios.get('/driver/ride/passenger/status/' + array.id + '/1');
-                this.sendLocation('passenger',array.id,1);
+                axios.get('/driver/ride/passenger/status/' + array.id + '/10');
+                this.sendLocation('passenger', array.id, 1);
             },
             resendotp(selected_id) {
                 array = this.data.ride_passengers[this.selected_id];
@@ -516,14 +520,14 @@ BarcodeScan({
                 array = this.data.ride_passengers[id];
                 this.data.ride_passengers[id].status = 5;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/5');
-                this.sendLocation('passenger',array.id,5);
+                this.sendLocation('passenger', array.id, 5);
             },
             out() {
                 array = this.data.ride_passengers[this.selected_id];
                 this.data.ride_passengers[this.selected_id].status = 2;
                 axios.get('/driver/ride/passenger/status/' + array.id + '/2');
                 document.getElementById('closeout').click();
-                this.sendLocation('passenger',array.id,2);
+                this.sendLocation('passenger', array.id, 2);
                 this.endStatus();
             },
             endStatus() {
@@ -547,23 +551,23 @@ BarcodeScan({
             //     setLocation();
             //     setTimeout(() => this.updateLocationApi(type,id,status,mylatitude,mylongitude), 5000);
             // },
-            async sendLocation(type,id,status) {
-            location_get=false;
-            setLocation();
-            let count = 0;
-            while (location_get==false) {
-                await sleep(1000); // wait 1 second
-                if (count === 5) {
-                break;
+            async sendLocation(type, id, status) {
+                location_get = false;
+                setLocation();
+                let count = 0;
+                while (location_get == false) {
+                    await sleep(1000); // wait 1 second
+                    if (count === 5) {
+                        break;
+                    }
+                    count++;
                 }
-                count++;
-            }
-            this.updateLocationApi(type,id,status,mylatitude,mylongitude);
+                this.updateLocationApi(type, id, status, mylatitude, mylongitude);
             },
-            async updateLocationApi(type,id,status,lat,long) {
-                await axios.get('/driver/ride/location/status/'+type+'/'+id+'/'+status+'/'+lat+'/'+long)
+            async updateLocationApi(type, id, status, lat, long) {
+                await axios.get('/driver/ride/location/status/' + type + '/' + id + '/' + status + '/' + lat + '/' + long)
                     .then(response => {
-                        
+
                     })
                     .catch(error => {
                         console.error(error);

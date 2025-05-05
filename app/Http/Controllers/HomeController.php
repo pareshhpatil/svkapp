@@ -1044,7 +1044,16 @@ class HomeController extends Controller
     public function driverPassengerRideStatus($ride_passenger_id, $status)
     {
         $array = [];
+        $otp_verified = 0;
+        if ($status == 10) {
+            $status = 1;
+            $otp_verified = 0;
+        } elseif ($status == 11) {
+            $status = 1;
+            $otp_verified = 1;
+        }
         $array['status'] = $status;
+
         $model =  $this->model;
         $row = $this->model->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         switch ($status) {
@@ -1053,6 +1062,7 @@ class HomeController extends Controller
                 break;
             case 1:
                 $array['in_time'] = date('Y-m-d H:i:s');
+                $array['otp_verified'] = $otp_verified;
                 if ($row->cab_time == '') {
                     $array['cab_time'] = date('Y-m-d H:i:s');
                 }
