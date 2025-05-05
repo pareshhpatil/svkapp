@@ -9,13 +9,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
-use Log;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingEmail; // Replace with your Mailable class
 use App\Http\Controllers\TripController;
-
+use Illuminate\Support\Facades\Log;
 class WebhookController extends Controller
 {
     /**
