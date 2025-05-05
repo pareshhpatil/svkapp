@@ -32,7 +32,6 @@ class WebhookController extends Controller
     public function facebookWebhook(Request $request)
 
     {
-        Log::error('Facebook Webhook:');
         Log::error('Facebook Webhook: ' . json_encode($request->all()));
 
         $data = $request->all();
@@ -191,6 +190,7 @@ class WebhookController extends Controller
 
     function getWhatsappImage($image_id, $extension = 'jpg')
     {
+        return $this->getWhatsappImagenew($image_id, $extension = 'jpg');
         $accessToken = env('WHATSAPP_TOKEN');
 
         // Make a GET request to retrieve media URL
