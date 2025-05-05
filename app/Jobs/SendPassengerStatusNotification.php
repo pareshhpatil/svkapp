@@ -28,8 +28,7 @@ class SendPassengerStatusNotification implements ShouldQueue
     public function __construct(
         public int $passenger_id,
         public int $status
-    ) {
-    }
+    ) {}
 
     public function handle()
     {
@@ -41,12 +40,10 @@ class SendPassengerStatusNotification implements ShouldQueue
         $row = $this->getTableRow('ride_passenger', 'id', $ride_passenger_id);
         $ride_id = $row->ride_id;
         $this->ride_id = $row->ride_id;
-        if ($status == 5 || $status == 1) {
-            if ($status == 5) {
-                $link = Encryption::encode($ride_passenger_id);
-                $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-                $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
-            }
+        if ($status == 5) {
+            $link = Encryption::encode($ride_passenger_id);
+            $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+            $apiController->sendNotification($row->passenger_id, 5, 'Cab Arrived', 'Your cab has arrived at your pickup location. We hope you have a pleasant ride', $url);
         }
         if ($status == 2) {
             $url = 'https://app.svktrv.in/dashboard';
@@ -71,6 +68,10 @@ class SendPassengerStatusNotification implements ShouldQueue
             $title = $driver_name . ' has reached at ' . $passenger_name . ' location';
             $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
             $notification_type = 2;
+        } elseif ($status == 1) {
+            $title = $passenger_name . ' picked up from ' . $row->pickup_location . ' by ' . $driver_name;
+            $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
+            $notification_type = 1;
         } elseif ($status == 4) {
             $title = $driver_name . ' mark no show for ' . $passenger_name;
             $message = "Ride location " . $row->pickup_location . ' to ' . $row->drop_location . ' Pickup time: ' . date('h:i:A', strtotime($row->pickup_time));
