@@ -32,7 +32,7 @@ class WebhookController extends Controller
     public function facebookWebhook(Request $request)
 
     {
-        Log::info('Facebook Webhook: ' . json_encode($request->all()));
+        Log::error('Facebook Webhook: ' . json_encode($request->all()));
 
         $data = $request->all();
         $model = $this->model;
