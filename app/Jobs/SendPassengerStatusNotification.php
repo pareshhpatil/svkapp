@@ -53,7 +53,7 @@ class SendPassengerStatusNotification implements ShouldQueue
         $ride = $this->getTableRow('ride', 'id', $ride_id);
         $driver_name = $this->getColumnValue('driver', 'id', $ride->driver_id, 'name');
         $passenger_name = $this->getColumnValue('passenger', 'id', $row->passenger_id, 'employee_name');
-        $link = Encryption::encode($row->id);
+        $link = Encryption::encode($ride->id);
         $url = 'https://app.svktrv.in/admin/ride/' . $link;
         $title = '';
         $notification_type = 1;
