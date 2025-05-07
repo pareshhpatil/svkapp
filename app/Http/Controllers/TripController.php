@@ -171,11 +171,13 @@ class TripController extends Controller
         }
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         if ($escort_id > 0) {
-            if ($ride->escort > 0) {
-                $this->model->updateWhereArray('ride_passenger', ['ride_id' => $ride_id, 'passenger_type' => 2], ['passenger_id' => $request->escort_id]);
+            $escort_ride_passenger_id=$this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'id', ['passenger_type' => 2, 'is_active' => 1]);
+            if ($escort_ride_passenger_id==true) {
+                $this->model->updateTable('ride_passenger', 'id', $escort_ride_passenger_id, 'passenger_id', $escort_id);
             } else {
                 $ride_passenger['roster_id'] = 0;
                 $ride_passenger['ride_id'] = $ride_id;
+                $ride_passenger['passenger_id'] = $escort_id;
                 $ride_passenger['passenger_type'] = 2;
                 $ride_passenger['pickup_location'] = $ride->start_location;
                 $ride_passenger['drop_location'] = $ride->end_location;
