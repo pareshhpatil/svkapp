@@ -282,6 +282,12 @@ class RosterController extends Controller
         $data['shift'] = [];
         $data['roster'] = [];
         if (!empty($data['rosterdata'])) {
+
+            $rosterArray = [];
+            foreach ($data['rosterdata'] as $k => $row) {
+                $data['rosterdata'][$row->id] = $row;
+            }
+            $data['rosterdata']=$data['rosterdata'];
             foreach ($data['rosterdata'] as $k => $row) {
                 if ($row->status == 0) {
                     $shift = ($row->shift == '') ? 'NA' : $row->shift;

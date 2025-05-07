@@ -45,10 +45,8 @@
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start">
-                                            <span class="badge bg-label-danger" v-html="'Cab '+ (index+1)"></span>
                                             <span class="badge bg-label-primary" v-if="item.type=='Drop'" v-html="item.type"></span>
                                             <span class="badge bg-label-success" v-if="item.type=='Pickup'" v-html="item.type"></span>
-                                            
                                             <span v-html="item.time"></span> &nbsp;&nbsp;
                                             <span v-html="item.slab_text"></span>
                                             <div class="card-action-element">
@@ -68,15 +66,6 @@
                                                     <input type="time" id="modalAddCardExpiryDate" style="width: auto;" class="form-control expiry-date-mask" placeholder="Pickup Time">
                                                 </span>
                                             </li>
-
-                                            <li v-for="(id, ind) in item.ids" class="list-group-item cursor-move d-flex  align-items-center">
-                                            <img class="rounded-circle mr-1" :src="roster[id].photo" alt="avatar" height="32" width="32" />
-                                                <span v-html="roster[id].title"> </span>
-                                                <input type="time" :value="roster[id].start_time" v-if="roster[id].type=='Pickup'" :id="'time'+roster[id].id" style="width: auto;min-width: 130px;" class="form-control" placeholder="Pickup Time">
-                                                <button type="button" @click="removePassenger(index,ind,roster[id].id)"  class="btn btn-icon btn-sm btn-outline-dribbble waves-effect"><i class="tf-icons ti ti-minus"></i>
-                                                </button>
-                                            </li>
-                                            
                                         </ul>
                                         <ul class="list-group list-group-flush" :id="item.id">
                                         </ul>
@@ -126,12 +115,10 @@
                                     <div class="col-md-12 col-12 mb-md-0 mb-4">
                                         <p>&nbsp;</p>
                                         <ul class="list-group list-group-flush" id="roster_list">
-                                            <li v-for="item in roster" :id="item.id" v-if="item.status==0" class="list-group-item drag-item cursor-move d-flex  align-items-center">
+                                            <li v-for="item in roster" :id="item.id" class="list-group-item drag-item cursor-move d-flex  align-items-center">
                                                 <img class="rounded-circle mr-1" :src="item.photo" alt="avatar" height="32" width="32" />
                                                 <span v-html="item.title"> </span>
                                                 <input type="time" :value="item.start_time" v-if="item.type=='Pickup'" :id="'time'+item.id" style="width: auto;min-width: 130px;" class="form-control" placeholder="Pickup Time">
-                                                <button type="button" data-bs-toggle="modal" @click="setmovepassengerid(item.id)" data-bs-target="#movetocab" class="btn btn-icon btn-sm btn-outline-vimeo waves-effect"><i class="tf-icons ti ti-plus"></i>
-                                                </button>
                                             </li>
                                         </ul>
                                     </div>
@@ -217,30 +204,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="movetocab" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
-            <div class="modal-content p-3 p-md-5">
-                <div class="modal-body">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                        <div class="col-12 col-md-12">
-                            <label class="form-label" for="modalAddCardName">Cab name</label>
-                            <select v-model="move_cab_no" class="select2 form-select input-sm">
-                                <option value="">Select..</option>
-                                <option v-for="(item, index) in routes" v-if="item.is_active==1" :value="'cab'+ (index+1)" v-html="'Cab '+ (index+1)"></option>
-                            </select>
-                        </div>
-                        <br>
-                        <div class="col-12 text-center">
-                            <a v-on:click="moveToCab" href="#" data-bs-dismiss="modal" class="btn btn-primary me-sm-3 me-1">Save</a>
-                            <button type="reset" class="btn btn-label-secondary btn-reset" data-bs-dismiss="modal" aria-label="Close">
-                                Cancel
-                            </button>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
     @include('web.roster.add')
 </div>
 
@@ -280,12 +243,10 @@
                 edit_cab: '',
                 emp_mobile: '',
                 emp_gender: 'Male',
-                move_passenger_id:0,
                 emp_project_id: 0,
                 emp_location: '',
                 emp_address: '',
                 emp_name: '',
-                move_cab_no: '',
                 emp_id: 0,
                 roster_type: 'Drop',
                 roster_shift: '',
@@ -330,23 +291,9 @@
                 }
                 return arr;
             },
-            removePassenger(id,index,roster_id)
-            {
-                this.roster[roster_id].status=0;
-                this.routes[id].ids.splice(index, 1);
-            },
-            setmovepassengerid(id)
-            {
-                this.move_passenger_id=id;
-            },
-            moveToCab()
-            {
-                this.roster[this.move_passenger_id].status=1;
-                this.moveData(this.move_passenger_id, this.move_cab_no, 'roster_list');
-            },
             moveData(id, to, from) {
 
-                console.log(id, to, from);
+
                 if (from == 'roster_list') {
                     to_id = Number(to.substring(3)) - 1;
                     if (Array.isArray(this.routes[to_id].ids)) {
@@ -374,6 +321,7 @@
                     }
                     this.routes[from_id].ids = this.removeArray(this.routes[from_id].ids, id);
                 }
+                console.log(this.routes);
 
 
             },
