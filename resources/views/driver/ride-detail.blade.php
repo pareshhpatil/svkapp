@@ -498,6 +498,7 @@
                     document.getElementById('closeotp').click();
                     this.sendLocation('passenger', array.id, 1);
                 }
+                restartLocation();
             },
             directverify(selected_id) {
                 array = this.data.ride_passengers[selected_id];
@@ -544,6 +545,8 @@
                     axios.get('/driver/ride/status/{{$ride_id}}/5');
                     //setTimeout(() => stoplocation(), 6000);
                     toastbox('toast-16');
+                }else{
+                    restartLocation();
                 }
                 this.alldone = done;
             },
