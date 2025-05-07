@@ -176,7 +176,6 @@ class TripController extends Controller
             } else {
                 $ride_passenger['roster_id'] = 0;
                 $ride_passenger['ride_id'] = $ride_id;
-                $ride_passenger['ride_id'] = $ride_id;
                 $ride_passenger['passenger_type'] = 2;
                 $ride_passenger['pickup_location'] = $ride->start_location;
                 $ride_passenger['drop_location'] = $ride->end_location;
