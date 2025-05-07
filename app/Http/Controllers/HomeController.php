@@ -215,7 +215,7 @@ class HomeController extends Controller
         if ($type == 'assign') {
             $data['driver_list'] = $this->model->getTableList('driver', 'is_active', 1, 'id,name,location');
             $data['vehicle_list'] = $this->model->getTableList('vehicle', 'is_active', 1, 'vehicle_id,number');
-            $data['escort_list'] = $this->model->getList('passenger', ['project_id' => $ride['project_id'], 'passenger_type' => 2], "concat(employee_name,' - ', location) as title,id");
+            $data['escort_list'] = $this->model->getList('passenger', ['project_id' => $ride['project_id'], 'passenger_type' => 2], "employee_name as title,id");
             $data['title'] = 'Assign cab';
             $data['passenger_list'] = $this->model->getTableList('passenger', 'project_id', $ride['project_id'], "concat(employee_name,' - ', location) as title,id");
         }
