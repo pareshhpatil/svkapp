@@ -70,9 +70,9 @@ class MasterController extends Controller
                 $id = $this->model->saveTable('vehicle', $array, Session::get('user_id'));
             }
         } else if ($type == 'escort') {
-            $array['passenger'] = 2;
+            $array['passenger_type'] = 2;
             $array['gender'] = 'Male';
-            $id = $this->model->getColumnValue('passenger', 'mobile', $array['mobile'], 'id', ['passenger' => 2, ['project_id' => $array['project_id']]]);
+            $id = $this->model->getColumnValue('passenger', 'mobile', $array['mobile'], 'id', ['passenger_type' => 2, ['project_id' => $array['project_id']]]);
             if ($id == false) {
                 $id = $this->model->saveTable('passenger', $array, Session::get('user_id'));
             }
