@@ -72,6 +72,7 @@ class MasterController extends Controller
         } else if ($type == 'escort') {
             $array['passenger_type'] = 2;
             $array['gender'] = 'Male';
+            $array['location'] = '';
             $id = $this->model->getColumnValue('passenger', 'mobile', $array['mobile'], 'id', ['passenger_type' => 2, 'project_id' => $array['project_id']]);
             if ($id == false) {
                 $id = $this->model->saveTable('passenger', $array, Session::get('user_id'));
