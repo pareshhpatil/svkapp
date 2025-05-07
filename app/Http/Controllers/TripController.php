@@ -182,6 +182,7 @@ class TripController extends Controller
                 $ride_passenger['drop_location'] = $ride->end_location;
                 $ride_passenger['pickup_time'] = $ride->start_time;
                 $ride_passenger['created_by'] = Session::get('user_id');
+                $ride_passenger['last_update_by'] = Session::get('user_id');
                 $ride_passenger['otp'] = rand(1111, 9999);
                 $this->model->saveTable('ride_passenger', $ride_passenger, 0);
                 $this->model->updateTable('ride', 'id', $ride_id, 'escort', 1);
