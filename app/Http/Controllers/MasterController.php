@@ -51,19 +51,35 @@ class MasterController extends Controller
         $ApiController->sendNotification(1, 1, 'Call Initiated ', $from . ' to ' . $to,  '', '');
     }
 
-    public function masterSave(Request $request, $type)
+    public function masterSave(Request $request, $type, $source = 'web')
     {
         $array = $request->all();
+        unset($array['_token']);
+
         if ($type == 'driver') {
-            unset($array['_token']);
-            $this->model->saveTable('driver', $array, Session::get('user_id'));
+            $id = $this->model->getColumnValue('driver', 'mobile', $array['mobile'], 'id');
+            if ($id == false) {
+                $id = $this->model->saveTable('driver', $array, Session::get('user_id'));
+            }
         } else if ($type == 'vehicle') {
-            unset($array['_token']);
+
             $array['name'] = $array['brand'] . ' - ' . $array['number'];
             $array['admin_id'] = 1;
-            $this->model->saveTable('vehicle', $array, Session::get('user_id'));
+            $id = $this->model->getColumnValue('vehicle', 'number', $array['number'], 'vehicle_id', ['admin_id' => 1]);
+            if ($id == false) {
+                $id = $this->model->saveTable('vehicle', $array, Session::get('user_id'));
+            }
+        } else if ($type == 'escort') {
+            $array['passenger'] = 2;
+            $array['gender'] = 'Male';
+            $id = $this->model->getColumnValue('passenger', 'mobile', $array['mobile'], 'id', ['passenger' => 2, ['project_id' => $array['project_id']]]);
+            if ($id == false) {
+                $id = $this->model->saveTable('passenger', $array, Session::get('user_id'));
+            }
         }
-
+        if ($source == 'api') {
+            return $id;
+        }
         return redirect()->back()->with('message', 'Added successfully');
     }
 

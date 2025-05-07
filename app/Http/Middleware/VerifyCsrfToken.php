@@ -16,5 +16,6 @@ class VerifyCsrfToken extends Middleware
         '/facebook/webhook',
         '/cashfree/webhook',
         '/notification/*',
+        '/master/save/*',
     ];
 }

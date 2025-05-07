@@ -231,6 +231,7 @@ class HomeController extends Controller
         $data['data']['driver'] = $driver;
         $data['data']['vehicle'] = $vehicle;
         $data['data']['ride_passengers'] = $ride_passengers;
+        $data['escort_id'] = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride['id'], 'passenger_id', ['passenger_type' => 2, 'is_active' => 1]);
         $data['enc_link'] = $link;
         $data['data']['link'] = env('APP_URL') . '/admin/ride/' . $link;
         $data['type'] = $type;
@@ -240,7 +241,7 @@ class HomeController extends Controller
             $photos = $this->model->getTableList('ride_images', 'ride_id', $ride_id);
             return view('passenger.ride-detail-casual', $data);
         }
-        return view('passenger.ride-detail', $data);
+        return view('admin.ride-detail', $data);
     }
 
     public function adminRideAssign($link)
