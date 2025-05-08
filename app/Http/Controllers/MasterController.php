@@ -37,6 +37,27 @@ class MasterController extends Controller
         return view('master.' . $type . '-add', $data);
     }
 
+    public function masterList($type)
+    {
+        $data['menu'] = 0;
+        $data['title'] = 'List ' . $type;
+        $drivers = $this->model->getTableList('driver', 'is_active', 1, 'id,name,mobile,photo');
+        $array = json_decode(json_encode($drivers), 1);
+        $data['drivers'] = $this->EncryptList($array, 0, '/master/update/driver/', 'id');
+        return view('master.' . $type . '-list', $data);
+    }
+
+    public function masterUpdate($type, $link)
+    {
+        $id = Encryption::decode($link);
+        $data['menu'] = 0;
+        $data['title'] = 'Update ' . $type;
+        $driver = $this->model->getTableRow('driver', 'id', $id);
+        $data['data'] = $driver;
+        $data['id'] = $id;
+        return view('master.' . $type . '-update', $data);
+    }
+
     public function callIVR($to)
     {
         $from = Session::get('mobile');
@@ -80,6 +101,9 @@ class MasterController extends Controller
         }
         if ($source == 'api') {
             return $id;
+        }
+        if ($type == 'driver') {
+            return redirect('/master/update/driver/' . Encryption::encode($id));
         }
         return redirect()->back()->with('message', 'Added successfully');
     }

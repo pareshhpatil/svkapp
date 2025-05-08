@@ -102,7 +102,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
     Route::get('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
     Route::get('/setting/update/{col}/{val}', [App\Http\Controllers\HomeController::class, 'updateSetting']);
-    Route::post('/upload/file/{type}', [App\Http\Controllers\HomeController::class, 'uploadFile']);
+    Route::post('/upload/file/{type}/{driver_id?}', [App\Http\Controllers\HomeController::class, 'uploadFile']);
 
     Route::post('/profile/save', [App\Http\Controllers\HomeController::class, 'profileSave']);
     Route::get('/calendar', [App\Http\Controllers\HomeController::class, 'calendar']);
@@ -114,6 +114,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/admin/assign/ride/cab', [App\Http\Controllers\TripController::class, 'assignRideCab']);
 
     Route::get('/master/add/{type}', [App\Http\Controllers\MasterController::class, 'masterAdd']);
+    Route::get('/master/update/{type}/{id}', [App\Http\Controllers\MasterController::class, 'masterUpdate']);
+    Route::get('/master/list/{type}', [App\Http\Controllers\MasterController::class, 'masterList']);
     Route::post('/master/save/{type}/{source?}', [App\Http\Controllers\MasterController::class, 'masterSave']);
 
     Route::get('/ride/passenger/add/{ride_id}/{p_id}/{time}', [App\Http\Controllers\HomeController::class, 'passengerAdd']);

@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
-
+use App\Http\Lib\Encryption;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -88,5 +88,21 @@ class Controller extends BaseController
         $json = '{"object":"whatsapp_business_account","entry":[{"id":"351936407998643","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"918879643150","phone_number_id":"350618571465341"},"contacts":[{"profile":{"name":"Contact us"},"wa_id":"919423300297"}],"messages":[{"from":"919423300297","id":"' . rand(10000, 99999) . '","timestamp":"1718544192","text":{"body":"' . $body . '"},"type":"text"}]},"field":"messages"}]}]}';
         $request = new Request(json_decode($json, 1));
         $WebhookController->facebookWebhook($request);
+    }
+
+
+    public function EncryptList($array, $single = 0, $link = '/passenger/ride/', $key = 'pid')
+    {
+        if (!empty($array)) {
+            if ($single == 0) {
+                foreach ($array as $k => $v) {
+                    $array[$k]['link'] = $link . Encryption::encode($v[$key]);
+                }
+            } else {
+
+                $array['link'] = $link . Encryption::encode($array[$key]);
+            }
+        }
+        return $array;
     }
 }

@@ -446,20 +446,7 @@ class HomeController extends Controller
     }
 
 
-    public function EncryptList($array, $single = 0, $link = '/passenger/ride/', $key = 'pid')
-    {
-        if (!empty($array)) {
-            if ($single == 0) {
-                foreach ($array as $k => $v) {
-                    $array[$k]['link'] = $link . Encryption::encode($v[$key]);
-                }
-            } else {
 
-                $array['link'] = $link . Encryption::encode($array[$key]);
-            }
-        }
-        return $array;
-    }
 
 
     public function chats()
@@ -556,7 +543,7 @@ class HomeController extends Controller
         $data['data'] = $this->model->updateTable('users', 'id', Session::get('user_id'), $col, $val);
     }
 
-    public function uploadFile(Request $request, $type)
+    public function uploadFile(Request $request, $type, $driver_id = 0)
     {
         $request->validate([
             'image' => 'required'
@@ -584,15 +571,26 @@ class HomeController extends Controller
         //echo '3';
         //$compress = 'storage/uploads/' . $file_name;
         //$img->save($compress);
-        $this->model->updateTable('users', 'id', Session::get('user_id'), 'image', $path);
-        $this->model->updateTable('users', 'id', Session::get('user_id'), 'icon', $compress);
-        if (Session::get('user_type') == 4) {
-            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'photo',  $path);
-            $this->model->updateTable('driver', 'id', Session::get('parent_id'), 'icon',  $compress);
+        if ($driver_id > 0) {
+            $user_id = $this->model->getColumnValue('users', 'parent_id', $driver_id, 'id', ['user_type' => 4]);
+            $parent_id = $driver_id;
+            $user_type = 4;
+        } else {
+            $user_id = Session::get('user_id');
+            $parent_id = Session::get('parent_id');
+            $user_type = Session::get('user_type');
         }
-        if (Session::get('user_type') == 5) {
-            $this->model->updateTable('passenger', 'id', Session::get('parent_id'), 'photo',  $path);
-            $this->model->updateTable('passenger', 'id', Session::get('parent_id'), 'icon',  $compress);
+        if ($user_id != false) {
+            $this->model->updateTable('users', 'id', $user_id, 'image', $path);
+            $this->model->updateTable('users', 'id', $user_id, 'icon', $compress);
+        }
+        if ($user_type == 4) {
+            $this->model->updateTable('driver', 'id', $parent_id, 'photo',  $path);
+            $this->model->updateTable('driver', 'id', $parent_id, 'icon',  $compress);
+        }
+        if ($user_type == 5) {
+            $this->model->updateTable('passenger', 'id', $parent_id, 'photo',  $path);
+            $this->model->updateTable('passenger', 'id', $parent_id, 'icon',  $compress);
         }
 
         Session::put('icon',  $compress);

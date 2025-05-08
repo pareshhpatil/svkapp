@@ -264,6 +264,16 @@
                             </a>
                         </li>
                         <li>
+                            <a href="/master/add/driver" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="person-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Drivers
+                                </div>
+                            </a>
+                        </li>
+                        <li>
                             <a href="/master/add/vehicle" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="car-sport-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
