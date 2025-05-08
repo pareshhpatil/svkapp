@@ -41,7 +41,7 @@ class MasterController extends Controller
     {
         $data['menu'] = 0;
         $data['title'] = 'List ' . $type;
-        $drivers = $this->model->getTableList('driver', 'is_active', 1, 'id,name,mobile,photo');
+        $drivers = $this->model->getTableListOrderby('driver', 'is_active', 1,'desc','id', 'id,name,mobile,photo');
         $array = json_decode(json_encode($drivers), 1);
         $data['drivers'] = $this->EncryptList($array, 0, '/master/update/driver/', 'id');
         return view('master.' . $type . '-list', $data);

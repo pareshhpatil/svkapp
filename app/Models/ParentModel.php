@@ -179,11 +179,11 @@ class ParentModel extends Model
         return $retObj;
     }
 
-    public function getTableListOrderby($table, $where, $value, $orderby, $idcol = 'id')
+    public function getTableListOrderby($table, $where, $value, $orderby = 'desc', $idcol = 'id', $col = '*')
     {
 
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
+            ->select(DB::raw($col))
             ->where('is_active', 1)
             ->where($where, $value)
             ->orderBy($idcol, $orderby)
