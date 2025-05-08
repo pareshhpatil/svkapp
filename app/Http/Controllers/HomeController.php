@@ -592,8 +592,9 @@ class HomeController extends Controller
             $this->model->updateTable('passenger', 'id', $parent_id, 'photo',  $path);
             $this->model->updateTable('passenger', 'id', $parent_id, 'icon',  $compress);
         }
-
+        if ($driver_id == 0) {
         Session::put('icon',  $compress);
+        }
         return response()->json(['image' =>  $compress]);
     }
 
