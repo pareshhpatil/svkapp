@@ -264,7 +264,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/master/add/driver" class="item">
+                            <a href="/master/list/driver" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="person-circle-outline"></ion-icon>
                                 </div>
