@@ -446,7 +446,7 @@
         stop();
         window.location.href = "/driver/ride/status/{{$ride_id}}/5";
     }
-    @if($data['ride']['status'] == 2)
+    @if($data['ride']['status'] == 2 && Session::get('mobile')!='9730946150')
     restartLocation();
     //setInterval(function() {
     //    stop();
