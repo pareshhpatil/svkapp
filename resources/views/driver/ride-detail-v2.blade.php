@@ -241,7 +241,7 @@
             <button v-if="data.ride.type=='Pickup' && allReadyForDrop" v-on:click="setModal(6,'')" data-bs-target="#commonmodal" data-bs-toggle="modal" href="#" class="btn btn-primary btn-block mt-2">
                 <ion-icon name="walk-outline"></ion-icon> Drop All Passengers
             </button>
-            <button v-if="data.ride.type=='Drop' && reachAtLocation" v-on:click="setModal(7,'')" data-bs-target="#commonmodal" data-bs-toggle="modal" href="#" class="btn btn-warning btn-block mt-2">
+            <button v-if="data.ride.type=='Drop' && reachAtLocation && data.ride.status==2" v-on:click="setModal(7,'')" data-bs-target="#commonmodal" data-bs-toggle="modal" href="#" class="btn btn-warning btn-block mt-2">
                 <ion-icon name="location-outline"></ion-icon> Reached At Pickup Location
             </button>
             <!-- <button v-if="data.ride.status==2 " data-bs-toggle="modal" data-bs-target="#endmodal" class="btn btn-danger text-center mt-2">
