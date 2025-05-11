@@ -556,7 +556,7 @@
                 return this.data.ride_passengers.map((p) => {
                     const isRelevantStatus = [1, 3, 4].includes(p.status);
                     const isPickup = this.data.ride.type === 'Pickup';
-                    const isNotStarted = this.data.ride.status != 1;
+                    const isNotStarted = this.data.ride.status == 1;
                     return (isRelevantStatus && isPickup) || isNotStarted;
                 });
             }
