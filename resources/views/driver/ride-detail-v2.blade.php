@@ -547,7 +547,7 @@
         },
         computed: {
             reachAtLocation() {
-                return this.data.ride_passengers.every(p => p.status != 5);
+                return this.data.ride_passengers.some(p => p.status == 0);
             },
             allReadyForDrop() {
                 return this.data.ride_passengers.every(p => p.status === 1 || p.status === 4);
