@@ -22,6 +22,24 @@
             border: 2px solid #fff;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.09);
         }
+        .bg-danger{
+            background: #e8481e !important;
+        }
+
+        .bg-blue{
+            background: #6236FF !important;
+        }
+
+        .btn-outline-blue {
+            background: transparent;
+            border-color: #6236FF;
+            color: #6236FF;
+            transition: 0.2s all;
+        }
+
+        extra-small {
+            font-size: .575em;
+        }
        
     </style>
     <!-- <style>

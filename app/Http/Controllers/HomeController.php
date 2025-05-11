@@ -270,9 +270,10 @@ class HomeController extends Controller
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         $ride_passenger['pickup_time'] = $this->htmlDateTime($ride['start_time']);
         $ride['start_short_time'] = $this->htmlTime($ride['start_time']);
-        $ride['start_time'] = $this->htmlDateTime($ride['start_time']);
+        $ride['start_time'] = $this->htmlShortDateTime($ride['start_time']);
         $ride['end_short_time'] = $this->htmlTime($ride['end_time']);
         $ride['end_time'] = $this->htmlTime($ride['end_time']);
+        $ride['trip_type'] = ($ride['type'] == 'Drop') ? 'Logout' : 'Login';
         $data['data']['ride'] = $ride;
         $data['data']['project'] = $project;
         $data['data']['driver'] = $driver;
@@ -320,7 +321,7 @@ class HomeController extends Controller
 
             return view('driver.ride-detail-casual', $data);
         }
-        return view('driver.ride-detail', $data);
+        return view('driver.ride-detail-v2', $data);
     }
 
     public function rideTrack($link)
@@ -593,7 +594,7 @@ class HomeController extends Controller
             $this->model->updateTable('passenger', 'id', $parent_id, 'icon',  $compress);
         }
         if ($driver_id == 0) {
-        Session::put('icon',  $compress);
+            Session::put('icon',  $compress);
         }
         return response()->json(['image' =>  $compress]);
     }
@@ -1100,8 +1101,24 @@ class HomeController extends Controller
 
         $model->updateTable('ride_passenger', 'id', $ride_passenger_id, 'status', $status);
     }
-    public function driverLocationRideStatus($type, $id, $status, $lat, $long)
+    public function driverLocationRideStatus($type, $id, $status, $lat = '', $long = '')
     {
+        if ($type == 'ride') {
+            $ride_passengers = $this->model->getList('ride_passenger', ['ride_id' => $id], 'id');
+
+            if (!empty($ride_passengers)) {
+                foreach ($ride_passengers as $v) {
+                    $ride_passenger_id = $v->id;
+                    $this->driverLocationRideStatus('passenger', $ride_passenger_id, $status, $lat, $long);
+                    $this->driverPassengerRideStatus($ride_passenger_id, $status);
+                }
+            }
+            if ($status == 2) {
+                $this->model->updateTable('ride', 'id', $id, 'status', 5);
+                $this->driverRideStatus($id, 5);
+            }
+        }
+
         if ($type == 'passenger') {
             $ride_passenger_id = $id;
         }
