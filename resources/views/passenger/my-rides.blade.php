@@ -132,7 +132,7 @@
                         <img v-if="item.photo" :src="item.photo" alt="img" class="image-block imaged w48">
                         <div>
                             <strong v-html="item.pickup_time"></strong>
-                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span> (<span v-html="item.number.slice(-4)"></span>)</p>
+                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span> (<span v-html="item.number?.slice(-4) || ''"></span>)</p>
                         </div>
                     </div>
                     <div class="right">
@@ -350,6 +350,7 @@
         },
         mounted() {
             this.data = JSON.parse('{!!json_encode($data)!!}');
+            console.log(this.data);
         },
         methods: {
             async fetchDate(type) {
