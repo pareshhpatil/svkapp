@@ -118,7 +118,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <a href="javascript:;" class="d-flex align-items-center">
                                 <div class="avatar me-2">
-                                    <img :src="ride.photo || defaultPhoto" alt="Driver Photo" class="rounded-circle">
+                                    <img :src="ride.photo!='' || defaultPhoto" alt="Driver Photo" class="rounded-circle">
                                 </div>
                                 <div class="me-2 ms-1">
                                     <h5 class="mb-0">
@@ -157,7 +157,7 @@
                         <div class="d-flex align-items-center py-2 mb-2">
                             <div class="d-flex align-items-center">
                                 <div v-for="passenger in ride.passengers">
-                                    <img :src="passenger.photo" class="rounded-circle">
+                                    <img :src="passenger.photo" style="max-width: 40px;" class="rounded-circle">
                                 </div>
                             </div>
                             <small class="text-muted" style="margin-left: 10px;">@{{ride.passengers.length}} Passengers assigned</small>
@@ -178,7 +178,7 @@
                                         <img :src="ride.photo || defaultPhoto" class="rounded-circle">
                                     </div>
                                     <div v-for="passenger in ride.live_passengers" class="avatar me-1 avatar-online">
-                                        <img :src="passenger.photo" alt="@{{passenger.employee_name}}"
+                                        <img :src="passenger.photo" style="max-width: 40px;" alt="@{{passenger.employee_name}}"
                                             class="rounded-circle">
                                     </div>
                                 </div>
