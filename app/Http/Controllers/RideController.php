@@ -160,7 +160,7 @@ class RideController extends Controller
                     'project_cords'   => $ride['project_cords'],
                     'status'    => $ride['ride_status'],
                     'ride_status'    => $ride_status,
-                    'photo'           => $ride['photo'],
+                    'photo'           => ($ride['photo'] != '') ? $ride['photo'] : 'https://app.svktrv.in/assets/img/driver.png',
                     'passengers' => [],
                     'live_passengers' => [],
                 ];

@@ -118,7 +118,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <a href="javascript:;" class="d-flex align-items-center">
                                 <div class="avatar me-2">
-                                    <img :src="ride.photo!='' || defaultPhoto" alt="Driver Photo" class="rounded-circle">
+                                    <img :src="ride.photo || defaultPhoto" alt="Driver Photo" class="rounded-circle">
                                 </div>
                                 <div class="me-2 ms-1">
                                     <h5 class="mb-0">
