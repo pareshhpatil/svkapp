@@ -223,7 +223,7 @@
                             </span>
                             <div class="timeline-event ps-0 pb-0">
                                 <div class="timeline-header">
-                                    <small class="text-success text-uppercase fw-semibold">@{{formatDate(row.last_update_date)}}</small>
+                                    <small class="text-success text-uppercase fw-semibold">@{{formatDate(row.created_date)}}</small>
                                 </div>
                                 <h6 class="mb-0">@{{row.title}}</h6>
                                 <p class="text-muted mb-0 text-nowrap">@{{row.message}}</p>
