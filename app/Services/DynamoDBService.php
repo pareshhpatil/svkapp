@@ -42,11 +42,34 @@ class DynamoDBService
         return isset($result['Item']) ? $this->marshaler->unmarshalItem($result['Item']) : null;
     }
 
+    public function getItemsByRideIds(array $rideIds, $tableName = 'ride_track_live')
+    {
+        $keys = array_map(function ($rideId) {
+            return ['data' => ['N' => (string) $rideId]];
+        }, $rideIds);
+
+        $params = [
+            'RequestItems' => [
+                $tableName => [
+                    'Keys' => $keys
+                ]
+            ]
+        ];
+
+        $result = $this->client->batchGetItem($params);
+
+        $items = $result['Responses'][$tableName] ?? [];
+
+        return array_map(function ($item) {
+            return $this->marshaler->unmarshalItem($item);
+        }, $items);
+    }
+
     public function getAllRows(string $keyName, int $dataKey, string $tableName = null): ?array
     {
         $tableName = $tableName ?? $this->table;
 
-        
+
         $key = $this->marshaler->marshalJson(json_encode([
             $keyName => $dataKey
         ]));

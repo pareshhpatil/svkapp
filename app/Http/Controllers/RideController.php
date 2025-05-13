@@ -85,10 +85,119 @@ class RideController extends Controller
         return $array;
     }
 
+    public function liveTracking()
+    {
+        $dynamo = new DynamoDBService();
+        $data['ride'] = $dynamo->getItemsByRideIds([1204, 1203]);
+
+        dd($data['ride']);
+    }
+
+    public function liveRides(Request $request)
+    {
+        $data['selectedMenu'] = [14, 30];
+        $data['menus'] = Session::get('menus');
+        $data['status'] = 'ride';
+        $data['date'] = date('Y-m-d');
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        return view('web.ride.live', $data);
+    }
+
+    public function getLiveRideLocation($id)
+    {
+        $dynamo = new DynamoDBService();
+        $data['ride'] = $dynamo->getItemsByRideIds([1204, 1203]);
+        return response()->json([
+            'lat' => 15.3020,
+            'lng' => 74.1260,
+        ]);
+    }
+
+    public function getRideUpdates($id)
+    {
+        $data = $this->model->getTableList('notifications', 'ride_id', $id);
+        return response()->json($data);
+    }
+
+    public function getLiveRides(Request $request)
+    {
+        $project_id = ($request->has('project')) ? $request->project : 0;
+        $status = ($request->has('status')) ? $request->status : 0;
+        $date = ($request->has('date')) ? $request->date : date('Y-m-d');
+        $this->model = new RideModel();
+        $list = $this->model->getRides($date, $project_id, $status);
+        $list = json_decode(json_encode($list), 1);
+        $rides = [];
+        foreach ($list as $k => $ride) {
+            $rideId = $ride['ride_status'] . $ride['ride_id'];
+            // Initialize group if not already
+            if (!isset($rides[$rideId])) {
+                $type = ($ride['type'] == 'Pickup') ? 'Login' : 'Logout';
+
+                switch ($ride['ride_status']) {
+                    case 1:
+                        $ride_status = 'Not Started';
+                        break;
+                    case 2:
+                        $ride_status = 'Live';
+                        break;
+                    case 5:
+                        $ride_status = 'Completed';
+                        break;
+                }
+                $rides[$rideId] = [
+                    'ride_id'        => $ride['ride_id'],
+                    'driver_name'    => $ride['driver_name'],
+                    'mobile'         => $ride['mobile'],
+                    'vehicle_number' => $ride['vehicle_number'],
+                    'type'           => $ride['type'],
+                    'ride_title'     => $type . ' @' . $this->htmlTime($ride['start_time']),
+                    'start_time'     => $ride['start_time'],
+                    'end_time'       => $ride['end_time'],
+                    'start_location' => $ride['start_location'],
+                    'end_location'   => $ride['end_location'],
+                    'project_cords'   => $ride['project_cords'],
+                    'status'    => $ride['ride_status'],
+                    'ride_status'    => $ride_status,
+                    'photo'           => $ride['photo'],
+                    'passengers' => [],
+                    'live_passengers' => [],
+                ];
+            }
+            $photo = '';
+            if ($ride['passenger_type'] == 2) {
+                $photo = 'https://admin.ridetrack.in/assets/img/escort.png';
+            } else {
+                $photo = ($ride['gender'] == 'Female') ? 'https://app.svktrv.in/assets/img/map-female.png' : 'https://app.svktrv.in/assets/img/map-male.png';
+            }
+            $passenger = [
+                'id'              => $ride['id'],
+                'passenger_type'   => $ride['passenger_type'],
+                'employee_name'   => $ride['employee_name'],
+                'gender'          => $ride['gender'],
+                'location'        => $ride['location'],
+                'pickup_time'     => $ride['pickup_time'],
+                'pickup_location' => $ride['pickup_location'],
+                'drop_location'   => $ride['drop_location'],
+                'drop_location'   => $ride['drop_location'],
+                'address'   => $ride['passenger_address'],
+                'photo'   => $photo,
+                'pstatus'         => $ride['pstatus'],
+
+            ];
+            // Add passenger to the list
+            $rides[$rideId]['passengers'][] = $passenger;
+            if ($ride['pstatus'] == 5) {
+                $rides[$rideId]['live_passengers'][] = $passenger;
+            }
+        }
+        return response()->json($rides);
+    }
 
     public function detailTrack($id)
     {
-        $dynamo=new DynamoDBService();
+        $dynamo = new DynamoDBService();
         $data['ride'] = $dynamo->getAllRows('data', $id);
 
         $speed = array_map(function ($item) {
@@ -99,7 +208,7 @@ class RideController extends Controller
         }, $data['ride']);
 
         $data['speed'] = json_encode($speed);
-        
+
         $this->model = new RideModel();
         $data['selectedMenu'] = [14, 15];
         $data['menus'] = Session::get('menus');
@@ -118,7 +227,7 @@ class RideController extends Controller
                 $data['ride_passengers'][$k]->icon = $row->icon;
             }
         }
-       // dd($data['ride_passengers']);
+        // dd($data['ride_passengers']);
         //  dd($data);
         return view('web.ride.detail-track', $data);
     }
@@ -325,7 +434,7 @@ class RideController extends Controller
 
         $params = [];
         $passengers = $this->model->getTableList('ride_passenger', 'ride_id', $ride_id);
-        
+
         foreach ($passengers as $row) {
             $link = Encryption::encode($row->id);
             $url = 'https://app.svktrv.in/passenger/ride/' . $link;

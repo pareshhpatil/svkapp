@@ -86,6 +86,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/master/{type}/delete/{id}/{id_col?}', [App\Http\Controllers\MasterController::class, 'delete']);
 
     Route::get('/ride/detail/track/{id}', [App\Http\Controllers\RideController::class, 'detailTrack']);
+    Route::get('/live/tracking', [App\Http\Controllers\RideController::class, 'liveTracking']);
+    Route::get('/live/rides', [App\Http\Controllers\RideController::class, 'liveRides']);
+    Route::get('/api/rides', [App\Http\Controllers\RideController::class, 'getLiveRides']);
+    Route::get('/api/ride/location/{ride_id}', [App\Http\Controllers\RideController::class, 'getLiveRideLocation']);
+    Route::get('/api/ride/updates/{ride_id}', [App\Http\Controllers\RideController::class, 'getRideUpdates']);
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
