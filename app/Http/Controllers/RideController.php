@@ -196,7 +196,7 @@ class RideController extends Controller
             ];
             // Add passenger to the list
             $rides[$rideId]['passengers'][] = $passenger;
-            if ($ride['pstatus'] == 5) {
+            if ($ride['pstatus'] == 1 || $ride['pstatus'] == 5) {
                 $rides[$rideId]['live_passengers'][] = $passenger;
             }
         }
