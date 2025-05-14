@@ -619,7 +619,7 @@
             this.fetchRides(); // Initial call
             this.rideInterval = setInterval(() => {
                 this.fetchRides();
-            }, 30000);
+            }, 10000);
         },
         beforeUnmount() {
             clearInterval(this.rideInterval);
