@@ -272,7 +272,7 @@
                                                 @{{passenger.pickup_time}}
                                             </small>
                                         </div>
-                                        <p class="mb-2">Drop location @{{passenger.location}}</p>
+                                        <p class="mb-2">@{{selected_ride.type}} location @{{passenger.location}}</p>
                                         <div class="d-flex">
                                             <a href="javascript:void(0)" class="me-3">
                                                 <img :src="passenger.photo"  class="rounded-circle avatar-lg">
