@@ -114,6 +114,13 @@ class RideController extends Controller
         ]);
     }
 
+    public function getRidePassengers($id)
+    {
+        $this->model = new RideModel();
+        $passengers = $this->model->getRidePassenger($id);
+        return response()->json($passengers);
+    }
+
     public function getRideUpdates($id)
     {
         $data = $this->model->getTableList('notifications', 'ride_id', $id);
@@ -149,12 +156,13 @@ class RideController extends Controller
                 $rides[$rideId] = [
                     'ride_id'        => $ride['ride_id'],
                     'driver_name'    => $ride['driver_name'],
+                    'office_location'    => $ride['office_location'],
                     'mobile'         => $ride['mobile'],
                     'vehicle_number' => $ride['vehicle_number'],
                     'type'           => $ride['type'],
                     'ride_title'     => $type . ' @' . $this->htmlTime($ride['start_time']),
-                    'start_time'     => $ride['start_time'],
-                    'end_time'       => $ride['end_time'],
+                    'start_time'     => $this->htmlTime($ride['start_time']),
+                    'end_time'       => $this->htmlTime($ride['end_time']),
                     'start_location' => $ride['start_location'],
                     'end_location'   => $ride['end_location'],
                     'project_cords'   => $ride['project_cords'],
@@ -177,7 +185,7 @@ class RideController extends Controller
                 'employee_name'   => $ride['employee_name'],
                 'gender'          => $ride['gender'],
                 'location'        => $ride['location'],
-                'pickup_time'     => $ride['pickup_time'],
+                'pickup_time'     => $this->htmlTime($ride['pickup_time']),
                 'pickup_location' => $ride['pickup_location'],
                 'drop_location'   => $ride['drop_location'],
                 'drop_location'   => $ride['drop_location'],

@@ -43,7 +43,7 @@ class RideModel extends ParentModel
         if ($project_id != 0) {
             $retObj->where('r.project_id', $project_id);
         }
-        $retObj=$retObj->select(DB::raw('p.id,p.passenger_type,p.ride_id,p.pickup_time,p.pickup_location,p.drop_location,p.status as pstatus,pr.employee_name,pr.gender,pr.location,pr.icon as photo,d.name as driver_name,d.mobile,d.photo,v.number as vehicle_number,r.type,r.start_time,r.end_time,r.start_location,r.end_location,r.status as ride_status,pro.lat_long as project_cords,pr.address as passenger_address'))
+        $retObj=$retObj->select(DB::raw('p.id,p.passenger_type,p.ride_id,p.pickup_time,p.pickup_location,p.drop_location,p.status as pstatus,pr.employee_name,pr.gender,pr.location,pr.icon as photo,d.name as driver_name,d.mobile,d.photo,v.number as vehicle_number,r.type,r.start_time,r.end_time,r.start_location,r.end_location,r.status as ride_status,pro.lat_long as project_cords,pr.address as passenger_address,pro.location as office_location'))
             ->orderBy('r.status','asc')
             ->get();
         return $retObj;

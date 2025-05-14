@@ -91,6 +91,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/api/rides', [App\Http\Controllers\RideController::class, 'getLiveRides']);
     Route::get('/api/ride/location/{ride_id}', [App\Http\Controllers\RideController::class, 'getLiveRideLocation']);
     Route::get('/api/ride/updates/{ride_id}', [App\Http\Controllers\RideController::class, 'getRideUpdates']);
+    Route::get('/api/ride/passengers/{ride_id}', [App\Http\Controllers\RideController::class, 'getRidePassengers']);
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);

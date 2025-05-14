@@ -116,25 +116,21 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <a href="javascript:;" class="d-flex align-items-center">
-                                <div class="avatar me-2">
-                                    <img :src="ride.photo || defaultPhoto" alt="Driver Photo" class="rounded-circle">
+                            <div class="avatar me-2">
+                                <img :src="ride.photo || defaultPhoto" alt="Driver Photo" class="rounded-circle">
+                            </div>
+                            <div class="me-2 ms-1">
+                                <h5 class="mb-0">
+                                    <span class="text-body" style="font-size: 14px;">@{{ride.driver_name}}</span>
+                                </h5>
+                                <div class="client-info">
+                                    <span class="text-muted" style="font-size: 12px;">@{{ride.vehicle_number}}</span>
                                 </div>
-                                <div class="me-2 ms-1">
-                                    <h5 class="mb-0">
-                                        <a href="javascript:;" class="stretched-link text-body" style="font-size: 14px;">@{{ride.driver_name}}</a>
-                                    </h5>
-                                    <div class="client-info">
-                                        <span class="text-muted" style="font-size: 12px;">@{{ride.vehicle_number}}</span>
-                                    </div>
-                                </div>
-
-
-                            </a>
+                            </div>
                             <div class="ms-auto">
                                 <ul class="list-inline mb-0 d-flex align-items-center">
                                     <li class="list-inline-item me-0">
-                                        <a href="javascript:;"><span :class="getStatusClass(ride.status)">@{{ride.ride_status}}</span></a>
+                                        <span :class="getStatusClass(ride.status)">@{{ride.ride_status}}</span>
                                     </li>
                                     <li>
                                         <div class="dropdown zindex-2">
@@ -142,6 +138,8 @@
                                                 <i class="ti ti-dots-vertical text-muted"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end" style="">
+                                                <li ><a class="dropdown-item" data-bs-toggle="modal"
+                                                        data-bs-target="#rideDetail" @click="selected_ride=ride" href="javascript:void(0);">Route</a></li>
                                                 <li v-if="ride.ride_status=='Live'"><a class="dropdown-item" data-bs-toggle="modal"
                                                         data-bs-target="#TrackingModal" @click="setLiveTracking(ride)" href="javascript:void(0);">Live Track</a></li>
                                                 <li><a class="dropdown-item" @click="fetchUpdates(ride.ride_id)" data-bs-toggle="modal"
@@ -156,12 +154,17 @@
                         </div>
                         <div class="d-flex align-items-center py-2 mb-2">
                             <div class="d-flex align-items-center">
-                                <div v-for="passenger in ride.passengers">
-                                    <img :src="passenger.photo" style="max-width: 40px;" class="rounded-circle">
+                                <div v-for="passenger in ride.passengers"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="right"
+                                    :data-bs-content="passenger.address"
+                                    :title="passenger.employee_name">
+                                    <img :src="passenger.photo" style="max-width: 40px;" :title="passenger.employee_name" class="rounded-circle">
                                 </div>
                             </div>
+
                             <small class="text-muted" style="margin-left: 10px;">@{{ride.passengers.length}} Passengers assigned</small>
-              
+
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 class="mb-1">@{{ride.ride_title}}</h6>
@@ -177,12 +180,15 @@
                                     <div class="avatar me-1 avatar-online">
                                         <img :src="ride.photo || defaultPhoto" class="rounded-circle">
                                     </div>
-                                    <div v-for="passenger in ride.live_passengers" class="avatar me-1 avatar-online">
+                                    <div v-for="passenger in ride.live_passengers" class="avatar me-1 avatar-online" data-bs-toggle="popover"
+                                        data-bs-placement="right"
+                                        :data-bs-content="passenger.address"
+                                        :title="passenger.employee_name">
                                         <img :src="passenger.photo" style="max-width: 40px;" alt="@{{passenger.employee_name}}"
                                             class="rounded-circle">
                                     </div>
                                 </div>
-                                <small class="text-muted" style="margin-left: 10px;">@{{ride.live_passengers.length+1}} Members in cab</small>
+                                <a onclick="alert();"><small class="text-muted" style="margin-left: 10px;">@{{ride.live_passengers.length+1}} Members in cab</small></a>
                             </div>
                         </div>
 
@@ -230,6 +236,63 @@
                             </div>
                         </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rideDetail" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-simple modal-pricing">
+            <div class="modal-content mx-0  p-md-5 px-0">
+                <div class="modal-body py-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="card mb-4">
+                        <h5 class="card-header">Ride Route</h5>
+                        <div class="card-body pb-0">
+                            <ul class="timeline mb-0">
+                                <li v-if="selected_ride.type=='Drop'" class="timeline-item timeline-item-transparent">
+                                    <span class="timeline-point timeline-point-success"></span>
+                                    <div class="timeline-event">
+                                        <div class="timeline-header mb-1">
+                                            <h6 class="mb-0">Ride Start from Office</h6>
+                                            <small class="text-muted">@{{selected_ride.start_time}}</small>
+                                        </div>
+                                        <p class="mb-2">Ride start from @{{selected_ride.office_location}}</p>
+                                    </div>
+                                </li>
+                                <li v-for="passenger in selected_ride.passengers" :key="passenger.id" class="timeline-item timeline-item-transparent">
+                                    <span class="timeline-point timeline-point-danger" v-if="selected_ride.type=='Drop'"></span>
+                                    <span class="timeline-point timeline-point-success" v-if="selected_ride.type!='Drop'"></span>
+                                    <div class="timeline-event">
+                                        <div class="timeline-header mb-1">
+                                            <h6 class="mb-0">
+                                                @{{passenger.employee_name}} @{{selected_ride.type}}
+                                            </h6>
+                                            <small class="text-muted" v-if="selected_ride.type!='Drop'">
+                                                @{{passenger.pickup_time}}
+                                            </small>
+                                        </div>
+                                        <p class="mb-2">Drop location @{{passenger.location}}</p>
+                                        <div class="d-flex">
+                                            <a href="javascript:void(0)" class="me-3">
+                                                <img :src="passenger.photo"  class="rounded-circle avatar-lg">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li v-if="selected_ride.type!='Drop'" class="timeline-item timeline-item-transparent">
+                                    <span class="timeline-point timeline-point-danger"></span>
+                                    <div class="timeline-event">
+                                        <div class="timeline-header mb-1">
+                                            <h6 class="mb-0">Ride end at Office</h6>
+                                            <small class="text-muted">@{{selected_ride.end_time}}</small>
+                                        </div>
+                                        <p class="mb-2">Ride end at @{{selected_ride.office_location}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -407,6 +470,22 @@
         }
         document.getElementById('timestamp').innerHTML = text;
     }
+
+    function popover() {
+
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        const popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl);
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                popoverList.forEach(function(popover) {
+                    popover.hide();
+                });
+            }
+        });
+    }
 </script>
 @endsection
 
@@ -428,6 +507,7 @@
                 },
                 rides: [],
                 loading: false,
+                selected_ride: [],
                 updates: []
             };
         },
@@ -450,7 +530,9 @@
                 } finally {
                     this.loading = false;
                 }
-
+                setTimeout(() => {
+                    popover();
+                }, 1000);
             },
             async fetchUpdates(ride_id) {
                 this.loading = true;
@@ -543,8 +625,6 @@
             clearInterval(this.rideInterval);
         },
     }).mount('#app');
-
-    
 </script>
 
 
