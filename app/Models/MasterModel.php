@@ -89,6 +89,23 @@ class MasterModel extends ParentModel
         }
         return $retObj->pluck('total', 'status');
     }
+    public function getSlabCountDetail($project_ids, $from_date, $to_date)
+    {
+        $retObj = DB::table('ride as r')
+            ->join('zone as z', 'z.zone_id', '=', 'r.slab_id')
+            ->select(DB::raw('COUNT(company_slab) as count'), 'company_slab')
+            ->whereBetween('r.date', [$from_date, $to_date])
+            ->groupBy('company_slab')
+            ->orderBy('company_slab');
+        if (!empty($project_ids)) {
+            $retObj->whereIn('r.project_id', $project_ids);
+        }
+
+        return [
+            'labels' => json_encode($retObj->pluck('company_slab')->toArray()),
+            'values' => json_encode($retObj->pluck('count')->toArray()),
+        ];
+    }
 
     public function getRide($project_id, $date, $status, $project_ids = [])
     {

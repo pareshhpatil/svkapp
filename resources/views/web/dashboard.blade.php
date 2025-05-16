@@ -57,7 +57,7 @@
         <div class="card h-100">
             <div class="card-header pb-0 d-flex justify-content-between mb-lg-n4">
                 <div class="card-title mb-0">
-                    <h5 class="mb-0">June 2023 </h5>
+                    <h5 class="mb-0">{{$month}}</h5>
                 </div>
                 
                 <!-- </div> -->
@@ -79,10 +79,10 @@
         <div class="card h-100">
             <div class="card-header pb-0 d-flex justify-content-between mb-lg-n4">
                 <div class="card-title mb-0">
-                    <h5 class="mb-0">June 2023 </h5>
+                    <h5 class="mb-0">{{$month}}</h5>
                     <small class="text-muted">Monthly Employees Ride Report</small>
                 </div>
-                <div class="dropdown">
+                <!-- <div class="dropdown">
                     <button class="btn p-0" type="button" id="earningReportsId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                     </button>
@@ -90,7 +90,7 @@
                         <a class="dropdown-item" href="javascript:void(0);">Previous Month</a>
                         <a class="dropdown-item" href="javascript:void(0);">Next Month</a>
                     </div>
-                </div>
+                </div> -->
                 <!-- </div> -->
             </div>
             <div class="card-body mt-5">
@@ -104,7 +104,6 @@
                     </div>
                 </div>
                 <div class="row">
-
                     <div class="col-12 col-md-12">
                         <div id="weeklyEarningReports"></div>
                     </div>
@@ -162,7 +161,14 @@
 <script>
     daysArray = {{$dayValues}};
     daysLabel =  {{$days}};
+
+   var parsedLabels = @json($slabs);
+   var  parsedValues=  @json($slabsValues);
+
+   var slabLabel = JSON.parse(parsedLabels);
+   var slabArray = JSON.parse(parsedValues);
+
 </script>
-<script src="/assets/js/dashboards-analytics.js"></script>
+<script src="/assets/js/dashboards-analytics.js?v=1"></script>
 
 @endsection

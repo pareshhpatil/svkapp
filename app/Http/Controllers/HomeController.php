@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MasterModel;
 use App\Services\DynamoDBService;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -31,14 +32,14 @@ class HomeController extends Controller
 
     public function show()
     {
-        $dynamo=new DynamoDBService();
+        $dynamo = new DynamoDBService();
         $item = $dynamo->getAllRows('data', 1123);
         return response()->json($item);
     }
     public function index()
     {
         //$data=$this->show();
-       // dd($data);
+        // dd($data);
         $data['selectedMenu'] = [1];
         $data['menus'] = Session::get('menus');
         $employee = $this->model->getEmployeeCount(Session::get('project_access'));
@@ -54,12 +55,15 @@ class HomeController extends Controller
             $data['femalePercent'] = 0;
         }
 
-        $from_date = date('Y-06-01');
-        $to_date = date('Y-06-30');
+        $from_date = date('Y-m-01');
+        $to_date = Carbon::now()->endOfMonth()->toDateString();
+        $selectedDate = Carbon::parse($from_date);
+        $monthYear = $selectedDate->format('F Y');
 
         $rides = $this->model->getRideCount(Session::get('project_access'), $from_date, $to_date);
         $rideStatus = $this->model->getRideCountDetail(Session::get('project_access'), $from_date, $to_date);
-
+        $slabs = $this->model->getSlabCountDetail(Session::get('project_access'), $from_date, $to_date);
+        $data['month'] = $monthYear;
         $data['all'] = 0;
         $data['cancelled'] = 0;
         $data['noshow'] = 0;
@@ -67,6 +71,7 @@ class HomeController extends Controller
         $data['cancelledPercent'] = 0;
         $data['noshowPercent'] = 0;
         $data['completedPercent'] = 0;
+        $data['slabs'] = $slabs;
         if (!empty($rideStatus)) {
             foreach ($rideStatus as $k => $v) {
                 $data['all'] = $data['all'] + $v;
@@ -101,6 +106,9 @@ class HomeController extends Controller
 
         $data['days'] = json_encode($data['days']);
         $data['dayValues'] = json_encode($data['dayValues']);
+
+        $data['slabs'] = $slabs['labels'];
+        $data['slabsValues'] = $slabs['values'];
         return view('web.dashboard', $data);
     }
     public function home($token)
