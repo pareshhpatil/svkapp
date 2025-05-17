@@ -36,10 +36,23 @@ class HomeController extends Controller
         $item = $dynamo->getAllRows('data', 1123);
         return response()->json($item);
     }
-    public function index()
+    public function index($date_change = null)
     {
-        //$data=$this->show();
-        // dd($data);
+        if ($date_change != null) {
+            $from_date = Carbon::parse(Session::get('from_date'));
+            $to_date = Carbon::parse(Session::get('to_date'));
+            if ($date_change == 'next') {
+                $from_change = $from_date->copy()->addMonth();
+                $to_change = $to_date->copy()->addMonth();
+            } elseif ($date_change == 'prev') {
+                $from_change = $from_date->copy()->subMonth();
+                $to_change = $to_date->copy()->subMonth();
+            }
+
+            Session::put('from_date', $from_change->toDateString());
+            Session::put('to_date', $to_change->toDateString());
+            return redirect()->route('home');
+        }
         $data['selectedMenu'] = [1];
         $data['menus'] = Session::get('menus');
         $employee = $this->model->getEmployeeCount(Session::get('project_access'));
@@ -54,9 +67,15 @@ class HomeController extends Controller
             $data['malePercent'] = 0;
             $data['femalePercent'] = 0;
         }
-
-        $from_date = date('Y-m-01');
-        $to_date = Carbon::now()->endOfMonth()->toDateString();
+        if (Session::has('from_date')) {
+            $from_date = Session::has('from_date') ? Session::get('from_date') : date('Y-m-01');
+            $to_date = Session::has('to_date') ? Session::get('to_date') : Carbon::now()->endOfMonth()->toDateString();
+        } else {
+            $from_date = date('Y-m-01');
+            $to_date = Carbon::now()->endOfMonth()->toDateString();
+            Session::put('from_date', $from_date);
+            Session::put('to_date', $to_date);
+        }
         $selectedDate = Carbon::parse($from_date);
         $monthYear = $selectedDate->format('F Y');
 

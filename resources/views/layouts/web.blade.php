@@ -100,11 +100,23 @@
                                 @isset($menus[$row2['id']])
                                 <ul class="menu-sub">
                                     @foreach ($menus[$row2['id']] as $row3)
+                                    @if($row3['link']!='')
                                     <li class="menu-item @if(in_array($row3['id'], $selectedMenu)) active @endif">
                                         <a href="@if ($row3['link']!=''){{$row3['link']}} @else javascript:; @endif" class="menu-link">
                                             <div data-i18n="Analytics">{{$row3['title']}}</div>
                                         </a>
                                     </li>
+                                    @else
+                                    <ul class="menu-sub">
+                                        @foreach ($menus[$row2['id']] as $row3)
+                                        <li class="menu-item">
+                                            <a href="app-user-view-account.html" class="menu-link">
+                                                <div data-i18n="Account">Account</div>
+                                            </a>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
                                     @endforeach
                                 </ul>
                                 @endisset

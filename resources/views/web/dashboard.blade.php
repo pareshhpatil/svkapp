@@ -82,15 +82,15 @@
                     <h5 class="mb-0">{{$month}}</h5>
                     <small class="text-muted">Monthly Employees Ride Report</small>
                 </div>
-                <!-- <div class="dropdown">
+                <div class="dropdown">
                     <button class="btn p-0" type="button" id="earningReportsId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="earningReportsId">
-                        <a class="dropdown-item" href="javascript:void(0);">Previous Month</a>
-                        <a class="dropdown-item" href="javascript:void(0);">Next Month</a>
+                        <a class="dropdown-item" href="/dashboard/prev">Previous Month</a>
+                        <a class="dropdown-item" href="/dashboard/next">Next Month</a>
                     </div>
-                </div> -->
+                </div>
                 <!-- </div> -->
             </div>
             <div class="card-body mt-5">

@@ -27,7 +27,7 @@ Route::get('/ride/track/location/{ride_id}', [App\Http\Controllers\RideControlle
 
 Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard/{date?}', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/escort/create', [App\Http\Controllers\PassengerController::class, 'escortCreate']);
     Route::any('/escort/list', [App\Http\Controllers\PassengerController::class, 'escortList']);
     Route::get('/passenger/create', [App\Http\Controllers\PassengerController::class, 'create']);
@@ -92,6 +92,11 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/api/ride/location/{ride_id}', [App\Http\Controllers\RideController::class, 'getLiveRideLocation']);
     Route::get('/api/ride/updates/{ride_id}', [App\Http\Controllers\RideController::class, 'getRideUpdates']);
     Route::get('/api/ride/passengers/{ride_id}', [App\Http\Controllers\RideController::class, 'getRidePassengers']);
+
+    Route::get('/invoice/create', [App\Http\Controllers\InvoiceController::class, 'create']);
+    Route::get('/invoice/list', [App\Http\Controllers\InvoiceController::class, 'list']);
+    Route::get('/invoice/delete/{id}', [App\Http\Controllers\InvoiceController::class, 'delete'])->name('invoice.delete');
+    Route::post('/invoice/save', [App\Http\Controllers\InvoiceController::class, 'save']);
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);
