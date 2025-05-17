@@ -38,7 +38,6 @@ class InvoiceController extends Controller
         $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
         $data['det'] = [];
         $data['type'] = 1;
-        dd($data['menus']);
         return view('web.invoice.create', $data);
     }
 
