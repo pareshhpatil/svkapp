@@ -79,6 +79,7 @@ class InvoiceController extends Controller
         $data['menus'] = Session::get('menus');
         $data['enc'] = Encryption::encode(date('Y-m-d'));
         $invoices = $this->model->getInvoiceList(Session::get('project_access'));
+        $data['invoices']=[];
         foreach ($invoices as $k => $row) {
             $data['invoices'][$k] = $row;
             $data['invoices'][$k]->documents = $this->model->getTableList('ridetrack_invoice_document', 'invoice_id', $row->invoice_id, 0, [], [], 'document_name,url');
