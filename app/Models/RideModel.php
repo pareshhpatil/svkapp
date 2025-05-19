@@ -71,11 +71,10 @@ class RideModel extends ParentModel
             ->join('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
-            ->where('p.rating', 0)
             ->where('p.status',  2)
             ->where('p.passenger_id', $id)
             ->orderBy('p.id', 'DESC')
-            ->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'));
+            ->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location,p.rating'));
         $array = $retObj->first();
         return json_decode(json_encode($array), 1);
     }

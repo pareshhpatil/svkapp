@@ -52,8 +52,7 @@ class BulkPayment extends Command
     {
         $ApiController = new ApiController();
 
-        $array = ['9730946150'
-        ];
+        $array = ['7506085393','9322934834'];
         foreach ($array as $mobile) {
             $ApiController->sendWhatsappMessage($mobile, 'mobile', 'mobile_app_installation', [], null, 'en', 1);
             echo $mobile . PHP_EOL;
