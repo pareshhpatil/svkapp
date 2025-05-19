@@ -26,6 +26,7 @@ class SendRideStatusNotification implements ShouldQueue
      */
     private $model;
     private $created_date;
+    private $notification_send;
 
     public function __construct(
         public int $ride_id,
@@ -34,6 +35,7 @@ class SendRideStatusNotification implements ShouldQueue
 
     public function handle(Job $job)
     {
+        $this->notification_send = true;
         $this->setCreatedDateFromJob($job);
 
         $rideId = $this->ride_id;
@@ -46,11 +48,13 @@ class SendRideStatusNotification implements ShouldQueue
         if ($notification) {
             $this->saveNotification($notification['title'], $notification['message'], $notification['url'], $notification['type']);
             // 3. Send notification to supervisors (only after saving)
-            $this->sendSupervisorNotifications($notification);
+            if ($this->notification_send == true) {
+                $this->sendSupervisorNotifications($notification);
+            }
         }
 
         // 4. Notify passengers on ride start (if applicable) - this runs regardless of supervisor notifications
-        if ($status == 2) {
+        if ($status == 2 && $this->notification_send == true) {
             $this->notifyPassengersOnRideStart($rideId);
         }
     }
