@@ -61,8 +61,10 @@ class HomeController extends Controller
             $data['data']['completed_ride'] = $this->model->getTableCount('ride_passenger', 'passenger_id', Session::get('parent_id'), 1, ['status' => 2]);
             $data['live_ride'] = $this->EncryptList($this->model->passengerLiveRide(Session::get('parent_id')), 1);
             $data['last_ride'] = $this->EncryptList($this->model->passengerLastRide(Session::get('parent_id')), 1);
-            if ($data['last_ride']->rating > 0) {
-                $data['last_ride'] = [];
+            if (!empty($data['last_ride'])) {
+                if ($data['last_ride']->rating > 0) {
+                    $data['last_ride'] = [];
+                }
             }
             $data['data']['upcoming'] = $this->model->passengerUpcomingRides(Session::get('parent_id'), 1);
             if (!empty($data['data']['upcoming'])) {
