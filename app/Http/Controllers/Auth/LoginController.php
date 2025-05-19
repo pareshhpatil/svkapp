@@ -64,6 +64,13 @@ class LoginController extends Controller
         return view('auth.otp', $data);
     }
 
+    public function getUser()
+    {
+        $user = Auth::user();
+        $token = $user->createToken('MyApp')->plainTextToken;
+        return response()->json($token);
+    }
+
     public function users()
     {
         $model =  new ApiModel();

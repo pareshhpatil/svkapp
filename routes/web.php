@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,6 +33,9 @@ Route::get('/store-data', function () {
 //Route::get('/', function () {
 //   return redirect('/login');
 //});
+
+Route::get('/vue/user', [App\Http\Controllers\Auth\LoginController::class, 'getUser']);
+
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'homea'])->name('home1');
 
