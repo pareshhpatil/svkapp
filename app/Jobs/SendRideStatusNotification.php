@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Queue\Job;
+use Carbon\Carbon;
 
 class SendRideStatusNotification implements ShouldQueue
 {
@@ -23,57 +25,109 @@ class SendRideStatusNotification implements ShouldQueue
      * @return void
      */
     private $model;
+    private $created_date;
 
     public function __construct(
         public int $ride_id,
         public int $status
-    ) {
-       
+    ) {}
+
+    public function handle(Job $job)
+    {
+        $this->setCreatedDateFromJob($job);
+
+        $rideId = $this->ride_id;
+        $status = $this->status;
+
+        // 1. Build supervisor notification content
+        $notification = $this->buildSupervisorNotificationData($rideId, $status);
+
+        // 2. Save notification (if available)
+        if ($notification) {
+            $this->saveNotification($notification['title'], $notification['message'], $notification['url'], $notification['type']);
+            // 3. Send notification to supervisors (only after saving)
+            $this->sendSupervisorNotifications($notification);
+        }
+
+        // 4. Notify passengers on ride start (if applicable) - this runs regardless of supervisor notifications
+        if ($status == 2) {
+            $this->notifyPassengersOnRideStart($rideId);
+        }
     }
 
-    public function handle()
+    private function setCreatedDateFromJob(Job $job)
     {
-        $ride_id = $this->ride_id;
-        $status = $this->status;
-        $apiController = new ApiController();
-        $link = Encryption::encode($ride_id);
+        $payload = $job->payload();
+        $timestamp = $payload['created_at'] ?? time();
+        $this->created_date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
+    }
+
+    private function buildSupervisorNotificationData($rideId, $status)
+    {
+        $ride = $this->getTableRow('ride', 'id', $rideId);
+        if (!$ride) return null;
+
+        $driverName = $this->getColumnValue('driver', 'id', $ride->driver_id, 'name');
+        $url = 'https://app.svktrv.in/admin/ride/' . Encryption::encode($rideId);
+
+        $notification = [
+            'title' => '',
+            'message' => '',
+            'url' => $url,
+            'type' => 2, // Default type for completed
+        ];
+
+        // Build the notification content based on the status
         if ($status == 2) {
-            $passengers = $this->getTableList('ride_passenger', 'ride_id', $ride_id);
-            foreach ($passengers as $row) {
-                if ($row->status == 0) {
-                    $link = Encryption::encode($row->id);
-                    $url = 'https://app.svktrv.in/passenger/ride/' . $link;
-                    $apiController->sendNotification($row->passenger_id, 5, 'Your ride has been started', 'Our driver is en route to your pickup location. Enjoy your journey with us.', $url);
-                }
+            $notification['title'] = "Ride started for {$ride->type} by $driverName";
+            $notification['message'] = "Ride location {$ride->start_location} to {$ride->end_location} Start time: " . date('h:i:A', strtotime($ride->start_time));
+        } elseif ($status == 5) {
+            $notification['title'] = "Ride completed for {$ride->type} by $driverName";
+            $notification['message'] = "Ride location {$ride->start_location} to {$ride->end_location} End time: " . date('h:i:A', strtotime($ride->end_time));
+            $notification['type'] = 1; // Completed rides
+        }
+
+        return $notification['title'] ? $notification : null;
+    }
+
+
+
+    private function sendSupervisorNotifications($notification)
+    {
+        $api = new ApiController();
+        $tokens = [];
+
+        // Get all supervisors' tokens
+        $supervisors = $this->getTableList('users', 'field_supervisor', 1);
+        foreach ($supervisors as $user) {
+            if (!empty($user->token) && $user->app_notification == 1) {
+                $tokens[] = $user->token;
             }
         }
 
-        $ride = $this->getTableRow('ride', 'id', $ride_id);
-        $driver_name = $this->getColumnValue('driver', 'id', $ride->driver_id, 'name');
-        $link = Encryption::encode($ride_id);
-        $url = 'https://app.svktrv.in/admin/ride/' . $link;
-        $title = '';
-        $notification_type = 2;
-        if ($status == 2) {
-            $title = 'Ride started for ' . $ride->type . ' by ' . $driver_name;
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' Start time: ' . date('h:i:A', strtotime($ride->start_time));
-        } elseif ($status == 5) {
-            $title = 'Ride completed for ' . $ride->type . ' by ' . $driver_name;
-            $message = "Ride location " . $ride->start_location . ' to ' . $ride->end_location . ' End time: ' . date('h:i:A', strtotime($ride->end_time));
-            $notification_type = 1;
+        // Send notification to all supervisors
+        if (!empty($tokens)) {
+            $api->sendNotification(0, 0, $notification['title'], $notification['message'], $notification['url'], '', $tokens);
         }
-        
-        $tokens = [];
-        if ($title != '') {
-            $this->saveNotification($title, $message, $url, $notification_type);
-            $supervisors = $this->getTableList('users', 'field_supervisor', 1);
-            foreach ($supervisors as $row) {
-                if ($row->token != '' && $row->app_notification == 1) {
-                    $tokens[] = $row->token;
-                }
-            }
-            if (!empty($tokens)) {
-                $apiController->sendNotification(0, 0, $title, $message, $url, '', $tokens);
+    }
+
+    private function notifyPassengersOnRideStart($rideId)
+    {
+        $passengers = $this->getTableList('ride_passenger', 'ride_id', $rideId);
+        $api = new ApiController();
+
+        foreach ($passengers as $passenger) {
+            if ($passenger->status == 0) {
+                $link = Encryption::encode($passenger->id);
+                $url = 'https://app.svktrv.in/passenger/ride/' . $link;
+
+                $api->sendNotification(
+                    $passenger->passenger_id,
+                    5,
+                    'Your ride has been started',
+                    'Our driver is en route to your pickup location. Enjoy your journey with us.',
+                    $url
+                );
             }
         }
     }
@@ -150,7 +204,8 @@ class SendRideStatusNotification implements ShouldQueue
     {
         $array['created_by'] = $created_by;
         $array['last_update_by'] = $created_by;
-        $array['created_date'] = date('Y-m-d H:i:s');
+        $array['created_date'] = $this->created_date;
+        $array['last_update_date'] = $this->created_date;
         $id = DB::table($table_name)->insertGetId(
             $array
         );
