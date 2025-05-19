@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,18 +10,12 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\Queue\Job;
 use Carbon\Carbon;
 
 class SendRideStatusNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     private $model;
     private $created_date;
     private $notification_send;
@@ -33,10 +25,10 @@ class SendRideStatusNotification implements ShouldQueue
         public int $status
     ) {}
 
-    public function handle(Job $job)
+    public function handle()
     {
         $this->notification_send = true;
-        $this->setCreatedDateFromJob($job);
+        $this->setCreatedDateFromJob();
 
         $rideId = $this->ride_id;
         $status = $this->status;
@@ -59,10 +51,10 @@ class SendRideStatusNotification implements ShouldQueue
         }
     }
 
-    private function setCreatedDateFromJob(Job $job)
+    private function setCreatedDateFromJob()
     {
-        $payload = $job->payload();
-        $timestamp = $payload['created_at'] ?? time();
+        // Get the timestamp from the job's payload
+        $timestamp = $this->job->payload()['created_at'] ?? time();
         $this->created_date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 
@@ -93,8 +85,6 @@ class SendRideStatusNotification implements ShouldQueue
 
         return $notification['title'] ? $notification : null;
     }
-
-
 
     private function sendSupervisorNotifications($notification)
     {
@@ -138,81 +128,76 @@ class SendRideStatusNotification implements ShouldQueue
 
     public function getTableList($table, $where, $value, $col = '*')
     {
-
-        $retObj = DB::table($table)
+        return DB::table($table)
             ->select(DB::raw($col))
             ->where('is_active', 1)
             ->where($where, $value)
             ->get();
-        return $retObj;
     }
 
     public function getColumnValue($table, $where, $value, $column_name, $param = [], $orderby = null)
     {
-
-        $retObj = DB::table($table)
+        $query = DB::table($table)
             ->select(DB::raw($column_name . ' as value'))
             ->where($where, $value);
+        
         if (!empty($param)) {
             foreach ($param as $k => $v) {
-                $retObj->where($k, $v);
+                $query->where($k, $v);
             }
         }
+        
         if ($orderby != null) {
-            $retObj->orderByDesc($orderby);
+            $query->orderByDesc($orderby);
         }
-        $array = $retObj->first();
-        if (!empty($array)) {
-            return $array->value;
-        } else {
-            return false;
-        }
+        
+        $result = $query->first();
+        return $result ? $result->value : false;
     }
 
     public function getTableRow($table, $where, $value, $active = 0, $param = [])
     {
-
-        $retObj = DB::table($table)
+        $query = DB::table($table)
             ->select(DB::raw('*'))
             ->where($where, $value);
+        
         if ($active == 1) {
-            $retObj->where('is_active', 1);
+            $query->where('is_active', 1);
         }
+        
         if (!empty($param)) {
             foreach ($param as $k => $v) {
-                $retObj->where($k, $v);
+                $query->where($k, $v);
             }
         }
-        $array = $retObj->first();
-        if (!empty($array)) {
-            return $array;
-        } else {
-            return false;
-        }
+        
+        $result = $query->first();
+        return $result ?: false;
     }
 
     public function saveNotification($title, $message, $link, $type = 2, $user_type = 3, $user_id = 0)
     {
-        $array['title'] = $title;
-        $array['message'] = $message;
-        $array['status'] = 1;
-        $array['link'] = $link;
-        $array['type'] = $type;
-        $array['user_type'] = $user_type;
-        $array['user_id'] = $user_id;
-        $array['ride_id'] = $this->ride_id;
-        $this->insertTable('notifications', $array);
+        $data = [
+            'title' => $title,
+            'message' => $message,
+            'status' => 1,
+            'link' => $link,
+            'type' => $type,
+            'user_type' => $user_type,
+            'user_id' => $user_id,
+            'ride_id' => $this->ride_id,
+        ];
+
+        $this->insertTable('notifications', $data);
     }
 
-    public function insertTable($table_name, $array, $created_by = '0')
+    public function insertTable($table_name, $data, $created_by = '0')
     {
-        $array['created_by'] = $created_by;
-        $array['last_update_by'] = $created_by;
-        $array['created_date'] = $this->created_date;
-        $array['last_update_date'] = $this->created_date;
-        $id = DB::table($table_name)->insertGetId(
-            $array
-        );
-        return $id;
+        $data['created_by'] = $created_by;
+        $data['last_update_by'] = $created_by;
+        $data['created_date'] = $this->created_date;
+        $data['last_update_date'] = $this->created_date;
+        
+        return DB::table($table_name)->insertGetId($data);
     }
 }

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ApiController;
 use App\Http\Lib\Encryption;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\Queue\Job;
 use Carbon\Carbon;
 
 class SendPassengerStatusNotification implements ShouldQueue
@@ -34,10 +33,10 @@ class SendPassengerStatusNotification implements ShouldQueue
         public int $status
     ) {}
 
-    public function handle(Job $job)
+    public function handle()
     {
         $this->notification_send = true;
-        $this->setCreatedDateFromJob($job);
+        $this->setCreatedDateFromJob();
 
         $ridePassengerRow = $this->getTableRow('ride_passenger', 'id', $this->passenger_id);
         if (!$ridePassengerRow) return;
@@ -60,10 +59,10 @@ class SendPassengerStatusNotification implements ShouldQueue
         }
     }
 
-    private function setCreatedDateFromJob(Job $job)
+    private function setCreatedDateFromJob()
     {
-        $payload = $job->payload();
-        $timestamp = $payload['created_at'] ?? time();
+        // Get the timestamp from the job's payload
+        $timestamp = $this->job->payload()['created_at'] ?? time();
         $this->created_date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 
