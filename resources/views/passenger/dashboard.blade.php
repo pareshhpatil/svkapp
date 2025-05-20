@@ -304,13 +304,7 @@
 
     </div>
 </div>
-
-
-
-
-
 @endsection
-
 @section('footer')
 <script>
     new Vue({

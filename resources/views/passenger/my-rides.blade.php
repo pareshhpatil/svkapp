@@ -95,7 +95,7 @@
                     <div class="detail">
                         <div>
                             <strong v-html="item.pickup_time"></strong>
-                            <p><span v-html="item.pickup_location"></span> - <span v-html="item.drop_location"></span></p>
+                            <p><span v-html="item.type"></span> - <span v-html="item.title"></span></p>
                         </div>
                     </div>
                     <div class="right">
