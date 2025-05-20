@@ -234,7 +234,7 @@
                 }
 
                 this.message_type = 1;
-                this.message = '';
+                //this.message = '';
                 this.image = null;
                 this.scrollToBottom();
                 this.loader = false;
