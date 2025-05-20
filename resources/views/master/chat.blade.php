@@ -174,7 +174,7 @@
             this.user_id = '{{$user_id}}';
             this.group_id = '{{$group_id}}';
             setInterval(this.fetchData, 3000);
-            setTimeout(() =>  this.scrollToBottom(), 1000);
+            setTimeout(() => this.scrollToBottom(), 1000);
         },
         methods: {
             onImageChange(e) {
@@ -199,7 +199,6 @@
 
                 let currentObj = this;
                 var msgs = [];
-
                 if (this.message_type == 3 && mylatitude != '') {
                     this.message = 'https://www.google.com/maps/search/?api=1&query=' + mylatitude + ',' + mylongitude;
                 }
@@ -210,10 +209,25 @@
                             'content-type': 'multipart/form-data'
                         }
                     }
+                    var text_message = this.message;
+                    this.message = '';
                     let formData = new FormData();
+                    if (this.message_type == 1) {
+                        const newMsg = {
+                            name: "You",
+                            user_id: this.user_id,
+                            message: text_message,
+                            type: 1,
+                            file: "",
+                            location: "",
+                            time: "Now"
+                        }
+                        this.messages.push(newMsg);
+                        this.scrollToBottom();
+                    }
                     formData.append('message_type', this.message_type);
                     formData.append('file', this.image);
-                    formData.append('message', this.message);
+                    formData.append('message', text_message);
                     formData.append('group_id', this.group_id);
                     let res = await axios.post('/ajax/chat/submit', formData, config);
                     this.messages = res.data;
