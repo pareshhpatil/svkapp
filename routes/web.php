@@ -60,6 +60,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/route/list', [App\Http\Controllers\RosterController::class, 'routelist']);
     Route::any('/ride/assign', [App\Http\Controllers\RideController::class, 'assign']);
     Route::any('/ride/list/completed', [App\Http\Controllers\RideController::class, 'rideList']);
+    Route::any('/mis/generate', [App\Http\Controllers\RideController::class, 'generateMis']);
+    Route::any('/mis/generate/{id}', [App\Http\Controllers\RideController::class, 'generateRideMis']);
+    Route::get('/ajax/mis/generate/{project_id}/{date?}', [App\Http\Controllers\RideController::class, 'ajaxMISGenerate']);
 
     Route::get('/ride/details/{id}', [App\Http\Controllers\RideController::class, 'details']);
 

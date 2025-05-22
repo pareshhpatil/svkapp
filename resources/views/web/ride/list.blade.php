@@ -227,7 +227,7 @@
                     searchable: false,
                     render: function(data, type, full, meta) {
                         return (
-                            '<a target="_BLANK" href="/ride/details/'+full.id+'" class="btn btn-sm btn-success waves-effect waves-light">Detail</a>'
+                            '<div class="d-inline-block"><a href="javascript:;" class="btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a><ul class="dropdown-menu dropdown-menu-end m-0"><li><a href="/ride/details/'+full.id+'" class="dropdown-item">Details</a></li></ul></div>'                            
                         );
                     }
                 }],

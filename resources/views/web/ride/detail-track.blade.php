@@ -56,14 +56,14 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="row">
-                                <div class="col-md-2"><select id="speed-select" class="form-control" onchange="updateSpeed()" style="min-width:80px;">
-                                        <option value="50">0.05 sec</option>
-                                        <option value="100">0.1 sec</option>
-                                        <option value="200">0.2 sec</option>
-                                        <option value="500">0.5 sec</option>
-                                        <option value="1000" selected>1 sec</option>
-                                        <option value="2000">2 sec</option>
-                                        <option value="3000">3 sec</option>
+                                <div class="col-md-2"><select id="speed-select" class="form-control" onchange="updateSpeed()" style="min-width:120px;">
+                                        <option value="20">Fastest</option>
+                                        <option value="50">Faster</option>
+                                        <option value="100">Fast</option>
+                                        <option value="200" selected>Normal</option>
+                                        <option value="500" >Moderate</option>
+                                        <option value="1000" >Slow</option>
+                                        <option value="2000">Very Slow</option>
                                     </select> </div>
                                 <div class="col-md-10"><button class="btn btn-primary" onclick="startAnimation()">▶ Start</button>
                                     <button class="btn btn-default" onclick="pauseAnimation()">⏸ Pause</button>

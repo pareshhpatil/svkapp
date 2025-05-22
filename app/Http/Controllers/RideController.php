@@ -390,6 +390,57 @@ class RideController extends Controller
         return view('web.ride.list', $data);
     }
 
+    public function generateMis(Request $request, $bulk_id = 0, $type = 0)
+    {
+        $data['selectedMenu'] = [14, 15];
+        $data['menus'] = Session::get('menus');
+        $data['bulk_id'] = $bulk_id;
+        $data['type'] = $type;
+        $data['status'] = 'ride';
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        return view('web.mis.list', $data);
+    }
+
+    public function generateRideMis($id)
+    {
+        dd($id);
+        $data['selectedMenu'] = [14, 15];
+        $data['menus'] = Session::get('menus');
+        $data['bulk_id'] = $bulk_id;
+        $data['type'] = $type;
+        $data['status'] = 'ride';
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+        return view('web.mis.list', $data);
+    }
+
+    public function ajaxMISGenerate($project_id = 0,  $date = 'na')
+    {
+        $this->model = new RideModel();
+        if (strlen($date) < 5) {
+            $date = 'na';
+        }
+
+        $from_date = null;
+        $to_date = null;
+        if ($date != 'na') {
+            $date_array = explode(' - ', $date);
+            if (!empty($date_array)) {
+                if (count($date_array) == 1) {
+                    $from_date = $this->sqlDateTime($date_array[0]);
+                    $to_date = $this->sqlDateTime($date_array[0] . ' 23:59');
+                } else {
+                    $from_date = $this->sqlDateTime($date_array[0]);
+                    $to_date = $this->sqlDateTime($date_array[1]);
+                }
+            }
+        }
+        $data['data'] = $this->model->getPendingMis($project_id, $from_date, $to_date, Session::get('project_access'));
+        return json_encode($data);
+    }
+
+
     public function assign()
     {
         $data['selectedMenu'] = [14, 10];

@@ -14,7 +14,7 @@
                     <h4 class="fw-bold py-2"><span class="text-muted fw-light">Ride /</span> Assign</h4>
                 </div>
                 <div class="col-lg-4 pull-right">
-                    <input type="text" name="date" onchange="reloadDate(this.value)" required id="bs-datepicker-autoclose" placeholder="Select Date" class="form-control" />
+                    <input type="text" name="date" autocomplete="off" onchange="reloadDate(this.value)"  required id="bs-datepicker-autoclose" placeholder="Select Date" class="form-control" />
                 </div>
                 <div class="col-lg-4 pull-right">
                     @csrf

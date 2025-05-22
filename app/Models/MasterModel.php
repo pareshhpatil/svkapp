@@ -65,6 +65,7 @@ class MasterModel extends ParentModel
             ->join('ride as r', 'p.ride_id', '=', 'r.id')
             ->select(DB::raw('DATE_FORMAT(p.pickup_time,"%d")  as day'), DB::raw('count(*) as total'))
             ->whereIn('r.status', [1, 2, 5])
+            ->where('p.passenger_type', 1)
             ->whereIn('p.status', [0, 1, 2, 5])
             ->whereDate('p.pickup_time', '>=', $from_date)
             ->whereDate('p.pickup_time', '<=', $to_date)

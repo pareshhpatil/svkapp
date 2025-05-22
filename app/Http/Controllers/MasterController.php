@@ -138,7 +138,12 @@ class MasterController extends Controller
             }
             $data['data'] = $this->model->getTableList('zone', 'is_active', 1, 0, $project_array);
         } else {
-            $data['data'] = $this->model->getTableList($type, 'is_active', 1);
+            if ($project_id > 0) {
+                $project_array[] = $project_id;
+            } else {
+                $project_array = Session::get('project_access');
+            }
+            $data['data'] = $this->model->getTableList($type, 'is_active', 1, 0, $project_array);
         }
         return json_encode($data);
     }
