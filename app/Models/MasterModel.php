@@ -52,6 +52,7 @@ class MasterModel extends ParentModel
     {
         $retObj = DB::table('passenger')
             ->select('gender', DB::raw('count(*) as total'))
+            ->where('passenger_type', 1)
             ->groupBy('gender');
         if (!empty($project_ids)) {
             $retObj->whereIn('project_id', $project_ids);
