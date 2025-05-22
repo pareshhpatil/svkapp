@@ -133,7 +133,7 @@ class RideController extends Controller
         $status = ($request->has('status')) ? $request->status : 0;
         $date = ($request->has('date')) ? $request->date : date('Y-m-d');
         $this->model = new RideModel();
-        $list = $this->model->getRides($date, $project_id, $status);
+        $list = $this->model->getRides($date, $project_id, $status,Session::get('project_access'));
         $list = json_decode(json_encode($list), 1);
         $rides = [];
         foreach ($list as $k => $ride) {
