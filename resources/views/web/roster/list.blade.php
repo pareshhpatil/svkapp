@@ -56,7 +56,7 @@
                                     <th>Gender</th>
                                     <th>Mobile</th>
                                     <th>Location</th>
-                                    <th>Address</th>
+                                    <!-- <th>Address</th> -->
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Shift</th>
@@ -275,9 +275,9 @@
                     {
                         data: 'location'
                     },
-                    {
-                        data: 'address'
-                    },
+                    // {
+                    //     data: 'address'
+                    // },
                     {
                         data: 'type'
                     },
