@@ -143,6 +143,10 @@ class MasterController extends Controller
             } else {
                 $project_array = Session::get('project_access');
             }
+            if($type=='driver')
+            {
+                $project_array=[];
+            }
             $data['data'] = $this->model->getTableList($type, 'is_active', 1, 0, $project_array);
         }
         return json_encode($data);
