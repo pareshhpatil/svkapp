@@ -25,7 +25,6 @@
                 <img v-if="item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="avatar">
                 <img v-if="item.gender=='Female'" src="/assets/img/map-female.png" alt="avatar" class="avatar">
                 <div class="content">
-                    <div class="title" v-html="item.name"></div>
                     <div v-if="item.message_type=='text'" class="bubble" v-html="item.message">
                     </div>
                     <div v-if="item.message_type=='contacts'" class="bubble" v-html="item.message">
