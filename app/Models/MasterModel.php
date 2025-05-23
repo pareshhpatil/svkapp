@@ -61,7 +61,7 @@ class MasterModel extends ParentModel
             ->join('users as u', 'c.user_id', '=', 'u.id')
             ->where('c.is_active', 1)
             ->where('c.group_id', $group_id)
-            ->select(DB::raw('c.*,u.gender,DATE_FORMAT(c.created_date, "%l:%i %p") as time'));
+            ->select(DB::raw('c.*,u.gender,DATE_FORMAT(c.created_date, "%d %b %y %l:%i %p") as time'));
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }
@@ -71,7 +71,7 @@ class MasterModel extends ParentModel
         $retObj = DB::table('whatsapp_messages as c')
             ->where('c.is_active', 1)
             ->where('c.mobile', $mobile)
-            ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.created_date, "%l:%i %p") as time,status'));
+            ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.created_date, "%d %b %y %l:%i %p") as time,status'));
         $array = $retObj->get();
         $this->updateReadMessage($mobile);
         return json_decode(json_encode($array), 1);
@@ -104,9 +104,8 @@ class MasterModel extends ParentModel
 
     function getChatName($mobile)
     {
-        $maxName = DB::table('whatsapp_messages')
+        $maxName = DB::table('new_view')
             ->select('name')
-            ->orderByRaw('created_date DESC')
             ->where('mobile', $mobile)
             ->where('name', '<>', '')
             ->first();

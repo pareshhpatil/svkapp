@@ -247,15 +247,18 @@ class RideModel extends ParentModel
     public function WhatsappList()
     {
         $results = DB::table('whatsapp_messages as t1')
-            ->select(DB::raw('concat(t1.name," - ",t1.mobile) as name,t1.mobile,DATE_FORMAT(t1.created_date, "%a %d %b %y %l:%i %p") as last_update_date'))
-            ->join(DB::raw('(SELECT mobile, MAX(last_update_date) as max_last_update,MAX(id) as id,max(name) as name
-                    FROM whatsapp_messages
-                    GROUP BY mobile) as t2'), function ($join) {
-                $join->on('t1.mobile', '=', 't2.mobile')
-                    ->on('t1.id', '=', 't2.id');
-            })
-            ->orderByDesc('t1.id')
-            ->get()->toArray();
+            ->select(DB::raw('
+        MAX(view.name) as name,
+        t1.mobile,
+        DATE_FORMAT(MAX(t1.created_date), "%a %d %b %y %l:%i %p") as last_update_date
+    '))
+            ->leftJoin('new_view as view', 't1.mobile', '=', 'view.mobile')
+            ->whereNotNull('t1.mobile')
+            ->where('t1.mobile', '!=', '')
+            ->groupBy('t1.mobile')
+            ->orderByDesc(DB::raw('MAX(t1.created_date)'))
+            ->get()
+            ->toArray();
         $results = json_decode(json_encode($results), 1);
         return $results;
     }
@@ -270,6 +273,16 @@ class RideModel extends ParentModel
             $retObj->where('p.project_id', $project_id);
         }
         return $retObj->count();
+    }
+
+    public function getPendingMessageCountsByMobiles($mobiles = [])
+    {
+        return DB::table('whatsapp_messages')
+            ->select('mobile', DB::raw('COUNT(*) as pending_count'))
+            ->where('status', '=', 'pending') // replace with actual pending logic
+            ->groupBy('mobile')
+            ->pluck('pending_count', 'mobile') // returns [mobile => count]
+            ->toArray();
     }
 
 

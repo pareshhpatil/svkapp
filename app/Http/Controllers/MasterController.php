@@ -164,11 +164,12 @@ class MasterController extends Controller
 
     public function whatsapp($link)
     {
+
         if ($link == '__manifest.json') {
             return false;
         }
         $id = Encryption::decode($link);
-        $group = $this->model->getTableRow('chat_group', 'id', $id);
+        //$group = $this->model->getTableRow('chat_group', 'id', $id);
         $messages = $this->model->getWhatsappMessages($id);
         $name = $this->model->getChatName($id);
         $data['menu'] = 0;

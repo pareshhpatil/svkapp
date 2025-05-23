@@ -17,9 +17,9 @@
 
 <div id="app">
     <div id="appCapsule" class="full-height" ref="scrollContainer">
-        <div class="message-divider">
+        <!-- <div class="message-divider">
             {{$created_date}}
-        </div>
+        </div> -->
         <div v-for="item in messages">
             <div v-if="item.type!='Sent'" class="message-item">
                 <img v-if="item.gender=='Male'" src="/assets/img/map-male.png" alt="avatar" class="avatar">

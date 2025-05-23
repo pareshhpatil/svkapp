@@ -469,10 +469,17 @@ class HomeController extends Controller
         $data['menu'] = 0;
         $data['title'] = 'Whatsapp';
         $chats = $this->model->WhatsappList();
+        $pendingCounts = $this->model->getPendingMessageCountsByMobiles();
+        // Attach counts to chats
         foreach ($chats as $key => $row) {
-            $chats[$key]['pending_message'] = $this->model->getPendingMessagetCount($row['mobile']);
+            $mobile = $row['mobile'];
+            if ($row['name'] == '') {
+                $chats[$key]['link'] = $mobile;
+            }
+            $chats[$key]['pending_message'] = $pendingCounts[$mobile] ?? 0;
+            $chats[$key]['link'] = '/whatsapp/' . Encryption::encode($mobile);
         }
-        $data['whatsapps'] = $this->EncryptList($chats, 0, '/whatsapp/', 'mobile');
+        $data['whatsapps'] = $chats;
         if ($get_data == 1) {
             return json_encode($data['whatsapps']);
         }
