@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div v-if="item.type=='Sent'" class="message-item user">
-                <div class="content">
+                <div class="content" style="text-align: right;">
                     <div v-if="item.message_type=='text'" class="bubble" v-html="item.message">
                     </div>
                     <div v-if="item.message_type=='contacts'" class="bubble" v-html="item.message">
