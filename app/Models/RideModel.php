@@ -279,7 +279,8 @@ class RideModel extends ParentModel
     {
         return DB::table('whatsapp_messages')
             ->select('mobile', DB::raw('COUNT(*) as pending_count'))
-            ->where('status', '=', 'pending') // replace with actual pending logic
+            ->where('status', 'delivered')
+            ->where('type', 'Received')
             ->groupBy('mobile')
             ->pluck('pending_count', 'mobile') // returns [mobile => count]
             ->toArray();
