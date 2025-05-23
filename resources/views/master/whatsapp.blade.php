@@ -41,7 +41,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls  >
+                        <audio preload="auto" controls>
                             <source :src="item.message" type="audio/mpeg">
                             <source :src="item.message" type="audio/ogg">
                             Your browser does not support the audio tag.
@@ -50,7 +50,7 @@
 
                     </div>
                     <div v-if="item.message_type=='video'">
-                        <video  width="250"  controls>
+                        <video width="250" controls>
                             <source :src="item.message" type="video/mp4">
                         </video>
 
@@ -78,7 +78,7 @@
                         <img src="/assets/img/document.png" alt="photo" class="imaged w76">
                     </div>
                     <div v-if="item.message_type=='audio'">
-                        <audio preload="auto" controls >
+                        <audio preload="auto" controls>
                             <source :src="item.message" type="audio/mpeg">
 
                             <source :src="item.message" type="audio/ogg">
@@ -238,11 +238,14 @@
                 let currentObj = this;
                 var msgs = [];
 
+
                 if (this.message_type == 3 && mylatitude != '') {
                     this.message = 'https://www.google.com/maps/search/?api=1&query=' + mylatitude + ',' + mylongitude;
                 }
+                var text_message = this.message;
+                this.message = '';
 
-                if (this.message != '' || this.message_type == 2) {
+                if (text_message != '' || this.message_type == 2) {
                     const config = {
                         headers: {
                             'content-type': 'multipart/form-data'
@@ -251,7 +254,7 @@
                     let formData = new FormData();
                     formData.append('message_type', this.message_type);
                     formData.append('file', this.image);
-                    formData.append('message', this.message);
+                    formData.append('message', text_message);
                     formData.append('group_id', this.group_id);
                     formData.append('mylatitude', mylatitude);
                     formData.append('mylongitude', mylongitude);
@@ -260,7 +263,7 @@
                 }
 
                 this.message_type = 1;
-                this.message = '';
+                
                 this.image = null;
                 this.scrollToBottom();
                 this.loader = false;
