@@ -474,7 +474,7 @@ class HomeController extends Controller
         foreach ($chats as $key => $row) {
             $mobile = $row['mobile'];
             if ($row['name'] == '') {
-                $chats[$key]['link'] = $mobile;
+                $chats[$key]['name'] = $mobile;
             }
             $chats[$key]['pending_message'] = $pendingCounts[$mobile] ?? 0;
             $chats[$key]['link'] = '/whatsapp/' . Encryption::encode($mobile);
