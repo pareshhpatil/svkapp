@@ -613,7 +613,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="search-form">
-                            <div class="form-group searchbox mb-1">
+                            <div class="form-group searchbox mb-1" v-if="data.ride.type!='Drop'">
                                 <input type="time" v-model="start_time" class="form-control" placeholder="Time">
                                 <i class="input-icon icon ion-ios-clock-outline"><ion-icon name="input-icon alarm-outline"></ion-icon></i>
                             </div>
