@@ -908,6 +908,15 @@ class HomeController extends Controller
         return view('blog.list', $data);
     }
 
+    public function ratings()
+    {
+        $data['menu'] = 0;
+        $data['title'] = 'Ratings';
+        $data['ratings'] = $this->model->getEmployeeRatings();
+        $data['ratings'] = $this->EncryptList($data['ratings'], 0, '/admin/ride/', 'ride_id');
+        return view('admin.rating', $data);
+    }
+
 
 
     public function contactus(Request $request)

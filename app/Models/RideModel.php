@@ -296,4 +296,17 @@ class RideModel extends ParentModel
             ->where('p.type', 'Received')
             ->count();
     }
+
+    public function getEmployeeRatings()
+    {
+        $retObj = DB::table('ride_passenger as r')
+            ->join('ride as ri', 'ri.id', '=', 'r.ride_id')
+            ->join('passenger as p', 'p.id', '=', 'r.passenger_id')
+            ->join('driver as d', 'd.id', '=', 'ri.driver_id')
+            ->where('r.rating', '<>', 0)
+            ->orderBy('r.last_update_date', 'desc')
+            ->select(DB::raw('d.photo,d.name,p.employee_name,r.rating,r.ride_id,DATE_FORMAT(ri.start_time, "%a %d %b %y %l:%i %p") as datetime'))
+            ->get();
+        return json_decode(json_encode($retObj), 1);
+    }
 }

@@ -301,6 +301,16 @@
                                 </div>
                             </a>
                         </li>
+                        <li>
+                            <a href="/ratings" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="star-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Ratings
+                                </div>
+                            </a>
+                        </li>
                         @endif
                         <li>
                             <a href="/settings" class="item">
