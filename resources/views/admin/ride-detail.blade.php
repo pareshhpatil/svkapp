@@ -623,7 +623,7 @@
                             </div>
                         </form>
 
-                        <div class="extra-header-active">
+                        <div class="extra-header-active" style="    overflow: scroll; height: 400px;">
                             <div class="mt-2 mb-2">
                                 <div class="card" v-if="passenger_id>0">
                                     <ul class="listview media transparent flush">
