@@ -41,7 +41,7 @@ class MasterController extends Controller
     {
         $data['menu'] = 0;
         $data['title'] = 'List ' . $type;
-        $drivers = $this->model->getTableListOrderby('driver', 'is_active', 1,'desc','id', 'id,name,mobile,photo');
+        $drivers = $this->model->getTableListOrderby('driver', 'is_active', 1, 'desc', 'id', 'id,name,mobile,photo');
         $array = json_decode(json_encode($drivers), 1);
         $data['drivers'] = $this->EncryptList($array, 0, '/master/update/driver/', 'id');
         return view('master.' . $type . '-list', $data);
@@ -68,6 +68,32 @@ class MasterController extends Controller
         $array['user_id'] = Session::get('user_id');
         $array['response'] = $result;
         $this->model->saveTable('call_ivr', $array, $array['user_id']);
+        $from_user = $this->model->getTableRow('users', 'mobile', $from, 0, [], 'name,user_type');
+        $to_user = $this->model->getTableRow('users', 'mobile', $to, 0, [], 'name,user_type');
+        if ($from_user != false) {
+            if ($from_user->user_type == 5) {
+                $from = 'Employee ' . $from_user->name . ' - ' . $from;
+            } else if ($from_user->user_type == 4) {
+                $from = 'Driver ' . $from_user->name . ' - ' . $from;
+            } else if ($from_user->user_type == 3) {
+                $from = 'Supervisor ' . $from_user->name . ' - ' . $from;
+            }
+        }
+        if ($to_user != false) {
+            if ($to_user->user_type == 5) {
+                $to = 'Employee ' . $to_user->name . ' - ' . $to;
+            } else if ($to_user->user_type == 4) {
+                $to = 'Driver ' . $to_user->name . ' - ' . $to;
+            } else if ($to_user->user_type == 3) {
+                $to = 'Supervisor ' . $to_user->name . ' - ' . $to;
+            }
+        } else {
+            $passenger = $this->model->getColumnValue('passenger', 'mobile', $to, 'employee_name');
+            if ($passenger != false) {
+                $to = 'Employee ' . $passenger . ' - ' . $to;
+            }
+        }
+
         $tokens[] = env('MY_TOKEN');
         $ApiController->sendNotification(1, 1, 'Call Initiated ', $from . ' to ' . $to,  '', '');
     }

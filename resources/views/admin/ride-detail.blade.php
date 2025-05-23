@@ -735,7 +735,7 @@
                 }
 
                 return this.passengers.filter(emp => {
-                   // return emp.title.toLowerCase().includes(this.search.toLowerCase())
+                    return emp.title.toLowerCase().includes(this.search.toLowerCase())
                 }).sort(compare)
             }
         },

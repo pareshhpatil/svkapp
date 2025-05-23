@@ -21,11 +21,11 @@ use Exception;
 
 class ParentModel extends Model
 {
-    public function getTableRow($table, $where, $value, $active = 0, $param = [])
+    public function getTableRow($table, $where, $value, $active = 0, $param = [], $select = '*')
     {
 
         $retObj = DB::table($table)
-            ->select(DB::raw('*'))
+            ->select(DB::raw($select))
             ->where($where, $value);
         if ($active == 1) {
             $retObj->where('is_active', 1);
