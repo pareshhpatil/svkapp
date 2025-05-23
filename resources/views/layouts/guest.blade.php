@@ -37,7 +37,7 @@
   <!-- App Header -->
   <div class="appHeader no-border">
     <div class="left">
-      @if($title!='Login')
+      @if($title!='Login' && $title!='Get the Ride Track App')
       <a href="#" class="headerButton goBack">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </a>
