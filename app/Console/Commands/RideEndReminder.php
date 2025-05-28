@@ -52,6 +52,7 @@ class RideEndReminder extends Command
             ->where('end_time', '<', $futureDateTime)
             ->where('reminder_sent', '<>',  2)
             ->where('status',  2)
+            ->where('is_active',  1)
             ->get();
 
         foreach ($rides as $ride) {
