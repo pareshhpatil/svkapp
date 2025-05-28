@@ -1125,13 +1125,15 @@ class HomeController extends Controller
     public function driverLocationRideStatus($type, $id, $status, $lat = '', $long = '')
     {
         if ($type == 'ride') {
-            $ride_passengers = $this->model->getList('ride_passenger', ['ride_id' => $id], 'id');
+            $ride_passengers = $this->model->getList('ride_passenger', ['ride_id' => $id, 'is_active' => 1], 'id,status');
 
             if (!empty($ride_passengers)) {
                 foreach ($ride_passengers as $v) {
-                    $ride_passenger_id = $v->id;
-                    $this->driverLocationRideStatus('passenger', $ride_passenger_id, $status, $lat, $long);
-                    $this->driverPassengerRideStatus($ride_passenger_id, $status);
+                    if ($v->status != 3) {
+                        $ride_passenger_id = $v->id;
+                        $this->driverLocationRideStatus('passenger', $ride_passenger_id, $status, $lat, $long);
+                        $this->driverPassengerRideStatus($ride_passenger_id, $status);
+                    }
                 }
             }
             if ($status == 2) {
