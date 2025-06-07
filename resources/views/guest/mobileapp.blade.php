@@ -29,7 +29,7 @@
     <div class="row text-center mt-4">
       <p><strong>Thanks for riding with us!</strong></p>
       <div class="col-12">
-        <img src="https://admin.svktrv.in/dist/img/1681581649.png" alt="Siddhivinayak Logo" class="imaged w200">
+        <img src="https://admin.siddhivinayaktravelshouse.in/dist/img/1681581649.png" alt="Siddhivinayak Logo" class="imaged w200">
       </div>
     </div>
 

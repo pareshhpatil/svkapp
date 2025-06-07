@@ -171,8 +171,8 @@ class TripController extends Controller
         }
         $this->model->updateArray('ride', 'id', $ride_id, $array);
         if ($escort_id > 0) {
-            $escort_ride_passenger_id=$this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'id', ['passenger_type' => 2, 'is_active' => 1]);
-            if ($escort_ride_passenger_id==true) {
+            $escort_ride_passenger_id = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'id', ['passenger_type' => 2, 'is_active' => 1]);
+            if ($escort_ride_passenger_id == true) {
                 $this->model->updateTable('ride_passenger', 'id', $escort_ride_passenger_id, 'passenger_id', $escort_id);
             } else {
                 $ride_passenger['roster_id'] = 0;
@@ -225,6 +225,10 @@ class TripController extends Controller
                 $params['var4'] = $url;
                 $apiController->sendUserSMS($row->passenger_id, 5, $params, '6804878cd6fc0553042e8f65');
                 $employee_name = $this->model->getColumnValue('passenger', 'id', $row->passenger_id, 'employee_name');
+                $logedin = $this->model->getColumnValue('users', 'parent_id', $row->passenger_id, 'id', ['user_type' => 5]);
+                if ($logedin == false) {
+                    $short_url = 'app';
+                }
                 if ($type == 'Drop') {
                     $start_location = "Office";
                     $end_location = "Home";
@@ -243,8 +247,6 @@ class TripController extends Controller
                 $apiController->sendWhatsappMessage($row->passenger_id, 5, 'ride_confirmation', $params, $short_url, 'en', 1);
             }
         }
-
-
         return redirect('/my-rides/pending');
     }
     public function assignCab(Request $request)
