@@ -314,7 +314,7 @@ class MasterController extends Controller
 
         $ApiController = new ApiController();
         $usertokens = $this->model->getChatMembers($request->group_id, $array['user_id']);
-        $tokens = [];
+        $tokens[] = env('MY_TOKEN');
         foreach ($usertokens as $ut) {
             if ($ut['token'] != '') {
                 $tokens[] = $ut['token'];

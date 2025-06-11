@@ -244,7 +244,11 @@ class ApiController extends Controller
     {
         $button_json = '';
         if ($button_link != null) {
-            $button_json = ',{"type":"button","index":"0","sub_type":"url","parameters":[{"type":"text","text":"' . $button_link . '"}]}';
+            if ($button_link == 'static') {
+                $button_json = ',{"type":"button","index":"0","sub_type":"url"}';
+            } else {
+                $button_json = ',{"type":"button","index":"0","sub_type":"url","parameters":[{"type":"text","text":"' . $button_link . '"}]}';
+            }
         }
 
         if ($user_type == 'mobile') {
