@@ -327,7 +327,7 @@
                         <li>
                             <a href="https://app.svktrv.in/user/switch/o2IZM970oyDLn95JrFlW9yw" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="logo-user" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
                                     Payment Login
@@ -337,7 +337,7 @@
                         <li>
                             <a href="https://app.svktrv.in/user/switch/KlcMttFurp_p4WP4q3_jXixe4A" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="logo-user" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
                                     Supervisor Login
@@ -357,7 +357,7 @@
                         <li>
                             <a href="/users/list" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="logo-users" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
                                     Users

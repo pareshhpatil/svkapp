@@ -221,6 +221,26 @@
                         </li>
                         @if(Session::get('mobile')=='9730946150')
                         <li>
+                            <a href="https://app.svktrv.in/user/switch/o2IZM970oyDLn95JrFlW9yw" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Payment Login
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://app.svktrv.in/user/switch/KlcMttFurp_p4WP4q3_jXixe4A" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Supervisor Login
+                                </div>
+                            </a>
+                        </li>
+                        <li>
                             <a href="/whatsapp" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="logo-whatsapp" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
@@ -233,7 +253,7 @@
                         <li>
                             <a href="/users/list" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="logo-users" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
+                                    <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="chatbubble outline"></ion-icon>
                                 </div>
                                 <div class="in">
                                     Users
