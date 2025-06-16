@@ -75,7 +75,8 @@ class MasterModel extends ParentModel
             ->select(DB::raw('c.*,"Male" as gender,DATE_FORMAT(c.created_date, "%d %b %y %l:%i %p") as time,status'));
         $array = $retObj->get();
         $this->updateReadMessage($mobile);
-        return json_decode(json_encode($array), 1);
+        $json = str_replace("'", '`', json_encode($array));
+        return json_decode($json, 1);
     }
 
     public function getChatMembers($group_id, $user_id)
