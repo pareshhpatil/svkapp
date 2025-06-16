@@ -530,7 +530,7 @@ class RideController extends Controller
 
     public function downloadMIS(Request $request)
     {
-        $data['selectedMenu'] = [29, 9];
+        $data['selectedMenu'] = [33, 14];
         $data['menus'] = Session::get('menus');
         $data['status'] = 'na';
         $data['current_date_range'] = date('d M Y') . ' 05:00 PM - ' . Date('d M Y', strtotime('+1 days')) . ' 05:00 PM';
