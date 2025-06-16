@@ -192,7 +192,29 @@
     </div>
 </div>
 
+<div class="modal fade dialogbox" id="DialogIconedDanger2" data-bs-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-icon text-primary">
+                <ion-icon name="close-circle"></ion-icon>
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Error</h5>
+            </div>
+            <div class="modal-body">
+                The selected pickup date and time must be in the future.
+            </div>
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <a href="#" class="btn" data-bs-dismiss="modal">CLOSE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <a href="#" class="item" id="dialogclick" data-bs-toggle="modal" data-bs-target="#DialogIconedDanger"></a>
+<a href="#" class="item" id="dialogclick2" data-bs-toggle="modal" data-bs-target="#DialogIconedDanger2"></a>
 
 @endsection
 
@@ -203,9 +225,9 @@
         data() {
             return {
                 data: [],
-                type: 'Pickup',
-                pickup: 'Home',
-                drop: 'Office',
+                type: 'Drop',
+                pickup: 'Office',
+                drop: 'Home',
                 shifts: [],
                 selected: '',
                 allshifts: []
@@ -235,14 +257,21 @@
 
     function validateDate() {
         var currentDate = new Date();
-        currentDate.setHours(currentDate.getHours() + 6);
         var updatedDate = new Date(document.getElementById('date').value + ' ' + document.getElementById('shift_time').value);
-        if (currentDate > updatedDate) {
-            document.getElementById("dialogclick").click();
+        if (updatedDate > currentDate) {
+            currentDate.setHours(currentDate.getHours() + 6);
+            if (currentDate > updatedDate) {
+                document.getElementById("dialogclick").click();
+                document.getElementById("status").value = '0';
+                return false;
+            } else {
+                document.getElementById("status").value = '1';
+            }
+        } else {
+            document.getElementById("dialogclick2").click();
             document.getElementById("status").value = '0';
             return false;
-        } else {
-            document.getElementById("status").value = '1';
+
         }
     }
 

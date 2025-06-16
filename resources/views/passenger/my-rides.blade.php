@@ -36,7 +36,7 @@
                 Past
             </a>
         </li>
-        @if(Session::get('user_type')==555)
+        @if(Session::get('user_type')==5 && Session::get('project_id')==7)
         <li class="nav-item">
             <a class="nav-link @if($type=='booking') active @endif" id="tab-booking" data-bs-toggle="tab" href="#booking" role="tab">
                 <ion-icon name="add-circle-outline"></ion-icon>

@@ -175,7 +175,7 @@
                 <strong>My Rides</strong>
             </div>
         </a>
-        @if(Session::get('user_type')==555)
+        @if(Session::get('user_type')==5 && Session::get('project_id')==7)
         <a @if($menu==3) href="javascript:location.reload();" @else href="/book-ride" @endif onclick="lod(true);" class="item @if($menu==3) active @endif">
             <div class="col">
                 <ion-icon name="add-circle-outline"></ion-icon>
