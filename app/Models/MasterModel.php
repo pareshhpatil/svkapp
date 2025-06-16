@@ -63,7 +63,8 @@ class MasterModel extends ParentModel
             ->where('c.group_id', $group_id)
             ->select(DB::raw('c.*,u.gender,DATE_FORMAT(c.created_date, "%d %b %y %l:%i %p") as time'));
         $array = $retObj->get();
-        return json_decode(json_encode($array), 1);
+        $json = str_replace("'", '`', json_encode($array));
+        return json_decode($json, 1);
     }
 
     public function getWhatsappMessages($mobile)
@@ -109,13 +110,10 @@ class MasterModel extends ParentModel
             ->where('mobile', $mobile)
             ->where('name', '<>', '')
             ->first();
-        if(isset($maxName->name))
-        {
+        if (isset($maxName->name)) {
             return $maxName->name;
-        }else
-        {
+        } else {
             return 'No name';
         }
-
     }
 }
