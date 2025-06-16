@@ -133,7 +133,7 @@ class RideController extends Controller
         $status = ($request->has('status')) ? $request->status : 0;
         $date = ($request->has('date')) ? $request->date : date('Y-m-d');
         $this->model = new RideModel();
-        $list = $this->model->getRides($date, $project_id, $status,Session::get('project_access'));
+        $list = $this->model->getRides($date, $project_id, $status, Session::get('project_access'));
         $list = json_decode(json_encode($list), 1);
         $rides = [];
         foreach ($list as $k => $ride) {
@@ -526,6 +526,18 @@ class RideController extends Controller
             $params[] = array('type' => 'text', 'text' => $row->otp);
             $apiController->sendWhatsappMessage($row->passenger_id, 5, 'ride_confirmation', $params, $short_url, 'en', 1);
         }
+    }
+
+    public function downloadMIS(Request $request)
+    {
+        $data['selectedMenu'] = [29, 9];
+        $data['menus'] = Session::get('menus');
+        $data['status'] = 'na';
+        $data['current_date_range'] = date('d M Y') . ' 05:00 PM - ' . Date('d M Y', strtotime('+1 days')) . ' 05:00 PM';
+        $data['project_id'] = (isset($request->project_id) ? $request->project_id : 0);
+        $data['project_list'] = $this->model->getTableList('project', 'is_active', 1, 0, Session::get('project_access'));
+
+        return view('web.mis.download', $data);
     }
 
 

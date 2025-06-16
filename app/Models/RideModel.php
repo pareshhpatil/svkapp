@@ -79,4 +79,6 @@ class RideModel extends ParentModel
         $array =   $retObj->get();
         return $array;
     }
+
+    
 }

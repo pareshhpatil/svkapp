@@ -47,6 +47,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/roster/save', [App\Http\Controllers\RosterController::class, 'save']);
     Route::post('/roster/route/save', [App\Http\Controllers\RosterController::class, 'routeSave']);
     Route::post('/roster/routedownload', [App\Http\Controllers\RosterController::class, 'rosterRouteDownload']);
+    Route::post('/roster/MISDownload', [App\Http\Controllers\RosterController::class, 'MISDownload']);
 
 
     Route::post('/{type}/importsave', [App\Http\Controllers\PassengerController::class, 'importsave']);
@@ -58,6 +59,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/ride/create', [App\Http\Controllers\RideController::class, 'create']);
     Route::post('/ride/save', [App\Http\Controllers\RideController::class, 'save']);
     Route::any('/route/list', [App\Http\Controllers\RosterController::class, 'routelist']);
+    Route::any('/download/mis', [App\Http\Controllers\RideController::class, 'downloadMIS']);
     Route::any('/ride/assign', [App\Http\Controllers\RideController::class, 'assign']);
     Route::any('/ride/list/completed', [App\Http\Controllers\RideController::class, 'rideList']);
     Route::any('/mis/generate', [App\Http\Controllers\RideController::class, 'generateMis']);

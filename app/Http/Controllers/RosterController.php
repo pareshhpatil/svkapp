@@ -287,7 +287,7 @@ class RosterController extends Controller
             foreach ($data['rosterdata'] as $k => $row) {
                 $data['rosterdata'][$row->id] = $row;
             }
-            $data['rosterdata']=$data['rosterdata'];
+            $data['rosterdata'] = $data['rosterdata'];
             foreach ($data['rosterdata'] as $k => $row) {
                 if ($row->status == 0) {
                     $shift = ($row->shift == '') ? 'NA' : $row->shift;
@@ -472,6 +472,92 @@ class RosterController extends Controller
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Cache-Control: cache, must-revalidate');
         header('Pragma: public');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+        exit;
+    }
+
+
+
+    function MISDownload(Request $request)
+    {
+
+
+        $from_date = null;
+        $to_date = null;
+        $date_array = explode(' - ', $request->date_range);
+        if (!empty($date_array)) {
+            $from_date = $this->sqlDate($date_array[0]);
+            $to_date = $this->sqlDate($date_array[1]);
+        }
+        $project_name = $this->model->getColumnValue('project', 'project_id', $request->project_id, 'name');
+        $data = $this->model->getMIS($request->project_id, $from_date, $to_date, $project_name);
+        $routes_array = [];
+        $last_ride_id = 0;
+        $inc = 0;
+
+        $columns = [];
+        if (!empty($data)) {
+            foreach (array_keys($data[0]) as $key) {
+                $columns[] = ucwords(str_replace('_', ' ', $key));
+            }
+        }
+
+        // Step 2: Create spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $title = 'Ride MIS';
+        $spreadsheet->getProperties()->setTitle($title);
+
+        // Step 3: Define column letters (A, B, ..., Z, AA, AB...)
+        $letters = range('A', 'Z');
+        $columns_excel = [];
+        foreach ($letters as $letter) {
+            $columns_excel[] = $letter;
+        }
+        foreach ($letters as $l1) {
+            foreach ($letters as $l2) {
+                $columns_excel[] = $l1 . $l2;
+            }
+        }
+
+        // Step 4: Set headers
+        foreach ($columns as $i => $col_name) {
+            $sheet->setCellValue($columns_excel[$i] . '1', $col_name);
+        }
+
+        // Step 5: Fill data rows
+        $rowIndex = 2;
+        foreach ($data as $row) {
+            $colIndex = 0;
+            foreach ($row as $val) {
+                $sheet->setCellValue($columns_excel[$colIndex] . $rowIndex, $val);
+                $colIndex++;
+            }
+            $rowIndex++;
+        }
+
+        // Step 6: Formatting
+        $spreadsheet->getDefaultStyle()->getFont()->setName('Verdana')->setSize(10);
+        $sheet->setTitle($title);
+
+        // Auto-size
+        for ($i = 0; $i < count($columns); $i++) {
+            $sheet->getColumnDimension($columns_excel[$i])->setAutoSize(true);
+        }
+
+        // Style header
+        $headerRange = "A1:" . $columns_excel[count($columns) - 1] . "1";
+        $sheet->getStyle($headerRange)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle($headerRange)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('AAAADD');
+
+        // Step 7: Output
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
+        header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
