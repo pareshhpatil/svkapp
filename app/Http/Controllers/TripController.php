@@ -159,7 +159,7 @@ class TripController extends Controller
         $type = $ride->type;
         $vehicle_number = $this->model->getColumnValue('vehicle', 'vehicle_id', $vehicle_id, 'number');
         $project_location = $this->model->getColumnValue('project', 'project_id', $ride->project_id, 'location');
-        $array['title'] = $type . ' ' . substr($vehicle_number, -4);
+        //$array['title'] = $type . ' ' . substr($vehicle_number, -4);
         if ($type == 'Drop') {
             $location = $this->model->getColumnValue('ride_passenger', 'ride_id', $ride_id, 'drop_location', [], 'id');
             $array['start_location'] = $project_location;
