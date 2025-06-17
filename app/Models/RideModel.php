@@ -198,6 +198,7 @@ class RideModel extends ParentModel
             ->select(DB::raw('*,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
             ->where('p.is_active', 1)
             ->where('p.passenger_id', $id)
+            ->where('p.status', '<>', 3)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
             ->get();
         return json_decode(json_encode($retObj), 1);
