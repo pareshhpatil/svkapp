@@ -859,28 +859,31 @@ class HomeController extends Controller
         $array['created_by'] = Session::get('user_id');
         $array['created_date'] = date('Y-m-d H:i:s');
         $array['last_update_by'] = Session::get('user_id');
-        $array['booking_id'] = $this->model->saveTable('ride_request', $array);
-        $array['start_time'] = $array['time'];
-        unset($array['time']);
-        $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
-        $apiController = new ApiController();
-        $url = 'https://app.svktrv.in/my-rides/request';
-        $tokens[] = 'epbTCLCQ9k52mMMRbYjxEt:APA91bHmIJvli6ClqdtUFz2DQNG56i6agtjwNVRNHvvRPLMHileDQz9FTIK2A1PBP7nCyMILE3tdCx3T_GojuVFIedRBhM2K7J8RCeueH431VUsjMmVHgJk';
-        $tokens[] = 'fptKhPHeSPm99eFLtFY5QL:APA91bF1KzJi2nI1xDVcXGi_EXqfYjEIartjevHA_VxIttzYjS24IxZGjvkXPx03kFRaJrtG-U7GU3Z7FrmnoAKBzOZqMUbIgyXrGP3MKT2Lc_t7NQLbgvs';
+        $exist = $this->model->getColumnValue('ride_request', 'passenger_id', $array['passenger_id'], 'id', ['time' => $array['time'], 'status' => 1]);
+        if ($exist == false) {
+            $array['booking_id'] = $this->model->saveTable('ride_request', $array);
+            $array['start_time'] = $array['time'];
+            unset($array['time']);
+            $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
+            $apiController = new ApiController();
+            $url = 'https://app.svktrv.in/my-rides/request';
+            $tokens[] = 'epbTCLCQ9k52mMMRbYjxEt:APA91bHmIJvli6ClqdtUFz2DQNG56i6agtjwNVRNHvvRPLMHileDQz9FTIK2A1PBP7nCyMILE3tdCx3T_GojuVFIedRBhM2K7J8RCeueH431VUsjMmVHgJk';
+            $tokens[] = 'fptKhPHeSPm99eFLtFY5QL:APA91bF1KzJi2nI1xDVcXGi_EXqfYjEIartjevHA_VxIttzYjS24IxZGjvkXPx03kFRaJrtG-U7GU3Z7FrmnoAKBzOZqMUbIgyXrGP3MKT2Lc_t7NQLbgvs';
 
-        $passenger_name = $this->model->getColumnValue('passenger', 'id', $array['passenger_id'], 'employee_name');
-        if ($array['status'] == 0) {
-            $array['is_active'] = 0;
-            //$admin_list = $this->model->getList('users', ['user_type' => 2, 'is_active' => 1, 'project_id' => $array['project_id']], 'parent_id');
-            $apiController->sendNotification(0, 2, 'Ad hoc booking request for approval', $passenger_name . ' requested Ad hoc booking for ' . $array['shift'], $url, '', $tokens);
-            // foreach ($admin_list as $row) {
-            //     $apiController->sendNotification($row->parent_id, 2, 'Ad hoc booking request for approval', $passenger_name . ' requested Ad hoc booking for ' . $array['shift'], $url);
-            // }
-        } else {
-            $apiController->sendNotification(0, 2, 'New booking request from ', $passenger_name . ' for ' . $request->date . ' ' . $array['shift'], $url, '', $tokens);
+            $passenger_name = $this->model->getColumnValue('passenger', 'id', $array['passenger_id'], 'employee_name');
+            if ($array['status'] == 0) {
+                $array['is_active'] = 0;
+                //$admin_list = $this->model->getList('users', ['user_type' => 2, 'is_active' => 1, 'project_id' => $array['project_id']], 'parent_id');
+                $apiController->sendNotification(0, 2, 'Ad hoc booking request for approval', $passenger_name . ' requested Ad hoc booking for ' . $array['shift'], $url, '', $tokens);
+                // foreach ($admin_list as $row) {
+                //     $apiController->sendNotification($row->parent_id, 2, 'Ad hoc booking request for approval', $passenger_name . ' requested Ad hoc booking for ' . $array['shift'], $url);
+                // }
+            } else {
+                $apiController->sendNotification(0, 2, 'New booking request from ', $passenger_name . ' for ' . $request->date . ' ' . $array['shift'], $url, '', $tokens);
+            }
+            unset($array['status']);
+            $this->model->saveTable('roster', $array);
         }
-        unset($array['status']);
-        $this->model->saveTable('roster', $array);
         return redirect('/my-rides/booking');
     }
 
