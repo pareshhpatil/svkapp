@@ -74,11 +74,12 @@ class LoginController extends Controller
     public function users()
     {
         $model =  new ApiModel();
-        $array = $model->getList('users', ['is_active' => 1], '*', 0, 'id');
+        $array = $model->getList('users', ['is_active' => 1], 'id,name,mobile,user_type,project_id', 0, 'id');
         $array = json_decode(json_encode($array), 1);
         foreach ($array as $k => $v) {
             $array[$k]['link'] = Encryption::encode($v['id']);
         }
+        $data['menu'] = '';
         $data['data'] = $array;
         return view('auth.users', $data);
     }
@@ -106,11 +107,6 @@ class LoginController extends Controller
                 if ($user_access != false) {
                     Session::put('user_access', json_decode(json_encode($user_access), 1));
                 }
-            }
-            if ($user->dark_mode == 1) {
-                Session::put('mode', 'dark-mode');
-            } else {
-                Session::put('mode', '');
             }
             if ($user->icon == '') {
                 $user->icon =  '/assets/img/avatars/' . $user->gender . '.png';
