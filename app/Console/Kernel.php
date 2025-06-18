@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ImportRoster',
         'App\Console\Commands\RideReminder',
         'App\Console\Commands\RideEndReminder',
+        'App\Console\Commands\BookingReminder',
     ];
 
     /**
@@ -31,6 +32,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('import:roster')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('ride:reminder')->everyTenMinutes()->withoutOverlapping();
         $schedule->command('rideend:reminder')->everyTenMinutes()->withoutOverlapping();
+        $schedule->command('booking:reminder')->dailyAt('16:00')->withoutOverlapping();
+
     }
 
     /**
