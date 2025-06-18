@@ -62,5 +62,7 @@ class BookingReminder extends Command
         foreach ($rides as $ride) {
             $apiController->sendWhatsappMessage($ride->passenger_id, 5, 'booking_reminder', [], 'book', 'en', 1);
         }
+
+        $apiController->sendWhatsappMessage('9730946150', 'mobile', 'booking_reminder', [], 'book', 'en', 1);
     }
 }
