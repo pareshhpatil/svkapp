@@ -91,7 +91,7 @@
 
                 return this.passengers.filter(emp => {
                     return emp.name.toLowerCase().includes(this.search.toLowerCase())
-                }).sort(compare)
+                }).sort((a, b) => b.id - a.id)
             }
         }
         
