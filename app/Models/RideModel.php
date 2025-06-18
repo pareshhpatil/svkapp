@@ -211,7 +211,7 @@ class RideModel extends ParentModel
             ->select(DB::raw('p.*,employee_name,employee_code,gender,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
             ->where('p.is_active', 1)
             ->join('passenger as r', 'r.id', '=', 'p.passenger_id')
-            ->whereIn('p.status', [0])
+            ->whereIn('p.status', [0,1])
             ->where('p.project_id', $project_id)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
             ->get();
