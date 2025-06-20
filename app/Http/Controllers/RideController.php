@@ -349,6 +349,13 @@ class RideController extends Controller
             $row['pickup_time'] = $array['date'] . ' ' . $this->sqlTime($row['pickup_time']);
             $row['ride_id'] = $ride_id;
             $emp_location = $this->model->getColumnValue('passenger', 'id', $row['passenger_id'], 'location');
+            $roster = $this->model->getTableRow('roster', 'passenger_id', $row['passenger_id'], 1, ['start_time' => $row['pickup_time'], 'status' => 0], 'booking_id,id');
+            if ($roster != false) {
+                $this->model->updateTable('roster', 'id', $roster->id, 'status', 1);
+                if ($roster->booking_id > 0) {
+                    $this->model->updateTable('ride_request', 'id', $roster->booking_id, 'status', 2);
+                }
+            }
 
             if ($array['type'] == 'Pickup') {
                 $row['pickup_location'] = $emp_location;
