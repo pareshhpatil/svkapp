@@ -51,7 +51,7 @@ class RideModel extends ParentModel
             ->leftJoin('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
-            ->where('p.status', '<', 2)
+            ->whereIn('p.status', [0, 1, 5])
             ->where('r.status', 2)
             ->where('p.passenger_id', $id)
             ->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(pickup_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(pickup_time, "%l:%i %p") as only_time,d.name as driver_name, p.id as pid,d.photo,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location'));
@@ -211,7 +211,7 @@ class RideModel extends ParentModel
             ->select(DB::raw('p.*,employee_name,employee_code,gender,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
             ->where('p.is_active', 1)
             ->join('passenger as r', 'r.id', '=', 'p.passenger_id')
-            ->whereIn('p.status', [0,1])
+            ->whereIn('p.status', [0, 1])
             ->where('p.project_id', $project_id)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
             ->get();

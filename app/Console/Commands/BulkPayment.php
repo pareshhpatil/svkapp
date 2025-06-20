@@ -52,11 +52,23 @@ class BulkPayment extends Command
     {
         $ApiController = new ApiController();
 
+
+        $params = [];
+        $params[] = array('type' => 'text', 'text' => 'Karan Rajesh');
+        $params[] = array('type' => 'text', 'text' => 'Marol');
+        $params[] = array('type' => 'text', 'text' => 'Kurla West');
+        $params[] = array('type' => 'text', 'text' => '21 June 3:30 AM');
+        $params[] = array('type' => 'text', 'text' => 'Akhlaq');
+        $params[] = array('type' => 'text', 'text' => 'MH03EG4827');
+        $params[] = array('type' => 'text', 'text' => '4299');
+        $ApiController->sendWhatsappMessage(551, 5, 'ride_confirmation', $params, 'app', 'en', 1);
+        die();
+
         $array = ['9730946150','9833948660',  '9833078520', '9930779609', '7506085393', '8369367228', '7518063939', '9930410908', '9322934834', '8419904427', '8451918559', '8356090273', '9082501008', '9769641318', '9833888935', '8879081923', '9051850709', '9167877823', '8108222998'];
         $array = ['9730946150',  '7506085393', '8369367228', '7518063939',   '8419904427',  '8356090273', '9082501008', '9769641318', '9833888935', '8879081923',  '9167877823', '8108222998'];
-       // $array = ['9833948660',  '9833078520'];
+        $array = ['8779646178','7045111945'];
         foreach ($array as $mobile) {
-           // $ApiController->sendWhatsappMessage($mobile, 'mobile', 'mobile_app_installation', [], null, 'en', 1);
+            //$ApiController->sendWhatsappMessage($mobile, 'mobile', 'mobile_app_installation', [], null, 'en', 1);
             $ApiController->sendWhatsappMessage($mobile, 'mobile', 'booking_reminder', [], 'book', 'en', 1);
             echo $mobile . PHP_EOL;
         }
