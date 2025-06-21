@@ -91,7 +91,7 @@ class WebhookController extends Controller
                 $description = 'Contact received';
             }
 
-            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['context'])) {
+            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'])) {
                 $message_id = $data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'];
                 $model->updateTable('whatsapp_messages', 'message_id', $message_id, 'reaction', $message);
                 $message_type = 'reaction';
