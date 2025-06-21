@@ -123,6 +123,7 @@ class RideModel extends ParentModel
         $retObj = DB::table('ride as r')
             ->where('r.is_active', 1)
             ->where('r.status', 0)
+            ->orderBy('start_time', 'asc')
             ->whereDate('r.date', '>=', date('Y-m-d'));
         $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time,DATE_FORMAT(date, "%a %d %b %Y") as date, r.id as pid , start_location as pickup_location ,end_location as drop_location'));
         $array = $retObj->get();
