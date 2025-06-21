@@ -200,7 +200,7 @@ class ParentModel extends Model
         $retObj->update($update_array);
     }
 
-    public function getList($table, $param = [], $col = '*', $limit = 0, $orderby = '')
+    public function getList($table, $param = [], $col = '*', $limit = 0, $orderby = '', $offset = null)
     {
         $retObj = DB::table($table)
             ->select(DB::raw($col));
@@ -208,6 +208,9 @@ class ParentModel extends Model
             foreach ($param as $k => $v) {
                 $retObj->where($k, $v);
             }
+        }
+        if ($offset != null) {
+            $retObj->offset($offset);
         }
         if ($limit > 0) {
             $retObj->limit($limit);

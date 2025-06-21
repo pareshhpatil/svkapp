@@ -647,18 +647,25 @@ class HomeController extends Controller
         return view('passenger.book-ride', $data);
     }
 
-    public function notifications($ride_id = 0)
+    public function notifications($ride_id = 0, $offset = null)
     {
         if ($ride_id == 0) {
             $filter = ['is_active' => 1];
+            $limit = 50;
         } else {
             $filter = ['ride_id' => $ride_id];
+            $limit = 0;
         }
-        $list = $this->model->getList('notifications', $filter, '*', 0, 'id');
-        $data['list'] = $list;
+
+        $list = $this->model->getList('notifications', $filter, '*', $limit, 'id', $offset);
+        $data['list'] = json_encode($list);
         $data['menu'] = 3;
+        $data['limit'] = $limit;
         $data['title'] = 'Notifications';
         $data['date'] = date('Y-m-d');
+        if ($offset != null) {
+            return json_encode($list);
+        }
         return view('master.notifications', $data);
     }
 
