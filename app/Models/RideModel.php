@@ -131,7 +131,7 @@ class RideModel extends ParentModel
         return json_decode(json_encode($array), 1);
     }
 
-    public function driverPastRides($id)
+    public function driverPastRides($id, $limit = 0)
     {
         $retObj = DB::table('ride as r')
             ->join('driver as d', 'd.id', '=', 'r.driver_id')
@@ -139,9 +139,13 @@ class RideModel extends ParentModel
             ->where('r.is_active', 1)
             ->where('r.status', 5)
             ->whereDate('r.date', '<=', date('Y-m-d'))
+
             ->orderBy('r.id', 'desc');
         if ($id > 0) {
             $retObj->where('r.driver_id', $id);
+        }
+        if ($limit > 0) {
+            $retObj->limit($limit);
         }
         $retObj->select(DB::raw('*,r.status as ride_status,DATE_FORMAT(start_time, "%a %d %b %y %l:%i %p") as pickup_time , r.id as pid, start_location as pickup_location ,end_location as drop_location,d.photo'));
         $array = $retObj->get();
