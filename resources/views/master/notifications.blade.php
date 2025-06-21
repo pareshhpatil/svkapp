@@ -50,7 +50,6 @@
                     return '';
                 },
                 async fetchData() {
-                    alert('Loading...');
                     await axios.get('/notifications/0/' + this.offset)
                         .then(response => {
                             // Update your data with the received response
