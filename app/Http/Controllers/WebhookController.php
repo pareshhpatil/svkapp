@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingEmail; // Replace with your Mailable class
 use App\Http\Controllers\TripController;
 use Illuminate\Support\Facades\Log;
+
 class WebhookController extends Controller
 {
     /**
@@ -108,21 +109,21 @@ class WebhookController extends Controller
             $apiController->sendNotification(1, 1, $message, $description, $url, $image);
         }
         if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['id'])) {
-            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['from'])) {
-                $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
-                $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
-                $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
-                $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
-                $error_code = '';
-                if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
-                    $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
-                }
-
-                $model->updateWhatsappStatus($message_id, $status, $timestamp);
-                if ($error_code == '131026') {
-                    $model->saveWhatsappFailed(substr($mobile, 2));
-                }
+            //if (isset($data['entry'][0]['changes'][0]['value']['messages'][0]['from'])) {
+            $message_id = $data['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
+            $status = $data['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
+            $timestamp = $data['entry'][0]['changes'][0]['value']['statuses'][0]['timestamp'];
+            $error_code = '';
+            if (isset($data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'])) {
+                $error_code = $data['entry'][0]['changes'][0]['value']['statuses'][0]['errors'][0]['code'];
             }
+
+            $model->updateWhatsappStatus($message_id, $status, $timestamp);
+            if ($error_code == '131026') {
+                $mobile = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
+                $model->saveWhatsappFailed(substr($mobile, 2));
+            }
+            //  }
         }
 
 
