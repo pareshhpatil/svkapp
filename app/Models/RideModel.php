@@ -30,6 +30,7 @@ class RideModel extends ParentModel
             ->leftJoin('vehicle as v', 'v.vehicle_id', '=', 'r.vehicle_id')
             ->where('p.is_active', 1)
             ->where('r.is_active', 1)
+            ->orderBy('r.start_time', 'asc')
             ->whereIn('r.status', [0, 1])
             ->where('p.status', 0)
             ->whereDate('r.date', '>=', date('Y-m-d'))
