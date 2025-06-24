@@ -234,6 +234,7 @@ class RideModel extends ParentModel
             ->where('p.ride_id', $ride_id)
             ->select(DB::raw('p.id,pr.address,pr.mobile ,p.status,p.otp,TIME_FORMAT(p.pickup_time, "%h:%i %p") as pickup_time ,TIME_FORMAT(p.drop_time, "%h:%i %p") as drop_time ,
             p.pickup_location,p.drop_location,pr.icon,pr.location,pr.employee_name as name,pr.gender,p.passenger_id,null as actual_pickup_location,null as actual_drop_location,null as cab_reach_location,p.passenger_type'))
+            ->orderBy('p.seq')
             ->get();
         return json_decode(json_encode($retObj), 1);
     }
