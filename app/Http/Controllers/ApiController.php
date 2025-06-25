@@ -112,25 +112,28 @@ class ApiController extends Controller
 
     public function sendSMS($number_, $params, $templateId)
     {
-        $client = new Client();
-        $number = '91' . $number_;
-        $params['mobiles'] = $number;
+        $failed = $this->model->getColumnValue('sms_failed', 'mobile', $number_, 'id');
+        if ($failed == false) {
+            $client = new Client();
+            $number = '91' . $number_;
+            $params['mobiles'] = $number;
 
-        $response = $client->post('https://control.msg91.com/api/v5/flow', [
-            'headers' => [
-                'accept' => 'application/json',
-                'authkey' => env('MSG91_AUTHKEY'), // move auth key to .env
-                'content-type' => 'application/json',
-            ],
-            'json' => [
-                'template_id' => $templateId,
-                'short_url' => '0',
-                'realTimeResponse' => '1',
-                'recipients' => [
-                    $params,
+            $response = $client->post('https://control.msg91.com/api/v5/flow', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authkey' => env('MSG91_AUTHKEY'), // move auth key to .env
+                    'content-type' => 'application/json',
                 ],
-            ],
-        ]);
+                'json' => [
+                    'template_id' => $templateId,
+                    'short_url' => '0',
+                    'realTimeResponse' => '1',
+                    'recipients' => [
+                        $params,
+                    ],
+                ],
+            ]);
+        }
     }
 
 
