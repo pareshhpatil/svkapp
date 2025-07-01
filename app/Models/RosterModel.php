@@ -135,12 +135,23 @@ class RosterModel extends ParentModel
 
     public function getMIS($project_id, $from_date, $to_date, $project_name)
     {
-        DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
-        $rides =  DB::select(DB::raw("select date,'$project_name' as company_name,'Sedan' as vehicle_type,v.number,r.type,GROUP_CONCAT(ps.location ORDER BY p.id SEPARATOR ', ') AS pickup_locations,end_location,date_format(start_time,'%H:%i') as pickup_time,
+        if ($project_id == 7) {
+            DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+            $rides =  DB::select(DB::raw("select date,'$project_name' as company_name,'Sedan' as vehicle_type,v.number,r.type,r.start_location,GROUP_CONCAT(ps.location ORDER BY p.id SEPARATOR ', ') AS end_location,date_format(start_time,'%H:%i') as pickup_time,
 date_format(end_time,'%H:%i') as drop_time,GROUP_CONCAT(ps.employee_name ORDER BY p.id SEPARATOR ', ') AS passengers,COUNT(p.id) AS employee_count,z.company_slab,escort,r.id as logsheet_number,company_amount from ride r inner join vehicle v on v.vehicle_id=r.vehicle_id 
 inner join ride_passenger p on r.id=p.ride_id inner join passenger ps on p.passenger_id=ps.id and ps.passenger_type=1 and p.status<>3
 left join zone z on z.zone_id=r.slab_id where r.project_id=$project_id and date>='$from_date' and date<='$to_date' and r.is_active=1 and p.is_active=1 and driver_id not in (128,126) group by r.id;"));
-        $rides = json_decode(json_encode($rides), true);
+            $rides = json_decode(json_encode($rides), true);
+        } else {
+            DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+            $rides =  DB::select(DB::raw("select date,'$project_name' as company_name,'Sedan' as vehicle_type,v.number,r.type,GROUP_CONCAT(ps.location ORDER BY p.id SEPARATOR ', ') AS pickup_locations,end_location,date_format(start_time,'%H:%i') as pickup_time,
+date_format(end_time,'%H:%i') as drop_time,GROUP_CONCAT(ps.employee_name ORDER BY p.id SEPARATOR ', ') AS passengers,COUNT(p.id) AS employee_count,z.company_slab,escort,r.id as logsheet_number,company_amount from ride r inner join vehicle v on v.vehicle_id=r.vehicle_id 
+inner join ride_passenger p on r.id=p.ride_id inner join passenger ps on p.passenger_id=ps.id and ps.passenger_type=1 and p.status<>3
+left join zone z on z.zone_id=r.slab_id where r.project_id=$project_id and date>='$from_date' and date<='$to_date' and r.is_active=1 and p.is_active=1 and driver_id not in (128,126) group by r.id;"));
+            $rides = json_decode(json_encode($rides), true);
+        }
+
+
         return $rides;
     }
 }
