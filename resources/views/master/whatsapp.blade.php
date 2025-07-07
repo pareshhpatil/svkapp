@@ -14,6 +14,7 @@
         user-select: none;
     }
 </style>
+<script src="https://unpkg.com/webtonative@1.0.56/webtonative.min.js"></script>
 
 <div id="app">
     <div id="appCapsule" class="full-height" ref="scrollContainer">
@@ -67,7 +68,10 @@
                     <div v-if="item.message_type=='contacts'" class="bubble" v-html="item.message">
                     </div>
                     <div v-if="item.message_type=='image'" class="bubble">
-                        <a download="chat-file" :href="item.message" title="ImageName">
+                        <a
+                            :download="getFileName(item.message)"
+                            :href="getDownloadUrl(item.message)"
+                            title="ImageName">
                             <img :src="item.message" alt="photo" class="imaged w160">
                         </a>
                     </div>
@@ -174,6 +178,14 @@
         mylongitude = crd.longitude;
     }
 
+
+    function fileDownload(file_name, path) {
+        window.WTN.downloadBlobFile({
+            fileName: file_name,
+            downloadUrl: path
+        })
+    }
+
     function error(err) {
         console.warn(`ERROR(${err.code}): ${err.message}`);
     }
@@ -263,7 +275,7 @@
                 }
 
                 this.message_type = 1;
-                
+
                 this.image = null;
                 this.scrollToBottom();
                 this.loader = false;
@@ -285,9 +297,27 @@
             },
             scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
+            },
+
+            getFileName(url) {
+                try {
+                    const urlObj = new URL(url);
+                    const pathname = urlObj.pathname;
+                    const filename = pathname.substring(pathname.lastIndexOf('/') + 1) || 'chat-file';
+                    return filename;
+                } catch (e) {
+                    return 'chat-file';
+                }
+            },
+            getDownloadUrl(originalUrl) {
+                try {
+                    const filename = this.getFileName(originalUrl);
+                    const hasQuery = originalUrl.includes('?');
+                    return `${originalUrl}${hasQuery ? '&' : '?'}filename=${filename}`;
+                } catch (e) {
+                    return originalUrl;
+                }
             }
-
-
         }
     })
 </script>
