@@ -169,6 +169,12 @@
 
 
 <script>
+
+    const { appReview: AppReview } = window.WTN
+
+AppReview.prompt()
+
+
     var mylatitude = '';
     var mylongitude = '';
 
