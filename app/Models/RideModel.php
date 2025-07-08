@@ -18,6 +18,7 @@ use Log;
 use App\Models\ParentModel;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Carbon\Carbon;
 
 class RideModel extends ParentModel
 {
@@ -210,9 +211,22 @@ class RideModel extends ParentModel
         return json_decode(json_encode($retObj), 1);
     }
 
+    function getMaxDateTime()
+    {
+        $now = Carbon::now();
+        $todayTenAM = Carbon::today()->setTime(10, 0);
+
+        $maxDate = $now->greaterThan($todayTenAM)
+            ? $todayTenAM->copy()->addDay()
+            : $todayTenAM;
+
+        return $maxDate->format('Y-m-d H:i:s'); // or any other format you need
+    }
+
 
     public function pendingBookingRides($project_id = 0)
     {
+        $max_date = $this->getMaxDateTime();
         $retObj = DB::table('ride_request as p')
             ->select(DB::raw('p.*,employee_name,employee_code,gender,DATE_FORMAT(time, "%a %d %b %y %l:%i %p") as pickup_time,TIMESTAMPDIFF(HOUR,NOW(),`time`) as hours'))
             ->where('p.is_active', 1)
@@ -220,6 +234,7 @@ class RideModel extends ParentModel
             ->whereIn('p.status', [0, 1])
             ->where('p.project_id', $project_id)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
+            ->where('p.time', '<', $max_date)
             ->orderBy('p.time', 'asc')
             ->get();
         return json_decode(json_encode($retObj), 1);
