@@ -216,7 +216,7 @@
                             </h5>
                             <h5><span v-html="item.pickup_time"></span></h5>
                             </h5>
-                            <h5><span v-html="item.type"></span></h5>
+                            <h5><span v-html="item.type"></span> - <span v-html="item.location"></span></h5>
                         </div>
                     </div>
                     <br>
