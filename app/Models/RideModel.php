@@ -220,6 +220,7 @@ class RideModel extends ParentModel
             ->whereIn('p.status', [0, 1])
             ->where('p.project_id', $project_id)
             ->where('p.time', '>', date('Y-m-d H:i:s'))
+            ->orderBy('p.time', 'asc')
             ->get();
         return json_decode(json_encode($retObj), 1);
     }
