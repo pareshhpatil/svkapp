@@ -201,9 +201,11 @@
         <!-- * waiting tab -->
         @if($type=='request')
         <div class="tab-pane fade @if($type=='request') active show @endif" id="request" role="tabpanel">
+            @if(Session::get('user_type')==5)
             <div class="alert alert-outline-warning mb-1" role="alert" style="background-color: #ffffff;">
                 Admin Approval are only permitted up to 6 hours before the scheduled pickup time.
             </div>
+            @endif
             <div class="transactions mt-2">
                 <div v-if="data.request.length" v-for="item in data.request" href="#" class="item" style="padding: 10px 10px;">
                     <div class="detail">
