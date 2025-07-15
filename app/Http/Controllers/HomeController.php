@@ -1190,8 +1190,8 @@ class HomeController extends Controller
     public function passengerAdd($ride_id, $passenger_id, $time)
     {
         $ride = $this->model->getRowArray('ride', 'id', $ride_id);
-        $exist = $this->model->isExistData('ride_passenger', 'passenger_id', $passenger_id);
-        $exist = $this->model->getColumnValue('ride_passenger', 'passenger_id', $passenger_id, 'id', ['ride_id' => $ride_id]);
+        //$exist = $this->model->isExistData('ride_passenger', 'passenger_id', $passenger_id);
+        $exist = $this->model->getColumnValue('ride_passenger', 'passenger_id', $passenger_id, 'id', ['ride_id' => $ride_id, 'is_active' => 1]);
         if ($exist == false) {
             $passenger = $this->model->getRowArray('passenger', 'id', $passenger_id);
             $project = $this->model->getRowArray('project', 'project_id', $ride['project_id']);
