@@ -694,13 +694,15 @@
                                             :key="item.id"
                                             class="list-group-item d-flex justify-content-between align-items-center">
                                             <div v-html="item.name" class="me-3 flex-grow-1 text-truncate"></div>
-                                            <input
-                                                type="number"
-                                                class="form-control form-control-sm"
-                                                style="width: 70px;"
-                                                v-model.number="item.seq"
-                                                @change="updateSequence(item.id, item.seq)"
-                                                :value="item.seq">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <button class="btn btn-sm btn-light" @click="updateSequence(item, 1)">
+                                                    ▲
+                                                </button>
+                                                <span class="small my-1">@{{ item.seq }}</span>
+                                                <button class="btn btn-sm btn-light" @click="updateSequence(item, 0)">
+                                                    ▼
+                                                </button>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -887,8 +889,14 @@
                     alert('Failed to save driver.');
                 }
             },
-            async updateSequence(id, seq) {
-                let res = await axios.get('/ride/passenger/sequence/' + id + '/' + seq);
+            async updateSequence(item, type) {
+                if (type == 0) {
+                    item.seq = Number(item.seq) - 1;
+                } else {
+                    item.seq = Number(item.seq) + 1;
+                }
+
+                let res = await axios.get('/ride/passenger/sequence/' + item.id + '/' + item.seq);
             }
         }
     })
