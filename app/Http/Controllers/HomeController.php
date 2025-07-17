@@ -1219,4 +1219,8 @@ class HomeController extends Controller
         // $ride_passengers = $this->model->getRidePassenger($detail['ride_id']);
         // return json_encode($ride_passengers);
     }
+    public function passengerSequence($id, $seq)
+    {
+        $this->model->updateTable('ride_passenger', 'id', $id, 'seq', $seq);
+    }
 }

@@ -123,6 +123,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/ride/passenger/add/{ride_id}/{p_id}/{time}', [App\Http\Controllers\HomeController::class, 'passengerAdd']);
     Route::get('/ride/passenger/remove/{id}', [App\Http\Controllers\HomeController::class, 'passengerRemove']);
+    Route::get('/ride/passenger/sequence/{id}/{seq}', [App\Http\Controllers\HomeController::class, 'passengerSequence']);
 
     Route::get('/chat/create/{user_type}/{ride_id}/{type}/{user_id}/{request_id}', [App\Http\Controllers\MasterController::class, 'chatCreate']);
     Route::get('/chat/{group_id}', [App\Http\Controllers\MasterController::class, 'chat']);

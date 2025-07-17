@@ -81,7 +81,7 @@
                                         <option value="">Select..</option>
                                         @if(!empty($vehicle_list))
                                         @foreach($vehicle_list as $v)
-                                        <option @if($v->vehicle_id==$data['ride']['vehicle_id']) selected @endif  value="{{$v->vehicle_id}}">{{$v->number}}</option>
+                                        <option @if($v->vehicle_id==$data['ride']['vehicle_id']) selected @endif value="{{$v->vehicle_id}}">{{$v->number}}</option>
                                         @endforeach
                                         @endif
                                     </select>
@@ -366,13 +366,20 @@
 
         </div>
         @endif
-        <div class="mt-1">Route
+        <div class="mt-1">
+
 
             @if($title=='Assign cab')
-            <a href="#" data-bs-toggle="modal" data-bs-target="#addpassenger" class="btn btn-info btn-sm pull-right">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#changesequence" class="btn btn-primary btn-sm  mr-1  mb-1">
+                <ion-icon name="refresh-outline"></ion-icon>
+                Sequence
+            </a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#addpassenger" class="btn btn-info btn-sm  mb-1">
                 <ion-icon name="person-add-outline"></ion-icon>
                 Add
             </a>
+            @else
+            Route
             @endif
         </div>
 
@@ -671,6 +678,48 @@
             </div>
         </div>
 
+        <div class="modal fade dialogbox" id="changesequence" data-bs-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Change sequence</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="extra-header-active" style="    overflow: scroll; height: 400px;">
+                            <div class="mt-2 mb-2">
+                                <div class="card" v-if="passenger_id==0" style="overflow-y: auto;">
+                                    <ul class="list-group list-group-flush">
+                                        <li
+                                            v-for="item in [...data.ride_passengers].sort((a, b) => a.seq - b.seq)"
+                                            :key="item.id"
+                                            class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div v-html="item.name" class="me-3 flex-grow-1 text-truncate"></div>
+                                            <input
+                                                type="number"
+                                                class="form-control form-control-sm"
+                                                style="width: 70px;"
+                                                v-model.number="item.seq"
+                                                @change="updateSequence(item.id, item.seq)"
+                                                :value="item.seq">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="#" @click="reload();" class="btn btn-text-danger" data-bs-dismiss="modal">
+                                <ion-icon name="close-outline"></ion-icon>
+                                Done
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @endif
 
 
@@ -762,6 +811,10 @@
                 // this.data.ride_passengers = JSON.parse(res);
                 // this.remove_id = 0;
             },
+            reload() {
+                this.notloded = true;
+                location.reload();
+            },
             call(mobile) {
                 axios.get('/call/' + mobile);
                 toastbox('toast-15');
@@ -814,7 +867,7 @@
             async saveEscort() {
                 try {
                     const response = await axios.post('/master/save/escort/api', {
-                        employee_name : this.escort.name,
+                        employee_name: this.escort.name,
                         mobile: this.escort.mobile,
                         project_id: this.data.ride.project_id
                     });
@@ -833,6 +886,9 @@
                     console.error('Error saving driver:', error);
                     alert('Failed to save driver.');
                 }
+            },
+            async updateSequence(id, seq) {
+                let res = await axios.get('/ride/passenger/sequence/' + id + '/' + seq);
             }
         }
     })
