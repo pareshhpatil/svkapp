@@ -140,7 +140,7 @@
                                             <ul class="dropdown-menu dropdown-menu-end" style="">
                                                 <li ><a class="dropdown-item" data-bs-toggle="modal"
                                                         data-bs-target="#rideDetail" @click="selected_ride=ride" href="javascript:void(0);">Route</a></li>
-                                                <li v-if="ride.ride_status!='Live'"><a class="dropdown-item" data-bs-toggle="modal"
+                                                <li v-if="ride.ride_status=='Live'"><a class="dropdown-item" data-bs-toggle="modal"
                                                         data-bs-target="#TrackingModal" @click="setLiveTracking(ride)" href="javascript:void(0);">Live Track</a></li>
                                                 <li><a class="dropdown-item" @click="fetchUpdates(ride.ride_id)" data-bs-toggle="modal"
                                                         data-bs-target="#updatesModal" href="javascript:void(0);">Updates</a></li>
