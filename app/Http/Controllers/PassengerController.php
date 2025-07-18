@@ -253,7 +253,7 @@ class PassengerController extends Controller
         foreach ($_POST['group-a'] as $row) {
             $row['project_id'] = $request->project_id;
             $exist = false;
-            $row['address'] = str_replace(array("\r", "\n", "'"), '', $row['address']);
+            $row['address'] = str_replace(array("\r", "\n", "'",'"'), '', $row['address']);
             if ($request->passenger_id) {
                 $this->model->updateArray('passenger', 'id', $request->passenger_id, $row);
             } else {
