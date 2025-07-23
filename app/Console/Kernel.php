@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\RideReminder',
         'App\Console\Commands\RideEndReminder',
         'App\Console\Commands\BookingReminder',
+        'App\Console\Commands\BackupDatabase',
     ];
 
     /**
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ride:reminder')->everyTenMinutes()->withoutOverlapping();
         $schedule->command('rideend:reminder')->everyTenMinutes()->withoutOverlapping();
         $schedule->command('booking:reminder')->dailyAt('16:00')->withoutOverlapping();
+        $schedule->command('backup:mysql')->dailyAt('14:00')->withoutOverlapping();
 
     }
 
