@@ -15,6 +15,7 @@ class BackupDatabase extends Command
     {
         $filename = 'backup-' . Carbon::now()->format('Y-m-d_H-i-s') . '.sql';
         $path = storage_path("app/backups/{$filename}");
+        $zipPath = storage_path("app/backups/{$filename}.zip");
 
         $db = config('database.connections.mysql');
         $command = sprintf(
@@ -29,6 +30,9 @@ class BackupDatabase extends Command
         exec($command, $output, $returnCode);
 
         if ($returnCode === 0) {
+            exec(sprintf('zip -j %s %s', escapeshellarg($zipPath), escapeshellarg($path)));
+            unlink($path);
+
             $this->info("Backup created: {$filename}");
         } else {
             $this->error('Failed to create backup.');
