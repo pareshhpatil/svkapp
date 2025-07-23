@@ -19,7 +19,7 @@ class BackupDatabase extends Command
         $db = config('database.connections.mysql');
         $command = sprintf(
             'mysqldump --user=%s --password=%s --host=%s %s > %s',
-            escapeshellarg('admin_cab_vendor'),
+            escapeshellarg('backup_cab_vendor'),
             escapeshellarg('swami@cab582'),
             escapeshellarg($db['host']),
             escapeshellarg($db['database']),
