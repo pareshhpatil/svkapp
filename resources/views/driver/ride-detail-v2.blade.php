@@ -121,6 +121,11 @@
                 <div class="content">
                     <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+ ((item.map === null || item.map === undefined || item.map === '' || item.map === 'null') ? item.address : item.map), '_system');" v-html="item.name"></span> <span v-if="item.passenger_type==2"> (Escort)</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="text-end" style="right: 10px;float: right;">
+                            <a v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+ ((item.map === null || item.map === undefined || item.map === '' || item.map === 'null') ? item.address : item.map), '_system');" class="btn btn-icon btn-outline-blue">
+                                <ion-icon name="navigate-outline"></ion-icon>
+                            </a>
+                        </div>
                         <!-- <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
                             <ion-icon name="call-outline"></ion-icon>
                         </span> -->
