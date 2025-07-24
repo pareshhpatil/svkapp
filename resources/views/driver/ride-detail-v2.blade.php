@@ -119,7 +119,7 @@
                 <div v-if="data.ride.type=='Drop'" class="dot bg-primary bg-red"></div>
                 <div v-if="data.ride.type=='Pickup'" class="dot bg-info "></div>
                 <div class="content">
-                    <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+ (item.map == '' ? item.address : item.map), '_system');" v-html="item.name"></span> <span v-if="item.passenger_type==2"> (Escort)</span>
+                    <h4 class="title"><span v-on:click="window.location.assign('https://www.google.com/maps/search/?api=1&query='+ ((item.map === null || item.map === undefined || item.map === '' || item.map === 'null') ? item.address : item.map), '_system');" v-html="item.name"></span> <span v-if="item.passenger_type==2"> (Escort)</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <!-- <span v-if="item.mobile!=''" v-on:click="call(item.mobile)" class="icon-box text-danger">
                             <ion-icon name="call-outline"></ion-icon>
