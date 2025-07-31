@@ -106,11 +106,26 @@
                                 <option value="">Select category</option>
                                 <option @if($category=='Casual' ) selected @endif value="Casual">Casual</option>
                                 <option @if($category=='Advance' ) selected @endif value="Advance">Advance</option>
-                                <option @if($category=='Salary' ) selected @endif value="Salary">Salary</option>
                                 <option @if($category=='Vendor Package' ) selected @endif value="Vendor Package">Vendor Package</option>
                                 <option @if($category=='Maintenance' ) selected @endif value="Maintenance">Maintenance</option>
                                 <option @if($category=='Company' ) selected @endif value="Company">Company</option>
-                                <option @if($category=='Office Expnese' ) selected @endif value="Office Expnese">Office Expnese</option>
+                                <option @if($category=='RTO' ) selected @endif value="RTO">RTO</option>
+                                <option @if($category=='Salary' ) selected @endif value="Salary">Salary</option>
+                                <option @if($category=='Fuel' ) selected @endif value="Fuel">Fuel</option>
+                                <option @if($category=='EMI' ) selected @endif value="EMI">EMI</option>
+                                <option @if($category=='Vendor Payment' ) selected @endif value="Vendor Payment">Vendor Payment</option>
+                                <option @if($category=='Office exp' ) selected @endif value="Office exp">Office exp</option>
+                                <option @if($category=='Office Rent' ) selected @endif value="Office Rent">Office Rent</option>
+                                <option @if($category=='Electricity Bill' ) selected @endif value="Electricity Bill">Electricity Bill</option>
+                                <option @if($category=='Commission' ) selected @endif value="Commission">Commission</option>
+                                <option @if($category=='Professional Fees' ) selected @endif value="Professional Fees">Professional Fees</option>
+                                <option @if($category=='Admin Exp' ) selected @endif value="Admin Exp">Admin Exp</option>
+                                <option @if($category=='Travelling Exp' ) selected @endif value="Travelling Exp">Travelling Exp</option>
+                                <option @if($category=='Personal Exp' ) selected @endif value="Personal Exp">Personal Exp</option>
+                                <option @if($category=='Proprietor Salary' ) selected @endif value="Proprietor Salary">Proprietor Salary</option>
+                                <option @if($category=='TDS' ) selected @endif value="TDS">TDS</option>
+                                <option @if($category=='Loan (Secure & Unsecure)' ) selected @endif value="Loan (Secure & Unsecure)">Loan (Secure & Unsecure)</option>
+                                <option @if($category=='Fastag & Toll' ) selected @endif value="Fastag & Toll">Fastag & Toll</option>
                             </select>
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
