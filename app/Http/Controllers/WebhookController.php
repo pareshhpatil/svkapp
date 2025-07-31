@@ -120,7 +120,7 @@ class WebhookController extends Controller
 
             $model->updateWhatsappStatus($message_id, $status, $timestamp);
             if ($error_code == '131026') {
-                $mobile = $model->getColumnValue('whatsapp_messages', 'message_id', $message_id, $mobile);
+                $mobile = $model->getColumnValue('whatsapp_messages', 'message_id', $message_id, 'mobile');
                 $model->saveWhatsappFailed($mobile);
             }
             //  }
