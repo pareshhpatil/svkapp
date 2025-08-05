@@ -2,6 +2,7 @@
 @section('header')
 <link rel="stylesheet" href="/assets/vendor/libs/select2/select2.css" />
 <link rel="stylesheet" href="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/flatpickr/flatpickr.css" />
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('MAP_KEY')}}"></script>
 <style>
@@ -111,8 +112,13 @@
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
         <!-- User Pills -->
         <ul class="nav nav-pills flex-column flex-md-row mb-4">
+            @if($role_id==1)
             <li class="nav-item">
-                <a class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-home" aria-controls="navs-top-home" aria-selected="true" href="javascript:void(0);"><i class="ti ti-user-check ti-xs me-1"></i>Route</a>
+                <a class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-verify" aria-controls="navs-top-verify" aria-selected="true" href="javascript:void(0);"><i class="ti ti-pencil ti-xs me-1"></i>Verify</a>
+            </li>
+            @endif
+            <li class="nav-item">
+                <a class="nav-link @if($role_id!=1) active @endif" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-home" aria-controls="navs-top-home" aria-selected="true" href="javascript:void(0);"><i class="ti ti-user-check ti-xs me-1"></i>Route</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-profile" aria-controls="navs-top-profile" aria-selected="true" href="javascript:void(0);">
@@ -142,7 +148,128 @@
 
 
         <div class="tab-content p-0">
-            <div class="tab-pane fade active show" id="navs-top-home" role="tabpanel">
+@if($role_id==1)
+        <div class="tab-pane fade active show" id="navs-top-verify" role="tabpanel">
+                <div class="card mb-4">
+                    <h5 class="card-header">Ride Verify</h5>
+                    <div class="card-body pb-0">
+                        <form action="/ride/details/verify" method="post">
+                            @csrf
+                        <ul class="timeline mb-0">
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Ride Status</h6>
+                                        <select class="form-control w-auto">
+                                            @foreach($ride_status as $stk=>$stv)
+                                            <option @if($stk==$det->status) selected @endif value="{{$stk}}">{{$stv}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Ride Start Time</h6>
+                                        <input
+                            type="text" name="ride_start_time"
+                            class="form-control flatpickr-datetime w-auto" value="{{$det->ride_started}}"
+                            placeholder="YYYY-MM-DD HH:MM"
+                          />
+                                    </div>
+
+                                </div>
+                            </li>
+                            
+                            @foreach($ride_passengers as $v)
+                            <li class="mb-3">
+                                <input type="hidden" name="rp_id[]" value="{{$v->id}}">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0" style="width: 120px;">{{$v->name}}</h6>
+                                        <select name="rp_status[]" class="form-control w-auto">
+                                            @foreach($status as $stk=>$stv)
+                                            <option @if($stk==$v->status) selected @endif value="{{$stk}}">{{$stv}}</option>
+                                            @endforeach
+                                        </select>
+                                       IN <input
+                            type="text" name="rp_in_time[]"
+                            class="form-control flatpickr-datetime w-auto"
+                            value="{{$v->in_date_time}}"
+                            placeholder="YYYY-MM-DD HH:MM"
+                            
+                          />
+                         Out <input
+                            type="text" name="rp_out_time[]"
+                            class="form-control flatpickr-datetime w-auto"
+                            value="{{$v->drop_date_time}}"
+                            placeholder="YYYY-MM-DD HH:MM"
+                            
+                          />
+                                    </div>
+
+                                </div>
+                            </li>
+                            @endforeach
+                             <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Ride End Time</h6>
+                                        <input
+                            type="text" name="ride_end_date"
+                            class="form-control flatpickr-datetime w-auto" value="{{$det->ride_ended}}"
+                            placeholder="YYYY-MM-DD HH:MM"
+
+                          />
+                                    </div>
+
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Toll Amount</h6>
+                                        <input
+                            type="number" name="toll"
+                            class="form-control w-auto" step="0.01" value="{{$det->toll}}"
+
+                          />
+                                    </div>
+
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Escord</h6>
+                                        <select name="escort_id" class="form-control w-auto">
+                                            <option  value="0">Select..</option>
+                                            @foreach($escort as $esc)
+                                            @if($esc->id>0)
+                                            <option @if($esc->id==$det->escort_id) selected @endif value="{{$esc->id}}">{{$esc->employee_name}}</option>
+                                            @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
+                        <input type="hidden" name="ride_id" value="{{$det->id}}">
+                                            <button type="submit" class="btn btn-primary w-auto pull-right mb-2">Submit</button>
+                                            <br>
+    </form>
+
+                    </div>
+                </div>
+            </div>
+            @endif
+
+
+
+            <div class="tab-pane fade @if($role_id!=1) active show @endif" id="navs-top-home" role="tabpanel">
                 <div class="card mb-4">
                     <h5 class="card-header">Ride Timeline</h5>
                     <div class="card-body pb-0">
@@ -608,6 +735,8 @@
 <script src="/assets/vendor/libs/select2/select2.js"></script>
 
 <script src="/assets/js/forms-selects.js"></script>
+    <script src="/assets/vendor/libs/flatpickr/flatpickr.js"></script>
+
 <script src="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
 <script>
@@ -618,6 +747,16 @@
         format: 'dd MM yyyy',
         orientation: isRtl ? 'auto right' : 'auto left'
     });
+    const flatpickrDateTime = document.querySelectorAll('.flatpickr-datetime')
+      if (flatpickrDateTime) {
+    flatpickrDateTime.forEach(input => {
+      flatpickr(input, {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        defaultDate: input.value || null  // use input's current value as default
+      });
+    });
+  }
 </script>
 
 

@@ -246,6 +246,7 @@ class RideController extends Controller
         $this->model = new RideModel();
         $data['selectedMenu'] = [14, 15];
         $data['menus'] = Session::get('menus');
+        $data['role_id'] = Session::get('role_id');
         $data['det'] = $this->model->getTableRow('ride', 'id', $id);
         $data['det']->date = $this->htmlDate($data['det']->date, 1);
         $data['det']->start_time = $this->htmlTime($data['det']->ride_started);
@@ -254,6 +255,7 @@ class RideController extends Controller
         $data['driver'] = $this->model->getTableRow('driver', 'id', $data['det']->driver_id);
         $data['company_address'] = $this->model->getColumnValue('project', 'project_id', $data['det']->project_id, 'address');
         $data['vehicle'] = $this->model->getTableRow('vehicle', 'vehicle_id', $data['det']->vehicle_id);
+        $data['escort'] = $this->model->getTableList('passenger', 'passenger_type', 2);
         $data['ride_passengers'] = $this->model->getRidePassenger($id);
         $data['driver_photo'] = env('MOBILE_APP_URL') . '/assets/img/driver.png';
         if ($data['driver'] != false) {
@@ -261,6 +263,8 @@ class RideController extends Controller
                 $data['driver_photo'] =  $data['driver']->photo;
             }
         }
+        $data['ride_status'] = array('0' => 'Created', '1' => 'Assigned', '2' => 'Start', '3' => 'Cancelled', '4' => 'Rejected', '5' => 'Completed', '6' => 'Reached', '7' => 'Picked Up');
+        $data['status'] = array('0' => 'Pending', '1' => 'Start', '2' => 'Complete', '3' => 'Cancelled', '4' => 'No show', '5' => 'Reached', '6' => 'Pickup');
 
 
         foreach ($data['ride_passengers'] as $k => $row) {
@@ -274,10 +278,26 @@ class RideController extends Controller
                 $data['ride_passengers'][$k]->icon = $row->icon;
             }
         }
-        //  dd($data);
         return view('web.ride.details', $data);
     }
 
+    public function verify(Request $request)
+    {
+        $array['toll'] = $request->toll;
+        $array['escort_id'] = $request->escort_id;
+        $array['ride_started'] = $request->ride_start_time;
+        $array['ride_ended'] = $request->ride_end_date;
+        $this->model->updateArray('ride', 'id', $request->ride_id, $array);
+        $array=[];
+        foreach ($request->rp_id as $key => $id) {
+            $array['in_time'] = $request->rp_in_time[$key];
+            $array['status'] = $request->rp_status[$key];
+            $array['drop_time'] = $request->rp_out_time[$key];
+            $this->model->updateArray('ride_passenger', 'id', $id, $array);
+        }
+
+        return redirect('/ride/details/' . $request->ride_id)->withSuccess('Ride updated successfully');
+    }
     /**
      * Show the application dashboard.
      *

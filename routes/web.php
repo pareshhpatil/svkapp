@@ -67,6 +67,7 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/ajax/mis/generate/{project_id}/{date?}', [App\Http\Controllers\RideController::class, 'ajaxMISGenerate']);
 
     Route::get('/ride/details/{id}', [App\Http\Controllers\RideController::class, 'details']);
+    Route::post('/ride/details/verify', [App\Http\Controllers\RideController::class, 'verify']);
 
     Route::get('/passenger/delete/{id}', [App\Http\Controllers\PassengerController::class, 'delete']);
     Route::get('/ride/delete/{id}', [App\Http\Controllers\RideController::class, 'delete']);
