@@ -160,7 +160,7 @@
                                 <div class="timeline-event">
                                     <div class="timeline-header mb-1">
                                         <h6 class="mb-0">Ride Status</h6>
-                                        <select class="form-control w-auto">
+                                        <select name="ride_status" class="form-control w-auto">
                                             @foreach($ride_status as $stk=>$stv)
                                             <option @if($stk==$det->status) selected @endif value="{{$stk}}">{{$stv}}</option>
                                             @endforeach

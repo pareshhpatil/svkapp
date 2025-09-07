@@ -287,6 +287,7 @@ class RideController extends Controller
         $array['escort_id'] = $request->escort_id;
         $array['ride_started'] = $request->ride_start_time;
         $array['approve_status'] = 1;
+        $array['status'] = $request->ride_status;
         $array['ride_ended'] = $request->ride_end_date;
         $this->model->updateArray('ride', 'id', $request->ride_id, $array);
         $array=[];
