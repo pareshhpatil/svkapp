@@ -284,6 +284,7 @@ class RideController extends Controller
     public function verify(Request $request)
     {
         $array['toll'] = $request->toll;
+        $array['escort_amount'] = $request->escort_amount;
         $array['escort_id'] = $request->escort_id;
         $array['ride_started'] = $request->ride_start_time;
         $array['approve_status'] = 1;

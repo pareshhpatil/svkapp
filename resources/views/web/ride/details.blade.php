@@ -243,7 +243,7 @@
                             <li class="mb-3">
                                 <div class="timeline-event">
                                     <div class="timeline-header mb-1">
-                                        <h6 class="mb-0">Escord</h6>
+                                        <h6 class="mb-0">Escort</h6>
                                         <select name="escort_id" class="form-control w-auto">
                                             <option  value="0">Select..</option>
                                             @foreach($escort as $esc)
@@ -252,6 +252,19 @@
                                             @endif
                                             @endforeach
                                         </select>
+                                    </div>
+
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Escort Amount</h6>
+                                        <input
+                            type="number" name="escort_amount"
+                            class="form-control w-auto" step="0.01" value="{{$det->escort_amount}}"
+
+                          />
                                     </div>
 
                                 </div>
