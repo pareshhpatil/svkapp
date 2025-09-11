@@ -154,13 +154,13 @@ class ApiController extends Controller
         $body['json']['client_secret'] = env('IVR_KEY');
         $body['json']['client_id'] = 'siddhivinayak';
         $client = new Client();
-        $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/login', $body);
+        $response = $client->request('POST', 'https://platformapi.teleforce.cx/api/v1/api/login', $body);
         $array = json_decode($response->getBody()->getContents(), 1);
         $ivr_array['json']['token'] = $array['accessToken'];
         $ivr_array['json']['caller1'] = $from;
         $ivr_array['json']['caller2'] = $to;
         $ivr_array['json']['did'] = env('IVR_DID');
-        $response = $client->request('POST', 'https://platformapi.teleforce.in/api/v1/api/clicktorandomobile', $ivr_array);
+        $response = $client->request('POST', 'https://platformapi.teleforce.cx/api/v1/api/clicktorandomobile', $ivr_array);
     }
 
     public function userSMS($user_id, $user_type, $message_, $template_id)
