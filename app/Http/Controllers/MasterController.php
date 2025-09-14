@@ -399,6 +399,13 @@ class MasterController extends Controller
         return response()->json($zones);
     }
 
+    public function getShifts($project_id, $pickup_drop)
+    {
+        $shifts = $this->model->getList('shift', ['project_id' => $project_id, 'type' => $pickup_drop, 'is_active' => 1], 'shift_time,name');
+        $shifts = json_decode(json_encode($shifts), 1);
+        return response()->json($shifts);
+    }
+
     public function saveRide(Request $request)
     {
         $array = $request->all();
@@ -406,4 +413,6 @@ class MasterController extends Controller
         $this->model->saveTable('ride', $array, Session::get('user_id'));
         return redirect('/my-rides');
     }
+
+
 }

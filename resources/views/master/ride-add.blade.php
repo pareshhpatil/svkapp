@@ -54,7 +54,17 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label" for="drop_time">Drop Time</label>
-                                <input v-model="form.drop_time" type="time" name="drop_time" id="drop_time" class="form-control" required>
+                                <select v-model="form.drop_time" name="drop_time" id="drop_time" class="form-control custom-select select2" required>
+                                    <option value="" disabled>Select shift time..</option>
+                                    <option v-if="loadingShifts" value="" disabled>Loading shifts...</option>
+                                    <option v-if="errorShifts" value="" disabled>Error loading shifts</option>
+                                    <option v-for="shift in shifts" :key="shift.shift_time" :value="shift.shift_time">
+                                        @{{ shift.name }}
+                                    </option>
+                                </select>
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                                </i>
                             </div>
                         </div>
 
@@ -130,23 +140,30 @@
             new Vue({
                 el: '#app',
                 data: {
-                    form: {
-                        project_id: '7', // Default to Neuiq
-                        pickup_drop: '',
-                        date: '',
-                        drop_time: '',
-                        car_type: '',
-                        slab_package: [],
-                        title: '',
-                        escort: '0'
-                    },
-                    slabPackages: [],
-                    loading: false,
-                    error: null
+                     form: {
+                         project_id: '7', // Default to Neuiq
+                         pickup_drop: '',
+                         date: '',
+                         drop_time: '',
+                         car_type: '',
+                         slab_package: '0',
+                         title: '',
+                         escort: '0'
+                     },
+                     slabPackages: [],
+                     shifts: [],
+                     loading: false,
+                     loadingShifts: false,
+                     error: null,
+                     errorShifts: null
                 },
                 watch: {
                     'form.project_id': function() {
                         this.loadSlabPackages();
+                        this.loadShifts();
+                    },
+                    'form.pickup_drop': function() {
+                        this.loadShifts();
                     },
                     'form.car_type': function() {
                         this.loadSlabPackages();
@@ -172,8 +189,28 @@
                         } else {
                             this.slabPackages = [];
                         }
-                     },
-                     calculateEndTime(date, time, hoursToAdd) {
+                    },
+                    loadShifts() {
+                        if (this.form.project_id && this.form.pickup_drop) {
+                            this.loadingShifts = true;
+                            this.errorShifts = null;
+                            this.shifts = [];
+
+                            axios.get(`/shift/list/${this.form.project_id}/${this.form.pickup_drop}`)
+                                .then(response => {
+                                    this.shifts = response.data;
+                                    this.loadingShifts = false;
+                                })
+                                .catch(error => {
+                                    console.error('Error loading shifts:', error);
+                                    this.errorShifts = 'Error loading shifts';
+                                    this.loadingShifts = false;
+                                });
+                        } else {
+                            this.shifts = [];
+                        }
+                    },
+                    calculateEndTime(date, time, hoursToAdd) {
                          // Create a Date object from the date and time
                          const dateTime = new Date(date + 'T' + time);
                          
@@ -236,6 +273,10 @@
                     // Load initial data if both project and car type are selected
                     if (this.form.project_id && this.form.car_type) {
                         this.loadSlabPackages();
+                    }
+                    // Load initial shifts if both project and pickup_drop are selected
+                    if (this.form.project_id && this.form.pickup_drop) {
+                        this.loadShifts();
                     }
                 }
             });

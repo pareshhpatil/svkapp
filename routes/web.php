@@ -168,6 +168,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/user/switch/{id}', [App\Http\Controllers\Auth\LoginController::class, 'userSwitch'])->name('user_switch');
 
     Route::get('/zone/list/{project_id}/{car_type}', [App\Http\Controllers\MasterController::class, 'getZone']);
+    Route::get('/shift/list/{project_id}/{pickup_drop}', [App\Http\Controllers\MasterController::class, 'getShifts']);
+    Route::get('/shift/list/{project_id}/{type}', [App\Http\Controllers\MasterController::class, 'getShift']);
     Route::post('/save/ride', [App\Http\Controllers\MasterController::class, 'saveRide']);
 });
 
