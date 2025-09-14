@@ -479,6 +479,17 @@ class HomeController extends Controller
             $chats[$key]['pending_message'] = $pendingCounts[$mobile] ?? 0;
             $chats[$key]['link'] = '/whatsapp/' . Encryption::encode($mobile);
         }
+        
+        // Sort chats to show those with pending messages at the top
+        usort($chats, function($a, $b) {
+            // First sort by pending_message (descending - higher counts first)
+            if ($a['pending_message'] != $b['pending_message']) {
+                return $b['pending_message'] - $a['pending_message'];
+            }
+            // If pending_message counts are equal, maintain original order
+            return 0;
+        });
+        
         $data['whatsapps'] = $chats;
         if ($get_data == 1) {
             return json_encode($data['whatsapps']);
