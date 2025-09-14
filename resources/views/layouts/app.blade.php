@@ -268,9 +268,18 @@
                         </a>
                     </div>
 
-                    <div class="listview-title mt-1">Menu</div>
                     <ul class="listview flush transparent no-line image-listview">
                         @if(Session::get('user_type')==3)
+                        <li>
+                            <a href="/master/add/ride" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="car-sport-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Add Ride
+                                </div>
+                            </a>
+                        </li>
                         <li>
                             <a href="/master/add/driver" class="item">
                                 <div class="icon-box bg-primary">
@@ -312,16 +321,7 @@
                             </a>
                         </li>
                         @endif
-                        <li>
-                            <a href="/settings" class="item">
-                                <div class="icon-box bg-primary">
-                                    <ion-icon name="settings-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
-                                </div>
-                                <div class="in">
-                                    Settings
-                                </div>
-                            </a>
-                        </li>
+                        
                         @if(Session::get('mobile')=='9730946150')
                         
                         <li>
@@ -375,6 +375,17 @@
                                 </div>
                             </a>
                         </li>
+                        @if(Session::get('user_type')!=3)
+                        <li>
+                            <a href="/settings" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="settings-outline" role="img" class="md hydrated" aria-label="settings outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Settings
+                                </div>
+                            </a>
+                        </li>
                         <li>
                             <a href="/chat/create/{{Session::get('user_type')}}/0/1/{{Session::get('parent_id')}}/0" class="item">
                                 <div class="icon-box bg-primary">
@@ -419,6 +430,7 @@
                                 @csrf
                             </form>
                         </li>
+                        @endif
                     </ul>
                     <div class="listview-title mt-1">Developed by <a href="https://www.ridetrack.in"> Ride Track</a></div>
                 </div>

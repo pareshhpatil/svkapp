@@ -118,7 +118,7 @@ class StaffController extends Controller
         $data['data'] = $array;
         $data['menu'] = 1;
 
-        if (Session::get('user_id') == 1) {
+        if (Session::get('user_id') == 1 && env('APP_ENV') != 'local') {
             $token = $this->getToken();
             $data['total_balance'] = '';
             if (isset($token)) {

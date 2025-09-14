@@ -391,4 +391,19 @@ class MasterController extends Controller
         }
         return redirect('/chat/' . Encryption::encode($group_id));
     }
+
+    public function getZone($project_id, $car_type)
+    {
+        $zones = $this->model->getList('zone', ['project_id' => $project_id, 'car_type' => $car_type, 'is_active' => 1], 'zone_id,zone');
+        $zones = json_decode(json_encode($zones), 1);
+        return response()->json($zones);
+    }
+
+    public function saveRide(Request $request)
+    {
+        $array = $request->all();
+        unset($array['_token']);
+        $this->model->saveTable('ride', $array, Session::get('user_id'));
+        return redirect('/my-rides');
+    }
 }

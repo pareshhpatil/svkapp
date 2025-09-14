@@ -166,6 +166,9 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::any('/users/list', [App\Http\Controllers\Auth\LoginController::class, 'users'])->name('users');
     Route::any('/notifications/{ride_id?}/{offset?}', [App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
     Route::any('/user/switch/{id}', [App\Http\Controllers\Auth\LoginController::class, 'userSwitch'])->name('user_switch');
+
+    Route::get('/zone/list/{project_id}/{car_type}', [App\Http\Controllers\MasterController::class, 'getZone']);
+    Route::post('/save/ride', [App\Http\Controllers\MasterController::class, 'saveRide']);
 });
 
 Route::get('transaction/detail/{id}', [App\Http\Controllers\StaffController::class, 'GuestTransactionDetail'])->name('transactionDetailguest');

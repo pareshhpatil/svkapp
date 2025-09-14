@@ -351,7 +351,7 @@
             }
         },
         mounted() {
-            this.data = JSON.parse('{!!json_encode($data)!!}');
+            this.data = JSON.parse('{!!json_encode($data ?? '')!!}');
             console.log(this.data);
         },
         methods: {
