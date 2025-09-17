@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Http;
 use App\Events\PassengerStatusChanged;
 use App\Events\RideStatusChanged;
 use Carbon\Carbon;
+use App\Jobs\GenerateRoute;
 
 class HomeController extends Controller
 {
@@ -911,7 +912,7 @@ class HomeController extends Controller
             }
             unset($array['status']);
             $roster_id = $this->model->saveTable('roster', $array);
-            $this->generateRoute($roster_id);
+            GenerateRoute::dispatch($roster_id);
         }
         return redirect('/my-rides/booking');
     }
