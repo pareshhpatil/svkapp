@@ -878,7 +878,7 @@ class HomeController extends Controller
         $array['created_by'] = Session::get('user_id');
         $array['created_date'] = date('Y-m-d H:i:s');
         $array['last_update_by'] = Session::get('user_id');
-        $exist = $this->model->getColumnValue('ride_request', 'passenger_id', $array['passenger_id'], 'id', ['time' => $array['time'], 'status' => 1]);
+        $exist = $this->model->getColumnValue('ride_request', 'passenger_id', $array['passenger_id'], 'id', ['time' => $array['time'], 'is_active' => 1]);
         if ($exist == false) {
             $array['booking_id'] = $this->model->saveTable('ride_request', $array);
             $array['start_time'] = $array['time'];
