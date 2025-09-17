@@ -200,7 +200,7 @@ class ParentModel extends Model
         $retObj->update($update_array);
     }
 
-    public function getList($table, $param = [], $col = '*', $limit = 0, $orderby = '', $offset = null)
+    public function getList($table, $param = [], $col = '*', $limit = 0, $orderby = '', $offset = null, $orderbymode = 'desc')
     {
         $retObj = DB::table($table)
             ->select(DB::raw($col));
@@ -216,7 +216,7 @@ class ParentModel extends Model
             $retObj->limit($limit);
         }
         if ($orderby != '') {
-            $retObj->orderBy($orderby, 'desc');
+            $retObj->orderBy($orderby, $orderbymode);
         }
         $retObj = $retObj->get();
         if (!empty($retObj)) {

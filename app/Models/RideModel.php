@@ -131,6 +131,40 @@ class RideModel extends ParentModel
         $array = $retObj->get();
         return json_decode(json_encode($array), 1);
     }
+    public function adminPendingRides2()
+    {
+        $retObj = DB::table('ride as r')
+            ->where('r.is_active', 1)
+            ->where('r.status', 0)
+            ->where('rp.is_active', 1)
+            ->whereDate('r.date', '>=', date('Y-m-d'))
+            ->orderBy('r.start_time', 'asc')
+            ->leftJoin('ride_passenger as rp', function ($join) {
+                $join->on('rp.ride_id', '=', 'r.id')
+                    ->where('rp.is_active', 1);
+            })
+            ->select(
+                'r.id as pid',
+                'r.type as type',
+                'r.title as title',
+                'r.start_location as start_location',
+                'r.status as ride_status',
+                DB::raw('DATE_FORMAT(r.start_time, "%a %d %b %y %l:%i %p") as pickup_time'),
+                DB::raw('DATE_FORMAT(r.date, "%a %d %b %Y") as date'),
+                DB::raw('GROUP_CONCAT(rp.drop_location ORDER BY rp.seq SEPARATOR ", ") as drop_location')
+            )
+            ->groupBy(
+                'r.id',
+                'r.start_location',
+                'r.status',
+                'r.type',
+                'r.title',
+                'r.start_time',
+                'r.date'
+            )
+            ->get();
+        return json_decode(json_encode($retObj), 1);
+    }
 
     public function driverPastRides($id, $limit = 0)
     {
@@ -332,5 +366,33 @@ class RideModel extends ParentModel
             ->select(DB::raw('d.photo,d.name,p.employee_name,r.rating,r.ride_id,DATE_FORMAT(ri.start_time, "%a %d %b %y %l:%i %p") as datetime'))
             ->get();
         return json_decode(json_encode($retObj), 1);
+    }
+
+
+    public function getMatchingRides($passengers = [], $count = 1, $ride_id = 0)
+    {
+        return DB::table('ride_passenger')
+            ->select('ride_id', DB::raw('COUNT(*) as passenger_count'))
+            ->where('status', 2)
+            ->where('is_active', 1)
+            ->where('ride_id', '<>', $ride_id)
+            ->whereIn('passenger_id', $passengers)
+            ->groupBy('ride_id')
+            ->having('passenger_count', '>', $count)
+            ->orderBy('ride_id', 'desc')
+            ->pluck('passenger_count', 'ride_id') // returns [mobile => count]
+            ->toArray();
+    }
+
+
+    public function getPendingRoster()
+    {
+        $retObj = DB::table('roster')
+            ->where('status',  0)
+            ->where('is_active',  1)
+            ->where('start_time',  '>', date('Y-m-d H:i:s'))
+            ->select(DB::raw('id'))
+            ->get();
+        return $retObj;
     }
 }

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Http;
 use App\Events\PassengerStatusChanged;
 use App\Events\RideStatusChanged;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -436,7 +437,7 @@ class HomeController extends Controller
             $data['data']['live'] = [];
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id')), 0, '/driver/ride/');
         } else if (Session::get('user_type') == 3) {
-            $data['data']['pending'] = $this->EncryptList($this->model->adminPendingRides(), 0, '/admin/ride/assign/');
+            $data['data']['pending'] = $this->EncryptList($this->model->adminPendingRides2(), 0, '/admin/ride/assign/');
             $data['data']['upcoming'] = $this->EncryptList($this->model->driverUpcomingRides(Session::get('parent_id'), 0, [1]), 0, '/admin/ride/');
             $data['data']['live'] = $this->EncryptList($this->model->driverLiveRide(Session::get('parent_id'), 0, [2]), 0, '/admin/ride/');
             $data['data']['past'] = $this->EncryptList($this->model->driverPastRides(Session::get('parent_id'), 50), 0, '/admin/ride/');
@@ -479,9 +480,9 @@ class HomeController extends Controller
             $chats[$key]['pending_message'] = $pendingCounts[$mobile] ?? 0;
             $chats[$key]['link'] = '/whatsapp/' . Encryption::encode($mobile);
         }
-        
+
         // Sort chats to show those with pending messages at the top
-        usort($chats, function($a, $b) {
+        usort($chats, function ($a, $b) {
             // First sort by pending_message (descending - higher counts first)
             if ($a['pending_message'] != $b['pending_message']) {
                 return $b['pending_message'] - $a['pending_message'];
@@ -489,7 +490,7 @@ class HomeController extends Controller
             // If pending_message counts are equal, maintain original order
             return 0;
         });
-        
+
         $data['whatsapps'] = $chats;
         if ($get_data == 1) {
             return json_encode($data['whatsapps']);
@@ -885,8 +886,17 @@ class HomeController extends Controller
             $array['shift'] = $this->model->getColumnValue('shift', 'shift_time', $this->sqlTime($request->time), 'name', ['project_id' => $array['project_id'], 'type' => $array['type']]);
             $apiController = new ApiController();
             $url = 'https://app.svktrv.in/my-rides/request';
-            $tokens[] = 'fV00UXvvIE-urTw8m6Fgoi:APA91bGPq73v1X-DdJ-f2ukxnsQLriAuDY5Y-5ebKihNovt21IPEf8a-I6PzNLuYThocfHhbRMWy3lBao4CpI9hsL4NvnKCu3ydMyey-2nNLdEM7GLNcVzE';
-            $tokens[] = 'fptKhPHeSPm99eFLtFY5QL:APA91bF1KzJi2nI1xDVcXGi_EXqfYjEIartjevHA_VxIttzYjS24IxZGjvkXPx03kFRaJrtG-U7GU3Z7FrmnoAKBzOZqMUbIgyXrGP3MKT2Lc_t7NQLbgvs';
+
+            // Get admin user IDs for the current project
+            $admin_list = $this->model->getTableListInArray('users', 'id', [1, 116, 117], 'token');
+            $tokens = [];
+            if (!empty($admin_list)) {
+                foreach ($admin_list as $admin) {
+                    $tokens[] = $admin->token;
+                }
+            }
+
+            // Get FCM tokens for admin users
 
             $passenger_name = $this->model->getColumnValue('passenger', 'id', $array['passenger_id'], 'employee_name');
             if ($array['status'] == 0) {
@@ -900,9 +910,136 @@ class HomeController extends Controller
                 $apiController->sendNotification(0, 2, 'New booking request from ', $passenger_name . ' for ' . $request->date . ' ' . $array['shift'], $url, '', $tokens);
             }
             unset($array['status']);
-            $this->model->saveTable('roster', $array);
+            $roster_id = $this->model->saveTable('roster', $array);
+            $this->generateRoute($roster_id);
         }
         return redirect('/my-rides/booking');
+    }
+
+    public function generateRoute($roster_id)
+    {
+        if ($roster_id == 'all') {
+            $rows = $this->model->getPendingRoster();
+            if (!empty($rows)) {
+                foreach ($rows as $row) {
+                    $this->generateRoute($row->id);
+                }
+            }
+        } else {
+            $roster = $this->model->getTableRow('roster', 'id', $roster_id, 1, ['status' => 0]);
+            $passenger_id = $roster->passenger_id;
+            $rides = $this->model->getList('ride', ['start_time' => $roster->start_time, 'type' => $roster->type, 'project_id' => $roster->project_id, 'is_active' => 1]);
+            $set_ride_id = 0;
+            $last_ride_id = 0;
+            foreach ($rides as $ride) {
+                $ride_passengers = $this->model->getList('ride_passenger', ['passenger_type' => 1, 'ride_id' => $ride->id, 'status' => 0,  'is_active' => 1], 'passenger_id');
+                $last_count = 0;
+                foreach ($ride_passengers as $ride_passenger) {
+                    if ($ride_passenger->passenger_id != $passenger_id && $ride_passenger->passenger_id > 0) {
+                        $passengers = [];
+                        $passengers[] = $ride_passenger->passenger_id;
+                        $passengers[] = $passenger_id;
+                        $passengers_summary = $this->model->getMatchingRides($passengers);
+                        if (!empty($passengers_summary)) {
+                            $count = count($passengers_summary);
+                            if ($count > $last_count) {
+                                $last_count = $count;
+                                $set_ride_id = $ride->id;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $passenger_location = $this->model->getColumnValue('passenger', 'id', $roster->passenger_id, 'location');
+            $ride_id = $set_ride_id;
+            if ($set_ride_id == 0) {
+                $array = [];
+                $array['project_id'] = $roster->project_id;
+                $array['type'] = $roster->type;
+                $array['date'] = $this->sqlDate($roster->start_time);
+                $array['start_time'] = $roster->start_time;
+                $array['end_time'] = Carbon::parse($roster->start_time)->addHours(2)->format('Y-m-d H:i:s');
+
+                $array['start_location'] = ($roster->type == 'Pickup') ? $passenger_location : 'Marol';
+                $array['end_location'] = ($roster->type == 'Drop') ? $passenger_location : 'Marol';
+                $array['total_passengers'] = 1;
+                $array['title'] = $passenger_location;
+                $slab_id = $this->model->getColumnValue('ride', 'end_location', $passenger_location, 'slab_id', ['project_id' => $roster->project_id], 'id');
+                $array['slab_id'] = ($slab_id > 0) ? $slab_id : 0;
+                $ride_id = $this->model->saveTable('ride', $array, 1);
+            }
+
+            $array = [];
+            $array['passenger_id'] = $roster->passenger_id;
+            $array['seq'] = 1;
+            $array['ride_id'] = $ride_id;
+            $array['pickup_time'] = $roster->start_time;
+            $array['pickup_location'] = ($roster->type == 'Pickup') ? $passenger_location : 'Marol';
+            $array['drop_location'] = ($roster->type == 'Drop') ? $passenger_location : 'Marol';
+            $array['otp'] = rand(1111, 9999);
+            $array['roster_id'] = $roster->id;
+            $this->model->saveTable('ride_passenger', $array, 1);
+            $this->model->updateTable('roster', 'id', $roster->id, 'status', 1);
+            if ($roster->booking_id > 0) {
+                $this->model->updateTable('ride_request', 'id', $roster->booking_id, 'status', 2);
+            }
+            $this->setRideSequnce($set_ride_id);
+        }
+    }
+
+    public function setRideSequnce($set_ride_id)
+    {
+        if ($set_ride_id > 0) {
+            $project_id = $this->model->getColumnValue('ride', 'id', $set_ride_id, 'project_id');
+            $ride_passengers = $this->model->getList('ride_passenger', ['passenger_type' => 1, 'ride_id' => $set_ride_id,  'is_active' => 1], 'passenger_id');
+            $passengers = [];
+            $total_passengers = count($ride_passengers);
+            foreach ($ride_passengers as $ride_passenger) {
+                if ($ride_passenger->passenger_id > 0) {
+                    $passengers[] = $ride_passenger->passenger_id;
+                }
+            }
+            $passengers_summary = [];
+            $count = count($passengers);
+            while (empty($passengers_summary)) {
+                $count--;
+                $passengers_summary = $this->model->getMatchingRides($passengers, $count, $set_ride_id);
+            }
+
+            if (!empty($passengers_summary)) {
+                $count = count($passengers_summary);
+                $last_ride_id = key($passengers_summary);
+                $ride_passengers = $this->model->getList('ride_passenger', ['passenger_type' => 1, 'ride_id' => $last_ride_id,  'is_active' => 1], 'passenger_id,seq', 0, 'seq', null, 'asc');
+                $seq = 1;
+                foreach ($ride_passengers as $ride_passenger) {
+                    $this->model->updateWhereArray('ride_passenger', ['ride_id' => $set_ride_id, 'passenger_id' => $ride_passenger->passenger_id], ['seq' => $seq]);
+                    $seq++;
+                }
+
+                $drop_location = $this->model->getColumnValue('ride_passenger', 'ride_id', $set_ride_id, 'drop_location', ['is_active' => 1], 'seq');
+                $this->model->updateWhereArray('ride', ['id' => $set_ride_id], ['end_location' => $drop_location, 'title' => $drop_location, 'total_passengers' => $total_passengers]);
+                $slab_id = $this->model->getColumnValue('ride', 'end_location', $drop_location, 'slab_id', ['project_id' => $project_id], 'id');
+                if ($slab_id > 0) {
+                    $this->model->updateTable('ride', 'id', $set_ride_id, 'slab_id', $slab_id);
+                }
+            }
+        }
+    }
+
+    public function setRidePassengers($set_ride_id)
+    {
+        if ($set_ride_id > 0) {
+            $project_id = $this->model->getColumnValue('ride', 'id', $set_ride_id, 'project_id');
+            $ride_passengers = $this->model->getList('ride_passenger', ['passenger_type' => 1, 'ride_id' => $set_ride_id,  'is_active' => 1], 'passenger_id');
+            $total_passengers = count($ride_passengers);
+            $drop_location = $this->model->getColumnValue('ride_passenger', 'ride_id', $set_ride_id, 'drop_location', ['is_active' => 1], 'seq');
+            $this->model->updateWhereArray('ride', ['id' => $set_ride_id], ['end_location' => $drop_location, 'title' => $drop_location, 'total_passengers' => $total_passengers]);
+            $slab_id = $this->model->getColumnValue('ride', 'end_location', $drop_location, 'slab_id', ['project_id' => $project_id], 'id');
+            if ($slab_id > 0) {
+                $this->model->updateTable('ride', 'id', $set_ride_id, 'slab_id', $slab_id);
+            }
+        }
     }
 
     public function home($token)
@@ -1218,6 +1355,7 @@ class HomeController extends Controller
                 $array['drop_location'] = $project['location'];
             }
             $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
+            $this->setRidePassengers($ride_id);
         }
         $ride_passengers = $this->model->getRidePassenger($ride_id);
         return json_encode($ride_passengers);
@@ -1225,8 +1363,16 @@ class HomeController extends Controller
 
     public function passengerRemove($id)
     {
-        $detail = $this->model->getRowArray('ride_passenger', 'id', $id);
+        $detail = $this->model->getTableRow('ride_passenger', 'id', $id);
         $this->model->updateTable('ride_passenger', 'id', $id, 'is_active', 0);
+        if ($detail->roster_id > 0) {
+            $detail = $this->model->getTableRow('roster', 'id', $detail->roster_id);
+            $this->model->updateTable('roster', 'id', $detail->id, 'status', 0);
+            if ($detail->booking_id > 0) {
+                $this->model->updateTable('ride_request', 'id', $detail->booking_id, 'status', 1);
+            }
+        }
+        $this->setRidePassengers($detail->ride_id);
         // $ride_passengers = $this->model->getRidePassenger($detail['ride_id']);
         // return json_encode($ride_passengers);
     }

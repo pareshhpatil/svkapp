@@ -94,6 +94,8 @@ Route::get('/ride/detail/{link}', [App\Http\Controllers\HomeController::class, '
 
 Route::get('/driver/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'driverRideStatus']);
 Route::get('/casual/ride/status/{ride_id}/{status}', [App\Http\Controllers\HomeController::class, 'casualRideStatus']);
+Route::get('/generate/route/{roster_id}', [App\Http\Controllers\HomeController::class, 'generateRoute']);
+Route::get('/generate/sequence/{ride_id}', [App\Http\Controllers\HomeController::class, 'setRideSequnce']);
 
 
 Route::group(['middleware' => array('auth', 'access')], function () {
