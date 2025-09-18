@@ -1367,7 +1367,7 @@ class HomeController extends Controller
         $ride_detail = $this->model->getTableRow('ride_passenger', 'id', $id);
         $this->model->updateTable('ride_passenger', 'id', $id, 'is_active', 0);
         if ($ride_detail->roster_id > 0) {
-            $detail = $this->model->getTableRow('roster', 'id', $detail->roster_id);
+            $detail = $this->model->getTableRow('roster', 'id', $ride_detail->roster_id);
             $this->model->updateTable('roster', 'id', $detail->id, 'status', 0);
             if ($detail->booking_id > 0) {
                 $this->model->updateTable('ride_request', 'id', $detail->booking_id, 'status', 1);
