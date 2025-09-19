@@ -611,12 +611,13 @@ class HomeController extends Controller
             $this->model->updateTable('users', 'id', $user_id, 'icon', $compress);
         }
         if ($user_type == 4) {
-            $this->model->updateTable('driver', 'id', $parent_id, 'photo',  $path);
-            $this->model->updateTable('driver', 'id', $parent_id, 'icon',  $compress);
+            $apiController = new ApiController();
+            $this->model->updateTableData('driver', 'id', $parent_id, ['photo' => $path, 'icon' => $compress]);
+            $driver_name = $this->model->getColumnValue('driver', 'id', $parent_id, 'name');
+            $apiController->sendNotification(1, 1, 'Driver photo uploaded', $driver_name . ' uploaded photo', $path);
         }
         if ($user_type == 5) {
-            $this->model->updateTable('passenger', 'id', $parent_id, 'photo',  $path);
-            $this->model->updateTable('passenger', 'id', $parent_id, 'icon',  $compress);
+            $this->model->updateTableData('passenger', 'id', $parent_id, ['photo' => $path, 'icon' => $compress]);
         }
         if ($driver_id == 0) {
             Session::put('icon',  $compress);

@@ -81,7 +81,17 @@ class TripController extends Controller
     }
     public function rating($id, $rating)
     {
-        $array = $this->model->updateTable('ride_passenger', 'id', $id, 'rating', $rating);
+        $passenger_id = $this->model->getColumnValue('ride_passenger', 'id', $id, 'passenger_id');
+        $passenger = $this->model->getTableRow('passenger', 'id', $passenger_id, 1, [], 'mobile,employee_name');
+        $apiController = new ApiController();
+        $params = [];
+        $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
+        $params[] = array('type' => 'text', 'text' => $rating);
+        if ($rating < 3) {
+            $apiController->sendWhatsappMessage($passenger->mobile, 'mobile', 'low_rating', $params, null, 'en', 1);
+        }
+        $apiController->sendWhatsappMessage('9730946150', 'mobile', 'low_rating', $params, null, 'en', 1);
+        $this->model->updateTable('ride_passenger', 'id', $id, 'rating', $rating);
     }
 
     public  function dateFetch($date, $type)
