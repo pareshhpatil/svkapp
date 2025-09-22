@@ -410,9 +410,9 @@ class MasterController extends Controller
     {
         $array = $request->all();
         unset($array['_token']);
-        $this->model->saveTable('ride', $array, Session::get('user_id'));
-        return redirect('/my-rides');
+        $id = $this->model->saveTable('ride', $array, Session::get('user_id'));
+        $array['success'] = 1;
+        $array['redirect'] = '/admin/ride/assign/' . Encryption::encode($id);
+        return json_encode($array);
     }
-
-
 }
