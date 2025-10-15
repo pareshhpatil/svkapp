@@ -1359,7 +1359,7 @@ class HomeController extends Controller
             $array['id'] = $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
             $this->model->updateWhereArray('ride_request', ['time' => $array['pickup_time'], 'passenger_id' => $passenger_id], ['status' => 2]);
             $this->setRidePassengers($ride_id);
-            if ($ride->driver_id > 0) {
+            if ($ride['driver_id'] > 0) {
                 $this->sendNotification(json_decode(json_encode($array)), json_decode(json_encode($ride)));
             }
         }
