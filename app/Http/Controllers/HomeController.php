@@ -1348,13 +1348,15 @@ class HomeController extends Controller
             $array['ride_id'] = $ride_id;
             $array['passenger_id'] = $passenger_id;
             $array['otp'] = rand(1111, 9999);
-            $array['pickup_time'] = $ride['date'] . ' ' . $this->sqlTime($time);
+            
             if ($ride['type'] == 'Drop') {
                 $array['pickup_location'] = $project['location'];
                 $array['drop_location'] = $passenger['location'];
+                $array['pickup_time'] = $ride['start_time'];
             } else {
                 $array['pickup_location'] = $passenger['location'];
                 $array['drop_location'] = $project['location'];
+                $array['pickup_time'] = $ride['date'] . ' ' . $this->sqlTime($time);
             }
             $array['id'] = $this->model->saveTable('ride_passenger', $array, Session::get('user_id'));
             $this->model->updateWhereArray('ride_request', ['time' => $array['pickup_time'], 'passenger_id' => $passenger_id], ['status' => 2]);
