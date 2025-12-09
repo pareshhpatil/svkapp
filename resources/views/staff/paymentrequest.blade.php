@@ -126,6 +126,7 @@
                                 <option @if($category=='TDS' ) selected @endif value="TDS">TDS</option>
                                 <option @if($category=='Loan (Secure & Unsecure)' ) selected @endif value="Loan (Secure & Unsecure)">Loan (Secure & Unsecure)</option>
                                 <option @if($category=='Fastag & Toll' ) selected @endif value="Fastag & Toll">Fastag & Toll</option>
+                                <option @if($category=='Bonus' ) selected @endif value="Bonus">Bonus</option>
                             </select>
                             <i class="clear-input">
                                 <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
