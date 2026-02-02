@@ -176,7 +176,7 @@
                         </div>
                         <div class="border-top">
                             <div class="d-flex align-items-center pt-1">
-                                <div class="d-flex align-items-center">
+                                <div v-if="ride.ride_status!='Completed'" class="d-flex align-items-center">
                                     <div class="avatar me-1 avatar-online">
                                         <img :src="ride.photo || defaultPhoto" class="rounded-circle">
                                     </div>
