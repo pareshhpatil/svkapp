@@ -235,7 +235,7 @@
                     searchable: false,
                     render: function(data, type, full, meta) {
                         return (
-                            '<div class="d-inline-block"><a href="javascript:;" class="btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a><ul class="dropdown-menu dropdown-menu-end m-0"><li><a href="/ride/details/'+full.id+'" class="dropdown-item">Details</a></li></ul></div>'                            
+                            '<div class="d-inline-block"><a href="javascript:;" target="_blank" class="btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a><ul class="dropdown-menu dropdown-menu-end m-0"><li><a href="/ride/details/'+full.id+'" class="dropdown-item">Details</a></li></ul></div>'                            
                         );
                     }
                 }],
