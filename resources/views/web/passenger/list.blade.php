@@ -37,14 +37,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Emp code</th>
                                 <th>Name</th>
                                 <th>Gender</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
                                 <th>Location</th>
-                                <th>Address</th>
-                                <th>Cost center</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -104,9 +101,6 @@
                         data: 'id'
                     },
                     {
-                        data: 'employee_code'
-                    },
-                    {
                         data: 'employee_name'
                     },
                     {
@@ -120,12 +114,6 @@
                     },
                     {
                         data: 'location'
-                    },
-                    {
-                        data: 'address'
-                    },
-                    {
-                        data: 'cost_center_code'
                     },
                     {
                         data: ''
