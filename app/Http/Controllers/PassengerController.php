@@ -263,8 +263,11 @@ class PassengerController extends Controller
                 }
                 if ($exist == false) {
                     $row['passenger_type'] = $request->type;
-                    $this->model->saveTable('passenger', $row, $this->user_id);
+                    $passenger_id=$this->model->saveTable('passenger', $row, $this->user_id);
                     $ApiController->sendWhatsappMessage($row['mobile'], 'mobile', 'mobile_app_installation', [], null, 'en', 1);
+                    $params['var1'] = 'Mobile';
+                    $params['var2'] = 'app.svktrv.in/mobile';
+                    $ApiController->sendSMS($passenger_id, 5, $params, '680f18ccd6fc0506de267423');
                 }
             }
         }
