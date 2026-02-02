@@ -126,7 +126,15 @@
 <script>
     var dt_basic;
     var project_id = 0;
-    var date = 'na';
+    var date = (function () {
+        const d = new Date();
+
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = d.toLocaleString('en-GB', { month: 'long' });
+        const year = d.getFullYear();
+
+        return day + ' ' + month + ' ' + year;
+    })();
     var ride_id = 0;
 
     function reload(id) {
