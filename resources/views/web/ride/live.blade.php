@@ -188,7 +188,7 @@
                                             class="rounded-circle">
                                     </div>
                                 </div>
-                                <a ><small class="text-muted" style="margin-left: 10px;">@{{ride.live_passengers.length+1}} Members in cab</small></a>
+                                <a v-if="ride.ride_status!='Completed'"><small class="text-muted" style="margin-left: 10px;">@{{ride.live_passengers.length+1}} Members in cab</small></a>
                             </div>
                         </div>
 
