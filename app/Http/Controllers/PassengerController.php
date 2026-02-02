@@ -250,10 +250,11 @@ class PassengerController extends Controller
     public function save(Request $request)
     {
         $this->user_id = Session::get('user_id');
+        $ApiController = new ApiController();
         foreach ($_POST['group-a'] as $row) {
             $row['project_id'] = $request->project_id;
             $exist = false;
-            $row['address'] = str_replace(array("\r", "\n", "'",'"'), '', $row['address']);
+            $row['address'] = str_replace(array("\r", "\n", "'", '"'), '', $row['address']);
             if ($request->passenger_id) {
                 $this->model->updateArray('passenger', 'id', $request->passenger_id, $row);
             } else {
@@ -263,6 +264,7 @@ class PassengerController extends Controller
                 if ($exist == false) {
                     $row['passenger_type'] = $request->type;
                     $this->model->saveTable('passenger', $row, $this->user_id);
+                    $ApiController->sendWhatsappMessage($row['mobile'], 'mobile', 'mobile_app_installation', [], null, 'en', 1);
                 }
             }
         }
