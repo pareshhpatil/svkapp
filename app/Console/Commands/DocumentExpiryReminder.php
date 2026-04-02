@@ -78,8 +78,11 @@ class DocumentExpiryReminder extends Command
                 : ($doc->name ?? 'Document');
 
             $recipients = [];
+            $name='User';
             if (!empty($doc->assigned_user_id)) {
                 $recipients[(int) $doc->assigned_user_id] = false;
+                $userdetial = DB::table('users')->where('id', $doc->assigned_user_id)->where('is_active', 1)->first();
+                $name=$userdetial->name;
             }
             foreach ($adminIds as $aid) {
                 $aid = (int) $aid;
@@ -107,7 +110,7 @@ class DocumentExpiryReminder extends Command
                 // Meta template document_expiry_reminder: exactly 3 body params ({{1}} {{2}} {{3}})
                 $nameParam = $useDriverLabel ? 'Driver' : $assigneeName;
                 $paramsWhatsapp = [
-                    ['type' => 'text', 'text' => $nameParam],
+                    ['type' => 'text', 'text' => $name],
                     ['type' => 'text', 'text' => $docNameAndType],
                     ['type' => 'text', 'text' => $expiryFormatted],
                 ];
