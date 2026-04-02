@@ -355,11 +355,8 @@ class RosterController extends Controller
         $column_name[] = 'Employee Name';
         $column_name[] = 'Gender';
         $column_name[] = 'EMPLOYEE Mobile';
-        $column_name[] = 'EMPLOYEE Code';
-        $column_name[] = 'Cost Center Code';
         $column_name[] = 'Type';
         $column_name[] = 'Shift';
-        $column_name[] = 'Pickup Time';
         $column_name[] = 'Pickup Location';
         $column_name[] = 'Drop Time';
         $column_name[] = 'Drop Location';
@@ -433,11 +430,8 @@ class RosterController extends Controller
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['employee_name']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['gender']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['mobile']);
-                $sheet->setCellValue($column[$n++] . $row_number, $ro['employee_code']);
-                $sheet->setCellValue($column[$n++] . $row_number, $ro['cost_center_code']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['type']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['shift']);
-                $sheet->setCellValue($column[$n++] . $row_number, $ro['pickup_time']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['pickup_location']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['drop_time']);
                 $sheet->setCellValue($column[$n++] . $row_number, $ro['drop_location']);

@@ -103,6 +103,12 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::get('/invoice/list', [App\Http\Controllers\InvoiceController::class, 'list']);
     Route::get('/invoice/delete/{id}', [App\Http\Controllers\InvoiceController::class, 'delete'])->name('invoice.delete');
     Route::post('/invoice/save', [App\Http\Controllers\InvoiceController::class, 'save']);
+
+    Route::get('/document/list', [App\Http\Controllers\DocumentController::class, 'list']);
+    Route::get('/document/create/{id?}', [App\Http\Controllers\DocumentController::class, 'create']);
+    Route::post('/document/save', [App\Http\Controllers\DocumentController::class, 'save']);
+    Route::get('/document/report', [App\Http\Controllers\DocumentController::class, 'report']);
+    Route::get('/document/delete/{id}', [App\Http\Controllers\DocumentController::class, 'delete'])->name('document.delete');
 });
 
 #Route::get('/trip/{type}/{passenger_id}/{link}', [App\Http\Controllers\TripController::class, 'tripDetails']);

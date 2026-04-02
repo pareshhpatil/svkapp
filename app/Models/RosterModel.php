@@ -109,8 +109,9 @@ class RosterModel extends ParentModel
             ->leftJoin('vehicle as v', 'r.vehicle_id', '=', 'v.vehicle_id')
             ->leftJoin('roster as ro', 'rp.roster_id', '=', 'ro.id')
             ->where('rp.is_active', 1)
+            ->whereNotIn('rp.ride_passenger_status', [3,4])
             ->where('r.is_active', 1)
-            ->select(DB::raw('r.id,r.type,p.employee_name,p.employee_code,p.cost_center_code,p.gender,p.mobile,ro.shift,TIME_FORMAT(rp.pickup_time, "%h:%i %p") as pickup_time,rp.pickup_location,rp.drop_location,v.number as vehicle_number,v.car_type,d.name as driver_name,d.mobile as driver_mobile,DATE_FORMAT(date,"%d %b %y") as date,r.escort'));
+            ->select(DB::raw('r.id,r.type,p.employee_name,p.gender,p.mobile,ro.shift,TIME_FORMAT(rp.pickup_time, "%h:%i %p") as pickup_time,rp.pickup_location,rp.drop_location,v.number as vehicle_number,v.car_type,d.name as driver_name,d.mobile as driver_mobile,DATE_FORMAT(r.date,"%d %b %y") as date,r.escort'));
         if ($project_id > 0) {
             $retObj->where('r.project_id', $project_id);
         } else {
