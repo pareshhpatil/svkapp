@@ -36,6 +36,9 @@ html {
             </div>
             <div class="col-lg-6 text-end">
                 <a href="/document/list" class="btn btn-label-secondary">Back to list</a>
+                @if(empty($det))
+                <a href="/document/create-multi" class="btn btn-outline-primary">Add multiple documents</a>
+                @endif
             </div>
         </div>
         <div class="card invoice-preview-card">

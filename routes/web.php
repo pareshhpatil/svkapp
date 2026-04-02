@@ -105,6 +105,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
     Route::post('/invoice/save', [App\Http\Controllers\InvoiceController::class, 'save']);
 
     Route::get('/document/list', [App\Http\Controllers\DocumentController::class, 'list']);
+    Route::get('/document/create-multi', [App\Http\Controllers\DocumentController::class, 'createMulti']);
+    Route::post('/document/save-multi', [App\Http\Controllers\DocumentController::class, 'saveMulti']);
     Route::get('/document/create/{id?}', [App\Http\Controllers\DocumentController::class, 'create']);
     Route::post('/document/save', [App\Http\Controllers\DocumentController::class, 'save']);
     Route::get('/document/report', [App\Http\Controllers\DocumentController::class, 'report']);

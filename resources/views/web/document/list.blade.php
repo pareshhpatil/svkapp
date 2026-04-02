@@ -11,6 +11,7 @@
             </div>
             <div class="col-lg-4 text-end">
                 <a href="/document/create" class="btn btn-primary">Add document</a>
+                <a href="/document/create-multi" class="btn btn-outline-primary">Add multiple</a>
                 <a href="/document/report?tab=expiring&amp;window=1m" class="btn btn-outline-primary">Expiry report</a>
             </div>
         </div>
