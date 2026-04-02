@@ -62,6 +62,9 @@ class DocumentExpiryReminder extends Command
             }
 
             $docTypeLabel = DocumentModel::subtypeLabel($doc->document_category ?? null, $doc->document_type ?? null);
+            $docNameAndType = ($doc->name ?? '') !== ''
+                ? trim($doc->name . ' — ' . $docTypeLabel)
+                : $docTypeLabel;
             $expiryFormatted = $expiry->format('d M Y');
             $daysText = match ($window) {
                 '30d' => 'in 30 days (1 month)',
@@ -88,12 +91,9 @@ class DocumentExpiryReminder extends Command
                 }
             }
 
-            $paramsWhatsapp = [
-                ['type' => 'text', 'text' => ''], // filled per recipient
-                ['type' => 'text', 'text' => $docTypeLabel],
-                ['type' => 'text', 'text' => $expiryFormatted],
-                ['type' => 'text', 'text' => $daysText],
-            ];
+            if ($recipients === []) {
+                continue;
+            }
 
             $sentAny = false;
 
@@ -104,15 +104,25 @@ class DocumentExpiryReminder extends Command
                     continue;
                 }
 
-                $paramsWhatsapp[0]['text'] = $useDriverLabel ? 'Driver' : $assigneeName;
+                // Meta template document_expiry_reminder: exactly 3 body params ({{1}} {{2}} {{3}})
+                $nameParam = $useDriverLabel ? 'Driver' : $assigneeName;
+                $paramsWhatsapp = [
+                    ['type' => 'text', 'text' => $nameParam],
+                    ['type' => 'text', 'text' => $docNameAndType],
+                    ['type' => 'text', 'text' => $expiryFormatted],
+                ];
 
                 $title = 'Document expiry reminder';
-                $body = ($useDriverLabel ? 'Driver' : $assigneeName) . ': ' . $docTypeLabel . ' expires on ' . $expiryFormatted . ' (' . $daysText . ').';
+                $body = $nameParam . ': ' . $docNameAndType . ' expires on ' . $expiryFormatted . ' (' . $daysText . ').';
 
-                if (!empty($user->token)) {
+                $allowPush = (int) ($user->app_notification ?? 1) === 1;
+
+                if (!empty($user->token) && $allowPush) {
                     try {
-                        $api->sendNotificationToDevice((string) $user->token, $title, $body, '', '');
-                        $sentAny = true;
+                        $ok = $api->sendNotificationToDevice((string) $user->token, $title, $body, '', '');
+                        if ($ok !== false) {
+                            $sentAny = true;
+                        }
                     } catch (\Throwable $e) {
                         Log::error('DocumentExpiryReminder: FCM failed', ['user_id' => $userId, 'e' => $e->getMessage()]);
                     }
@@ -121,8 +131,10 @@ class DocumentExpiryReminder extends Command
                 $mobile = $user->mobile ?? '';
                 if (is_string($mobile) && strlen($mobile) === 10 && $whatsappTemplate !== '') {
                     try {
-                        $api->sendWhatsappMessage($mobile, 'mobile', $whatsappTemplate, $paramsWhatsapp, null, 'en', 0);
-                        $sentAny = true;
+                        $wa = $api->sendWhatsappMessage($mobile, 'mobile', $whatsappTemplate, $paramsWhatsapp, null, 'en', 0);
+                        if ($wa !== false && $wa !== null) {
+                            $sentAny = true;
+                        }
                     } catch (\Throwable $e) {
                         Log::error('DocumentExpiryReminder: WhatsApp failed', ['user_id' => $userId, 'e' => $e->getMessage()]);
                     }
@@ -140,6 +152,6 @@ class DocumentExpiryReminder extends Command
             }
         }
 
-        return self::SUCCESS;
+        return 0;
     }
 }
