@@ -10,6 +10,9 @@
             <div class="col-lg-8">
                 <h4 class="fw-bold py-2"><span class="text-muted fw-light">Invoice /</span> List</h4>
             </div>
+            <div class="col-lg-4 text-end">
+                <a href="/invoice/export" class="btn btn-outline-primary">Export</a>
+            </div>
 
         </div>
         <div class="card invoice-preview-card">

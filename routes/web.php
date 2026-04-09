@@ -101,6 +101,8 @@ Route::group(['middleware' => array('auth', 'access')], function () {
 
     Route::get('/invoice/create', [App\Http\Controllers\InvoiceController::class, 'create']);
     Route::get('/invoice/list', [App\Http\Controllers\InvoiceController::class, 'list']);
+    Route::get('/invoice/export', [App\Http\Controllers\InvoiceController::class, 'export']);
+    Route::post('/invoice/export/download', [App\Http\Controllers\InvoiceController::class, 'exportDownload']);
     Route::get('/invoice/delete/{id}', [App\Http\Controllers\InvoiceController::class, 'delete'])->name('invoice.delete');
     Route::post('/invoice/save', [App\Http\Controllers\InvoiceController::class, 'save']);
 
