@@ -87,7 +87,7 @@ class TripController extends Controller
         $params = [];
         $params[] = array('type' => 'text', 'text' => $passenger->employee_name);
         $params[] = array('type' => 'text', 'text' => $rating);
-        if ($rating < 3) {
+        if ($rating < 4) {
             $apiController->sendWhatsappMessage($passenger->mobile, 'mobile', 'low_rating', $params, null, 'en', 1);
         }
         $apiController->sendWhatsappMessage('9730946150', 'mobile', 'low_rating', $params, null, 'en', 1);

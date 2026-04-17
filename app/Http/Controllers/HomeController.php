@@ -935,6 +935,9 @@ class HomeController extends Controller
             $last_ride_id = 0;
             foreach ($rides as $ride) {
                 $ride_passengers = $this->model->getList('ride_passenger', ['passenger_type' => 1, 'ride_id' => $ride->id, 'status' => 0,  'is_active' => 1], 'passenger_id');
+                if (count($ride_passengers) >= 4) {
+                    continue;
+                }
                 $last_count = 0;
                 foreach ($ride_passengers as $ride_passenger) {
                     if ($ride_passenger->passenger_id != $passenger_id && $ride_passenger->passenger_id > 0) {
