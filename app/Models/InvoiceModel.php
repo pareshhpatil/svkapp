@@ -46,11 +46,13 @@ class InvoiceModel extends ParentModel
 
         $q = DB::table('logsheet_invoice as i')
             ->join('company as c', 'c.company_id', '=', 'i.company_id')
+            ->join('vehicle as v', 'v.vehicle_id', '=', 'i.vehicle_id')
             ->where('i.is_active', 1)
             ->where('i.admin_id', (int) $adminId)
             ->select(DB::raw("
                 c.name as company_name,
                 i.invoice_number,
+                v.number as vehicle_number,
                 i.bill_date,
                 {$monthColumn} as month_value,
                 {$grossTotalColumn} as gross_total,

@@ -269,6 +269,19 @@
 
                                 </div>
                             </li>
+                            <li class="mb-3">
+                                <div class="timeline-event">
+                                    <div class="timeline-header mb-1">
+                                        <h6 class="mb-0">Note</h6>
+                                        <input
+                            type="text" name="note"
+                            class="form-control w-auto" value="{{$det->note ?? ''}}"
+
+                          />
+                                    </div>
+
+                                </div>
+                            </li>
                         </ul>
                         <input type="hidden" name="ride_id" value="{{$det->id}}">
                                             <button type="submit" class="btn btn-primary w-auto pull-right mb-2">Submit</button>

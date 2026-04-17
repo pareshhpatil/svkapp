@@ -290,6 +290,7 @@ class RideController extends Controller
         $array['approve_status'] = 1;
         $array['status'] = $request->ride_status;
         $array['ride_ended'] = $request->ride_end_date;
+        $array['note'] = $request->note;
         $this->model->updateArray('ride', 'id', $request->ride_id, $array);
         $array=[];
         foreach ($request->rp_id as $key => $id) {
